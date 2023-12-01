@@ -208,10 +208,10 @@ $output = array(
 );
 $vlRequest = false;
 $vlView = false;
-if ((_isAllowed("/vl/requests/editVlRequest.php"))) {
+if ((_isAllowed("/covid-19/requests/covid-19-edit-request.php"))) {
     $vlRequest = true;
 }
-if ((_isAllowed("viewVlRequest.php"))) {
+if ((_isAllowed("covid-19-requests.php"))) {
     $vlView = true;
 }
 

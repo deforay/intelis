@@ -4,20 +4,20 @@ namespace App\Abstracts;
 
 use COUNTRY;
 use Exception;
-use MysqliDb;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\GeoLocationsService;
 
 abstract class AbstractTestService
 {
-    protected MysqliDb $db;
+    protected DatabaseService $db;
     protected CommonService $commonService;
     protected GeoLocationsService $geoLocationsService;
 
     public function __construct(
-        MysqliDb $db,
+        DatabaseService $db,
         CommonService $commonService,
         GeoLocationsService $geoLocationsService
     ) {
@@ -50,7 +50,7 @@ abstract class AbstractTestService
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
 
-        $currentYear = $year = $dateObj->format('y');
+        $year = $dateObj->format('y');
         $month = $dateObj->format('m');
         $day = $dateObj->format('d');
 
@@ -67,12 +67,11 @@ abstract class AbstractTestService
 
         try {
             $yearData = [];
-
+            $currentYear = $dateObj->format('Y');
             if (!empty($existingMaxId) && $existingMaxId > 0) {
                 $maxId = $existingMaxId + 1;
             } else {
                 // Determine the sequence number
-                $currentYear = $dateObj->format('Y');
                 $sql = "SELECT * FROM sequence_counter
                         WHERE year = ? AND
                         test_type = ? AND
@@ -128,18 +127,20 @@ abstract class AbstractTestService
                 $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
             }
 
-            $checkQuery = "SELECT $sampleCodeType, $sampleCodeKeyCol
-                        FROM $testTable
-                        WHERE $sampleCodeType= ?";
-            $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
-            if (!empty($checkResult)) {
-                error_log("DUP::: Sample ID ====== " . $sampleCodeGenerator['sampleCode']);
-                error_log("DUP::: Sample Key Code ====== " . $maxId);
-                $params['existingMaxId'] = $maxId;
-                return $this->generateSampleCode($testTable, $params);
-            }
-
+            // We check for duplication only if we are inserting a new record
             if ($insertOperation) {
+                $checkQuery = "SELECT $sampleCodeType, $sampleCodeKeyCol
+                                FROM $testTable
+                                WHERE $sampleCodeType= ?";
+                $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
+                if (!empty($checkResult)) {
+                    error_log("DUPLICATE ::: Sample ID in $testTable ::: " . $sampleCodeGenerator['sampleCode']);
+                    error_log("DUPLICATE ::: Sample Key Code in $testTable ::: " . $maxId);
+                    $params['existingMaxId'] = $maxId;
+                    return $this->generateSampleCode($testTable, $params);
+                }
+
+                // Insert or update the sequence counter for this test type and year
                 if ($maxId == 1) {
                     $this->db->insert('sequence_counter', [
                         'test_type' => $testType,
@@ -148,7 +149,6 @@ abstract class AbstractTestService
                         'code_type' => $sampleCodeType
                     ]);
                 } else {
-
                     $this->db->where('code_type', $sampleCodeType);
                     $this->db->where('year', $currentYear);
                     $this->db->where('test_type', $testType);

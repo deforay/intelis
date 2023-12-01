@@ -1,6 +1,8 @@
-<?php 
-use App\Registries\ContainerRegistry;
+<?php
+
 use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
 /** @var CommonService $commonService */
 $general = ContainerRegistry::get(CommonService::class);
 $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 2', array('facility_id', 'facility_name', 'facility_code'));
@@ -23,13 +25,15 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script src="/assets/js/deforayValidation.js"></script>
 <style>
-	.select2-selection__placeholder{
+	.select2-selection__placeholder {
 		display: block;
 	}
+
 	#select2-labId-container {
 		display: block;
 		margin-top: 7px !important;
 	}
+
 	b {
 		font-size: 12px;
 	}
@@ -76,8 +80,8 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 										<td class="lis hide" colspan="3">
 											<select name="labId" id="labId" title="Please select the lab name" class="form-control lis-input">
 												<option value="">-- Select --</option>
-												<?php foreach($labResults as $row){ ?>
-													<option value="<?php echo $row['facility_id'];?>"><?php echo $row['facility_name'] . '(' . $row['facility_code'] . ')';?></option>
+												<?php foreach ($labResults as $row) { ?>
+													<option value="<?php echo $row['facility_id']; ?>"><?php echo $row['facility_name'] . '(' . $row['facility_code'] . ')'; ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -140,10 +144,10 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 	$(document).ready(function() {
 		$('#labId').select2({
 			width: '100%',
-			placeholder: "Select Testing Lab"
+			placeholder: "<?= _translate("Select Lab", true); ?>"
 		});
-		<?php if(empty($labResults[0]) || count( $labResults)  == 0){ ?>
-			async function callFun(){
+		<?php if (empty($labResults)) { ?>
+			async function callFun() {
 				$.blockUI({
 					message: "<h3><?= _translate("Trying to sync Lab Details", true); ?><br><?= _translate("Please wait..."); ?></h3>"
 				});
@@ -152,7 +156,8 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 			callFun().then(
 				function(value) {
 					location.reload();
-				},function(error){
+				},
+				function(error) {
 					console.log(error);
 				}
 			);
@@ -169,7 +174,7 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 	<?php } ?>
 
 	function validateNow() {
-		if($('#userType').val() == ''){
+		if ($('#userType').val() == '') {
 			alert('Please select the user type');
 			$('#userType').focus();
 		}
@@ -182,20 +187,20 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 		}
 	}
 
-	function changeLabType(value){
-		if(value == 'lis' || value == 'standalone'){
+	function changeLabType(value) {
+		if (value == 'lis' || value == 'standalone') {
 			$('.lis').removeClass('hide');
 			$('.lis-input').addClass('isRequired');
 			$('.sts').addClass('hide');
 			$('.sts-input').removeClass('isRequired');
 			$('.sts-input,lis-input').val('').trigger('change');
-		}else if(value == 'sts'){
+		} else if (value == 'sts') {
 			$('.sts').removeClass('hide');
 			$('.sts-input').addClass('isRequired');
 			$('.lis').addClass('hide');
 			$('.lis-input').removeClass('isRequired');
 			$('.lis-input,sts-input').val('').trigger('change');
-		}else{
+		} else {
 			$('.lis, .sts').addClass('hide');
 			$('.lis-input,sts-input').removeClass('isRequired');
 			$('.lis-input,sts-input').val('').trigger('change');

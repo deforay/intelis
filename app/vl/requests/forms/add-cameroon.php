@@ -569,7 +569,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="isSampleRejected"><?= _translate('Sample Rejection'); ?> </label>
+                                                                      <label class="col-lg-5 control-label" for="isSampleRejected"><?= _translate('Is Sample Rejected?'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="isSampleRejected" id="isSampleRejected" class="form-control" title="<?= _translate('Please check if sample is rejected or not'); ?>">
                                                                                 <option value=""><?= _translate('-- Select --'); ?></option>

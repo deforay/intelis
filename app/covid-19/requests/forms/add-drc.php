@@ -760,9 +760,9 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
                                                 </select>
                                             </td>
-                                            <th scope="row">L'échantillon est-il rejeté?</th>
+                                            <th scope="row"><?= _translate("Is Sample Rejected?"); ?></th>
                                             <td>
-                                                <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="L'échantillon est-il rejeté?">
+                                                <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="<?= _translate("Is Sample Rejected?"); ?>">
                                                     <option value="">--Select--</option>
                                                     <option value="yes">Oui</option>
                                                     <option value="no">Non</option>

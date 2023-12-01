@@ -177,27 +177,23 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													<td><strong>
-															<?php echo _translate("ART Number"); ?>&nbsp;:
-														</strong></td>
-													<td>
-														<input type="text" id="artNo" name="artNo" class="form-control" placeholder="<?php echo _translate('ART Number'); ?>" style="width:220px;" onkeyup="searchVlRequestData()" />
-													</td>
+													
 													<td><strong>
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
 														<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
-
-												</tr>
-												<tr>
 													<td><strong>
 															<?php echo _translate("Patient ID"); ?>&nbsp;:
 														</strong></td>
 													<td>
 														<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
 													</td>
+
+												</tr>
+												<tr>
+													
 													<td><strong>
 															<?php echo _translate("Patient Name"); ?>&nbsp;:
 														</strong></td>
@@ -425,26 +421,21 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													<td><strong>
-															<?php echo _translate("ART Number"); ?>&nbsp;:
-														</strong></td>
-													<td>
-														<input type="text" id="printArtNo" name="artNo" class="form-control" placeholder="<?php echo _translate('ART Number'); ?>" style="width:220px;" onkeyup="searchPrintedVlRequestData()" />
-													</td>
+													
 													<td><strong>
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
 														<input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
-												</tr>
-												<tr>
 													<td><strong>
 															<?php echo _translate("Patient ID"); ?>&nbsp;:
 														</strong></td>
 													<td>
 														<input type="text" id="printPatientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
 													</td>
+												</tr>
+												<tr>
 													<td><strong>
 															<?php echo _translate("Patient Name"); ?>&nbsp;:
 														</strong></td>
@@ -837,10 +828,6 @@ $state = $geolocationService->getProvinces("yes");
 					"value": $("#gender").val()
 				});
 				aoData.push({
-					"name": "artNo",
-					"value": $("#artNo").val()
-				});
-				aoData.push({
 					"name": "sampleTestDate",
 					"value": $("#sampleTestDate").val()
 				});
@@ -983,10 +970,6 @@ $state = $geolocationService->getProvinces("yes");
 				aoData.push({
 					"name": "gender",
 					"value": $("#printGender").val()
-				});
-				aoData.push({
-					"name": "artNo",
-					"value": $("#printArtNo").val()
 				});
 				aoData.push({
 					"name": "sampleTestDate",
