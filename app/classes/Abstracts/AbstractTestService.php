@@ -50,7 +50,7 @@ abstract class AbstractTestService
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
 
-        $currentYear = $year = $dateObj->format('y');
+        $year = $dateObj->format('y');
         $month = $dateObj->format('m');
         $day = $dateObj->format('d');
 
@@ -67,7 +67,7 @@ abstract class AbstractTestService
 
         try {
             $yearData = [];
-
+            $currentYear = $dateObj->format('Y');
             if (!empty($existingMaxId) && $existingMaxId > 0) {
                 $maxId = $existingMaxId + 1;
             } else {
