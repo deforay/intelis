@@ -224,9 +224,7 @@ if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != ''
 if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
      $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
 }
-if (isset($_POST['artNo']) && trim((string) $_POST['artNo']) != '') {
-     $sWhere[] = " vl.patient_art_no LIKE '%" . $_POST['artNo'] . "%' ";
-}
+
 if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
      if ($_POST['status'] == 'no_result') {
           $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;

@@ -5,7 +5,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
-$sQuery = "SELECT * FROM r_vl_sample_type";
+$sQuery = "SELECT * FROM r_tb_sample_type";
 $sResult = $db->rawQuery($sQuery);
 $fQuery = "SELECT * FROM facility_details where status='active'";
 $fResult = $db->rawQuery($fQuery);

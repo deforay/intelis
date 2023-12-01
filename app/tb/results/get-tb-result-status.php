@@ -200,10 +200,10 @@ $output = array(
 );
 $vlRequest = false;
 $vlView = false;
-if ((_isAllowed("/vl/requests/editVlRequest.php"))) {
+if ((_isAllowed("/tb/requests/tb-edit-request.php"))) {
     $vlRequest = true;
 }
-if ((_isAllowed("viewVlRequest.php"))) {
+if ((_isAllowed("tb-requests.php"))) {
     $vlView = true;
 }
 
