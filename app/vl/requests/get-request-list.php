@@ -287,7 +287,7 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
      $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
-     $sWhere[] = ' vl.sample_received_at_lab_datetime is not null AND vl.sample_received_at_lab_datetime not like ""';
+     $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) > '1970-01-01'";
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
      $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;

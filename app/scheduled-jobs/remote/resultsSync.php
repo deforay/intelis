@@ -29,14 +29,13 @@ $version = VERSION;
 $systemConfig = SYSTEM_CONFIG;
 
 if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
-    error_log("Please check if Remote URL is set");
+    error_log("Please check if STS URL is set");
     exit(0);
 }
 try {
     // Checking if the network connection is available
     $remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
-    $headers = @get_headers($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version);
-    if (!str_contains((string)$headers[0], '200')) {
+    if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
         error_log("No network connectivity while trying remote sync.");
         return false;
     }

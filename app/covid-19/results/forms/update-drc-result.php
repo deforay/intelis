@@ -757,9 +757,9 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                                 <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Sélectionner --'); ?>
                                             </select>
                                         </td>
-                                        <th scope="row">L'échantillon est-il rejeté? <span class="mandatory">*</span></th>
+                                        <th scope="row"><?= _translate("Is Sample Rejected?"); ?> <span class="mandatory">*</span></th>
                                         <td>
-                                            <select class="form-control result-focus isRequired" name="isSampleRejected" id="isSampleRejected" title="L'échantillon est-il rejeté?">
+                                            <select class="form-control result-focus isRequired" name="isSampleRejected" id="isSampleRejected" title="<?= _translate("Is Sample Rejected?"); ?>">
                                                 <option value=''> -- Sélectionner -- </option>
                                                 <option value="yes" <?php echo ($covid19Info['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
                                                 <option value="no" <?php echo ($covid19Info['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>

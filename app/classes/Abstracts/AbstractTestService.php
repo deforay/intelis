@@ -4,20 +4,20 @@ namespace App\Abstracts;
 
 use COUNTRY;
 use Exception;
-use MysqliDb;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\GeoLocationsService;
 
 abstract class AbstractTestService
 {
-    protected MysqliDb $db;
+    protected DatabaseService $db;
     protected CommonService $commonService;
     protected GeoLocationsService $geoLocationsService;
 
     public function __construct(
-        MysqliDb $db,
+        DatabaseService $db,
         CommonService $commonService,
         GeoLocationsService $geoLocationsService
     ) {
@@ -72,7 +72,6 @@ abstract class AbstractTestService
                 $maxId = $existingMaxId + 1;
             } else {
                 // Determine the sequence number
-                $currentYear = $dateObj->format('Y');
                 $sql = "SELECT * FROM sequence_counter
                         WHERE year = ? AND
                         test_type = ? AND

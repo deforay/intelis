@@ -221,4 +221,46 @@ class PatientsService
         $result = $this->db->getOne($this->table, "system_patient_code");
         return $result['system_patient_code'];
     }
+
+    public function getLastRequestForPatientID(string $testType, string $patientId)
+    {
+
+        $sQuery = "";
+        if ($testType == 'vl') {
+            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
+                        DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
+                        (SELECT count(unique_id) FROM `form_vl` WHERE `patient_art_no`='$patientId') as no_of_req_time,
+                        (SELECT COUNT(unique_id) FROM `form_vl` WHERE `patient_art_no`='$patientId' AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
+                        FROM form_vl
+                        WHERE `patient_art_no`='$patientId' ORDER by DATE(request_created_datetime) DESC limit 1";
+        } elseif ($testType == 'eid') {
+            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
+                        DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
+                        (SELECT count(unique_id) FROM `form_eid` WHERE `child_id`='$patientId') as no_of_req_time,
+                        (SELECT COUNT(unique_id) FROM `form_eid` WHERE `child_id`='$patientId' AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
+                        FROM form_eid
+                        WHERE `child_id`='$patientId' ORDER by DATE(request_created_datetime) DESC limit 1";
+        } elseif ($testType == 'covid19') {
+            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
+                        DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
+                        (SELECT count(unique_id) FROM `form_covid19` WHERE `patient_id`='$patientId') as no_of_req_time,
+                        (SELECT COUNT(unique_id) FROM `form_covid19` WHERE `patient_id`='$patientId' AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
+                        FROM form_covid19
+                        WHERE `patient_id`='$patientId'
+                        ORDER by DATE(request_created_datetime) DESC limit 1";
+        } elseif ($testType == 'hepatitis') {
+            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
+                        DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
+                        (SELECT count(unique_id) FROM `form_hepatitis` WHERE `patient_id`='$patientId') as no_of_req_time,
+                        (SELECT COUNT(unique_id) FROM `form_hepatitis` WHERE `patient_id`='$patientId' AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
+                        FROM form_hepatitis
+                        WHERE `patient_id`='$patientId'
+                        ORDER by DATE(request_created_datetime) DESC limit 1";
+        }
+        if (!empty($sQuery)) {
+            return $this->db->rawQueryOne($sQuery);
+        } else {
+            return null;
+        }
+    }
 }
