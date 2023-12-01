@@ -127,18 +127,20 @@ abstract class AbstractTestService
                 $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
             }
 
-            $checkQuery = "SELECT $sampleCodeType, $sampleCodeKeyCol
-                        FROM $testTable
-                        WHERE $sampleCodeType= ?";
-            $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
-            if (!empty($checkResult)) {
-                error_log("DUP::: Sample ID ====== " . $sampleCodeGenerator['sampleCode']);
-                error_log("DUP::: Sample Key Code ====== " . $maxId);
-                $params['existingMaxId'] = $maxId;
-                return $this->generateSampleCode($testTable, $params);
-            }
-
+            // We check for duplication only if we are inserting a new record
             if ($insertOperation) {
+                $checkQuery = "SELECT $sampleCodeType, $sampleCodeKeyCol
+                                FROM $testTable
+                                WHERE $sampleCodeType= ?";
+                $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
+                if (!empty($checkResult)) {
+                    error_log("DUPLICATE ::: Sample ID in $testTable ::: " . $sampleCodeGenerator['sampleCode']);
+                    error_log("DUPLICATE ::: Sample Key Code in $testTable ::: " . $maxId);
+                    $params['existingMaxId'] = $maxId;
+                    return $this->generateSampleCode($testTable, $params);
+                }
+
+                // Insert or update the sequence counter for this test type and year
                 if ($maxId == 1) {
                     $this->db->insert('sequence_counter', [
                         'test_type' => $testType,
@@ -147,7 +149,6 @@ abstract class AbstractTestService
                         'code_type' => $sampleCodeType
                     ]);
                 } else {
-
                     $this->db->where('code_type', $sampleCodeType);
                     $this->db->where('year', $currentYear);
                     $this->db->where('test_type', $testType);
