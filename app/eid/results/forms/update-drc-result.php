@@ -468,7 +468,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['resul
 												<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
 											</select>
 										</td>
-										<th scope="row">L'échantillon est-il rejeté? <span class="mandatory">*</span></th>
+										<th scope="row"><?= _translate("Is Sample Rejected?"); ?> <span class="mandatory">*</span></th>
 										<td>
 											<select class="form-control isRequired" name="isSampleRejected" title="Veuillez sélectionner si l'échantillon est rejeté ou non?" id="isSampleRejected" onchange="sampleRejection();">
 												<option value=''> -- Sélectionner -- </option>

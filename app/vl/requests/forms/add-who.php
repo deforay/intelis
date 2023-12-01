@@ -567,7 +567,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="isSampleRejected">Sample Rejected? <span class="mandatory result-span">*</span></label>
+                                                                      <label class="col-lg-5 control-label labels" for="isSampleRejected">Is Sample Rejected? <span class="mandatory result-span">*</span></label>
                                                                       <div class="col-lg-7">
                                                                            <select name="isSampleRejected" id="isSampleRejected" class="form-control isRequired" title="Please check if sample is rejected or not">
                                                                                 <option value="">-- Select --</option>

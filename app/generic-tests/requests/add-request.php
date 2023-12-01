@@ -554,7 +554,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                             </div>
                                                        </div>
                                                        <div class="col-md-6">
-                                                            <label class="col-lg-5 control-label labels" for="isSampleRejected">Sample Rejected? <span class="mandatory result-span">*</span></label>
+                                                            <label class="col-lg-5 control-label labels" for="isSampleRejected">Is Sample Rejected? <span class="mandatory result-span">*</span></label>
                                                             <div class="col-lg-7">
                                                                  <select name="isSampleRejected" id="isSampleRejected" class="form-control" title="Please check if sample is rejected or not">
                                                                       <option value="">-- Select --</option>

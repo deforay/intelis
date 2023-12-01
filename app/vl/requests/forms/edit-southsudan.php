@@ -692,7 +692,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="isSampleRejected">Sample Rejection <span class="mandatory result-span">*</span></label>
+													<label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? <span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
 														<select name="isSampleRejected" id="isSampleRejected" class="form-control labSection" title="Please check if sample is rejected or not">
 															<option value="">-- Select --</option>

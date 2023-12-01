@@ -784,9 +784,9 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                     <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Sélectionner --'); ?>
                                                 </select>
                                             </td>
-                                            <th scope="row">L'échantillon est-il rejeté?</th>
+                                            <th scope="row"><?= _translate("Is Sample Rejected?"); ?></th>
                                             <td>
-                                                <select class="form-control result-focus" name="isSampleRejected" id="isSampleRejected" title="L'échantillon est-il rejeté?">
+                                                <select class="form-control result-focus" name="isSampleRejected" id="isSampleRejected" title="<?= _translate("Is Sample Rejected?"); ?>">
                                                     <option value=''> -- Sélectionner -- </option>
                                                     <option value="yes" <?php echo ($covid19Info['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
                                                     <option value="no" <?php echo ($covid19Info['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
@@ -973,7 +973,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </table>
                                 </div>
                             </div>
-<?php } ?>
+                        <?php } ?>
 
                     </div>
                     <!-- /.box-body -->
