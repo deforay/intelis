@@ -196,13 +196,13 @@ try {
     if (isset($_POST['treatmentIndication']) && $_POST['treatmentIndication'] == "Other") {
         $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
     }
-    $interpretationResult = null;
+    // $interpretationResult = null;
     /* if(isset($_POST['resultType']) && isset($_POST['testType']) && !empty($_POST['resultType']) && !empty($_POST['testType'])){
         $interpretationResult = $genericTestsService->getInterpretationResults($_POST['testType'], $_POST['result']);
     } */
-    if (!empty($_POST['resultInterpretation'])) {
+    /* if (!empty($_POST['resultInterpretation'])) {
         $interpretationResult = $_POST['resultInterpretation'];
-    }
+    } */
 
 
     $vldata = array(
@@ -245,7 +245,7 @@ try {
         'rejection_on' => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
         'result' => $_POST['result'] ?: null,
         // 'result_unit' => (isset($_POST['finalTestResultUnit']) && $_POST['finalTestResultUnit'] != "") ? implode("##",$_POST['finalTestResultUnit']) : null,
-        'final_result_interpretation' => $interpretationResult,
+        // 'final_result_interpretation' => $interpretationResult,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,
@@ -316,19 +316,21 @@ try {
                 foreach($subTests as $testKey=>$testKitName){
                      if (!empty($testKitName)) {
                           $testData = array(
-                               'generic_id' => $_POST['vlSampleId'],
-                               'sub_test_name' => $subTestName,
-                               'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName],
-                               'result_type' => $_POST['resultType'][$subTestName],
-                               'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName,
-                               'facility_id' => $_POST['labId'] ?? null,
-                               'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? '', true),
-                               'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null,
-                               'kit_lot_no' => (str_contains((string)$testKitName, 'RDT')) ? $_POST['lotNo'][$subTestName][$testKey] : null,
-                               'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null,
-                               'result' => $_POST['testResult'][$subTestName][$testKey],
-                               'final_result' => $_POST['finalResult'][$subTestName],
-                               'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey]
+                            'generic_id' => $_POST['vlSampleId'],
+                            'sub_test_name' => $subTestName,
+                            'result_type' => $_POST['resultType'][$subTestName],
+                            'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName,
+                            'facility_id' => $_POST['labId'] ?? null,
+                            'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? '', true),
+                            'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null,
+                            'kit_lot_no' => (str_contains((string)$testKitName, 'RDT')) ? $_POST['lotNo'][$subTestName][$testKey] : null,
+                            'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null,
+                            'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey],
+                            'result' => $_POST['testResult'][$subTestName][$testKey],
+                            
+                            'final_result' => $_POST['finalResult'][$subTestName],
+                            'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName],
+                            'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
                           );
                           $db->insert('generic_test_results', $testData);
                      }
