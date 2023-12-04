@@ -28,7 +28,7 @@ abstract class AbstractTestService
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);
 
-    public function generateSampleCode($testTable, $params): bool|string
+    public function generateSampleCode($testTable, $params)
     {
 
         $sampleCodeGenerator = [];
@@ -129,6 +129,7 @@ abstract class AbstractTestService
 
             // We check for duplication only if we are inserting a new record
             if ($insertOperation) {
+                error_log("Trying to insert Sample ID in $testTable");
                 $checkQuery = "SELECT $sampleCodeType, $sampleCodeKeyCol
                                 FROM $testTable
                                 WHERE $sampleCodeType= ?";

@@ -14,7 +14,7 @@ use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
-function decrypt($encrypted, $key): string
+function decrypt($encrypted, $key): string|null
 {
     try {
         $decoded = sodium_base642bin((string) $encrypted, SODIUM_BASE64_VARIANT_URLSAFE);

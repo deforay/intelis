@@ -46,7 +46,7 @@ class MiscUtility
     }
 
     //dump the contents of a variable to the error log in a readable format
-    public static function errorLog($object = null): void
+    public static function dumpToErrorLog($object = null): void
     {
         ob_start();
         var_dump($object);
