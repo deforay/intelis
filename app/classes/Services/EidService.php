@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use COUNTRY;
 use Exception;
 use SAMPLE_STATUS;
-use COUNTRY;
 use App\Utilities\DateUtility;
+use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
 class EidService extends AbstractTestService
@@ -13,6 +14,7 @@ class EidService extends AbstractTestService
 
     protected string $table = 'form_eid';
     protected string $shortCode = 'EID';
+    protected int $maxTries = 5; // Max tries to insert sample
 
     public function getSampleCode($params)
     {
@@ -62,6 +64,11 @@ class EidService extends AbstractTestService
     {
         try {
             $formId = $this->commonService->getGlobalConfig('vl_form');
+
+            $params['tries'] = $params['tries'] ?? 0;
+            if ($params['tries'] >= $this->maxTries) {
+                throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
+            }
 
             $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
@@ -144,10 +151,11 @@ class EidService extends AbstractTestService
                 }
             } else {
                 // If this sample id exists, let us regenerate the sample id and insert
+                $params['tries']++;
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSample($params);
             }
-        } catch (Exception $e) {
+        } catch (Exception | SystemException $e) {
             error_log('Insert EID Sample : ' . $this->db->getLastErrno());
             error_log('Insert EID Sample : ' . $this->db->getLastError());
             error_log('Insert EID Sample : ' . $this->db->getLastQuery());

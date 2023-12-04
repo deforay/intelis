@@ -6,6 +6,7 @@ use COUNTRY;
 use Exception;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
+use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
 class Covid19Service extends AbstractTestService
@@ -13,6 +14,7 @@ class Covid19Service extends AbstractTestService
 
     protected string $table = 'form_covid19';
     protected string $shortCode = 'C19';
+    protected int $maxTries = 5; // Max tries to insert sample
 
     public function getSampleCode($params)
     {
@@ -345,6 +347,11 @@ class Covid19Service extends AbstractTestService
     public function insertSample($params, $returnSampleData = false)
     {
         try {
+            $params['tries'] = $params['tries'] ?? 0;
+            if ($params['tries'] >= $this->maxTries) {
+                throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
+            }
+
             $formId = $this->commonService->getGlobalConfig('vl_form');
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = (!empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
@@ -426,10 +433,11 @@ class Covid19Service extends AbstractTestService
                 }
             } else {
                 // If this sample id exists, let us regenerate the sample id and insert
+                $params['tries']++;
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSample($params);
             }
-        } catch (Exception $e) {
+        } catch (Exception | SystemException $e) {
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastErrno());
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastError());
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastQuery());

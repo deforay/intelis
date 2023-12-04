@@ -17,6 +17,7 @@ abstract class AbstractTestService
     protected DatabaseService $db;
     protected CommonService $commonService;
     protected GeoLocationsService $geoLocationsService;
+    protected int $maxTries = 5; // Max tries for generating sample code
 
     public function __construct(
         DatabaseService $db,
@@ -30,8 +31,12 @@ abstract class AbstractTestService
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);
 
-    public function generateSampleCode($testTable, $params): bool|string
+    public function generateSampleCode($testTable, $params, $tryCount = 0): bool|string
     {
+
+        if ($tryCount >= $this->maxTries) {
+            throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating sample code");
+        }
 
         $sampleCodeGenerator = [];
         $formId = $this->commonService->getGlobalConfig('vl_form');
@@ -139,7 +144,7 @@ abstract class AbstractTestService
                 if (!empty($checkResult)) {
                     LoggerUtility::log('info', "DUPLICATE ::: Sample ID/Sample Key Code in $testTable ::: " . $sampleCodeGenerator['sampleCode'] . " / " . $maxId);
                     $params['existingMaxId'] = $maxId;
-                    return $this->generateSampleCode($testTable, $params);
+                    return $this->generateSampleCode($testTable, $params, $tryCount + 1);
                 }
 
 
@@ -159,12 +164,13 @@ abstract class AbstractTestService
                 }
             }
         } catch (Exception | SystemException $exception) {
-            LoggerUtility::log('error', "Error while generating Sample Code for $testTable : " . $exception->getMessage(), [
-                'exception' => $exception,
-                'file' => $exception->getFile(), // File where the error occurred
-                'line' => $exception->getLine(), // Line number of the error
-                'stacktrace' => $exception->getTraceAsString()
-            ]);
+            // LoggerUtility::log('error', "Error while generating Sample Code for $testTable : " . $exception->getMessage(), [
+            //     'exception' => $exception,
+            //     'file' => $exception->getFile(), // File where the error occurred
+            //     'line' => $exception->getLine(), // Line number of the error
+            //     'stacktrace' => $exception->getTraceAsString()
+            // ]);
+            throw new SystemException("Error while generating Sample Code for $testTable : " . $exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return json_encode($sampleCodeGenerator);
