@@ -395,11 +395,11 @@ $state = $geolocationService->getProvinces("yes");
 										<?php echo _translate("Clear Search"); ?>
 									</span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+								&nbsp;<button class="btn btn-sm btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
 									<?php echo _translate("Download"); ?>
 								</button>
 
-								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span>
+								&nbsp;<button class="btn btn-sm btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span>
 										<?php echo _translate("Manage Columns"); ?>
 									</span></button>
 							</td>

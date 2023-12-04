@@ -119,10 +119,10 @@ abstract class AbstractTestService
 
 
             if ($sampleCodeFormat == 'auto') {
-                $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
-                $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
-                $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
-                $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
+                $sampleCodeGenerator['sampleCode'] = $remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId'];
+                $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId'];
+                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
+                $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
             } elseif ($sampleCodeFormat == 'auto2') {
                 $sampleCodeGenerator['sampleCode'] = $remotePrefix . $year . $provinceCode . $prefix . $sampleCodeGenerator['maxId'];
                 $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $prefix . $sampleCodeGenerator['maxId'];
@@ -132,8 +132,21 @@ abstract class AbstractTestService
                 $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
                 $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
                 $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'];
-                $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
+                $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
             }
+
+            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
+
+            if ($sampleCodeFormat == 'auto') {
+                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
+            } elseif ($sampleCodeFormat == 'auto2') {
+                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $year . $provinceCode . $prefix . $autoFormatedString;
+            } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
+                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'];
+            }
+
+            $sampleCodeGenerator['sampleCode'] = $sampleCodeGenerator['sampleCodeFormat'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $sampleCodeGenerator['sampleCodeFormat'] . $sampleCodeGenerator['maxId'];
 
             // We check for duplication only if we are inserting a new record
             if ($insertOperation) {

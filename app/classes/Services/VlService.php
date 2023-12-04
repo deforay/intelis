@@ -143,8 +143,7 @@ class VlService extends AbstractTestService
         $hivDetection = $params['hivDetection'] ?? null;
         $resultStatus = null;
 
-        // if ($params['isSampleRejected'] ?? null === 'yes') {
-        if ($params['isSampleRejected'] == 'yes') {
+        if (($params['isSampleRejected'] ?? null) == 'yes') {
             $isRejected = 'yes';
             $finalResult = $params['vlResult'] = $params['vlLog'] = null;
             $resultStatus = SAMPLE_STATUS\REJECTED;

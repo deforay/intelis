@@ -131,7 +131,7 @@ class PatientsService
             $data['patient_address'] = (!empty($params['patientAddress']) ? $params['patientAddress'] : null);
             $data['updated_datetime'] = DateUtility::getCurrentDateTime();
             $data['patient_registered_on'] = DateUtility::getCurrentDateTime();
-            $data['patient_registered_by'] = $params['registeredBy'];
+            $data['patient_registered_by'] = $params['registeredBy'] ?? null;
 
             $updateColumns = array_keys($data);
             $this->db->onDuplicate($updateColumns, 'system_patient_code');
