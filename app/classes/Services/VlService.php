@@ -409,7 +409,7 @@ class VlService extends AbstractTestService
         return $this->db->getValue('instruments', 'low_vl_result_text', null);
     }
 
-    public function insertSample($params, $returnSampleData = false): int|array
+    public function insertSample($params, $returnSampleData = false)
     {
         try {
 

@@ -147,21 +147,20 @@ abstract class AbstractTestService
                     return $this->generateSampleCode($testTable, $params, $tryCount + 1);
                 }
 
-
                 //Insert or update the sequence counter for this test type and year
-                if ($maxId == 1) {
-                    $this->db->insert('sequence_counter', [
-                        'test_type' => $testType,
-                        'year' => $currentYear,
-                        'max_sequence_number' => $maxId,
-                        'code_type' => $sampleCodeType
-                    ]);
-                } else {
-                    $this->db->where('code_type', $sampleCodeType);
-                    $this->db->where('year', $currentYear);
-                    $this->db->where('test_type', $testType);
-                    $this->db->update('sequence_counter', ['max_sequence_number' => $maxId]);
-                }
+                $data = [
+                    'test_type' => $testType,
+                    'year' => $currentYear,
+                    'max_sequence_number' => $maxId,
+                    'code_type' => $sampleCodeType
+                ];
+
+                $onDuplicateKeyUpdateData = [
+                    'max_sequence_number' => $maxId
+                ];
+
+                $this->db->onDuplicate($onDuplicateKeyUpdateData)
+                    ->insert('sequence_counter', $data);
             }
         } catch (Exception | SystemException $exception) {
             // LoggerUtility::log('error', "Error while generating Sample Code for $testTable : " . $exception->getMessage(), [
