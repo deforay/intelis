@@ -65,7 +65,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-               $key = base64_decode((string) $general->getGlobalConfig('key'));
+               $key = (string) $general->getGlobalConfig('key');
                $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
                $patientFname = $general->crypto('decrypt', $patientFname, $key);
           }
@@ -81,25 +81,25 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $vlSampleId[] = $aRow['vl_sample_id'];
           $output[] = $row;
      }
-          if ($_POST['markAsComplete'] == 'true') {
-               $vlId = implode(",", $vlSampleId);
-          }
-          if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 75000) {
-                    $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.csv';
-                    $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-                    // we dont need the $output variable anymore
-                    unset($output);
-                    echo base64_encode((string) $fileName);
-               } else {
-                    $excel = new Spreadsheet();
-                    $sheet = $excel->getActiveSheet();
-               
-                    $sheet->fromArray($headings, null, 'A3');
+     if ($_POST['markAsComplete'] == 'true') {
+          $vlId = implode(",", $vlSampleId);
+     }
+     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 75000) {
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.csv';
+          $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+          // we dont need the $output variable anymore
+          unset($output);
+          echo base64_encode((string) $fileName);
+     } else {
+          $excel = new Spreadsheet();
+          $sheet = $excel->getActiveSheet();
 
-                    foreach ($output as $rowNo => $rowData) {
-                         $rRowCount = $rowNo + 4;
-                         $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-                    }
+          $sheet->fromArray($headings, null, 'A3');
+
+          foreach ($output as $rowNo => $rowData) {
+               $rRowCount = $rowNo + 4;
+               $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+          }
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($fileName);

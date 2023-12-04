@@ -49,12 +49,16 @@ $db = ContainerRegistry::get('db');
 // Define your encryption key
 $encryptionKey = 'your_aes_encryption_key';
 
+$oldSodiumKey = "";
+
 // Define the name of the table and columns you want to migrate
 $tableName = 'form_vl';
 $columnsToMigrate = ['is_encrypted', 'patient_art_no', 'patient_first_name', 'patient_middle_name', 'patient_last_name'];
 
 // Query the database to retrieve the data
 $data = $db->get($tableName, null, $columnsToMigrate);
+
+
 
 // Loop through the data and migrate encrypted entries
 foreach ($data as $row) {

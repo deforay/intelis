@@ -49,9 +49,9 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         }
     }
 
-    
 
-	foreach ($db->rawQueryGenerator($_SESSION['resultNotAvailable']) as $aRow) {        
+
+    foreach ($db->rawQueryGenerator($_SESSION['resultNotAvailable']) as $aRow) {
         $row = [];
         //sample collecion date
         $sampleCollectionDate = '';
@@ -70,7 +70,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
             $row[] = $aRow['remote_sample_code'];
         }
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $key = base64_decode((string) $general->getGlobalConfig('key'));
+            $key = (string) $general->getGlobalConfig('key');
             $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
             $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
         }
@@ -88,13 +88,13 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
         // we dont need the $output variable anymore
         unset($output);
-        echo base64_encode((string) $fileName);   
-     } else {
+        echo base64_encode((string) $fileName);
+    } else {
         $colNo = 1;
 
         $excel = new Spreadsheet();
         $sheet = $excel->getActiveSheet();
-    
+
         $styleArray = array(
             'font' => array(
                 'bold' => true,
@@ -135,8 +135,8 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $sheet->fromArray($headings, null, 'A3');
 
         foreach ($output as $rowNo => $rowData) {
-          $rRowCount = $rowNo + 4;
-          $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+            $rRowCount = $rowNo + 4;
+            $sheet->fromArray($rowData, null, 'A' . $rRowCount);
         }
         $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
         $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Covid-19-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';

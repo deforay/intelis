@@ -267,7 +267,7 @@ if (!empty($id)) {
                         }
 
                         if (!empty($sampleResult[0]['is_encrypted']) && $sampleResult[0]['is_encrypted'] == 'yes') {
-                            $key = base64_decode((string) $general->getGlobalConfig('key'));
+                            $key = (string) $general->getGlobalConfig('key');
                             $sampleResult[0][$patientIdColumn] = $general->crypto('decrypt', $sampleResult[0][$patientIdColumn], $key);
                         }
 
@@ -350,7 +350,7 @@ if (!empty($id)) {
                             $lotExpirationDate .= DateUtility::humanReadableDateFormat($sampleResult[0]['lot_expiration_date'] ?? '');
                         }
                         if (!empty($sampleResult[0]['is_encrypted']) && $sampleResult[0]['is_encrypted'] == 'yes') {
-                            $key = base64_decode((string) $general->getGlobalConfig('key'));
+                            $key = (string) $general->getGlobalConfig('key');
                             $sampleResult[0][$patientIdColumn] = $general->crypto('decrypt', $sampleResult[0][$patientIdColumn], $key);
                         }
 

@@ -86,7 +86,7 @@ foreach ($db->rawQueryGenerator($_SESSION['vlRequestQuery']) as $aRow) {
 	$row[] = $aRow['facility_state'];
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-			$key = base64_decode((string) $general->getGlobalConfig('key'));
+			$key = (string) $general->getGlobalConfig('key');
 			$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
 			$patientFname = $general->crypto('decrypt', $patientFname, $key);
 			$patientMname = $general->crypto('decrypt', $patientMname, $key);

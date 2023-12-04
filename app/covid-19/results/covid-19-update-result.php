@@ -93,7 +93,7 @@ $condition = "status ='active' AND test_type='covid19'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes') {
-	$key = base64_decode((string) $general->getGlobalConfig('key'));
+	$key = (string) $general->getGlobalConfig('key');
 	$covid19Info['patient_id'] = $general->crypto('decrypt', $covid19Info['patient_id'], $key);
 	$covid19Info['patient_name'] = $general->crypto('decrypt', $covid19Info['patient_name'], $key);
 

@@ -156,7 +156,7 @@ if (!empty($requestResult)) {
           $messageTextSize = '15px';
 
           if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-               $key = base64_decode((string) $general->getGlobalConfig('key'));
+               $key = (string) $general->getGlobalConfig('key');
                $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
                $result['patient_first_name'] = $general->crypto('decrypt',  $result['patient_first_name'], $key);
                $result['patient_last_name'] = $general->crypto('decrypt',  $result['patient_last_name'], $key);
@@ -237,7 +237,7 @@ if (!empty($requestResult)) {
                $patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_art_no']));
 
                if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-                    $key = base64_decode((string) $general->getGlobalConfig('key'));
+                    $key = (string) $general->getGlobalConfig('key');
                     $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
                     $patientFname = $general->crypto('decrypt', $patientFname, $key);
                }

@@ -67,7 +67,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-               $key = base64_decode((string) $general->getGlobalConfig('key'));
+               $key = (string) $general->getGlobalConfig('key');
                $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
                $patientFname = $general->crypto('decrypt', $patientFname, $key);
           }
@@ -80,40 +80,40 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $output[] = $row;
      }
      if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 75000) {
-                    $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Hepatitis-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
-                    $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-                    // we dont need the $output variable anymore
-                    unset($output);
-                    echo base64_encode((string) $fileName);
-               } else {
-                    $excel = new Spreadsheet();
-                    $sheet = $excel->getActiveSheet();
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Hepatitis-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
+          $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+          // we dont need the $output variable anymore
+          unset($output);
+          echo base64_encode((string) $fileName);
+     } else {
+          $excel = new Spreadsheet();
+          $sheet = $excel->getActiveSheet();
 
-                    $styleArray = array(
-                         'font' => array(
-                              'bold' => true,
-                              'size' => '13',
-                         ),
-                         'alignment' => array(
-                              'horizontal' => Alignment::HORIZONTAL_CENTER,
-                              'vertical' => Alignment::VERTICAL_CENTER,
-                         ),
-                         'borders' => array(
-                              'outline' => array(
-                                   'style' => Border::BORDER_THIN,
-                              ),
-                         )
-                    );
+          $styleArray = array(
+               'font' => array(
+                    'bold' => true,
+                    'size' => '13',
+               ),
+               'alignment' => array(
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+               ),
+               'borders' => array(
+                    'outline' => array(
+                         'style' => Border::BORDER_THIN,
+                    ),
+               )
+          );
 
-                    $sheet->mergeCells('A1:AE1');
-                    $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
+          $sheet->mergeCells('A1:AE1');
+          $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
 
-                    $sheet->fromArray($headings, null, 'A3');
+          $sheet->fromArray($headings, null, 'A3');
 
-                    foreach ($output as $rowNo => $rowData) {
-                         $rRowCount = $rowNo + 4;
-                         $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-                    }
+          foreach ($output as $rowNo => $rowData) {
+               $rRowCount = $rowNo + 4;
+               $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+          }
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Hepatitis-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($fileName);

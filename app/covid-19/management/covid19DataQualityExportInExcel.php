@@ -38,8 +38,8 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           }
      }
 
-   
-	foreach ($db->rawQueryGenerator($_SESSION['vlIncompleteForm']) as $aRow) {
+
+     foreach ($db->rawQueryGenerator($_SESSION['vlIncompleteForm']) as $aRow) {
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
@@ -56,7 +56,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
 
           $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]));
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-               $key = base64_decode((string) $general->getGlobalConfig('key'));
+               $key = (string) $general->getGlobalConfig('key');
                $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
                $patientFname = $general->crypto('decrypt', $patientFname, $key);
           }
@@ -79,10 +79,10 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
      }
      if (isset($_SESSION['vlIncompleteFormCount']) && $_SESSION['vlIncompleteFormCount'] > 75000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.csv';
-		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-		// we dont need the $output variable anymore
-		unset($output);
-		echo base64_encode((string) $fileName);
+          $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+          // we dont need the $output variable anymore
+          unset($output);
+          echo base64_encode((string) $fileName);
      } else {
           $colNo = 1;
 
@@ -104,10 +104,10 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
                     ),
                )
           );
-     
+
           $sheet->mergeCells('A1:AE1');
           $nameValue = '';
-           
+
           foreach ($_POST as $key => $value) {
                if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
                     $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
@@ -115,16 +115,16 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           }
 
           $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-          ->setValueExplicit(html_entity_decode($nameValue));
+               ->setValueExplicit(html_entity_decode($nameValue));
 
           $sheet->fromArray($headings, null, 'A3');
 
           $sheet->getStyle('A3:M3')->applyFromArray($styleArray);
 
           foreach ($output as $rowNo => $rowData) {
-			$rRowCount = $rowNo + 4;
-			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-		}
+               $rRowCount = $rowNo + 4;
+               $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+          }
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);

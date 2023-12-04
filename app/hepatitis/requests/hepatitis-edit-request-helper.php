@@ -122,7 +122,7 @@ try {
 	}
 
 	//Update patient Information in Patients Table
-	$patientsService->updatePatient($_POST,'form_hepatitis');
+	$patientsService->updatePatient($_POST, 'form_hepatitis');
 
 	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['patientDob'] ?? ''));
 
@@ -220,7 +220,7 @@ try {
 
 		$hepatitisData['is_encrypted'] = 'no';
 		if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-			$key = base64_decode((string) $general->getGlobalConfig('key'));
+			$key = (string) $general->getGlobalConfig('key');
 			$encryptedPatientId = $general->crypto('encrypt', $hepatitisData['patient_id'], $key);
 			$encryptedPatientName = $general->crypto('encrypt', $hepatitisData['patient_name'], $key);
 			$encryptedPatientSurName = $general->crypto('encrypt', $hepatitisData['patient_surname'], $key);

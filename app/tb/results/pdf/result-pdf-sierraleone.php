@@ -308,11 +308,11 @@ if (!empty($requestResult)) {
         }
 
         if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-            $key = base64_decode((string) $general->getGlobalConfig('key'));
+            $key = (string) $general->getGlobalConfig('key');
             $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $patientLname = $general->crypto('decrypt', $patientLname, $key);
-       }
+        }
 
         $html = '<br><br>';
 

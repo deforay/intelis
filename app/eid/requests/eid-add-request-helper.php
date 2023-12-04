@@ -273,10 +273,10 @@ try {
 		$_POST['approvedOnDateTime'] = null;
 	}
 
-		//Update patient Information in Patients Table
-		$patientsService->savePatient($_POST, 'form_eid');
+	//Update patient Information in Patients Table
+	$patientsService->savePatient($_POST, 'form_eid');
 
-		$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['childId'], $_POST['childGender'], DateUtility::isoDateFormat($_POST['childDob'] ?? ''));
+	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['childId'], $_POST['childGender'], DateUtility::isoDateFormat($_POST['childDob'] ?? ''));
 
 
 	$eidData = array(
@@ -419,7 +419,7 @@ try {
 
 	$eidData['is_encrypted'] = 'no';
 	if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-		$key = base64_decode((string) $general->getGlobalConfig('key'));
+		$key = (string) $general->getGlobalConfig('key');
 		$encryptedChildId = $general->crypto('encrypt', $eidData['child_id'], $key);
 		$encryptedChildName = $general->crypto('encrypt', $eidData['child_name'], $key);
 		$encryptedChildSurName = $general->crypto('encrypt', $eidData['child_surname'], $key);

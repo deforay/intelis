@@ -86,7 +86,7 @@ if (!empty($_POST['facility'])) {
 }
 
 //if (!empty($_POST['operator'])) {
-	// $where[] = " (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
+// $where[] = " (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
 //}
 
 if (!empty($_POST['testType'])) {
@@ -116,7 +116,7 @@ $result = $db->rawQuery($query);
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) {
 			if ($sample['is_encrypted'] == 'yes') {
-				$key = base64_decode((string) $general->getGlobalConfig('key'));
+				$key = (string) $general->getGlobalConfig('key');
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
 			if (!empty($sample[$sampleCode])) {
@@ -140,7 +140,7 @@ $result = $db->rawQuery($query);
 	<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) {
 			if ($sample['is_encrypted'] == 'yes') {
-				$key = base64_decode((string) $general->getGlobalConfig('key'));
+				$key = (string) $general->getGlobalConfig('key');
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
 			if (!empty($sample[$sampleCode])) {

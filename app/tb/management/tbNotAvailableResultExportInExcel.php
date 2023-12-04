@@ -46,7 +46,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
             unset($headings[$key]);
         }
     }
-    
+
 
     foreach ($db->rawQueryGenerator($_SESSION['resultNotAvailable']) as $aRow) {
         $row = [];
@@ -68,7 +68,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         }
         // $row[] = ($patientFname);
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $key = base64_decode((string) $general->getGlobalConfig('key'));
+            $key = (string) $general->getGlobalConfig('key');
             $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
             $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
         }
@@ -82,49 +82,49 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
     }
     if (isset($_SESSION['resultNotAvailableCount']) && $_SESSION['resultNotAvailableCount'] > 75000) {
 
-                $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.csv';
-                $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-                // we dont need the $output variable anymore
-                unset($output);
-                echo base64_encode((string) $fileName);
-            } else {
-                $excel = new Spreadsheet();
-                $sheet = $excel->getActiveSheet();
+        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.csv';
+        $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+        // we dont need the $output variable anymore
+        unset($output);
+        echo base64_encode((string) $fileName);
+    } else {
+        $excel = new Spreadsheet();
+        $sheet = $excel->getActiveSheet();
 
-                $styleArray = array(
-                    'font' => array(
-                        'bold' => true,
-                        'size' => '13',
-                    ),
-                    'alignment' => array(
-                        'horizontal' => Alignment::HORIZONTAL_CENTER,
-                        'vertical' => Alignment::VERTICAL_CENTER,
-                    ),
-                    'borders' => array(
-                        'outline' => array(
-                            'style' => Border::BORDER_THIN,
-                        ),
-                    ),
-                );
-            
-                $sheet->mergeCells('A1:AE1');
-                $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
-                $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
-                $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
-                $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
-                $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
-                $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
-                $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
-                if ($_SESSION['instanceType'] != 'standalone') {
-                    $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
-                }
-            
-                $sheet->fromArray($headings, null, 'A3');
+        $styleArray = array(
+            'font' => array(
+                'bold' => true,
+                'size' => '13',
+            ),
+            'alignment' => array(
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ),
+            'borders' => array(
+                'outline' => array(
+                    'style' => Border::BORDER_THIN,
+                ),
+            ),
+        );
 
-                foreach ($output as $rowNo => $rowData) {
-                    $rRowCount = $rowNo + 4;
-                    $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-                }
+        $sheet->mergeCells('A1:AE1');
+        $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
+        $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
+        $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
+        $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
+        $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
+        $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
+        $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
+        if ($_SESSION['instanceType'] != 'standalone') {
+            $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
+        }
+
+        $sheet->fromArray($headings, null, 'A3');
+
+        foreach ($output as $rowNo => $rowData) {
+            $rRowCount = $rowNo + 4;
+            $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+        }
         $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
         $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
         $writer->save($fileName);

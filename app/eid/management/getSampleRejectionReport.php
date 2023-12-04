@@ -221,7 +221,7 @@ foreach ($rResult as $aRow) {
         $row[] = $aRow['remote_sample_code'];
     }
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-        $key = base64_decode((string) $general->getGlobalConfig('key'));
+        $key = (string) $general->getGlobalConfig('key');
         $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
         $childName = $general->crypto('decrypt', $childName, $key);
     }

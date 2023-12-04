@@ -255,7 +255,7 @@ if (!empty($requestResult)) {
         $html .= '<tr>';
         $patientFname = ($general->crypto('doNothing', $result['child_name'], $result['child_id']));
         if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-            $key = base64_decode((string) $general->getGlobalConfig('key'));
+            $key = (string) $general->getGlobalConfig('key');
             $result['child_id'] = $general->crypto('decrypt', $result['child_id'], $key);
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $result['mother_id'] = $general->crypto('decrypt', $result['mother_id'], $key);

@@ -154,19 +154,19 @@ if (isset($tbInfo['result_approved_datetime']) && trim((string) $tbInfo['result_
 $condition = "status ='active' AND test_type='tb'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
-if (!empty($tbInfo['is_encrypted']) && $tbInfo['is_encrypted'] == 'yes'){
-	$key = base64_decode((string) $general->getGlobalConfig('key'));
-	$tbInfo['patient_id'] = $general->crypto('decrypt' ,$tbInfo['patient_id'], $key);
-	if($tbInfo['patient_name']!=''){
-        $tbInfo['patient_name'] = $general->crypto('decrypt' ,$tbInfo['patient_name'], $key);
-	}
-    if($tbInfo['patient_surname']!=''){
-        $tbInfo['patient_surname'] = $general->crypto('decrypt' ,$tbInfo['patient_surname'], $key);
-	}
+if (!empty($tbInfo['is_encrypted']) && $tbInfo['is_encrypted'] == 'yes') {
+    $key = (string) $general->getGlobalConfig('key');
+    $tbInfo['patient_id'] = $general->crypto('decrypt', $tbInfo['patient_id'], $key);
+    if ($tbInfo['patient_name'] != '') {
+        $tbInfo['patient_name'] = $general->crypto('decrypt', $tbInfo['patient_name'], $key);
+    }
+    if ($tbInfo['patient_surname'] != '') {
+        $tbInfo['patient_surname'] = $general->crypto('decrypt', $tbInfo['patient_surname'], $key);
+    }
 }
 
 $minPatientIdLength = 0;
-if(isset($arr['tb_min_patient_id_length']) && $arr['tb_min_patient_id_length'] != ""){
+if (isset($arr['tb_min_patient_id_length']) && $arr['tb_min_patient_id_length'] != "") {
     $minPatientIdLength = $arr['tb_min_patient_id_length'];
 }
 
@@ -217,7 +217,7 @@ require($fileArray[$arr['vl_form']]);
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -228,7 +228,7 @@ require($fileArray[$arr['vl_form']]);
         $('.date-time').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -245,7 +245,7 @@ require($fileArray[$arr['vl_form']]);
         $("#patientDob").datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             maxDate: "Today",
             yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
             onSelect: function(dateText, inst) {
@@ -259,7 +259,7 @@ require($fileArray[$arr['vl_form']]);
         $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -279,7 +279,7 @@ require($fileArray[$arr['vl_form']]);
         $('#sampleReceivedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -296,7 +296,7 @@ require($fileArray[$arr['vl_form']]);
             $('.ui-datepicker-calendar').show();
         });
 
-// let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
+        // let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
         // $('.date').mask(dateFormatMask);
         // $('.dateTime').mask(dateFormatMask + ' 99:99');
 

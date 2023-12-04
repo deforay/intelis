@@ -289,7 +289,7 @@ $html .= '</tr>';
 $patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
 $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-    $key = base64_decode((string) $general->getGlobalConfig('key'));
+    $key = (string) $general->getGlobalConfig('key');
     $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
     $patientFname = $general->crypto('decrypt', $patientFname, $key);
     $patientLname = $general->crypto('decrypt', $patientLname, $key);

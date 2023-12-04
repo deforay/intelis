@@ -88,7 +88,7 @@ $disable = "disabled = 'disabled'";
 
 $testPlatformResult = $general->getTestingPlatforms('eid');
 foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
+	$testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
 
 $iResultQuery = "SELECT * FROM instrument_machines";
@@ -108,26 +108,25 @@ if (isset($eidInfo['result_dispatched_datetime']) && trim((string) $eidInfo['res
 $condition = "status ='active' AND test_type='eid'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
-if (!empty($eidInfo['is_encrypted']) && $eidInfo['is_encrypted'] == 'yes'){
-	$key = base64_decode((string) $general->getGlobalConfig('key'));
-	$eidInfo['child_id'] = $general->crypto('decrypt' ,$eidInfo['child_id'], $key);
-    $eidInfo['mother_id'] = $general->crypto('decrypt' ,$eidInfo['mother_id'], $key);
+if (!empty($eidInfo['is_encrypted']) && $eidInfo['is_encrypted'] == 'yes') {
+	$key = (string) $general->getGlobalConfig('key');
+	$eidInfo['child_id'] = $general->crypto('decrypt', $eidInfo['child_id'], $key);
+	$eidInfo['mother_id'] = $general->crypto('decrypt', $eidInfo['mother_id'], $key);
 
-	if($eidInfo['child_name']!=''){
-        $eidInfo['child_name'] = $general->crypto('decrypt' ,$eidInfo['child_name'], $key);
+	if ($eidInfo['child_name'] != '') {
+		$eidInfo['child_name'] = $general->crypto('decrypt', $eidInfo['child_name'], $key);
 	}
-    if($eidInfo['mother_name']!=''){
-        $eidInfo['mother_name'] = $general->crypto('decrypt' ,$eidInfo['mother_name'], $key);
-	}
-
-    if($eidInfo['child_surname']!=''){
-        $eidInfo['child_surname'] = $general->crypto('decrypt' ,$eidInfo['child_surname'], $key);
+	if ($eidInfo['mother_name'] != '') {
+		$eidInfo['mother_name'] = $general->crypto('decrypt', $eidInfo['mother_name'], $key);
 	}
 
-    if($eidInfo['mother_surname']!=''){
-        $eidInfo['mother_surname'] = $general->crypto('decrypt' ,$eidInfo['mother_surname'], $key);
+	if ($eidInfo['child_surname'] != '') {
+		$eidInfo['child_surname'] = $general->crypto('decrypt', $eidInfo['child_surname'], $key);
 	}
 
+	if ($eidInfo['mother_surname'] != '') {
+		$eidInfo['mother_surname'] = $general->crypto('decrypt', $eidInfo['mother_surname'], $key);
+	}
 }
 
 ?>
@@ -262,7 +261,7 @@ require($fileArray[$arr['vl_form']]);
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -272,7 +271,7 @@ require($fileArray[$arr['vl_form']]);
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {

@@ -227,7 +227,7 @@ foreach ($rResult as $aRow) {
      }
 
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = base64_decode((string) $general->getGlobalConfig('key'));
+          $key = (string) $general->getGlobalConfig('key');
           $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
           $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
           $aRow['mother_id'] = $general->crypto('decrypt', $aRow['mother_id'], $key);

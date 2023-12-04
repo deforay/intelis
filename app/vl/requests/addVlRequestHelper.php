@@ -178,8 +178,8 @@ try {
         $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
     }
 
-        //Update patient Information in Patients Table
-        $patientsService->savePatient($_POST, 'form_vl');
+    //Update patient Information in Patients Table
+    $patientsService->savePatient($_POST, 'form_vl');
 
     $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
@@ -340,7 +340,7 @@ try {
 
     $vlData['is_encrypted'] = 'no';
     if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-        $key = base64_decode((string) $general->getGlobalConfig('key'));
+        $key = (string) $general->getGlobalConfig('key');
         $encryptedPatientId = $general->crypto('encrypt', $vlData['patient_art_no'] ?? '', $key);
         $encryptedPatientFirstName = $general->crypto('encrypt', $vlData['patient_first_name'] ?? '', $key);
         $encryptedPatientMiddleName = $general->crypto('encrypt', $vlData['patient_middle_name'] ?? '', $key);

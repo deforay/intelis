@@ -116,12 +116,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 			$dob =  date("d-m-Y", strtotime((string) $aRow['patient_dob']));
 		}
 		//set gender
-        $gender = match (strtolower((string)$aRow['patient_gender'])) {
-            'male', 'm' => 'M',
-            'female', 'f' => 'F',
-            'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
-            default => '',
-        };
+		$gender = match (strtolower((string)$aRow['patient_gender'])) {
+			'male', 'm' => 'M',
+			'female', 'f' => 'F',
+			'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
+			default => '',
+		};
 		//sample collecion date
 		$sampleCollectionDate = '';
 		if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
@@ -182,7 +182,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 		$row[] = ($aRow['facility_name']);
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 			if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-				$key = base64_decode((string) $general->getGlobalConfig('key'));
+				$key = (string) $general->getGlobalConfig('key');
 				$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
 				$patientFname = $general->crypto('decrypt', $patientFname, $key);
 				$patientLname = $general->crypto('decrypt', $patientLname, $key);

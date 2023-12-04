@@ -160,10 +160,10 @@ try {
 		$_POST['approvedOn'] = null;
 	}
 
-		//Update patient Information in Patients Table
-		$patientsService->updatePatient($_POST, 'form_covid19');
+	//Update patient Information in Patients Table
+	$patientsService->updatePatient($_POST, 'form_covid19');
 
-		$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['patientDob'] ?? ''));
+	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['patientDob'] ?? ''));
 
 	$covid19Data = array(
 		'external_sample_code' => !empty($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,
@@ -364,7 +364,7 @@ try {
 
 	$covid19Data['is_encrypted'] = 'no';
 	if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-		$key = base64_decode((string) $general->getGlobalConfig('key'));
+		$key = (string) $general->getGlobalConfig('key');
 		$encryptedPatientId = $general->crypto('encrypt', $covid19Data['patient_id'], $key);
 		$encryptedPatientName = $general->crypto('encrypt', $covid19Data['patient_name'], $key);
 		$encryptedPatientSurName = $general->crypto('encrypt', $covid19Data['patient_surname'], $key);

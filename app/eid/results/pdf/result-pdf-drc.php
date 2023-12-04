@@ -194,7 +194,7 @@ if (!empty($requestResult)) {
             } else if ($result['result'] == 'indeterminate') {
                 $vlResult = $eidResults[$result['result']];
                 //if (isset($smileyShow) && $smileyShow != '') {
-                    //$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="frown_face"/>';
+                //$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="frown_face"/>';
                 //}
                 $showMessage = '';
                 $messageTextSize = '15px';
@@ -202,9 +202,9 @@ if (!empty($requestResult)) {
         }
 
         if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-            $key = base64_decode((string) $general->getGlobalConfig('key'));
+            $key = (string) $general->getGlobalConfig('key');
             $result['child_id'] = $general->crypto('decrypt', $result['child_id'], $key);
-       }
+        }
 
         $html = '<table style="padding:0px 2px 2px 2px;">';
         $html .= '<tr>';

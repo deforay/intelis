@@ -127,19 +127,19 @@ foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
 
-if (!empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 'yes'){
-	$key = base64_decode((string) $general->getGlobalConfig('key'));
-	$hepatitisInfo['patient_id'] = $general->crypto('decrypt' ,$hepatitisInfo['patient_id'], $key);
-	if($hepatitisInfo['patient_name']!=''){
-        $hepatitisInfo['patient_name'] = $general->crypto('decrypt' ,$hepatitisInfo['patient_name'], $key);
-	}
-    if($hepatitisInfo['patient_surname']!=''){
-        $hepatitisInfo['patient_surname'] = $general->crypto('decrypt' ,$hepatitisInfo['patient_surname'], $key);
-	}
+if (!empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 'yes') {
+    $key = (string) $general->getGlobalConfig('key');
+    $hepatitisInfo['patient_id'] = $general->crypto('decrypt', $hepatitisInfo['patient_id'], $key);
+    if ($hepatitisInfo['patient_name'] != '') {
+        $hepatitisInfo['patient_name'] = $general->crypto('decrypt', $hepatitisInfo['patient_name'], $key);
+    }
+    if ($hepatitisInfo['patient_surname'] != '') {
+        $hepatitisInfo['patient_surname'] = $general->crypto('decrypt', $hepatitisInfo['patient_surname'], $key);
+    }
 }
 
 $minPatientIdLength = 0;
-if(isset($arr['hepatitis_min_patient_id_length']) && $arr['hepatitis_min_patient_id_length'] != ""){
+if (isset($arr['hepatitis_min_patient_id_length']) && $arr['hepatitis_min_patient_id_length'] != "") {
     $minPatientIdLength = $arr['hepatitis_min_patient_id_length'];
 }
 
@@ -164,13 +164,13 @@ require($fileArray[$arr['vl_form']]);
         if ($.trim($("#" + id).val()) != '') {
             $.blockUI();
             $.post("/covid-19/requests/check-sample-duplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: $("#" + id).val(),
-                fnct: fnct,
-                format: "html"
-            },
-                function (data) {
+                    tableName: tableName,
+                    fieldName: fieldName,
+                    value: $("#" + id).val(),
+                    fnct: fnct,
+                    format: "html"
+                },
+                function(data) {
                     if (data != 0) {
                         <?php if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
                             alert(alrt);
@@ -185,18 +185,18 @@ require($fileArray[$arr['vl_form']]);
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('.date').datepicker({
             changeMonth: true,
             changeYear: true,
-            onSelect: function () {
+            onSelect: function() {
                 $(this).change();
             },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function () {
+        }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
 
@@ -204,14 +204,14 @@ require($fileArray[$arr['vl_form']]);
         $("#patientDob").datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             maxDate: "Today",
             yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function (dateText, inst) {
+            onSelect: function(dateText, inst) {
                 $("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
                 $(this).change();
             }
-        }).click(function () {
+        }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
 
@@ -219,94 +219,94 @@ require($fileArray[$arr['vl_form']]);
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function (year, month, widget) {
-                setTimeout(function () {
+            onChangeMonthYear: function(year, month, widget) {
+                setTimeout(function() {
                     $('.ui-datepicker-calendar').show();
                 });
             },
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function () {
+        }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
 
         $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function (year, month, widget) {
-                setTimeout(function () {
+            onChangeMonthYear: function(year, month, widget) {
+                setTimeout(function() {
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            onSelect: function (e) {
+            onSelect: function(e) {
                 $('#sampleReceivedDate').val('');
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
             },
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function () {
+        }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
 
         $('#sampleReceivedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function (year, month, widget) {
-                setTimeout(function () {
+            onChangeMonthYear: function(year, month, widget) {
+                setTimeout(function() {
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            onSelect: function (e) {
+            onSelect: function(e) {
                 $('#sampleTestedDateTime').val('');
                 $('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
             },
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function () {
+        }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
 
         $('#sampleTestedDateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function (year, month, widget) {
-                setTimeout(function () {
+            onChangeMonthYear: function(year, month, widget) {
+                setTimeout(function() {
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            onSelect: function (e) {
+            onSelect: function(e) {
 
             },
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function () {
+        }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
 
         //$('.date').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?>');
         //$('.dateTime').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?> 99:99');
-        $('#isSampleRejected').change(function (e) {
+        $('#isSampleRejected').change(function(e) {
             changeReject(this.value);
         });
 
-        $("#hepatitisPlatform").on("change", function () {
+        $("#hepatitisPlatform").on("change", function() {
             if (this.value != "") {
                 getMachine(this.value);
             }
         });
         getMachine($("#hepatitisPlatform").val());
 
-        $('.result-focus').change(function (e) {
+        $('.result-focus').change(function(e) {
             var status = false;
-            $(".result-focus").each(function (index) {
+            $(".result-focus").each(function(index) {
                 if ($(this).val() != "") {
                     status = true;
                 }
@@ -349,11 +349,11 @@ require($fileArray[$arr['vl_form']]);
 
     function getMachine(value) {
         $.post("/instruments/get-machine-names-by-instrument.php", {
-            instrumentId: value,
-            machine: <?php echo !empty($hepatitisInfo['import_machine_name']) ? $hepatitisInfo['import_machine_name'] : '""'; ?>,
-            testType: 'hepatitis'
-        },
-            function (data) {
+                instrumentId: value,
+                machine: <?php echo !empty($hepatitisInfo['import_machine_name']) ? $hepatitisInfo['import_machine_name'] : '""'; ?>,
+                testType: 'hepatitis'
+            },
+            function(data) {
                 $('#machineName').html('');
                 if (data != "") {
                     $('#machineName').append(data);

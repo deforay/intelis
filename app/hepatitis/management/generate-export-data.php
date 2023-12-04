@@ -35,12 +35,12 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 	foreach ($db->rawQueryGenerator($_SESSION['hepatitisResultQuery']) as $aRow) {
 		$row = [];
 		//set gender
-        $gender = match (strtolower((string)$aRow['patient_gender'])) {
-            'male', 'm' => 'M',
-            'female', 'f' => 'F',
-            'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
-            default => '',
-        };
+		$gender = match (strtolower((string)$aRow['patient_gender'])) {
+			'male', 'm' => 'M',
+			'female', 'f' => 'F',
+			'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
+			default => '',
+		};
 
 		$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
 
@@ -62,7 +62,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 		}
 
 		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-			$key = base64_decode((string) $general->getGlobalConfig('key'));
+			$key = (string) $general->getGlobalConfig('key');
 			$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
 			$patientFname = $general->crypto('decrypt', $patientFname, $key);
 			$patientLname = $general->crypto('decrypt', $patientLname, $key);

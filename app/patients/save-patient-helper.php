@@ -53,32 +53,30 @@ try {
 
     $patientData['is_encrypted'] = 'no';
     if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-         $key = base64_decode((string) $general->getGlobalConfig('key'));
-         $encryptedPatientId = $general->crypto('encrypt', $patientData['patient_code'], $key);
-         $encryptedPatientFirstName = $general->crypto('encrypt', $patientData['patient_first_name'], $key);
-         $encryptedPatientMiddleName = $general->crypto('encrypt', $patientData['patient_middle_name'], $key);
-         $encryptedPatientLastName = $general->crypto('encrypt', $patientData['patient_last_name'], $key);
+        $key = (string) $general->getGlobalConfig('key');
+        $encryptedPatientId = $general->crypto('encrypt', $patientData['patient_code'], $key);
+        $encryptedPatientFirstName = $general->crypto('encrypt', $patientData['patient_first_name'], $key);
+        $encryptedPatientMiddleName = $general->crypto('encrypt', $patientData['patient_middle_name'], $key);
+        $encryptedPatientLastName = $general->crypto('encrypt', $patientData['patient_last_name'], $key);
 
-         $patientData['patient_code'] = $encryptedPatientId;
-         $patientData['patient_first_name'] = $encryptedPatientFirstName;
-         $patientData['patient_middle_name'] = $encryptedPatientMiddleName;
-         $patientData['patient_last_name'] = $encryptedPatientLastName;
-         $patientData['is_encrypted'] = 'yes';
-    } 
+        $patientData['patient_code'] = $encryptedPatientId;
+        $patientData['patient_first_name'] = $encryptedPatientFirstName;
+        $patientData['patient_middle_name'] = $encryptedPatientMiddleName;
+        $patientData['patient_last_name'] = $encryptedPatientLastName;
+        $patientData['is_encrypted'] = 'yes';
+    }
 
-//    echo '<pre>'; print_r($patientData); die;
+    //    echo '<pre>'; print_r($patientData); die;
 
     $id = 0;
 
-    if(isset($_POST['patientId']))
-    {
+    if (isset($_POST['patientId'])) {
         $db = $db->where('patient_id', $_POST['patientId']);
         $id = $db->update($tableName, $patientData);
-    }
-    else{
+    } else {
         $id = $db->insert($tableName, $patientData);
     }
-    
+
     //error_log($db->getLastError());
 
     if ($id > 0) {
@@ -88,7 +86,6 @@ try {
         $_SESSION['alertMsg'] = _translate("Please try again later");
         header("Location:/patients/view-patients.php");
     }
-
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

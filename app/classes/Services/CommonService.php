@@ -229,8 +229,7 @@ class CommonService
     public static function encrypt($message, $key): string
     {
         try {
-            // Generate a random salt
-            $salt = random_bytes(16); // Adjust the salt length as needed
+            $key = hex2bin($key); // Convert hexadecimal key to binary format
 
             $iv = random_bytes(16); // Initialization Vector
             $cipherText = openssl_encrypt(
@@ -241,25 +240,26 @@ class CommonService
                 $iv
             );
 
+            if ($cipherText === false) {
+                throw new Exception("Encryption failed.");
+            }
+
             $encryptedData = $iv . $cipherText;
-
-            // Append the salt to the encrypted data
-            $encryptedData .= $salt;
-
             return base64_encode($encryptedData);
         } catch (Exception $e) {
-            // Return the original string on error
+            // Return the original message on error
             return $message;
         }
     }
 
-
     public static function decrypt($encrypted, $key): string
     {
         try {
+            $key = hex2bin($key); // Convert hexadecimal key to binary format
+
             $decodedData = base64_decode($encrypted);
             $iv = substr($decodedData, 0, 16); // Extract IV
-            $ciphertext = substr($decodedData, 16); // Extract ciphertext (including salt)
+            $ciphertext = substr($decodedData, 16); // Extract ciphertext
 
             $plain = openssl_decrypt(
                 $ciphertext,
@@ -270,17 +270,15 @@ class CommonService
             );
 
             if ($plain === false) {
-                // Return the original string on decryption failure
-                return substr($decodedData, 16); // Extract only the ciphertext (excluding IV and salt)
+                throw new Exception("Decryption failed.");
             }
 
             return $plain;
         } catch (Exception $e) {
-            // Return the original string on error
+            // Return the original encrypted string on error
             return $encrypted;
         }
     }
-
 
     public function crypto($action, $inputString, $key)
     {

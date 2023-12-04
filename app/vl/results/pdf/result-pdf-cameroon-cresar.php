@@ -294,7 +294,7 @@ if (!empty($requestResult)) {
           $html .= '<td colspan="3">';
           $patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_art_no']));
           if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-               $key = base64_decode((string) $general->getGlobalConfig('key'));
+               $key = (string) $general->getGlobalConfig('key');
                $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
                $patientFname = $general->crypto('decrypt', $patientFname, $key);
           }
@@ -398,7 +398,7 @@ if (!empty($requestResult)) {
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Validated by') . ' : ' . $reviewedBy  . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by') . ' : ' . $resultApprovedBy . '</td></tr>';
-          
+
           if (!empty($reviewedSignaturePath) && $pdf->imageExists($reviewedSignaturePath)) {
                $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:50px;" />';
           } else {
@@ -410,7 +410,7 @@ if (!empty($requestResult)) {
           } else {
                $signImgApproved = '';
           }
-          
+
           $html .= '<tr><td></td></tr>';
           if (!empty($signImg)) {
                $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Signature') . ' : ' . $signImg  . '</td>';

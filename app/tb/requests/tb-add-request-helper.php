@@ -181,8 +181,8 @@ try {
     $reason = $_POST['reasonForTbTest'];
     $reason['reason'] = array($reason['reason'] => 'yes');
 
-          //Update patient Information in Patients Table
-          $patientsService->savePatient($_POST,'form_tb');
+    //Update patient Information in Patients Table
+    $patientsService->savePatient($_POST, 'form_tb');
 
 
 
@@ -279,7 +279,7 @@ try {
 
     $tbData['is_encrypted'] = 'no';
     if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-        $key = base64_decode((string) $general->getGlobalConfig('key'));
+        $key = (string) $general->getGlobalConfig('key');
         $encryptedPatientId = $general->crypto('encrypt', $tbData['patient_id'], $key);
         $encryptedPatientName = $general->crypto('encrypt', $tbData['patient_name'], $key);
         $encryptedPatientSurName = $general->crypto('encrypt', $tbData['patient_surname'], $key);

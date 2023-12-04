@@ -285,7 +285,7 @@ if (!empty($requestResult)) {
 
 
           if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-               $key = base64_decode((string) $general->getGlobalConfig('key'));
+               $key = (string) $general->getGlobalConfig('key');
                $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
                if ($patientFname != '') {
                     $patientFname = $general->crypto('decrypt', $patientFname, $key);
