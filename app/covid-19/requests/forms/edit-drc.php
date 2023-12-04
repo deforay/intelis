@@ -1244,7 +1244,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
     function setPatientDetails(pDetails) {
         patientArray = JSON.parse(pDetails);
-        //   console.log(patientArray);
+        //   //console.log(patientArray);
         $("#patientProvince").val(patientArray['geo_name']);
         $("#firstName").val(patientArray['firstname']);
         $("#lastName").val(patientArray['lastname']);

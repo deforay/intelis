@@ -105,13 +105,17 @@ class DateUtility
 
         return false;
     }
-    private static function parseDate(string $dateStr, ?array $formats = null): ?Carbon
+    private static function parseDate(string $dateStr, ?array $formats = null, $ignoreTime = true): ?Carbon
     {
+        if ($ignoreTime) {
+            $dateStr = explode(' ', $dateStr)[0]; // Extract only the date part
+        }
         if ($formats) {
             foreach ($formats as $format) {
                 try {
                     return Carbon::createFromFormat($format, $dateStr);
                 } catch (Exception $e) {
+                    error_log("Invalid or unparseable date $dateStr : " . $e->getMessage());
                     continue;
                 }
             }
@@ -119,7 +123,7 @@ class DateUtility
         try {
             return Carbon::parse($dateStr);
         } catch (Exception $e) {
-            error_log("Invalid or unparseable date $dateStr");
+            error_log("Invalid or unparseable date $dateStr : " . $e->getMessage());
         }
 
         return null;

@@ -114,7 +114,7 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 						url: "/scheduled-jobs/remote/commonDataSync.php",
 					})
 					.done(function(data) {
-						//console.log(data);
+						////console.log(data);
 						//alert( "success" );
 					})
 					.fail(function() {
@@ -138,7 +138,7 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 						url: "/scheduled-jobs/remote/requestsSync.php",
 					})
 					.done(function(data) {
-						//console.log(data);
+						////console.log(data);
 						//alert( "success" );
 					})
 					.fail(function() {
@@ -163,7 +163,7 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 						url: "/scheduled-jobs/remote/resultsSync.php",
 					})
 					.done(function(data) {
-						//console.log(data);
+						////console.log(data);
 						//alert( "success" );
 					})
 					.fail(function() {

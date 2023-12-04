@@ -255,7 +255,13 @@ require($fileArray[$arr['vl_form']]);
                 },
                 function(data) {
                     if (data != 0) {
-                        generateSampleCode();
+                        // Toastify({
+                        //     text: "<?= _translate('This Sample Code already exists', true) ?>",
+                        //     duration: 3000,
+                        //     style: {
+                        //         background: 'red',
+                        //     }
+                        // }).showToast();
                     }
                 });
             $.unblockUI();
@@ -274,7 +280,7 @@ require($fileArray[$arr['vl_form']]);
                 provinceId: provinceId
             },
             function(data) {
-                //console.log(data);
+                ////console.log(data);
                 if (data > 0) {
                     $.unblockUI();
                     document.getElementById("eidSampleId").value = data;

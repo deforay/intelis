@@ -106,7 +106,7 @@ require_once APPLICATION_PATH . '/header.php';
 						id: obj.id
 					},
 					function(data) {
-						console.log(data);
+						//console.log(data);
 						if (data != "") {
 							oTable.fnDraw();
 							alert("<?php echo _translate("Updated successfully"); ?>.");

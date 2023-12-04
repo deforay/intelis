@@ -274,7 +274,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 						url: "/scheduled-jobs/remote/requestsSync.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
 					})
 					.done(function(data) {
-						//console.log(data);
+						////console.log(data);
 						//alert( "success" );
 					})
 					.fail(function() {

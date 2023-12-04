@@ -663,7 +663,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 
 	function setPatientDetails(pDetails) {
 		var patientArray = JSON.parse(pDetails);
-		//   console.log(patientArray);
+		//   //console.log(patientArray);
 		$("#childId").val(patientArray['child_id']);
 		$("#childName").val(patientArray['child_name']);
 		$("#childDob").val(patientArray['dob']);

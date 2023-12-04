@@ -1153,7 +1153,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 						url: "/scheduled-jobs/remote/resultsSync.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
 					})
 					.done(function(data) {
-						//console.log(data);
+						////console.log(data);
 						//alert( "success" );
 					})
 					.fail(function() {
@@ -1177,7 +1177,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				url: "/vl/interop/fhir/vl-receive.php",
 			})
 			.done(function(data) {
-				//console.log(data);
+				////console.log(data);
 				//alert( "success" );
 				$.unblockUI();
 				//alert(data.processed + " records added from EMR/FHIR");
@@ -1207,7 +1207,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				url: "/vl/interop/fhir/vl-send.php",
 			})
 			.done(function(data) {
-				//console.log(data);
+				////console.log(data);
 				//alert( "success" );
 				$.unblockUI();
 				alert(data.processed + " records sent to EMR/FHIR");

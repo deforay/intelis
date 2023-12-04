@@ -7,6 +7,7 @@ use Exception;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
 
@@ -36,6 +37,7 @@ class VlService extends AbstractTestService
     protected int $suppressionLimit = 1000;
     protected string $table = 'form_vl';
     protected string $shortCode = 'VL';
+    protected int $maxTries = 5; // Max tries to insert sample
 
     public function getSampleCode($params)
     {
@@ -407,11 +409,16 @@ class VlService extends AbstractTestService
         return $this->db->getValue('instruments', 'low_vl_result_text', null);
     }
 
-    public function insertSample($params, $returnSampleData = false)
+    public function insertSample($params, $returnSampleData = false): int|array
     {
         try {
 
             $formId = $this->commonService->getGlobalConfig('vl_form');
+
+            $params['tries'] = $params['tries'] ?? 0;
+            if ($params['tries'] >= $this->maxTries) {
+                throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
+            }
 
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
@@ -426,7 +433,8 @@ class VlService extends AbstractTestService
             $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
             $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
             $sampleCodeParams['provinceId'] = $provinceId;
-            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['existingMaxId'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['insertOperation'] = $params['insertOperation'] ?? false;
 
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);
@@ -491,10 +499,11 @@ class VlService extends AbstractTestService
                 }
             } else {
                 // If this sample id exists, let us regenerate the sample id and insert
+                $params['tries']++;
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSample($params);
             }
-        } catch (Exception $e) {
+        } catch (Exception | SystemException $e) {
             error_log('Insert VL Sample : ' . $this->db->getLastErrno());
             error_log('Insert VL Sample : ' . $this->db->getLastError());
             error_log('Insert VL Sample : ' . $this->db->getLastQuery());

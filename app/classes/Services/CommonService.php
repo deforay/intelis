@@ -7,7 +7,6 @@ namespace App\Services;
 use Exception;
 use TCPDFBarcode;
 use TCPDF2DBarcode;
-use SodiumException;
 use Ramsey\Uuid\Uuid;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -525,27 +524,27 @@ class CommonService
 
     public function activeReportFormats($module): array
     {
-        $activeReportFormats = [];
         $countryShortCode = $this->getCountryShortCode();
         $pdfFormatPaths = glob(APPLICATION_PATH . "/$module/results/pdf/result-pdf-$countryShortCode*.{php}", GLOB_BRACE);
 
-        if (!empty($pdfFormatPaths)) {
-            $activeReportFormats = array_map(function ($formatPath) {
-                $baseName = basename($formatPath);
-                $countryShortCode = $this->getCountryShortCode();
-                $formatName = str_replace(['.php', 'result-pdf-'], '', $baseName);
-                if ($baseName == "result-pdf-$countryShortCode.php")
-                    return ["pdf/$baseName" => "Default"];
-                else
-                    return ["pdf/$baseName" => strtoupper($formatName)];
-            }, $pdfFormatPaths);
+        if (empty($pdfFormatPaths)) {
+            return [];
         }
 
-        return $activeReportFormats;
+        return array_map(function ($formatPath) use ($countryShortCode) {
+            $baseName = pathinfo($formatPath, PATHINFO_BASENAME);
+            $formatName = str_replace(['.php', "result-pdf-$countryShortCode"], '', $baseName);
+
+            if ($baseName == "result-pdf-$countryShortCode.php") {
+                return ["pdf/$baseName" => "Default"];
+            }
+
+            return ["pdf/$baseName" => strtoupper($formatName)];
+        }, $pdfFormatPaths);
     }
 
 
-    public function getCountryShortCode()
+    public function getCountryShortCode(): string
     {
         return once(function () {
             $this->db->where("vlsm_country_id", $this->getGlobalConfig('vl_form'));
@@ -893,7 +892,7 @@ class CommonService
 
 
                 // Check if the user provided a search query and if the encryption key is valid
-                $isValidKey = !empty($encryptionKey) && strlen($encryptionKey) == 64;
+                $isValidKey = !empty($encryptionKey) && strlen(hex2bin($encryptionKey)) == 64;
                 // Split the search query into separate words
                 $searchArray = explode(" ", (string) $searchText);
                 $colSize = count($allColumns);

@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use COUNTRY;
 use Exception;
 use SAMPLE_STATUS;
-use COUNTRY;
 use App\Utilities\DateUtility;
+use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
 
@@ -14,6 +15,7 @@ class GenericTestsService extends AbstractTestService
 
     protected string $table = 'form_generic';
     protected string $shortCode = 'T';
+    protected int $maxTries = 5; // Max tries to insert sample
 
     public function getSampleCode($params)
     {
@@ -66,6 +68,11 @@ class GenericTestsService extends AbstractTestService
 
             $formId = $this->commonService->getGlobalConfig('vl_form');
 
+            $params['tries'] = $params['tries'] ?? 0;
+            if ($params['tries'] >= $this->maxTries) {
+                throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
+            }
+
             $testType = $params['testType'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
@@ -86,7 +93,8 @@ class GenericTestsService extends AbstractTestService
             $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
             $sampleCodeParams['provinceId'] = $provinceId;
             $sampleCodeParams['testType'] = $testType;
-            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['existingMaxId'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['insertOperation'] = $params['insertOperation'] ?? false;
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode((string) $sampleJson, true);
@@ -153,10 +161,11 @@ class GenericTestsService extends AbstractTestService
                 }
             } else {
                 // If this sample id exists, let us regenerate the sample id and insert
+                $params['tries']++;
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSample($params);
             }
-        } catch (Exception $e) {
+        } catch (Exception | SystemException $e) {
             error_log('Insert lab tests Sample : ' . $this->db->getLastErrno());
             error_log('Insert lab tests Sample : ' . $this->db->getLastError());
             error_log('Insert lab tests Sample : ' . $this->db->getLastQuery());

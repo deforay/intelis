@@ -3,6 +3,7 @@
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -191,14 +192,10 @@ try {
                     $modules[$id['module']] = $id['module'];
                 }
             }
+
             $_SESSION['modules'] = $modules;
             $_SESSION['privileges'] = $usersService->getAllPrivileges($privileges);
-
-
             $_SESSION['landingPage'] = $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
-
-
-
 
             if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
                 $redirect = "/users/editProfile.php";
@@ -213,9 +210,13 @@ try {
     } else {
         throw new SystemException(_translate("Please check your login credentials"));
     }
-} catch (SystemException $exc) {
-    $_SESSION['alertMsg'] = $exc->getMessage();
-    error_log($exc->getMessage() . " | " . $ipaddress . " | " . $userName);
-    error_log($exc->getTraceAsString());
+} catch (SystemException $exception) {
+    $_SESSION['alertMsg'] = $exception->getMessage();
+    LoggerUtility::log('info', $exception->getMessage() . " | " . $ipaddress . " | " . $userName, [
+        'exception' => $exception,
+        'file' => $exception->getFile(), // File where the error occurred
+        'line' => $exception->getLine(), // Line number of the error
+        //'stacktrace' => $exception->getTraceAsString()
+    ]);
     header("Location:/login/login.php");
 }

@@ -645,7 +645,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 
 	function setPatientDetails(pDetails) {
 		var patientArray = JSON.parse(pDetails);
-		//   console.log(patientArray);
+		//   //console.log(patientArray);
 		$("#childId").val(patientArray['child_id']);
 		$("#childName").val(patientArray['child_name']);
 		$("#childDob").val(patientArray['dob']);

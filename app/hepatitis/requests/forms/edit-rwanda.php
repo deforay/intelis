@@ -515,7 +515,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                     testType: 'hepatitis'
                 },
                 function(data) {
-                    console.log(data);
+                    //console.log(data);
                     if (data != "") {
                         details = data.split("###");
                         $("#province").html(details[0]);

@@ -1466,7 +1466,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     },
                     function(data) {
                          if (data != 0) {
-                              generateSampleCode();
+                              // Toastify({
+                              //      text: "<?= _translate('This Sample Code already exists', true) ?>",
+                              //      duration: 3000,
+                              //      style: {
+                              //           background: 'red',
+                              //      }
+                              // }).showToast();
                          }
                     });
                $.unblockUI();
@@ -1561,7 +1567,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     function(data) {
                          if (data != undefined && data !== null) {
 
-                              //  console.log(data);
+                              //  //console.log(data);
                               data = JSON.parse(data);
                               $("#facilitySection,#labSection,.subTestResultSection,#otherSection").html('');
                               $('.patientSectionInput').remove();

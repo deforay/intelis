@@ -14,6 +14,7 @@ use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\AppMenuService;
 use App\Services\Covid19Service;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Utilities\CaptchaUtility;
@@ -137,6 +138,7 @@ $builder->addDefinitions([
     DateUtility::class => DI\create(DateUtility::class),
     CaptchaUtility::class => DI\create(CaptchaUtility::class),
     MiscUtility::class => DI\create(MiscUtility::class),
+    LoggerUtility::class => DI\create(LoggerUtility::class),
     ValidationUtility::class => DI\create(ValidationUtility::class),
     ErrorResponseGenerator::class => DI\create(ErrorResponseGenerator::class)
         ->constructor($debugMode),

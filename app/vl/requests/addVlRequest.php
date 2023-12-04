@@ -31,7 +31,7 @@ $formId = $general->getGlobalConfig('vl_form');
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 
-$healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('vl',false,true);
+$healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('vl', false, true);
 
 
 //get import config
@@ -83,7 +83,7 @@ $aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
 $aResult = $db->query($aQuery);
 
 $minPatientIdLength = 0;
-if(isset($arr['vl_min_patient_id_length']) && $arr['vl_min_patient_id_length'] != ""){
+if (isset($arr['vl_min_patient_id_length']) && $arr['vl_min_patient_id_length'] != "") {
     $minPatientIdLength = $arr['vl_min_patient_id_length'];
 }
 ?>
@@ -159,7 +159,7 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
                 provinceId: provinceId
             },
             function(data) {
-                console.log(data);
+                //console.log(data);
                 if (data > 0) {
                     $.unblockUI();
                     document.getElementById("vlSampleId").value = data;

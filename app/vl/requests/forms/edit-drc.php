@@ -744,7 +744,7 @@ $aResult = $db->query($aQuery);
 
 	function setPatientDetails(pDetails) {
 		var patientArray = JSON.parse(pDetails);
-		console.log(patientArray);
+		//console.log(patientArray);
 		if ($.trim(patientArray['dob']) != '') {
 			$("#dob").val(patientArray['dob']);
 			getAge();

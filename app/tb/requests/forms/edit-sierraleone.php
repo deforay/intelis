@@ -982,7 +982,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 						id: this.value,
 					},
 					function(data) {
-						console.log(data);
+						//console.log(data);
 						if (data != "" && data != false) {
 							_data = jQuery.parseJSON(data);
 							$(".platform").hide();

@@ -7,12 +7,14 @@ use SAMPLE_STATUS;
 use COUNTRY;
 use App\Utilities\DateUtility;
 use App\Abstracts\AbstractTestService;
+use App\Exceptions\SystemException;
 
 class TbService extends AbstractTestService
 {
 
     protected string $table = 'form_tb';
     protected string $shortCode = 'TB';
+    protected int $maxTries = 5; // Max tries to insert sample
 
     public function getSampleCode($params)
     {
@@ -151,6 +153,12 @@ class TbService extends AbstractTestService
     public function insertSample($params, $returnSampleData = false)
     {
         try {
+
+            $params['tries'] = $params['tries'] ?? 0;
+            if ($params['tries'] >= $this->maxTries) {
+                throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
+            }
+
             $formId = $this->commonService->getGlobalConfig('vl_form');
             $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
@@ -166,7 +174,8 @@ class TbService extends AbstractTestService
             $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
             $sampleCodeParams['provinceCode'] = $provinceCode;
             $sampleCodeParams['provinceId'] = $provinceId;
-            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['existingMaxId'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['insertOperation'] = $params['insertOperation'] ?? false;
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode((string) $sampleJson, true);
@@ -232,7 +241,8 @@ class TbService extends AbstractTestService
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSample($params);
             }
-        } catch (Exception $e) {
+        } catch (Exception | SystemException $e) {
+            $params['tries']++;
             error_log('Insert TB Sample : ' . $this->db->getLastError());
             error_log('Insert TB Sample : ' . $e->getMessage());
             $id = 0;

@@ -6,6 +6,7 @@ use App\Services\CommonService;
 use App\Services\VlService;
 use App\Services\PatientsService;
 use App\Utilities\DateUtility;
+use App\Utilities\LoggerUtility;
 use App\Utilities\ValidationUtility;
 
 /** @var MysqliDb $db */
@@ -356,7 +357,7 @@ try {
 
     $id = 0;
 
-    $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
+    $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);
 
     if ($id === true) {
@@ -368,11 +369,11 @@ try {
         $general->activityLog($eventType, $action, $resource);
 
         $barcode = "";
-        if (isset($_POST['printBarCode']) && $_POST['printBarCode'] == 'on') {
+        if (!empty($_POST['printBarCode']) && $_POST['printBarCode'] == 'on') {
             $s = $_POST['sampleCode'];
-            $facQuery = "SELECT * FROM facility_details where facility_id= ?";
-            $facResult = $db->rawQuery($facQuery, [$_POST['fName']]);
-            $f = ($facResult[0]['facility_name']) . " | " . $_POST['sampleCollectionDate'];
+            $facQuery = "SELECT facility_name FROM facility_details where facility_id= ?";
+            $facResult = $db->rawQueryOne($facQuery, [$_POST['fName']]);
+            $f = ($facResult['facility_name']) . " | " . $_POST['sampleCollectionDate'];
             $barcode = "?barcode=true&s=$s&f=$f";
         }
 
@@ -382,6 +383,13 @@ try {
             header("Location:/vl/requests/vl-requests.php");
         }
     } else {
+        if ($db->getLastErrno() > 0) {
+            LoggerUtility::log('error', "DB ERROR :: " . $db->getLastError(), [
+                'exception' => $db->getLastError(),
+                'file' => __FILE__,
+                'line' => __LINE__
+            ]);
+        }
         $_SESSION['alertMsg'] = _translate("Please try again later");
         header("Location:/vl/requests/vl-requests.php");
     }

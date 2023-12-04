@@ -858,7 +858,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     function setPatientDetails(pDetails) {
         patientArray = JSON.parse(pDetails);
-        //console.log(patientArray);
+        ////console.log(patientArray);
         $("#patientProvince").val(patientArray['geo_name'] + '##' + patientArray['geo_code']).trigger('change');
         $("#firstName").val(patientArray['firstname']);
         $("#lastName").val(patientArray['lastname']);
