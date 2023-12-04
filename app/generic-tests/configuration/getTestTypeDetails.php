@@ -33,9 +33,7 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
- * Ordering
- */
+
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -80,17 +78,6 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $sWhere .= $sWhereSub;
 }
 
-/* Individual column filtering */
-$columnCounter = count($aColumns);
-for ($i = 0; $i < $columnCounter; $i++) {
-    if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
-            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
-    }
-}
 
 /*
  * SQL queries

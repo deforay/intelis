@@ -877,7 +877,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				<?php } ?>
 			],
 			"aaSorting": [
-				[<?php echo ($_SESSION['instanceType'] == 'remoteuser' || $_SESSION['instanceType'] == 'vluser') ? 12 : 11 ?>, "desc"]
+				[<?php echo ($_SESSION['instanceType'] == 'remoteuser' || $_SESSION['instanceType'] == 'vluser') ? 12 : 11 ?>, "desc"],
+				[2, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");

@@ -54,9 +54,7 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
- * Ordering
- */
+
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -94,17 +92,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $sWhere .= $sWhereSub;
 }
 
-/* Individual column filtering */
-$columnCounter = count($aColumns);
-for ($i = 0; $i < $columnCounter; $i++) {
-     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-          if ($sWhere == "") {
-               $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          } else {
-               $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          }
-     }
-}
+
 
 $aWhere = '';
 $sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange, f.*, vl.*, hf.monthly_target FROM testing_labs as hf INNER JOIN form_tb as vl ON vl.lab_id=hf.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";

@@ -229,55 +229,58 @@ class CommonService
     public static function encrypt($message, $key): string
     {
         try {
-            $nonce = random_bytes(
-                SODIUM_CRYPTO_SECRETBOX_NONCEBYTES
+            // Generate a random salt
+            $salt = random_bytes(16); // Adjust the salt length as needed
+
+            $iv = random_bytes(16); // Initialization Vector
+            $cipherText = openssl_encrypt(
+                $message,
+                'aes-256-cbc',
+                $key,
+                OPENSSL_RAW_DATA,
+                $iv
             );
 
-            $cipher = sodium_bin2base64(
-                $nonce .
-                    sodium_crypto_secretbox(
-                        (string) $message,
-                        $nonce,
-                        (string) $key
-                    ),
-                SODIUM_BASE64_VARIANT_URLSAFE
-            );
-            sodium_memzero($message);
-            sodium_memzero($key);
-            return $cipher;
-        } catch (SodiumException $e) {
+            $encryptedData = $iv . $cipherText;
+
+            // Append the salt to the encrypted data
+            $encryptedData .= $salt;
+
+            return base64_encode($encryptedData);
+        } catch (Exception $e) {
+            // Return the original string on error
             return $message;
         }
     }
 
+
     public static function decrypt($encrypted, $key): string
     {
         try {
-            $decoded = sodium_base642bin((string) $encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
-            if (empty($decoded)) {
-                throw new SystemException('The message encoding failed');
-            }
-            if (mb_strlen($decoded, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
-                throw new SystemException('The message was truncated');
-            }
-            $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
-            $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
+            $decodedData = base64_decode($encrypted);
+            $iv = substr($decodedData, 0, 16); // Extract IV
+            $ciphertext = substr($decodedData, 16); // Extract ciphertext (including salt)
 
-            $plain = sodium_crypto_secretbox_open(
+            $plain = openssl_decrypt(
                 $ciphertext,
-                $nonce,
-                $key
+                'aes-256-cbc',
+                $key,
+                OPENSSL_RAW_DATA,
+                $iv
             );
+
             if ($plain === false) {
-                throw new SystemException('The message was tampered with in transit');
+                // Return the original string on decryption failure
+                return substr($decodedData, 16); // Extract only the ciphertext (excluding IV and salt)
             }
-            sodium_memzero($ciphertext);
-            sodium_memzero($key);
+
             return $plain;
-        } catch (SodiumException | SystemException $e) {
+        } catch (Exception $e) {
+            // Return the original string on error
             return $encrypted;
         }
     }
+
 
     public function crypto($action, $inputString, $key)
     {
@@ -882,5 +885,94 @@ class CommonService
         $this->db->where("status", "active");
         $this->db->orderBy('status_name', "ASC");
         return $this->db->get('r_sample_status');
+    }
+    public function multipleColumnSearch($searchText, $allColumns, $encryptableColumns = [], $encryptionKey = null)
+    {
+        return once(function () use ($searchText, $allColumns, $encryptableColumns, $encryptionKey) {
+            $sWhere = [];
+
+            if (!empty($searchText)) {
+
+
+                // Check if the user provided a search query and if the encryption key is valid
+                $isValidKey = !empty($encryptionKey) && strlen($encryptionKey) == 64;
+                // Split the search query into separate words
+                $searchArray = explode(" ", (string) $searchText);
+                $colSize = count($allColumns);
+
+                foreach ($searchArray as $search) {
+                    $sWhereSub = [];
+
+                    for ($i = 0; $i < $colSize; $i++) {
+                        $sWhereSub[] = $this->constructSearchCondition($allColumns[$i], $search, $encryptableColumns, $isValidKey ? $encryptionKey : null);
+                    }
+
+                    $sWhere[] = " (" . implode(' OR ', array_filter($sWhereSub)) . ") ";
+                }
+            }
+
+            return $sWhere;
+        });
+    }
+
+    public function singleColumnSearch($fieldName, $searchString, $encryptionKey)
+    {
+        if (empty($searchString)) {
+            return "";
+        }
+        $isValidKey = !empty($encryptionKey) && strlen($encryptionKey) == 64;
+        return $this->constructSearchCondition($fieldName, $searchString, [$fieldName], $isValidKey ? $encryptionKey : null);
+    }
+
+    private function constructSearchCondition($columnName, $searchTerm, $encryptableColumns, $validEncryptionKey)
+    {
+        if (in_array($columnName, $encryptableColumns) && $validEncryptionKey !== null) {
+            $encryptedSearchTerm = CommonService::encrypt($searchTerm, base64_decode($validEncryptionKey));
+            return "(AES_DECRYPT($columnName, UNHEX('$validEncryptionKey')) LIKE '%$encryptedSearchTerm%' OR $columnName LIKE '%$searchTerm%')";
+        } else {
+            return "$columnName LIKE '%$searchTerm%'";
+        }
+    }
+
+
+    public function generateDataTablesSorting($postData, $orderColumns, $encryptedColumns = [], $encryptionKey = null)
+    {
+        return once(function () use ($postData, $orderColumns, $encryptedColumns, $encryptionKey) {
+            $sOrder = "";
+            // Check if $encryptedColumns is set and $encryptionKey is valid
+            if (!empty($encryptedColumns) && !empty($encryptionKey) && strlen($encryptionKey) == 64) {
+                for ($i = 0; $i < (int)$postData['iSortingCols']; $i++) {
+                    $columnIndex = (int)$postData['iSortCol_' . $i];
+
+                    if (isset($postData['bSortable_' . $columnIndex]) && $postData['bSortable_' . $columnIndex] == "true") {
+                        $column = $postData['mDataProp_' . $columnIndex];
+
+                        // Check if the column is in encryptedColumns and needs decryption
+                        if (in_array($column, $encryptedColumns)) {
+                            $decryptedColumn = "AES_DECRYPT($column, UNHEX('$encryptionKey'))";
+                        } else {
+                            $decryptedColumn = $column;
+                        }
+
+                        $sortDirection = $postData['sSortDir_' . $i];
+                        $sOrder .= $decryptedColumn . " " . $sortDirection . ", ";
+                    }
+                }
+
+                $sOrder = rtrim($sOrder, ', ');
+            } else {
+                // If $encryptedColumns is not set or $key is invalid
+                if (isset($postData['iSortCol_0'])) {
+                    for ($i = 0; $i < (int) $postData['iSortingCols']; $i++) {
+                        if ($postData['bSortable_' . (int) $postData['iSortCol_' . $i]] == "true") {
+                            $sOrder .= $orderColumns[(int) $postData['iSortCol_' . $i]] . " " . ($postData['sSortDir_' . $i]) . ", ";
+                        }
+                    }
+                    $sOrder = substr_replace($sOrder, "", -2);
+                }
+            }
+
+            return $sOrder;
+        });
     }
 }

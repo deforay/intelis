@@ -52,23 +52,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 * Ordering
 */
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-     $sOrder = "";
-     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-               $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
-}
-/*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
+
 
 $sWhere[] = " (IFNULL(reason_for_vl_testing, 0)  != 9999 or reason_for_vl_testing is null) ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -94,13 +79,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $sWhere[] = $sWhereSub;
 }
 
-/* Individual column filtering */
-$columnCounter = count($aColumns);
-for ($i = 0; $i < $columnCounter; $i++) {
-     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-          $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-     }
-}
+
 
 $sQuery = "SELECT vl.vl_sample_id,
                vl.sample_code,

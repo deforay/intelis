@@ -707,7 +707,7 @@ $state = $geolocationService->getProvinces("yes");
 				}
 			],
 			"aaSorting": [
-				[0, "asc"]
+				[15, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

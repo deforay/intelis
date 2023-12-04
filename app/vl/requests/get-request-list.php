@@ -5,6 +5,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -29,7 +30,6 @@ $primaryKey = "vl_sample_id";
  */
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'testingLab.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'testingLab.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
@@ -51,65 +51,9 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
- * Ordering
- */
-//  echo (int) $_POST['iSortingCols'];
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-     $sOrder = "";
-     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-               $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-/*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
-
-$sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", (string) $_POST['sSearch']);
-     $sWhereSub = "";
-     foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
-               $sWhereSub .= " (";
-          } else {
-               $sWhereSub .= " AND (";
-          }
-          $colSize = count($aColumns);
-
-          for ($i = 0; $i < $colSize; $i++) {
-               if ($i < $colSize - 1) {
-                    if (!empty($aColumns[$i])) {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    }
-               } else {
-                    if (!empty($aColumns[$i])) {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-               }
-          }
-          $sWhereSub .= ")";
-     }
-     $sWhere[] = $sWhereSub;
-}
-
-/* Individual column filtering */
-$columnCounter = count($aColumns);
-for ($i = 0; $i < $columnCounter; $i++) {
-     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-          $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-     }
-}
-
+$sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
 $sQuery = "SELECT
                vl.vl_sample_id,
@@ -190,23 +134,23 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
 }
 if (!empty($_POST['sampleCollectionDate'])) {
      if (trim((string) $startDate) == trim((string) $endDate)) {
-          $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $startDate . '"';
+          $sWhere[] = ' DATE(vl.sample_collection_date) =  "' . $startDate . '"';
      } else {
-          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $startDate . '" AND DATE(vl.sample_collection_date) <= "' . $endDate . '"';
+          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
      }
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
      if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
-          $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) like "' . $labStartDate . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
      } else {
-          $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEnddate . '"';
+          $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEnddate'";
      }
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
      if (trim((string) $testedStartDate) == trim((string) $testedEndDate)) {
-          $sWhere[] = ' DATE(vl.sample_tested_datetime) like "' . $testedStartDate . '"';
+          $sWhere[] = " DATE(vl.sample_tested_datetime) = '$testedStartDate ' ";
      } else {
-          $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+          $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
      }
 }
 /* Viral load filter */
@@ -307,30 +251,21 @@ if (empty($_POST['recencySamples']) || $_POST['recencySamples'] === 'no') {
 if (!empty($_POST['rejectedSamples']) && $_POST['rejectedSamples'] == 'no') {
      $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";
 }
-if (isset($_POST['requestCreatedDatetime']) && trim((string) $_POST['requestCreatedDatetime']) != '') {
-     $sRequestCreatedDatetime = '';
-     $eRequestCreatedDatetime = '';
-
-     $date = explode("to", (string) $_POST['requestCreatedDatetime']);
-     if (isset($date[0]) && trim($date[0]) != "") {
-          $sRequestCreatedDatetime = DateUtility::isoDateFormat(trim($date[0]));
-     }
-     if (isset($date[1]) && trim($date[1]) != "") {
-          $eRequestCreatedDatetime = DateUtility::isoDateFormat(trim($date[1]));
-     }
+if (!empty($_POST['requestCreatedDatetime'])) {
+     [$sRequestCreatedDatetime, $eRequestCreatedDatetime] = DateUtility::convertDateRange($_POST['requestCreatedDatetime'] ?? '');
 
      if (trim((string) $sRequestCreatedDatetime) == trim((string) $eRequestCreatedDatetime)) {
-          $sWhere[] = '  DATE(vl.request_created_datetime) like "' . $sRequestCreatedDatetime . '"';
+          $sWhere[] = " DATE(vl.request_created_datetime) = '$sRequestCreatedDatetime' ";
      } else {
-          $sWhere[] = '  DATE(vl.request_created_datetime) >= "' . $sRequestCreatedDatetime . '" AND DATE(vl.request_created_datetime) <= "' . $eRequestCreatedDatetime . '"';
+          $sWhere[] = " DATE(vl.request_created_datetime) BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime' ";
      }
 }
 
 if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
      if (trim((string) $sPrintDate) == trim((string) $eTestDate)) {
-          $sWhere[] = '  DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
+          $sWhere[] = "  DATE(vl.result_printed_datetime) = '$sPrintDate'";
      } else {
-          $sWhere[] = '  DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
+          $sWhere[] = " DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";
      }
 }
 
@@ -352,6 +287,7 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['vlRequestQuery'] = $sQuery;
+error_log($sQuery);
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 $_SESSION['vlRequestQueryCount'] = $resultCount;
 
@@ -448,4 +384,4 @@ foreach ($rResult as $aRow) {
 
      $output['aaData'][] = $row;
 }
-echo json_encode($output);
+echo MiscUtility::convert_to_utf8_and_encode($output);

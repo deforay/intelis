@@ -230,6 +230,22 @@ class MiscUtility
         fclose($handle);
         return $filename;
     }
+    public static function convert_to_utf8($input)
+    {
+        if (is_array($input)) {
+            return array_map('self::convert_to_utf8', $input);
+        }
+        if (is_string($input)) {
+            return mb_convert_encoding($input, 'UTF-8', 'UTF-8');
+        }
+        return $input;
+    }
+
+    public static function convert_to_utf8_and_encode($data)
+    {
+        $data = self::convert_to_utf8($data);
+        return json_encode($data);
+    }
 
     public static function getGenderFromString($gender)
     {
