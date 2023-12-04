@@ -52,8 +52,10 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
+//$encryptableColumns = ['vl.patient_art_no','vl.patient_first_name','vl.patient_middle_name','vl.patient_last_name'];
+//$encryptedKey = (string) $general->getGlobalConfig('key');
 
-$sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+$sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns );
 
 $sQuery = "SELECT
                vl.vl_sample_id,
@@ -287,6 +289,7 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['vlRequestQuery'] = $sQuery;
+
 
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 $_SESSION['vlRequestQueryCount'] = $resultCount;

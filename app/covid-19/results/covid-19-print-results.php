@@ -732,7 +732,7 @@ $state = $geolocationService->getProvinces("yes");
                 });
                 aoData.push({
                     "name": "facilityName",
-                    "value": $("#prinFacility").val()
+                    "value": $("#printFacility").val()
                 });
                 aoData.push({
                     "name": "labId",

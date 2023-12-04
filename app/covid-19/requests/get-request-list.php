@@ -286,7 +286,7 @@ foreach ($rResult as $aRow) {
      }
 
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = (string) $general->getGlobalConfig('key');
+          $key = $general->getGlobalConfig('key');
           $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
           $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
           $aRow['patient_surname'] = $general->crypto('decrypt', $aRow['patient_surname'], $key);
