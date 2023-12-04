@@ -905,7 +905,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 						id: this.value,
 					},
 					function(data) {
-						console.log(data);
+						//console.log(data);
 						if (data != "" && data != false) {
 							_data = jQuery.parseJSON(data);
 							$(".platform").hide();

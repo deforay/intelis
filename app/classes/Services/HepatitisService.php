@@ -199,7 +199,8 @@ class HepatitisService extends AbstractTestService
             $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
             $sampleCodeParams['provinceCode'] = $provinceCode;
             $sampleCodeParams['provinceId'] = $provinceId;
-            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['existingMaxId'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['insertOperation'] = $params['insertOperation'] ?? false;
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode((string) $sampleJson, true);

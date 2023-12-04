@@ -407,7 +407,7 @@ class VlService extends AbstractTestService
         return $this->db->getValue('instruments', 'low_vl_result_text', null);
     }
 
-    public function insertSample($params, $returnSampleData = false)
+    public function insertSample($params, $returnSampleData = false): int|array
     {
         try {
 
@@ -426,7 +426,8 @@ class VlService extends AbstractTestService
             $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
             $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
             $sampleCodeParams['provinceId'] = $provinceId;
-            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['existingMaxId'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['insertOperation'] = $params['insertOperation'] ?? false;
 
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);

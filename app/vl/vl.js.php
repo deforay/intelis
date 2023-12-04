@@ -8,7 +8,7 @@
         $('.date').datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "hh:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -18,7 +18,7 @@
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -184,7 +184,13 @@
                 },
                 function(data) {
                     if (data != 0) {
-                        generateSampleCode();
+                        // Toastify({
+                        //     text: "<?= _translate('This Sample Code already exists', true) ?>",
+                        //     duration: 3000,
+                        //     style: {
+                        //         background: 'red',
+                        //     }
+                        // }).showToast();
                     }
                 });
             //$.unblockUI();

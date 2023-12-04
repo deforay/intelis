@@ -233,7 +233,9 @@ class MiscUtility
     public static function convert_to_utf8($input)
     {
         if (is_array($input)) {
-            return array_map('self::convert_to_utf8', $input);
+            return array_map(function ($item) {
+                return self::convert_to_utf8($item);
+            }, $input);
         }
         if (is_string($input)) {
             return mb_convert_encoding($input, 'UTF-8', 'UTF-8');

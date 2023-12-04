@@ -892,7 +892,7 @@ class CommonService
 
 
                 // Check if the user provided a search query and if the encryption key is valid
-                $isValidKey = !empty($encryptionKey) && strlen($encryptionKey) == 64;
+                $isValidKey = !empty($encryptionKey) && strlen(hex2bin($encryptionKey)) == 64;
                 // Split the search query into separate words
                 $searchArray = explode(" ", (string) $searchText);
                 $colSize = count($allColumns);

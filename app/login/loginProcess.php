@@ -216,7 +216,7 @@ try {
         'exception' => $exception,
         'file' => $exception->getFile(), // File where the error occurred
         'line' => $exception->getLine(), // Line number of the error
-        'stacktrace' => $exception->getTraceAsString()
+        //'stacktrace' => $exception->getTraceAsString()
     ]);
     header("Location:/login/login.php");
 }

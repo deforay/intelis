@@ -349,7 +349,6 @@ class Covid19Service extends AbstractTestService
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = (!empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
 
-
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             // Sample Collection Date Cannot be Empty
             if (empty($sampleCollectionDate) || ($formId == COUNTRY\PNG && empty($provinceId))) {
@@ -361,7 +360,8 @@ class Covid19Service extends AbstractTestService
             $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
             $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
             $sampleCodeParams['provinceId'] = $provinceId;
-            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['existingMaxId'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['insertOperation'] = $params['insertOperation'] ?? false;
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode((string) $sampleJson, true);

@@ -7,7 +7,9 @@ use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Services\GeoLocationsService;
 
 abstract class AbstractTestService
@@ -28,7 +30,7 @@ abstract class AbstractTestService
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);
 
-    public function generateSampleCode($testTable, $params)
+    public function generateSampleCode($testTable, $params): bool|string
     {
 
         $sampleCodeGenerator = [];
@@ -72,7 +74,7 @@ abstract class AbstractTestService
                 $maxId = $existingMaxId + 1;
             } else {
                 // Determine the sequence number
-                $sql = "SELECT * FROM sequence_counter
+                $sql = "SELECT max_sequence_number FROM sequence_counter
                         WHERE year = ? AND
                         test_type = ? AND
                         code_type = ?";
@@ -85,6 +87,7 @@ abstract class AbstractTestService
                     $testType,
                     $sampleCodeType
                 ]);
+
                 if (!empty($yearData)) {
                     $maxId = $yearData['max_sequence_number'] + 1;
                 } else {
@@ -129,19 +132,18 @@ abstract class AbstractTestService
 
             // We check for duplication only if we are inserting a new record
             if ($insertOperation) {
-                error_log("Trying to insert Sample ID in $testTable");
                 $checkQuery = "SELECT $sampleCodeType, $sampleCodeKeyCol
                                 FROM $testTable
                                 WHERE $sampleCodeType= ?";
                 $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
                 if (!empty($checkResult)) {
-                    error_log("DUPLICATE ::: Sample ID in $testTable ::: " . $sampleCodeGenerator['sampleCode']);
-                    error_log("DUPLICATE ::: Sample Key Code in $testTable ::: " . $maxId);
+                    LoggerUtility::log('info', "DUPLICATE ::: Sample ID/Sample Key Code in $testTable ::: " . $sampleCodeGenerator['sampleCode'] . " / " . $maxId);
                     $params['existingMaxId'] = $maxId;
                     return $this->generateSampleCode($testTable, $params);
                 }
 
-                // Insert or update the sequence counter for this test type and year
+
+                //Insert or update the sequence counter for this test type and year
                 if ($maxId == 1) {
                     $this->db->insert('sequence_counter', [
                         'test_type' => $testType,
@@ -156,9 +158,13 @@ abstract class AbstractTestService
                     $this->db->update('sequence_counter', ['max_sequence_number' => $maxId]);
                 }
             }
-        } catch (Exception $e) {
-            // Error handling logic
-            error_log("Error in generateSampleCode: " . $e->getMessage());
+        } catch (Exception | SystemException $exception) {
+            LoggerUtility::log('error', "Error while generating Sample Code for $testTable : " . $exception->getMessage(), [
+                'exception' => $exception,
+                'file' => $exception->getFile(), // File where the error occurred
+                'line' => $exception->getLine(), // Line number of the error
+                'stacktrace' => $exception->getTraceAsString()
+            ]);
         }
 
         return json_encode($sampleCodeGenerator);

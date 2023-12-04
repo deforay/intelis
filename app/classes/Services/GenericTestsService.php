@@ -86,7 +86,8 @@ class GenericTestsService extends AbstractTestService
             $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
             $sampleCodeParams['provinceId'] = $provinceId;
             $sampleCodeParams['testType'] = $testType;
-            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['existingMaxId'] = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams['insertOperation'] = $params['insertOperation'] ?? false;
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode((string) $sampleJson, true);

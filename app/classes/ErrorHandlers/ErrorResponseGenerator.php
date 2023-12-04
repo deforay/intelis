@@ -56,7 +56,10 @@ class ErrorResponseGenerator
                 $errorMessage = _translate('Sorry, something went wrong. Please try again later.');
             }
 
-            if (str_starts_with($request->getUri()->getPath(), '/api/')) {
+            if (
+                str_starts_with($request->getUri()->getPath(), '/api/') ||
+                str_starts_with($request->getUri()->getPath(), '/remote/remote/')
+            ) {
                 $responseBody = json_encode([
                     'error' => [
                         'code' => $httpCode,

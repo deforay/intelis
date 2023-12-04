@@ -853,7 +853,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 						id: this.value,
 					},
 					function(data) {
-						console.log(data);
+						//console.log(data);
 						if (data != "" && data != false) {
 							_data = jQuery.parseJSON(data);
 							$(".platform").hide();

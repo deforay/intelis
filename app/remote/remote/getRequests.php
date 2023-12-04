@@ -4,6 +4,7 @@ use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -25,18 +26,19 @@ $apiService = ContainerRegistry::get(ApiService::class);
 $request = $GLOBALS['request'];
 $data = $apiService->getJsonFromRequest($request, true);
 
-$payload = [];
-
 $labId = $data['labName'] ?? $data['labId'] ?? null;
 
 if (empty($labId)) {
-  error_log('Lab Id is required');
+  LoggerUtility::log('error', 'Lab ID missing in payload', [
+    'exception' => 'Lab ID missing in payload',
+    'file' => __FILE__, // File where the error occurred
+    'line' => __LINE__, // Line number of the error
+  ]);
   exit(0);
 }
 
-
-$dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
-$dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
+$payload = [];
+$dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
 try {
   $db->startTransaction();

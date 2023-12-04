@@ -287,7 +287,7 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['vlRequestQuery'] = $sQuery;
-error_log($sQuery);
+
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 $_SESSION['vlRequestQueryCount'] = $resultCount;
 

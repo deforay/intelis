@@ -215,7 +215,7 @@ require_once APPLICATION_PATH . '/header.php';
 				},
 				function(data) {
 					$.unblockUI();
-					console.log(data);
+					//console.log(data);
 					if (data != "") {
 						$('.activateSample').show();
 						$('#sampleId').val(data);
@@ -244,7 +244,7 @@ require_once APPLICATION_PATH . '/header.php';
 						url: "/scheduled-jobs/remote/requestsSync.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
 					})
 					.done(function(data) {
-						//console.log(data);
+						////console.log(data);
 						//alert( "success" );
 					})
 					.fail(function() {
