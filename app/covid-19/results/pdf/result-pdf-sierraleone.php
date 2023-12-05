@@ -11,12 +11,12 @@ use App\Utilities\MiscUtility;
 
 class SouthSudan_PDF extends MYPDF
 {
-    public string $logo = '';
-    public string $text = '';
-    public string $lab = '';
-    public array $facilityInfo = [];
-    public string $formId = 1;
-    public string $htitle = '';
+    public $logo = '';
+    public $text = '';
+    public $lab = '';
+    public $facilityInfo = [];
+    public $formId = 1;
+    public $htitle = '';
     //Page header
     public function Header()
     {

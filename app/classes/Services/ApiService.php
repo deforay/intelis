@@ -57,7 +57,7 @@ class ApiService
         }
     }
 
-    public function post($url, $payload, $gzip = true): string
+    public function post($url, $payload, $gzip = true): string|null
     {
 
         $options = [
@@ -83,7 +83,7 @@ class ApiService
         }
     }
 
-    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = false): string
+    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = false): string|null
     {
         // Prepare multipart data
         $multipartData = [];
