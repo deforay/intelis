@@ -135,7 +135,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										</td>
 										<td><label for="clinicName">POINT DE COLLECT </label></td>
 										<td>
-											<select class="form-control" name="clinicName" id="clinicName" title="Please choose service provider" <?php echo $disable; ?> style="width:100%;">
+											<select class="form-control" name="clinicName" id="clinicName" title="<?= _translate("Please choose facility"); ?>" <?php echo $disable; ?> style="width:100%;">
 												<?= $facility; ?>
 											</select>
 										</td>

@@ -109,7 +109,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </select>
                                         </td>
                                         <td style="width:25%"><label for="facilityId"><?= _translate('Health Facility'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
+                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose facility" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php //echo $facility;
                                                 foreach ($healthFacilitiesAllColumns as $facility) {

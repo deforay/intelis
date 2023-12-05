@@ -155,6 +155,10 @@ class TbService extends AbstractTestService
     {
         try {
 
+            // Start a new transaction (this starts a new transaction if not already started)
+            // see the beginTransaction() function implementation to understand how this works
+            $this->db->beginTransaction();
+
             $params['tries'] = $params['tries'] ?? 0;
             if ($params['tries'] >= $this->maxTries) {
                 throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
@@ -238,6 +242,15 @@ class TbService extends AbstractTestService
                     throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
                 }
             } else {
+
+                LoggerUtility::log('info', 'Sample Code Exists. Trying to regenerate sample code', [
+                    'file' => __FILE__,
+                    'line' => __LINE__,
+                ]);
+
+                // Rollback the current transaction to release locks and undo changes
+                $this->db->rollbackTransaction();
+
                 // If this sample id exists, let us regenerate the sample id and insert
                 $params['tries']++;
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];

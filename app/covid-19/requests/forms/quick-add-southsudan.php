@@ -108,7 +108,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                         <td><label for="facilityId">Facility </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;">
+                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;">
                                                 <?php echo $facility; ?>
                                             </select>
                                         </td>

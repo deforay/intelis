@@ -21,7 +21,6 @@ if (!empty($requestResult)) {
      $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
      MiscUtility::makeDirectory($pathFront);
 
-
      $pages = [];
      $page = 1;
      foreach ($requestResult as $result) {

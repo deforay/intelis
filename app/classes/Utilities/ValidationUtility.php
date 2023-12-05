@@ -49,7 +49,7 @@ class ValidationUtility
         return true;
     }
 
-    public static function isValidPhoneNumber($phoneNumberInput)
+    public static function isValidPhoneNumber($phoneNumberInput): bool
     {
         try {
             $phoneNumber = PhoneNumber::parse($phoneNumberInput);

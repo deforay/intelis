@@ -118,7 +118,7 @@ abstract class AbstractTestService
                 $remotePrefix = $remotePrefix . "R";
             }
 
-            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
+            //$sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
 
             if ($sampleCodeFormat == 'auto') {
                 $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;

@@ -109,7 +109,7 @@ $sFormat = '';
 										<td><label for="fName">POINT DE COLLECT </label><span class="mandatory">*</span>
 										</td>
 										<td>
-											<select class="form-control isRequired " name="fName" id="fName" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
+											<select class="form-control isRequired " name="fName" id="fName" title="<?= _translate("Please choose facility"); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
 												<?php echo $facility; ?>
 											</select>
 										</td>
