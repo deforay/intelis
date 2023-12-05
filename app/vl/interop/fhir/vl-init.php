@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 
 require_once(__DIR__ . "/../../../../bootstrap.php");
 
@@ -11,7 +12,7 @@ if (php_sapi_name() !== 'cli' && !isset($_SESSION['userId'])) {
 }
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

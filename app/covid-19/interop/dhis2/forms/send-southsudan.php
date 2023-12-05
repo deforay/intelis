@@ -5,11 +5,12 @@
 use App\Interop\Dhis2;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\UsersService;
 
 $usersService = ContainerRegistry::get(UsersService::class);
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

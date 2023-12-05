@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -16,7 +17,7 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -27,7 +28,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 
 try {
-    $db->startTransaction();
+    $db->beginTransaction();
     //this file receives the lab results and updates in the remote db
     //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
@@ -182,9 +183,9 @@ try {
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'generic-tests', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
     $general->updateResultSyncDateTime('generic', 'form_generic', $sampleCodes, $transactionId, $facilityIds, $labId);
-    $db->commit();
+    $db->commitTransaction();
 } catch (Exception $e) {
-    $db->rollback();
+    $db->rollbackTransaction();
 
     error_log($db->getLastError());
     error_log($e->getMessage());

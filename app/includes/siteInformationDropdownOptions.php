@@ -1,11 +1,12 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -53,7 +54,7 @@ $GLOBALS['facilityMap'] = $_SESSION['facilityMap'];
 
 function getFacilitiesDropdown($provinceName = null, $districtRequested = null, $usersService = null): string
 {
-	/** @var MysqliDb $db */
+	/** @var DatabaseService $db */
 	$db = $GLOBALS['db'];
 
 	$option = $GLOBALS['option'];
@@ -105,7 +106,7 @@ function getFacilitiesDropdown($provinceName = null, $districtRequested = null, 
 
 function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null)
 {
-	/** @var MysqliDb $db */
+	/** @var DatabaseService $db */
 	$db = $GLOBALS['db'];
 	$option = $GLOBALS['option'];
 
@@ -115,7 +116,7 @@ function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null)
 			$db->orderBy("geo_name", "ASC");
 
 			$districtInfo = $db->setQueryOption('DISTINCT')
-								->get('geographical_divisions', null, 'geo_id, geo_name');
+				->get('geographical_divisions', null, 'geo_id, geo_name');
 			$district = $option;
 			foreach ($districtInfo as $pdRow) {
 				$selected = '';
@@ -136,7 +137,7 @@ function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null)
 	}
 	$db->orderBy("f.facility_name", "ASC");
 	$facilityInfo = $db->setQueryOption('DISTINCT')
-						->get('facility_details f', null, 'facility_district');
+		->get('facility_details f', null, 'facility_district');
 
 	$district = $option;
 	foreach ($facilityInfo as $pdRow) {
@@ -191,7 +192,7 @@ if (!empty($facilityIdRequested)) {
 
 function getProvinceDropdown($selectedProvince = null)
 {
-	/** @var MysqliDb $db */
+	/** @var DatabaseService $db */
 	$db = $GLOBALS['db'];
 	$option = $GLOBALS['option'];
 
@@ -204,7 +205,7 @@ function getProvinceDropdown($selectedProvince = null)
 	$db->where("p.geo_parent = 0");
 	$db->orderBy("p.geo_name", "ASC");
 	$pdResult = $db->setQueryOption('DISTINCT')
-					->get('geographical_divisions p', null, 'geo_id,geo_name,geo_code');
+		->get('geographical_divisions p', null, 'geo_id,geo_name,geo_code');
 	//$pdResult = $db->get('geographical_divisions p');
 	$state = $option;
 	foreach ($pdResult as $pdRow) {

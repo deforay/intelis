@@ -9,9 +9,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use App\ErrorHandlers\ErrorResponseGenerator;
 
-class ErrorHandlerMiddleware implements MiddlewareInterface
+readonly class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-    private readonly ErrorResponseGenerator $errorResponseGenerator;
+    private ErrorResponseGenerator $errorResponseGenerator;
 
     public function __construct(ErrorResponseGenerator $errorResponseGenerator)
     {

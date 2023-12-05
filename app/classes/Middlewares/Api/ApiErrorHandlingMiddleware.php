@@ -9,9 +9,9 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
 
-class ApiErrorHandlingMiddleware implements MiddlewareInterface
+readonly class ApiErrorHandlingMiddleware implements MiddlewareInterface
 {
-    private readonly ErrorResponseGenerator $errorResponseGenerator;
+    private ErrorResponseGenerator $errorResponseGenerator;
 
     public function __construct(ErrorResponseGenerator $errorResponseGenerator)
     {

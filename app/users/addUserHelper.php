@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -19,7 +20,7 @@ $_POST = $request->getParsedBody();
 
 $uploadedFiles = $request->getUploadedFiles();
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var UsersService $usersService */

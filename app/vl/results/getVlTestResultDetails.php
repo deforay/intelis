@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
@@ -11,7 +12,7 @@ use App\Registries\ContainerRegistry;
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -178,7 +179,7 @@ if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
 
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
      $key = base64_decode((string) $general->getGlobalConfig('key'));
-     $sWhere[] = ' DES_DECRYPT(vl.patient_art_no,'.$key.') like "%' . $_POST['patientId'] . '%"';
+     $sWhere[] = ' DES_DECRYPT(vl.patient_art_no,' . $key . ') like "%' . $_POST['patientId'] . '%"';
 }
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";

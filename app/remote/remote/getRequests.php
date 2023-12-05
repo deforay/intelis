@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\ApiService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -13,7 +14,7 @@ require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 header('Content-Type: application/json');
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -41,7 +42,7 @@ $payload = [];
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
 try {
-  $db->startTransaction();
+  $db->beginTransaction();
   $transactionId = $general->generateUUID();
 
   $counter = 0;
@@ -118,9 +119,9 @@ try {
 
 
   $general->updateTestRequestsSyncDateTime('vl', 'form_vl', 'vl_sample_id', $sampleIds, $transactionId, $facilityIds, $labId);
-  $db->commit();
+  $db->commitTransaction();
 } catch (Exception $e) {
-  $db->rollback();
+  $db->rollbackTransaction();
 
   error_log($db->getLastError());
   error_log($e->getMessage());

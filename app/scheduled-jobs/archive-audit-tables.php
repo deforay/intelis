@@ -8,6 +8,7 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -20,7 +21,7 @@ if (
     exit;
 }
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 if (empty(SYSTEM_CONFIG['archive'])) {

@@ -13,7 +13,7 @@ $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
 try {
-	$db->startTransaction();
+	$db->beginTransaction();
 	if (isset($_POST['feedback']) && trim((string) $_POST['feedback']) != "" && trim((string) $_POST['feedbackUrl']) != "") {
 		$data = array(
 			'feedback' => $_POST['feedback'],
@@ -55,23 +55,23 @@ try {
 					);
 					$db->where('support_id', $supportId);
 					$db->update($tableName, $fData);
-					$db->commit();
+					$db->commitTransaction();
 					$response['status'] = 1;
 					$response['supportId'] = base64_encode((string) $supportId);
 					$response['message'] = 'Form data submitted successfully!';
 				} else {
-					$db->rollback();
+					$db->rollbackTransaction();
 					$response['message'] = 'Please try again after some time';
 				}
 			} else {
-				$db->rollback();
+				$db->rollbackTransaction();
 				$response['message'] = 'Sorry, only ' . implode(', ', $allowedExtensions) . ' files are allowed to upload.';
 			}
 		} else {
 			$response['status'] = 1;
 			$response['supportId'] = base64_encode((string) $supportId);
 			$response['message'] = 'Form data submitted successfully!';
-			$db->commit();
+			$db->commitTransaction();
 		}
 
 		// Return response

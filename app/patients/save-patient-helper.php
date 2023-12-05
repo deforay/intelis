@@ -2,12 +2,13 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Services\PatientsService;
 use App\Utilities\DateUtility;
 use App\Utilities\ValidationUtility;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

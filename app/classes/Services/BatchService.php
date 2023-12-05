@@ -1,19 +1,18 @@
 <?php
 
 
-
 namespace App\Services;
 
-use MysqliDb;
 use Generator;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 class BatchService
 {
 
-    protected ?MysqliDb $db = null;
+    protected ?DatabaseService $db = null;
 
-    public function __construct(?MysqliDb $db = null)
+    public function __construct(?DatabaseService $db = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
     }

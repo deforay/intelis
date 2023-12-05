@@ -1,11 +1,12 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /* Save Province / State details to geolocation table */

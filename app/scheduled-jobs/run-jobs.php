@@ -1,6 +1,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
 require_once(__DIR__ . "/../../bootstrap.php");
@@ -9,7 +10,7 @@ try {
 
     $phpPath = SYSTEM_CONFIG['system']['php_path'] ?? PHP_BINARY;
 
-    /** @var MysqliDb $db */
+    /** @var DatabaseService $db */
     $db = ContainerRegistry::get('db');
 
     $db->where("status = 'pending'");

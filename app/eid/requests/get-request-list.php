@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -10,7 +11,7 @@ use App\Registries\ContainerRegistry;
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

@@ -3,6 +3,7 @@
 // this file is included in /hepatitis/interop/dhis2/hepatitis-receive.php
 
 use App\Interop\Dhis2;
+use App\Services\DatabaseService;
 use JsonMachine\Items;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -14,7 +15,7 @@ $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 $syncType = 'DHIS2-Hepatitis-Receive';
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

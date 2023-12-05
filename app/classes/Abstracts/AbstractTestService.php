@@ -31,14 +31,16 @@ abstract class AbstractTestService
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);
 
-    public function generateSampleCode($testTable, $params, $tryCount = 0): bool|string
+    public function generateSampleCode($testTable, $params, $tryCount = 0)
     {
+        // Start a new transaction (this starts a new transaction if not already started)
+        // see the beginTransaction() function implementation to understand how this works
+        $this->db->beginTransaction();
 
         if ($tryCount >= $this->maxTries) {
             throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating sample code");
         }
 
-        $sampleCodeGenerator = [];
         $formId = $this->commonService->getGlobalConfig('vl_form');
         $userType = $this->commonService->getSystemConfig('sc_user_type');
 
@@ -92,7 +94,6 @@ abstract class AbstractTestService
                     $testType,
                     $sampleCodeType
                 ]);
-
                 if (!empty($yearData)) {
                     $maxId = $yearData['max_sequence_number'] + 1;
                 } else {
@@ -117,24 +118,6 @@ abstract class AbstractTestService
                 $remotePrefix = $remotePrefix . "R";
             }
 
-
-            if ($sampleCodeFormat == 'auto') {
-                $sampleCodeGenerator['sampleCode'] = $remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId'];
-                $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId'];
-                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
-                $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
-            } elseif ($sampleCodeFormat == 'auto2') {
-                $sampleCodeGenerator['sampleCode'] = $remotePrefix . $year . $provinceCode . $prefix . $sampleCodeGenerator['maxId'];
-                $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $prefix . $sampleCodeGenerator['maxId'];
-                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
-                $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
-            } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
-                $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
-                $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
-                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'];
-                $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
-            }
-
             $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
 
             if ($sampleCodeFormat == 'auto') {
@@ -150,11 +133,14 @@ abstract class AbstractTestService
 
             // We check for duplication only if we are inserting a new record
             if ($insertOperation) {
-                $checkQuery = "SELECT $sampleCodeType, $sampleCodeKeyCol
-                                FROM $testTable
-                                WHERE $sampleCodeType= ?";
-                $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
-                if (!empty($checkResult)) {
+                $checkDuplicateQuery = "SELECT $sampleCodeType, $sampleCodeKeyCol
+                                        FROM $testTable
+                                        WHERE $sampleCodeType= ?";
+                $checkDuplicateResult = $this->db->rawQueryOne($checkDuplicateQuery, [$sampleCodeGenerator['sampleCode']]);
+                if (!empty($checkDuplicateResult)) {
+                    // Rollback the current transaction to release locks and undo changes
+                    $this->db->rollbackTransaction();
+
                     LoggerUtility::log('info', "DUPLICATE ::: Sample ID/Sample Key Code in $testTable ::: " . $sampleCodeGenerator['sampleCode'] . " / " . $maxId);
                     $params['existingMaxId'] = $maxId;
                     return $this->generateSampleCode($testTable, $params, $tryCount + 1);
@@ -176,12 +162,6 @@ abstract class AbstractTestService
                     ->insert('sequence_counter', $data);
             }
         } catch (Exception | SystemException $exception) {
-            // LoggerUtility::log('error', "Error while generating Sample Code for $testTable : " . $exception->getMessage(), [
-            //     'exception' => $exception,
-            //     'file' => $exception->getFile(), // File where the error occurred
-            //     'line' => $exception->getLine(), // Line number of the error
-            //     'stacktrace' => $exception->getTraceAsString()
-            // ]);
             throw new SystemException("Error while generating Sample Code for $testTable : " . $exception->getMessage(), $exception->getCode(), $exception);
         }
 

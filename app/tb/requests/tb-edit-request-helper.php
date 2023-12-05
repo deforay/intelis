@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\GeoLocationsService;
 use App\Utilities\DateUtility;
 use App\Services\PatientsService;
@@ -13,7 +14,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

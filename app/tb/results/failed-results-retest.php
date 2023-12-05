@@ -5,10 +5,11 @@
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
 try {
-    /** @var MysqliDb $db */
+    /** @var DatabaseService $db */
     $db = ContainerRegistry::get('db');
 
     /** @var CommonService $general */

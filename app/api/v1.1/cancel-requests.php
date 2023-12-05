@@ -2,6 +2,7 @@
 // Allow from any origin
 use App\Exceptions\SystemException;
 use App\Services\ApiService;
+use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
@@ -15,7 +16,7 @@ $input = $request->getParsedBody();
 
 $applicationConfig = ContainerRegistry::get('applicationConfig');
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

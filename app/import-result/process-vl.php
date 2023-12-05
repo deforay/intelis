@@ -2,6 +2,7 @@
 
 // this file is included in /import-result/processImportedResults.php
 
+use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -12,7 +13,7 @@ use App\Registries\ContainerRegistry;
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

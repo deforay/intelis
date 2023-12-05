@@ -3,16 +3,16 @@
 namespace App\Services;
 
 use Exception;
-use MysqliDb;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 
 class PatientsService
 {
 
-    protected ?MysqliDb $db = null;
+    protected ?DatabaseService $db = null;
     protected string $table = 'patients';
     protected CommonService $commonService;
 
@@ -70,7 +70,7 @@ class PatientsService
     public function savePatient($params, $testTable)
     {
         try {
-            $this->db->startTransaction();
+            $this->db->beginTransaction();
 
             $data = [];
 
@@ -144,9 +144,9 @@ class PatientsService
                 error_log($this->db->getLastError());
             }
 
-            $this->db->commit();
+            $this->db->commitTransaction();
         } catch (Exception $e) {
-            $this->db->rollback();
+            $this->db->rollbackTransaction();
             throw $e;
         }
     }

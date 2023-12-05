@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Registries\ContainerRegistry;
 use App\Utilities\DateUtility;
-use MysqliDb;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 class FacilitiesService
 {
 
-    protected ?MysqliDb $db = null;
+    protected ?DatabaseService $db = null;
     protected string $table = 'facility_details';
 
     public function __construct($db = null)

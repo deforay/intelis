@@ -2,9 +2,10 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -117,7 +118,8 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
          $_SESSION['alertMsg'] = 'Email sent successfully';
          header('location:vlResultMail.php');
       } else {
-         echo 'oooops'; die;
+         echo 'oooops';
+         die;
          $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
          error_log("Mailer Error: " . $mail->ErrorInfo);
          header('location:vlResultMail.php');

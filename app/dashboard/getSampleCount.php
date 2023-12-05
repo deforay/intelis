@@ -1,10 +1,11 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 // Sanitized values from $request object

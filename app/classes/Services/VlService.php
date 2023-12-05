@@ -9,7 +9,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
-
+use App\Utilities\LoggerUtility;
 
 class VlService extends AbstractTestService
 {
@@ -494,7 +494,7 @@ class VlService extends AbstractTestService
                 $this->db->insert("form_vl", $tesRequestData);
                 $id = $this->db->getInsertId();
                 if ($this->db->getLastErrno() > 0) {
-                    error_log($this->db->getLastError());
+                    throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
                 }
             } else {
                 // If this sample id exists, let us regenerate the sample id and insert
@@ -503,10 +503,13 @@ class VlService extends AbstractTestService
                 return $this->insertSample($params);
             }
         } catch (Exception | SystemException $e) {
-            error_log('Insert VL Sample : ' . $this->db->getLastErrno());
-            error_log('Insert VL Sample : ' . $this->db->getLastError());
-            error_log('Insert VL Sample : ' . $this->db->getLastQuery());
-            error_log('Insert VL Sample : ' . $e->getMessage());
+            //error_log('Insert VL Sample : ' . $this->db->getLastQuery());
+            LoggerUtility::log('error', 'Insert VL Sample : ' . $e->getMessage(), [
+                'exception' => $e,
+                'file' => $e->getFile(), // File where the error occurred
+                'line' => $e->getLine(), // Line number of the error
+                'stacktrace' => $e->getTraceAsString()
+            ]);
             $id = 0;
         }
         if ($returnSampleData === true) {

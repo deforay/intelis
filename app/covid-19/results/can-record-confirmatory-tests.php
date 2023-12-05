@@ -1,13 +1,14 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 
 $title = "Enter Covid-19 Result";
 
 require_once APPLICATION_PATH . '/header.php';
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 // Sanitized values from $request object

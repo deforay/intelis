@@ -1,8 +1,9 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 

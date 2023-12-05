@@ -10,7 +10,7 @@ use App\Registries\ContainerRegistry;
 
 header('Content-Type: application/json');
 try {
-    $db->startTransaction();
+    $db->beginTransaction();
     //$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
     /** @var ApiService $apiService */
@@ -69,9 +69,9 @@ try {
 
 
     $general->updateTestRequestsSyncDateTime('tb', 'form_tb', 'tb_id', $sampleIds, $transactionId, $facilityIds, $labId);
-    $db->commit();
+    $db->commitTransaction();
 } catch (Exception $e) {
-    $db->rollback();
+    $db->rollbackTransaction();
 
     error_log($db->getLastError());
     error_log($e->getMessage());

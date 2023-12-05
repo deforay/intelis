@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -11,7 +12,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 $sCode = $labFieldDisabled = '';
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var FacilitiesService $facilitiesService */

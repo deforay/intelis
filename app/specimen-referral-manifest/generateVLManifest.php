@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
 
@@ -9,7 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -49,7 +50,7 @@ class MYPDF extends TCPDF
         //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
         //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
         // Set font
-        if (trim((string) $this->logo) != "") {
+        if (trim($this->logo) != "") {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                 $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
@@ -62,7 +63,7 @@ class MYPDF extends TCPDF
         $this->SetFont('helvetica', '', 10);
         $this->writeHTMLCell(0, 0, 0, 20, $this->labname, 0, 0, 0, true, 'C');
 
-        if (trim((string) $this->logo) != "") {
+        if (trim($this->logo) != "") {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                 $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T');
@@ -275,13 +276,8 @@ if (trim((string) $id) != '') {
             $tbl .= '</table>';
 
             foreach ($result as $sample) {
-                //var_dump($sample);die;
-                $collectionDate = '';
-                if (isset($sample['sample_collection_date']) && $sample['sample_collection_date'] != '' && $sample['sample_collection_date'] != null && $sample['sample_collection_date'] != '0000-00-00 00:00:00') {
-                    $cDate = explode(" ", (string) $sample['sample_collection_date']);
-                    //$collectionDate = \App\Utilities\DateUtility::humanReadableDateFormat($cDate[0]) . " " . $cDate[1];
-                    $collectionDate = DateUtility::humanReadableDateFormat($cDate[0]);
-                }
+
+                $collectionDate = DateUtility::humanReadableDateFormat($sample['sample_collection_date'] ?? '');
                 $patientDOB = '';
                 if (isset($sample['patient_dob']) && $sample['patient_dob'] != '' && $sample['patient_dob'] != null && $sample['patient_dob'] != '0000-00-00') {
                     $patientDOB = DateUtility::humanReadableDateFormat($sample['patient_dob']);

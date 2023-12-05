@@ -2,11 +2,11 @@
 
 namespace App\HttpHandlers;
 
-use MysqliDb;
 use Exception;
 use Throwable;
 use App\Services\CommonService;
 use Laminas\Diactoros\Response;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use Psr\Http\Message\ResponseInterface;
@@ -22,7 +22,8 @@ class LegacyRequestHandler implements RequestHandlerInterface
             $fileToInclude = null;
             // Capture output buffer to prevent it from being sent directly
             ob_start();
-            /** @var MysqliDb $db */
+
+            /** @var DatabaseService $db */
             $db = ContainerRegistry::get('db');
 
             /** @var CommonService $general */

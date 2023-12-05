@@ -2,6 +2,7 @@
 
 use App\Services\BatchService;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
@@ -35,7 +36,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 $title = _translate($title . " | Add Batch");
 require_once APPLICATION_PATH . '/header.php';
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -227,16 +228,16 @@ $fundingSourceList = $general->getFundingSources();
                 </tr>
                 <tr>
                     <td><label for="fundingSource">Funding Partner</label></td>
-                        <td>
-                            <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
-                               <option value=""> -- Select -- </option>
-                                <?php
-                                 foreach ($fundingSourceList as $fundingSource) {
-                                ?>
+                    <td>
+                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+                            <option value=""> -- Select -- </option>
+                            <?php
+                            foreach ($fundingSourceList as $fundingSource) {
+                            ?>
                                 <option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
-                                <?php } ?>
-                            </select>
-                        </td>
+                            <?php } ?>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">

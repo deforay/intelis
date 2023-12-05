@@ -8,6 +8,7 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -25,7 +26,7 @@ if (
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

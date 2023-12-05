@@ -7,13 +7,14 @@ if (php_sapi_name() == 'cli') {
 //this file gets the data from the local database and updates the remote database
 
 use App\Services\ApiService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

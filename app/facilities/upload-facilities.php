@@ -1,12 +1,13 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 require_once APPLICATION_PATH . '/header.php';
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -111,10 +112,10 @@ if (isset($_GET['total'])) {
 									</label>
 									<div class="col-lg-5">
 										<select name="uploadOption" id="uploadOption" class="form-control">
-											<option value="default" <?php echo ($_GET['option']=='default') ? 'selected="selected"' : ''; ?>><?= _translate("Don't update duplicates (default)"); ?></option>
-											<option value="facility_name_match" <?php echo ($_GET['option']=='facility_name_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Name matches"); ?></option>
-											<option value="facility_code_match" <?php echo ($_GET['option']=='facility_code_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Code matches"); ?></option>
-											<option value="facility_name_code_match" <?php echo ($_GET['option']=='facility_name_code_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Name and Facility Code match"); ?></option>
+											<option value="default" <?php echo ($_GET['option'] == 'default') ? 'selected="selected"' : ''; ?>><?= _translate("Don't update duplicates (default)"); ?></option>
+											<option value="facility_name_match" <?php echo ($_GET['option'] == 'facility_name_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Name matches"); ?></option>
+											<option value="facility_code_match" <?php echo ($_GET['option'] == 'facility_code_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Code matches"); ?></option>
+											<option value="facility_name_code_match" <?php echo ($_GET['option'] == 'facility_name_code_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Name and Facility Code match"); ?></option>
 										</select>
 									</div>
 								</div>

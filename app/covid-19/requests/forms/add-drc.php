@@ -4,13 +4,14 @@
 use App\Services\Covid19Service;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\GeoLocationsService;
 
 
 
 // Getting the list of Provinces, Districts and Facilities
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

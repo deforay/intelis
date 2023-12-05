@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
-use Generator;
 use MysqliDb;
+use Generator;
 
 class DatabaseService extends MysqliDb
 {
+
+    private $isTransactionActive = false;
 
     /**
      * Execute a query and return a generator to fetch results row by row.
@@ -22,7 +24,7 @@ class DatabaseService extends MysqliDb
         $stmt = $this->_prepareQuery();
 
         if (is_array($bindParams)) {
-            foreach ($bindParams as $prop => $val) {
+            foreach ($bindParams as $val) {
                 $params[0] .= $this->_determineType($val);
                 $params[] = $val;
             }
@@ -38,5 +40,38 @@ class DatabaseService extends MysqliDb
 
         $stmt->close();
         $this->reset();
+    }
+
+    /**
+     * Begin a new transaction if not already started.
+     */
+    public function beginTransaction(): void
+    {
+        if (!$this->isTransactionActive) {
+            $this->startTransaction();
+            $this->isTransactionActive = true;
+        }
+    }
+
+    /**
+     * Commit the current transaction.
+     */
+    public function commitTransaction(): void
+    {
+        if ($this->isTransactionActive) {
+            $this->commit();
+            $this->isTransactionActive = false;
+        }
+    }
+
+    /**
+     * Roll back the current transaction.
+     */
+    public function rollbackTransaction(): void
+    {
+        if ($this->isTransactionActive) {
+            $this->rollback();
+            $this->isTransactionActive = false;
+        }
     }
 }

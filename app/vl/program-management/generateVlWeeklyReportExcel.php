@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -17,7 +18,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -209,7 +210,7 @@ $resultSet = $db->rawQuery($sQuery);
 
 $excelResultSet = [];
 foreach ($resultSet as $row) {
-    $excelResultSet[$row['lab_name'].'-'.$row['fcode']][] = $row;
+    $excelResultSet[$row['lab_name'] . '-' . $row['fcode']][] = $row;
 }
 
 foreach ($excelResultSet as $vlLab => $labResult) {
@@ -217,13 +218,12 @@ foreach ($excelResultSet as $vlLab => $labResult) {
     $sheet = new Worksheet($excel, '');
     $excel->addSheet($sheet, $c);
     $vlLab = preg_replace('/\s+/', ' ', ($vlLab));
-    $labInfo = explode('-',$vlLab);
+    $labInfo = explode('-', $vlLab);
 
-    if(isset($labInfo[1]) && $labInfo[1]!=''){
+    if (isset($labInfo[1]) && $labInfo[1] != '') {
         $sheet->setTitle($labInfo[1]);
-    }
-    else{
-        $labName = substr($labInfo[1],0,31);
+    } else {
+        $labName = substr($labInfo[1], 0, 31);
         $sheet->setTitle($labName);
     }
 

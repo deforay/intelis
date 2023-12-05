@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\PatientsService;
@@ -13,7 +14,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -281,8 +282,8 @@ try {
           $vldata['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : null;
      }
 
-              //Update patient Information in Patients Table
-              $patientsService->updatePatient($_POST,'form_generic');
+     //Update patient Information in Patients Table
+     $patientsService->updatePatient($_POST, 'form_generic');
 
 
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
@@ -290,24 +291,24 @@ try {
                $db = $db->where('generic_id', $_POST['vlSampleId']);
                $db->delete('generic_test_results');
                foreach ($_POST['testName'] as $subTestName => $subTests) {
-                    foreach($subTests as $testKey=>$testKitName){
+                    foreach ($subTests as $testKey => $testKitName) {
                          if (!empty($testKitName)) {
                               $testData = array(
                                    'generic_id' => $_POST['vlSampleId'],
-                               'sub_test_name' => $subTestName,
-                               'result_type' => $_POST['resultType'][$subTestName],
-                               'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName,
-                               'facility_id' => $_POST['labId'] ?? null,
-                               'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? '', true),
-                               'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null,
-                               'kit_lot_no' => (str_contains((string)$testKitName, 'RDT')) ? $_POST['lotNo'][$subTestName][$testKey] : null,
-                               'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null,
-                               'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey],
-                               'result' => $_POST['testResult'][$subTestName][$testKey],
-                               
-                               'final_result' => $_POST['finalResult'][$subTestName],
-                               'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName],
-                               'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
+                                   'sub_test_name' => $subTestName,
+                                   'result_type' => $_POST['resultType'][$subTestName],
+                                   'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName,
+                                   'facility_id' => $_POST['labId'] ?? null,
+                                   'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? '', true),
+                                   'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null,
+                                   'kit_lot_no' => (str_contains((string)$testKitName, 'RDT')) ? $_POST['lotNo'][$subTestName][$testKey] : null,
+                                   'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null,
+                                   'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey],
+                                   'result' => $_POST['testResult'][$subTestName][$testKey],
+
+                                   'final_result' => $_POST['finalResult'][$subTestName],
+                                   'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName],
+                                   'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
                               );
                               $db->insert('generic_test_results', $testData);
                          }

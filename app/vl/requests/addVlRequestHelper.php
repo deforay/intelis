@@ -3,13 +3,14 @@
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Services\PatientsService;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
 use App\Utilities\ValidationUtility;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -333,7 +334,10 @@ try {
         $pngSpecificFields['qc_date'] = DateUtility::isoDateFormat($_POST['qcDate']);
         $pngSpecificFields['report_date'] = DateUtility::isoDateFormat($_POST['reportDate']);
     }
-    $vlData = array_merge($vlData, $pngSpecificFields);
+
+    if (!empty($pngSpecificFields)) {
+        $vlData = array_merge($vlData, $pngSpecificFields);
+    }
 
     $vlData['patient_first_name'] = $_POST['patientFirstName'] ?? '';
     $vlData['patient_middle_name'] = $_POST['patientMiddleName'] ?? '';
@@ -353,7 +357,6 @@ try {
         $vlData['patient_last_name'] = $encryptedPatientLastName;
         $vlData['is_encrypted'] = 'yes';
     }
-
 
     $id = 0;
 
@@ -378,7 +381,7 @@ try {
         }
 
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-            header("Location:addVlRequest.php");
+            header("Location:/vl/requests/addVlRequest.php");
         } else {
             header("Location:/vl/requests/vl-requests.php");
         }

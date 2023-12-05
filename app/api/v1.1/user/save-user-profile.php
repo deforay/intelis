@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\ApiService;
+use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -15,7 +16,7 @@ $request = $GLOBALS['request'];
 
 $origJson = $request->getBody()->getContents();
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

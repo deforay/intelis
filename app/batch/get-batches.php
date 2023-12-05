@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -13,7 +14,7 @@ $_POST = $request->getParsedBody();
 $tableName = "batch_details";
 $primaryKey = "batch_id";
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use MysqliDb;
 use DateTimeImmutable;
+use App\Services\DatabaseService;
 
 class TestResultsService
 {
 
-    protected ?MysqliDb $db = null;
+    protected ?DatabaseService $db = null;
 
-    public function __construct(?MysqliDb $db = null)
+    public function __construct(?DatabaseService $db = null)
     {
         $this->db = $db;
     }

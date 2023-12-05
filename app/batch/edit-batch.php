@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -52,7 +53,7 @@ if (isset($testType) && $testType == 'vl') {
 
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -204,18 +205,18 @@ $fundingSourceList = $general->getFundingSources();
 					</td>
 				</tr>
 				<tr>
-                    <td><label for="fundingSource">Funding Partner</label></td>
-                        <td>
-                            <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
-                               <option value=""> -- Select -- </option>
-                                <?php
-                                 foreach ($fundingSourceList as $fundingSource) {
-                                ?>
-                                <option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
-                                <?php } ?>
-                            </select>
-                        </td>
-                </tr>
+					<td><label for="fundingSource">Funding Partner</label></td>
+					<td>
+						<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+							<option value=""> -- Select -- </option>
+							<?php
+							foreach ($fundingSourceList as $fundingSource) {
+							?>
+								<option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+							<?php } ?>
+						</select>
+					</td>
+				</tr>
 				<tr>
 					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
 						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Reset Filters"); ?></span></button>

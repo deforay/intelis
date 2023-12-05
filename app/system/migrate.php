@@ -8,6 +8,7 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+use App\Services\DatabaseService;
 use PhpMyAdmin\SqlParser\Parser;
 use App\Registries\ContainerRegistry;
 
@@ -16,7 +17,7 @@ if (version_compare(VERSION, '5.2.5', '<')) {
     exit("This script requires VERSION 5.2.5 or higher. Current version: " . VERSION . "\n");
 }
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 $db->where('name', 'sc_version');
@@ -42,7 +43,7 @@ foreach ($migrationFiles as $file) {
         $sql_contents = file_get_contents($file);
         $parser = new Parser($sql_contents);
 
-        $db->startTransaction();  // Start a new transaction
+        $db->beginTransaction();  // Start a new transaction
         $errorOccurred = false;
         foreach ($parser->statements as $statement) {
             try {
@@ -66,7 +67,7 @@ foreach ($migrationFiles as $file) {
                     $response = trim(fgets($handle));
                     fclose($handle);
                     if (strtolower($response) !== 'y') {
-                        $db->rollback();  // Rollback the transaction on error
+                        $db->rollbackTransaction();  // Rollback the transaction on error
                         exit("Migration aborted by user.\n");
                     }
                 }
@@ -78,6 +79,6 @@ foreach ($migrationFiles as $file) {
         //}
 
         $db->where('name', 'sc_version')->update('system_config', ['value' => $version]);
-        $db->commit();  // Commit the transaction if no error occurred
+        $db->commitTransaction();  // Commit the transaction if no error occurred
     }
 }

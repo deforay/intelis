@@ -1,6 +1,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -8,7 +9,7 @@ $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 $mappingType     = $_POST['mappingType'];

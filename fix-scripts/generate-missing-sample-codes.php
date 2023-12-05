@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -8,7 +9,7 @@ use App\Registries\ContainerRegistry;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

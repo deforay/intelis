@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\GenericTestsService;
 use App\Services\TbService;
 use App\Services\VlService;
@@ -15,7 +16,7 @@ $title = "Move Manifest";
 
 require_once APPLICATION_PATH . '/header.php';
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

@@ -4,15 +4,16 @@
 /** @var Laminas\Diactoros\ServerRequest $request */
 
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 $tableName1 = "roles";
-$db->startTransaction();
+$db->beginTransaction();
 try {
         $lastId = base64_decode((string) $_POST['roleId']);
 
@@ -43,10 +44,10 @@ try {
                 }
                 $_SESSION['alertMsg'] = _translate("Role updated successfully");
         }
-        $db->commit();
+        $db->commitTransaction();
         header("Location:roles.php");
 } catch (Exception $exc) {
         error_log($exc->getMessage());
         error_log($exc->getTraceAsString());
-        $db->rollback();
+        $db->rollbackTransaction();
 }

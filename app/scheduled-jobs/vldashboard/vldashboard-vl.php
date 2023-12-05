@@ -6,6 +6,7 @@ if (php_sapi_name() == 'cli') {
 
 
 use App\Services\ApiService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -16,7 +17,7 @@ set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

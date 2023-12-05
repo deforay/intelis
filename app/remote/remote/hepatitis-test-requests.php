@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 header('Content-Type: application/json');
 try {
-    $db->startTransaction();
+    $db->beginTransaction();
 
     //$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
@@ -84,9 +84,9 @@ try {
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], $jsonData, $payload, 'json', $labId);
 
     $general->updateTestRequestsSyncDateTime('hepatitis', 'form_hepatitis', 'hepatitis_id', $sampleIds, $transactionId, $facilityIds, $labId);
-    $db->commit();
+    $db->commitTransaction();
 } catch (Exception $e) {
-    $db->rollback();
+    $db->rollbackTransaction();
 
     error_log($db->getLastError());
     error_log($e->getMessage());

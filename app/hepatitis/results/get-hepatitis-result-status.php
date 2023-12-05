@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Utilities\DateUtility;
 
@@ -28,7 +29,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

@@ -2,12 +2,13 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\SystemService;
 
 
 
 require_once APPLICATION_PATH . '/header.php';
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -332,11 +333,11 @@ $rInfo = $db->query($resourcesQuery);
 											echo "</th>";
 											echo "</tr>";
 
-                                            $mode = match ($_SESSION['instanceType']) {
-                                                'remoteuser' => " AND (show_mode like 'sts' or show_mode like 'always')",
-                                                'vluser' => " AND (show_mode like 'lis' or show_mode like 'always')",
-                                                default => " AND (show_mode like 'always')",
-                                            };
+											$mode = match ($_SESSION['instanceType']) {
+												'remoteuser' => " AND (show_mode like 'sts' or show_mode like 'always')",
+												'vluser' => " AND (show_mode like 'lis' or show_mode like 'always')",
+												default => " AND (show_mode like 'always')",
+											};
 
 											$pQuery = "SELECT * FROM privileges WHERE resource_id= ? $mode ORDER BY display_order ASC";
 											$pInfo = $db->rawQuery($pQuery, [$mRes[0]]);

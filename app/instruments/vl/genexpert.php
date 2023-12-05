@@ -2,6 +2,7 @@
 
 // File included in import-file-helper.php
 
+use App\Services\DatabaseService;
 use League\Csv\Reader;
 use App\Services\VlService;
 use App\Services\BatchService;
@@ -12,7 +13,7 @@ use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

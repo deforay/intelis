@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Registries\ContainerRegistry;
 use App\Utilities\DateUtility;
-use MysqliDb;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 class GeoLocationsService
 {
 
-    protected ?MysqliDb $db = null;
+    protected ?DatabaseService $db = null;
 
     public function __construct($db = null)
     {

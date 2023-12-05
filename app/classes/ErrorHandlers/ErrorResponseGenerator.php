@@ -41,8 +41,7 @@ class ErrorResponseGenerator
             $errorMessage = $exception->getMessage() ??
                 _translate('Sorry, something went wrong. Please try again later.');
 
-            $errorReason = isset($this->errorReasons[$httpCode]) ?
-                $this->errorReasons[$httpCode] : _translate('Internal Server Error') . ' - ';
+            $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error') . ' - ';
 
             // Log the error with Monolog, including the file, line, and stack trace
             LoggerUtility::log('error', $errorReason . ' Error: ' . $exception->getMessage(), [

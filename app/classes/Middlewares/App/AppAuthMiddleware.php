@@ -53,7 +53,6 @@ class AppAuthMiddleware implements MiddlewareInterface
 
     private function shouldExcludeFromAuthCheck(ServerRequestInterface $request): bool
     {
-        $return = false;
         if (
             php_sapi_name() === 'cli' ||
             strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest'

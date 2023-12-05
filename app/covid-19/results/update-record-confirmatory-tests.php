@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
@@ -10,7 +11,7 @@ $title = "Enter Covid-19 Result";
 
 require_once APPLICATION_PATH . '/header.php';
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -133,76 +134,76 @@ if (isset($forms[$arr['vl_form']])) {
 ?>
 
 <script>
-	$(document).ready(function () {
-		$('#isSampleRejected').change(function (e) {
+	$(document).ready(function() {
+		$('#isSampleRejected').change(function(e) {
 			changeReject(this.value);
 		});
-		$('#hasRecentTravelHistory').change(function (e) {
+		$('#hasRecentTravelHistory').change(function(e) {
 			changeHistory(this.value);
 		});
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function () {
+		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			onChangeMonthYear: function (year, month, widget) {
-				setTimeout(function () {
+			onChangeMonthYear: function(year, month, widget) {
+				setTimeout(function() {
 					$('.ui-datepicker-calendar').show();
 				});
 			},
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function () {
+		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
 
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			onChangeMonthYear: function (year, month, widget) {
-				setTimeout(function () {
+			onChangeMonthYear: function(year, month, widget) {
+				setTimeout(function() {
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			onSelect: function (e) {
+			onSelect: function(e) {
 				$('#sampleReceivedDate').val('');
 				$('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
 			},
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function () {
+		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
 
 		$('#sampleReceivedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			onChangeMonthYear: function (year, month, widget) {
-				setTimeout(function () {
+			onChangeMonthYear: function(year, month, widget) {
+				setTimeout(function() {
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			onSelect: function (e) {
+			onSelect: function(e) {
 				$('#sampleTestedDateTime').val('');
 				$('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
 			},
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function () {
+		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
 

@@ -3,6 +3,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\ApiService;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
@@ -13,7 +14,7 @@ ini_set('max_execution_time', 300000);
 
 header('Content-Type: application/json');
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

@@ -2,6 +2,7 @@
 
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 
 require_once APPLICATION_PATH . '/header.php';
 $tsQuery = "SELECT * FROM r_sample_status";
@@ -24,7 +25,7 @@ $_GET = $request->getQueryParams();
 
 $module = $_GET['t'];
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

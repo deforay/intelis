@@ -34,7 +34,7 @@ $genericService = ContainerRegistry::get(GenericTestsService::class);
 
 try {
 
-    $db->startTransaction();
+    $db->beginTransaction();
     ini_set('memory_limit', -1);
     set_time_limit(0);
     ini_set('max_execution_time', 20000);
@@ -450,9 +450,9 @@ try {
         'data' => $responseData ?? []
     ];
     http_response_code(200);
-    $db->commit();
+    $db->commitTransaction();
 } catch (SystemException $exc) {
-    $db->rollback();
+    $db->rollbackTransaction();
     http_response_code(500);
     $payload = [
         'status' => 'failed',

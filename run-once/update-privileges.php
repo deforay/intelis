@@ -2,10 +2,11 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 $sharedPrivileges = [

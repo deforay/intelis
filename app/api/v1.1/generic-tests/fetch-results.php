@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\GenericTestsService;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -22,7 +23,7 @@ $origJson = $request->getBody()->getContents();
 $input = $request->getParsedBody();
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

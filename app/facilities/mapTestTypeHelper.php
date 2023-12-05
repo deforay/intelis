@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
@@ -10,7 +11,7 @@ $_POST = $request->getParsedBody();
 
 $currentDateTime = DateUtility::getCurrentDateTime();
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 $mappingType = $_POST['mappingType'];

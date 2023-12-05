@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
@@ -10,7 +11,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

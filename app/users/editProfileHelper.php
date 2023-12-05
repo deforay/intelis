@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Services\CommonService;
@@ -7,7 +8,7 @@ use App\Services\SystemService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var UsersService $userModel */

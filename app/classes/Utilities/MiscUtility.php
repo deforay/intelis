@@ -226,15 +226,16 @@ class MiscUtility
             }
         }
 
-        unset($data); // Clear memory
+        //Clear Memory
+        unset($data);
         fclose($handle);
         return $filename;
     }
-    public static function convert_to_utf8($input)
+    public static function convertToUtf8($input)
     {
         if (is_array($input)) {
             return array_map(function ($item) {
-                return self::convert_to_utf8($item);
+                return self::convertToUtf8($item);
             }, $input);
         }
         if (is_string($input)) {
@@ -243,10 +244,9 @@ class MiscUtility
         return $input;
     }
 
-    public static function convert_to_utf8_and_encode($data)
+    public static function convertToUtf8AndEncode($data)
     {
-        $data = self::convert_to_utf8($data);
-        return json_encode($data);
+        return json_encode(self::convertToUtf8($data));
     }
 
     public static function getGenderFromString($gender)

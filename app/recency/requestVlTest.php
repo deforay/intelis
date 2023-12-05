@@ -1,6 +1,7 @@
 <?php
 // Allow from any origin
 use App\Services\ApiService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
@@ -25,7 +26,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
     exit(0);
 }
 try {
-    /** @var MysqliDb $db */
+    /** @var DatabaseService $db */
     $db = ContainerRegistry::get('db');
 
     /** @var CommonService $general */

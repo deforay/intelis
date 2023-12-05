@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -7,7 +8,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -385,4 +386,4 @@ foreach ($rResult as $aRow) {
 
      $output['aaData'][] = $row;
 }
-echo MiscUtility::convert_to_utf8_and_encode($output);
+echo MiscUtility::convertToUtf8AndEncode($output);

@@ -35,9 +35,9 @@ class DRC_PDF extends MYPDF
         $this->writeHTMLCell(0, 0, 12, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, false, true, 'C');
         $this->SetFont('helvetica', 'B', 10);
         $this->writeHTMLCell(0, 0, 12, 10, $this->text, 0, 0, false, true, 'C');
-        if (trim((string) $this->lab) != '') {
+        if (trim($this->lab) != '') {
             $this->SetFont('helvetica', 'B', 11);
-            $this->writeHTMLCell(0, 0, 12, 15, strtoupper((string) $this->lab), 0, 0, false, true, 'C');
+            $this->writeHTMLCell(0, 0, 12, 15, strtoupper($this->lab), 0, 0, false, true, 'C');
         }
         $this->SetFont('helvetica', 'B', 11);
         $this->writeHTMLCell(0, 0, 12, 20, 'Province du Nord-Kivu', 0, 0, false, true, 'C');

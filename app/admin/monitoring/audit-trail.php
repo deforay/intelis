@@ -1,13 +1,14 @@
 <?php
 
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\SystemService;
 use App\Registries\ContainerRegistry;
 
 $title = _translate("Audit Trail");
 require_once APPLICATION_PATH . '/header.php';
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

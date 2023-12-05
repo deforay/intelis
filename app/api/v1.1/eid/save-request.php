@@ -35,7 +35,7 @@ $eidService = ContainerRegistry::get(EidService::class);
 
 try {
 
-    $db->startTransaction();
+    $db->beginTransaction();
 
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
@@ -468,9 +468,9 @@ try {
         'timestamp' => time(),
         'data' => $responseData ?? []
     ];
-    $db->commit();
+    $db->commitTransaction();
 } catch (SystemException $exc) {
-    $db->rollback();
+    $db->rollbackTransaction();
     http_response_code(500);
     $payload = [
         'status' => 'failed',

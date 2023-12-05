@@ -6,6 +6,7 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../../bootstrap.php");
 
+use App\Services\DatabaseService;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
@@ -26,7 +27,7 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     exit(0);
 }
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use JsonMachine\Items;
 use App\Services\TbService;
 use App\Services\ApiService;
@@ -48,7 +49,7 @@ try {
         throw new SystemException("Invalid request");
     }
 
-    /** @var MysqliDb $db */
+    /** @var DatabaseService $db */
     $db = ContainerRegistry::get('db');
 
     /** @var CommonService $general */

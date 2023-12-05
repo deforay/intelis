@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\AppMenuService;
@@ -10,7 +11,7 @@ use App\Services\GenericTestsService;
 
 $applicationConfig = ContainerRegistry::get('applicationConfig');
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

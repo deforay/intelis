@@ -2,12 +2,13 @@
 
 namespace App\Services;
 
+use COUNTRY;
 use Exception;
 use SAMPLE_STATUS;
-use COUNTRY;
 use App\Utilities\DateUtility;
-use App\Abstracts\AbstractTestService;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
+use App\Abstracts\AbstractTestService;
 
 class TbService extends AbstractTestService
 {
@@ -234,17 +235,21 @@ class TbService extends AbstractTestService
                 $this->db->insert("form_tb", $tesRequestData);
                 $id = $this->db->getInsertId();
                 if ($this->db->getLastErrno() > 0) {
-                    error_log($this->db->getLastError());
+                    throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
                 }
             } else {
                 // If this sample id exists, let us regenerate the sample id and insert
+                $params['tries']++;
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSample($params);
             }
         } catch (Exception | SystemException $e) {
-            $params['tries']++;
-            error_log('Insert TB Sample : ' . $this->db->getLastError());
-            error_log('Insert TB Sample : ' . $e->getMessage());
+            LoggerUtility::log('error', 'Insert TB Sample : ' . $e->getMessage(), [
+                'exception' => $e,
+                'file' => $e->getFile(), // File where the error occurred
+                'line' => $e->getLine(), // Line number of the error
+                'stacktrace' => $e->getTraceAsString()
+            ]);
             $id = 0;
         }
         if ($returnSampleData === true) {

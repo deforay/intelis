@@ -1,10 +1,11 @@
 <?php
 
 
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 
@@ -95,7 +96,7 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['patient_id'] . strtolower((string) $patient['patient_name']) . strtolower((string) $patient['patient_surname']) . $patient['patient_age_in_years'] . strtolower((string) $patient['patient_gender']) . strtolower((string) $patient['facility_name']);
 									//if (!in_array($value, $artNoList)) {
 									$artNoList[] = $value;
-									//$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_age'] . "##" . $patient['is_patient_pregnant'] . "##" . $patient['is_patient_breastfeeding'] . "##" . $patient['patient_phone_number'] .  "##" . $patient['patient_id'] .  "##" . $patient['patient_passport_number'] .  "##" . $patient['patient_address'] .  "##" . $patient['patient_nationality'] .  "##" . $patient['patient_city'] .  "##" . $patient['patient_province'] .  "##" . $patient['patient_district'] .  "##" . $patient['geo_code'] .  "##" . $patient['province_id'] . "##" . $patient['patient_zone'] . "##" . $patient['external_sample_code'];
+
 									$patientDetails = json_encode(
 										array(
 											"firstname" => ($patient['patient_name']),

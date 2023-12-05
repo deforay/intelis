@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -11,7 +12,7 @@ $title = _translate("Export Data");
 require_once APPLICATION_PATH . '/header.php';
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

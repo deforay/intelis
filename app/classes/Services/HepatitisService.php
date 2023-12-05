@@ -6,6 +6,7 @@ use COUNTRY;
 use Exception;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
@@ -274,7 +275,7 @@ class HepatitisService extends AbstractTestService
                 $this->db->insert("form_hepatitis", $tesRequestData);
                 $id = $this->db->getInsertId();
                 if ($this->db->getLastErrno() > 0) {
-                    error_log($this->db->getLastError());
+                    throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
                 }
             } else {
                 // If this sample id exists, let us regenerate the sample id and insert
@@ -283,10 +284,12 @@ class HepatitisService extends AbstractTestService
                 return $this->insertSample($params);
             }
         } catch (Exception | SystemException $e) {
-            error_log('Insert Hepatitis Sample : ' . $this->db->getLastErrno());
-            error_log('Insert Hepatitis Sample : ' . $this->db->getLastError());
-            error_log('Insert Hepatitis Sample : ' . $this->db->getLastQuery());
-            error_log('Insert Hepatitis Sample : ' . $e->getMessage());
+            LoggerUtility::log('error', 'Insert Hepatitis Sample : ' . $e->getMessage(), [
+                'exception' => $e,
+                'file' => $e->getFile(), // File where the error occurred
+                'line' => $e->getLine(), // Line number of the error
+                'stacktrace' => $e->getTraceAsString()
+            ]);
             $id = 0;
         }
         if ($returnSampleData === true) {

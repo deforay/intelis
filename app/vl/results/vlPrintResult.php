@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
@@ -10,7 +11,7 @@ $title = _translate("Print VL Results");
 require_once APPLICATION_PATH . '/header.php';
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -177,7 +178,7 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													
+
 													<td><strong>
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>
@@ -193,7 +194,7 @@ $state = $geolocationService->getProvinces("yes");
 
 												</tr>
 												<tr>
-													
+
 													<td><strong>
 															<?php echo _translate("Patient Name"); ?>&nbsp;:
 														</strong></td>
@@ -421,7 +422,7 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													
+
 													<td><strong>
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>

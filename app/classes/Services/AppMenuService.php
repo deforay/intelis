@@ -2,19 +2,20 @@
 
 namespace App\Services;
 
-use MysqliDb;
 use App\Services\UsersService;
 use App\Services\CommonService;
+use App\Services\SystemService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 class AppMenuService
 {
-    protected ?MysqliDb $db = null;
+    protected ?DatabaseService $db = null;
     protected string $table = 's_app_menu';
     protected CommonService $commonService;
     protected UsersService $usersService;
 
-    public function __construct(?MysqliDb $db, CommonService $commonService, UsersService $usersService)
+    public function __construct(?DatabaseService $db = null, CommonService $commonService, UsersService $usersService)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
         $this->commonService = $commonService;

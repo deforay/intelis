@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -11,7 +12,7 @@ use App\Utilities\ImageResizeUtility;
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

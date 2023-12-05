@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -9,7 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -136,12 +137,12 @@ vl.sample_received_at_hub_datetime,
 vl.sample_received_at_testing_lab_datetime,
 vl.result_dispatched_datetime,
 vl.result_printed_datetime,
-vl.result_approved_by 
-FROM form_generic as vl 
-LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
-LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type 
+vl.result_approved_by
+FROM form_generic as vl
+LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
+LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 

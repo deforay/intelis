@@ -43,7 +43,7 @@ if (!class_exists('DRC_PDF')) {
                 $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C');
                 $this->writeHTMLCell(0, 0, 0, 16, "DIVISION PROVINCIALE DE LA SANTÉ", 0, 0, 0, true, 'C');
                 $this->writeHTMLCell(0, 0, 0, 22, "PROVINCE DE LUALABA", 0, 0, 0, true, 'C');
-                if (trim((string) $this->lab) != '') {
+                if (trim($this->lab) != '') {
                     $this->SetFont('helvetica', 'B', 11);
                     $this->writeHTMLCell(0, 0, 0, 27, ($this->lab), 0, 0, 0, true, 'C');
                 }

@@ -2,6 +2,7 @@
 
 use App\Exceptions\SystemException;
 use App\Services\ApiService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -19,7 +20,7 @@ $origJson = $request->getBody()->getContents();
 $input = $request->getParsedBody();
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -31,8 +32,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-// /** @var ApiService $app */
-// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
+
+
 
 $arr = $general->getGlobalConfig();
 $user = null;

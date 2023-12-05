@@ -2,8 +2,9 @@
 
 
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 $fType = ($_POST['fType'] == 1) ? 4 : 1;

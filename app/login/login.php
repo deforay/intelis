@@ -4,9 +4,6 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
-
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -14,8 +11,9 @@ if (isset($_SESSION['userId'])) {
 	header("Location:/dashboard/index.php");
 }
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
+
 
 // If there are NO users, then we need to register the admin user
 // This happens during first setup typically
@@ -24,9 +22,6 @@ $count = $db->getValue("user_details", "count(*)");
 if ($count == 0) {
 	header("Location:/setup/index.php");
 }
-
-/** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

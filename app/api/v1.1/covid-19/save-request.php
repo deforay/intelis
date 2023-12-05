@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -17,7 +18,7 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -35,7 +36,7 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 try {
 
-    $db->startTransaction();
+    $db->beginTransaction();
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
     $noOfFailedRecords = 0;
@@ -530,9 +531,9 @@ try {
         'timestamp' => time(),
         'data' => $responseData ?? []
     ];
-    $db->commit();
+    $db->commitTransaction();
 } catch (SystemException $exc) {
-    $db->rollback();
+    $db->rollbackTransaction();
     http_response_code(500);
     $payload = [
         'status' => 'failed',

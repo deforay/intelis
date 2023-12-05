@@ -8,6 +8,7 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+use App\Services\DatabaseService;
 use App\Utilities\MiscUtility;
 use App\Registries\ContainerRegistry;
 
@@ -23,7 +24,7 @@ $cleanup = [
     WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary',
 ];
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 foreach ($cleanup as $folder) {

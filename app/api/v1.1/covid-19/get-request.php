@@ -3,6 +3,7 @@
 use App\Exceptions\SystemException;
 use App\Services\ApiService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -18,7 +19,7 @@ $request = $GLOBALS['request'];
 $origJson = $request->getBody()->getContents();
 $input = $request->getParsedBody();
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -33,8 +34,8 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
-// /** @var ApiService $app */
-// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
+
+
 
 
 $transactionId = $general->generateUUID();

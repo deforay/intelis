@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use MysqliDb;
 
 
 
 class InstrumentsService
 {
 
-    protected ?MysqliDb $db = null;
+    protected ?DatabaseService $db = null;
     protected string $table = 'instruments';
 
     public function __construct($db = null)
@@ -43,5 +43,4 @@ class InstrumentsService
         $db->where('machine_name', $instrumentName);
         return $db->getOne($this->table);
     }
-
 }

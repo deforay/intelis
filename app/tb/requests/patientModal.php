@@ -3,9 +3,10 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -95,9 +96,7 @@ $pResult = $db->rawQuery($pQuery);
 								$artNoList = [];
 								foreach ($pResult as $patient) {
 									$value = $patient['patient_id'] . strtolower((string) $patient['patient_name']) . strtolower((string) $patient['patient_surname']) . $patient['patient_age'] . strtolower((string) $patient['patient_gender']) . strtolower((string) $patient['facility_name']);
-									//if (!in_array($value, $artNoList)) {
 									$artNoList[] = $value;
-									//$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_id'];
 									$patientDetails = json_encode(
 										array(
 											"firstname" => ($patient['patient_name']),

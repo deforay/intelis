@@ -129,7 +129,6 @@ class ApiService
 
     public function getJsonFromRequest($request, $decode = false)
     {
-        $response = null;
         try {
             // Get the content encoding header to check for gzip
             $contentEncoding = $request->getHeaderLine('Content-Encoding');

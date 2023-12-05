@@ -1,9 +1,10 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 
@@ -112,9 +113,7 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 								$artNoList = [];
 								foreach ($pResult as $patient) {
 									$value = $patient['child_id'] . strtolower((string) $patient['child_name']) . strtolower((string) $patient['child_surname']) . $patient['mother_age_in_years'] . strtolower((string) $patient['child_gender']) . strtolower((string) $patient['facility_name']);
-									//if (!in_array($value, $artNoList)) {
 									$artNoList[] = $value;
-									//$patientDetails = $patient['child_name'] . "##" . $patient['child_surname'] . "##" . $patient['child_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['child_dob']) . "##" . $patient['child_age'] . "##" . $patient['caretaker_phone_number'] .  "##" . $patient['child_id'] .  "##" . $patient['mother_id'] .  "##" . $patient['caretaker_address'] .  "##" . $patient['mother_name'] .  "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['mother_dob']) .  "##" . $patient['mother_marital_status'];
 
 									$patientDetails = json_encode(
 										array(

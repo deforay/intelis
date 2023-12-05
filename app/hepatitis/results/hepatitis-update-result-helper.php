@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -9,7 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -101,15 +102,6 @@ try {
 	$resource = 'hepatitis-result';
 
 	$general->activityLog($eventType, $action, $resource);
-
-	// $data = array(
-	// 	'user_id' => $_SESSION['userId'],
-	// 	'vl_sample_id' => $_POST['hepatitisSampleId'],
-	// 	'test_type' => 'hepatitis',
-	// 	'updated_on' => \App\Utilities\DateUtility::getCurrentDateTime()
-	// );
-	// $db->insert($tableName2, $data);
-	error_log($db->getLastError() . PHP_EOL);
 
 	header("Location:hepatitis-manual-results.php");
 } catch (Exception $exc) {

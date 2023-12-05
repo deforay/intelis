@@ -4,6 +4,7 @@
 header('Content-Type: application/json');
 
 use App\Interop\Fhir;
+use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -13,7 +14,7 @@ use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

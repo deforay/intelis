@@ -9,9 +9,9 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Response;
 
-class ApiAuthMiddleware implements MiddlewareInterface
+readonly class ApiAuthMiddleware implements MiddlewareInterface
 {
-    private readonly UsersService $userModel;
+    private UsersService $userModel;
 
     public function __construct($userModel)
     {

@@ -15,14 +15,14 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 try {
     // Start transaction
-    $db->startTransaction();
+    $db->beginTransaction();
     $_POST['insertOperation'] = true;
     echo $genericTestsService->insertSample($_POST);
     // Commit transaction
-    $db->commit();
+    $db->commitTransaction();
 } catch (Exception | SystemException $exception) {
     // Rollback transaction in case of error
-    $db->rollback();
+    $db->rollbackTransaction();
     LoggerUtility::log('error', $exception->getMessage(), [
         'exception' => $exception,
         'file' => $exception->getFile(), // File where the error occurred

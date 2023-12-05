@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\PatientsService;
 
@@ -10,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -250,15 +251,6 @@ try {
 		$resource = 'hepatitis-edit-request';
 
 		$general->activityLog($eventType, $action, $resource);
-
-		// $data=array(
-		// 'event_type'=>$eventType,
-		// 'action'=>$action,
-		// 'resource'=>$resource,
-		// 'date_time'=>\App\Utilities\DateUtility::getCurrentDateTime()
-		// );
-		// $db->insert($tableName1,$data);
-
 	} else {
 		$_SESSION['alertMsg'] = _translate("Please try again later");
 	}

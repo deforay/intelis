@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\ApiService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
@@ -9,7 +10,7 @@ use App\Registries\ContainerRegistry;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -17,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 header('Content-Type: application/json');
 
 try {
-  $db->startTransaction();
+  $db->beginTransaction();
 
   //$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
@@ -115,9 +116,9 @@ try {
 
 
   $general->updateTestRequestsSyncDateTime('eid', 'form_eid', 'eid_id', $sampleIds, $transactionId, $facilityIds, $labId);
-  $db->commit();
+  $db->commitTransaction();
 } catch (Exception $e) {
-  $db->rollback();
+  $db->rollbackTransaction();
 
   error_log($db->getLastError());
   error_log($e->getMessage());

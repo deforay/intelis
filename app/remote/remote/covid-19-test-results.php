@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -17,7 +18,7 @@ set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
 try {
-    $db->startTransaction();
+    $db->beginTransaction();
     //this file receives the lab results and updates in the remote db
     //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
@@ -29,7 +30,7 @@ try {
     $jsonResponse = $apiService->getJsonFromRequest($request);
 
 
-    /** @var MysqliDb $db */
+    /** @var DatabaseService $db */
     $db = ContainerRegistry::get('db');
 
     /** @var CommonService $general */
@@ -38,8 +39,8 @@ try {
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
 
-    // /** @var ApiService $app */
-    // $app = \App\Registries\ContainerRegistry::get(ApiService::class);
+
+
 
 
     $transactionId = $general->generateUUID();
@@ -190,9 +191,9 @@ try {
 
 
     $general->updateResultSyncDateTime('covid19', 'form_covid19', $sampleCodes, $transactionId, $facilityIds, $labId);
-    $db->commit();
+    $db->commitTransaction();
 } catch (Exception $e) {
-    $db->rollback();
+    $db->rollbackTransaction();
 
     error_log($db->getLastError());
     error_log($e->getMessage());

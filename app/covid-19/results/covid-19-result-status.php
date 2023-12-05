@@ -4,8 +4,9 @@ $title = _translate("Manage Result Status");
 require_once APPLICATION_PATH . '/header.php';
 
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 $tsQuery = "SELECT * FROM r_sample_status";

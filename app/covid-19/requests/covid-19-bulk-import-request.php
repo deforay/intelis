@@ -2,12 +2,13 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 
 
 $title = "Bulk Import Test Requests";
 
 require_once APPLICATION_PATH . '/header.php';
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

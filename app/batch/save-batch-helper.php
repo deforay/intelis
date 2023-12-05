@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\BatchService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
@@ -11,7 +12,7 @@ use App\Registries\ContainerRegistry;
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -99,7 +100,7 @@ try {
                 header("Location:add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
             }
             //else {
-                // header("Location:batches.php?type=" . $_POST['type']);
+            // header("Location:batches.php?type=" . $_POST['type']);
             //}
         } else {
             $exist = $batchService->doesBatchCodeExist($_POST['batchCode']);

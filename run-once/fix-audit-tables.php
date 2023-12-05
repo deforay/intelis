@@ -2,6 +2,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
@@ -16,7 +17,7 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
         'form_generic' => 'audit_form_generic',
     ];
 
-    // Get the mysqli connection from the MySQLiDb instance
+    // Get the mysqli connection from the DatabaseService instance
     $mysqli = $db->mysqli();
     foreach ($auditTables as $formTable => $auditTable) {
         // Check if the audit table exists
@@ -148,7 +149,7 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
     }
 }
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 $mainDbName = SYSTEM_CONFIG['database']['db'];
 $archiveDbName = null;

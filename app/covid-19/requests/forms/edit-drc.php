@@ -2,13 +2,14 @@
 
 // imported in covid-19-edit-request.php based on country in global config
 
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\Covid19Service;
 use App\Services\PatientsService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 // Sanitized values from $request object

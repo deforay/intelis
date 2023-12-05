@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Services\SystemService;
 use GuzzleHttp\Client;
@@ -20,7 +21,7 @@ $vlForm = ($_POST['vl_form']);
 $timeZone = ($_POST['default_time_zone']);
 $locale = ($_POST['app_locale']);
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

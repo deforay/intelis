@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\PatientsService;
@@ -7,7 +8,7 @@ use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -308,14 +309,14 @@ try {
     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_id']);
     $id = 0;
 
-         //Update patient Information in Patients Table
+    //Update patient Information in Patients Table
     // $patientsService->savePatient($_POST,'form_generic');
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         if (!empty($_POST['testName'])) {
             foreach ($_POST['testName'] as $subTestName => $subTests) {
-                foreach($subTests as $testKey=>$testKitName){
-                     if (!empty($testKitName)) {
-                          $testData = array(
+                foreach ($subTests as $testKey => $testKitName) {
+                    if (!empty($testKitName)) {
+                        $testData = array(
                             'generic_id' => $_POST['vlSampleId'],
                             'sub_test_name' => $subTestName,
                             'result_type' => $_POST['resultType'][$subTestName],
@@ -327,22 +328,22 @@ try {
                             'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null,
                             'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey],
                             'result' => $_POST['testResult'][$subTestName][$testKey],
-                            
+
                             'final_result' => $_POST['finalResult'][$subTestName],
                             'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName],
                             'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
-                          );
-                          $db->insert('generic_test_results', $testData);
-                     }
+                        );
+                        $db->insert('generic_test_results', $testData);
+                    }
                 }
-           }
+            }
         }
     } else {
         $db = $db->where('generic_id', $_POST['vlSampleId']);
         $db->delete($testTableName);
         $covid19Data['sample_tested_datetime'] = null;
     }
-    
+
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db = $db->where('sample_id', $_POST['vlSampleId']);
         $id = $db->update($tableName, $vldata);
@@ -397,11 +398,11 @@ try {
 
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
             header("Location:add-request.php");
-        } 
+        }
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'clone') {
             header("Location:clone-request.php?id=" . base64_encode((string) $_POST['vlSampleId']));
         }
-        if(empty($_POST['saveNext'])){
+        if (empty($_POST['saveNext'])) {
             header("Location:view-requests.php");
         }
     } else {

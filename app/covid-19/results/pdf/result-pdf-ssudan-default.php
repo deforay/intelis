@@ -13,7 +13,7 @@ class SouthSudan_PDF extends MYPDF
 
         if ($this->htitle != '') {
 
-            if (trim((string) $this->logo) != '') {
+            if (trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
@@ -21,7 +21,7 @@ class SouthSudan_PDF extends MYPDF
             }
             $this->SetFont('helvetica', 'B', 15);
             $this->writeHTMLCell(0, 0, 40, 7, $this->text, 0, 0, 0, true, 'L');
-            if (trim((string) $this->lab) != '') {
+            if (trim($this->lab) != '') {
                 $this->SetFont('helvetica', 'B', 11);
                 // $this->writeHTMLCell(0, 0, 40, 15, strtoupper($this->lab), 0, 0, 0, true, 'L', true);
                 $this->writeHTMLCell(0, 0, 40, 15, 'Public Health Laboratory', 0, 0, 0, true, 'L');

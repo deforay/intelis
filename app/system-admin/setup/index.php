@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
@@ -12,7 +13,7 @@ if (count($adminCount) != 0) {
 }
 
 $path = '/assets/img/remote-bg.jpg';
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
