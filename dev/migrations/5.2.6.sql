@@ -192,3 +192,8 @@ ALTER TABLE `audit_form_tb` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT N
 
 ALTER TABLE `form_generic` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `implementing_partner`;
 ALTER TABLE `audit_form_generic` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `implementing_partner`;
+
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
