@@ -202,10 +202,11 @@ $ftResult = $db->rawQuery($fQuery);
                                                   <div class="fileinput fileinput-new userSignature" data-provides="fileinput">
                                                        <div class="fileinput-preview thumbnail image-placeholder" data-trigger="fileinput" style="width:200px; height:150px;">
                                                             <?php
-                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
+                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && file_exists($userInfo['user_signature'])) {
+                                                                 $signFileName = basename($userInfo['user_signature']); 
                                                             ?>
-                                                                 <img src="/uploads/users-signature/<?php echo $userInfo['user_signature']; ?>" alt="Signature image">
-                                                            <?php } else { ?>
+                                                                 <img src="/uploads/users-signature/<?php echo $signFileName; ?>" alt="Signature image">
+                                                            <?php } else {  echo 'no image';?>
 
                                                             <?php } ?>
                                                        </div>
@@ -214,7 +215,7 @@ $ftResult = $db->rawQuery($fQuery);
                                                                  <input type="file" id="userSignature" name="userSignature" accept="image/png,image/gpg,image/jpeg" title="<?php echo _translate('Please select user signature'); ?>" onchange="getNewSignatureImage('<?php echo $userInfo['user_signature']; ?>');">
                                                             </span>
                                                             <?php
-                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
+                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && file_exists($userInfo['user_signature'])) {
                                                             ?>
                                                                  <a id="clearUserSignature" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearUserSignature('<?php echo $userInfo['user_signature']; ?>')"><?php echo _translate("Clear"); ?></a>
                                                             <?php } ?>
