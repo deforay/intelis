@@ -393,24 +393,28 @@ class VlService extends AbstractTestService
     }
 
 
-    public function getLowVLResultTextFromImportConfigs($machineFile = null)
-    {
-        if ($this->db == null) {
-            return false;
-        }
+    // public function getLowVLResultTextFromImportConfigs($machineFile = null)
+    // {
+    //     if ($this->db == null) {
+    //         return false;
+    //     }
 
-        if (!empty($machineFile)) {
-            $this->db->where('import_machine_file_name', $machineFile);
-        }
+    //     if (!empty($machineFile)) {
+    //         $this->db->where('import_machine_file_name', $machineFile);
+    //     }
 
-        $this->db->where("low_vl_result_text", null, 'IS NOT');
-        $this->db->where("status", 'active', 'like');
-        return $this->db->getValue('instruments', 'low_vl_result_text', null);
-    }
+    //     $this->db->where("low_vl_result_text", null, 'IS NOT');
+    //     $this->db->where("status", 'active', 'like');
+    //     return $this->db->getValue('instruments', 'low_vl_result_text', null);
+    // }
 
     public function insertSample($params, $returnSampleData = false)
     {
         try {
+
+            // Start a new transaction (this starts a new transaction if not already started)
+            // see the beginTransaction() function implementation to understand how this works
+            $this->db->beginTransaction();
 
             $formId = $this->commonService->getGlobalConfig('vl_form');
 
@@ -497,6 +501,15 @@ class VlService extends AbstractTestService
                     throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
                 }
             } else {
+
+                LoggerUtility::log('info', 'Sample Code Exists. Trying to regenerate sample code', [
+                    'file' => __FILE__,
+                    'line' => __LINE__,
+                ]);
+
+                // Rollback the current transaction to release locks and undo changes
+                $this->db->rollbackTransaction();
+
                 // If this sample id exists, let us regenerate the sample id and insert
                 $params['tries']++;
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];

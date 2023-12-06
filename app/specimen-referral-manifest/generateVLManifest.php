@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -122,17 +123,10 @@ if (trim((string) $id) != '') {
 
     $labname = $result[0]['lab_name'] ?? "";
 
-    if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests")) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests", 0777, true);
-    }
-    $configQuery = "SELECT * from global_config";
-    $configResult = $db->query($configQuery);
-    $arr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
-    $showPatientName = $arr['vl_show_participant_name_in_manifest'];
+    MiscUtility::makeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests", 0777, true);
+
+    $globalConfig = $general->getGlobalConfig();
+    $showPatientName = $globalConfig['vl_show_participant_name_in_manifest'];
     $bQuery = "SELECT * FROM package_details as pd WHERE package_id IN($id)";
     //echo $bQuery;die;
     $bResult = $db->query($bQuery);
@@ -141,7 +135,7 @@ if (trim((string) $id) != '') {
         // create new PDF document
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf->setHeading($arr['logo'], $arr['header'], $labname);
+        $pdf->setHeading($globalConfig['logo'], $globalConfig['header'], $labname);
 
         // set document information
         $pdf->SetCreator('STS');
@@ -179,7 +173,7 @@ if (trim((string) $id) != '') {
 
         // add a page
         $pdf->AddPage();
-        if ($arr['vl_form'] == COUNTRY\SIERRA_LEONE) {
+        if ($globalConfig['vl_form'] == COUNTRY\SIERRA_LEONE) {
             //$pdf->writeHTMLCell(0, 20, 10, 10, 'FACILITY RELEASER INFORMATION ', 0, 0, 0, true, 'C', true);
             $pdf->WriteHTML('<strong>FACILITY RELEASER INFORMATION</strong>');
 

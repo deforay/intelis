@@ -26,6 +26,7 @@ configs/*.png
 configs/*.jpg
 secretKey.txt
 rector.php
+temp.ini
 vendor/
 
 # Now switching to regexp syntax for more complex patterns

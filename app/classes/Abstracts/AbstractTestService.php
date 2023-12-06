@@ -33,48 +33,56 @@ abstract class AbstractTestService
 
     public function generateSampleCode($testTable, $params, $tryCount = 0)
     {
-        // Start a new transaction (this starts a new transaction if not already started)
-        // see the beginTransaction() function implementation to understand how this works
-        $this->db->beginTransaction();
-
-        if ($tryCount >= $this->maxTries) {
-            throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating sample code");
-        }
-
-        $formId = $this->commonService->getGlobalConfig('vl_form');
-        $userType = $this->commonService->getSystemConfig('sc_user_type');
-
-        $insertOperation = $params['insertOperation'] ?? false;
-
-        $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
-        $provinceCode = $params['provinceCode'] ?? null;
-        //$provinceId = $params['provinceId'] ?? null;
-        $sampleCodeFormat = $params['sampleCodeFormat'] ?? 'MMYY';
-        $prefix = $params['prefix'] ?? 'T';
-        $testType = $params['testType'];
-        $existingMaxId = $params['existingMaxId'] ?? null;
-
-        if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false) {
-            $sampleCollectionDate = 'now';
-        }
-        $dateObj = new DateTimeImmutable($sampleCollectionDate);
-
-        $year = $dateObj->format('y');
-        $month = $dateObj->format('m');
-        $day = $dateObj->format('d');
-
-        $autoFormatedString = $year . $month . $day;
-
-        $remotePrefix = '';
-        $sampleCodeKeyCol = 'sample_code_key';
-        $sampleCodeType = 'sample_code';
-        if (!empty($userType) && $userType == 'remoteuser') {
-            $remotePrefix = 'R';
-            $sampleCodeKeyCol = 'remote_sample_code_key';
-            $sampleCodeType = 'remote_sample_code';
-        }
-
         try {
+
+            $sampleCodeGenerator = [];
+            // We use this flag to determine if we generating sample code for inserting
+            // or just displaging on the form
+            $insertOperation = $params['insertOperation'] ?? false;
+
+            if ($insertOperation) {
+                // Start a new transaction (this starts a new transaction if not already started)
+                // see the beginTransaction() function implementation to understand how this works
+                $this->db->beginTransaction();
+
+                if ($tryCount >= $this->maxTries) {
+                    throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating sample code");
+                }
+            }
+
+
+            $formId = $this->commonService->getGlobalConfig('vl_form');
+            $userType = $this->commonService->getSystemConfig('sc_user_type');
+
+            $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
+            $provinceCode = $params['provinceCode'] ?? null;
+            //$provinceId = $params['provinceId'] ?? null;
+            $sampleCodeFormat = $params['sampleCodeFormat'] ?? 'MMYY';
+            $prefix = $params['prefix'] ?? 'T';
+            $testType = $params['testType'];
+            $existingMaxId = $params['existingMaxId'] ?? null;
+
+            if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false) {
+                $sampleCollectionDate = 'now';
+            }
+            $dateObj = new DateTimeImmutable($sampleCollectionDate);
+
+            $year = $dateObj->format('y');
+            $month = $dateObj->format('m');
+            $day = $dateObj->format('d');
+
+            $autoFormatedString = $year . $month . $day;
+
+            $remotePrefix = '';
+            $sampleCodeKeyCol = 'sample_code_key';
+            $sampleCodeType = 'sample_code';
+            if (!empty($userType) && $userType == 'remoteuser') {
+                $remotePrefix = 'R';
+                $sampleCodeKeyCol = 'remote_sample_code_key';
+                $sampleCodeType = 'remote_sample_code';
+            }
+
+
             $yearData = [];
             $currentYear = $dateObj->format('Y');
             if (!empty($existingMaxId) && $existingMaxId > 0) {
@@ -118,7 +126,7 @@ abstract class AbstractTestService
                 $remotePrefix = $remotePrefix . "R";
             }
 
-            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
+            //$sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
 
             if ($sampleCodeFormat == 'auto') {
                 $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
@@ -162,6 +170,8 @@ abstract class AbstractTestService
                     ->insert('sequence_counter', $data);
             }
         } catch (Exception | SystemException $exception) {
+            // Rollback the current transaction to release locks and undo changes
+            $this->db->rollbackTransaction();
             throw new SystemException("Error while generating Sample Code for $testTable : " . $exception->getMessage(), $exception->getCode(), $exception);
         }
 

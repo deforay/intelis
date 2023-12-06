@@ -1,7 +1,13 @@
+-- MySQL dump 10.13  Distrib 5.7.39, for osx11.0 (x86_64)
+--
+-- Host: localhost    Database: vlsm-init
+-- ------------------------------------------------------
+-- Server version	5.7.39
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -15,17 +21,17 @@
 
 DROP TABLE IF EXISTS `activity_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `activity_log` (
-  `log_id` int NOT NULL AUTO_INCREMENT,
-  `event_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `action` mediumtext COLLATE utf8mb4_general_ci,
-  `resource` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `user_id` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `event_type` varchar(255) DEFAULT NULL,
+  `action` mediumtext,
+  `resource` varchar(255) DEFAULT NULL,
+  `user_id` varchar(256) DEFAULT NULL,
   `date_time` datetime DEFAULT NULL,
-  `ip_address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ip_address` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,161 +49,162 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `audit_form_covid19`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `audit_form_covid19` (
-  `action` varchar(8) COLLATE utf8mb4_general_ci DEFAULT 'insert',
-  `revision` int NOT NULL AUTO_INCREMENT,
+  `action` varchar(8) DEFAULT 'insert',
+  `revision` int(6) NOT NULL AUTO_INCREMENT,
   `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `covid19_id` int NOT NULL,
-  `unique_id` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_instance_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_country_id` int DEFAULT NULL,
-  `sample_code_key` int DEFAULT NULL,
-  `sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_reordered` varchar(256) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `external_sample_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_number` int DEFAULT NULL,
-  `remote_sample` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int DEFAULT NULL,
-  `remote_sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `covid19_id` int(11) NOT NULL,
+  `unique_id` varchar(500) DEFAULT NULL,
+  `vlsm_instance_id` varchar(255) DEFAULT NULL,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `sample_code_key` int(11) DEFAULT NULL,
+  `sample_code_format` varchar(255) DEFAULT NULL,
+  `sample_code` varchar(500) DEFAULT NULL,
+  `sample_reordered` varchar(256) NOT NULL DEFAULT 'no',
+  `external_sample_code` varchar(255) DEFAULT NULL,
+  `test_number` int(11) DEFAULT NULL,
+  `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_format` varchar(255) DEFAULT NULL,
+  `remote_sample_code` varchar(256) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
-  `sample_condition` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tested_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
+  `sample_condition` varchar(255) DEFAULT NULL,
+  `tested_by` varchar(255) DEFAULT NULL,
+  `lab_tech_comments` mediumtext,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `source_of_alert` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `source_of_alert_other` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `province_id` int DEFAULT NULL,
-  `is_encrypted` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `sync_patient_identifiers` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'yes',
-  `patient_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_name` text COLLATE utf8mb4_general_ci,
-  `patient_surname` text COLLATE utf8mb4_general_ci,
+  `funding_source` int(11) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `source_of_alert` varchar(255) DEFAULT NULL,
+  `source_of_alert_other` varchar(255) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
+  `is_encrypted` varchar(10) DEFAULT 'no',
+  `sync_patient_identifiers` varchar(10) DEFAULT 'yes',
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `patient_id` varchar(255) DEFAULT NULL,
+  `patient_name` text,
+  `patient_surname` text,
   `patient_dob` date DEFAULT NULL,
-  `patient_age` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_gender` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_patient_pregnant` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_phone_number` text COLLATE utf8mb4_general_ci,
-  `patient_email` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_nationality` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_passport_number` text COLLATE utf8mb4_general_ci,
-  `vaccination_status` text COLLATE utf8mb4_general_ci,
-  `vaccination_dosage` text COLLATE utf8mb4_general_ci,
-  `vaccination_type` text COLLATE utf8mb4_general_ci,
-  `vaccination_type_other` text COLLATE utf8mb4_general_ci,
-  `patient_occupation` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `does_patient_smoke` text COLLATE utf8mb4_general_ci,
-  `patient_address` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `flight_airline` text COLLATE utf8mb4_general_ci,
-  `flight_seat_no` text COLLATE utf8mb4_general_ci,
+  `patient_age` varchar(255) DEFAULT NULL,
+  `patient_gender` varchar(256) DEFAULT NULL,
+  `is_patient_pregnant` varchar(255) DEFAULT NULL,
+  `patient_phone_number` text,
+  `patient_email` varchar(256) DEFAULT NULL,
+  `patient_nationality` varchar(255) DEFAULT NULL,
+  `patient_passport_number` text,
+  `vaccination_status` text,
+  `vaccination_dosage` text,
+  `vaccination_type` text,
+  `vaccination_type_other` text,
+  `patient_occupation` varchar(255) DEFAULT NULL,
+  `does_patient_smoke` text,
+  `patient_address` varchar(1000) DEFAULT NULL,
+  `flight_airline` text,
+  `flight_seat_no` text,
   `flight_arrival_datetime` datetime DEFAULT NULL,
-  `flight_airport_of_departure` text COLLATE utf8mb4_general_ci,
-  `flight_transit` text COLLATE utf8mb4_general_ci,
-  `reason_of_visit` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_sample_collected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_covid19_test` int DEFAULT NULL,
-  `type_of_test_requested` text COLLATE utf8mb4_general_ci,
-  `patient_province` text COLLATE utf8mb4_general_ci,
-  `patient_district` text COLLATE utf8mb4_general_ci,
-  `patient_zone` text COLLATE utf8mb4_general_ci,
-  `patient_city` text COLLATE utf8mb4_general_ci,
-  `specimen_taken_before_antibiotics` text COLLATE utf8mb4_general_ci,
-  `specimen_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_sample_post_mortem` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `priority_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `number_of_days_sick` int DEFAULT NULL,
-  `asymptomatic` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `flight_airport_of_departure` text,
+  `flight_transit` text,
+  `reason_of_visit` varchar(500) DEFAULT NULL,
+  `is_sample_collected` varchar(255) DEFAULT NULL,
+  `reason_for_covid19_test` int(11) DEFAULT NULL,
+  `type_of_test_requested` text,
+  `patient_province` text,
+  `patient_district` text,
+  `patient_zone` text,
+  `patient_city` text,
+  `specimen_taken_before_antibiotics` text,
+  `specimen_type` varchar(255) DEFAULT NULL,
+  `is_sample_post_mortem` varchar(255) DEFAULT NULL,
+  `priority_status` varchar(255) DEFAULT NULL,
+  `number_of_days_sick` int(11) DEFAULT NULL,
+  `asymptomatic` varchar(50) DEFAULT NULL,
   `date_of_symptom_onset` date DEFAULT NULL,
-  `suspected_case` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `suspected_case` varchar(255) DEFAULT NULL,
   `date_of_initial_consultation` date DEFAULT NULL,
-  `medical_history` text COLLATE utf8mb4_general_ci,
-  `recent_hospitalization` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_lives_with_children` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_cares_for_children` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `fever_temp` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `temperature_measurement_method` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `respiratory_rate` int DEFAULT NULL,
+  `medical_history` text,
+  `recent_hospitalization` varchar(255) DEFAULT NULL,
+  `patient_lives_with_children` varchar(255) DEFAULT NULL,
+  `patient_cares_for_children` varchar(255) DEFAULT NULL,
+  `fever_temp` varchar(255) DEFAULT NULL,
+  `temperature_measurement_method` varchar(255) DEFAULT NULL,
+  `respiratory_rate` int(11) DEFAULT NULL,
   `oxygen_saturation` double DEFAULT NULL,
-  `close_contacts` mediumtext COLLATE utf8mb4_general_ci,
-  `contact_with_confirmed_case` text COLLATE utf8mb4_general_ci,
-  `has_recent_travel_history` text COLLATE utf8mb4_general_ci,
-  `travel_country_names` text COLLATE utf8mb4_general_ci,
+  `close_contacts` mediumtext,
+  `contact_with_confirmed_case` text,
+  `has_recent_travel_history` text,
+  `travel_country_names` text,
   `travel_return_date` date DEFAULT NULL,
-  `lab_id` int DEFAULT NULL,
+  `lab_id` int(11) DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int DEFAULT NULL,
-  `lab_manager` text COLLATE utf8mb4_general_ci,
-  `testing_point` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_technician` text COLLATE utf8mb4_general_ci,
-  `investigator_name` text COLLATE utf8mb4_general_ci,
-  `investigator_phone` text COLLATE utf8mb4_general_ci,
-  `investigator_email` text COLLATE utf8mb4_general_ci,
+  `referring_lab_id` int(11) DEFAULT NULL,
+  `lab_manager` text,
+  `testing_point` varchar(255) DEFAULT NULL,
+  `lab_technician` text,
+  `investigator_name` text,
+  `investigator_phone` text,
+  `investigator_email` text,
   `test_requested_on` date DEFAULT NULL,
-  `clinician_name` text COLLATE utf8mb4_general_ci,
-  `clinician_phone` mediumtext COLLATE utf8mb4_general_ci,
-  `clinician_email` mediumtext COLLATE utf8mb4_general_ci,
-  `health_outcome` mediumtext COLLATE utf8mb4_general_ci,
+  `clinician_name` text,
+  `clinician_phone` mediumtext,
+  `clinician_email` mediumtext,
+  `health_outcome` mediumtext,
   `health_outcome_date` date DEFAULT NULL,
-  `lab_reception_person` mediumtext COLLATE utf8mb4_general_ci,
-  `covid19_test_platform` mediumtext COLLATE utf8mb4_general_ci,
-  `covid19_test_name` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_status` int DEFAULT NULL,
-  `locked` varchar(256) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `is_sample_rejected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_sample_rejection` int DEFAULT NULL,
+  `lab_reception_person` mediumtext,
+  `covid19_test_platform` mediumtext,
+  `covid19_test_name` varchar(500) DEFAULT NULL,
+  `result_status` int(11) DEFAULT NULL,
+  `locked` varchar(256) DEFAULT 'no',
+  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `reason_for_sample_rejection` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
-  `result` text COLLATE utf8mb4_general_ci,
-  `if_have_other_diseases` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `other_diseases` mediumtext COLLATE utf8mb4_general_ci,
-  `is_result_authorised` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `authorized_by` mediumtext COLLATE utf8mb4_general_ci,
+  `result` text,
+  `if_have_other_diseases` varchar(50) DEFAULT NULL,
+  `other_diseases` mediumtext,
+  `is_result_authorised` varchar(255) DEFAULT NULL,
+  `authorized_by` mediumtext,
   `authorized_on` date DEFAULT NULL,
-  `revised_by` text COLLATE utf8mb4_general_ci,
+  `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
-  `reason_for_changing` mediumtext COLLATE utf8mb4_general_ci,
+  `reason_for_changing` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `result_reviewed_by` mediumtext COLLATE utf8mb4_general_ci,
+  `result_reviewed_by` mediumtext,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `result_approved_by` mediumtext COLLATE utf8mb4_general_ci,
-  `approver_comments` text COLLATE utf8mb4_general_ci,
+  `result_approved_by` mediumtext,
+  `approver_comments` text,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `manual_result_entry` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `import_machine_name` mediumtext COLLATE utf8mb4_general_ci,
-  `import_machine_file_name` mediumtext COLLATE utf8mb4_general_ci,
+  `manual_result_entry` varchar(255) DEFAULT 'no',
+  `import_machine_name` mediumtext,
+  `import_machine_file_name` mediumtext,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `request_created_by` text COLLATE utf8mb4_general_ci,
+  `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
-  `sample_batch_id` int DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` mediumtext COLLATE utf8mb4_general_ci,
-  `positive_test_manifest_id` int DEFAULT NULL,
-  `positive_test_manifest_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lot_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `source_of_request` text COLLATE utf8mb4_general_ci,
-  `source_data_dump` mediumtext COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` mediumtext COLLATE utf8mb4_general_ci,
+  `sample_batch_id` int(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` mediumtext,
+  `positive_test_manifest_id` int(11) DEFAULT NULL,
+  `positive_test_manifest_code` varchar(255) DEFAULT NULL,
+  `lot_number` varchar(255) DEFAULT NULL,
+  `source_of_request` text,
+  `source_data_dump` mediumtext,
+  `result_sent_to_source` mediumtext,
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `is_result_mail_sent` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `app_sample_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_result_mail_sent` varchar(255) DEFAULT 'no',
+  `app_sample_code` varchar(255) DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT NULL,
-  `last_modified_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `last_modified_by` varchar(255) DEFAULT NULL,
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`covid19_id`,`revision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,181 +222,182 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `audit_form_eid`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `audit_form_eid` (
-  `action` varchar(8) COLLATE utf8mb4_general_ci DEFAULT 'insert',
-  `revision` int NOT NULL AUTO_INCREMENT,
+  `action` varchar(8) DEFAULT 'insert',
+  `revision` int(6) NOT NULL AUTO_INCREMENT,
   `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `eid_id` int NOT NULL,
-  `unique_id` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_instance_id` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `vlsm_country_id` int DEFAULT NULL,
-  `sample_code_key` int DEFAULT NULL,
-  `sample_code_format` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_reordered` varchar(256) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int DEFAULT NULL,
-  `remote_sample_code_format` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `external_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `eid_id` int(11) NOT NULL,
+  `unique_id` varchar(256) DEFAULT NULL,
+  `vlsm_instance_id` varchar(100) NOT NULL,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `sample_code_key` int(11) DEFAULT NULL,
+  `sample_code_format` varchar(100) DEFAULT NULL,
+  `sample_code` varchar(100) DEFAULT NULL,
+  `sample_reordered` varchar(256) NOT NULL DEFAULT 'no',
+  `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_format` varchar(100) DEFAULT NULL,
+  `remote_sample_code` varchar(100) DEFAULT NULL,
+  `external_sample_code` varchar(256) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
-  `is_sample_recollected` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_sample_recollected` varchar(11) DEFAULT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `is_sample_rejected` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `funding_source` int(11) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `is_sample_rejected` varchar(10) DEFAULT NULL,
   `test_1_date` date DEFAULT NULL,
-  `test_1_batch` int DEFAULT NULL,
-  `test_1_assay` text COLLATE utf8mb4_general_ci,
-  `test_1_ct_qs` int DEFAULT NULL,
-  `test_1_result` text COLLATE utf8mb4_general_ci,
-  `test_1_repeated` text COLLATE utf8mb4_general_ci,
-  `test_1_repeat_reason` text COLLATE utf8mb4_general_ci,
+  `test_1_batch` int(11) DEFAULT NULL,
+  `test_1_assay` text,
+  `test_1_ct_qs` int(11) DEFAULT NULL,
+  `test_1_result` text,
+  `test_1_repeated` text,
+  `test_1_repeat_reason` text,
   `test_2_date` date DEFAULT NULL,
-  `test_2_batch` int DEFAULT NULL,
-  `test_2_assay` text COLLATE utf8mb4_general_ci,
-  `test_2_ct_qs` int DEFAULT NULL,
-  `test_2_result` text COLLATE utf8mb4_general_ci,
-  `reason_for_sample_rejection` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_2_batch` int(11) DEFAULT NULL,
+  `test_2_assay` text,
+  `test_2_ct_qs` int(11) DEFAULT NULL,
+  `test_2_result` text,
+  `reason_for_sample_rejection` varchar(500) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `province_id` int DEFAULT NULL,
-  `is_encrypted` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `sync_patient_identifiers` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'yes',
-  `mother_id` text COLLATE utf8mb4_general_ci,
-  `mother_name` text COLLATE utf8mb4_general_ci,
-  `mother_surname` text COLLATE utf8mb4_general_ci,
-  `caretaker_contact_consent` text COLLATE utf8mb4_general_ci,
-  `caretaker_phone_number` text COLLATE utf8mb4_general_ci,
-  `caretaker_address` text COLLATE utf8mb4_general_ci,
-  `previous_sample_code` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `clinical_assessment` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `clinician_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
+  `is_encrypted` varchar(10) DEFAULT 'no',
+  `sync_patient_identifiers` varchar(10) DEFAULT 'yes',
+  `mother_id` text,
+  `mother_name` text,
+  `mother_surname` text,
+  `caretaker_contact_consent` text,
+  `caretaker_phone_number` text,
+  `caretaker_address` text,
+  `previous_sample_code` varchar(32) DEFAULT NULL,
+  `clinical_assessment` varchar(256) DEFAULT NULL,
+  `clinician_name` varchar(64) DEFAULT NULL,
   `mother_dob` date DEFAULT NULL,
-  `mother_age_in_years` varchar(3) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mother_marital_status` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `child_id` text COLLATE utf8mb4_general_ci,
-  `child_name` text COLLATE utf8mb4_general_ci,
-  `child_surname` text COLLATE utf8mb4_general_ci,
+  `mother_age_in_years` varchar(3) DEFAULT NULL,
+  `mother_marital_status` varchar(10) DEFAULT NULL,
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `child_id` text,
+  `child_name` text,
+  `child_surname` text,
   `child_dob` date DEFAULT NULL,
-  `child_age` int DEFAULT NULL,
-  `child_gender` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `child_weight` int DEFAULT NULL,
-  `child_prophylactic_arv` text COLLATE utf8mb4_general_ci,
-  `child_prophylactic_arv_other` text COLLATE utf8mb4_general_ci,
+  `child_age` int(11) DEFAULT NULL,
+  `child_gender` varchar(10) DEFAULT NULL,
+  `child_weight` int(11) DEFAULT NULL,
+  `child_prophylactic_arv` text,
+  `child_prophylactic_arv_other` text,
   `mother_hiv_test_date` date DEFAULT NULL,
-  `mother_hiv_status` varchar(16) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mother_hiv_status` varchar(16) DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
-  `no_of_exposed_children` int DEFAULT NULL,
-  `no_of_infected_children` int DEFAULT NULL,
-  `mother_arv_protocol` int DEFAULT NULL,
-  `mode_of_delivery` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mode_of_delivery_other` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mother_art_status` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mother_treatment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mother_regimen` text COLLATE utf8mb4_general_ci,
+  `no_of_exposed_children` int(11) DEFAULT NULL,
+  `no_of_infected_children` int(11) DEFAULT NULL,
+  `mother_arv_protocol` int(11) DEFAULT NULL,
+  `mode_of_delivery` varchar(255) DEFAULT NULL,
+  `mode_of_delivery_other` varchar(32) DEFAULT NULL,
+  `mother_art_status` varchar(32) DEFAULT NULL,
+  `mother_treatment` varchar(255) DEFAULT NULL,
+  `mother_regimen` text,
   `started_art_date` date DEFAULT NULL,
-  `mother_mtct_risk` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mother_treatment_other` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mother_mtct_risk` varchar(256) DEFAULT NULL,
+  `mother_treatment_other` varchar(1000) DEFAULT NULL,
   `mother_treatment_initiation_date` date DEFAULT NULL,
-  `mother_cd4` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mother_cd4` varchar(255) DEFAULT NULL,
   `mother_cd4_test_date` date DEFAULT NULL,
-  `mother_vl_result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mother_vl_result` varchar(255) DEFAULT NULL,
   `mother_vl_test_date` date DEFAULT NULL,
-  `is_child_symptomatic` int DEFAULT NULL,
+  `is_child_symptomatic` int(11) DEFAULT NULL,
   `date_of_weaning` date DEFAULT NULL,
-  `was_child_breastfed` text COLLATE utf8mb4_general_ci,
-  `child_treatment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `child_treatment_other` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `was_child_breastfed` text,
+  `child_treatment` varchar(255) DEFAULT NULL,
+  `child_treatment_other` varchar(1000) DEFAULT NULL,
   `child_treatment_initiation_date` date DEFAULT NULL,
-  `is_infant_receiving_treatment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `has_infant_stopped_breastfeeding` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `infant_on_pmtct_prophylaxis` text COLLATE utf8mb4_general_ci,
-  `infant_on_ctx_prophylaxis` text COLLATE utf8mb4_general_ci,
-  `age_breastfeeding_stopped_in_months` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `infant_art_status` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `infant_art_status_other` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `child_started_art_date` text COLLATE utf8mb4_general_ci,
-  `choice_of_feeding` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_child_on_cotrim` text COLLATE utf8mb4_general_ci,
-  `child_started_cotrim_date` text COLLATE utf8mb4_general_ci,
-  `is_cotrimoxazole_being_administered_to_the_infant` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_requestor_name` text COLLATE utf8mb4_general_ci,
-  `sample_requestor_phone` varchar(16) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `specimen_quality` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `specimen_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_eid_test` int DEFAULT NULL,
-  `pcr_test_performed_before` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `pcr_test_number` int DEFAULT NULL,
-  `last_pcr_id` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `previous_pcr_result` varchar(16) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_infant_receiving_treatment` varchar(255) DEFAULT NULL,
+  `has_infant_stopped_breastfeeding` varchar(255) DEFAULT NULL,
+  `infant_on_pmtct_prophylaxis` text,
+  `infant_on_ctx_prophylaxis` text,
+  `age_breastfeeding_stopped_in_months` varchar(255) DEFAULT NULL,
+  `infant_art_status` varchar(32) DEFAULT NULL,
+  `infant_art_status_other` varchar(32) DEFAULT NULL,
+  `child_started_art_date` text,
+  `choice_of_feeding` varchar(255) DEFAULT NULL,
+  `is_child_on_cotrim` text,
+  `child_started_cotrim_date` text,
+  `is_cotrimoxazole_being_administered_to_the_infant` varchar(255) DEFAULT NULL,
+  `sample_requestor_name` text,
+  `sample_requestor_phone` varchar(16) DEFAULT NULL,
+  `specimen_quality` varchar(255) DEFAULT NULL,
+  `specimen_type` varchar(255) DEFAULT NULL,
+  `reason_for_eid_test` int(11) DEFAULT NULL,
+  `pcr_test_performed_before` varchar(10) DEFAULT NULL,
+  `pcr_test_number` int(11) DEFAULT NULL,
+  `last_pcr_id` varchar(32) DEFAULT NULL,
+  `previous_pcr_result` varchar(16) DEFAULT NULL,
   `last_pcr_date` date DEFAULT NULL,
-  `reason_for_pcr` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_repeat_pcr_other` text COLLATE utf8mb4_general_ci,
-  `rapid_test_performed` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `reason_for_pcr` varchar(500) DEFAULT NULL,
+  `reason_for_repeat_pcr_other` text,
+  `rapid_test_performed` varchar(255) DEFAULT NULL,
   `rapid_test_date` date DEFAULT NULL,
-  `rapid_test_result` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `serological_test` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rapid_test_result` varchar(32) DEFAULT NULL,
+  `serological_test` varchar(11) DEFAULT NULL,
   `pcr_1_test_date` date DEFAULT NULL,
-  `pcr_1_test_result` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `pcr_1_test_result` varchar(50) DEFAULT NULL,
   `pcr_2_test_date` date DEFAULT NULL,
-  `pcr_2_test_result` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `pcr_2_test_result` varchar(50) DEFAULT NULL,
   `pcr_3_test_date` date DEFAULT NULL,
-  `pcr_3_test_result` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_collection_reason` text COLLATE utf8mb4_general_ci,
-  `lab_id` int DEFAULT NULL,
-  `lab_testing_point` text COLLATE utf8mb4_general_ci,
-  `lab_testing_point_other` text COLLATE utf8mb4_general_ci,
+  `pcr_3_test_result` varchar(50) DEFAULT NULL,
+  `sample_collection_reason` text,
+  `lab_id` int(11) DEFAULT NULL,
+  `lab_testing_point` text,
+  `lab_testing_point_other` text,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int DEFAULT NULL,
-  `lab_technician` text COLLATE utf8mb4_general_ci,
-  `lab_reception_person` text COLLATE utf8mb4_general_ci,
-  `eid_test_platform` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_status` int DEFAULT NULL,
-  `locked` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_changing` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tested_by` text COLLATE utf8mb4_general_ci,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
+  `referring_lab_id` int(11) DEFAULT NULL,
+  `lab_technician` text,
+  `lab_reception_person` text,
+  `eid_test_platform` varchar(64) DEFAULT NULL,
+  `result_status` int(11) DEFAULT NULL,
+  `locked` varchar(10) DEFAULT 'no',
+  `result` varchar(255) DEFAULT NULL,
+  `reason_for_changing` varchar(256) DEFAULT NULL,
+  `tested_by` text,
+  `lab_tech_comments` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `result_reviewed_by` text COLLATE utf8mb4_general_ci,
+  `result_reviewed_by` text,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `revised_by` text COLLATE utf8mb4_general_ci,
+  `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
-  `result_approved_by` text COLLATE utf8mb4_general_ci,
-  `second_dbs_requested` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `approver_comments` text COLLATE utf8mb4_general_ci,
+  `result_approved_by` text,
+  `second_dbs_requested` varchar(256) DEFAULT NULL,
+  `approver_comments` text,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `app_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `manual_result_entry` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `import_machine_name` text COLLATE utf8mb4_general_ci,
-  `import_machine_file_name` text COLLATE utf8mb4_general_ci,
+  `app_sample_code` varchar(100) DEFAULT NULL,
+  `manual_result_entry` varchar(10) DEFAULT NULL,
+  `import_machine_name` text,
+  `import_machine_file_name` text,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
   `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `request_created_by` text COLLATE utf8mb4_general_ci,
+  `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT NULL,
-  `last_modified_by` text COLLATE utf8mb4_general_ci,
-  `sample_batch_id` int DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` text COLLATE utf8mb4_general_ci,
-  `lot_number` text COLLATE utf8mb4_general_ci,
-  `source_of_request` text COLLATE utf8mb4_general_ci,
-  `source_data_dump` mediumtext COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `last_modified_by` text,
+  `sample_batch_id` int(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` text,
+  `lot_number` text,
+  `source_of_request` text,
+  `source_data_dump` mediumtext,
+  `result_sent_to_source` varchar(10) DEFAULT 'pending',
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`eid_id`,`revision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -407,160 +415,164 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `audit_form_generic`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `audit_form_generic` (
-  `sample_id` int NOT NULL,
-  `unique_id` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_type` int DEFAULT NULL,
+  `action` varchar(8) DEFAULT 'insert',
+  `revision` int(6) NOT NULL AUTO_INCREMENT,
+  `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `sample_id` int(11) NOT NULL,
+  `unique_id` varchar(500) DEFAULT NULL,
+  `test_type` int(11) DEFAULT NULL,
+  `sub_tests` text,
   `test_type_form` json DEFAULT NULL,
-  `vlsm_instance_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `vlsm_country_id` int DEFAULT NULL,
-  `remote_sample` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample_code_key` int DEFAULT NULL,
-  `sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code_key` int DEFAULT NULL,
-  `external_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `app_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `province_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_sample_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_batch_id` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` text COLLATE utf8mb4_general_ci,
-  `sample_reordered` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `test_urgency` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `patient_first_name` text COLLATE utf8mb4_general_ci,
-  `patient_middle_name` text COLLATE utf8mb4_general_ci,
-  `patient_last_name` text COLLATE utf8mb4_general_ci,
-  `patient_attendant` text COLLATE utf8mb4_general_ci,
-  `patient_nationality` int DEFAULT NULL,
-  `patient_province` text COLLATE utf8mb4_general_ci,
-  `patient_district` text COLLATE utf8mb4_general_ci,
-  `patient_group` text COLLATE utf8mb4_general_ci,
-  `patient_id` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `laboratory_number` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `vlsm_instance_id` varchar(255) NOT NULL,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
+  `remote_sample_code` varchar(500) DEFAULT NULL,
+  `remote_sample_code_format` varchar(255) DEFAULT NULL,
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `sample_code` varchar(500) DEFAULT NULL,
+  `sample_code_format` varchar(255) DEFAULT NULL,
+  `sample_code_key` int(11) DEFAULT NULL,
+  `external_sample_code` varchar(256) DEFAULT NULL,
+  `app_sample_code` varchar(256) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `province_id` varchar(255) DEFAULT NULL,
+  `facility_sample_id` varchar(255) DEFAULT NULL,
+  `sample_batch_id` varchar(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` text,
+  `sample_reordered` varchar(45) NOT NULL DEFAULT 'no',
+  `test_urgency` varchar(255) DEFAULT NULL,
+  `funding_source` int(11) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `patient_first_name` text,
+  `patient_middle_name` text,
+  `patient_last_name` text,
+  `patient_attendant` text,
+  `patient_nationality` int(11) DEFAULT NULL,
+  `patient_province` text,
+  `patient_district` text,
+  `patient_group` text,
+  `patient_id` varchar(256) DEFAULT NULL,
+  `laboratory_number` varchar(100) DEFAULT NULL,
   `patient_dob` date DEFAULT NULL,
-  `patient_gender` text COLLATE utf8mb4_general_ci,
-  `patient_mobile_number` text COLLATE utf8mb4_general_ci,
-  `patient_location` text COLLATE utf8mb4_general_ci,
-  `patient_address` mediumtext COLLATE utf8mb4_general_ci,
+  `patient_gender` text,
+  `patient_mobile_number` text,
+  `patient_location` text,
+  `patient_address` mediumtext,
   `sample_collection_date` datetime DEFAULT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
-  `sample_type` int DEFAULT NULL,
-  `treatment_initiation` text COLLATE utf8mb4_general_ci,
-  `is_patient_pregnant` text COLLATE utf8mb4_general_ci,
-  `is_patient_breastfeeding` text COLLATE utf8mb4_general_ci,
-  `pregnancy_trimester` int DEFAULT NULL,
-  `consent_to_receive_sms` text COLLATE utf8mb4_general_ci,
-  `request_clinician_name` text COLLATE utf8mb4_general_ci,
+  `sample_type` int(11) DEFAULT NULL,
+  `treatment_initiation` text,
+  `is_patient_pregnant` text,
+  `is_patient_breastfeeding` text,
+  `pregnancy_trimester` int(11) DEFAULT NULL,
+  `consent_to_receive_sms` text,
+  `request_clinician_name` text,
   `test_requested_on` date DEFAULT NULL,
-  `request_clinician_phone_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `request_clinician_phone_number` varchar(255) DEFAULT NULL,
   `sample_testing_date` datetime DEFAULT NULL,
-  `testing_lab_focal_person` text COLLATE utf8mb4_general_ci,
-  `testing_lab_focal_person_phone_number` text COLLATE utf8mb4_general_ci,
+  `testing_lab_focal_person` text,
+  `testing_lab_focal_person_phone_number` text,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_testing_lab_datetime` datetime DEFAULT NULL,
   `result_dispatched_datetime` datetime DEFAULT NULL,
-  `is_sample_rejected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_rejection_facility` int DEFAULT NULL,
-  `reason_for_sample_rejection` int DEFAULT NULL,
+  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `sample_rejection_facility` int(11) DEFAULT NULL,
+  `reason_for_sample_rejection` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
-  `request_created_by` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
+  `request_created_by` varchar(500) NOT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_modified_by` text COLLATE utf8mb4_general_ci,
+  `last_modified_by` text,
   `last_modified_datetime` datetime DEFAULT NULL,
-  `patient_other_id` text COLLATE utf8mb4_general_ci,
-  `patient_age_in_years` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_age_in_months` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `patient_other_id` text,
+  `patient_age_in_years` varchar(255) DEFAULT NULL,
+  `patient_age_in_months` varchar(255) DEFAULT NULL,
   `treatment_initiated_date` date DEFAULT NULL,
-  `treatment_indication` text COLLATE utf8mb4_general_ci,
-  `treatment_details` mediumtext COLLATE utf8mb4_general_ci,
-  `lab_name` text COLLATE utf8mb4_general_ci,
-  `lab_id` int DEFAULT NULL,
+  `treatment_indication` text,
+  `treatment_details` mediumtext,
+  `lab_name` text,
+  `lab_id` int(11) DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int DEFAULT NULL,
-  `lab_code` int DEFAULT NULL,
-  `lab_technician` text COLLATE utf8mb4_general_ci,
-  `lab_contact_person` text COLLATE utf8mb4_general_ci,
-  `lab_phone_number` text COLLATE utf8mb4_general_ci,
+  `referring_lab_id` int(11) DEFAULT NULL,
+  `lab_code` int(11) DEFAULT NULL,
+  `lab_technician` text,
+  `lab_contact_person` text,
+  `lab_phone_number` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `result` text COLLATE utf8mb4_general_ci,
-  `result_unit` int DEFAULT NULL,
-  `final_result_interpretation` text COLLATE utf8mb4_general_ci,
-  `approver_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `reason_for_test_result_changes` mediumtext COLLATE utf8mb4_general_ci,
-  `lot_number` text COLLATE utf8mb4_general_ci,
+  `result` text,
+  `result_unit` int(11) DEFAULT NULL,
+  `final_result_interpretation` text,
+  `approver_comments` mediumtext,
+  `reason_for_test_result_changes` mediumtext,
+  `lot_number` text,
   `lot_expiration_date` date DEFAULT NULL,
-  `tested_by` text COLLATE utf8mb4_general_ci,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `result_approved_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tested_by` text,
+  `lab_tech_comments` mediumtext,
+  `result_approved_by` varchar(256) DEFAULT NULL,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `revised_by` text COLLATE utf8mb4_general_ci,
+  `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
-  `result_reviewed_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `result_reviewed_by` varchar(256) DEFAULT NULL,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `test_methods` text COLLATE utf8mb4_general_ci,
-  `reason_for_testing` text COLLATE utf8mb4_general_ci,
-  `reason_for_testing_other` text COLLATE utf8mb4_general_ci,
-  `sample_collected_by` text COLLATE utf8mb4_general_ci,
-  `facility_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `test_platform` text COLLATE utf8mb4_general_ci,
-  `import_machine_name` int DEFAULT NULL,
-  `physician_name` text COLLATE utf8mb4_general_ci,
+  `test_methods` text,
+  `reason_for_testing` text,
+  `reason_for_testing_other` text,
+  `sample_collected_by` text,
+  `facility_comments` mediumtext,
+  `test_platform` text,
+  `import_machine_name` int(11) DEFAULT NULL,
+  `physician_name` text,
   `date_test_ordered_by_physician` date DEFAULT NULL,
-  `test_number` text COLLATE utf8mb4_general_ci,
+  `test_number` text,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
   `result_sms_sent_datetime` datetime DEFAULT NULL,
-  `is_request_mail_sent` varchar(500) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
+  `is_request_mail_sent` varchar(500) NOT NULL DEFAULT 'no',
   `request_mail_datetime` datetime DEFAULT NULL,
-  `is_result_mail_sent` varchar(500) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
+  `is_result_mail_sent` varchar(500) NOT NULL DEFAULT 'no',
   `result_mail_datetime` datetime DEFAULT NULL,
-  `is_result_sms_sent` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `test_request_export` int NOT NULL DEFAULT '0',
-  `test_request_import` int NOT NULL DEFAULT '0',
-  `test_result_export` int NOT NULL DEFAULT '0',
-  `test_result_import` int NOT NULL DEFAULT '0',
+  `is_result_sms_sent` varchar(45) NOT NULL DEFAULT 'no',
+  `test_request_export` int(11) NOT NULL DEFAULT '0',
+  `test_request_import` int(11) NOT NULL DEFAULT '0',
+  `test_result_export` int(11) NOT NULL DEFAULT '0',
+  `test_result_import` int(11) NOT NULL DEFAULT '0',
   `request_exported_datetime` datetime DEFAULT NULL,
   `request_imported_datetime` datetime DEFAULT NULL,
   `result_exported_datetime` datetime DEFAULT NULL,
   `result_imported_datetime` datetime DEFAULT NULL,
-  `import_machine_file_name` text COLLATE utf8mb4_general_ci,
-  `manual_result_entry` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `source` varchar(500) COLLATE utf8mb4_general_ci DEFAULT 'manual',
-  `qc_tech_name` text COLLATE utf8mb4_general_ci,
-  `qc_tech_sign` text COLLATE utf8mb4_general_ci,
-  `qc_date` text COLLATE utf8mb4_general_ci,
-  `repeat_sample_collection` text COLLATE utf8mb4_general_ci,
+  `import_machine_file_name` text,
+  `manual_result_entry` varchar(255) DEFAULT NULL,
+  `source` varchar(500) DEFAULT 'manual',
+  `qc_tech_name` text,
+  `qc_tech_sign` text,
+  `qc_date` text,
+  `repeat_sample_collection` text,
   `clinic_date` date DEFAULT NULL,
   `report_date` date DEFAULT NULL,
-  `requesting_professional_number` text COLLATE utf8mb4_general_ci,
-  `requesting_category` text COLLATE utf8mb4_general_ci,
-  `requesting_facility_id` int DEFAULT NULL,
-  `requesting_person` text COLLATE utf8mb4_general_ci,
-  `requesting_phone` text COLLATE utf8mb4_general_ci,
+  `requesting_professional_number` text,
+  `requesting_category` text,
+  `requesting_facility_id` int(11) DEFAULT NULL,
+  `requesting_person` text,
+  `requesting_phone` text,
   `requesting_date` date DEFAULT NULL,
-  `result_coming_from` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_processed` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vldash_sync` int DEFAULT '0',
-  `source_of_request` text COLLATE utf8mb4_general_ci,
-  `source_data_dump` text COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` varchar(256) COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `result_coming_from` varchar(255) DEFAULT NULL,
+  `sample_processed` varchar(255) DEFAULT NULL,
+  `vldash_sync` int(11) DEFAULT '0',
+  `source_of_request` text,
+  `source_data_dump` text,
+  `result_sent_to_source` varchar(256) DEFAULT 'pending',
   `test_specific_attributes` json DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
-  `locked` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `data_sync` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
-  `result_status` int NOT NULL,
-  `sub_tests` text COLLATE utf8mb4_general_ci,
-  PRIMARY KEY (`sample_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `locked` varchar(50) NOT NULL DEFAULT 'no',
+  `data_sync` varchar(10) NOT NULL DEFAULT '0',
+  `result_status` int(11) NOT NULL,
+  PRIMARY KEY (`sample_id`,`revision`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -578,126 +590,127 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `audit_form_hepatitis`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `audit_form_hepatitis` (
-  `action` varchar(8) COLLATE utf8mb4_general_ci DEFAULT 'insert',
-  `revision` int NOT NULL AUTO_INCREMENT,
+  `action` varchar(8) DEFAULT 'insert',
+  `revision` int(6) NOT NULL AUTO_INCREMENT,
   `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `hepatitis_id` int NOT NULL,
-  `unique_id` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_instance_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_country_id` int DEFAULT NULL,
-  `sample_code_key` int DEFAULT NULL,
-  `sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_reordered` varchar(256) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `external_sample_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `app_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hepatitis_test_type` text COLLATE utf8mb4_general_ci,
-  `test_number` int DEFAULT NULL,
-  `remote_sample` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int DEFAULT NULL,
-  `remote_sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `hepatitis_id` int(11) NOT NULL,
+  `unique_id` varchar(500) DEFAULT NULL,
+  `vlsm_instance_id` varchar(255) DEFAULT NULL,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `sample_code_key` int(11) DEFAULT NULL,
+  `sample_code_format` varchar(255) DEFAULT NULL,
+  `sample_code` varchar(500) DEFAULT NULL,
+  `sample_reordered` varchar(256) NOT NULL DEFAULT 'no',
+  `external_sample_code` varchar(255) DEFAULT NULL,
+  `app_sample_code` varchar(256) DEFAULT NULL,
+  `hepatitis_test_type` text,
+  `test_number` int(11) DEFAULT NULL,
+  `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_format` varchar(255) DEFAULT NULL,
+  `remote_sample_code` varchar(500) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
-  `sample_condition` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_condition` varchar(255) DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `province_id` int DEFAULT NULL,
-  `is_encrypted` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `sync_patient_identifiers` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'yes',
-  `patient_id` text COLLATE utf8mb4_general_ci,
-  `patient_name` text COLLATE utf8mb4_general_ci,
-  `patient_surname` text COLLATE utf8mb4_general_ci,
+  `funding_source` int(11) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
+  `is_encrypted` varchar(10) DEFAULT 'no',
+  `sync_patient_identifiers` varchar(10) DEFAULT 'yes',
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `patient_id` text,
+  `patient_name` text,
+  `patient_surname` text,
   `patient_dob` date DEFAULT NULL,
-  `patient_age` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_gender` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_phone_number` text COLLATE utf8mb4_general_ci,
-  `patient_province` text COLLATE utf8mb4_general_ci,
-  `patient_district` text COLLATE utf8mb4_general_ci,
-  `patient_city` text COLLATE utf8mb4_general_ci,
-  `patient_nationality` text COLLATE utf8mb4_general_ci,
-  `patient_occupation` text COLLATE utf8mb4_general_ci,
-  `patient_address` text COLLATE utf8mb4_general_ci,
-  `patient_marital_status` text COLLATE utf8mb4_general_ci,
-  `social_category` text COLLATE utf8mb4_general_ci,
-  `patient_insurance` text COLLATE utf8mb4_general_ci,
-  `hbv_vaccination` text COLLATE utf8mb4_general_ci,
-  `is_sample_collected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_hepatitis_test` int DEFAULT NULL,
-  `type_of_test_requested` text COLLATE utf8mb4_general_ci,
-  `reason_for_vl_test` text COLLATE utf8mb4_general_ci,
-  `specimen_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `priority_status` text COLLATE utf8mb4_general_ci,
-  `lab_id` int DEFAULT NULL,
+  `patient_age` varchar(255) DEFAULT NULL,
+  `patient_gender` varchar(255) DEFAULT NULL,
+  `patient_phone_number` text,
+  `patient_province` text,
+  `patient_district` text,
+  `patient_city` text,
+  `patient_nationality` text,
+  `patient_occupation` text,
+  `patient_address` text,
+  `patient_marital_status` text,
+  `social_category` text,
+  `patient_insurance` text,
+  `hbv_vaccination` text,
+  `is_sample_collected` varchar(255) DEFAULT NULL,
+  `reason_for_hepatitis_test` int(11) DEFAULT NULL,
+  `type_of_test_requested` text,
+  `reason_for_vl_test` text,
+  `specimen_type` varchar(255) DEFAULT NULL,
+  `priority_status` text,
+  `lab_id` int(11) DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int DEFAULT NULL,
-  `lab_technician` text COLLATE utf8mb4_general_ci,
-  `testing_point` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_reception_person` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hepatitis_test_platform` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_status` int DEFAULT NULL,
-  `locked` varchar(256) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `is_sample_rejected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_sample_rejection` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `referring_lab_id` int(11) DEFAULT NULL,
+  `lab_technician` text,
+  `testing_point` varchar(255) DEFAULT NULL,
+  `lab_reception_person` varchar(255) DEFAULT NULL,
+  `hepatitis_test_platform` varchar(255) DEFAULT NULL,
+  `result_status` int(11) DEFAULT NULL,
+  `locked` varchar(256) DEFAULT 'no',
+  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `reason_for_sample_rejection` varchar(500) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
-  `result` text COLLATE utf8mb4_general_ci,
-  `tested_by` text COLLATE utf8mb4_general_ci,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `hbsag_result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `anti_hcv_result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hcv_vl_result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hbv_vl_result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hcv_vl_count` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hbv_vl_count` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vl_testing_site` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_result_authorised` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `authorized_by` text COLLATE utf8mb4_general_ci,
+  `result` text,
+  `tested_by` text,
+  `lab_tech_comments` mediumtext,
+  `hbsag_result` varchar(255) DEFAULT NULL,
+  `anti_hcv_result` varchar(255) DEFAULT NULL,
+  `hcv_vl_result` varchar(255) DEFAULT NULL,
+  `hbv_vl_result` varchar(255) DEFAULT NULL,
+  `hcv_vl_count` varchar(255) DEFAULT NULL,
+  `hbv_vl_count` varchar(255) DEFAULT NULL,
+  `vl_testing_site` varchar(255) DEFAULT NULL,
+  `is_result_authorised` varchar(255) DEFAULT NULL,
+  `authorized_by` text,
   `authorized_on` date DEFAULT NULL,
-  `revised_by` text COLLATE utf8mb4_general_ci,
+  `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
-  `reason_for_changing` mediumtext COLLATE utf8mb4_general_ci,
+  `reason_for_changing` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `result_reviewed_by` text COLLATE utf8mb4_general_ci,
+  `result_reviewed_by` text,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `result_approved_by` text COLLATE utf8mb4_general_ci,
-  `approver_comments` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `result_approved_by` text,
+  `approver_comments` varchar(1000) DEFAULT NULL,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `manual_result_entry` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `import_machine_name` text COLLATE utf8mb4_general_ci,
-  `import_machine_file_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `manual_result_entry` varchar(255) DEFAULT 'no',
+  `import_machine_name` text,
+  `import_machine_file_name` varchar(255) DEFAULT NULL,
   `imported_date_time` datetime DEFAULT NULL,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
   `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `request_created_by` text COLLATE utf8mb4_general_ci,
+  `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
-  `sample_batch_id` int DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` text COLLATE utf8mb4_general_ci,
-  `positive_test_manifest_id` int DEFAULT NULL,
-  `positive_test_manifest_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lot_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `source_of_request` text COLLATE utf8mb4_general_ci,
-  `source_data_dump` mediumtext COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` mediumtext COLLATE utf8mb4_general_ci,
+  `sample_batch_id` int(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` text,
+  `positive_test_manifest_id` int(11) DEFAULT NULL,
+  `positive_test_manifest_code` varchar(255) DEFAULT NULL,
+  `lot_number` varchar(255) DEFAULT NULL,
+  `source_of_request` text,
+  `source_data_dump` mediumtext,
+  `result_sent_to_source` mediumtext,
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `is_result_mail_sent` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'no',
+  `is_result_mail_sent` varchar(255) DEFAULT 'no',
   `last_modified_datetime` datetime DEFAULT NULL,
-  `last_modified_by` text COLLATE utf8mb4_general_ci,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `last_modified_by` text,
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`hepatitis_id`,`revision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -715,107 +728,108 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `audit_form_tb`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `audit_form_tb` (
-  `action` varchar(8) COLLATE utf8mb4_general_ci DEFAULT 'insert',
-  `revision` int NOT NULL AUTO_INCREMENT,
+  `action` varchar(8) DEFAULT 'insert',
+  `revision` int(6) NOT NULL AUTO_INCREMENT,
   `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `tb_id` int NOT NULL,
-  `unique_id` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_instance_id` mediumtext COLLATE utf8mb4_general_ci,
-  `vlsm_country_id` int DEFAULT NULL,
-  `sample_reordered` varchar(1000) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `sample_code_key` int NOT NULL,
-  `sample_code_format` mediumtext COLLATE utf8mb4_general_ci,
-  `sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `external_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample` varchar(1000) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int DEFAULT NULL,
-  `remote_sample_code_format` mediumtext COLLATE utf8mb4_general_ci,
-  `remote_sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tb_id` int(11) NOT NULL,
+  `unique_id` varchar(500) DEFAULT NULL,
+  `vlsm_instance_id` mediumtext,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `sample_reordered` varchar(1000) NOT NULL DEFAULT 'no',
+  `sample_code_key` int(11) NOT NULL,
+  `sample_code_format` mediumtext,
+  `sample_code` varchar(500) DEFAULT NULL,
+  `external_sample_code` varchar(100) DEFAULT NULL,
+  `remote_sample` varchar(1000) NOT NULL DEFAULT 'no',
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_format` mediumtext,
+  `remote_sample_code` varchar(500) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `requesting_clinician` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `province_id` int DEFAULT NULL,
-  `referring_unit` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `other_referring_unit` mediumtext COLLATE utf8mb4_general_ci,
-  `is_encrypted` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `sync_patient_identifiers` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'yes',
-  `patient_id` mediumtext COLLATE utf8mb4_general_ci,
-  `patient_name` mediumtext COLLATE utf8mb4_general_ci,
-  `patient_surname` mediumtext COLLATE utf8mb4_general_ci,
+  `funding_source` int(11) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `requesting_clinician` varchar(100) DEFAULT NULL,
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
+  `referring_unit` varchar(256) DEFAULT NULL,
+  `other_referring_unit` mediumtext,
+  `is_encrypted` varchar(10) DEFAULT 'no',
+  `sync_patient_identifiers` varchar(10) DEFAULT 'yes',
+  `patient_id` mediumtext,
+  `patient_name` mediumtext,
+  `patient_surname` mediumtext,
   `patient_dob` date DEFAULT NULL,
-  `patient_age` mediumtext COLLATE utf8mb4_general_ci,
-  `patient_gender` mediumtext COLLATE utf8mb4_general_ci,
-  `patient_address` mediumtext COLLATE utf8mb4_general_ci,
-  `patient_phone` mediumtext COLLATE utf8mb4_general_ci,
+  `patient_age` mediumtext,
+  `patient_gender` mediumtext,
+  `patient_address` mediumtext,
+  `patient_phone` mediumtext,
   `patient_type` json DEFAULT NULL,
-  `other_patient_type` mediumtext COLLATE utf8mb4_general_ci,
-  `hiv_status` mediumtext COLLATE utf8mb4_general_ci,
-  `previously_treated_for_tb` text COLLATE utf8mb4_general_ci,
+  `other_patient_type` mediumtext,
+  `hiv_status` mediumtext,
+  `previously_treated_for_tb` text,
   `tests_requested` json DEFAULT NULL,
-  `number_of_sputum_samples` int DEFAULT NULL,
+  `number_of_sputum_samples` int(11) DEFAULT NULL,
   `first_sputum_samples_collection_date` date DEFAULT NULL,
-  `sample_requestor_name` mediumtext COLLATE utf8mb4_general_ci,
-  `sample_requestor_phone` mediumtext COLLATE utf8mb4_general_ci,
-  `specimen_quality` mediumtext COLLATE utf8mb4_general_ci,
-  `specimen_type` mediumtext COLLATE utf8mb4_general_ci,
-  `other_specimen_type` mediumtext COLLATE utf8mb4_general_ci,
+  `sample_requestor_name` mediumtext,
+  `sample_requestor_phone` mediumtext,
+  `specimen_quality` mediumtext,
+  `specimen_type` mediumtext,
+  `other_specimen_type` mediumtext,
   `reason_for_tb_test` json DEFAULT NULL,
-  `lab_id` int DEFAULT NULL,
-  `lab_technician` mediumtext COLLATE utf8mb4_general_ci,
-  `lab_reception_person` mediumtext COLLATE utf8mb4_general_ci,
-  `is_sample_rejected` varchar(1000) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `reason_for_sample_rejection` mediumtext COLLATE utf8mb4_general_ci,
+  `lab_id` int(11) DEFAULT NULL,
+  `lab_technician` mediumtext,
+  `lab_reception_person` mediumtext,
+  `is_sample_rejected` varchar(1000) NOT NULL DEFAULT 'no',
+  `reason_for_sample_rejection` mediumtext,
   `rejection_on` date DEFAULT NULL,
-  `tb_test_platform` mediumtext COLLATE utf8mb4_general_ci,
-  `result_status` int DEFAULT NULL,
-  `locked` varchar(256) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `result` mediumtext COLLATE utf8mb4_general_ci,
-  `xpert_mtb_result` mediumtext COLLATE utf8mb4_general_ci,
-  `reason_for_changing` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tested_by` mediumtext COLLATE utf8mb4_general_ci,
+  `tb_test_platform` mediumtext,
+  `result_status` int(11) DEFAULT NULL,
+  `locked` varchar(256) DEFAULT 'no',
+  `result` mediumtext,
+  `xpert_mtb_result` mediumtext,
+  `reason_for_changing` varchar(256) DEFAULT NULL,
+  `tested_by` mediumtext,
   `result_date` datetime DEFAULT NULL,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `result_reviewed_by` mediumtext COLLATE utf8mb4_general_ci,
+  `lab_tech_comments` mediumtext,
+  `result_reviewed_by` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `result_approved_by` mediumtext COLLATE utf8mb4_general_ci,
+  `result_approved_by` mediumtext,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `revised_by` mediumtext COLLATE utf8mb4_general_ci,
+  `revised_by` mediumtext,
   `revised_on` datetime DEFAULT NULL,
-  `approver_comments` mediumtext COLLATE utf8mb4_general_ci,
+  `approver_comments` mediumtext,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `app_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `manual_result_entry` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `import_machine_name` mediumtext COLLATE utf8mb4_general_ci,
-  `import_machine_file_name` mediumtext COLLATE utf8mb4_general_ci,
+  `app_sample_code` varchar(256) DEFAULT NULL,
+  `manual_result_entry` varchar(255) DEFAULT 'no',
+  `import_machine_name` mediumtext,
+  `import_machine_file_name` mediumtext,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
   `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` datetime DEFAULT NULL,
-  `request_created_by` mediumtext COLLATE utf8mb4_general_ci,
+  `request_created_by` mediumtext,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT NULL,
-  `last_modified_by` mediumtext COLLATE utf8mb4_general_ci,
-  `sample_batch_id` int DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` mediumtext COLLATE utf8mb4_general_ci,
-  `source_of_request` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `source_data_dump` mediumtext COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` mediumtext COLLATE utf8mb4_general_ci,
+  `last_modified_by` mediumtext,
+  `sample_batch_id` int(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` mediumtext,
+  `source_of_request` varchar(50) DEFAULT NULL,
+  `source_data_dump` mediumtext,
+  `result_sent_to_source` mediumtext,
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`tb_id`,`revision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -833,253 +847,254 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `audit_form_vl`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `audit_form_vl` (
-  `action` varchar(8) COLLATE utf8mb4_general_ci DEFAULT 'insert',
-  `revision` int NOT NULL AUTO_INCREMENT,
+  `action` varchar(8) DEFAULT 'insert',
+  `revision` int(6) NOT NULL AUTO_INCREMENT,
   `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `vl_sample_id` int NOT NULL,
-  `unique_id` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_instance_id` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `vlsm_country_id` int DEFAULT NULL,
-  `remote_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `external_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `province_id` int DEFAULT NULL,
-  `facility_sample_id` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_batch_id` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` text COLLATE utf8mb4_general_ci,
-  `sample_reordered` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int DEFAULT NULL,
-  `remote_sample_code_format` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code_key` int DEFAULT NULL,
-  `sample_code_format` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code_title` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'auto',
-  `sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_urgency` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `community_sample` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `patient_first_name` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_middle_name` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_last_name` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_responsible_person` text COLLATE utf8mb4_general_ci,
-  `patient_nationality` int DEFAULT NULL,
-  `patient_province` text COLLATE utf8mb4_general_ci,
-  `patient_district` text COLLATE utf8mb4_general_ci,
-  `patient_group` text COLLATE utf8mb4_general_ci,
-  `patient_art_no` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_encrypted` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `sync_patient_identifiers` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'yes',
+  `vl_sample_id` int(11) NOT NULL,
+  `unique_id` varchar(256) DEFAULT NULL,
+  `vlsm_instance_id` varchar(100) NOT NULL,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `remote_sample_code` varchar(100) DEFAULT NULL,
+  `external_sample_code` varchar(100) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
+  `facility_sample_id` varchar(100) DEFAULT NULL,
+  `sample_batch_id` varchar(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` text,
+  `sample_reordered` varchar(45) NOT NULL DEFAULT 'no',
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_format` varchar(100) DEFAULT NULL,
+  `sample_code_key` int(11) DEFAULT NULL,
+  `sample_code_format` varchar(100) DEFAULT NULL,
+  `sample_code_title` varchar(45) NOT NULL DEFAULT 'auto',
+  `sample_code` varchar(100) DEFAULT NULL,
+  `test_urgency` varchar(10) DEFAULT NULL,
+  `funding_source` int(11) DEFAULT NULL,
+  `community_sample` varchar(10) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `patient_first_name` varchar(512) DEFAULT NULL,
+  `patient_middle_name` varchar(512) DEFAULT NULL,
+  `patient_last_name` varchar(512) DEFAULT NULL,
+  `patient_responsible_person` text,
+  `patient_nationality` int(11) DEFAULT NULL,
+  `patient_province` text,
+  `patient_district` text,
+  `patient_group` text,
+  `patient_art_no` varchar(512) DEFAULT NULL,
+  `is_encrypted` varchar(10) DEFAULT 'no',
+  `sync_patient_identifiers` varchar(10) DEFAULT 'yes',
   `patient_dob` date DEFAULT NULL,
-  `patient_below_five_years` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_gender` text COLLATE utf8mb4_general_ci,
-  `patient_mobile_number` text COLLATE utf8mb4_general_ci,
-  `patient_location` text COLLATE utf8mb4_general_ci,
-  `patient_address` mediumtext COLLATE utf8mb4_general_ci,
+  `patient_below_five_years` varchar(255) DEFAULT NULL,
+  `patient_gender` text,
+  `patient_mobile_number` text,
+  `patient_location` text,
+  `patient_address` mediumtext,
   `patient_art_date` date DEFAULT NULL,
-  `patient_receiving_therapy` text COLLATE utf8mb4_general_ci,
-  `patient_drugs_transmission` text COLLATE utf8mb4_general_ci,
-  `patient_tb` text COLLATE utf8mb4_general_ci,
-  `patient_tb_yes` text COLLATE utf8mb4_general_ci,
+  `patient_receiving_therapy` text,
+  `patient_drugs_transmission` text,
+  `patient_tb` text,
+  `patient_tb_yes` text,
   `sample_collection_date` datetime DEFAULT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
-  `sample_type` int DEFAULT NULL,
-  `is_patient_new` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `treatment_initiation` text COLLATE utf8mb4_general_ci,
-  `line_of_treatment` int DEFAULT NULL,
-  `line_of_treatment_failure_assessed` text COLLATE utf8mb4_general_ci,
-  `line_of_treatment_ref_type` text COLLATE utf8mb4_general_ci,
-  `current_arv_protocol` text COLLATE utf8mb4_general_ci,
-  `current_regimen` text COLLATE utf8mb4_general_ci,
+  `sample_type` int(11) DEFAULT NULL,
+  `is_patient_new` varchar(45) DEFAULT NULL,
+  `treatment_initiation` text,
+  `line_of_treatment` int(11) DEFAULT NULL,
+  `line_of_treatment_failure_assessed` text,
+  `line_of_treatment_ref_type` text,
+  `current_arv_protocol` text,
+  `current_regimen` text,
   `date_of_initiation_of_current_regimen` date DEFAULT NULL,
-  `is_patient_pregnant` text COLLATE utf8mb4_general_ci,
-  `no_of_pregnancy_weeks` int DEFAULT NULL,
-  `is_patient_breastfeeding` text COLLATE utf8mb4_general_ci,
-  `no_of_breastfeeding_weeks` int DEFAULT NULL,
-  `patient_has_active_tb` text COLLATE utf8mb4_general_ci,
-  `patient_active_tb_phase` text COLLATE utf8mb4_general_ci,
-  `pregnancy_trimester` int DEFAULT NULL,
-  `arv_adherance_percentage` text COLLATE utf8mb4_general_ci,
-  `is_adherance_poor` text COLLATE utf8mb4_general_ci,
-  `consent_to_receive_sms` text COLLATE utf8mb4_general_ci,
-  `number_of_enhanced_sessions` text COLLATE utf8mb4_general_ci,
+  `is_patient_pregnant` text,
+  `no_of_pregnancy_weeks` int(11) DEFAULT NULL,
+  `is_patient_breastfeeding` text,
+  `no_of_breastfeeding_weeks` int(11) DEFAULT NULL,
+  `patient_has_active_tb` text,
+  `patient_active_tb_phase` text,
+  `pregnancy_trimester` int(11) DEFAULT NULL,
+  `arv_adherance_percentage` text,
+  `is_adherance_poor` text,
+  `consent_to_receive_sms` text,
+  `number_of_enhanced_sessions` text,
   `last_vl_date_routine` date DEFAULT NULL,
-  `last_vl_result_routine` text COLLATE utf8mb4_general_ci,
-  `last_vl_sample_type_routine` int DEFAULT NULL,
+  `last_vl_result_routine` text,
+  `last_vl_sample_type_routine` int(11) DEFAULT NULL,
   `last_vl_date_failure_ac` date DEFAULT NULL,
-  `last_vl_result_failure_ac` text COLLATE utf8mb4_general_ci,
-  `last_vl_sample_type_failure_ac` int DEFAULT NULL,
+  `last_vl_result_failure_ac` text,
+  `last_vl_sample_type_failure_ac` int(11) DEFAULT NULL,
   `last_vl_date_failure` date DEFAULT NULL,
-  `last_vl_result_failure` text COLLATE utf8mb4_general_ci,
-  `last_vl_sample_type_failure` int DEFAULT NULL,
+  `last_vl_result_failure` text,
+  `last_vl_sample_type_failure` int(11) DEFAULT NULL,
   `last_vl_date_ecd` date DEFAULT NULL,
-  `last_vl_result_ecd` text COLLATE utf8mb4_general_ci,
+  `last_vl_result_ecd` text,
   `last_vl_date_cf` date DEFAULT NULL,
-  `last_vl_result_cf` text COLLATE utf8mb4_general_ci,
+  `last_vl_result_cf` text,
   `last_vl_date_if` date DEFAULT NULL,
-  `last_vl_result_if` text COLLATE utf8mb4_general_ci,
-  `request_clinician_name` text COLLATE utf8mb4_general_ci,
+  `last_vl_result_if` text,
+  `request_clinician_name` text,
   `test_requested_on` date DEFAULT NULL,
-  `request_clinician_phone_number` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `cv_number` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `request_clinician_phone_number` varchar(32) DEFAULT NULL,
+  `cv_number` varchar(20) DEFAULT NULL,
   `sample_testing_date` datetime DEFAULT NULL,
-  `vl_focal_person` text COLLATE utf8mb4_general_ci,
-  `vl_focal_person_phone_number` text COLLATE utf8mb4_general_ci,
+  `vl_focal_person` text,
+  `vl_focal_person_phone_number` text,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `result_dispatched_datetime` datetime DEFAULT NULL,
-  `is_sample_rejected` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_rejection_facility` int DEFAULT NULL,
-  `reason_for_sample_rejection` int DEFAULT NULL,
-  `recommended_corrective_action` int DEFAULT NULL,
+  `is_sample_rejected` varchar(10) DEFAULT NULL,
+  `sample_rejection_facility` int(11) DEFAULT NULL,
+  `reason_for_sample_rejection` int(11) DEFAULT NULL,
+  `recommended_corrective_action` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
-  `request_created_by` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
+  `request_created_by` varchar(500) NOT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_modified_by` text COLLATE utf8mb4_general_ci,
+  `last_modified_by` text,
   `last_modified_datetime` datetime DEFAULT NULL,
-  `patient_other_id` text COLLATE utf8mb4_general_ci,
-  `patient_age_in_years` int DEFAULT NULL,
-  `patient_age_in_months` int DEFAULT NULL,
+  `patient_other_id` text,
+  `patient_age_in_years` int(11) DEFAULT NULL,
+  `patient_age_in_months` int(11) DEFAULT NULL,
   `treatment_initiated_date` date DEFAULT NULL,
-  `treatment_duration` text COLLATE utf8mb4_general_ci,
-  `treatment_indication` text COLLATE utf8mb4_general_ci,
-  `patient_anc_no` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `treatment_details` mediumtext COLLATE utf8mb4_general_ci,
-  `sample_visit_type` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vl_sample_suspected_treatment_failure_at` text COLLATE utf8mb4_general_ci,
-  `lab_name` text COLLATE utf8mb4_general_ci,
-  `lab_id` int DEFAULT NULL,
+  `treatment_duration` text,
+  `treatment_indication` text,
+  `patient_anc_no` varchar(100) DEFAULT NULL,
+  `treatment_details` mediumtext,
+  `sample_visit_type` varchar(45) DEFAULT NULL,
+  `vl_sample_suspected_treatment_failure_at` text,
+  `lab_name` text,
+  `lab_id` int(11) DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int DEFAULT NULL,
-  `lab_code` int DEFAULT NULL,
-  `lab_technician` text COLLATE utf8mb4_general_ci,
-  `lab_contact_person` text COLLATE utf8mb4_general_ci,
-  `lab_phone_number` text COLLATE utf8mb4_general_ci,
+  `referring_lab_id` int(11) DEFAULT NULL,
+  `lab_code` int(11) DEFAULT NULL,
+  `lab_technician` text,
+  `lab_contact_person` text,
+  `lab_phone_number` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `result_value_log` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_absolute` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_text` text COLLATE utf8mb4_general_ci,
-  `result_value_absolute_decimal` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result` text COLLATE utf8mb4_general_ci,
-  `approver_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `reason_for_vl_result_changes` mediumtext COLLATE utf8mb4_general_ci,
-  `lot_number` text COLLATE utf8mb4_general_ci,
+  `result_value_log` varchar(32) DEFAULT NULL,
+  `result_value_absolute` varchar(32) DEFAULT NULL,
+  `result_value_text` text,
+  `result_value_absolute_decimal` varchar(255) DEFAULT NULL,
+  `result` text,
+  `approver_comments` mediumtext,
+  `reason_for_vl_result_changes` mediumtext,
+  `lot_number` text,
   `lot_expiration_date` date DEFAULT NULL,
-  `tested_by` text COLLATE utf8mb4_general_ci,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `result_approved_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tested_by` text,
+  `lab_tech_comments` mediumtext,
+  `result_approved_by` varchar(256) DEFAULT NULL,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `revised_by` text COLLATE utf8mb4_general_ci,
+  `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
-  `result_reviewed_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `result_reviewed_by` varchar(256) DEFAULT NULL,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `test_methods` text COLLATE utf8mb4_general_ci,
-  `contact_complete_status` text COLLATE utf8mb4_general_ci,
+  `test_methods` text,
+  `contact_complete_status` text,
   `last_viral_load_date` date DEFAULT NULL,
-  `last_viral_load_result` text COLLATE utf8mb4_general_ci,
-  `last_vl_result_in_log` text COLLATE utf8mb4_general_ci,
-  `reason_for_vl_testing` text COLLATE utf8mb4_general_ci,
-  `reason_for_vl_testing_other` text COLLATE utf8mb4_general_ci,
-  `control_vl_testing_type` text COLLATE utf8mb4_general_ci,
-  `coinfection_type` text COLLATE utf8mb4_general_ci,
-  `drug_substitution` text COLLATE utf8mb4_general_ci,
-  `sample_collected_by` text COLLATE utf8mb4_general_ci,
-  `facility_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `vl_test_platform` text COLLATE utf8mb4_general_ci,
-  `result_value_hiv_detection` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `cphl_vl_result` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `import_machine_name` int DEFAULT NULL,
-  `facility_support_partner` text COLLATE utf8mb4_general_ci,
-  `has_patient_changed_regimen` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_regimen_change` text COLLATE utf8mb4_general_ci,
+  `last_viral_load_result` text,
+  `last_vl_result_in_log` text,
+  `reason_for_vl_testing` text,
+  `reason_for_vl_testing_other` text,
+  `control_vl_testing_type` text,
+  `coinfection_type` text,
+  `drug_substitution` text,
+  `sample_collected_by` text,
+  `facility_comments` mediumtext,
+  `vl_test_platform` text,
+  `result_value_hiv_detection` varchar(32) DEFAULT NULL,
+  `cphl_vl_result` varchar(32) DEFAULT NULL,
+  `import_machine_name` int(11) DEFAULT NULL,
+  `facility_support_partner` text,
+  `has_patient_changed_regimen` varchar(45) DEFAULT NULL,
+  `reason_for_regimen_change` text,
   `regimen_change_date` date DEFAULT NULL,
   `plasma_conservation_temperature` float DEFAULT NULL,
-  `plasma_conservation_duration` text COLLATE utf8mb4_general_ci,
-  `physician_name` text COLLATE utf8mb4_general_ci,
+  `plasma_conservation_duration` text,
+  `physician_name` text,
   `date_test_ordered_by_physician` date DEFAULT NULL,
-  `vl_test_number` text COLLATE utf8mb4_general_ci,
+  `vl_test_number` text,
   `date_dispatched_from_clinic_to_lab` datetime DEFAULT NULL,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_sms_sent_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
-  `is_request_mail_sent` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
+  `is_request_mail_sent` varchar(10) NOT NULL DEFAULT 'no',
   `request_mail_datetime` datetime DEFAULT NULL,
-  `is_result_mail_sent` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `app_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_result_mail_sent` varchar(10) NOT NULL DEFAULT 'no',
+  `app_sample_code` varchar(100) DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `is_result_sms_sent` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `test_request_export` int NOT NULL DEFAULT '0',
-  `test_request_import` int NOT NULL DEFAULT '0',
-  `test_result_export` int NOT NULL DEFAULT '0',
-  `test_result_import` int NOT NULL DEFAULT '0',
+  `is_result_sms_sent` varchar(45) NOT NULL DEFAULT 'no',
+  `test_request_export` int(11) NOT NULL DEFAULT '0',
+  `test_request_import` int(11) NOT NULL DEFAULT '0',
+  `test_result_export` int(11) NOT NULL DEFAULT '0',
+  `test_result_import` int(11) NOT NULL DEFAULT '0',
   `request_exported_datetime` datetime DEFAULT NULL,
   `request_imported_datetime` datetime DEFAULT NULL,
   `result_exported_datetime` datetime DEFAULT NULL,
   `result_imported_datetime` datetime DEFAULT NULL,
-  `result_status` int NOT NULL,
-  `locked` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `import_machine_file_name` text COLLATE utf8mb4_general_ci,
-  `manual_result_entry` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `consultation` text COLLATE utf8mb4_general_ci,
-  `first_line` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `second_line` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `first_viral_load` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `collection_type` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_processed` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vl_result_category` text COLLATE utf8mb4_general_ci,
-  `vldash_sync` int DEFAULT '0',
-  `source_of_request` text COLLATE utf8mb4_general_ci,
-  `source_data_dump` text COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `result_status` int(11) NOT NULL,
+  `locked` varchar(10) DEFAULT 'no',
+  `import_machine_file_name` text,
+  `manual_result_entry` varchar(10) DEFAULT NULL,
+  `consultation` text,
+  `first_line` varchar(32) DEFAULT NULL,
+  `second_line` varchar(32) DEFAULT NULL,
+  `first_viral_load` varchar(10) DEFAULT NULL,
+  `collection_type` varchar(100) DEFAULT NULL,
+  `sample_processed` varchar(10) DEFAULT NULL,
+  `vl_result_category` text,
+  `vldash_sync` int(11) DEFAULT '0',
+  `source_of_request` text,
+  `source_data_dump` text,
+  `result_sent_to_source` varchar(10) DEFAULT 'pending',
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
-  `source` varchar(100) COLLATE utf8mb4_general_ci DEFAULT 'manual',
-  `ward` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `art_cd_cells` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `source` varchar(100) DEFAULT 'manual',
+  `ward` varchar(100) DEFAULT NULL,
+  `art_cd_cells` varchar(100) DEFAULT NULL,
   `art_cd_date` date DEFAULT NULL,
-  `who_clinical_stage` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_testing_png` mediumtext COLLATE utf8mb4_general_ci,
-  `tech_name_png` text COLLATE utf8mb4_general_ci,
-  `qc_tech_name` text COLLATE utf8mb4_general_ci,
-  `qc_tech_sign` text COLLATE utf8mb4_general_ci,
-  `qc_date` text COLLATE utf8mb4_general_ci,
-  `whole_blood_ml` text COLLATE utf8mb4_general_ci,
-  `whole_blood_vial` text COLLATE utf8mb4_general_ci,
-  `plasma_ml` text COLLATE utf8mb4_general_ci,
-  `plasma_vial` text COLLATE utf8mb4_general_ci,
-  `plasma_process_time` text COLLATE utf8mb4_general_ci,
-  `plasma_process_tech` text COLLATE utf8mb4_general_ci,
-  `batch_quality` text COLLATE utf8mb4_general_ci,
-  `sample_test_quality` text COLLATE utf8mb4_general_ci,
-  `repeat_sample_collection` text COLLATE utf8mb4_general_ci,
+  `who_clinical_stage` varchar(100) DEFAULT NULL,
+  `reason_testing_png` mediumtext,
+  `tech_name_png` text,
+  `qc_tech_name` text,
+  `qc_tech_sign` text,
+  `qc_date` text,
+  `whole_blood_ml` text,
+  `whole_blood_vial` text,
+  `plasma_ml` text,
+  `plasma_vial` text,
+  `plasma_process_time` text,
+  `plasma_process_tech` text,
+  `batch_quality` text,
+  `sample_test_quality` text,
+  `repeat_sample_collection` text,
   `failed_test_date` datetime DEFAULT NULL,
-  `failed_test_tech` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `failed_vl_result` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_failure` int DEFAULT NULL,
-  `failed_batch_quality` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `failed_sample_test_quality` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `failed_batch_id` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `failed_test_tech` varchar(100) DEFAULT NULL,
+  `failed_vl_result` varchar(32) DEFAULT NULL,
+  `reason_for_failure` int(11) DEFAULT NULL,
+  `failed_batch_quality` varchar(32) DEFAULT NULL,
+  `failed_sample_test_quality` varchar(32) DEFAULT NULL,
+  `failed_batch_id` varchar(32) DEFAULT NULL,
   `clinic_date` date DEFAULT NULL,
   `report_date` date DEFAULT NULL,
-  `sample_to_transport` text COLLATE utf8mb4_general_ci,
-  `requesting_professional_number` text COLLATE utf8mb4_general_ci,
-  `requesting_category` text COLLATE utf8mb4_general_ci,
-  `requesting_vl_service_sector` text COLLATE utf8mb4_general_ci,
-  `requesting_facility_id` int DEFAULT NULL,
-  `requesting_person` text COLLATE utf8mb4_general_ci,
-  `requesting_phone` text COLLATE utf8mb4_general_ci,
+  `sample_to_transport` text,
+  `requesting_professional_number` text,
+  `requesting_category` text,
+  `requesting_vl_service_sector` text,
+  `requesting_facility_id` int(11) DEFAULT NULL,
+  `requesting_person` text,
+  `requesting_phone` text,
   `requesting_date` date DEFAULT NULL,
-  `collection_site` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
-  `remote_sample` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `recency_vl` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `recency_sync` int DEFAULT '0',
+  `collection_site` varchar(10) DEFAULT NULL,
+  `data_sync` int(11) NOT NULL DEFAULT '0',
+  `remote_sample` varchar(10) NOT NULL DEFAULT 'no',
+  `recency_vl` varchar(10) NOT NULL DEFAULT 'no',
+  `recency_sync` int(11) DEFAULT '0',
   PRIMARY KEY (`vl_sample_id`,`revision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1097,23 +1112,23 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `batch_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `batch_details` (
-  `batch_id` int NOT NULL AUTO_INCREMENT,
-  `machine` int NOT NULL,
-  `batch_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `batch_code_key` int DEFAULT NULL,
-  `test_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `batch_status` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'completed',
-  `sent_mail` varchar(100) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `position_type` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `label_order` mediumtext COLLATE utf8mb4_general_ci,
-  `created_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `batch_id` int(11) NOT NULL AUTO_INCREMENT,
+  `machine` int(11) NOT NULL,
+  `batch_code` varchar(255) DEFAULT NULL,
+  `batch_code_key` int(11) DEFAULT NULL,
+  `test_type` varchar(255) DEFAULT NULL,
+  `batch_status` varchar(255) NOT NULL DEFAULT 'completed',
+  `sent_mail` varchar(100) NOT NULL DEFAULT 'no',
+  `position_type` varchar(256) DEFAULT NULL,
+  `label_order` mediumtext,
+  `created_by` varchar(256) DEFAULT NULL,
   `request_created_datetime` datetime NOT NULL,
   `last_modified_by` datetime DEFAULT CURRENT_TIMESTAMP,
   `last_modified_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`batch_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1131,33 +1146,33 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `covid19_imported_controls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `covid19_imported_controls` (
-  `control_id` int NOT NULL AUTO_INCREMENT,
-  `control_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `lab_id` int DEFAULT NULL,
-  `batch_id` int DEFAULT NULL,
-  `control_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lot_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `control_id` int(11) NOT NULL AUTO_INCREMENT,
+  `control_code` varchar(255) NOT NULL,
+  `lab_id` int(11) DEFAULT NULL,
+  `batch_id` int(11) DEFAULT NULL,
+  `control_type` varchar(255) DEFAULT NULL,
+  `lot_number` varchar(255) DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `tested_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tested_by` varchar(255) DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `is_sample_rejected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_sample_rejection` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `approver_comments` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_approved_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `reason_for_sample_rejection` varchar(255) DEFAULT NULL,
+  `result` varchar(255) DEFAULT NULL,
+  `approver_comments` varchar(255) DEFAULT NULL,
+  `result_approved_by` varchar(255) DEFAULT NULL,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `result_reviewed_by` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
+  `result_reviewed_by` varchar(1000) DEFAULT NULL,
+  `lab_tech_comments` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_country_id` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `file_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `vlsm_country_id` varchar(10) DEFAULT NULL,
+  `file_name` varchar(255) DEFAULT NULL,
   `imported_date_time` datetime DEFAULT NULL,
-  `import_machine_file_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `import_machine_file_name` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`control_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1175,13 +1190,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `covid19_patient_comorbidities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `covid19_patient_comorbidities` (
-  `covid19_id` int NOT NULL,
-  `comorbidity_id` int NOT NULL,
-  `comorbidity_detected` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `covid19_id` int(11) NOT NULL,
+  `comorbidity_id` int(11) NOT NULL,
+  `comorbidity_detected` varchar(255) NOT NULL,
   PRIMARY KEY (`covid19_id`,`comorbidity_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1199,14 +1214,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `covid19_patient_symptoms`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `covid19_patient_symptoms` (
-  `covid19_id` int NOT NULL,
-  `symptom_id` int NOT NULL,
-  `symptom_detected` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `symptom_details` mediumtext COLLATE utf8mb4_general_ci,
+  `covid19_id` int(11) NOT NULL,
+  `symptom_id` int(11) NOT NULL,
+  `symptom_detected` varchar(255) NOT NULL,
+  `symptom_details` mediumtext,
   PRIMARY KEY (`covid19_id`,`symptom_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1224,16 +1239,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `covid19_positive_confirmation_manifest`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `covid19_positive_confirmation_manifest` (
-  `manifest_id` int NOT NULL AUTO_INCREMENT,
-  `manifest_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `added_by` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `manifest_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `module` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `manifest_id` int(11) NOT NULL AUTO_INCREMENT,
+  `manifest_code` varchar(255) NOT NULL,
+  `added_by` varchar(255) NOT NULL,
+  `manifest_status` varchar(255) DEFAULT NULL,
+  `module` varchar(255) DEFAULT NULL,
   `request_created_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`manifest_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1251,14 +1266,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `covid19_reasons_for_testing`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `covid19_reasons_for_testing` (
-  `covid19_id` int NOT NULL,
-  `reasons_id` int NOT NULL,
-  `reasons_detected` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_details` text COLLATE utf8mb4_general_ci,
+  `covid19_id` int(11) NOT NULL,
+  `reasons_id` int(11) NOT NULL,
+  `reasons_detected` varchar(50) DEFAULT NULL,
+  `reason_details` text,
   PRIMARY KEY (`covid19_id`,`reasons_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1276,23 +1291,23 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `covid19_tests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `covid19_tests` (
-  `test_id` int NOT NULL AUTO_INCREMENT,
-  `covid19_id` int NOT NULL,
-  `facility_id` int DEFAULT NULL,
-  `test_name` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
-  `tested_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_id` int(11) NOT NULL AUTO_INCREMENT,
+  `covid19_id` int(11) NOT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `test_name` varchar(500) NOT NULL,
+  `tested_by` varchar(255) DEFAULT NULL,
   `sample_tested_datetime` datetime NOT NULL,
-  `testing_platform` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `kit_lot_no` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `testing_platform` varchar(255) DEFAULT NULL,
+  `kit_lot_no` varchar(256) DEFAULT NULL,
   `kit_expiry_date` date DEFAULT NULL,
-  `result` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
+  `result` varchar(500) NOT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_id`),
   KEY `covid19_id` (`covid19_id`),
   CONSTRAINT `covid19_tests_ibfk_1` FOREIGN KEY (`covid19_id`) REFERENCES `form_covid19` (`covid19_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1310,33 +1325,33 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `eid_imported_controls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `eid_imported_controls` (
-  `control_id` int NOT NULL AUTO_INCREMENT,
-  `control_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `lab_id` int DEFAULT NULL,
-  `batch_id` int DEFAULT NULL,
-  `control_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lot_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `control_id` int(11) NOT NULL AUTO_INCREMENT,
+  `control_code` varchar(255) NOT NULL,
+  `lab_id` int(11) DEFAULT NULL,
+  `batch_id` int(11) DEFAULT NULL,
+  `control_type` varchar(255) DEFAULT NULL,
+  `lot_number` varchar(255) DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `tested_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
+  `tested_by` varchar(255) DEFAULT NULL,
+  `lab_tech_comments` mediumtext,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `is_sample_rejected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_sample_rejection` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `approver_comments` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_approved_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `reason_for_sample_rejection` varchar(255) DEFAULT NULL,
+  `result` varchar(255) DEFAULT NULL,
+  `approver_comments` varchar(255) DEFAULT NULL,
+  `result_approved_by` varchar(255) DEFAULT NULL,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `result_reviewed_by` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `result_reviewed_by` varchar(1000) DEFAULT NULL,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_country_id` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `file_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `vlsm_country_id` varchar(10) DEFAULT NULL,
+  `file_name` varchar(255) DEFAULT NULL,
   `imported_date_time` datetime DEFAULT NULL,
-  `import_machine_file_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `import_machine_file_name` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`control_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1354,43 +1369,43 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `facility_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `facility_details` (
-  `facility_id` int NOT NULL AUTO_INCREMENT,
-  `facility_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_instance_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `other_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_emails` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `report_email` mediumtext COLLATE utf8mb4_general_ci,
-  `contact_person` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_mobile_numbers` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `country` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_state_id` int DEFAULT NULL,
-  `facility_district_id` int DEFAULT NULL,
-  `facility_state` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_district` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_hub_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `latitude` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `longitude` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_type` int DEFAULT NULL,
+  `facility_id` int(11) NOT NULL AUTO_INCREMENT,
+  `facility_name` varchar(255) DEFAULT NULL,
+  `facility_code` varchar(255) DEFAULT NULL,
+  `vlsm_instance_id` varchar(255) NOT NULL,
+  `other_id` varchar(255) DEFAULT NULL,
+  `facility_emails` varchar(255) DEFAULT NULL,
+  `report_email` mediumtext,
+  `contact_person` varchar(255) DEFAULT NULL,
+  `facility_mobile_numbers` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `facility_state_id` int(11) DEFAULT NULL,
+  `facility_district_id` int(11) DEFAULT NULL,
+  `facility_state` varchar(255) DEFAULT NULL,
+  `facility_district` varchar(255) DEFAULT NULL,
+  `facility_hub_name` varchar(255) DEFAULT NULL,
+  `latitude` varchar(255) DEFAULT NULL,
+  `longitude` varchar(255) DEFAULT NULL,
+  `facility_type` int(11) DEFAULT NULL,
   `facility_attributes` json DEFAULT NULL,
   `testing_points` json DEFAULT NULL,
-  `facility_logo` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `header_text` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `facility_logo` varchar(255) DEFAULT NULL,
+  `header_text` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
-  `test_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `report_format` mediumtext COLLATE utf8mb4_general_ci,
+  `data_sync` int(11) NOT NULL DEFAULT '0',
+  `test_type` varchar(255) DEFAULT NULL,
+  `report_format` mediumtext,
   PRIMARY KEY (`facility_id`),
   UNIQUE KEY `facility_name` (`facility_name`),
   UNIQUE KEY `other_id` (`other_id`),
   UNIQUE KEY `facility_name_2` (`facility_name`),
   UNIQUE KEY `other_id_2` (`other_id`),
   UNIQUE KEY `facility_code` (`facility_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1408,12 +1423,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `facility_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `facility_type` (
-  `facility_type_id` int NOT NULL AUTO_INCREMENT,
-  `facility_type_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `facility_type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `facility_type_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`facility_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1432,22 +1447,22 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `failed_result_retest_tracker`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `failed_result_retest_tracker` (
-  `frrt_id` int NOT NULL AUTO_INCREMENT,
-  `test_type_pid` int DEFAULT NULL,
-  `test_type` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_data` mediumtext COLLATE utf8mb4_general_ci NOT NULL,
-  `remote_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `batch_id` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_id` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `frrt_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_type_pid` int(11) DEFAULT NULL,
+  `test_type` varchar(256) DEFAULT NULL,
+  `sample_code` varchar(256) DEFAULT NULL,
+  `sample_data` mediumtext NOT NULL,
+  `remote_sample_code` varchar(256) DEFAULT NULL,
+  `batch_id` varchar(256) DEFAULT NULL,
+  `facility_id` varchar(256) DEFAULT NULL,
+  `result` varchar(256) DEFAULT NULL,
+  `result_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `updated_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `updated_by` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`frrt_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1465,156 +1480,157 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `form_covid19`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `form_covid19` (
-  `covid19_id` int NOT NULL AUTO_INCREMENT,
-  `unique_id` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_instance_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_country_id` int DEFAULT NULL,
-  `sample_code_key` int DEFAULT NULL,
-  `sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_reordered` varchar(256) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `external_sample_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_number` int DEFAULT NULL,
-  `remote_sample` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int DEFAULT NULL,
-  `remote_sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `covid19_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unique_id` varchar(500) DEFAULT NULL,
+  `vlsm_instance_id` varchar(255) DEFAULT NULL,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `sample_code_key` int(11) DEFAULT NULL,
+  `sample_code_format` varchar(255) DEFAULT NULL,
+  `sample_code` varchar(500) DEFAULT NULL,
+  `sample_reordered` varchar(256) NOT NULL DEFAULT 'no',
+  `external_sample_code` varchar(255) DEFAULT NULL,
+  `test_number` int(11) DEFAULT NULL,
+  `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_format` varchar(255) DEFAULT NULL,
+  `remote_sample_code` varchar(256) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
-  `sample_condition` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tested_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
+  `sample_condition` varchar(255) DEFAULT NULL,
+  `tested_by` varchar(255) DEFAULT NULL,
+  `lab_tech_comments` mediumtext,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `source_of_alert` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `source_of_alert_other` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `province_id` int DEFAULT NULL,
-  `is_encrypted` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `sync_patient_identifiers` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'yes',
-  `patient_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_name` text COLLATE utf8mb4_general_ci,
-  `patient_surname` text COLLATE utf8mb4_general_ci,
+  `funding_source` int(11) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `source_of_alert` varchar(255) DEFAULT NULL,
+  `source_of_alert_other` varchar(255) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
+  `is_encrypted` varchar(10) DEFAULT 'no',
+  `sync_patient_identifiers` varchar(10) DEFAULT 'yes',
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `patient_id` varchar(255) DEFAULT NULL,
+  `patient_name` text,
+  `patient_surname` text,
   `patient_dob` date DEFAULT NULL,
-  `patient_age` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_gender` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_patient_pregnant` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_phone_number` text COLLATE utf8mb4_general_ci,
-  `patient_email` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_nationality` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_passport_number` text COLLATE utf8mb4_general_ci,
-  `vaccination_status` text COLLATE utf8mb4_general_ci,
-  `vaccination_dosage` text COLLATE utf8mb4_general_ci,
-  `vaccination_type` text COLLATE utf8mb4_general_ci,
-  `vaccination_type_other` text COLLATE utf8mb4_general_ci,
-  `patient_occupation` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `does_patient_smoke` text COLLATE utf8mb4_general_ci,
-  `patient_address` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `flight_airline` text COLLATE utf8mb4_general_ci,
-  `flight_seat_no` text COLLATE utf8mb4_general_ci,
+  `patient_age` varchar(255) DEFAULT NULL,
+  `patient_gender` varchar(256) DEFAULT NULL,
+  `is_patient_pregnant` varchar(255) DEFAULT NULL,
+  `patient_phone_number` text,
+  `patient_email` varchar(256) DEFAULT NULL,
+  `patient_nationality` varchar(255) DEFAULT NULL,
+  `patient_passport_number` text,
+  `vaccination_status` text,
+  `vaccination_dosage` text,
+  `vaccination_type` text,
+  `vaccination_type_other` text,
+  `patient_occupation` varchar(255) DEFAULT NULL,
+  `does_patient_smoke` text,
+  `patient_address` varchar(1000) DEFAULT NULL,
+  `flight_airline` text,
+  `flight_seat_no` text,
   `flight_arrival_datetime` datetime DEFAULT NULL,
-  `flight_airport_of_departure` text COLLATE utf8mb4_general_ci,
-  `flight_transit` text COLLATE utf8mb4_general_ci,
-  `reason_of_visit` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_sample_collected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_covid19_test` int DEFAULT NULL,
-  `type_of_test_requested` text COLLATE utf8mb4_general_ci,
-  `patient_province` text COLLATE utf8mb4_general_ci,
-  `patient_district` text COLLATE utf8mb4_general_ci,
-  `patient_zone` text COLLATE utf8mb4_general_ci,
-  `patient_city` text COLLATE utf8mb4_general_ci,
-  `specimen_taken_before_antibiotics` text COLLATE utf8mb4_general_ci,
-  `specimen_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_sample_post_mortem` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `priority_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `number_of_days_sick` int DEFAULT NULL,
-  `asymptomatic` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `flight_airport_of_departure` text,
+  `flight_transit` text,
+  `reason_of_visit` varchar(500) DEFAULT NULL,
+  `is_sample_collected` varchar(255) DEFAULT NULL,
+  `reason_for_covid19_test` int(11) DEFAULT NULL,
+  `type_of_test_requested` text,
+  `patient_province` text,
+  `patient_district` text,
+  `patient_zone` text,
+  `patient_city` text,
+  `specimen_taken_before_antibiotics` text,
+  `specimen_type` varchar(255) DEFAULT NULL,
+  `is_sample_post_mortem` varchar(255) DEFAULT NULL,
+  `priority_status` varchar(255) DEFAULT NULL,
+  `number_of_days_sick` int(11) DEFAULT NULL,
+  `asymptomatic` varchar(50) DEFAULT NULL,
   `date_of_symptom_onset` date DEFAULT NULL,
-  `suspected_case` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `suspected_case` varchar(255) DEFAULT NULL,
   `date_of_initial_consultation` date DEFAULT NULL,
-  `medical_history` text COLLATE utf8mb4_general_ci,
-  `recent_hospitalization` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_lives_with_children` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_cares_for_children` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `fever_temp` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `temperature_measurement_method` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `respiratory_rate` int DEFAULT NULL,
+  `medical_history` text,
+  `recent_hospitalization` varchar(255) DEFAULT NULL,
+  `patient_lives_with_children` varchar(255) DEFAULT NULL,
+  `patient_cares_for_children` varchar(255) DEFAULT NULL,
+  `fever_temp` varchar(255) DEFAULT NULL,
+  `temperature_measurement_method` varchar(255) DEFAULT NULL,
+  `respiratory_rate` int(11) DEFAULT NULL,
   `oxygen_saturation` double DEFAULT NULL,
-  `close_contacts` mediumtext COLLATE utf8mb4_general_ci,
-  `contact_with_confirmed_case` text COLLATE utf8mb4_general_ci,
-  `has_recent_travel_history` text COLLATE utf8mb4_general_ci,
-  `travel_country_names` text COLLATE utf8mb4_general_ci,
+  `close_contacts` mediumtext,
+  `contact_with_confirmed_case` text,
+  `has_recent_travel_history` text,
+  `travel_country_names` text,
   `travel_return_date` date DEFAULT NULL,
-  `lab_id` int DEFAULT NULL,
+  `lab_id` int(11) DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int DEFAULT NULL,
-  `lab_manager` text COLLATE utf8mb4_general_ci,
-  `testing_point` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_technician` text COLLATE utf8mb4_general_ci,
-  `investigator_name` text COLLATE utf8mb4_general_ci,
-  `investigator_phone` text COLLATE utf8mb4_general_ci,
-  `investigator_email` text COLLATE utf8mb4_general_ci,
+  `referring_lab_id` int(11) DEFAULT NULL,
+  `lab_manager` text,
+  `testing_point` varchar(255) DEFAULT NULL,
+  `lab_technician` text,
+  `investigator_name` text,
+  `investigator_phone` text,
+  `investigator_email` text,
   `test_requested_on` date DEFAULT NULL,
-  `clinician_name` text COLLATE utf8mb4_general_ci,
-  `clinician_phone` mediumtext COLLATE utf8mb4_general_ci,
-  `clinician_email` mediumtext COLLATE utf8mb4_general_ci,
-  `health_outcome` mediumtext COLLATE utf8mb4_general_ci,
+  `clinician_name` text,
+  `clinician_phone` mediumtext,
+  `clinician_email` mediumtext,
+  `health_outcome` mediumtext,
   `health_outcome_date` date DEFAULT NULL,
-  `lab_reception_person` mediumtext COLLATE utf8mb4_general_ci,
-  `covid19_test_platform` mediumtext COLLATE utf8mb4_general_ci,
-  `covid19_test_name` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_status` int DEFAULT NULL,
-  `locked` varchar(256) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `is_sample_rejected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_sample_rejection` int DEFAULT NULL,
+  `lab_reception_person` mediumtext,
+  `covid19_test_platform` mediumtext,
+  `covid19_test_name` varchar(500) DEFAULT NULL,
+  `result_status` int(11) DEFAULT NULL,
+  `locked` varchar(256) DEFAULT 'no',
+  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `reason_for_sample_rejection` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
-  `result` text COLLATE utf8mb4_general_ci,
-  `if_have_other_diseases` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `other_diseases` mediumtext COLLATE utf8mb4_general_ci,
-  `is_result_authorised` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `authorized_by` mediumtext COLLATE utf8mb4_general_ci,
+  `result` text,
+  `if_have_other_diseases` varchar(50) DEFAULT NULL,
+  `other_diseases` mediumtext,
+  `is_result_authorised` varchar(255) DEFAULT NULL,
+  `authorized_by` mediumtext,
   `authorized_on` date DEFAULT NULL,
-  `revised_by` text COLLATE utf8mb4_general_ci,
+  `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
-  `reason_for_changing` mediumtext COLLATE utf8mb4_general_ci,
+  `reason_for_changing` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `result_reviewed_by` mediumtext COLLATE utf8mb4_general_ci,
+  `result_reviewed_by` mediumtext,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `result_approved_by` mediumtext COLLATE utf8mb4_general_ci,
-  `approver_comments` text COLLATE utf8mb4_general_ci,
+  `result_approved_by` mediumtext,
+  `approver_comments` text,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `manual_result_entry` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `import_machine_name` mediumtext COLLATE utf8mb4_general_ci,
-  `import_machine_file_name` mediumtext COLLATE utf8mb4_general_ci,
+  `manual_result_entry` varchar(255) DEFAULT 'no',
+  `import_machine_name` mediumtext,
+  `import_machine_file_name` mediumtext,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `request_created_by` text COLLATE utf8mb4_general_ci,
+  `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
-  `sample_batch_id` int DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` mediumtext COLLATE utf8mb4_general_ci,
-  `positive_test_manifest_id` int DEFAULT NULL,
-  `positive_test_manifest_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lot_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `source_of_request` text COLLATE utf8mb4_general_ci,
-  `source_data_dump` mediumtext COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` mediumtext COLLATE utf8mb4_general_ci,
+  `sample_batch_id` int(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` mediumtext,
+  `positive_test_manifest_id` int(11) DEFAULT NULL,
+  `positive_test_manifest_code` varchar(255) DEFAULT NULL,
+  `lot_number` varchar(255) DEFAULT NULL,
+  `source_of_request` text,
+  `source_data_dump` mediumtext,
+  `result_sent_to_source` mediumtext,
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `is_result_mail_sent` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `app_sample_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_result_mail_sent` varchar(255) DEFAULT 'no',
+  `app_sample_code` varchar(255) DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT NULL,
-  `last_modified_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `last_modified_by` varchar(255) DEFAULT NULL,
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`covid19_id`),
   UNIQUE KEY `unique_id` (`unique_id`),
   UNIQUE KEY `remote_sample_code` (`remote_sample_code`),
@@ -1624,7 +1640,7 @@ CREATE TABLE `form_covid19` (
   KEY `sample_code_key` (`sample_code_key`),
   KEY `remote_sample_code_key` (`remote_sample_code_key`),
   KEY `sample_package_id` (`sample_package_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1640,11 +1656,12 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_covid19_data__ai` AFTER INSERT ON `form_covid19` FOR EACH ROW INSERT INTO `audit_form_covid19` SELECT 'insert', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_covid19_data__ai AFTER INSERT ON `form_covid19` FOR EACH ROW
+    INSERT INTO `audit_form_covid19` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_covid19` AS d WHERE d.covid19_id = NEW.covid19_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1656,11 +1673,12 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_covid19_data__au` AFTER UPDATE ON `form_covid19` FOR EACH ROW INSERT INTO `audit_form_covid19` SELECT 'update', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_covid19_data__au AFTER UPDATE ON `form_covid19` FOR EACH ROW
+    INSERT INTO `audit_form_covid19` SELECT 'update', NULL, NOW(), d.*
     FROM `form_covid19` AS d WHERE d.covid19_id = NEW.covid19_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1672,11 +1690,12 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_covid19_data__bd` BEFORE DELETE ON `form_covid19` FOR EACH ROW INSERT INTO `audit_form_covid19` SELECT 'delete', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_covid19_data__bd BEFORE DELETE ON `form_covid19` FOR EACH ROW
+    INSERT INTO `audit_form_covid19` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_covid19` AS d WHERE d.covid19_id = OLD.covid19_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1690,176 +1709,177 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `form_eid`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `form_eid` (
-  `eid_id` int NOT NULL AUTO_INCREMENT,
-  `unique_id` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_instance_id` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `vlsm_country_id` int DEFAULT NULL,
-  `sample_code_key` int DEFAULT NULL,
-  `sample_code_format` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_reordered` varchar(256) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int DEFAULT NULL,
-  `remote_sample_code_format` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `external_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `eid_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unique_id` varchar(256) DEFAULT NULL,
+  `vlsm_instance_id` varchar(100) NOT NULL,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `sample_code_key` int(11) DEFAULT NULL,
+  `sample_code_format` varchar(100) DEFAULT NULL,
+  `sample_code` varchar(100) DEFAULT NULL,
+  `sample_reordered` varchar(256) NOT NULL DEFAULT 'no',
+  `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_format` varchar(100) DEFAULT NULL,
+  `remote_sample_code` varchar(100) DEFAULT NULL,
+  `external_sample_code` varchar(256) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
-  `is_sample_recollected` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_sample_recollected` varchar(11) DEFAULT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `is_sample_rejected` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `funding_source` int(11) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `is_sample_rejected` varchar(10) DEFAULT NULL,
   `test_1_date` date DEFAULT NULL,
-  `test_1_batch` int DEFAULT NULL,
-  `test_1_assay` text COLLATE utf8mb4_general_ci,
-  `test_1_ct_qs` int DEFAULT NULL,
-  `test_1_result` text COLLATE utf8mb4_general_ci,
-  `test_1_repeated` text COLLATE utf8mb4_general_ci,
-  `test_1_repeat_reason` text COLLATE utf8mb4_general_ci,
+  `test_1_batch` int(11) DEFAULT NULL,
+  `test_1_assay` text,
+  `test_1_ct_qs` int(11) DEFAULT NULL,
+  `test_1_result` text,
+  `test_1_repeated` text,
+  `test_1_repeat_reason` text,
   `test_2_date` date DEFAULT NULL,
-  `test_2_batch` int DEFAULT NULL,
-  `test_2_assay` text COLLATE utf8mb4_general_ci,
-  `test_2_ct_qs` int DEFAULT NULL,
-  `test_2_result` text COLLATE utf8mb4_general_ci,
-  `reason_for_sample_rejection` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_2_batch` int(11) DEFAULT NULL,
+  `test_2_assay` text,
+  `test_2_ct_qs` int(11) DEFAULT NULL,
+  `test_2_result` text,
+  `reason_for_sample_rejection` varchar(500) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `province_id` int DEFAULT NULL,
-  `is_encrypted` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `sync_patient_identifiers` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'yes',
-  `mother_id` text COLLATE utf8mb4_general_ci,
-  `mother_name` text COLLATE utf8mb4_general_ci,
-  `mother_surname` text COLLATE utf8mb4_general_ci,
-  `caretaker_contact_consent` text COLLATE utf8mb4_general_ci,
-  `caretaker_phone_number` text COLLATE utf8mb4_general_ci,
-  `caretaker_address` text COLLATE utf8mb4_general_ci,
-  `previous_sample_code` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `clinical_assessment` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `clinician_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
+  `is_encrypted` varchar(10) DEFAULT 'no',
+  `sync_patient_identifiers` varchar(10) DEFAULT 'yes',
+  `mother_id` text,
+  `mother_name` text,
+  `mother_surname` text,
+  `caretaker_contact_consent` text,
+  `caretaker_phone_number` text,
+  `caretaker_address` text,
+  `previous_sample_code` varchar(32) DEFAULT NULL,
+  `clinical_assessment` varchar(256) DEFAULT NULL,
+  `clinician_name` varchar(64) DEFAULT NULL,
   `mother_dob` date DEFAULT NULL,
-  `mother_age_in_years` varchar(3) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mother_marital_status` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `child_id` text COLLATE utf8mb4_general_ci,
-  `child_name` text COLLATE utf8mb4_general_ci,
-  `child_surname` text COLLATE utf8mb4_general_ci,
+  `mother_age_in_years` varchar(3) DEFAULT NULL,
+  `mother_marital_status` varchar(10) DEFAULT NULL,
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `child_id` text,
+  `child_name` text,
+  `child_surname` text,
   `child_dob` date DEFAULT NULL,
-  `child_age` int DEFAULT NULL,
-  `child_gender` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `child_weight` int DEFAULT NULL,
-  `child_prophylactic_arv` text COLLATE utf8mb4_general_ci,
-  `child_prophylactic_arv_other` text COLLATE utf8mb4_general_ci,
+  `child_age` int(11) DEFAULT NULL,
+  `child_gender` varchar(10) DEFAULT NULL,
+  `child_weight` int(11) DEFAULT NULL,
+  `child_prophylactic_arv` text,
+  `child_prophylactic_arv_other` text,
   `mother_hiv_test_date` date DEFAULT NULL,
-  `mother_hiv_status` varchar(16) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mother_hiv_status` varchar(16) DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
-  `no_of_exposed_children` int DEFAULT NULL,
-  `no_of_infected_children` int DEFAULT NULL,
-  `mother_arv_protocol` int DEFAULT NULL,
-  `mode_of_delivery` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mode_of_delivery_other` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mother_art_status` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mother_treatment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mother_regimen` text COLLATE utf8mb4_general_ci,
+  `no_of_exposed_children` int(11) DEFAULT NULL,
+  `no_of_infected_children` int(11) DEFAULT NULL,
+  `mother_arv_protocol` int(11) DEFAULT NULL,
+  `mode_of_delivery` varchar(255) DEFAULT NULL,
+  `mode_of_delivery_other` varchar(32) DEFAULT NULL,
+  `mother_art_status` varchar(32) DEFAULT NULL,
+  `mother_treatment` varchar(255) DEFAULT NULL,
+  `mother_regimen` text,
   `started_art_date` date DEFAULT NULL,
-  `mother_mtct_risk` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mother_treatment_other` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mother_mtct_risk` varchar(256) DEFAULT NULL,
+  `mother_treatment_other` varchar(1000) DEFAULT NULL,
   `mother_treatment_initiation_date` date DEFAULT NULL,
-  `mother_cd4` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mother_cd4` varchar(255) DEFAULT NULL,
   `mother_cd4_test_date` date DEFAULT NULL,
-  `mother_vl_result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mother_vl_result` varchar(255) DEFAULT NULL,
   `mother_vl_test_date` date DEFAULT NULL,
-  `is_child_symptomatic` int DEFAULT NULL,
+  `is_child_symptomatic` int(11) DEFAULT NULL,
   `date_of_weaning` date DEFAULT NULL,
-  `was_child_breastfed` text COLLATE utf8mb4_general_ci,
-  `child_treatment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `child_treatment_other` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `was_child_breastfed` text,
+  `child_treatment` varchar(255) DEFAULT NULL,
+  `child_treatment_other` varchar(1000) DEFAULT NULL,
   `child_treatment_initiation_date` date DEFAULT NULL,
-  `is_infant_receiving_treatment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `has_infant_stopped_breastfeeding` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `infant_on_pmtct_prophylaxis` text COLLATE utf8mb4_general_ci,
-  `infant_on_ctx_prophylaxis` text COLLATE utf8mb4_general_ci,
-  `age_breastfeeding_stopped_in_months` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `infant_art_status` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `infant_art_status_other` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `child_started_art_date` text COLLATE utf8mb4_general_ci,
-  `choice_of_feeding` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_child_on_cotrim` text COLLATE utf8mb4_general_ci,
-  `child_started_cotrim_date` text COLLATE utf8mb4_general_ci,
-  `is_cotrimoxazole_being_administered_to_the_infant` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_requestor_name` text COLLATE utf8mb4_general_ci,
-  `sample_requestor_phone` varchar(16) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `specimen_quality` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `specimen_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_eid_test` int DEFAULT NULL,
-  `pcr_test_performed_before` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `pcr_test_number` int DEFAULT NULL,
-  `last_pcr_id` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `previous_pcr_result` varchar(16) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_infant_receiving_treatment` varchar(255) DEFAULT NULL,
+  `has_infant_stopped_breastfeeding` varchar(255) DEFAULT NULL,
+  `infant_on_pmtct_prophylaxis` text,
+  `infant_on_ctx_prophylaxis` text,
+  `age_breastfeeding_stopped_in_months` varchar(255) DEFAULT NULL,
+  `infant_art_status` varchar(32) DEFAULT NULL,
+  `infant_art_status_other` varchar(32) DEFAULT NULL,
+  `child_started_art_date` text,
+  `choice_of_feeding` varchar(255) DEFAULT NULL,
+  `is_child_on_cotrim` text,
+  `child_started_cotrim_date` text,
+  `is_cotrimoxazole_being_administered_to_the_infant` varchar(255) DEFAULT NULL,
+  `sample_requestor_name` text,
+  `sample_requestor_phone` varchar(16) DEFAULT NULL,
+  `specimen_quality` varchar(255) DEFAULT NULL,
+  `specimen_type` varchar(255) DEFAULT NULL,
+  `reason_for_eid_test` int(11) DEFAULT NULL,
+  `pcr_test_performed_before` varchar(10) DEFAULT NULL,
+  `pcr_test_number` int(11) DEFAULT NULL,
+  `last_pcr_id` varchar(32) DEFAULT NULL,
+  `previous_pcr_result` varchar(16) DEFAULT NULL,
   `last_pcr_date` date DEFAULT NULL,
-  `reason_for_pcr` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_repeat_pcr_other` text COLLATE utf8mb4_general_ci,
-  `rapid_test_performed` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `reason_for_pcr` varchar(500) DEFAULT NULL,
+  `reason_for_repeat_pcr_other` text,
+  `rapid_test_performed` varchar(255) DEFAULT NULL,
   `rapid_test_date` date DEFAULT NULL,
-  `rapid_test_result` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `serological_test` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rapid_test_result` varchar(32) DEFAULT NULL,
+  `serological_test` varchar(11) DEFAULT NULL,
   `pcr_1_test_date` date DEFAULT NULL,
-  `pcr_1_test_result` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `pcr_1_test_result` varchar(50) DEFAULT NULL,
   `pcr_2_test_date` date DEFAULT NULL,
-  `pcr_2_test_result` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `pcr_2_test_result` varchar(50) DEFAULT NULL,
   `pcr_3_test_date` date DEFAULT NULL,
-  `pcr_3_test_result` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_collection_reason` text COLLATE utf8mb4_general_ci,
-  `lab_id` int DEFAULT NULL,
-  `lab_testing_point` text COLLATE utf8mb4_general_ci,
-  `lab_testing_point_other` text COLLATE utf8mb4_general_ci,
+  `pcr_3_test_result` varchar(50) DEFAULT NULL,
+  `sample_collection_reason` text,
+  `lab_id` int(11) DEFAULT NULL,
+  `lab_testing_point` text,
+  `lab_testing_point_other` text,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int DEFAULT NULL,
-  `lab_technician` text COLLATE utf8mb4_general_ci,
-  `lab_reception_person` text COLLATE utf8mb4_general_ci,
-  `eid_test_platform` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_status` int DEFAULT NULL,
-  `locked` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_changing` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tested_by` text COLLATE utf8mb4_general_ci,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
+  `referring_lab_id` int(11) DEFAULT NULL,
+  `lab_technician` text,
+  `lab_reception_person` text,
+  `eid_test_platform` varchar(64) DEFAULT NULL,
+  `result_status` int(11) DEFAULT NULL,
+  `locked` varchar(10) DEFAULT 'no',
+  `result` varchar(255) DEFAULT NULL,
+  `reason_for_changing` varchar(256) DEFAULT NULL,
+  `tested_by` text,
+  `lab_tech_comments` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `result_reviewed_by` text COLLATE utf8mb4_general_ci,
+  `result_reviewed_by` text,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `revised_by` text COLLATE utf8mb4_general_ci,
+  `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
-  `result_approved_by` text COLLATE utf8mb4_general_ci,
-  `second_dbs_requested` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `approver_comments` text COLLATE utf8mb4_general_ci,
+  `result_approved_by` text,
+  `second_dbs_requested` varchar(256) DEFAULT NULL,
+  `approver_comments` text,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `app_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `manual_result_entry` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `import_machine_name` text COLLATE utf8mb4_general_ci,
-  `import_machine_file_name` text COLLATE utf8mb4_general_ci,
+  `app_sample_code` varchar(100) DEFAULT NULL,
+  `manual_result_entry` varchar(10) DEFAULT NULL,
+  `import_machine_name` text,
+  `import_machine_file_name` text,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
   `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `request_created_by` text COLLATE utf8mb4_general_ci,
+  `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT NULL,
-  `last_modified_by` text COLLATE utf8mb4_general_ci,
-  `sample_batch_id` int DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` text COLLATE utf8mb4_general_ci,
-  `lot_number` text COLLATE utf8mb4_general_ci,
-  `source_of_request` text COLLATE utf8mb4_general_ci,
-  `source_data_dump` mediumtext COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `last_modified_by` text,
+  `sample_batch_id` int(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` text,
+  `lot_number` text,
+  `source_of_request` text,
+  `source_data_dump` mediumtext,
+  `result_sent_to_source` varchar(10) DEFAULT 'pending',
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`eid_id`),
   UNIQUE KEY `remote_sample_code` (`remote_sample_code`),
   UNIQUE KEY `sample_code` (`sample_code`,`lab_id`),
@@ -1868,7 +1888,7 @@ CREATE TABLE `form_eid` (
   KEY `sample_code_key` (`sample_code_key`),
   KEY `remote_sample_code_key` (`remote_sample_code_key`),
   KEY `sample_package_id` (`sample_package_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1884,11 +1904,12 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_eid_data__ai` AFTER INSERT ON `form_eid` FOR EACH ROW INSERT INTO `audit_form_eid` SELECT 'insert', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_eid_data__ai AFTER INSERT ON `form_eid` FOR EACH ROW
+    INSERT INTO `audit_form_eid` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_eid` AS d WHERE d.eid_id = NEW.eid_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1900,11 +1921,12 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_eid_data__au` AFTER UPDATE ON `form_eid` FOR EACH ROW INSERT INTO `audit_form_eid` SELECT 'update', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_eid_data__au AFTER UPDATE ON `form_eid` FOR EACH ROW
+    INSERT INTO `audit_form_eid` SELECT 'update', NULL, NOW(), d.*
     FROM `form_eid` AS d WHERE d.eid_id = NEW.eid_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1916,11 +1938,12 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_eid_data__bd` BEFORE DELETE ON `form_eid` FOR EACH ROW INSERT INTO `audit_form_eid` SELECT 'delete', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_eid_data__bd BEFORE DELETE ON `form_eid` FOR EACH ROW
+    INSERT INTO `audit_form_eid` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_eid` AS d WHERE d.eid_id = OLD.eid_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1934,161 +1957,162 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `form_generic`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `form_generic` (
-  `sample_id` int NOT NULL AUTO_INCREMENT,
-  `unique_id` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_type` int DEFAULT NULL,
-  `sub_tests` text COLLATE utf8mb4_general_ci,
+  `sample_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unique_id` varchar(500) DEFAULT NULL,
+  `test_type` int(11) DEFAULT NULL,
+  `sub_tests` text,
   `test_type_form` json DEFAULT NULL,
-  `vlsm_instance_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `vlsm_country_id` int DEFAULT NULL,
-  `remote_sample` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample_code_key` int DEFAULT NULL,
-  `sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code_key` int DEFAULT NULL,
-  `external_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `app_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `province_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_sample_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_batch_id` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` text COLLATE utf8mb4_general_ci,
-  `sample_reordered` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `test_urgency` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `patient_first_name` text COLLATE utf8mb4_general_ci,
-  `patient_middle_name` text COLLATE utf8mb4_general_ci,
-  `patient_last_name` text COLLATE utf8mb4_general_ci,
-  `patient_attendant` text COLLATE utf8mb4_general_ci,
-  `patient_nationality` int DEFAULT NULL,
-  `patient_province` text COLLATE utf8mb4_general_ci,
-  `patient_district` text COLLATE utf8mb4_general_ci,
-  `patient_group` text COLLATE utf8mb4_general_ci,
-  `patient_id` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `laboratory_number` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `vlsm_instance_id` varchar(255) NOT NULL,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
+  `remote_sample_code` varchar(500) DEFAULT NULL,
+  `remote_sample_code_format` varchar(255) DEFAULT NULL,
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `sample_code` varchar(500) DEFAULT NULL,
+  `sample_code_format` varchar(255) DEFAULT NULL,
+  `sample_code_key` int(11) DEFAULT NULL,
+  `external_sample_code` varchar(256) DEFAULT NULL,
+  `app_sample_code` varchar(256) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `province_id` varchar(255) DEFAULT NULL,
+  `facility_sample_id` varchar(255) DEFAULT NULL,
+  `sample_batch_id` varchar(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` text,
+  `sample_reordered` varchar(45) NOT NULL DEFAULT 'no',
+  `test_urgency` varchar(255) DEFAULT NULL,
+  `funding_source` int(11) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `patient_first_name` text,
+  `patient_middle_name` text,
+  `patient_last_name` text,
+  `patient_attendant` text,
+  `patient_nationality` int(11) DEFAULT NULL,
+  `patient_province` text,
+  `patient_district` text,
+  `patient_group` text,
+  `patient_id` varchar(256) DEFAULT NULL,
+  `laboratory_number` varchar(100) DEFAULT NULL,
   `patient_dob` date DEFAULT NULL,
-  `patient_gender` text COLLATE utf8mb4_general_ci,
-  `patient_mobile_number` text COLLATE utf8mb4_general_ci,
-  `patient_location` text COLLATE utf8mb4_general_ci,
-  `patient_address` mediumtext COLLATE utf8mb4_general_ci,
+  `patient_gender` text,
+  `patient_mobile_number` text,
+  `patient_location` text,
+  `patient_address` mediumtext,
   `sample_collection_date` datetime DEFAULT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
-  `sample_type` int DEFAULT NULL,
-  `treatment_initiation` text COLLATE utf8mb4_general_ci,
-  `is_patient_pregnant` text COLLATE utf8mb4_general_ci,
-  `is_patient_breastfeeding` text COLLATE utf8mb4_general_ci,
-  `pregnancy_trimester` int DEFAULT NULL,
-  `consent_to_receive_sms` text COLLATE utf8mb4_general_ci,
-  `request_clinician_name` text COLLATE utf8mb4_general_ci,
+  `sample_type` int(11) DEFAULT NULL,
+  `treatment_initiation` text,
+  `is_patient_pregnant` text,
+  `is_patient_breastfeeding` text,
+  `pregnancy_trimester` int(11) DEFAULT NULL,
+  `consent_to_receive_sms` text,
+  `request_clinician_name` text,
   `test_requested_on` date DEFAULT NULL,
-  `request_clinician_phone_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `request_clinician_phone_number` varchar(255) DEFAULT NULL,
   `sample_testing_date` datetime DEFAULT NULL,
-  `testing_lab_focal_person` text COLLATE utf8mb4_general_ci,
-  `testing_lab_focal_person_phone_number` text COLLATE utf8mb4_general_ci,
+  `testing_lab_focal_person` text,
+  `testing_lab_focal_person_phone_number` text,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_testing_lab_datetime` datetime DEFAULT NULL,
   `result_dispatched_datetime` datetime DEFAULT NULL,
-  `is_sample_rejected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_rejection_facility` int DEFAULT NULL,
-  `reason_for_sample_rejection` int DEFAULT NULL,
+  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `sample_rejection_facility` int(11) DEFAULT NULL,
+  `reason_for_sample_rejection` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
-  `request_created_by` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
+  `request_created_by` varchar(500) NOT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_modified_by` text COLLATE utf8mb4_general_ci,
+  `last_modified_by` text,
   `last_modified_datetime` datetime DEFAULT NULL,
-  `patient_other_id` text COLLATE utf8mb4_general_ci,
-  `patient_age_in_years` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_age_in_months` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `patient_other_id` text,
+  `patient_age_in_years` varchar(255) DEFAULT NULL,
+  `patient_age_in_months` varchar(255) DEFAULT NULL,
   `treatment_initiated_date` date DEFAULT NULL,
-  `treatment_indication` text COLLATE utf8mb4_general_ci,
-  `treatment_details` mediumtext COLLATE utf8mb4_general_ci,
-  `lab_name` text COLLATE utf8mb4_general_ci,
-  `lab_id` int DEFAULT NULL,
+  `treatment_indication` text,
+  `treatment_details` mediumtext,
+  `lab_name` text,
+  `lab_id` int(11) DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int DEFAULT NULL,
-  `lab_code` int DEFAULT NULL,
-  `lab_technician` text COLLATE utf8mb4_general_ci,
-  `lab_contact_person` text COLLATE utf8mb4_general_ci,
-  `lab_phone_number` text COLLATE utf8mb4_general_ci,
+  `referring_lab_id` int(11) DEFAULT NULL,
+  `lab_code` int(11) DEFAULT NULL,
+  `lab_technician` text,
+  `lab_contact_person` text,
+  `lab_phone_number` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `result` text COLLATE utf8mb4_general_ci,
-  `result_unit` int DEFAULT NULL,
-  `final_result_interpretation` text COLLATE utf8mb4_general_ci,
-  `approver_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `reason_for_test_result_changes` mediumtext COLLATE utf8mb4_general_ci,
-  `lot_number` text COLLATE utf8mb4_general_ci,
+  `result` text,
+  `result_unit` int(11) DEFAULT NULL,
+  `final_result_interpretation` text,
+  `approver_comments` mediumtext,
+  `reason_for_test_result_changes` mediumtext,
+  `lot_number` text,
   `lot_expiration_date` date DEFAULT NULL,
-  `tested_by` text COLLATE utf8mb4_general_ci,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `result_approved_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tested_by` text,
+  `lab_tech_comments` mediumtext,
+  `result_approved_by` varchar(256) DEFAULT NULL,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `revised_by` text COLLATE utf8mb4_general_ci,
+  `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
-  `result_reviewed_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `result_reviewed_by` varchar(256) DEFAULT NULL,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `test_methods` text COLLATE utf8mb4_general_ci,
-  `reason_for_testing` text COLLATE utf8mb4_general_ci,
-  `reason_for_testing_other` text COLLATE utf8mb4_general_ci,
-  `sample_collected_by` text COLLATE utf8mb4_general_ci,
-  `facility_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `test_platform` text COLLATE utf8mb4_general_ci,
-  `import_machine_name` int DEFAULT NULL,
-  `physician_name` text COLLATE utf8mb4_general_ci,
+  `test_methods` text,
+  `reason_for_testing` text,
+  `reason_for_testing_other` text,
+  `sample_collected_by` text,
+  `facility_comments` mediumtext,
+  `test_platform` text,
+  `import_machine_name` int(11) DEFAULT NULL,
+  `physician_name` text,
   `date_test_ordered_by_physician` date DEFAULT NULL,
-  `test_number` text COLLATE utf8mb4_general_ci,
+  `test_number` text,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
   `result_sms_sent_datetime` datetime DEFAULT NULL,
-  `is_request_mail_sent` varchar(500) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
+  `is_request_mail_sent` varchar(500) NOT NULL DEFAULT 'no',
   `request_mail_datetime` datetime DEFAULT NULL,
-  `is_result_mail_sent` varchar(500) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
+  `is_result_mail_sent` varchar(500) NOT NULL DEFAULT 'no',
   `result_mail_datetime` datetime DEFAULT NULL,
-  `is_result_sms_sent` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `test_request_export` int NOT NULL DEFAULT '0',
-  `test_request_import` int NOT NULL DEFAULT '0',
-  `test_result_export` int NOT NULL DEFAULT '0',
-  `test_result_import` int NOT NULL DEFAULT '0',
+  `is_result_sms_sent` varchar(45) NOT NULL DEFAULT 'no',
+  `test_request_export` int(11) NOT NULL DEFAULT '0',
+  `test_request_import` int(11) NOT NULL DEFAULT '0',
+  `test_result_export` int(11) NOT NULL DEFAULT '0',
+  `test_result_import` int(11) NOT NULL DEFAULT '0',
   `request_exported_datetime` datetime DEFAULT NULL,
   `request_imported_datetime` datetime DEFAULT NULL,
   `result_exported_datetime` datetime DEFAULT NULL,
   `result_imported_datetime` datetime DEFAULT NULL,
-  `import_machine_file_name` text COLLATE utf8mb4_general_ci,
-  `manual_result_entry` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `source` varchar(500) COLLATE utf8mb4_general_ci DEFAULT 'manual',
-  `qc_tech_name` text COLLATE utf8mb4_general_ci,
-  `qc_tech_sign` text COLLATE utf8mb4_general_ci,
-  `qc_date` text COLLATE utf8mb4_general_ci,
-  `repeat_sample_collection` text COLLATE utf8mb4_general_ci,
+  `import_machine_file_name` text,
+  `manual_result_entry` varchar(255) DEFAULT NULL,
+  `source` varchar(500) DEFAULT 'manual',
+  `qc_tech_name` text,
+  `qc_tech_sign` text,
+  `qc_date` text,
+  `repeat_sample_collection` text,
   `clinic_date` date DEFAULT NULL,
   `report_date` date DEFAULT NULL,
-  `requesting_professional_number` text COLLATE utf8mb4_general_ci,
-  `requesting_category` text COLLATE utf8mb4_general_ci,
-  `requesting_facility_id` int DEFAULT NULL,
-  `requesting_person` text COLLATE utf8mb4_general_ci,
-  `requesting_phone` text COLLATE utf8mb4_general_ci,
+  `requesting_professional_number` text,
+  `requesting_category` text,
+  `requesting_facility_id` int(11) DEFAULT NULL,
+  `requesting_person` text,
+  `requesting_phone` text,
   `requesting_date` date DEFAULT NULL,
-  `result_coming_from` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_processed` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vldash_sync` int DEFAULT '0',
-  `source_of_request` text COLLATE utf8mb4_general_ci,
-  `source_data_dump` text COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` varchar(256) COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `result_coming_from` varchar(255) DEFAULT NULL,
+  `sample_processed` varchar(255) DEFAULT NULL,
+  `vldash_sync` int(11) DEFAULT '0',
+  `source_of_request` text,
+  `source_data_dump` text,
+  `result_sent_to_source` varchar(256) DEFAULT 'pending',
   `test_specific_attributes` json DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
-  `locked` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `data_sync` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
-  `result_status` int NOT NULL,
+  `locked` varchar(50) NOT NULL DEFAULT 'no',
+  `data_sync` varchar(10) NOT NULL DEFAULT '0',
+  `result_status` int(11) NOT NULL,
   PRIMARY KEY (`sample_id`),
   UNIQUE KEY `lab_id` (`lab_id`,`app_sample_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2104,11 +2128,12 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_form_generic_data__ai` AFTER INSERT ON `form_generic` FOR EACH ROW INSERT INTO `audit_form_generic` SELECT 'ai', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_form_generic_data__ai` AFTER INSERT ON `form_generic` FOR EACH ROW
+            INSERT INTO `audit_form_generic` SELECT 'ai', NULL, NOW(), d.*
             FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2120,12 +2145,64 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_form_generic_data__au` AFTER UPDATE ON `form_generic` FOR EACH ROW INSERT INTO `audit_form_generic` SELECT 'au', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_generic_data__ai AFTER INSERT ON `form_generic` FOR EACH ROW
+    INSERT INTO `audit_form_generic` SELECT 'insert', NULL, NOW(), d.*
+    FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_form_generic_data__au` AFTER UPDATE ON `form_generic` FOR EACH ROW
+            INSERT INTO `audit_form_generic` SELECT 'au', NULL, NOW(), d.*
             FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_generic_data__au AFTER UPDATE ON `form_generic` FOR EACH ROW
+    INSERT INTO `audit_form_generic` SELECT 'update', NULL, NOW(), d.*
+    FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_generic_data__bd BEFORE DELETE ON `form_generic` FOR EACH ROW
+    INSERT INTO `audit_form_generic` SELECT 'delete', NULL, NOW(), d.*
+    FROM `form_generic` AS d WHERE d.sample_id = OLD.sample_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -2138,121 +2215,122 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `form_hepatitis`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `form_hepatitis` (
-  `hepatitis_id` int NOT NULL AUTO_INCREMENT,
-  `unique_id` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_instance_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_country_id` int DEFAULT NULL,
-  `sample_code_key` int DEFAULT NULL,
-  `sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_reordered` varchar(256) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `external_sample_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `app_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hepatitis_test_type` text COLLATE utf8mb4_general_ci,
-  `test_number` int DEFAULT NULL,
-  `remote_sample` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int DEFAULT NULL,
-  `remote_sample_code_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `hepatitis_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unique_id` varchar(500) DEFAULT NULL,
+  `vlsm_instance_id` varchar(255) DEFAULT NULL,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `sample_code_key` int(11) DEFAULT NULL,
+  `sample_code_format` varchar(255) DEFAULT NULL,
+  `sample_code` varchar(500) DEFAULT NULL,
+  `sample_reordered` varchar(256) NOT NULL DEFAULT 'no',
+  `external_sample_code` varchar(255) DEFAULT NULL,
+  `app_sample_code` varchar(256) DEFAULT NULL,
+  `hepatitis_test_type` text,
+  `test_number` int(11) DEFAULT NULL,
+  `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_format` varchar(255) DEFAULT NULL,
+  `remote_sample_code` varchar(500) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
-  `sample_condition` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_condition` varchar(255) DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `province_id` int DEFAULT NULL,
-  `is_encrypted` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `sync_patient_identifiers` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'yes',
-  `patient_id` text COLLATE utf8mb4_general_ci,
-  `patient_name` text COLLATE utf8mb4_general_ci,
-  `patient_surname` text COLLATE utf8mb4_general_ci,
+  `funding_source` int(11) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
+  `is_encrypted` varchar(10) DEFAULT 'no',
+  `sync_patient_identifiers` varchar(10) DEFAULT 'yes',
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `patient_id` text,
+  `patient_name` text,
+  `patient_surname` text,
   `patient_dob` date DEFAULT NULL,
-  `patient_age` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_gender` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_phone_number` text COLLATE utf8mb4_general_ci,
-  `patient_province` text COLLATE utf8mb4_general_ci,
-  `patient_district` text COLLATE utf8mb4_general_ci,
-  `patient_city` text COLLATE utf8mb4_general_ci,
-  `patient_nationality` text COLLATE utf8mb4_general_ci,
-  `patient_occupation` text COLLATE utf8mb4_general_ci,
-  `patient_address` text COLLATE utf8mb4_general_ci,
-  `patient_marital_status` text COLLATE utf8mb4_general_ci,
-  `social_category` text COLLATE utf8mb4_general_ci,
-  `patient_insurance` text COLLATE utf8mb4_general_ci,
-  `hbv_vaccination` text COLLATE utf8mb4_general_ci,
-  `is_sample_collected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_hepatitis_test` int DEFAULT NULL,
-  `type_of_test_requested` text COLLATE utf8mb4_general_ci,
-  `reason_for_vl_test` text COLLATE utf8mb4_general_ci,
-  `specimen_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `priority_status` text COLLATE utf8mb4_general_ci,
-  `lab_id` int DEFAULT NULL,
+  `patient_age` varchar(255) DEFAULT NULL,
+  `patient_gender` varchar(255) DEFAULT NULL,
+  `patient_phone_number` text,
+  `patient_province` text,
+  `patient_district` text,
+  `patient_city` text,
+  `patient_nationality` text,
+  `patient_occupation` text,
+  `patient_address` text,
+  `patient_marital_status` text,
+  `social_category` text,
+  `patient_insurance` text,
+  `hbv_vaccination` text,
+  `is_sample_collected` varchar(255) DEFAULT NULL,
+  `reason_for_hepatitis_test` int(11) DEFAULT NULL,
+  `type_of_test_requested` text,
+  `reason_for_vl_test` text,
+  `specimen_type` varchar(255) DEFAULT NULL,
+  `priority_status` text,
+  `lab_id` int(11) DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int DEFAULT NULL,
-  `lab_technician` text COLLATE utf8mb4_general_ci,
-  `testing_point` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_reception_person` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hepatitis_test_platform` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_status` int DEFAULT NULL,
-  `locked` varchar(256) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `is_sample_rejected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_sample_rejection` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `referring_lab_id` int(11) DEFAULT NULL,
+  `lab_technician` text,
+  `testing_point` varchar(255) DEFAULT NULL,
+  `lab_reception_person` varchar(255) DEFAULT NULL,
+  `hepatitis_test_platform` varchar(255) DEFAULT NULL,
+  `result_status` int(11) DEFAULT NULL,
+  `locked` varchar(256) DEFAULT 'no',
+  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `reason_for_sample_rejection` varchar(500) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
-  `result` text COLLATE utf8mb4_general_ci,
-  `tested_by` text COLLATE utf8mb4_general_ci,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `hbsag_result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `anti_hcv_result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hcv_vl_result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hbv_vl_result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hcv_vl_count` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hbv_vl_count` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vl_testing_site` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_result_authorised` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `authorized_by` text COLLATE utf8mb4_general_ci,
+  `result` text,
+  `tested_by` text,
+  `lab_tech_comments` mediumtext,
+  `hbsag_result` varchar(255) DEFAULT NULL,
+  `anti_hcv_result` varchar(255) DEFAULT NULL,
+  `hcv_vl_result` varchar(255) DEFAULT NULL,
+  `hbv_vl_result` varchar(255) DEFAULT NULL,
+  `hcv_vl_count` varchar(255) DEFAULT NULL,
+  `hbv_vl_count` varchar(255) DEFAULT NULL,
+  `vl_testing_site` varchar(255) DEFAULT NULL,
+  `is_result_authorised` varchar(255) DEFAULT NULL,
+  `authorized_by` text,
   `authorized_on` date DEFAULT NULL,
-  `revised_by` text COLLATE utf8mb4_general_ci,
+  `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
-  `reason_for_changing` mediumtext COLLATE utf8mb4_general_ci,
+  `reason_for_changing` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `result_reviewed_by` text COLLATE utf8mb4_general_ci,
+  `result_reviewed_by` text,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `result_approved_by` text COLLATE utf8mb4_general_ci,
-  `approver_comments` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `result_approved_by` text,
+  `approver_comments` varchar(1000) DEFAULT NULL,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `manual_result_entry` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `import_machine_name` text COLLATE utf8mb4_general_ci,
-  `import_machine_file_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `manual_result_entry` varchar(255) DEFAULT 'no',
+  `import_machine_name` text,
+  `import_machine_file_name` varchar(255) DEFAULT NULL,
   `imported_date_time` datetime DEFAULT NULL,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
   `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `request_created_by` text COLLATE utf8mb4_general_ci,
+  `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
-  `sample_batch_id` int DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` text COLLATE utf8mb4_general_ci,
-  `positive_test_manifest_id` int DEFAULT NULL,
-  `positive_test_manifest_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lot_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `source_of_request` text COLLATE utf8mb4_general_ci,
-  `source_data_dump` mediumtext COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` mediumtext COLLATE utf8mb4_general_ci,
+  `sample_batch_id` int(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` text,
+  `positive_test_manifest_id` int(11) DEFAULT NULL,
+  `positive_test_manifest_code` varchar(255) DEFAULT NULL,
+  `lot_number` varchar(255) DEFAULT NULL,
+  `source_of_request` text,
+  `source_data_dump` mediumtext,
+  `result_sent_to_source` mediumtext,
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `is_result_mail_sent` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'no',
+  `is_result_mail_sent` varchar(255) DEFAULT 'no',
   `last_modified_datetime` datetime DEFAULT NULL,
-  `last_modified_by` text COLLATE utf8mb4_general_ci,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `last_modified_by` text,
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`hepatitis_id`),
   UNIQUE KEY `unique_id` (`unique_id`),
   UNIQUE KEY `remote_sample_code` (`remote_sample_code`),
@@ -2262,7 +2340,7 @@ CREATE TABLE `form_hepatitis` (
   KEY `sample_code_key` (`sample_code_key`),
   KEY `remote_sample_code_key` (`remote_sample_code_key`),
   KEY `sample_package_id` (`sample_package_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2278,11 +2356,12 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_hepatitis_data__ai` AFTER INSERT ON `form_hepatitis` FOR EACH ROW INSERT INTO `audit_form_hepatitis` SELECT 'insert', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_hepatitis_data__ai AFTER INSERT ON `form_hepatitis` FOR EACH ROW
+    INSERT INTO `audit_form_hepatitis` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_hepatitis` AS d WHERE d.hepatitis_id = NEW.hepatitis_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2294,11 +2373,12 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_hepatitis_data__au` AFTER UPDATE ON `form_hepatitis` FOR EACH ROW INSERT INTO `audit_form_hepatitis` SELECT 'update', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_hepatitis_data__au AFTER UPDATE ON `form_hepatitis` FOR EACH ROW
+    INSERT INTO `audit_form_hepatitis` SELECT 'update', NULL, NOW(), d.*
     FROM `form_hepatitis` AS d WHERE d.hepatitis_id = NEW.hepatitis_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2310,11 +2390,12 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_hepatitis_data__bd` BEFORE DELETE ON `form_hepatitis` FOR EACH ROW INSERT INTO `audit_form_hepatitis` SELECT 'delete', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_hepatitis_data__bd BEFORE DELETE ON `form_hepatitis` FOR EACH ROW
+    INSERT INTO `audit_form_hepatitis` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_hepatitis` AS d WHERE d.hepatitis_id = OLD.hepatitis_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2328,102 +2409,103 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `form_tb`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `form_tb` (
-  `tb_id` int NOT NULL AUTO_INCREMENT,
-  `unique_id` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_instance_id` mediumtext COLLATE utf8mb4_general_ci,
-  `vlsm_country_id` int DEFAULT NULL,
-  `sample_reordered` varchar(1000) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `sample_code_key` int NOT NULL,
-  `sample_code_format` mediumtext COLLATE utf8mb4_general_ci,
-  `sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `external_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sample` varchar(1000) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int DEFAULT NULL,
-  `remote_sample_code_format` mediumtext COLLATE utf8mb4_general_ci,
-  `remote_sample_code` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tb_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unique_id` varchar(500) DEFAULT NULL,
+  `vlsm_instance_id` mediumtext,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `sample_reordered` varchar(1000) NOT NULL DEFAULT 'no',
+  `sample_code_key` int(11) NOT NULL,
+  `sample_code_format` mediumtext,
+  `sample_code` varchar(500) DEFAULT NULL,
+  `external_sample_code` varchar(100) DEFAULT NULL,
+  `remote_sample` varchar(1000) NOT NULL DEFAULT 'no',
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_format` mediumtext,
+  `remote_sample_code` varchar(500) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `requesting_clinician` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `province_id` int DEFAULT NULL,
-  `referring_unit` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `other_referring_unit` mediumtext COLLATE utf8mb4_general_ci,
-  `is_encrypted` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `sync_patient_identifiers` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'yes',
-  `patient_id` mediumtext COLLATE utf8mb4_general_ci,
-  `patient_name` mediumtext COLLATE utf8mb4_general_ci,
-  `patient_surname` mediumtext COLLATE utf8mb4_general_ci,
+  `funding_source` int(11) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `requesting_clinician` varchar(100) DEFAULT NULL,
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
+  `referring_unit` varchar(256) DEFAULT NULL,
+  `other_referring_unit` mediumtext,
+  `is_encrypted` varchar(10) DEFAULT 'no',
+  `sync_patient_identifiers` varchar(10) DEFAULT 'yes',
+  `patient_id` mediumtext,
+  `patient_name` mediumtext,
+  `patient_surname` mediumtext,
   `patient_dob` date DEFAULT NULL,
-  `patient_age` mediumtext COLLATE utf8mb4_general_ci,
-  `patient_gender` mediumtext COLLATE utf8mb4_general_ci,
-  `patient_address` mediumtext COLLATE utf8mb4_general_ci,
-  `patient_phone` mediumtext COLLATE utf8mb4_general_ci,
+  `patient_age` mediumtext,
+  `patient_gender` mediumtext,
+  `patient_address` mediumtext,
+  `patient_phone` mediumtext,
   `patient_type` json DEFAULT NULL,
-  `other_patient_type` mediumtext COLLATE utf8mb4_general_ci,
-  `hiv_status` mediumtext COLLATE utf8mb4_general_ci,
-  `previously_treated_for_tb` text COLLATE utf8mb4_general_ci,
+  `other_patient_type` mediumtext,
+  `hiv_status` mediumtext,
+  `previously_treated_for_tb` text,
   `tests_requested` json DEFAULT NULL,
-  `number_of_sputum_samples` int DEFAULT NULL,
+  `number_of_sputum_samples` int(11) DEFAULT NULL,
   `first_sputum_samples_collection_date` date DEFAULT NULL,
-  `sample_requestor_name` mediumtext COLLATE utf8mb4_general_ci,
-  `sample_requestor_phone` mediumtext COLLATE utf8mb4_general_ci,
-  `specimen_quality` mediumtext COLLATE utf8mb4_general_ci,
-  `specimen_type` mediumtext COLLATE utf8mb4_general_ci,
-  `other_specimen_type` mediumtext COLLATE utf8mb4_general_ci,
+  `sample_requestor_name` mediumtext,
+  `sample_requestor_phone` mediumtext,
+  `specimen_quality` mediumtext,
+  `specimen_type` mediumtext,
+  `other_specimen_type` mediumtext,
   `reason_for_tb_test` json DEFAULT NULL,
-  `lab_id` int DEFAULT NULL,
-  `lab_technician` mediumtext COLLATE utf8mb4_general_ci,
-  `lab_reception_person` mediumtext COLLATE utf8mb4_general_ci,
-  `is_sample_rejected` varchar(1000) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `reason_for_sample_rejection` mediumtext COLLATE utf8mb4_general_ci,
+  `lab_id` int(11) DEFAULT NULL,
+  `lab_technician` mediumtext,
+  `lab_reception_person` mediumtext,
+  `is_sample_rejected` varchar(1000) NOT NULL DEFAULT 'no',
+  `reason_for_sample_rejection` mediumtext,
   `rejection_on` date DEFAULT NULL,
-  `tb_test_platform` mediumtext COLLATE utf8mb4_general_ci,
-  `result_status` int DEFAULT NULL,
-  `locked` varchar(256) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `result` mediumtext COLLATE utf8mb4_general_ci,
-  `xpert_mtb_result` mediumtext COLLATE utf8mb4_general_ci,
-  `reason_for_changing` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tested_by` mediumtext COLLATE utf8mb4_general_ci,
+  `tb_test_platform` mediumtext,
+  `result_status` int(11) DEFAULT NULL,
+  `locked` varchar(256) DEFAULT 'no',
+  `result` mediumtext,
+  `xpert_mtb_result` mediumtext,
+  `reason_for_changing` varchar(256) DEFAULT NULL,
+  `tested_by` mediumtext,
   `result_date` datetime DEFAULT NULL,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `result_reviewed_by` mediumtext COLLATE utf8mb4_general_ci,
+  `lab_tech_comments` mediumtext,
+  `result_reviewed_by` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `result_approved_by` mediumtext COLLATE utf8mb4_general_ci,
+  `result_approved_by` mediumtext,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `revised_by` mediumtext COLLATE utf8mb4_general_ci,
+  `revised_by` mediumtext,
   `revised_on` datetime DEFAULT NULL,
-  `approver_comments` mediumtext COLLATE utf8mb4_general_ci,
+  `approver_comments` mediumtext,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `app_sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `manual_result_entry` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `import_machine_name` mediumtext COLLATE utf8mb4_general_ci,
-  `import_machine_file_name` mediumtext COLLATE utf8mb4_general_ci,
+  `app_sample_code` varchar(256) DEFAULT NULL,
+  `manual_result_entry` varchar(255) DEFAULT 'no',
+  `import_machine_name` mediumtext,
+  `import_machine_file_name` mediumtext,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
   `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` datetime DEFAULT NULL,
-  `request_created_by` mediumtext COLLATE utf8mb4_general_ci,
+  `request_created_by` mediumtext,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT NULL,
-  `last_modified_by` mediumtext COLLATE utf8mb4_general_ci,
-  `sample_batch_id` int DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` mediumtext COLLATE utf8mb4_general_ci,
-  `source_of_request` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `source_data_dump` mediumtext COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` mediumtext COLLATE utf8mb4_general_ci,
+  `last_modified_by` mediumtext,
+  `sample_batch_id` int(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` mediumtext,
+  `source_of_request` varchar(50) DEFAULT NULL,
+  `source_data_dump` mediumtext,
+  `result_sent_to_source` mediumtext,
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`tb_id`),
   UNIQUE KEY `sample_code` (`sample_code`,`lab_id`),
   UNIQUE KEY `unique_id` (`unique_id`),
@@ -2434,7 +2516,7 @@ CREATE TABLE `form_tb` (
   KEY `sample_code_key` (`sample_code_key`),
   KEY `remote_sample_code_key` (`remote_sample_code_key`),
   KEY `sample_package_id` (`sample_package_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2450,11 +2532,12 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_tb_data__ai` AFTER INSERT ON `form_tb` FOR EACH ROW INSERT INTO `audit_form_tb` SELECT 'insert', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_tb_data__ai AFTER INSERT ON `form_tb` FOR EACH ROW
+    INSERT INTO `audit_form_tb` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_tb` AS d WHERE d.tb_id = NEW.tb_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2466,11 +2549,12 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_tb_data__au` AFTER UPDATE ON `form_tb` FOR EACH ROW INSERT INTO `audit_form_tb` SELECT 'update', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_tb_data__au AFTER UPDATE ON `form_tb` FOR EACH ROW
+    INSERT INTO `audit_form_tb` SELECT 'update', NULL, NOW(), d.*
     FROM `form_tb` AS d WHERE d.tb_id = NEW.tb_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2482,11 +2566,12 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_tb_data__bd` BEFORE DELETE ON `form_tb` FOR EACH ROW INSERT INTO `audit_form_tb` SELECT 'delete', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_tb_data__bd BEFORE DELETE ON `form_tb` FOR EACH ROW
+    INSERT INTO `audit_form_tb` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_tb` AS d WHERE d.tb_id = OLD.tb_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2500,248 +2585,249 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `form_vl`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `form_vl` (
-  `vl_sample_id` int NOT NULL AUTO_INCREMENT,
-  `unique_id` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_instance_id` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `vlsm_country_id` int DEFAULT NULL,
-  `remote_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `external_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `province_id` int DEFAULT NULL,
-  `facility_sample_id` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_batch_id` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_package_id` int DEFAULT NULL,
-  `sample_package_code` text COLLATE utf8mb4_general_ci,
-  `sample_reordered` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int DEFAULT NULL,
-  `remote_sample_code_format` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code_key` int DEFAULT NULL,
-  `sample_code_format` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_code_title` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'auto',
-  `sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_urgency` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `funding_source` int DEFAULT NULL,
-  `community_sample` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `implementing_partner` int DEFAULT NULL,
-  `patient_first_name` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_middle_name` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_last_name` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_responsible_person` text COLLATE utf8mb4_general_ci,
-  `patient_nationality` int DEFAULT NULL,
-  `patient_province` text COLLATE utf8mb4_general_ci,
-  `patient_district` text COLLATE utf8mb4_general_ci,
-  `patient_group` text COLLATE utf8mb4_general_ci,
-  `patient_art_no` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_encrypted` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `sync_patient_identifiers` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'yes',
+  `vl_sample_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unique_id` varchar(256) DEFAULT NULL,
+  `vlsm_instance_id` varchar(100) NOT NULL,
+  `vlsm_country_id` int(11) DEFAULT NULL,
+  `remote_sample_code` varchar(100) DEFAULT NULL,
+  `external_sample_code` varchar(100) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
+  `facility_sample_id` varchar(100) DEFAULT NULL,
+  `sample_batch_id` varchar(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_code` text,
+  `sample_reordered` varchar(45) NOT NULL DEFAULT 'no',
+  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_format` varchar(100) DEFAULT NULL,
+  `sample_code_key` int(11) DEFAULT NULL,
+  `sample_code_format` varchar(100) DEFAULT NULL,
+  `sample_code_title` varchar(45) NOT NULL DEFAULT 'auto',
+  `sample_code` varchar(100) DEFAULT NULL,
+  `test_urgency` varchar(10) DEFAULT NULL,
+  `funding_source` int(11) DEFAULT NULL,
+  `community_sample` varchar(10) DEFAULT NULL,
+  `implementing_partner` int(11) DEFAULT NULL,
+  `system_patient_code` varchar(43) DEFAULT NULL,
+  `patient_first_name` varchar(512) DEFAULT NULL,
+  `patient_middle_name` varchar(512) DEFAULT NULL,
+  `patient_last_name` varchar(512) DEFAULT NULL,
+  `patient_responsible_person` text,
+  `patient_nationality` int(11) DEFAULT NULL,
+  `patient_province` text,
+  `patient_district` text,
+  `patient_group` text,
+  `patient_art_no` varchar(512) DEFAULT NULL,
+  `is_encrypted` varchar(10) DEFAULT 'no',
+  `sync_patient_identifiers` varchar(10) DEFAULT 'yes',
   `patient_dob` date DEFAULT NULL,
-  `patient_below_five_years` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_gender` text COLLATE utf8mb4_general_ci,
-  `patient_mobile_number` text COLLATE utf8mb4_general_ci,
-  `patient_location` text COLLATE utf8mb4_general_ci,
-  `patient_address` mediumtext COLLATE utf8mb4_general_ci,
+  `patient_below_five_years` varchar(255) DEFAULT NULL,
+  `patient_gender` text,
+  `patient_mobile_number` text,
+  `patient_location` text,
+  `patient_address` mediumtext,
   `patient_art_date` date DEFAULT NULL,
-  `patient_receiving_therapy` text COLLATE utf8mb4_general_ci,
-  `patient_drugs_transmission` text COLLATE utf8mb4_general_ci,
-  `patient_tb` text COLLATE utf8mb4_general_ci,
-  `patient_tb_yes` text COLLATE utf8mb4_general_ci,
+  `patient_receiving_therapy` text,
+  `patient_drugs_transmission` text,
+  `patient_tb` text,
+  `patient_tb_yes` text,
   `sample_collection_date` datetime DEFAULT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
-  `sample_type` int DEFAULT NULL,
-  `is_patient_new` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `treatment_initiation` text COLLATE utf8mb4_general_ci,
-  `line_of_treatment` int DEFAULT NULL,
-  `line_of_treatment_failure_assessed` text COLLATE utf8mb4_general_ci,
-  `line_of_treatment_ref_type` text COLLATE utf8mb4_general_ci,
-  `current_arv_protocol` text COLLATE utf8mb4_general_ci,
-  `current_regimen` text COLLATE utf8mb4_general_ci,
+  `sample_type` int(11) DEFAULT NULL,
+  `is_patient_new` varchar(45) DEFAULT NULL,
+  `treatment_initiation` text,
+  `line_of_treatment` int(11) DEFAULT NULL,
+  `line_of_treatment_failure_assessed` text,
+  `line_of_treatment_ref_type` text,
+  `current_arv_protocol` text,
+  `current_regimen` text,
   `date_of_initiation_of_current_regimen` date DEFAULT NULL,
-  `is_patient_pregnant` text COLLATE utf8mb4_general_ci,
-  `no_of_pregnancy_weeks` int DEFAULT NULL,
-  `is_patient_breastfeeding` text COLLATE utf8mb4_general_ci,
-  `no_of_breastfeeding_weeks` int DEFAULT NULL,
-  `patient_has_active_tb` text COLLATE utf8mb4_general_ci,
-  `patient_active_tb_phase` text COLLATE utf8mb4_general_ci,
-  `pregnancy_trimester` int DEFAULT NULL,
-  `arv_adherance_percentage` text COLLATE utf8mb4_general_ci,
-  `is_adherance_poor` text COLLATE utf8mb4_general_ci,
-  `consent_to_receive_sms` text COLLATE utf8mb4_general_ci,
-  `number_of_enhanced_sessions` text COLLATE utf8mb4_general_ci,
+  `is_patient_pregnant` text,
+  `no_of_pregnancy_weeks` int(11) DEFAULT NULL,
+  `is_patient_breastfeeding` text,
+  `no_of_breastfeeding_weeks` int(11) DEFAULT NULL,
+  `patient_has_active_tb` text,
+  `patient_active_tb_phase` text,
+  `pregnancy_trimester` int(11) DEFAULT NULL,
+  `arv_adherance_percentage` text,
+  `is_adherance_poor` text,
+  `consent_to_receive_sms` text,
+  `number_of_enhanced_sessions` text,
   `last_vl_date_routine` date DEFAULT NULL,
-  `last_vl_result_routine` text COLLATE utf8mb4_general_ci,
-  `last_vl_sample_type_routine` int DEFAULT NULL,
+  `last_vl_result_routine` text,
+  `last_vl_sample_type_routine` int(11) DEFAULT NULL,
   `last_vl_date_failure_ac` date DEFAULT NULL,
-  `last_vl_result_failure_ac` text COLLATE utf8mb4_general_ci,
-  `last_vl_sample_type_failure_ac` int DEFAULT NULL,
+  `last_vl_result_failure_ac` text,
+  `last_vl_sample_type_failure_ac` int(11) DEFAULT NULL,
   `last_vl_date_failure` date DEFAULT NULL,
-  `last_vl_result_failure` text COLLATE utf8mb4_general_ci,
-  `last_vl_sample_type_failure` int DEFAULT NULL,
+  `last_vl_result_failure` text,
+  `last_vl_sample_type_failure` int(11) DEFAULT NULL,
   `last_vl_date_ecd` date DEFAULT NULL,
-  `last_vl_result_ecd` text COLLATE utf8mb4_general_ci,
+  `last_vl_result_ecd` text,
   `last_vl_date_cf` date DEFAULT NULL,
-  `last_vl_result_cf` text COLLATE utf8mb4_general_ci,
+  `last_vl_result_cf` text,
   `last_vl_date_if` date DEFAULT NULL,
-  `last_vl_result_if` text COLLATE utf8mb4_general_ci,
-  `request_clinician_name` text COLLATE utf8mb4_general_ci,
+  `last_vl_result_if` text,
+  `request_clinician_name` text,
   `test_requested_on` date DEFAULT NULL,
-  `request_clinician_phone_number` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `cv_number` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `request_clinician_phone_number` varchar(32) DEFAULT NULL,
+  `cv_number` varchar(20) DEFAULT NULL,
   `sample_testing_date` datetime DEFAULT NULL,
-  `vl_focal_person` text COLLATE utf8mb4_general_ci,
-  `vl_focal_person_phone_number` text COLLATE utf8mb4_general_ci,
+  `vl_focal_person` text,
+  `vl_focal_person_phone_number` text,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `result_dispatched_datetime` datetime DEFAULT NULL,
-  `is_sample_rejected` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_rejection_facility` int DEFAULT NULL,
-  `reason_for_sample_rejection` int DEFAULT NULL,
-  `recommended_corrective_action` int DEFAULT NULL,
+  `is_sample_rejected` varchar(10) DEFAULT NULL,
+  `sample_rejection_facility` int(11) DEFAULT NULL,
+  `reason_for_sample_rejection` int(11) DEFAULT NULL,
+  `recommended_corrective_action` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
-  `request_created_by` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
+  `request_created_by` varchar(500) NOT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_modified_by` text COLLATE utf8mb4_general_ci,
+  `last_modified_by` text,
   `last_modified_datetime` datetime DEFAULT NULL,
-  `patient_other_id` text COLLATE utf8mb4_general_ci,
-  `patient_age_in_years` int DEFAULT NULL,
-  `patient_age_in_months` int DEFAULT NULL,
+  `patient_other_id` text,
+  `patient_age_in_years` int(11) DEFAULT NULL,
+  `patient_age_in_months` int(11) DEFAULT NULL,
   `treatment_initiated_date` date DEFAULT NULL,
-  `treatment_duration` text COLLATE utf8mb4_general_ci,
-  `treatment_indication` text COLLATE utf8mb4_general_ci,
-  `patient_anc_no` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `treatment_details` mediumtext COLLATE utf8mb4_general_ci,
-  `sample_visit_type` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vl_sample_suspected_treatment_failure_at` text COLLATE utf8mb4_general_ci,
-  `lab_name` text COLLATE utf8mb4_general_ci,
-  `lab_id` int DEFAULT NULL,
+  `treatment_duration` text,
+  `treatment_indication` text,
+  `patient_anc_no` varchar(100) DEFAULT NULL,
+  `treatment_details` mediumtext,
+  `sample_visit_type` varchar(45) DEFAULT NULL,
+  `vl_sample_suspected_treatment_failure_at` text,
+  `lab_name` text,
+  `lab_id` int(11) DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int DEFAULT NULL,
-  `lab_code` int DEFAULT NULL,
-  `lab_technician` text COLLATE utf8mb4_general_ci,
-  `lab_contact_person` text COLLATE utf8mb4_general_ci,
-  `lab_phone_number` text COLLATE utf8mb4_general_ci,
+  `referring_lab_id` int(11) DEFAULT NULL,
+  `lab_code` int(11) DEFAULT NULL,
+  `lab_technician` text,
+  `lab_contact_person` text,
+  `lab_phone_number` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `result_value_log` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_absolute` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_text` text COLLATE utf8mb4_general_ci,
-  `result_value_absolute_decimal` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result` text COLLATE utf8mb4_general_ci,
-  `approver_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `reason_for_vl_result_changes` mediumtext COLLATE utf8mb4_general_ci,
-  `lot_number` text COLLATE utf8mb4_general_ci,
+  `result_value_log` varchar(32) DEFAULT NULL,
+  `result_value_absolute` varchar(32) DEFAULT NULL,
+  `result_value_text` text,
+  `result_value_absolute_decimal` varchar(255) DEFAULT NULL,
+  `result` text,
+  `approver_comments` mediumtext,
+  `reason_for_vl_result_changes` mediumtext,
+  `lot_number` text,
   `lot_expiration_date` date DEFAULT NULL,
-  `tested_by` text COLLATE utf8mb4_general_ci,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `result_approved_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tested_by` text,
+  `lab_tech_comments` mediumtext,
+  `result_approved_by` varchar(256) DEFAULT NULL,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `revised_by` text COLLATE utf8mb4_general_ci,
+  `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
-  `result_reviewed_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `result_reviewed_by` varchar(256) DEFAULT NULL,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `test_methods` text COLLATE utf8mb4_general_ci,
-  `contact_complete_status` text COLLATE utf8mb4_general_ci,
+  `test_methods` text,
+  `contact_complete_status` text,
   `last_viral_load_date` date DEFAULT NULL,
-  `last_viral_load_result` text COLLATE utf8mb4_general_ci,
-  `last_vl_result_in_log` text COLLATE utf8mb4_general_ci,
-  `reason_for_vl_testing` text COLLATE utf8mb4_general_ci,
-  `reason_for_vl_testing_other` text COLLATE utf8mb4_general_ci,
-  `control_vl_testing_type` text COLLATE utf8mb4_general_ci,
-  `coinfection_type` text COLLATE utf8mb4_general_ci,
-  `drug_substitution` text COLLATE utf8mb4_general_ci,
-  `sample_collected_by` text COLLATE utf8mb4_general_ci,
-  `facility_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `vl_test_platform` text COLLATE utf8mb4_general_ci,
-  `result_value_hiv_detection` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `cphl_vl_result` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `import_machine_name` int DEFAULT NULL,
-  `facility_support_partner` text COLLATE utf8mb4_general_ci,
-  `has_patient_changed_regimen` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_regimen_change` text COLLATE utf8mb4_general_ci,
+  `last_viral_load_result` text,
+  `last_vl_result_in_log` text,
+  `reason_for_vl_testing` text,
+  `reason_for_vl_testing_other` text,
+  `control_vl_testing_type` text,
+  `coinfection_type` text,
+  `drug_substitution` text,
+  `sample_collected_by` text,
+  `facility_comments` mediumtext,
+  `vl_test_platform` text,
+  `result_value_hiv_detection` varchar(32) DEFAULT NULL,
+  `cphl_vl_result` varchar(32) DEFAULT NULL,
+  `import_machine_name` int(11) DEFAULT NULL,
+  `facility_support_partner` text,
+  `has_patient_changed_regimen` varchar(45) DEFAULT NULL,
+  `reason_for_regimen_change` text,
   `regimen_change_date` date DEFAULT NULL,
   `plasma_conservation_temperature` float DEFAULT NULL,
-  `plasma_conservation_duration` text COLLATE utf8mb4_general_ci,
-  `physician_name` text COLLATE utf8mb4_general_ci,
+  `plasma_conservation_duration` text,
+  `physician_name` text,
   `date_test_ordered_by_physician` date DEFAULT NULL,
-  `vl_test_number` text COLLATE utf8mb4_general_ci,
+  `vl_test_number` text,
   `date_dispatched_from_clinic_to_lab` datetime DEFAULT NULL,
   `result_printed_datetime` datetime DEFAULT NULL,
   `result_sms_sent_datetime` datetime DEFAULT NULL,
   `result_printed_on_sts_datetime` datetime DEFAULT NULL,
   `result_printed_on_lis_datetime` datetime DEFAULT NULL,
-  `is_request_mail_sent` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
+  `is_request_mail_sent` varchar(10) NOT NULL DEFAULT 'no',
   `request_mail_datetime` datetime DEFAULT NULL,
-  `is_result_mail_sent` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `app_sample_code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_result_mail_sent` varchar(10) NOT NULL DEFAULT 'no',
+  `app_sample_code` varchar(100) DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `is_result_sms_sent` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `test_request_export` int NOT NULL DEFAULT '0',
-  `test_request_import` int NOT NULL DEFAULT '0',
-  `test_result_export` int NOT NULL DEFAULT '0',
-  `test_result_import` int NOT NULL DEFAULT '0',
+  `is_result_sms_sent` varchar(45) NOT NULL DEFAULT 'no',
+  `test_request_export` int(11) NOT NULL DEFAULT '0',
+  `test_request_import` int(11) NOT NULL DEFAULT '0',
+  `test_result_export` int(11) NOT NULL DEFAULT '0',
+  `test_result_import` int(11) NOT NULL DEFAULT '0',
   `request_exported_datetime` datetime DEFAULT NULL,
   `request_imported_datetime` datetime DEFAULT NULL,
   `result_exported_datetime` datetime DEFAULT NULL,
   `result_imported_datetime` datetime DEFAULT NULL,
-  `result_status` int NOT NULL,
-  `locked` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `import_machine_file_name` text COLLATE utf8mb4_general_ci,
-  `manual_result_entry` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `consultation` text COLLATE utf8mb4_general_ci,
-  `first_line` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `second_line` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `first_viral_load` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `collection_type` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_processed` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vl_result_category` text COLLATE utf8mb4_general_ci,
-  `vldash_sync` int DEFAULT '0',
-  `source_of_request` text COLLATE utf8mb4_general_ci,
-  `source_data_dump` text COLLATE utf8mb4_general_ci,
-  `result_sent_to_source` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `result_status` int(11) NOT NULL,
+  `locked` varchar(10) DEFAULT 'no',
+  `import_machine_file_name` text,
+  `manual_result_entry` varchar(10) DEFAULT NULL,
+  `consultation` text,
+  `first_line` varchar(32) DEFAULT NULL,
+  `second_line` varchar(32) DEFAULT NULL,
+  `first_viral_load` varchar(10) DEFAULT NULL,
+  `collection_type` varchar(100) DEFAULT NULL,
+  `sample_processed` varchar(10) DEFAULT NULL,
+  `vl_result_category` text,
+  `vldash_sync` int(11) DEFAULT '0',
+  `source_of_request` text,
+  `source_data_dump` text,
+  `result_sent_to_source` varchar(10) DEFAULT 'pending',
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
-  `source` varchar(100) COLLATE utf8mb4_general_ci DEFAULT 'manual',
-  `ward` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `art_cd_cells` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `source` varchar(100) DEFAULT 'manual',
+  `ward` varchar(100) DEFAULT NULL,
+  `art_cd_cells` varchar(100) DEFAULT NULL,
   `art_cd_date` date DEFAULT NULL,
-  `who_clinical_stage` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_testing_png` mediumtext COLLATE utf8mb4_general_ci,
-  `tech_name_png` text COLLATE utf8mb4_general_ci,
-  `qc_tech_name` text COLLATE utf8mb4_general_ci,
-  `qc_tech_sign` text COLLATE utf8mb4_general_ci,
-  `qc_date` text COLLATE utf8mb4_general_ci,
-  `whole_blood_ml` text COLLATE utf8mb4_general_ci,
-  `whole_blood_vial` text COLLATE utf8mb4_general_ci,
-  `plasma_ml` text COLLATE utf8mb4_general_ci,
-  `plasma_vial` text COLLATE utf8mb4_general_ci,
-  `plasma_process_time` text COLLATE utf8mb4_general_ci,
-  `plasma_process_tech` text COLLATE utf8mb4_general_ci,
-  `batch_quality` text COLLATE utf8mb4_general_ci,
-  `sample_test_quality` text COLLATE utf8mb4_general_ci,
-  `repeat_sample_collection` text COLLATE utf8mb4_general_ci,
+  `who_clinical_stage` varchar(100) DEFAULT NULL,
+  `reason_testing_png` mediumtext,
+  `tech_name_png` text,
+  `qc_tech_name` text,
+  `qc_tech_sign` text,
+  `qc_date` text,
+  `whole_blood_ml` text,
+  `whole_blood_vial` text,
+  `plasma_ml` text,
+  `plasma_vial` text,
+  `plasma_process_time` text,
+  `plasma_process_tech` text,
+  `batch_quality` text,
+  `sample_test_quality` text,
+  `repeat_sample_collection` text,
   `failed_test_date` datetime DEFAULT NULL,
-  `failed_test_tech` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `failed_vl_result` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_failure` int DEFAULT NULL,
-  `failed_batch_quality` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `failed_sample_test_quality` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `failed_batch_id` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `failed_test_tech` varchar(100) DEFAULT NULL,
+  `failed_vl_result` varchar(32) DEFAULT NULL,
+  `reason_for_failure` int(11) DEFAULT NULL,
+  `failed_batch_quality` varchar(32) DEFAULT NULL,
+  `failed_sample_test_quality` varchar(32) DEFAULT NULL,
+  `failed_batch_id` varchar(32) DEFAULT NULL,
   `clinic_date` date DEFAULT NULL,
   `report_date` date DEFAULT NULL,
-  `sample_to_transport` text COLLATE utf8mb4_general_ci,
-  `requesting_professional_number` text COLLATE utf8mb4_general_ci,
-  `requesting_category` text COLLATE utf8mb4_general_ci,
-  `requesting_vl_service_sector` text COLLATE utf8mb4_general_ci,
-  `requesting_facility_id` int DEFAULT NULL,
-  `requesting_person` text COLLATE utf8mb4_general_ci,
-  `requesting_phone` text COLLATE utf8mb4_general_ci,
+  `sample_to_transport` text,
+  `requesting_professional_number` text,
+  `requesting_category` text,
+  `requesting_vl_service_sector` text,
+  `requesting_facility_id` int(11) DEFAULT NULL,
+  `requesting_person` text,
+  `requesting_phone` text,
   `requesting_date` date DEFAULT NULL,
-  `collection_site` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
-  `remote_sample` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `recency_vl` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no',
-  `recency_sync` int DEFAULT '0',
+  `collection_site` varchar(10) DEFAULT NULL,
+  `data_sync` int(11) NOT NULL DEFAULT '0',
+  `remote_sample` varchar(10) NOT NULL DEFAULT 'no',
+  `recency_vl` varchar(10) NOT NULL DEFAULT 'no',
+  `recency_sync` int(11) DEFAULT '0',
   PRIMARY KEY (`vl_sample_id`),
   UNIQUE KEY `remote_sample_code` (`remote_sample_code`),
   UNIQUE KEY `unique_id` (`unique_id`),
@@ -2767,7 +2853,7 @@ CREATE TABLE `form_vl` (
   KEY `patient_middle_name` (`patient_middle_name`),
   KEY `patient_last_name` (`patient_last_name`),
   CONSTRAINT `form_vl_ibfk_5` FOREIGN KEY (`result_status`) REFERENCES `r_sample_status` (`status_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2783,11 +2869,12 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_vl_data__ai` AFTER INSERT ON `form_vl` FOR EACH ROW INSERT INTO `audit_form_vl` SELECT 'insert', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_vl_data__ai AFTER INSERT ON `form_vl` FOR EACH ROW
+    INSERT INTO `audit_form_vl` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_vl` AS d WHERE d.vl_sample_id = NEW.vl_sample_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2799,11 +2886,12 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_vl_data__au` AFTER UPDATE ON `form_vl` FOR EACH ROW INSERT INTO `audit_form_vl` SELECT 'update', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_vl_data__au AFTER UPDATE ON `form_vl` FOR EACH ROW
+    INSERT INTO `audit_form_vl` SELECT 'update', NULL, NOW(), d.*
     FROM `form_vl` AS d WHERE d.vl_sample_id = NEW.vl_sample_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2815,11 +2903,12 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_vl_data__bd` BEFORE DELETE ON `form_vl` FOR EACH ROW INSERT INTO `audit_form_vl` SELECT 'delete', NULL, NOW(), d.*
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_vl_data__bd BEFORE DELETE ON `form_vl` FOR EACH ROW
+    INSERT INTO `audit_form_vl` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_vl` AS d WHERE d.vl_sample_id = OLD.vl_sample_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2833,14 +2922,14 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `generic_sample_rejection_reason_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `generic_sample_rejection_reason_map` (
-  `map_id` int NOT NULL AUTO_INCREMENT,
-  `rejection_reason_id` int NOT NULL,
-  `test_type_id` int NOT NULL,
+  `map_id` int(11) NOT NULL AUTO_INCREMENT,
+  `rejection_reason_id` int(11) NOT NULL,
+  `test_type_id` int(11) NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`map_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2858,16 +2947,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `generic_test_failure_reason_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `generic_test_failure_reason_map` (
-  `map_id` int NOT NULL AUTO_INCREMENT,
-  `test_failure_reason_id` int NOT NULL,
-  `test_type_id` int NOT NULL,
+  `map_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_failure_reason_id` int(11) NOT NULL,
+  `test_type_id` int(11) NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`map_id`),
   KEY `test_type_id` (`test_type_id`),
   KEY `test_reason_id` (`test_failure_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2885,16 +2974,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `generic_test_methods_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `generic_test_methods_map` (
-  `map_id` int NOT NULL AUTO_INCREMENT,
-  `test_method_id` int NOT NULL,
-  `test_type_id` int NOT NULL,
+  `map_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_method_id` int(11) NOT NULL,
+  `test_type_id` int(11) NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`map_id`),
   KEY `test_type_id` (`test_type_id`),
   KEY `test_method_id` (`test_method_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2912,18 +3001,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `generic_test_reason_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `generic_test_reason_map` (
-  `map_id` int NOT NULL AUTO_INCREMENT,
-  `test_reason_id` int NOT NULL,
-  `test_type_id` int NOT NULL,
+  `map_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_reason_id` int(11) NOT NULL,
+  `test_type_id` int(11) NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`map_id`),
   KEY `test_type_id` (`test_type_id`),
   KEY `test_reason_id` (`test_reason_id`),
   CONSTRAINT `generic_test_reason_map_ibfk_1` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`),
   CONSTRAINT `generic_test_reason_map_ibfk_2` FOREIGN KEY (`test_reason_id`) REFERENCES `r_generic_test_reasons` (`test_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2941,18 +3030,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `generic_test_result_units_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `generic_test_result_units_map` (
-  `map_id` int NOT NULL AUTO_INCREMENT,
-  `unit_id` int NOT NULL,
-  `test_type_id` int NOT NULL,
+  `map_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unit_id` int(11) NOT NULL,
+  `test_type_id` int(11) NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`map_id`),
   KEY `test_type_id` (`test_type_id`),
   KEY `unit_id` (`unit_id`),
-  CONSTRAINT `generic_test_result_units_map_ibfk_1` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `generic_test_result_units_map_ibfk_2` FOREIGN KEY (`unit_id`) REFERENCES `r_generic_test_result_units` (`unit_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `generic_test_result_units_map_ibfk_1` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`),
+  CONSTRAINT `generic_test_result_units_map_ibfk_2` FOREIGN KEY (`unit_id`) REFERENCES `r_generic_test_result_units` (`unit_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2970,28 +3059,28 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `generic_test_results`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `generic_test_results` (
-  `test_id` int NOT NULL AUTO_INCREMENT,
-  `generic_id` int NOT NULL,
-  `facility_id` int DEFAULT NULL,
-  `sub_test_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `final_result_unit` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_type` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_name` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
-  `tested_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_id` int(11) NOT NULL AUTO_INCREMENT,
+  `generic_id` int(11) NOT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `sub_test_name` varchar(256) DEFAULT NULL,
+  `final_result_unit` varchar(256) DEFAULT NULL,
+  `result_type` varchar(256) DEFAULT NULL,
+  `test_name` varchar(500) NOT NULL,
+  `tested_by` varchar(255) DEFAULT NULL,
   `sample_tested_datetime` datetime NOT NULL,
-  `testing_platform` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `kit_lot_no` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `testing_platform` varchar(255) DEFAULT NULL,
+  `kit_lot_no` varchar(256) DEFAULT NULL,
   `kit_expiry_date` date DEFAULT NULL,
-  `result` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
-  `final_result` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_unit` int DEFAULT NULL,
+  `result` varchar(500) NOT NULL,
+  `final_result` varchar(256) DEFAULT NULL,
+  `result_unit` int(11) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_id`),
   KEY `generic_id` (`generic_id`),
   CONSTRAINT `generic_test_results_ibfk_1` FOREIGN KEY (`generic_id`) REFERENCES `form_generic` (`sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3009,18 +3098,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `generic_test_sample_type_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `generic_test_sample_type_map` (
-  `map_id` int NOT NULL AUTO_INCREMENT,
-  `sample_type_id` int NOT NULL,
-  `test_type_id` int NOT NULL,
+  `map_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sample_type_id` int(11) NOT NULL,
+  `test_type_id` int(11) NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`map_id`),
   KEY `sample_type_id` (`sample_type_id`),
   KEY `test_type_id` (`test_type_id`),
   CONSTRAINT `generic_test_sample_type_map_ibfk_1` FOREIGN KEY (`sample_type_id`) REFERENCES `r_generic_sample_types` (`sample_type_id`),
   CONSTRAINT `generic_test_sample_type_map_ibfk_2` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3038,18 +3127,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `generic_test_symptoms_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `generic_test_symptoms_map` (
-  `map_id` int NOT NULL AUTO_INCREMENT,
-  `symptom_id` int NOT NULL,
-  `test_type_id` int NOT NULL,
+  `map_id` int(11) NOT NULL AUTO_INCREMENT,
+  `symptom_id` int(11) NOT NULL,
+  `test_type_id` int(11) NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`map_id`),
   KEY `symptom_id` (`symptom_id`),
   KEY `test_type_id` (`test_type_id`),
   CONSTRAINT `generic_test_symptoms_map_ibfk_1` FOREIGN KEY (`symptom_id`) REFERENCES `r_generic_symptoms` (`symptom_id`),
   CONSTRAINT `generic_test_symptoms_map_ibfk_2` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3067,20 +3156,20 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `geographical_divisions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `geographical_divisions` (
-  `geo_id` int NOT NULL AUTO_INCREMENT,
-  `geo_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `geo_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `geo_parent` varchar(256) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
-  `geo_status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `created_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `geo_id` int(11) NOT NULL AUTO_INCREMENT,
+  `geo_name` varchar(256) DEFAULT NULL,
+  `geo_code` varchar(256) DEFAULT NULL,
+  `geo_parent` varchar(256) NOT NULL DEFAULT '0',
+  `geo_status` varchar(256) DEFAULT NULL,
+  `created_by` varchar(256) DEFAULT NULL,
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`geo_id`),
   UNIQUE KEY `geo_name` (`geo_name`,`geo_parent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3098,18 +3187,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `global_config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `global_config` (
-  `display_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `value` longtext COLLATE utf8mb4_general_ci,
-  `category` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `remote_sync_needed` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `display_name` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `value` longtext,
+  `category` varchar(255) DEFAULT NULL,
+  `remote_sync_needed` varchar(50) DEFAULT NULL,
   `updated_on` datetime DEFAULT NULL,
-  `updated_by` mediumtext COLLATE utf8mb4_general_ci,
-  `status` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `updated_by` mediumtext,
+  `status` varchar(255) NOT NULL DEFAULT 'active',
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3118,7 +3207,7 @@ CREATE TABLE `global_config` (
 
 LOCK TABLES `global_config` WRITE;
 /*!40000 ALTER TABLE `global_config` DISABLE KEYS */;
-INSERT INTO `global_config` VALUES ('App Locale/Language','app_locale','fr_CM','common','no',NULL,NULL,'active'),('App Menu Name','app_menu_name','VLSM','app','no','2022-02-18 16:28:05',NULL,'active'),('Auto Approval','auto_approval','yes','general','no','2022-02-18 16:28:05',NULL,'inactive'),('Barcode Format','barcode_format','C39','general','no','2022-02-18 16:28:05','daemon','active'),('Barcode Printing','bar_code_printing','off','general','no','2022-02-18 16:28:05','daemon','active'),('COVID-19 Auto Approve API Results','covid19_auto_approve_api_results','no','covid19','no',NULL,NULL,'active'),('Generate Patient Code','covid19_generate_patient_code','no','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid-19 Maximum Length','covid19_max_length','','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid-19 Minimum Length','covid19_min_length','','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Minimum Patient ID Length','covid19_min_patient_id_length',NULL,'covid19','no',NULL,NULL,'active'),('Patient Code Prefix','covid19_patient_code_prefix','P','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Positive Confirmatory Tests Required By Central Lab','covid19_positive_confirmatory_tests_required_by_central_lab','yes','covid19','no','2022-02-18 16:28:05',NULL,'active'),('COVID-19 Report QR Code','covid19_report_qr_code','no',NULL,'no','2022-02-18 16:28:05',NULL,'active'),('Report Type','covid19_report_type','default','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid-19 Sample Code Format','covid19_sample_code','MMYY','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid-19 Sample Code Prefix','covid19_sample_code_prefix','C19','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid19 Sample Expiry Days','covid19_sample_expiry_after_days','999','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid19 Sample Lock Expiry Days','covid19_sample_lock_after_days','999','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Show Participant Name in Manifest','covid19_show_participant_name_in_manifest','yes','COVID19','no',NULL,NULL,'active'),('Covid19 Tests Table in Results Pdf','covid19_tests_table_in_results_pdf','no','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Data Sync Interval','data_sync_interval','30','general','no','2022-02-18 16:28:05',NULL,'active'),('CSV Delimiter','default_csv_delimiter',',','general','no',NULL,NULL,'active'),('CSV Enclosure','default_csv_enclosure','\"','general','no',NULL,NULL,'active'),('Default Phone Prefix','default_phone_prefix',NULL,'general','no',NULL,NULL,'active'),('Default Time Zone','default_time_zone','UTC','general','no','2022-02-18 16:28:05','daemon','active'),('Display Encrypt PII Option','display_encrypt_pii_option','no','general','no',NULL,NULL,'active'),('Edit Profile','edit_profile','yes','general','no','2022-02-18 16:28:05','daemon','active'),('EID Auto Approve API Results','eid_auto_approve_api_results','no','eid','no',NULL,NULL,'active'),('EID Maximum Length','eid_max_length','','eid','no','2022-02-18 16:28:05','daemon','active'),('EID Minimum Length','eid_min_length','','eid','no','2022-02-18 16:28:05','daemon','active'),('Minimum Patient ID Length','eid_min_patient_id_length',NULL,'eid','no',NULL,NULL,'active'),('EID Report QR Code','eid_report_qr_code','yes','EID','no',NULL,NULL,'active'),('EID Sample Code','eid_sample_code','MMYY','eid','no','2022-02-18 16:28:05','daemon','active'),('EID Sample Code Prefix','eid_sample_code_prefix','EID','eid','no','2022-02-18 16:28:05','daemon','active'),('EID Sample Expiry Days','eid_sample_expiry_after_days','999','eid','no','2022-02-18 16:28:05',NULL,'active'),('EID Sample Lock Expiry Days','eid_sample_lock_after_days','999','eid','no','2022-02-18 16:28:05',NULL,'active'),('Show Participant Name in Manifest','eid_show_participant_name_in_manifest','yes','EID','no',NULL,NULL,'active'),('Enable QR Code Mechanism','enable_qr_mechanism','no','general','no','2022-02-18 16:28:05',NULL,'inactive'),('Auto Approve API Results','generic_auto_approve_api_results',NULL,'generic-tests','yes','2021-11-02 17:48:32',NULL,'active'),('Generic Maximum Length','generic_max_length',NULL,'generic-tests','yes','2021-11-02 18:16:53',NULL,'active'),('Generic Minimum Length','generic_min_length',NULL,'generic-tests','yes','2021-11-02 18:16:53',NULL,'active'),('Minimum Patient ID Length','generic_min_patient_id_length',NULL,'generic','no',NULL,NULL,'active'),('Generic Sample Code Format','generic_sample_code','MMYY','generic-tests','yes','2021-11-02 17:48:32',NULL,'active'),('Sample Lock Expiry Days','generic_sample_lock_after_days',NULL,'generic-tests','yes','2021-11-02 17:48:32',NULL,'active'),('Lab Tests Show Participant Name in Manifest','generic_show_participant_name_in_manifest',NULL,'generic-tests','yes','2021-11-02 17:48:32',NULL,'active'),('Date Format','gui_date_format','d-M-Y','general','no',NULL,NULL,'active'),('Header','header','MINISTRY OF HEALTH','general','no','2022-02-18 16:28:05','daemon','active'),('Hepatitis Auto Approve API Results','hepatitis_auto_approve_api_results','no','hepatitis','no',NULL,NULL,'active'),('Minimum Patient ID Length','hepatitis_min_patient_id_length',NULL,'hepatitis','no',NULL,NULL,'active'),('Hepatitis Report QR Code','hepatitis_report_qr_code','yes',NULL,NULL,NULL,NULL,'active'),('Hepatitis Sample Code Format','hepatitis_sample_code','MMYY','hepatitis','no','2022-02-18 16:28:05',NULL,'active'),('Hepatitis Sample Code Prefix','hepatitis_sample_code_prefix','HEP','hepatitis','no','2022-02-18 16:28:05',NULL,'active'),('Hepatitis Sample Expiry Days','hepatitis_sample_expiry_after_days','999','hepatitis','no','2022-02-18 16:28:05',NULL,'active'),('Hepatitis Sample Lock Expiry Days','hepatitis_sample_lock_after_days','999','hepatitis','no','2022-02-18 16:28:05',NULL,'active'),('Show Participant Name in Manifest','hepatitis_show_participant_name_in_manifest','yes','HEPATITIS','no',NULL,NULL,'active'),('Result PDF High Viral Load Message','h_vl_msg','','vl','no','2022-02-18 16:28:05','daemon','active'),('Import Non matching Sample Results from Machine generated file','import_non_matching_sample','yes','general','no','2022-02-18 16:28:05','daemon','active'),('Instance Type ','instance_type','Both','general','no','2022-02-18 16:28:05','daemon','active'),('Key','key',NULL,'general','yes',NULL,NULL,'active'),('Lock Approved Covid-19 Samples','lock_approved_covid19_samples','no','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Lock Approved EID Samples','lock_approved_eid_samples','no','eid','no','2022-02-18 16:28:05',NULL,'active'),('Lock Approved TB Samples','lock_approved_tb_samples','no','tb','no','2022-02-18 16:28:05',NULL,'active'),('Lock approved VL Samples','lock_approved_vl_samples','no','vl','no','2022-02-18 16:28:05',NULL,'active'),('Logo','logo',NULL,'general','no','2022-02-18 16:28:05','daemon','active'),('Low Viral Load (text results)','low_vl_text_results','Target Not Detected, TND, < 20, < 40','vl','yes','2022-02-18 16:28:05',NULL,'active'),('Result PDF Low Viral Load Message','l_vl_msg','','vl','yes','2022-02-18 16:28:05','daemon','active'),('Manager Email','manager_email','','general','no','2022-02-18 16:28:05','daemon','active'),('Maximum Length','max_length','','vl','no','2022-02-18 16:28:05','daemon','active'),('Maximum Length of Phone Number','max_phone_length',NULL,'general','no',NULL,NULL,'active'),('Minimum Length','min_length','','vl','no','2022-02-18 16:28:05','daemon','active'),('Minimum Length of Phone Number','min_phone_length',NULL,'general','no',NULL,NULL,'active'),('Patient Name in Result PDF','patient_name_pdf','flname','general','no','2022-02-18 16:28:05','daemon','active'),('Result PDF Mandatory Fields','r_mandatory_fields',NULL,'vl','yes','2022-02-18 16:28:05',NULL,'active'),('Sample Code','sample_code','MMYY','vl','no','2022-02-18 16:28:05','daemon','active'),('Sample Code Prefix','sample_code_prefix','VL','general','no','2022-02-18 16:28:05','daemon','active'),('Sample Type','sample_type','enabled',NULL,'no','2022-02-18 16:28:05',NULL,'active'),('Patient ART No. Date','show_date','no','vl','no','2022-02-18 16:28:05','daemon','active'),('Do you want to show emoticons on the result pdf?','show_smiley','yes','general','no','2022-02-18 16:28:05','daemon','active'),('Support Email','support_email','','general','no',NULL,'','active'),('TB Auto Approve API Results','tb_auto_approve_api_results','no','tb','no',NULL,NULL,'active'),('TB Maximum Length','tb_max_length',NULL,'tb','no','2022-02-18 16:28:05',NULL,'active'),('TB Minimum Length','tb_min_length',NULL,'tb','no','2022-02-18 16:28:05',NULL,'active'),('Minimum Patient ID Length','tb_min_patient_id_length',NULL,'tb','no',NULL,NULL,'active'),('TB Sample Code Format','tb_sample_code','MMYY','tb','no','2022-02-18 16:28:05',NULL,'active'),('TB Sample Code Prefix','tb_sample_code_prefix','TB','tb','no','2022-02-18 16:28:05',NULL,'active'),('TB Sample Expiry Days','tb_sample_expiry_after_days','999','tb','no','2022-02-18 16:28:05',NULL,'active'),('TB Sample Lock Expiry Days','tb_sample_lock_after_days','999','tb','no','2022-02-18 16:28:05',NULL,'active'),('Show Participant Name in Manifest','tb_show_participant_name_in_manifest','yes','TB','no',NULL,NULL,'active'),('Testing Status','testing_status','enabled','vl','no','2022-02-18 16:28:05',NULL,'active'),('Training Mode','training_mode','no','common','no','2023-10-16 17:03:43',NULL,'active'),('Training Mode Text','training_mode_text','TRAINING SERVER','common','no','2023-10-16 17:03:43',NULL,'active'),('Same user can Review and Approve','user_review_approve','yes','general','no','2022-02-18 16:28:05','daemon','active'),('Viral Load Threshold Limit','viral_load_threshold_limit','1000','vl','no','2022-02-18 16:28:05','daemon','active'),('Vldashboard Url','vldashboard_url',NULL,'general','yes','2022-02-18 16:28:05','daemon','active'),('VL Auto Approve API Results','vl_auto_approve_api_results','no','vl','no',NULL,NULL,'active'),('Viral Load Export Format','vl_excel_export_format','default','VL','no',NULL,'','active'),('Viral Load Form','vl_form','4','general','no','2022-02-18 16:28:05','daemon','active'),('Interpret and Convert VL Results','vl_interpret_and_convert_results','no','VL','yes',NULL,NULL,'active'),('Minimum Patient ID Length','vl_min_patient_id_length',NULL,'vl','no',NULL,NULL,'active'),('VL Monthly Target','vl_monthly_target','no','vl','no','2022-02-18 16:28:05','','active'),('VL Report QR Code','vl_report_qr_code','yes','vl','no',NULL,NULL,'active'),('VL Sample Expiry Days','vl_sample_expiry_after_days','999','vl','no','2022-02-18 16:28:05',NULL,'active'),('VL Sample Lock Expiry Days','vl_sample_lock_after_days','999','vl','no','2022-02-18 16:28:05',NULL,'active'),('Show Participant Name in Manifest','vl_show_participant_name_in_manifest','yes','VL','no',NULL,NULL,'active');
+INSERT INTO `global_config` VALUES ('App Locale/Language','app_locale','en_EN','common','no',NULL,NULL,'active'),('App Menu Name','app_menu_name','VLSM','app','no','2022-02-18 16:28:05',NULL,'active'),('Auto Approval','auto_approval','yes','general','no','2022-02-18 16:28:05',NULL,'inactive'),('Barcode Format','barcode_format','C39','general','no','2022-02-18 16:28:05','daemon','active'),('Barcode Printing','bar_code_printing','off','general','no','2022-02-18 16:28:05','daemon','active'),('COVID-19 Auto Approve API Results','covid19_auto_approve_api_results','no','covid19','no',NULL,NULL,'active'),('Generate Patient Code','covid19_generate_patient_code','no','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid-19 Maximum Length','covid19_max_length','','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid-19 Minimum Length','covid19_min_length','','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Minimum Patient ID Length','covid19_min_patient_id_length',NULL,'covid19','no',NULL,NULL,'active'),('Patient Code Prefix','covid19_patient_code_prefix','P','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Positive Confirmatory Tests Required By Central Lab','covid19_positive_confirmatory_tests_required_by_central_lab','yes','covid19','no','2022-02-18 16:28:05',NULL,'active'),('COVID-19 Report QR Code','covid19_report_qr_code','no',NULL,'no','2022-02-18 16:28:05',NULL,'active'),('Report Type','covid19_report_type','default','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid-19 Sample Code Format','covid19_sample_code','MMYY','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid-19 Sample Code Prefix','covid19_sample_code_prefix','C19','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid19 Sample Expiry Days','covid19_sample_expiry_after_days','999','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Covid19 Sample Lock Expiry Days','covid19_sample_lock_after_days','999','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Show Participant Name in Manifest','covid19_show_participant_name_in_manifest','yes','COVID19','no',NULL,NULL,'active'),('Covid19 Tests Table in Results Pdf','covid19_tests_table_in_results_pdf','no','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Data Sync Interval','data_sync_interval','30','general','no','2022-02-18 16:28:05',NULL,'active'),('CSV Delimiter','default_csv_delimiter',',','general','no',NULL,NULL,'active'),('CSV Enclosure','default_csv_enclosure','\"','general','no',NULL,NULL,'active'),('Default Phone Prefix','default_phone_prefix',NULL,'general','no',NULL,NULL,'active'),('Default Time Zone','default_time_zone','UTC','general','no','2022-02-18 16:28:05','daemon','active'),('Display Encrypt PII Option','display_encrypt_pii_option','no','general','no',NULL,NULL,'active'),('Edit Profile','edit_profile','yes','general','no','2022-02-18 16:28:05','daemon','active'),('EID Auto Approve API Results','eid_auto_approve_api_results','no','eid','no',NULL,NULL,'active'),('EID Maximum Length','eid_max_length','','eid','no','2022-02-18 16:28:05','daemon','active'),('EID Minimum Length','eid_min_length','','eid','no','2022-02-18 16:28:05','daemon','active'),('Minimum Patient ID Length','eid_min_patient_id_length',NULL,'eid','no',NULL,NULL,'active'),('EID Report QR Code','eid_report_qr_code','yes','EID','no',NULL,NULL,'active'),('EID Sample Code','eid_sample_code','MMYY','eid','no','2022-02-18 16:28:05','daemon','active'),('EID Sample Code Prefix','eid_sample_code_prefix','EID','eid','no','2022-02-18 16:28:05','daemon','active'),('EID Sample Expiry Days','eid_sample_expiry_after_days','999','eid','no','2022-02-18 16:28:05',NULL,'active'),('EID Sample Lock Expiry Days','eid_sample_lock_after_days','999','eid','no','2022-02-18 16:28:05',NULL,'active'),('Show Participant Name in Manifest','eid_show_participant_name_in_manifest','yes','EID','no',NULL,NULL,'active'),('Enable QR Code Mechanism','enable_qr_mechanism','no','general','no','2022-02-18 16:28:05',NULL,'inactive'),('Auto Approve API Results','generic_auto_approve_api_results',NULL,'generic-tests','yes','2021-11-02 17:48:32',NULL,'active'),('Generic Maximum Length','generic_max_length',NULL,'generic-tests','yes','2021-11-02 18:16:53',NULL,'active'),('Generic Minimum Length','generic_min_length',NULL,'generic-tests','yes','2021-11-02 18:16:53',NULL,'active'),('Minimum Patient ID Length','generic_min_patient_id_length',NULL,'generic','no',NULL,NULL,'active'),('Generic Sample Code Format','generic_sample_code','MMYY','generic-tests','yes','2021-11-02 17:48:32',NULL,'active'),('Sample Lock Expiry Days','generic_sample_lock_after_days',NULL,'generic-tests','yes','2021-11-02 17:48:32',NULL,'active'),('Lab Tests Show Participant Name in Manifest','generic_show_participant_name_in_manifest',NULL,'generic-tests','yes','2021-11-02 17:48:32',NULL,'active'),('Date Format','gui_date_format','d-M-Y','general','no',NULL,NULL,'active'),('Header','header','MINISTRY OF HEALTH','general','no','2022-02-18 16:28:05','daemon','active'),('Hepatitis Auto Approve API Results','hepatitis_auto_approve_api_results','no','hepatitis','no',NULL,NULL,'active'),('Minimum Patient ID Length','hepatitis_min_patient_id_length',NULL,'hepatitis','no',NULL,NULL,'active'),('Hepatitis Report QR Code','hepatitis_report_qr_code','yes',NULL,NULL,NULL,NULL,'active'),('Hepatitis Sample Code Format','hepatitis_sample_code','MMYY','hepatitis','no','2022-02-18 16:28:05',NULL,'active'),('Hepatitis Sample Code Prefix','hepatitis_sample_code_prefix','HEP','hepatitis','no','2022-02-18 16:28:05',NULL,'active'),('Hepatitis Sample Expiry Days','hepatitis_sample_expiry_after_days','999','hepatitis','no','2022-02-18 16:28:05',NULL,'active'),('Hepatitis Sample Lock Expiry Days','hepatitis_sample_lock_after_days','999','hepatitis','no','2022-02-18 16:28:05',NULL,'active'),('Show Participant Name in Manifest','hepatitis_show_participant_name_in_manifest','yes','HEPATITIS','no',NULL,NULL,'active'),('Result PDF High Viral Load Message','h_vl_msg','','vl','no','2022-02-18 16:28:05','daemon','active'),('Import Non matching Sample Results from Machine generated file','import_non_matching_sample','yes','general','no','2022-02-18 16:28:05','daemon','active'),('Instance Type ','instance_type','Both','general','no','2022-02-18 16:28:05','daemon','active'),('Key','key',NULL,'general','yes',NULL,NULL,'active'),('Lock Approved Covid-19 Samples','lock_approved_covid19_samples','no','covid19','no','2022-02-18 16:28:05',NULL,'active'),('Lock Approved EID Samples','lock_approved_eid_samples','no','eid','no','2022-02-18 16:28:05',NULL,'active'),('Lock Approved TB Samples','lock_approved_tb_samples','no','tb','no','2022-02-18 16:28:05',NULL,'active'),('Lock approved VL Samples','lock_approved_vl_samples','no','vl','no','2022-02-18 16:28:05',NULL,'active'),('Logo','logo',NULL,'general','no','2022-02-18 16:28:05','daemon','active'),('Low Viral Load (text results)','low_vl_text_results','Target Not Detected, TND, < 20, < 40','vl','yes','2022-02-18 16:28:05',NULL,'active'),('Result PDF Low Viral Load Message','l_vl_msg','','vl','yes','2022-02-18 16:28:05','daemon','active'),('Manager Email','manager_email','','general','no','2022-02-18 16:28:05','daemon','active'),('Maximum Length','max_length','','vl','no','2022-02-18 16:28:05','daemon','active'),('Maximum Length of Phone Number','max_phone_length',NULL,'general','no',NULL,NULL,'active'),('Minimum Length','min_length','','vl','no','2022-02-18 16:28:05','daemon','active'),('Minimum Length of Phone Number','min_phone_length',NULL,'general','no',NULL,NULL,'active'),('Patient Name in Result PDF','patient_name_pdf','flname','general','no','2022-02-18 16:28:05','daemon','active'),('Result PDF Mandatory Fields','r_mandatory_fields',NULL,'vl','yes','2022-02-18 16:28:05',NULL,'active'),('Sample Code','sample_code','MMYY','vl','no','2022-02-18 16:28:05','daemon','active'),('Sample Code Prefix','sample_code_prefix','VL','general','no','2022-02-18 16:28:05','daemon','active'),('Sample Type','sample_type','enabled',NULL,'no','2022-02-18 16:28:05',NULL,'active'),('Patient ART No. Date','show_date','no','vl','no','2022-02-18 16:28:05','daemon','active'),('Do you want to show emoticons on the result pdf?','show_smiley','yes','general','no','2022-02-18 16:28:05','daemon','active'),('Support Email','support_email','','general','no',NULL,'','active'),('TB Auto Approve API Results','tb_auto_approve_api_results','no','tb','no',NULL,NULL,'active'),('TB Maximum Length','tb_max_length',NULL,'tb','no','2022-02-18 16:28:05',NULL,'active'),('TB Minimum Length','tb_min_length',NULL,'tb','no','2022-02-18 16:28:05',NULL,'active'),('Minimum Patient ID Length','tb_min_patient_id_length',NULL,'tb','no',NULL,NULL,'active'),('TB Sample Code Format','tb_sample_code','MMYY','tb','no','2022-02-18 16:28:05',NULL,'active'),('TB Sample Code Prefix','tb_sample_code_prefix','TB','tb','no','2022-02-18 16:28:05',NULL,'active'),('TB Sample Expiry Days','tb_sample_expiry_after_days','999','tb','no','2022-02-18 16:28:05',NULL,'active'),('TB Sample Lock Expiry Days','tb_sample_lock_after_days','999','tb','no','2022-02-18 16:28:05',NULL,'active'),('Show Participant Name in Manifest','tb_show_participant_name_in_manifest','yes','TB','no',NULL,NULL,'active'),('Testing Status','testing_status','enabled','vl','no','2022-02-18 16:28:05',NULL,'active'),('Training Mode','training_mode','no','common','no','2023-10-16 17:03:43',NULL,'active'),('Training Mode Text','training_mode_text','TRAINING SERVER','common','no','2023-10-16 17:03:43',NULL,'active'),('Same user can Review and Approve','user_review_approve','yes','general','no','2022-02-18 16:28:05','daemon','active'),('Viral Load Threshold Limit','viral_load_threshold_limit','1000','vl','no','2022-02-18 16:28:05','daemon','active'),('Vldashboard Url','vldashboard_url',NULL,'general','yes','2022-02-18 16:28:05','daemon','active'),('VL Auto Approve API Results','vl_auto_approve_api_results','no','vl','no',NULL,NULL,'active'),('Viral Load Export Format','vl_excel_export_format','default','VL','no',NULL,'','active'),('Viral Load Form','vl_form',NULL,'general','no','2022-02-18 16:28:05','daemon','active'),('Interpret and Convert VL Results','vl_interpret_and_convert_results','no','VL','yes',NULL,NULL,'active'),('Minimum Patient ID Length','vl_min_patient_id_length',NULL,'vl','no',NULL,NULL,'active'),('VL Monthly Target','vl_monthly_target','no','vl','no','2022-02-18 16:28:05','','active'),('VL Report QR Code','vl_report_qr_code','yes','vl','no',NULL,NULL,'active'),('VL Sample Expiry Days','vl_sample_expiry_after_days','999','vl','no','2022-02-18 16:28:05',NULL,'active'),('VL Sample Lock Expiry Days','vl_sample_lock_after_days','999','vl','no','2022-02-18 16:28:05',NULL,'active'),('Show Participant Name in Manifest','vl_show_participant_name_in_manifest','yes','VL','no',NULL,NULL,'active');
 /*!40000 ALTER TABLE `global_config` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3128,13 +3217,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `health_facilities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `health_facilities` (
-  `test_type` enum('vl','eid','covid19','hepatitis','tb','generic-tests') COLLATE utf8mb4_general_ci NOT NULL,
-  `facility_id` int NOT NULL,
+  `test_type` enum('vl','eid','covid19','hepatitis','tb','generic-tests') NOT NULL,
+  `facility_id` int(11) NOT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`test_type`,`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3152,13 +3241,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `hepatitis_patient_comorbidities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `hepatitis_patient_comorbidities` (
-  `hepatitis_id` int NOT NULL,
-  `comorbidity_id` int NOT NULL,
-  `comorbidity_detected` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `hepatitis_id` int(11) NOT NULL,
+  `comorbidity_id` int(11) NOT NULL,
+  `comorbidity_detected` varchar(255) NOT NULL,
   PRIMARY KEY (`hepatitis_id`,`comorbidity_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3176,13 +3265,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `hepatitis_risk_factors`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `hepatitis_risk_factors` (
-  `hepatitis_id` int NOT NULL,
-  `riskfactors_id` int NOT NULL,
-  `riskfactors_detected` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `hepatitis_id` int(11) NOT NULL,
+  `riskfactors_id` int(11) NOT NULL,
+  `riskfactors_detected` varchar(255) NOT NULL,
   PRIMARY KEY (`hepatitis_id`,`riskfactors_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3200,41 +3289,41 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `hold_sample_import`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `hold_sample_import` (
-  `hold_sample_id` int NOT NULL AUTO_INCREMENT,
-  `facility_id` int DEFAULT NULL,
-  `lab_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_id` int DEFAULT NULL,
-  `lab_contact_person` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_phone_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_received_at_vl_lab_datetime` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_tested_datetime` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_dispatched_datetime` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_reviewed_datetime` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_reviewed_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `approver_comments` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lot_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `hold_sample_id` int(11) NOT NULL AUTO_INCREMENT,
+  `facility_id` int(11) DEFAULT NULL,
+  `lab_name` varchar(255) DEFAULT NULL,
+  `lab_id` int(11) DEFAULT NULL,
+  `lab_contact_person` varchar(255) DEFAULT NULL,
+  `lab_phone_number` varchar(255) DEFAULT NULL,
+  `sample_received_at_vl_lab_datetime` varchar(255) DEFAULT NULL,
+  `sample_tested_datetime` varchar(255) DEFAULT NULL,
+  `result_dispatched_datetime` varchar(255) DEFAULT NULL,
+  `result_reviewed_datetime` varchar(255) DEFAULT NULL,
+  `result_reviewed_by` varchar(255) DEFAULT NULL,
+  `lab_tech_comments` mediumtext,
+  `approver_comments` varchar(255) DEFAULT NULL,
+  `lot_number` varchar(255) DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `sample_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `batch_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `order_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_log` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_absolute` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_text` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_absolute_decimal` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_details` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `import_batch_tracking` int DEFAULT NULL,
-  `vl_test_platform` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `import_machine_name` int DEFAULT NULL,
-  `import_machine_file_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `manual_result_entry` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_code` varchar(255) DEFAULT NULL,
+  `batch_code` varchar(255) DEFAULT NULL,
+  `sample_type` varchar(255) DEFAULT NULL,
+  `order_number` varchar(255) DEFAULT NULL,
+  `result_value_log` varchar(255) DEFAULT NULL,
+  `result_value_absolute` varchar(255) DEFAULT NULL,
+  `result_value_text` varchar(255) DEFAULT NULL,
+  `result_value_absolute_decimal` varchar(255) DEFAULT NULL,
+  `result` varchar(255) DEFAULT NULL,
+  `sample_details` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `import_batch_tracking` int(11) DEFAULT NULL,
+  `vl_test_platform` varchar(255) DEFAULT NULL,
+  `import_machine_name` int(11) DEFAULT NULL,
+  `import_machine_file_name` varchar(255) DEFAULT NULL,
+  `manual_result_entry` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`hold_sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3252,15 +3341,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `instrument_controls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `instrument_controls` (
-  `test_type` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `config_id` int NOT NULL,
-  `number_of_in_house_controls` int DEFAULT NULL,
-  `number_of_manufacturer_controls` int DEFAULT NULL,
-  `number_of_calibrators` int DEFAULT NULL,
+  `test_type` varchar(255) NOT NULL,
+  `config_id` int(11) NOT NULL,
+  `number_of_in_house_controls` int(11) DEFAULT NULL,
+  `number_of_manufacturer_controls` int(11) DEFAULT NULL,
+  `number_of_calibrators` int(11) DEFAULT NULL,
   PRIMARY KEY (`test_type`,`config_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3279,19 +3368,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `instrument_machines`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `instrument_machines` (
-  `config_machine_id` int NOT NULL AUTO_INCREMENT,
-  `config_id` int NOT NULL,
-  `config_machine_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `date_format` text COLLATE utf8mb4_general_ci,
-  `file_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `poc_device` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `latitude` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `longitude` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `config_machine_id` int(11) NOT NULL AUTO_INCREMENT,
+  `config_id` int(11) NOT NULL,
+  `config_machine_name` varchar(255) NOT NULL,
+  `date_format` text,
+  `file_name` varchar(256) DEFAULT NULL,
+  `poc_device` varchar(255) DEFAULT NULL,
+  `latitude` varchar(255) DEFAULT NULL,
+  `longitude` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`config_machine_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3310,26 +3399,26 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `instruments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `instruments` (
-  `config_id` int NOT NULL AUTO_INCREMENT,
-  `machine_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_id` int DEFAULT NULL,
+  `config_id` int(11) NOT NULL AUTO_INCREMENT,
+  `machine_name` varchar(255) DEFAULT NULL,
+  `lab_id` int(11) DEFAULT NULL,
   `supported_tests` json DEFAULT NULL,
-  `import_machine_file_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lower_limit` int DEFAULT NULL,
-  `higher_limit` int DEFAULT NULL,
-  `max_no_of_samples_in_a_batch` int NOT NULL,
-  `number_of_in_house_controls` int DEFAULT NULL,
-  `number_of_manufacturer_controls` int DEFAULT NULL,
-  `number_of_calibrators` int DEFAULT NULL,
-  `low_vl_result_text` mediumtext COLLATE utf8mb4_general_ci,
+  `import_machine_file_name` varchar(255) DEFAULT NULL,
+  `lower_limit` int(11) DEFAULT NULL,
+  `higher_limit` int(11) DEFAULT NULL,
+  `max_no_of_samples_in_a_batch` int(11) NOT NULL,
+  `number_of_in_house_controls` int(11) DEFAULT NULL,
+  `number_of_manufacturer_controls` int(11) DEFAULT NULL,
+  `number_of_calibrators` int(11) DEFAULT NULL,
+  `low_vl_result_text` mediumtext,
   `approved_by` json DEFAULT NULL,
   `reviewed_by` json DEFAULT NULL,
-  `status` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `status` varchar(45) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`config_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3348,22 +3437,22 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `lab_report_signatories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lab_report_signatories` (
-  `signatory_id` int NOT NULL AUTO_INCREMENT,
-  `name_of_signatory` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `designation` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `signature` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_types` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_id` int DEFAULT NULL,
-  `display_order` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `signatory_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name_of_signatory` varchar(255) DEFAULT NULL,
+  `designation` varchar(255) DEFAULT NULL,
+  `signature` varchar(255) DEFAULT NULL,
+  `test_types` varchar(255) DEFAULT NULL,
+  `lab_id` int(11) DEFAULT NULL,
+  `display_order` varchar(50) DEFAULT NULL,
   `added_on` datetime DEFAULT NULL,
-  `added_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `signatory_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `added_by` varchar(255) DEFAULT NULL,
+  `signatory_status` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`signatory_id`),
   KEY `lab_id` (`lab_id`),
   CONSTRAINT `lab_report_signatories_ibfk_1` FOREIGN KEY (`lab_id`) REFERENCES `facility_details` (`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3381,17 +3470,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `log_result_updates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log_result_updates` (
-  `result_log_id` int NOT NULL AUTO_INCREMENT,
-  `user_id` text COLLATE utf8mb4_general_ci,
-  `vl_sample_id` int NOT NULL,
-  `test_type` varchar(244) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'vl, eid, covid19, hepatitis, tb',
-  `result_method` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `file_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `result_log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` text,
+  `vl_sample_id` int(11) NOT NULL,
+  `test_type` varchar(244) DEFAULT NULL COMMENT 'vl, eid, covid19, hepatitis, tb',
+  `result_method` varchar(256) DEFAULT NULL,
+  `file_name` varchar(256) DEFAULT NULL,
   `updated_on` datetime DEFAULT NULL,
   PRIMARY KEY (`result_log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3409,19 +3498,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `move_samples`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `move_samples` (
-  `move_sample_id` int NOT NULL AUTO_INCREMENT,
-  `moved_from_lab_id` int NOT NULL,
-  `moved_to_lab_id` int NOT NULL,
-  `test_type` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `move_sample_id` int(11) NOT NULL AUTO_INCREMENT,
+  `moved_from_lab_id` int(11) NOT NULL,
+  `moved_to_lab_id` int(11) NOT NULL,
+  `test_type` varchar(256) DEFAULT NULL,
   `moved_on` date DEFAULT NULL,
-  `moved_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_moving` mediumtext COLLATE utf8mb4_general_ci,
-  `move_approved_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `moved_by` varchar(255) DEFAULT NULL,
+  `reason_for_moving` mediumtext,
+  `move_approved_by` varchar(255) DEFAULT NULL,
   `list_request_created_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`move_sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3439,15 +3528,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `move_samples_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `move_samples_map` (
-  `sample_map_id` int NOT NULL AUTO_INCREMENT,
-  `move_sample_id` int NOT NULL,
-  `test_type_sample_id` int DEFAULT NULL,
-  `test_type` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `move_sync_status` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
+  `sample_map_id` int(11) NOT NULL AUTO_INCREMENT,
+  `move_sample_id` int(11) NOT NULL,
+  `test_type_sample_id` int(11) DEFAULT NULL,
+  `test_type` varchar(256) DEFAULT NULL,
+  `move_sync_status` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`sample_map_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3465,14 +3554,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `other_config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `other_config` (
-  `type` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `display_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `value` mediumtext COLLATE utf8mb4_general_ci,
+  `type` varchar(45) DEFAULT NULL,
+  `display_name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `value` mediumtext,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3491,19 +3580,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `package_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `package_details` (
-  `package_id` int NOT NULL AUTO_INCREMENT,
-  `package_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `added_by` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `package_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `module` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_id` int DEFAULT NULL,
-  `number_of_samples` int DEFAULT NULL,
+  `package_id` int(11) NOT NULL AUTO_INCREMENT,
+  `package_code` varchar(255) NOT NULL,
+  `added_by` varchar(255) NOT NULL,
+  `package_status` varchar(255) DEFAULT NULL,
+  `module` varchar(255) DEFAULT NULL,
+  `lab_id` int(11) DEFAULT NULL,
+  `number_of_samples` int(11) DEFAULT NULL,
   `request_created_datetime` datetime DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`package_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3521,34 +3610,34 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `patients`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `patients` (
-  `system_patient_code` varchar(43) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `is_encrypted` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_code_prefix` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_code_key` int DEFAULT NULL,
-  `patient_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_first_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `patient_middle_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `patient_last_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `patient_gender` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_phone_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_age_in_years` int DEFAULT NULL,
-  `patient_age_in_months` int DEFAULT NULL,
+  `system_patient_code` varchar(43) NOT NULL,
+  `is_encrypted` varchar(10) DEFAULT NULL,
+  `patient_code_prefix` varchar(256) DEFAULT NULL,
+  `patient_code_key` int(11) DEFAULT NULL,
+  `patient_code` varchar(256) DEFAULT NULL,
+  `patient_first_name` text,
+  `patient_middle_name` text,
+  `patient_last_name` text,
+  `patient_gender` varchar(256) DEFAULT NULL,
+  `patient_phone_number` varchar(50) DEFAULT NULL,
+  `patient_age_in_years` int(11) DEFAULT NULL,
+  `patient_age_in_months` int(11) DEFAULT NULL,
   `patient_dob` date DEFAULT NULL,
-  `patient_address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `is_patient_pregnant` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_patient_breastfeeding` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_province` int DEFAULT NULL,
-  `patient_district` int DEFAULT NULL,
-  `status` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `patient_address` text,
+  `is_patient_pregnant` varchar(10) DEFAULT NULL,
+  `is_patient_breastfeeding` varchar(10) DEFAULT NULL,
+  `patient_province` int(11) DEFAULT NULL,
+  `patient_district` int(11) DEFAULT NULL,
+  `status` varchar(11) DEFAULT NULL,
   `patient_registered_on` datetime DEFAULT NULL,
-  `patient_registered_by` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `patient_registered_by` text,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`system_patient_code`),
   UNIQUE KEY `patient_code_prefix` (`patient_code_prefix`,`patient_code_key`),
   UNIQUE KEY `single_patient` (`patient_code`,`patient_gender`,`patient_dob`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3561,60 +3650,23 @@ LOCK TABLES `patients` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `patients_old`
---
-
-DROP TABLE IF EXISTS `patients_old`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `patients_old` (
-  `patient_id` int NOT NULL AUTO_INCREMENT,
-  `patient_code_prefix` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `patient_code_key` int DEFAULT NULL,
-  `patient_code` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `is_encrypted` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_first_name` text COLLATE utf8mb4_general_ci,
-  `patient_middle_name` text COLLATE utf8mb4_general_ci,
-  `patient_last_name` text COLLATE utf8mb4_general_ci,
-  `patient_gender` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `patient_province` int DEFAULT NULL,
-  `patient_district` int DEFAULT NULL,
-  `patient_registered_on` datetime DEFAULT NULL,
-  `patient_registered_by` text COLLATE utf8mb4_general_ci,
-  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`patient_id`),
-  UNIQUE KEY `patient_code` (`patient_code`),
-  UNIQUE KEY `patient_code_prefix` (`patient_code_prefix`,`patient_code_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `patients_old`
---
-
-LOCK TABLES `patients_old` WRITE;
-/*!40000 ALTER TABLE `patients_old` DISABLE KEYS */;
-/*!40000 ALTER TABLE `patients_old` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `privileges`
 --
 
 DROP TABLE IF EXISTS `privileges`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `privileges` (
-  `privilege_id` int NOT NULL AUTO_INCREMENT,
-  `resource_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `privilege_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `privilege_id` int(11) NOT NULL AUTO_INCREMENT,
+  `resource_id` varchar(255) NOT NULL,
+  `privilege_name` varchar(255) DEFAULT NULL,
   `shared_privileges` json DEFAULT NULL,
-  `display_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `display_order` int DEFAULT NULL,
-  `show_mode` varchar(32) COLLATE utf8mb4_general_ci DEFAULT 'always',
+  `display_name` varchar(255) DEFAULT NULL,
+  `display_order` int(11) DEFAULT NULL,
+  `show_mode` varchar(32) DEFAULT 'always',
   PRIMARY KEY (`privilege_id`),
   UNIQUE KEY `resource` (`resource_id`,`privilege_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=420 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=420 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3633,17 +3685,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `province_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `province_details` (
-  `province_id` int NOT NULL AUTO_INCREMENT,
-  `province_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `province_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `province_id` int(11) NOT NULL AUTO_INCREMENT,
+  `province_name` varchar(255) DEFAULT NULL,
+  `province_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`province_id`),
   UNIQUE KEY `province_name` (`province_name`),
   UNIQUE KEY `province_name_2` (`province_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3661,26 +3713,26 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `qc_covid19`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `qc_covid19` (
-  `qc_id` int NOT NULL AUTO_INCREMENT,
-  `unique_id` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
-  `qc_code` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `qc_code_key` int NOT NULL,
-  `testkit` int NOT NULL,
-  `lot_no` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
+  `qc_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unique_id` varchar(500) NOT NULL,
+  `qc_code` varchar(256) NOT NULL,
+  `qc_code_key` int(11) NOT NULL,
+  `testkit` int(11) NOT NULL,
+  `lot_no` varchar(256) NOT NULL,
   `expiry_date` date NOT NULL,
-  `lab_id` int NOT NULL,
-  `testing_point` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `lab_id` int(11) NOT NULL,
+  `testing_point` varchar(256) DEFAULT NULL,
   `qc_received_datetime` datetime DEFAULT NULL,
-  `tested_by` text COLLATE utf8mb4_general_ci NOT NULL,
+  `tested_by` text NOT NULL,
   `qc_tested_datetime` datetime NOT NULL,
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`qc_id`),
   UNIQUE KEY `qc_code` (`qc_code`),
   UNIQUE KEY `unique_id` (`unique_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3698,14 +3750,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `qc_covid19_tests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `qc_covid19_tests` (
-  `qc_test_id` int NOT NULL AUTO_INCREMENT,
-  `qc_id` int NOT NULL,
-  `test_label` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `test_result` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
+  `qc_test_id` int(11) NOT NULL AUTO_INCREMENT,
+  `qc_id` int(11) NOT NULL,
+  `test_label` varchar(256) NOT NULL,
+  `test_result` varchar(256) NOT NULL,
   PRIMARY KEY (`qc_test_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3723,16 +3775,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_countries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_countries` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `iso_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `iso2` varchar(2) COLLATE utf8mb4_general_ci NOT NULL,
-  `iso3` varchar(3) COLLATE utf8mb4_general_ci NOT NULL,
-  `numeric_code` smallint NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `iso_name` varchar(255) NOT NULL,
+  `iso2` varchar(2) NOT NULL,
+  `iso3` varchar(3) NOT NULL,
+  `numeric_code` smallint(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3751,14 +3803,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_covid19_comorbidities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_covid19_comorbidities` (
-  `comorbidity_id` int NOT NULL AUTO_INCREMENT,
-  `comorbidity_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `comorbidity_status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `comorbidity_id` int(11) NOT NULL AUTO_INCREMENT,
+  `comorbidity_name` varchar(255) DEFAULT NULL,
+  `comorbidity_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`comorbidity_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3777,17 +3829,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_covid19_qc_testkits`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_covid19_qc_testkits` (
-  `testkit_id` int NOT NULL AUTO_INCREMENT,
-  `testkit_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `no_of_tests` int DEFAULT NULL,
+  `testkit_id` int(11) NOT NULL AUTO_INCREMENT,
+  `testkit_name` varchar(256) DEFAULT NULL,
+  `no_of_tests` int(11) DEFAULT NULL,
   `labels_and_expected_results` json DEFAULT NULL,
-  `status` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
+  `status` varchar(256) NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`testkit_id`),
   UNIQUE KEY `testkit_name` (`testkit_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3805,15 +3857,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_covid19_results`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_covid19_results` (
-  `result_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `result` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `status` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `result_id` varchar(255) NOT NULL,
+  `result` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3832,17 +3884,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_covid19_sample_rejection_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_covid19_sample_rejection_reasons` (
-  `rejection_reason_id` int NOT NULL AUTO_INCREMENT,
-  `rejection_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_type` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'general',
-  `rejection_reason_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_reason_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `rejection_reason_name` varchar(255) DEFAULT NULL,
+  `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
+  `rejection_reason_status` varchar(255) DEFAULT NULL,
+  `rejection_reason_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`rejection_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3861,15 +3913,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_covid19_sample_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_covid19_sample_type` (
-  `sample_id` int NOT NULL AUTO_INCREMENT,
-  `sample_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sample_name` varchar(255) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3888,15 +3940,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_covid19_symptoms`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_covid19_symptoms` (
-  `symptom_id` int NOT NULL AUTO_INCREMENT,
-  `symptom_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `parent_symptom` int DEFAULT NULL,
-  `symptom_status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `symptom_id` int(11) NOT NULL AUTO_INCREMENT,
+  `symptom_name` varchar(255) DEFAULT NULL,
+  `parent_symptom` int(11) DEFAULT NULL,
+  `symptom_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`symptom_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3915,15 +3967,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_covid19_test_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_covid19_test_reasons` (
-  `test_reason_id` int NOT NULL AUTO_INCREMENT,
-  `test_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `parent_reason` int DEFAULT NULL,
-  `test_reason_status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_reason_name` varchar(255) DEFAULT NULL,
+  `parent_reason` int(11) DEFAULT NULL,
+  `test_reason_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`test_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3942,15 +3994,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_eid_results`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_eid_results` (
-  `result_id` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `result` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `status` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `result_id` varchar(256) NOT NULL,
+  `result` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3969,17 +4021,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_eid_sample_rejection_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_eid_sample_rejection_reasons` (
-  `rejection_reason_id` int NOT NULL AUTO_INCREMENT,
-  `rejection_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_type` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'general',
-  `rejection_reason_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_reason_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `rejection_reason_name` varchar(255) DEFAULT NULL,
+  `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
+  `rejection_reason_status` varchar(255) DEFAULT NULL,
+  `rejection_reason_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`rejection_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3998,15 +4050,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_eid_sample_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_eid_sample_type` (
-  `sample_id` int NOT NULL AUTO_INCREMENT,
-  `sample_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sample_name` varchar(255) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4025,16 +4077,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_eid_test_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_eid_test_reasons` (
-  `test_reason_id` int NOT NULL AUTO_INCREMENT,
-  `test_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `parent_reason` int DEFAULT '0',
-  `test_reason_status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_reason_name` varchar(255) DEFAULT NULL,
+  `parent_reason` int(11) DEFAULT '0',
+  `test_reason_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int DEFAULT '0',
+  `data_sync` int(11) DEFAULT '0',
   PRIMARY KEY (`test_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4052,15 +4104,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_funding_sources`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_funding_sources` (
-  `funding_source_id` int NOT NULL AUTO_INCREMENT,
-  `funding_source_name` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
-  `funding_source_status` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `funding_source_id` int(11) NOT NULL AUTO_INCREMENT,
+  `funding_source_name` varchar(500) NOT NULL,
+  `funding_source_status` varchar(45) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int DEFAULT '0',
+  `data_sync` int(11) DEFAULT '0',
   PRIMARY KEY (`funding_source_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4079,17 +4131,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_generic_sample_rejection_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_generic_sample_rejection_reasons` (
-  `rejection_reason_id` int NOT NULL AUTO_INCREMENT,
-  `rejection_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_type` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'general',
-  `rejection_reason_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_reason_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `rejection_reason_name` varchar(255) DEFAULT NULL,
+  `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
+  `rejection_reason_status` varchar(255) DEFAULT NULL,
+  `rejection_reason_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`rejection_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4107,17 +4159,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_generic_sample_types`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_generic_sample_types` (
-  `sample_type_id` int NOT NULL AUTO_INCREMENT,
-  `sample_type_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_type_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_type_status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sample_type_code` varchar(256) DEFAULT NULL,
+  `sample_type_name` varchar(256) DEFAULT NULL,
+  `sample_type_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`sample_type_id`),
   UNIQUE KEY `sample_type_code` (`sample_type_code`),
   UNIQUE KEY `sample_type_name` (`sample_type_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4135,17 +4187,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_generic_symptoms`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_generic_symptoms` (
-  `symptom_id` int NOT NULL AUTO_INCREMENT,
-  `symptom_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `symptom_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `symptom_status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `symptom_id` int(11) NOT NULL AUTO_INCREMENT,
+  `symptom_name` varchar(256) DEFAULT NULL,
+  `symptom_code` varchar(256) DEFAULT NULL,
+  `symptom_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`symptom_id`),
   UNIQUE KEY `symptom_code` (`symptom_code`),
   UNIQUE KEY `symptom_name` (`symptom_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4163,15 +4215,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_generic_test_categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_generic_test_categories` (
-  `test_category_id` int NOT NULL AUTO_INCREMENT,
-  `test_category_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_category_status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_category_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_category_name` varchar(256) DEFAULT NULL,
+  `test_category_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_category_id`),
   UNIQUE KEY `test_category_name` (`test_category_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4189,16 +4241,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_generic_test_failure_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_generic_test_failure_reasons` (
-  `test_failure_reason_id` int NOT NULL AUTO_INCREMENT,
-  `test_failure_reason_code` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `test_failure_reason` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_failure_reason_status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_failure_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_failure_reason_code` varchar(256) NOT NULL,
+  `test_failure_reason` varchar(256) DEFAULT NULL,
+  `test_failure_reason_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int DEFAULT NULL,
+  `data_sync` int(11) DEFAULT NULL,
   PRIMARY KEY (`test_failure_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4216,15 +4268,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_generic_test_methods`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_generic_test_methods` (
-  `test_method_id` int NOT NULL AUTO_INCREMENT,
-  `test_method_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_method_status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_method_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_method_name` varchar(256) DEFAULT NULL,
+  `test_method_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_method_id`),
   UNIQUE KEY `test_method_name` (`test_method_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4242,17 +4294,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_generic_test_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_generic_test_reasons` (
-  `test_reason_id` int NOT NULL AUTO_INCREMENT,
-  `test_reason_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_reason` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_reason_status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_reason_code` varchar(256) DEFAULT NULL,
+  `test_reason` varchar(256) DEFAULT NULL,
+  `test_reason_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_reason_id`),
   UNIQUE KEY `test_reason_code` (`test_reason_code`),
   UNIQUE KEY `test_reason` (`test_reason`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4270,14 +4322,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_generic_test_result_units`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_generic_test_result_units` (
-  `unit_id` int NOT NULL AUTO_INCREMENT,
-  `unit_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `unit_status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `unit_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unit_name` varchar(256) DEFAULT NULL,
+  `unit_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`unit_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4295,14 +4347,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_hepatitis_comorbidities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_hepatitis_comorbidities` (
-  `comorbidity_id` int NOT NULL AUTO_INCREMENT,
-  `comorbidity_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `comorbidity_status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `comorbidity_id` int(11) NOT NULL AUTO_INCREMENT,
+  `comorbidity_name` varchar(255) DEFAULT NULL,
+  `comorbidity_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`comorbidity_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4321,15 +4373,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_hepatitis_results`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_hepatitis_results` (
-  `result_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `result` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `status` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `result_id` varchar(255) NOT NULL,
+  `result` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4348,14 +4400,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_hepatitis_risk_factors`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_hepatitis_risk_factors` (
-  `riskfactor_id` int NOT NULL AUTO_INCREMENT,
-  `riskfactor_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `riskfactor_status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `riskfactor_id` int(11) NOT NULL AUTO_INCREMENT,
+  `riskfactor_name` varchar(255) DEFAULT NULL,
+  `riskfactor_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`riskfactor_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4374,17 +4426,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_hepatitis_sample_rejection_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_hepatitis_sample_rejection_reasons` (
-  `rejection_reason_id` int NOT NULL AUTO_INCREMENT,
-  `rejection_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_type` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'general',
-  `rejection_reason_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_reason_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `rejection_reason_name` varchar(255) DEFAULT NULL,
+  `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
+  `rejection_reason_status` varchar(255) DEFAULT NULL,
+  `rejection_reason_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`rejection_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4403,15 +4455,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_hepatitis_sample_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_hepatitis_sample_type` (
-  `sample_id` int NOT NULL AUTO_INCREMENT,
-  `sample_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sample_name` varchar(255) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4430,15 +4482,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_hepatitis_test_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_hepatitis_test_reasons` (
-  `test_reason_id` int NOT NULL AUTO_INCREMENT,
-  `test_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `parent_reason` int DEFAULT NULL,
-  `test_reason_status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_reason_name` varchar(255) DEFAULT NULL,
+  `parent_reason` int(11) DEFAULT NULL,
+  `test_reason_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`test_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4457,15 +4509,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_implementation_partners`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_implementation_partners` (
-  `i_partner_id` int NOT NULL AUTO_INCREMENT,
-  `i_partner_name` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
-  `i_partner_status` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `i_partner_id` int(11) NOT NULL AUTO_INCREMENT,
+  `i_partner_name` varchar(500) NOT NULL,
+  `i_partner_status` varchar(45) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int DEFAULT '0',
+  `data_sync` int(11) DEFAULT '0',
   PRIMARY KEY (`i_partner_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4484,16 +4536,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_recommended_corrective_actions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_recommended_corrective_actions` (
-  `recommended_corrective_action_id` int NOT NULL AUTO_INCREMENT,
-  `test_type` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `recommended_corrective_action_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `recommended_corrective_action_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_type` varchar(11) DEFAULT NULL,
+  `recommended_corrective_action_name` varchar(256) DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`recommended_corrective_action_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4511,12 +4563,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_sample_controls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_sample_controls` (
-  `r_sample_control_id` int NOT NULL AUTO_INCREMENT,
-  `r_sample_control_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `r_sample_control_id` int(11) NOT NULL AUTO_INCREMENT,
+  `r_sample_control_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`r_sample_control_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4535,13 +4587,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_sample_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_sample_status` (
-  `status_id` int NOT NULL AUTO_INCREMENT,
-  `status_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `status_id` int(11) NOT NULL AUTO_INCREMENT,
+  `status_name` varchar(255) DEFAULT NULL,
+  `status` varchar(45) NOT NULL DEFAULT 'active',
   PRIMARY KEY (`status_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4560,16 +4612,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_tb_results`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_tb_results` (
-  `result_id` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `result` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_type` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `result_id` varchar(256) NOT NULL,
+  `result` varchar(256) DEFAULT NULL,
+  `result_type` varchar(256) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4588,17 +4640,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_tb_sample_rejection_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_tb_sample_rejection_reasons` (
-  `rejection_reason_id` int NOT NULL AUTO_INCREMENT,
-  `rejection_reason_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_type` varchar(256) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'general',
-  `rejection_reason_status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_reason_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `rejection_reason_name` varchar(256) DEFAULT NULL,
+  `rejection_type` varchar(256) NOT NULL DEFAULT 'general',
+  `rejection_reason_status` varchar(45) DEFAULT NULL,
+  `rejection_reason_code` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`rejection_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4617,15 +4669,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_tb_sample_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_tb_sample_type` (
-  `sample_id` int NOT NULL AUTO_INCREMENT,
-  `sample_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sample_name` varchar(256) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4644,15 +4696,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_tb_test_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_tb_test_reasons` (
-  `test_reason_id` int NOT NULL AUTO_INCREMENT,
-  `test_reason_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `parent_reason` int DEFAULT NULL,
-  `test_reason_status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_reason_name` varchar(256) DEFAULT NULL,
+  `parent_reason` int(11) DEFAULT NULL,
+  `test_reason_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4671,20 +4723,20 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_test_types`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_test_types` (
-  `test_type_id` int NOT NULL AUTO_INCREMENT,
-  `test_standard_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_generic_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_short_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_loinc_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_category` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_form_config` text COLLATE utf8mb4_general_ci,
-  `test_results_config` text COLLATE utf8mb4_general_ci,
-  `test_status` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_standard_name` varchar(255) DEFAULT NULL,
+  `test_generic_name` varchar(255) DEFAULT NULL,
+  `test_short_code` varchar(255) DEFAULT NULL,
+  `test_loinc_code` varchar(255) DEFAULT NULL,
+  `test_category` varchar(256) DEFAULT NULL,
+  `test_form_config` text,
+  `test_results_config` text,
+  `test_status` varchar(100) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4702,18 +4754,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_vl_art_regimen`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_vl_art_regimen` (
-  `art_id` int NOT NULL AUTO_INCREMENT,
-  `art_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `parent_art` int NOT NULL,
-  `headings` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nation_identifier` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `art_status` varchar(45) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `art_id` int(11) NOT NULL AUTO_INCREMENT,
+  `art_code` varchar(255) DEFAULT NULL,
+  `parent_art` int(11) NOT NULL,
+  `headings` varchar(255) DEFAULT NULL,
+  `nation_identifier` varchar(255) DEFAULT NULL,
+  `art_status` varchar(45) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`art_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4732,17 +4784,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_vl_results`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_vl_results` (
-  `result_id` int NOT NULL AUTO_INCREMENT,
-  `result` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `status` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `result_id` int(11) NOT NULL AUTO_INCREMENT,
+  `result` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL DEFAULT 'active',
   `available_for_instruments` json DEFAULT NULL,
-  `interpretation` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `interpretation` varchar(25) NOT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4760,17 +4812,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_vl_sample_rejection_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_vl_sample_rejection_reasons` (
-  `rejection_reason_id` int NOT NULL AUTO_INCREMENT,
-  `rejection_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_type` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'general',
-  `rejection_reason_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_reason_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `rejection_reason_name` varchar(255) DEFAULT NULL,
+  `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
+  `rejection_reason_status` varchar(255) DEFAULT NULL,
+  `rejection_reason_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`rejection_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4789,15 +4841,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_vl_sample_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_vl_sample_type` (
-  `sample_id` int NOT NULL AUTO_INCREMENT,
-  `sample_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sample_name` varchar(255) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4816,15 +4868,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_vl_test_failure_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_vl_test_failure_reasons` (
-  `failure_id` int NOT NULL AUTO_INCREMENT,
-  `failure_reason` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `failure_id` int(11) NOT NULL AUTO_INCREMENT,
+  `failure_reason` varchar(256) DEFAULT NULL,
+  `status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int DEFAULT NULL,
+  `data_sync` int(11) DEFAULT NULL,
   PRIMARY KEY (`failure_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4842,16 +4894,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `r_vl_test_reasons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `r_vl_test_reasons` (
-  `test_reason_id` int NOT NULL AUTO_INCREMENT,
-  `test_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `parent_reason` int DEFAULT '0',
-  `test_reason_status` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_reason_id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_reason_name` varchar(255) DEFAULT NULL,
+  `parent_reason` int(11) DEFAULT '0',
+  `test_reason_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int DEFAULT '0',
+  `data_sync` int(11) DEFAULT '0',
   PRIMARY KEY (`test_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4870,19 +4922,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `report_to_mail`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `report_to_mail` (
-  `report_mail_id` int NOT NULL AUTO_INCREMENT,
-  `batch_id` int NOT NULL,
-  `subject` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `to_mail` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `encrypt` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `comment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `report_mail_id` int(11) NOT NULL AUTO_INCREMENT,
+  `batch_id` int(11) NOT NULL,
+  `subject` varchar(255) DEFAULT NULL,
+  `to_mail` varchar(255) DEFAULT NULL,
+  `encrypt` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`report_mail_id`),
   KEY `batch_id` (`batch_id`),
   CONSTRAINT `report_to_mail_ibfk_1` FOREIGN KEY (`batch_id`) REFERENCES `batch_details` (`batch_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4900,13 +4952,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `resources`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `resources` (
-  `resource_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `module` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `display_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `resource_id` varchar(255) NOT NULL,
+  `module` varchar(255) NOT NULL,
+  `display_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`resource_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4925,15 +4977,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `result_import_stats`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `result_import_stats` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `imported_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `no_of_results_imported` int DEFAULT NULL,
-  `imported_by` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `import_mode` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `no_of_results_imported` int(11) DEFAULT NULL,
+  `imported_by` varchar(1000) DEFAULT NULL,
+  `import_mode` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4951,16 +5003,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `roles` (
-  `role_id` int NOT NULL AUTO_INCREMENT,
-  `role_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `role_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `access_type` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `landing_page` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `role_id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(255) DEFAULT NULL,
+  `role_code` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `access_type` varchar(256) DEFAULT NULL,
+  `landing_page` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4979,17 +5031,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `roles_privileges_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `roles_privileges_map` (
-  `map_id` int NOT NULL AUTO_INCREMENT,
-  `role_id` int NOT NULL,
-  `privilege_id` int NOT NULL,
+  `map_id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_id` int(11) NOT NULL,
+  `privilege_id` int(11) NOT NULL,
   PRIMARY KEY (`map_id`),
   KEY `role_id` (`role_id`),
   KEY `privilege_id` (`privilege_id`),
   CONSTRAINT `roles_privileges_map_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`),
   CONSTRAINT `roles_privileges_map_ibfk_2` FOREIGN KEY (`privilege_id`) REFERENCES `privileges` (`privilege_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5498 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5498 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5008,26 +5060,26 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `s_app_menu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `s_app_menu` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `module` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `sub_module` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `is_header` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `display_text` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `link` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `inner_pages` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `show_mode` varchar(32) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'always',
-  `icon` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `has_children` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `additional_class_names` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `parent_id` int DEFAULT '0',
-  `display_order` int NOT NULL,
-  `status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `module` varchar(256) NOT NULL,
+  `sub_module` varchar(256) DEFAULT NULL,
+  `is_header` varchar(256) DEFAULT NULL,
+  `display_text` varchar(256) NOT NULL,
+  `link` varchar(256) DEFAULT NULL,
+  `inner_pages` varchar(256) DEFAULT NULL,
+  `show_mode` varchar(32) NOT NULL DEFAULT 'always',
+  `icon` varchar(256) DEFAULT NULL,
+  `has_children` varchar(256) DEFAULT NULL,
+  `additional_class_names` varchar(256) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT '0',
+  `display_order` int(11) NOT NULL,
+  `status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `link` (`link`,`parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=185 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=182 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5046,13 +5098,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `s_available_country_forms`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `s_available_country_forms` (
-  `vlsm_country_id` int NOT NULL AUTO_INCREMENT,
-  `form_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `short_name` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
+  `vlsm_country_id` int(11) NOT NULL AUTO_INCREMENT,
+  `form_name` varchar(255) DEFAULT NULL,
+  `short_name` varchar(256) NOT NULL,
   PRIMARY KEY (`vlsm_country_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5071,16 +5123,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `s_vlsm_instance`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `s_vlsm_instance` (
-  `vlsm_instance_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `instance_facility_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `instance_facility_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `instance_facility_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `instance_facility_logo` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `vlsm_instance_id` varchar(255) NOT NULL,
+  `instance_facility_name` varchar(255) DEFAULT NULL,
+  `instance_facility_code` varchar(255) DEFAULT NULL,
+  `instance_facility_type` varchar(255) DEFAULT NULL,
+  `instance_facility_logo` varchar(255) DEFAULT NULL,
   `instance_added_on` datetime DEFAULT NULL,
   `instance_update_on` datetime DEFAULT NULL,
-  `instance_mac_address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `instance_mac_address` varchar(255) DEFAULT NULL,
   `vl_last_dash_sync` datetime DEFAULT NULL,
   `eid_last_dash_sync` datetime DEFAULT NULL,
   `covid19_last_dash_sync` datetime DEFAULT NULL,
@@ -5091,7 +5143,7 @@ CREATE TABLE `s_vlsm_instance` (
   `last_interface_sync` datetime DEFAULT NULL,
   PRIMARY KEY (`vlsm_instance_id`),
   UNIQUE KEY `vl_instance_id` (`vlsm_instance_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5109,18 +5161,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `scheduled_jobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scheduled_jobs` (
-  `job_id` int NOT NULL AUTO_INCREMENT,
-  `job` text COLLATE utf8mb4_general_ci,
+  `job_id` int(11) NOT NULL AUTO_INCREMENT,
+  `job` text,
   `requested_on` datetime DEFAULT CURRENT_TIMESTAMP,
-  `requested_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `requested_by` varchar(256) DEFAULT NULL,
   `scheduled_on` datetime DEFAULT NULL,
-  `run_once` varchar(3) COLLATE utf8mb4_general_ci DEFAULT 'no',
+  `run_once` varchar(3) DEFAULT 'no',
   `completed_on` datetime DEFAULT NULL,
-  `status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending',
+  `status` varchar(20) NOT NULL DEFAULT 'pending',
   PRIMARY KEY (`job_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5138,14 +5190,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sequence_counter`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sequence_counter` (
-  `test_type` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `year` int NOT NULL,
-  `code_type` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'sample_code or remote_sample_code',
-  `max_sequence_number` int DEFAULT NULL,
+  `test_type` varchar(255) NOT NULL,
+  `year` int(11) NOT NULL,
+  `code_type` varchar(255) NOT NULL COMMENT 'sample_code or remote_sample_code',
+  `max_sequence_number` int(11) DEFAULT NULL,
   PRIMARY KEY (`test_type`,`year`,`code_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5163,17 +5215,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `support`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `support` (
-  `support_id` int NOT NULL AUTO_INCREMENT,
-  `feedback` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `feedback_url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `upload_file_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `attach_screenshot` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `screenshot_file_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(100) COLLATE utf8mb4_general_ci DEFAULT 'active',
+  `support_id` int(11) NOT NULL AUTO_INCREMENT,
+  `feedback` varchar(500) DEFAULT NULL,
+  `feedback_url` varchar(255) DEFAULT NULL,
+  `upload_file_name` varchar(255) DEFAULT NULL,
+  `attach_screenshot` varchar(100) DEFAULT NULL,
+  `screenshot_file_name` varchar(255) DEFAULT NULL,
+  `status` varchar(100) DEFAULT 'active',
   PRIMARY KEY (`support_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5191,16 +5243,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `system_admin`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `system_admin` (
-  `system_admin_id` int NOT NULL AUTO_INCREMENT,
-  `system_admin_name` mediumtext COLLATE utf8mb4_general_ci,
-  `system_admin_email` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `system_admin_login` mediumtext COLLATE utf8mb4_general_ci,
-  `system_admin_password` mediumtext COLLATE utf8mb4_general_ci,
+  `system_admin_id` int(11) NOT NULL AUTO_INCREMENT,
+  `system_admin_name` mediumtext,
+  `system_admin_email` varchar(255) DEFAULT NULL,
+  `system_admin_login` mediumtext,
+  `system_admin_password` mediumtext,
   PRIMARY KEY (`system_admin_id`),
   UNIQUE KEY `user_admin_id` (`system_admin_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5218,13 +5270,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `system_config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `system_config` (
-  `display_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `value` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `display_name` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `value` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5243,18 +5295,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `tb_tests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tb_tests` (
-  `tb_test_id` int NOT NULL AUTO_INCREMENT,
-  `tb_id` int DEFAULT NULL,
-  `actual_no` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_result` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tb_test_id` int(11) NOT NULL AUTO_INCREMENT,
+  `tb_id` int(11) DEFAULT NULL,
+  `actual_no` varchar(256) DEFAULT NULL,
+  `test_result` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int NOT NULL DEFAULT '0',
+  `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`tb_test_id`),
   KEY `tb_id` (`tb_id`),
   CONSTRAINT `tb_tests_ibfk_1` FOREIGN KEY (`tb_id`) REFERENCES `form_tb` (`tb_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5272,50 +5324,50 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `temp_sample_import`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `temp_sample_import` (
-  `temp_sample_id` int NOT NULL AUTO_INCREMENT,
-  `module` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `facility_id` int DEFAULT NULL,
-  `lab_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_id` int DEFAULT NULL,
-  `lab_contact_person` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_phone_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `cv_number` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_received_at_vl_lab_datetime` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_tested_datetime` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_dispatched_datetime` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_reviewed_datetime` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_reviewed_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
-  `approver_comments` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lot_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `temp_sample_id` int(11) NOT NULL AUTO_INCREMENT,
+  `module` varchar(255) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `lab_name` varchar(255) DEFAULT NULL,
+  `lab_id` int(11) DEFAULT NULL,
+  `lab_contact_person` varchar(255) DEFAULT NULL,
+  `lab_phone_number` varchar(255) DEFAULT NULL,
+  `cv_number` varchar(20) DEFAULT NULL,
+  `sample_received_at_vl_lab_datetime` varchar(255) DEFAULT NULL,
+  `sample_tested_datetime` varchar(255) DEFAULT NULL,
+  `result_dispatched_datetime` varchar(255) DEFAULT NULL,
+  `result_reviewed_datetime` varchar(255) DEFAULT NULL,
+  `result_reviewed_by` varchar(255) DEFAULT NULL,
+  `lab_tech_comments` mediumtext,
+  `approver_comments` varchar(255) DEFAULT NULL,
+  `lot_number` varchar(255) DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `sample_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `batch_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `batch_code_key` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `order_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_log` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_absolute` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_text` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_absolute_decimal` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_details` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `import_machine_file_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vl_test_platform` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `import_machine_name` int DEFAULT NULL,
+  `sample_code` varchar(255) DEFAULT NULL,
+  `batch_code` varchar(255) DEFAULT NULL,
+  `batch_code_key` varchar(255) DEFAULT NULL,
+  `sample_type` varchar(255) DEFAULT NULL,
+  `test_type` varchar(255) DEFAULT NULL,
+  `order_number` varchar(255) DEFAULT NULL,
+  `result_value_log` varchar(255) DEFAULT NULL,
+  `result_value_absolute` varchar(255) DEFAULT NULL,
+  `result_value_text` varchar(255) DEFAULT NULL,
+  `result_value_absolute_decimal` varchar(255) DEFAULT NULL,
+  `result` varchar(255) DEFAULT NULL,
+  `sample_details` varchar(255) DEFAULT NULL,
+  `result_status` varchar(255) DEFAULT NULL,
+  `import_machine_file_name` varchar(255) DEFAULT NULL,
+  `vl_test_platform` varchar(255) DEFAULT NULL,
+  `import_machine_name` int(11) DEFAULT NULL,
   `request_exported_datetime` datetime DEFAULT NULL,
   `request_imported_datetime` datetime DEFAULT NULL,
   `result_exported_datetime` datetime DEFAULT NULL,
   `result_imported_datetime` datetime DEFAULT NULL,
-  `temp_sample_status` int NOT NULL DEFAULT '0',
-  `sample_review_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `imported_by` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `temp_sample_status` int(11) NOT NULL DEFAULT '0',
+  `sample_review_by` varchar(255) DEFAULT NULL,
+  `imported_by` varchar(255) NOT NULL,
   PRIMARY KEY (`temp_sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5333,17 +5385,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `testing_lab_health_facilities_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `testing_lab_health_facilities_map` (
-  `facility_map_id` int NOT NULL AUTO_INCREMENT,
-  `vl_lab_id` int NOT NULL,
-  `facility_id` int NOT NULL,
+  `facility_map_id` int(11) NOT NULL AUTO_INCREMENT,
+  `vl_lab_id` int(11) NOT NULL,
+  `facility_id` int(11) NOT NULL,
   PRIMARY KEY (`facility_map_id`),
   KEY `vl_lab_id` (`vl_lab_id`),
   KEY `facility_id` (`facility_id`),
   CONSTRAINT `testing_lab_health_facilities_map_ibfk_1` FOREIGN KEY (`vl_lab_id`) REFERENCES `facility_details` (`facility_id`),
   CONSTRAINT `testing_lab_health_facilities_map_ibfk_2` FOREIGN KEY (`facility_id`) REFERENCES `facility_details` (`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5361,16 +5413,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `testing_labs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `testing_labs` (
-  `test_type` enum('vl','eid','covid19','hepatitis','tb','generic-tests') COLLATE utf8mb4_general_ci NOT NULL,
-  `facility_id` int NOT NULL,
+  `test_type` enum('vl','eid','covid19','hepatitis','tb','generic-tests') NOT NULL,
+  `facility_id` int(11) NOT NULL,
   `attributes` json DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `monthly_target` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `suppressed_monthly_target` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `monthly_target` varchar(255) DEFAULT NULL,
+  `suppressed_monthly_target` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`test_type`,`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5388,24 +5440,24 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `track_api_requests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `track_api_requests` (
-  `api_track_id` int NOT NULL AUTO_INCREMENT,
-  `transaction_id` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `requested_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `api_track_id` int(11) NOT NULL AUTO_INCREMENT,
+  `transaction_id` varchar(256) DEFAULT NULL,
+  `requested_by` varchar(255) DEFAULT NULL,
   `requested_on` datetime DEFAULT NULL,
-  `number_of_records` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `request_type` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `test_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `api_url` mediumtext COLLATE utf8mb4_general_ci,
-  `api_params` text COLLATE utf8mb4_general_ci,
-  `request_data` text COLLATE utf8mb4_general_ci,
-  `response_data` text COLLATE utf8mb4_general_ci,
-  `facility_id` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `data_format` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `number_of_records` varchar(50) DEFAULT NULL,
+  `request_type` varchar(50) DEFAULT NULL,
+  `test_type` varchar(255) DEFAULT NULL,
+  `api_url` mediumtext,
+  `api_params` text,
+  `request_data` text,
+  `response_data` text,
+  `facility_id` varchar(256) DEFAULT NULL,
+  `data_format` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`api_track_id`),
   KEY `requested_on` (`requested_on`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5423,18 +5475,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `track_qr_code_page`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `track_qr_code_page` (
-  `tqcp_d` int NOT NULL AUTO_INCREMENT,
-  `test_type` varchar(256) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'vl, eid, covid19 or hepatitis',
-  `test_type_id` int NOT NULL,
-  `sample_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `browser` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ip_address` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `operating_system` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tqcp_d` int(11) NOT NULL AUTO_INCREMENT,
+  `test_type` varchar(256) NOT NULL COMMENT 'vl, eid, covid19 or hepatitis',
+  `test_type_id` int(11) NOT NULL,
+  `sample_code` varchar(256) DEFAULT NULL,
+  `browser` varchar(256) DEFAULT NULL,
+  `ip_address` varchar(256) DEFAULT NULL,
+  `operating_system` varchar(256) DEFAULT NULL,
   `date_time` datetime DEFAULT NULL,
   PRIMARY KEY (`tqcp_d`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5452,31 +5504,31 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `user_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_details` (
-  `user_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `user_name` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_id` varchar(255) NOT NULL,
+  `user_name` varchar(500) DEFAULT NULL,
   `interface_user_name` json DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `phone_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `login_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `password` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `role_id` int DEFAULT NULL,
-  `user_locale` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `user_signature` mediumtext COLLATE utf8mb4_general_ci,
-  `api_token` mediumtext COLLATE utf8mb4_general_ci,
+  `email` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(255) DEFAULT NULL,
+  `login_id` varchar(255) DEFAULT NULL,
+  `password` varchar(500) DEFAULT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  `user_locale` varchar(256) DEFAULT NULL,
+  `user_signature` mediumtext,
+  `api_token` mediumtext,
   `api_token_generated_datetime` datetime DEFAULT NULL,
-  `api_token_exipiration_days` int DEFAULT NULL,
-  `force_password_reset` int DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `app_access` varchar(50) COLLATE utf8mb4_general_ci DEFAULT 'no',
-  `hash_algorithm` varchar(256) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'sha1',
-  `data_sync` int DEFAULT '0',
+  `api_token_exipiration_days` int(11) DEFAULT NULL,
+  `force_password_reset` int(11) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `app_access` varchar(50) DEFAULT 'no',
+  `hash_algorithm` varchar(256) NOT NULL DEFAULT 'sha1',
+  `data_sync` int(11) DEFAULT '0',
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `user_details_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5494,15 +5546,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `user_facility_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_facility_map` (
-  `user_facility_map_id` int NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `facility_id` int NOT NULL,
+  `user_facility_map_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) NOT NULL,
+  `facility_id` int(11) NOT NULL,
   PRIMARY KEY (`user_facility_map_id`),
   KEY `user_id` (`user_id`),
   KEY `facility_id` (`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5520,19 +5572,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `user_login_history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_login_history` (
-  `history_id` int NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `login_id` varchar(1000) COLLATE utf8mb4_general_ci NOT NULL,
+  `history_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(1000) DEFAULT NULL,
+  `login_id` varchar(1000) NOT NULL,
   `login_attempted_datetime` datetime DEFAULT NULL,
-  `login_status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ip_address` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `browser` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `operating_system` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `login_status` varchar(256) DEFAULT NULL,
+  `ip_address` varchar(256) DEFAULT NULL,
+  `browser` varchar(1000) DEFAULT NULL,
+  `operating_system` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`history_id`),
   KEY `login_status_attempted_datetime_idx` (`login_status`,`login_attempted_datetime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5550,17 +5602,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `vl_contact_notes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `vl_contact_notes` (
-  `contact_notes_id` int NOT NULL AUTO_INCREMENT,
-  `treament_contact_id` int DEFAULT NULL,
-  `contact_notes` mediumtext COLLATE utf8mb4_general_ci,
+  `contact_notes_id` int(11) NOT NULL AUTO_INCREMENT,
+  `treament_contact_id` int(11) DEFAULT NULL,
+  `contact_notes` mediumtext,
   `collected_on` date DEFAULT NULL,
   `added_on` datetime DEFAULT NULL,
   PRIMARY KEY (`contact_notes_id`),
   KEY `treament_contact_id` (`treament_contact_id`),
   CONSTRAINT `vl_contact_notes_ibfk_1` FOREIGN KEY (`treament_contact_id`) REFERENCES `form_vl` (`vl_sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5578,37 +5630,37 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `vl_imported_controls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `vl_imported_controls` (
-  `control_id` int NOT NULL AUTO_INCREMENT,
-  `control_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `lab_id` int DEFAULT NULL,
-  `batch_id` int DEFAULT NULL,
-  `control_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lot_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `control_id` int(11) NOT NULL AUTO_INCREMENT,
+  `control_code` varchar(255) NOT NULL,
+  `lab_id` int(11) DEFAULT NULL,
+  `batch_id` int(11) DEFAULT NULL,
+  `control_type` varchar(255) DEFAULT NULL,
+  `lot_number` varchar(255) DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `tested_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tested_by` varchar(255) DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `is_sample_rejected` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `reason_for_sample_rejection` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_absolute` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_log` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_text` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_value_absolute_decimal` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `approver_comments` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `result_approved_by` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `reason_for_sample_rejection` varchar(255) DEFAULT NULL,
+  `result_value_absolute` varchar(255) DEFAULT NULL,
+  `result_value_log` varchar(255) DEFAULT NULL,
+  `result_value_text` varchar(255) DEFAULT NULL,
+  `result_value_absolute_decimal` varchar(255) DEFAULT NULL,
+  `result` varchar(255) DEFAULT NULL,
+  `approver_comments` varchar(255) DEFAULT NULL,
+  `result_approved_by` varchar(255) DEFAULT NULL,
   `result_approved_datetime` datetime DEFAULT NULL,
-  `result_reviewed_by` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `lab_tech_comments` mediumtext COLLATE utf8mb4_general_ci,
+  `result_reviewed_by` varchar(1000) DEFAULT NULL,
+  `lab_tech_comments` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `vlsm_country_id` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `file_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `vlsm_country_id` varchar(10) DEFAULT NULL,
+  `file_name` varchar(255) DEFAULT NULL,
   `imported_date_time` datetime DEFAULT NULL,
-  `import_machine_file_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `import_machine_file_name` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`control_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5629,4 +5681,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-30 13:36:29
+-- Dump completed on 2023-12-06 13:47:43

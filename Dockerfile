@@ -7,7 +7,7 @@ RUN apt-get update && \
     libzip-dev libjpeg62-turbo-dev libfreetype6-dev \
     libonig-dev libpng-dev libicu-dev libcurl4-openssl-dev \
     git zip unzip rsync vim openssl curl acl gettext cron \
-    default-mysql-client netcat && \
+    default-mysql-client && \
     apt-get upgrade -y openssl apache2 curl libxml2 && \
     rm -rf /var/lib/apt/lists/*
 

@@ -1,10 +1,11 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
@@ -44,9 +45,8 @@ try {
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 
-    if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request")) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request", 0777, true);
-    }
+    MiscUtility::makeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request", 0777, true);
+
     if (move_uploaded_file($_FILES['requestFile']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!

@@ -1,8 +1,9 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
@@ -47,9 +48,7 @@ try {
     }
 
     if (isset($_FILES['instanceLogo']['name']) && $_FILES['instanceLogo']['name'] != "") {
-        if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo")) {
-            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo", 0777, true);
-        }
+        MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo");
         $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['instanceLogo']['name'], PATHINFO_EXTENSION));
         $string = $general->generateRandomString(6) . ".";
         $imageName = "logo" . $string . $extension;
