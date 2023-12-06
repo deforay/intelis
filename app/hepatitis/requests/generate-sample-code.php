@@ -31,6 +31,6 @@ if (empty($sampleCollectionDate) || empty($prefix)) {
   $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
   $sampleCodeParams['prefix'] = $prefix;
   $sampleCodeParams['provinceCode'] = $provinceCode;
-
+  $sampleCodeParams['insertOperation'] = false;
   echo $hepatitisService->getSampleCode($sampleCodeParams);
 }

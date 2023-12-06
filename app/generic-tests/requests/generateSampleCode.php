@@ -22,6 +22,6 @@ if (empty($sampleCollectionDate) || empty($testType)) {
     $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
     $sampleCodeParams['provinceCode'] = $provinceCode;
     $sampleCodeParams['testType'] = $testType;
-
+    $sampleCodeParams['insertOperation'] = false;
     echo $genericTestsService->getSampleCode($sampleCodeParams);
 }

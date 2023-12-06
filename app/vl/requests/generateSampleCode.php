@@ -20,5 +20,6 @@ if (empty($sampleCollectionDate)) {
   $sampleCodeParams = [];
   $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
   $sampleCodeParams['provinceCode'] = $provinceCode;
+  $sampleCodeParams['insertOperation'] = false;
   echo $vlService->getSampleCode($sampleCodeParams);
 }

@@ -53,7 +53,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams = [];
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($formData['sample_collection_date'] ?? '');
         $sampleCodeParams['provinceCode'] = $provinceCode;
-
+        $sampleCodeParams['insertOperation'] = true;
         $sampleJson = $covid19Service->getSampleCode($sampleCodeParams);
         $sampleData = json_decode((string) $sampleJson, true);
         $covid19Data = [];

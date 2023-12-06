@@ -299,7 +299,7 @@ foreach ($formData as $serviceRequest => $data) {
 
     $sampleCodeParams = [];
     $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate ?? null;
-
+    $sampleCodeParams['insertOperation'] = true;
     $sampleJson = $vlService->getSampleCode($sampleCodeParams);
 
     $sampleData = json_decode((string) $sampleJson, true);

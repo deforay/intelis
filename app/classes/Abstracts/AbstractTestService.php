@@ -38,7 +38,7 @@ abstract class AbstractTestService
             $sampleCodeGenerator = [];
             // We use this flag to determine if we generating sample code for inserting
             // or just displaging on the form
-            $insertOperation = $params['insertOperation'] ?? false;
+            $insertOperation = $params['insertOperation'] ?? true;
 
             if ($insertOperation) {
                 // Start a new transaction (this starts a new transaction if not already started)

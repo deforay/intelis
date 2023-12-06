@@ -283,7 +283,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $sampleCodeParams = [];
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($formData['sample_collection_date'] ?? '');
         $sampleCodeParams['prefix'] = $formData['hepatitis_test_type'] ?? null;
-
+        $sampleCodeParams['insertOperation'] = true;
         $sampleJson = $hepatitisService->getSampleCode($sampleCodeParams);
 
         $sampleData = json_decode((string) $sampleJson, true);

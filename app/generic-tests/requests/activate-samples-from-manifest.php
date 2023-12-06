@@ -61,7 +61,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
         $sampleCodeParams['provinceCode'] = $provinceCode;
         $sampleCodeParams['testType'] = $testTypeShortCode;
-
+        $sampleCodeParams['insertOperation'] = true;
         $sampleJson = $genericTestsService->getSampleCode($sampleCodeParams);
         $sampleData = json_decode((string) $sampleJson, true);
         //$vldata['sample_code'] = $sampleData['sampleCode'];

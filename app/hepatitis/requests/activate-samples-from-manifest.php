@@ -57,7 +57,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
         $sampleCodeParams['prefix'] = $sampleRow['hepatitis_test_type'] ?? null;
         $sampleCodeParams['provinceCode'] = $provinceCode;
-
+        $sampleCodeParams['insertOperation'] = true;
         $sampleJson = $hepatitisService->getSampleCode($sampleCodeParams);
         $sampleData = json_decode((string) $sampleJson, true);
         $hepatitisData = [];

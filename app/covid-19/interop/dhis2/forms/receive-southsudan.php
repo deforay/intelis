@@ -256,7 +256,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $sampleCodeParams = [];
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($formData['sample_collection_date'] ?? '');
         $sampleCodeParams['provinceId'] = $formData['province_id'];
-
+        $sampleCodeParams['insertOperation'] = true;
         $sampleJson = $covid19Service->getSampleCode($sampleCodeParams);
 
         $sampleData = json_decode((string) $sampleJson, true);

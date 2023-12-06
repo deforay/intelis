@@ -40,7 +40,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams = [];
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
         $sampleCodeParams['provinceCode'] = $provinceCode ?? null;
-
+        $sampleCodeParams['insertOperation'] = true;
         $sampleJson = $vlObj->getSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
         $vldata['sample_code'] = $sampleData['sampleCode'];

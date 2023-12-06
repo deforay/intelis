@@ -56,7 +56,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams = [];
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
         $sampleCodeParams['provinceCode'] = $provinceCode;
-
+        $sampleCodeParams['insertOperation'] = true;
         $sampleJson = $tbService->getSampleCode($sampleCodeParams);
         $sampleData = json_decode((string) $sampleJson, true);
         $tbData = [];

@@ -26,6 +26,6 @@ if (empty($sampleCollectionDate)) {
   $sampleCodeParams = [];
   $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
   $sampleCodeParams['provinceCode'] = $provinceCode;
-
+  $sampleCodeParams['insertOperation'] = false;
   echo $eidService->getSampleCode($sampleCodeParams);
 }
