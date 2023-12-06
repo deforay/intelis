@@ -12,6 +12,7 @@ services:
       #- app_code:/var/www/html
       - .:/var/www/html
     environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
       - DOMAIN=${DOMAIN:-vlsm}
       - API_DOMAIN=${API_DOMAIN:-api.vlsm}
       - APACHE_PORT=${APACHE_PORT:-80}
