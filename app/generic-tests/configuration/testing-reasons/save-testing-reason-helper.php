@@ -29,7 +29,7 @@ try {
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
         if (!empty($testReasonId)) {
-            $db = $db->where('test_reason_id', $testReasonId);
+            $db->where('test_reason_id', $testReasonId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Testing reason updated successfully");

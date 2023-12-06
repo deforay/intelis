@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
@@ -15,13 +16,17 @@ $provinceCode = $_POST['pName'] ?? $_POST['provinceCode'] ?? null;
 $sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? null;
 $testType = $_POST['testType'] ?? null;
 
-if (empty($sampleCollectionDate) || empty($testType)) {
-    echo json_encode([]);
-} else {
-    $sampleCodeParams = [];
-    $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
-    $sampleCodeParams['provinceCode'] = $provinceCode;
-    $sampleCodeParams['testType'] = $testType;
-    $sampleCodeParams['insertOperation'] = false;
-    echo $genericTestsService->getSampleCode($sampleCodeParams);
+try {
+    if (empty($sampleCollectionDate) || empty($testType)) {
+        echo json_encode([]);
+    } else {
+        $sampleCodeParams = [];
+        $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+        $sampleCodeParams['provinceCode'] = $provinceCode;
+        $sampleCodeParams['testType'] = $testType;
+        $sampleCodeParams['insertOperation'] = false;
+        echo $genericTestsService->getSampleCode($sampleCodeParams);
+    }
+} catch (Exception | SystemException $exception) {
+    error_log("Error while generating Sample Code : " . $exception->getMessage());
 }

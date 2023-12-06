@@ -70,11 +70,11 @@ try {
                 'last_modified_by' => $_SESSION['userId'],
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
-            $db = $db->where('batch_id', $id);
+            $db->where('batch_id', $id);
             $db->update($tableName1, $data);
             if ($id > 0) {
                 $value = ['sample_batch_id' => null];
-                $db = $db->where('sample_batch_id', $id);
+                $db->where('sample_batch_id', $id);
                 $db->update($refTable, $value);
                 $xplodResultSample = [];
                 if (isset($_POST['selectedSample']) && trim((string) $_POST['selectedSample']) != "") {
@@ -94,7 +94,7 @@ try {
 
                 for ($j = 0; $j < count($sample); $j++) {
                     $value = array('sample_batch_id' => $id);
-                    $db = $db->where($refPrimaryColumn, $sample[$j]);
+                    $db->where($refPrimaryColumn, $sample[$j]);
                     $db->update($refTable, $value);
                 }
                 header("Location:add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
@@ -130,7 +130,7 @@ try {
 
                             $vlSampleId = $uniqueSampleId[$j];
                             $value = array('sample_batch_id' => $lastId);
-                            $db = $db->where($refPrimaryColumn, $vlSampleId);
+                            $db->where($refPrimaryColumn, $vlSampleId);
                             $db->update($refTable, $value);
                         }
                     }

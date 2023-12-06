@@ -25,7 +25,7 @@ try {
             'riskfactor_status' => $_POST['status'],
             'updated_datetime'     =>  DateUtility::getCurrentDateTime(),
         );
-        $db = $db->where('riskfactor_id', $id[$i]);
+        $db->where('riskfactor_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];
     }

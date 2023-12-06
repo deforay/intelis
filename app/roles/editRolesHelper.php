@@ -18,7 +18,7 @@ try {
         $lastId = base64_decode((string) $_POST['roleId']);
 
 
-        $db = $db->where('role_id', $lastId);
+        $db->where('role_id', $lastId);
         $db->delete("roles_privileges_map");
 
         if (isset($_POST['roleName']) && trim((string) $_POST['roleName']) != "") {
@@ -29,7 +29,7 @@ try {
                         'access_type' => $_POST['accessType'],
                         'landing_page' => $_POST['landingPage']
                 );
-                $db = $db->where('role_id', $lastId);
+                $db->where('role_id', $lastId);
                 $db->update($tableName1, $data);
         }
         $roleQuery = "SELECT * from roles_privileges_map where role_id=?";

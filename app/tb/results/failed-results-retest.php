@@ -31,9 +31,9 @@ try {
 
 
     if ($_POST['bulkIds'] && is_array($_POST['tbId'])) {
-        $db = $db->where("`tb_id` IN (" . implode(",", $_POST['tbId']) . ")");
+        $db->where("`tb_id` IN (" . implode(",", $_POST['tbId']) . ")");
     } else {
-        $db = $db->where('tb_id', base64_decode((string) $_POST['tbId']));
+        $db->where('tb_id', base64_decode((string) $_POST['tbId']));
     }
     $db->delete('tb_tests');
 

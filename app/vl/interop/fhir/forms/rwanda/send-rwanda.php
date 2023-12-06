@@ -107,7 +107,7 @@ foreach ($formResults as $row) {
 
 
     $updateData = array('result_sent_to_source' => 'sent');
-    $db = $db->where('vl_sample_id', $row['vl_sample_id']);
+    $db->where('vl_sample_id', $row['vl_sample_id']);
     $db->update('form_vl', $updateData);
     $counter++;
 }

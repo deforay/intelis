@@ -25,7 +25,7 @@ try {
 			'updated_datetime'     => DateUtility::getCurrentDateTime(),
 		);
 		if (isset($_POST['sampleId']) && $_POST['sampleId'] != "") {
-			$db = $db->where($primaryKey, base64_decode((string) $_POST['sampleId']));
+			$db->where($primaryKey, base64_decode((string) $_POST['sampleId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$data['data_sync'] = 0;

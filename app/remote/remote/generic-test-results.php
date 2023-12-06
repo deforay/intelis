@@ -160,7 +160,7 @@ try {
             }
 
             foreach ($testResultsData as $genId => $testResults) {
-                $db = $db->where('generic_id', $sampleId);
+                $db->where('generic_id', $sampleId);
                 $db->delete("generic_test_results");
                 foreach ($testResults as $testId => $test) {
                     $testResultValues = array(

@@ -46,7 +46,7 @@ try {
             if (isset($response->status) && $response->status == "success") {
                 $data['recency_sync'] = '1';
                 $db->update('form_vl', $data);
-                $db = $db->where('remote_sample_code', $result['remote_sample_code']);
+                $db->where('remote_sample_code', $result['remote_sample_code']);
             }
         }
     }

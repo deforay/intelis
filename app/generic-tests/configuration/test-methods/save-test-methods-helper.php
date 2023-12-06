@@ -28,7 +28,7 @@ try {
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
         if (!empty($testMethodId)) {
-            $db = $db->where('test_method_id', $testMethodId);
+            $db->where('test_method_id', $testMethodId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Test Method updated successfully");

@@ -20,7 +20,7 @@ try {
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
         if (!empty($unitId)) {
-            $db = $db->where('unit_id', $unitId);
+            $db->where('unit_id', $unitId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Test Result Unit Details updated successfully");

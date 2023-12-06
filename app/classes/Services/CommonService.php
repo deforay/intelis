@@ -748,30 +748,56 @@ class CommonService
 
     public function updateSyncDateTime($testType, $testTable, $columnForWhereCondition, $sampleIds, $transactionId, $facilityIds, $labId, $syncType): void
     {
-        $currentDateTime = DateUtility::getCurrentDateTime();
-        $sampleIdsStr = is_array($sampleIds) ? "'" . implode("','", $sampleIds) . "'" : $sampleIds;
+        try {
+            $currentDateTime = DateUtility::getCurrentDateTime();
 
-        if (!empty($sampleIds)) {
-            $sql = "UPDATE $testTable SET data_sync = 1,
-                    form_attributes = JSON_SET(COALESCE(form_attributes, '{}'), '$.remote{$syncType}Sync', '$currentDateTime', '{$syncType}SyncTransactionId', '$transactionId')
-                    WHERE $columnForWhereCondition IN ($sampleIdsStr)";
-            $this->db->rawQuery($sql);
-        }
+            if (!empty($sampleIds)) {
+                $sampleIdsStr = is_array($sampleIds) ? "'" . implode("','", $sampleIds) . "'" : $sampleIds;
+                $formAttributes = [
+                    "remote{$syncType}Sync" => $currentDateTime,
+                    "{$syncType}SyncTransactionId" => $transactionId
+                ];
+                $formAttributes = $this->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+                $data = [
+                    'form_attributes' => $this->db->func($formAttributes),
+                    'data_sync' => 1
+                ];
+                $this->db->where($columnForWhereCondition, [$sampleIdsStr], 'IN');
+                $this->db->update($testTable, $data);
+            }
 
+            if (!empty($facilityIds)) {
+                $facilityIdsStr = implode(",", array_unique(array_filter($facilityIds)));
+                $facilityAttributes = [
+                    "remote{$syncType}Sync" => $currentDateTime,
+                    "{$testType}Remote{$syncType}Sync" => $currentDateTime
+                ];
+                $facilityAttributes = $this->jsonToSetString(json_encode($facilityAttributes), 'facility_attributes');
+                $data = [
+                    'facility_attributes' => $this->db->func($facilityAttributes)
+                ];
+                $this->db->where('facility_id', [$facilityIdsStr], 'IN');
+                $this->db->update('facility_details', $data);
+            }
 
-        if (!empty($facilityIds)) {
-            $facilityIdsStr = implode(",", array_unique(array_filter($facilityIds)));
-            $sql = "UPDATE facility_details
-                SET facility_attributes = JSON_SET(COALESCE(facility_attributes, '{}'), '$.remote{$syncType}Sync', '$currentDateTime', '$.{$testType}Remote{$syncType}Sync', '$currentDateTime')
-                WHERE facility_id IN ($facilityIdsStr)";
-            $this->db->rawQuery($sql);
-        }
-
-        if (!empty($labId)) {
-            $sql = "UPDATE facility_details
-            SET facility_attributes = JSON_SET(COALESCE(facility_attributes, '{}'), '$.last{$syncType}Sync', '$currentDateTime', '$.{$testType}Last{$syncType}Sync', '$currentDateTime')
-            WHERE facility_id = ?";
-            $this->db->rawQuery($sql, [$labId]);
+            if (!empty($labId)) {
+                $facilityAttributes = [
+                    "last{$syncType}Sync" => $currentDateTime,
+                    "{$testType}Last{$syncType}Sync" => $currentDateTime
+                ];
+                $facilityAttributes = $this->jsonToSetString(json_encode($facilityAttributes), 'facility_attributes');
+                $data = [
+                    'facility_attributes' => $this->db->func($facilityAttributes)
+                ];
+                $this->db->where('facility_id', $labId);
+                $this->db->update('facility_details', $data);
+            }
+        } catch (Exception | SystemException $exception) {
+            if ($this->db->getLastErrno() > 0) {
+                error_log($this->db->getLastError());
+                error_log($this->db->getLastQuery());
+            }
+            error_log("Error while updating timestamps : " . $exception->getMessage());
         }
     }
 

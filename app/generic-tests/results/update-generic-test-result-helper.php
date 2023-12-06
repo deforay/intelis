@@ -165,7 +165,7 @@ try {
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         if (!empty($_POST['testName'])) {
-            $db = $db->where('generic_id', $_POST['vlSampleId']);
+            $db->where('generic_id', $_POST['vlSampleId']);
             $db->delete($testTableName);
             foreach ($_POST['testName'] as $subTestName => $subTests) {
                 foreach ($subTests as $testKey => $testKitName) {
@@ -193,12 +193,12 @@ try {
             }
         }
     } else {
-        $db = $db->where('generic_id', $_POST['vlSampleId']);
+        $db->where('generic_id', $_POST['vlSampleId']);
         $db->delete($testTableName);
         $covid19Data['sample_tested_datetime'] = null;
     }
 
-    $db = $db->where('sample_id', $_POST['vlSampleId']);
+    $db->where('sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);
     //var_dump($db->getLastError());die;
     if ($id === true) {

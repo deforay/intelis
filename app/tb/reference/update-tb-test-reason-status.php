@@ -25,7 +25,7 @@ try {
             'test_reason_status' => $_POST['status'],
             'updated_datetime'     =>  DateUtility::getCurrentDateTime(),
         );
-        $db = $db->where('test_reason_id', $id[$i]);
+        $db->where('test_reason_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];
     }

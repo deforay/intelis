@@ -86,7 +86,7 @@ try {
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
-            $db = $db->where('sample_code', $result, 'IN');
+            $db->where('sample_code', $result, 'IN');
             $id = $db->update('form_generic', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
@@ -122,7 +122,7 @@ try {
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
-            $db = $db->where('sample_code', $result, 'IN');
+            $db->where('sample_code', $result, 'IN');
             $id = $db->update('form_vl', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
@@ -155,7 +155,7 @@ try {
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
-            $db = $db->where('sample_code', $result, 'IN');
+            $db->where('sample_code', $result, 'IN');
             $id = $db->update('form_eid', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
@@ -200,7 +200,7 @@ try {
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
-            $db = $db->where('sample_code', $result, 'IN');
+            $db->where('sample_code', $result, 'IN');
             $id = $db->update('form_covid19', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
@@ -234,14 +234,14 @@ try {
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
-            $db = $db->where('sample_code', $result, 'IN');
+            $db->where('sample_code', $result, 'IN');
             $id = $db->update('form_hepatitis', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', count($hepLabResult), 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
     $instanceId = $general->getInstanceId();
-    $db = $db->where('vlsm_instance_id', $instanceId);
+    $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Exception $exc) {
     error_log($db->getLastError());

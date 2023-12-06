@@ -92,7 +92,7 @@ try {
     //update facility code
     if (isset($_POST['fCode']) && trim((string) $_POST['fCode']) != '') {
         $fData = array('facility_code' => $_POST['fCode']);
-        $db = $db->where('facility_id', $_POST['fName']);
+        $db->where('facility_id', $_POST['fName']);
         $id = $db->update($fDetails, $fData);
     }
     if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {

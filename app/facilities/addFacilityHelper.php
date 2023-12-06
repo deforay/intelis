@@ -242,7 +242,7 @@ try {
 				$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
 
 				$image = array('facility_logo' => $imageName);
-				$db = $db->where('facility_id', $lastId);
+				$db->where('facility_id', $lastId);
 				$db->update($facilityTable, $image);
 			}
 		}
@@ -282,7 +282,7 @@ try {
 						$resizeObj->resizeToWidth(100);
 						$resizeObj->save($pathname . $imageName);
 						$image = array('signature' => $imageName);
-						$db = $db->where('signatory_id', $lastSignId);
+						$db->where('signatory_id', $lastSignId);
 						$db->update($labSignTable, $image);
 					}
 				}

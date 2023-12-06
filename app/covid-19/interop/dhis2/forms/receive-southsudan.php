@@ -3,12 +3,13 @@
 // this file is included in /covid-19/interop/dhis2/covid-19-receive.php
 
 use App\Interop\Dhis2;
-use App\Services\Covid19Service;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
 use JsonMachine\Items;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Services\Covid19Service;
+use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 $programStages = [
@@ -61,241 +62,248 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
+try {
 
-$vlsmSystemConfig = $general->getSystemConfig();
+    $db->beginTransaction();
+    $vlsmSystemConfig = $general->getSystemConfig();
 
-$dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+    $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
-$receivedCounter = 0;
-$processedCounter = 0;
-
-
-// https://southsudanhis.org/covid19southsudan/api/trackedEntityInstances.json?programStartDate=2020-04-01&programEndDate=2021-04-02&ou=OV9zi20DDXP&ouMode=DESCENDANTS&program=uYjxkTbwRNf&fields=attributes[attribute,code,value],enrollments[*],orgUnit,trackedEntityInstance&paging=false
-
-$counter = 0;
-$data = [];
-$data[] = "lastUpdatedDuration=1d";
-$data[] = "ou=OV9zi20DDXP"; // South Sudan
-$data[] = "ouMode=DESCENDANTS";
-$data[] = "program=uYjxkTbwRNf";
-$data[] = "fields=attributes[attribute,code,value],enrollments[*],orgUnit,trackedEntityInstance";
-$data[] = "paging=false";
-$data[] = "skipPaging=true";
-
-$url = "/api/trackedEntityInstances.json";
-
-$jsonResponse = $dhis2->get($url, $data);
-
-if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) {
-    die('No Response from API');
-}
-
-$options = [
-    'pointer' => '/trackedEntityInstances',
-    'decoder' => new ExtJsonDecoder(true)
-];
-$trackedEntityInstances = Items::fromString($jsonResponse, $options);
-
-foreach ($trackedEntityInstances as $tracker) {
-
-    $receivedCounter++;
-
-    $formData = [];
-    $screeningEventIds = [];
-    $enrollmentDate = null;
+    $receivedCounter = 0;
+    $processedCounter = 0;
 
 
-    foreach ($tracker['enrollments'] as $enrollments) {
+    // https://southsudanhis.org/covid19southsudan/api/trackedEntityInstances.json?programStartDate=2020-04-01&programEndDate=2021-04-02&ou=OV9zi20DDXP&ouMode=DESCENDANTS&program=uYjxkTbwRNf&fields=attributes[attribute,code,value],enrollments[*],orgUnit,trackedEntityInstance&paging=false
 
-        $allProgramStages = array_column($enrollments['events'], 'programStage', 'event');
+    $counter = 0;
+    $data = [];
+    $data[] = "lastUpdatedDuration=1d";
+    $data[] = "ou=OV9zi20DDXP"; // South Sudan
+    $data[] = "ouMode=DESCENDANTS";
+    $data[] = "program=uYjxkTbwRNf";
+    $data[] = "fields=attributes[attribute,code,value],enrollments[*],orgUnit,trackedEntityInstance";
+    $data[] = "paging=false";
+    $data[] = "skipPaging=true";
 
-        $screeningEventIds = array_keys($allProgramStages, $programStages['labRequest']); // screening programStage
+    $url = "/api/trackedEntityInstances.json";
 
-        if (count($screeningEventIds) == 0) {
-            continue 2;
-            // if no screening stage, skip this tracker entirely
+    $jsonResponse = $dhis2->get($url, $data);
+
+    if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) {
+        die('No Response from API');
+    }
+
+    $options = [
+        'pointer' => '/trackedEntityInstances',
+        'decoder' => new ExtJsonDecoder(true)
+    ];
+    $trackedEntityInstances = Items::fromString($jsonResponse, $options);
+
+    foreach ($trackedEntityInstances as $tracker) {
+
+        $receivedCounter++;
+
+        $formData = [];
+        $screeningEventIds = [];
+        $enrollmentDate = null;
+
+
+        foreach ($tracker['enrollments'] as $enrollments) {
+
+            $allProgramStages = array_column($enrollments['events'], 'programStage', 'event');
+
+            $screeningEventIds = array_keys($allProgramStages, $programStages['labRequest']); // screening programStage
+
+            if (count($screeningEventIds) == 0) {
+                continue 2;
+                // if no screening stage, skip this tracker entirely
+            }
+
+            $enrollmentDate = strstr((string) $enrollments['enrollmentDate'], 'T', true);
+
+            $eventsData = [];
+            foreach ($enrollments['events'] as $event) {
+
+                if ($event['programStage'] != $programStages['labRequest']) {
+                    continue;
+                }
+
+                foreach ($event['dataValues'] as $dV) {
+                    if (empty($eventsDataElementMapping[$dV['dataElement']])) {
+                        continue;
+                    }
+                    $eventsData["dhis2::" . $tracker['trackedEntityInstance'] . "::" . $event['event']][$eventsDataElementMapping[$dV['dataElement']]] = $dV['value'];
+                }
+            }
         }
 
-        $enrollmentDate = strstr((string) $enrollments['enrollmentDate'], 'T', true);
+        $attributesData = [];
+        foreach ($tracker['attributes'] as $trackerAttr) {
+            if (empty($attributesDataElementMapping[$trackerAttr['attribute']])) {
+                continue;
+            }
+            $attributesData[$attributesDataElementMapping[$trackerAttr['attribute']]] = $trackerAttr['value'];
+        }
 
-        $eventsData = [];
-        foreach ($enrollments['events'] as $event) {
+        foreach ($eventsData as $uniqueID => $singleEventData) {
 
-            if ($event['programStage'] != $programStages['labRequest']) {
+
+            $db->where('unique_id', $uniqueID);
+            $c19Result = $db->getOne("form_covid19");
+
+            if (!empty($c19Result)) {
                 continue;
             }
 
-            foreach ($event['dataValues'] as $dV) {
-                if (empty($eventsDataElementMapping[$dV['dataElement']])) {
-                    continue;
+            $formData = array_merge($singleEventData, $attributesData);
+            $formData['source_of_request'] = 'dhis2';
+            $formData['source_data_dump'] = json_encode($tracker);
+
+
+            $facility = $tracker['orgUnit'];
+
+
+            $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ? $formData['sample_collection_date'] : $enrollmentDate);
+
+            // Reason for Testing
+            if (!empty($formData['reason_for_covid19_test'])) {
+                $db->where("test_reason_name", $formData['reason_for_covid19_test']);
+                $reason = $db->getOne("r_covid19_test_reasons");
+                if (!empty($reason) && $reason) {
+                    $formData['reason_for_covid19_test'] = $reason['test_reason_id'];
+                } else {
+                    $reasonData = array(
+                        'test_reason_name' => $formData['reason_for_covid19_test'],
+                        'test_reason_status' => 'active',
+                        'updated_datetime' => DateUtility::getCurrentDateTime()
+                    );
+                    $formData['reason_for_covid19_test'] = $db->insert("r_covid19_test_reasons", $reasonData);
                 }
-                $eventsData["dhis2::" . $tracker['trackedEntityInstance'] . "::" . $event['event']][$eventsDataElementMapping[$dV['dataElement']]] = $dV['value'];
             }
-        }
-    }
-
-    $attributesData = [];
-    foreach ($tracker['attributes'] as $trackerAttr) {
-        if (empty($attributesDataElementMapping[$trackerAttr['attribute']])) {
-            continue;
-        }
-        $attributesData[$attributesDataElementMapping[$trackerAttr['attribute']]] = $trackerAttr['value'];
-    }
-
-    foreach ($eventsData as $uniqueID => $singleEventData) {
 
 
-        $db->where('unique_id', $uniqueID);
-        $c19Result = $db->getOne("form_covid19");
 
-        if (!empty($c19Result)) {
-            continue;
-        }
+            $db->where("iso3", $formData['patient_nationality']);
+            $country = $db->getOne("r_countries");
+            $formData['patient_nationality'] = $country['id'];
 
-        $formData = array_merge($singleEventData, $attributesData);
-        $formData['source_of_request'] = 'dhis2';
-        $formData['source_data_dump'] = json_encode($tracker);
-
-
-        $facility = $tracker['orgUnit'];
-
-
-        $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ? $formData['sample_collection_date'] : $enrollmentDate);
-
-        // Reason for Testing
-        if (!empty($formData['reason_for_covid19_test'])) {
-            $db->where("test_reason_name", $formData['reason_for_covid19_test']);
-            $reason = $db->getOne("r_covid19_test_reasons");
-            if (!empty($reason) && $reason) {
-                $formData['reason_for_covid19_test'] = $reason['test_reason_id'];
+            // Platform
+            if (!empty($formData['covid19_test_platform'])) {
+                $db->where("machine_name", $formData['covid19_test_platform']);
+                $testPlatform = $db->getOne("instruments");
+                $formData['covid19_test_platform'] = $testPlatform['config_id'];
             } else {
-                $reasonData = array(
-                    'test_reason_name' => $formData['reason_for_covid19_test'],
-                    'test_reason_status' => 'active',
-                    'updated_datetime' => DateUtility::getCurrentDateTime()
-                );
-                $formData['reason_for_covid19_test'] = $db->insert("r_covid19_test_reasons", $reasonData);
+                $formData['covid19_test_platform'] = null;
             }
-        }
 
-
-
-        $db->where("iso3", $formData['patient_nationality']);
-        $country = $db->getOne("r_countries");
-        $formData['patient_nationality'] = $country['id'];
-
-        // Platform
-        if (!empty($formData['covid19_test_platform'])) {
-            $db->where("machine_name", $formData['covid19_test_platform']);
-            $testPlatform = $db->getOne("instruments");
-            $formData['covid19_test_platform'] = $testPlatform['config_id'];
-        } else {
-            $formData['covid19_test_platform'] = null;
-        }
-
-        // Lab ID
-        if (!empty($formData['lab_id'])) {
-            $db->where("facility_name", $formData['lab_id']);
-            $db->orWhere("other_id", $formData['lab_id']);
-            $lab = $db->getOne("facility_details");
-            $formData['lab_id'] = $lab['facility_id'];
-        } else {
-            $formData['lab_id'] = null;
-        }
-
-
-        // Facility ID
-        $db->where("other_id", $facility);
-        $fac = $db->getOne("facility_details");
-        $formData['facility_id'] = $fac['facility_id'];
-
-        $db->where("geo_name", $fac['facility_state']);
-        $prov = $db->getOne("geographical_divisions");
-
-        $formData['province_id'] = !empty($prov['geo_id']) ? $prov['geo_id'] : 1;
-
-
-        //Specimen Type
-        if (!empty($formData['specimen_type'])) {
-            $db->where("sample_name", $formData['specimen_type']);
-            $sampleType = $db->getOne("r_covid19_sample_type");
-
-            if (!empty($sampleType) && $sampleType) {
-                $formData['specimen_type'] = $sampleType['sample_id'];
+            // Lab ID
+            if (!empty($formData['lab_id'])) {
+                $db->where("facility_name", $formData['lab_id']);
+                $db->orWhere("other_id", $formData['lab_id']);
+                $lab = $db->getOne("facility_details");
+                $formData['lab_id'] = $lab['facility_id'];
             } else {
-                $sampleTypeData = array(
-                    'sample_name' => $formData['specimen_type'],
-                    'status' => 'active',
-                    'updated_datetime' => DateUtility::getCurrentDateTime()
-                );
-                $formData['specimen_type'] = $db->insert("r_covid19_sample_type", $sampleTypeData);
+                $formData['lab_id'] = null;
             }
-        }
 
 
-        $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
-            $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-        }
+            // Facility ID
+            $db->where("other_id", $facility);
+            $fac = $db->getOne("facility_details");
+            $formData['facility_id'] = $fac['facility_id'];
 
-        $formData['result_status'] = $status;
-        $formData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+            $db->where("geo_name", $fac['facility_state']);
+            $prov = $db->getOne("geographical_divisions");
 
-
-        $formData['patient_gender'] = (!empty($formData['patient_gender']) ? strtolower((string) $formData['patient_gender']) : null);
-        if (!empty($formData['specimen_quality'])) {
-            $formData['specimen_quality'] = strtolower((string) $formData['specimen_quality']);
-        }
+            $formData['province_id'] = !empty($prov['geo_id']) ? $prov['geo_id'] : 1;
 
 
-        // all the columns at this point will be in update columns list
-        // the columns below this are only for inserting
-        //$updateColumns = array_keys($formData);
+            //Specimen Type
+            if (!empty($formData['specimen_type'])) {
+                $db->where("sample_name", $formData['specimen_type']);
+                $sampleType = $db->getOne("r_covid19_sample_type");
+
+                if (!empty($sampleType) && $sampleType) {
+                    $formData['specimen_type'] = $sampleType['sample_id'];
+                } else {
+                    $sampleTypeData = array(
+                        'sample_name' => $formData['specimen_type'],
+                        'status' => 'active',
+                        'updated_datetime' => DateUtility::getCurrentDateTime()
+                    );
+                    $formData['specimen_type'] = $db->insert("r_covid19_sample_type", $sampleTypeData);
+                }
+            }
 
 
-        $sampleCodeParams = [];
-        $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($formData['sample_collection_date'] ?? '');
-        $sampleCodeParams['provinceId'] = $formData['province_id'];
-        $sampleCodeParams['insertOperation'] = true;
-        $sampleJson = $covid19Service->getSampleCode($sampleCodeParams);
+            $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+                $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+            }
 
-        $sampleData = json_decode((string) $sampleJson, true);
-
-        $formData['unique_id'] = $uniqueID;
-
-        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
-            $sampleCode = 'remote_sample_code';
-            $sampleCodeKey = 'remote_sample_code_key';
-            $sampleCodeFormat = 'remote_sample_code_format';
-            $formData['remote_sample'] = 'yes';
-        } else {
-            $sampleCode = 'sample_code';
-            $sampleCodeKey = 'sample_code_key';
-            $sampleCodeFormat = 'sample_code_format';
-            $formData['remote_sample'] = 'no';
-        }
-
-        $formData[$sampleCode] = $sampleData['sampleCode'];
-        $formData[$sampleCodeFormat] = $sampleData['sampleCodeFormat'];
-        $formData[$sampleCodeKey] = $sampleData['sampleCodeKey'];
-
-        $formData['request_created_by'] = 1;
-        $formData['request_created_datetime'] = DateUtility::getCurrentDateTime();
-
-        $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
-
-        $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
-        $formData['vlsm_country_id'] = 1; // South Sudan
+            $formData['result_status'] = $status;
+            $formData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
 
-        //$db->onDuplicate($updateColumns, 'unique_id');
-        $id = $db->insert("form_covid19", $formData);
-        if ($id) {
-            $processedCounter++;
+            $formData['patient_gender'] = (!empty($formData['patient_gender']) ? strtolower((string) $formData['patient_gender']) : null);
+            if (!empty($formData['specimen_quality'])) {
+                $formData['specimen_quality'] = strtolower((string) $formData['specimen_quality']);
+            }
+
+
+            // all the columns at this point will be in update columns list
+            // the columns below this are only for inserting
+            //$updateColumns = array_keys($formData);
+
+
+            $sampleCodeParams = [];
+            $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($formData['sample_collection_date'] ?? '');
+            $sampleCodeParams['provinceId'] = $formData['province_id'];
+            $sampleCodeParams['insertOperation'] = true;
+            $sampleJson = $covid19Service->getSampleCode($sampleCodeParams);
+
+            $sampleData = json_decode((string) $sampleJson, true);
+
+            $formData['unique_id'] = $uniqueID;
+
+            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+                $sampleCode = 'remote_sample_code';
+                $sampleCodeKey = 'remote_sample_code_key';
+                $sampleCodeFormat = 'remote_sample_code_format';
+                $formData['remote_sample'] = 'yes';
+            } else {
+                $sampleCode = 'sample_code';
+                $sampleCodeKey = 'sample_code_key';
+                $sampleCodeFormat = 'sample_code_format';
+                $formData['remote_sample'] = 'no';
+            }
+
+            $formData[$sampleCode] = $sampleData['sampleCode'];
+            $formData[$sampleCodeFormat] = $sampleData['sampleCodeFormat'];
+            $formData[$sampleCodeKey] = $sampleData['sampleCodeKey'];
+
+            $formData['request_created_by'] = 1;
+            $formData['request_created_datetime'] = DateUtility::getCurrentDateTime();
+
+            $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
+
+            $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
+            $formData['vlsm_country_id'] = 1; // South Sudan
+
+
+            //$db->onDuplicate($updateColumns, 'unique_id');
+            $id = $db->insert("form_covid19", $formData);
+            if ($id) {
+                $processedCounter++;
+            }
         }
     }
+
+    $response = array('received' => $receivedCounter, 'processed' => $processedCounter);
+
+    echo (json_encode($response));
+    $db->commitTransaction();
+} catch (Exception | SystemException $exception) {
+    $db->rollbackTransaction();
+    error_log("Error while generating receiving DHIS2 data : " . $exception->getMessage());
 }
-
-$response = array('received' => $receivedCounter, 'processed' => $processedCounter);
-
-echo (json_encode($response));

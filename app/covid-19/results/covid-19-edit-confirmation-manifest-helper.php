@@ -22,7 +22,7 @@ try {
                 'positive_test_manifest_id'   => null,
                 'positive_test_manifest_code' => null
             );
-            $db = $db->where('positive_test_manifest_code', $lastId);
+            $db->where('positive_test_manifest_code', $lastId);
             $db->update('form_covid19', $value);
 
             for ($j = 0; $j < count($_POST['sampleCode']); $j++) {
@@ -31,7 +31,7 @@ try {
                     'positive_test_manifest_code' => $_POST['manifestCode']
                 );
 
-                $db = $db->where('covid19_id', $_POST['sampleCode'][$j]);
+                $db->where('covid19_id', $_POST['sampleCode'][$j]);
                 $db->update('form_covid19', $value);
             }
             $_SESSION['alertMsg'] = "Manifest details updated successfully";

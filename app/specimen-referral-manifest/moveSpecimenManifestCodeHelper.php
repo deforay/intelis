@@ -46,11 +46,11 @@ try {
             'data_sync'                 => 0
         );
         /* Update Package details table */
-        $db = $db->where('package_code IN(' . implode(",", $_POST['packageCode']) . ')');
+        $db->where('package_code IN(' . implode(",", $_POST['packageCode']) . ')');
         $db->update('package_details', array("lab_id" => $_POST['assignLab']));
 
         /* Update test types */
-        $db = $db->where('sample_package_code IN(' . implode(",", $_POST['packageCode']) . ')');
+        $db->where('sample_package_code IN(' . implode(",", $_POST['packageCode']) . ')');
         $db->update($table, $value);
 
         $_SESSION['alertMsg'] = "Manifest code(s) moved successfully";

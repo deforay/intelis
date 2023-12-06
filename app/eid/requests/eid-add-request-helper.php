@@ -442,7 +442,7 @@ try {
 
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
-		$db = $db->where('eid_id', $_POST['eidSampleId']);
+		$db->where('eid_id', $_POST['eidSampleId']);
 		$id = $db->update($tableName, $eidData);
 		error_log($db->getLastError());
 	}

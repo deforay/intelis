@@ -31,7 +31,7 @@ try {
 		);
 
 		if (isset($_POST['rejectionReasonId']) && $_POST['rejectionReasonId'] != "") {
-			$db = $db->where($primaryKey, base64_decode((string) $_POST['rejectionReasonId']));
+			$db->where($primaryKey, base64_decode((string) $_POST['rejectionReasonId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$data['data_sync'] = 0;

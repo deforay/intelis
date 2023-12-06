@@ -35,7 +35,7 @@ try {
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);
 
-		$db = $db->where('test_reason_id', $testReasonId);
+		$db->where('test_reason_id', $testReasonId);
 		$db->update($tableName, $data);
 
 		$_SESSION['alertMsg'] = "Test reason details updated successfully";

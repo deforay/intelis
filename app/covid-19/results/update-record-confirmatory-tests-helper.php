@@ -1,19 +1,16 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
-
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
 $tableName = "form_covid19";
 $tableName1 = "activity_log";
 $tableName2 = "log_result_updates";
@@ -23,11 +20,11 @@ try {
 	$covid19Data = array(
 		'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
 		'lab_id' => $_POST['labId'] ?? null,
-		'is_sample_rejected' => ($_POST['isSampleRejected'] ?? null),
+		'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
 		'result' => $_POST['result'] ?? null,
 		'is_result_authorised' => $_POST['isResultAuthorized'] ?? null,
 		'authorized_by' => $_POST['authorizedBy'] ?? null,
-		'authorized_on' => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
+		'authorized_on' => DateUtility::isoDateFormat($_POST['authorizedOn'] ?? ''),
 		'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
 		'result_status' => 6,
@@ -45,7 +42,7 @@ try {
 	if (isset($_POST['deletedRow']) && trim((string) $_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 		$deleteRows = explode(',', (string) $_POST['deletedRow']);
 		foreach ($deleteRows as $delete) {
-			$db = $db->where('test_id', base64_decode($delete));
+			$db->where('test_id', base64_decode($delete));
 			$id = $db->delete($testTableName);
 		}
 	}
@@ -60,7 +57,7 @@ try {
 					'result' => $_POST['testResult'][$testKey],
 				);
 				if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {
-					$db = $db->where('test_id', base64_decode((string) $_POST['testId'][$testKey]));
+					$db->where('test_id', base64_decode((string) $_POST['testId'][$testKey]));
 					$db->update($testTableName, $covid19TestData);
 				} else {
 					$db->insert($testTableName, $covid19TestData);
@@ -71,11 +68,11 @@ try {
 			}
 		}
 	} else {
-		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
+		$db->where('covid19_id', $_POST['covid19SampleId']);
 		$id = $db->delete($testTableName);
 		$covid19Data['sample_tested_datetime'] = null;
 	}
-	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
+	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$id = $db->update($tableName, $covid19Data);
 
 	$_SESSION['alertMsg'] = "Covid-19 result updated successfully";

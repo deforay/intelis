@@ -44,14 +44,14 @@ try {
             /* Suppose while edit they can change the testkit means prev data not needed so we can rease it from DB */
             $exist = $db->rawQueryOne("SELECT qc_id FROM $tableName1 WHERE qc_id = " . base64_decode((string) $_POST['qcDataId']));
             if (isset($exist) && !empty($exist['qc_id'])) {
-                $db = $db->where("qc_id", $exist['qc_id']);
+                $db->where("qc_id", $exist['qc_id']);
                 $db->delete($tableName1);
             }
 
             unset($data['unique_id']);
             unset($data['created_on']);
 
-            $db = $db->where($primaryKey, base64_decode((string) $_POST['qcDataId']));
+            $db->where($primaryKey, base64_decode((string) $_POST['qcDataId']));
             $db->update($tableName, $data);
             $lastId = base64_decode((string) $_POST['qcDataId']);
         } else {
@@ -75,7 +75,7 @@ try {
 
                     /* If ID already exist we can update */
                     // if (isset($_POST['qcTestId'][$key]) && !empty($_POST['qcTestId'][$key])) {
-                    //     $db = $db->where($primaryKey1, $_POST['qcTestId'][$key]);
+                    //     $db->where($primaryKey1, $_POST['qcTestId'][$key]);
                     //     $db->update($tableName1, $subData);
                     // } else {
                     //     $db->insert($tableName1, $subData);

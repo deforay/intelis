@@ -28,7 +28,7 @@ try {
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
         if (!empty($testCategoryId)) {
-            $db = $db->where('test_category_id', $testCategoryId);
+            $db->where('test_category_id', $testCategoryId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Test Category updated successfully");

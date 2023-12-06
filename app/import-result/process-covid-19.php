@@ -188,7 +188,7 @@ try {
                     if (!empty($vlResult)) {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['data_sync'] = 0;
-                        $db = $db->where('sample_code', $rResult[0]['sample_code']);
+                        $db->where('sample_code', $rResult[0]['sample_code']);
 
                         $result = $db->update($tableName1, $data);
                         $covid19Id = $vlResult[0]['covid19_id'];
@@ -216,7 +216,7 @@ try {
                     "updated_on" => DateUtility::getCurrentDateTime()
                 ));
             }
-            $db = $db->where('temp_sample_id', $id[$i]);
+            $db->where('temp_sample_id', $id[$i]);
             $result = $db->update($tableName, array('temp_sample_status' => 1));
         }
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult[0]['import_machine_file_name'])) {
@@ -278,7 +278,7 @@ try {
                 $data['sample_batch_id'] = $db->getInsertId();
             }
             $data['data_sync'] = 0;
-            $db = $db->where('sample_code', $accResult[$i]['sample_code']);
+            $db->where('sample_code', $accResult[$i]['sample_code']);
             $result = $db->update($tableName1, $data);
 
             $numberOfResults++;
@@ -287,7 +287,7 @@ try {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'])) {
                 copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
             }
-            $db = $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
+            $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
             $result = $db->update($tableName, array('temp_sample_status' => 1));
         }
     }

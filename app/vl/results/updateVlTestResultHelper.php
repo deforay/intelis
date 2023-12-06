@@ -173,7 +173,7 @@ try {
 
     $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
 
-    $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
+    $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("VL request updated successfully");

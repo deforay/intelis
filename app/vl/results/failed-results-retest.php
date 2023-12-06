@@ -39,9 +39,9 @@ try {
     $response = $db->rawQuery($query);
 
     if ($_POST['bulkIds'] && is_array($_POST['vlId'])) {
-        $db = $db->where("`vl_sample_id` IN (" . implode(",", $_POST['vlId']) . ")");
+        $db->where("`vl_sample_id` IN (" . implode(",", $_POST['vlId']) . ")");
     } else {
-        $db = $db->where('vl_sample_id', base64_decode((string) $_POST['vlId']));
+        $db->where('vl_sample_id', base64_decode((string) $_POST['vlId']));
     }
     $id = $db->update(
         "form_vl",

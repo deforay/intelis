@@ -21,7 +21,7 @@ $_POST = $request->getParsedBody();
 
 $selectedSamplesTypes = [];
 if (!empty($_POST['facilityId'])) {
-    $db = $db->where('facility_id', base64_decode((string) $_POST['facilityId']));
+    $db->where('facility_id', base64_decode((string) $_POST['facilityId']));
     $facility = $db->getOne('facility_details', array('facility_attributes'));
     $selectedSamplesTypes = json_decode((string) $facility['facility_attributes'], true);
 }

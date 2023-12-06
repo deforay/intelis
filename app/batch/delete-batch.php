@@ -51,12 +51,12 @@ $vlInfo = $db->query($vlQuery);
 if (count($vlInfo) > 0) {
 
     $value = array('sample_batch_id' => null);
-    $db = $db->where('sample_batch_id', $batchId);
+    $db->where('sample_batch_id', $batchId);
 
     $db->update($tableName2, $value);
 }
 
-$db = $db->where('batch_id', $batchId);
+$db->where('batch_id', $batchId);
 $delId = $db->delete($tableName1);
 if ($delId > 0) {
     echo '1';

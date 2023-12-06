@@ -59,7 +59,7 @@ $_SESSION['covid19PrintSearchResultQuery'] = $samplePrintQuery;
 
 
 // We can clear the temp sample import table
-//$db = $db->where('imported_by', $_SESSION['userId']);
+//$db->where('imported_by', $_SESSION['userId']);
 //$db->delete('temp_sample_import');
 unset($_SESSION['controllertrack']);
 

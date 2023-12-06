@@ -39,7 +39,7 @@ try {
                     $covid19Data['positive_test_manifest_id']   = $lastConfirmationManifestId;
                     $covid19Data['positive_test_manifest_code'] = $packageNo;
 
-                    $db = $db->where('covid19_id', $sampleResult['covid19_id']);
+                    $db->where('covid19_id', $sampleResult['covid19_id']);
                     $db->update($tableName2, $covid19Data);
                 }
             }

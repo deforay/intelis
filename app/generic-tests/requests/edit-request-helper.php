@@ -92,7 +92,7 @@ try {
      //update facility code
      if (trim((string) $_POST['fCode']) != '') {
           $fData = array('facility_code' => $_POST['fCode']);
-          $db = $db->where('facility_id', $_POST['fName']);
+          $db->where('facility_id', $_POST['fName']);
           $id = $db->update($fDetails, $fData);
      }
 
@@ -288,7 +288,7 @@ try {
 
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
           if (!empty($_POST['testName'])) {
-               $db = $db->where('generic_id', $_POST['vlSampleId']);
+               $db->where('generic_id', $_POST['vlSampleId']);
                $db->delete('generic_test_results');
                foreach ($_POST['testName'] as $subTestName => $subTests) {
                     foreach ($subTests as $testKey => $testKitName) {
@@ -316,13 +316,13 @@ try {
                }
           }
      } else {
-          $db = $db->where('generic_id', $_POST['vlSampleId']);
+          $db->where('generic_id', $_POST['vlSampleId']);
           $db->delete('generic_test_results');
           $covid19Data['sample_tested_datetime'] = null;
      }
 
      $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_id']);
-     $db = $db->where('sample_id', $_POST['vlSampleId']);
+     $db->where('sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vldata);
      error_log($db->getLastError());
      if ($id === true) {

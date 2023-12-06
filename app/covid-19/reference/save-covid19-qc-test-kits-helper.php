@@ -27,7 +27,7 @@ try {
         );
 
         if (isset($_POST['qcTestId']) && $_POST['qcTestId'] != "") {
-            $db = $db->where($primaryKey, base64_decode((string) $_POST['qcTestId']));
+            $db->where($primaryKey, base64_decode((string) $_POST['qcTestId']));
             $lastId = $db->update($tableName, $data);
         } else {
             $lastId = $db->insert($tableName, $data);

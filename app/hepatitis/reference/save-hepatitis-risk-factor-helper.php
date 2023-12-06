@@ -26,7 +26,7 @@ try {
 			'updated_datetime'     => DateUtility::getCurrentDateTime(),
 		);
 		if (isset($_POST['riskFactorId']) && $_POST['riskFactorId'] != "") {
-			$db = $db->where($primaryKey, base64_decode((string) $_POST['riskFactorId']));
+			$db->where($primaryKey, base64_decode((string) $_POST['riskFactorId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$db->insert($tableName, $data);

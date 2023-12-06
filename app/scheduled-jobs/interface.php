@@ -236,7 +236,7 @@ if (!empty($interfaceData)) {
             } elseif ($data['vl_result_category'] == 'rejected') {
                 $data['result_status'] = SAMPLE_STATUS\REJECTED;
             }
-            $db = $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
+            $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
             $vlUpdateId = $db->update('form_vl', $data);
             $numberOfResults++;
             $processedResults[] = $result['order_id'];
@@ -297,7 +297,7 @@ if (!empty($interfaceData)) {
                 'data_sync' => 0
             ];
 
-            $db = $db->where('eid_id', $tableInfo['eid_id']);
+            $db->where('eid_id', $tableInfo['eid_id']);
             $eidUpdateId = $db->update('form_eid', $data);
             $numberOfResults++;
             $processedResults[] = $result['order_id'];
@@ -376,7 +376,7 @@ if (!empty($interfaceData)) {
                 'data_sync' => 0
             ];
 
-            $db = $db->where('hepatitis_id', $tableInfo['hepatitis_id']);
+            $db->where('hepatitis_id', $tableInfo['hepatitis_id']);
             $vlUpdateId = $db->update('form_hepatitis', $data);
             $numberOfResults++;
             $processedResults[] = $result['order_id'];

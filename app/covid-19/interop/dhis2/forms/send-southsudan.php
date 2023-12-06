@@ -249,7 +249,7 @@ foreach ($formResults as $row) {
 
 
   $updateData = array('result_sent_to_source' => 'sent');
-  $db = $db->where('covid19_id', $row['covid19_id']);
+  $db->where('covid19_id', $row['covid19_id']);
   $db->update('form_covid19', $updateData);
   $counter++;
 }

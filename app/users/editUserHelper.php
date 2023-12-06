@@ -109,11 +109,11 @@ try {
             $data['force_password_reset'] = 1;
         }
 
-        $db = $db->where('user_id', $userId);
+        $db->where('user_id', $userId);
         $db->update("user_details", $data);
 
         // Deleting old mapping of user to facilities
-        $db = $db->where('user_id', $userId);
+        $db->where('user_id', $userId);
         $delId = $db->delete("user_facility_map");
 
         if ($userId != '' && trim((string) $_POST['selectedFacility']) != '') {

@@ -66,7 +66,7 @@ try {
 			$db->insert('s_vlsm_instance', array('vlsm_instance_id' => $instanceId));
 			$_SESSION['instanceId'] = $instanceId;
 		}
-		$db = $db->where('name', 'instance_type');
+		$db->where('name', 'instance_type');
 		$db->update($globalTable, array('value' => $_POST['fType']));
 		$data = [
 			'instance_facility_name' => $_POST['fName'],
@@ -82,7 +82,7 @@ try {
 			$data['instance_mac_address'] = getMacWindows();
 		}
 
-		$db = $db->where('vlsm_instance_id', $instanceId);
+		$db->where('vlsm_instance_id', $instanceId);
 		$id = $db->update($tableName, $data);
 		if ($id === true) {
 			$_SESSION['instanceFacilityName'] = $_POST['fName'];
@@ -99,7 +99,7 @@ try {
 					$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
 
 					$image = ['instance_facility_logo' => $imageName];
-					$db = $db->where('vlsm_instance_id', $instanceId);
+					$db->where('vlsm_instance_id', $instanceId);
 					$db->update($tableName, $image);
 				}
 			}

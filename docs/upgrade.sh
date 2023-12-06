@@ -40,6 +40,28 @@ if ! command -v php &>/dev/null; then
     exit 1
 fi
 
+# Check for PHP version 8.2.x
+php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
+desired_php_version="8.2"
+
+if [[ "$php_version" != "$desired_php_version" ]]; then
+    echo "Current PHP version is $php_version. Switching to PHP $desired_php_version."
+
+    # Download and install switch-php script
+    wget https://gist.githubusercontent.com/amitdugar/339470e36f6ad6c1910914e854384294/raw/switch-php -O /usr/local/bin/switch-php
+    chmod +x /usr/local/bin/switch-php
+
+    # Switch to PHP 8.2
+    switch-php $desired_php_version
+
+    if [ $? -ne 0 ]; then
+        echo "Failed to switch to PHP $desired_php_version. Please check your setup."
+        exit 1
+    fi
+else
+    echo "PHP version is already $desired_php_version."
+fi
+
 # Check for Composer
 if ! command -v composer &>/dev/null; then
     echo "Composer is not installed. Please first run the setup script."

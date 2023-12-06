@@ -391,7 +391,7 @@ try {
 
         if (isset($data['genericSampleId']) && $data['genericSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
             if (!empty($data['testResult'])) {
-                $db = $db->where('sample_id', $data['genericSampleId']);
+                $db->where('sample_id', $data['genericSampleId']);
                 $db->delete($testTableName);
 
                 foreach ($data['testResult'] as $testKey => $testResult) {
@@ -406,12 +406,12 @@ try {
                 }
             }
         } else {
-            $db = $db->where('sample_id', $data['genericSampleId']);
+            $db->where('sample_id', $data['genericSampleId']);
             $db->delete($testTableName);
         }
         $id = false;
         if (!empty($data['genericSampleId'])) {
-            $db = $db->where('sample_id', $data['genericSampleId']);
+            $db->where('sample_id', $data['genericSampleId']);
             $id = $db->update($tableName, $genericData);
         }
         if ($id === true) {

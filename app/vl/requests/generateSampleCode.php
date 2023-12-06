@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\VlService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var VlService $vlService */
@@ -13,13 +14,16 @@ $_POST = $request->getParsedBody();
 
 $provinceCode = $_POST['provinceCode'] ?? $_POST['pName'] ?? null;
 $sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? null;
-
-if (empty($sampleCollectionDate)) {
-  echo json_encode([]);
-} else {
-  $sampleCodeParams = [];
-  $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
-  $sampleCodeParams['provinceCode'] = $provinceCode;
-  $sampleCodeParams['insertOperation'] = false;
-  echo $vlService->getSampleCode($sampleCodeParams);
+try {
+  if (empty($sampleCollectionDate)) {
+    echo json_encode([]);
+  } else {
+    $sampleCodeParams = [];
+    $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+    $sampleCodeParams['provinceCode'] = $provinceCode;
+    $sampleCodeParams['insertOperation'] = false;
+    echo $vlService->getSampleCode($sampleCodeParams);
+  }
+} catch (Exception | SystemException $exception) {
+  error_log("Error while generating Sample Code : " . $exception->getMessage());
 }

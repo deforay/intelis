@@ -17,7 +17,7 @@ try {
                 }
             }
             $data = array('value' => $fieldValue);
-            $db = $db->where('name', $fieldName);
+            $db->where('name', $fieldName);
             $db->update($tableName, $data);
         }
     }

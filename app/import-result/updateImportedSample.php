@@ -30,7 +30,7 @@ try {
             );
             $db->insert("batch_details", $data);
         }
-        $db = $db->where('temp_sample_id', $_POST['tempsampleId']);
+        $db->where('temp_sample_id', $_POST['tempsampleId']);
         $result = $db->update($tableName, array('batch_code' => $_POST['batchCode']));
     } else if (isset($_POST['sampleCode']) && trim((string) $_POST['sampleCode']) != '') {
         $sampleResult = $db->rawQuery("select sample_code from form_vl where sample_code='" . trim((string) $_POST['sampleCode']) . "'");
@@ -39,11 +39,11 @@ try {
         } else {
             $sampleDetails = 'New Sample';
         }
-        $db = $db->where('temp_sample_id', $_POST['tempsampleId']);
+        $db->where('temp_sample_id', $_POST['tempsampleId']);
         $result = $db->update($tableName, array('sample_code' => $_POST['sampleCode'], 'sample_details' => $sampleDetails));
     } else if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
         $sampleControlResult = $db->rawQuery("select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim((string) $_POST['sampleType']) . "'");
-        $db = $db->where('temp_sample_id', $_POST['tempsampleId']);
+        $db->where('temp_sample_id', $_POST['tempsampleId']);
         $result = $db->update($tableName, array('sample_type' => trim((string) $_POST['sampleType'])));
     }
     echo $result;

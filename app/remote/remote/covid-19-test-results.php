@@ -167,7 +167,7 @@ try {
         }
 
         foreach ($testResultsData as $covid19Id => $testResults) {
-            $db = $db->where('covid19_id', $covid19Id);
+            $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_tests");
             foreach ($testResults as $testId => $test) {
                 $db->insert(

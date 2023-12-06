@@ -112,7 +112,7 @@ try {
 
   //var_dump($eidData);die;
 
-  $db = $db->where('eid_id', $_POST['eidSampleId']);
+  $db->where('eid_id', $_POST['eidSampleId']);
   $id = $db->update($tableName, $eidData);
   error_log($db->getLastError());
 

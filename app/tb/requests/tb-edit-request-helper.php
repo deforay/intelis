@@ -246,7 +246,7 @@ try {
 
     if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         if (!empty($_POST['testResult'])) {
-            $db = $db->where('tb_id', $_POST['tbSampleId']);
+            $db->where('tb_id', $_POST['tbSampleId']);
             $db->delete($testTableName);
 
             foreach ($_POST['testResult'] as $testKey => $testResult) {
@@ -264,7 +264,7 @@ try {
             }
         }
     } else {
-        $db = $db->where('tb_id', $_POST['tbSampleId']);
+        $db->where('tb_id', $_POST['tbSampleId']);
         $db->delete($testTableName);
     }
 
@@ -283,7 +283,7 @@ try {
 
 
     if (!empty($_POST['tbSampleId'])) {
-        $db = $db->where('tb_id', $_POST['tbSampleId']);
+        $db->where('tb_id', $_POST['tbSampleId']);
         $id = $db->update($tableName, $tbData);
     }
 

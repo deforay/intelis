@@ -136,7 +136,7 @@ try {
 	if (isset($_POST['deletedRow']) && trim((string) $_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 		$deleteRows = explode(',', (string) $_POST['deletedRow']);
 		foreach ($deleteRows as $delete) {
-			$db = $db->where('test_id', base64_decode($delete));
+			$db->where('test_id', base64_decode($delete));
 			$id = $db->delete($testTableName);
 		}
 	}
@@ -156,7 +156,7 @@ try {
 						'result' => $_POST['testResult'][$testKey],
 					);
 					if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {
-						$db = $db->where('test_id', base64_decode((string) $_POST['testId'][$testKey]));
+						$db->where('test_id', base64_decode((string) $_POST['testId'][$testKey]));
 						$db->update($testTableName, $covid19TestData);
 					} else {
 						$db->insert($testTableName, $covid19TestData);
@@ -168,13 +168,13 @@ try {
 			}
 		}
 	} else {
-		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
+		$db->where('covid19_id', $_POST['covid19SampleId']);
 		$id = $db->delete($testTableName);
 		$covid19Data['sample_tested_datetime'] = null;
 	}
 	/* echo "<pre>";
 		  print_r($covid19Data);die; */
-	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
+	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$id = $db->update($tableName, $covid19Data);
 	if ($id === true) {
 		$_SESSION['alertMsg'] = _translate("Covid-19 result updated successfully");

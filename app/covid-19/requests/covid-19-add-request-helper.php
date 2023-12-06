@@ -291,7 +291,7 @@ try {
 
 
 	//if (isset($_POST['asymptomatic']) && $_POST['asymptomatic'] != "yes") {
-	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
+	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$db->delete("covid19_patient_symptoms");
 	if (!empty($_POST['symptomDetected']) || (!empty($_POST['symptom']))) {
 		for ($i = 0; $i < count($_POST['symptomDetected']); $i++) {
@@ -306,7 +306,7 @@ try {
 	}
 	//}
 
-	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
+	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$db->delete("covid19_reasons_for_testing");
 	if (!empty($_POST['reasonDetails'])) {
 		$reasonData = [];
@@ -319,7 +319,7 @@ try {
 	}
 
 	//die;
-	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
+	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$db->delete("covid19_patient_comorbidities");
 	if (!empty($_POST['comorbidityDetected'])) {
 
@@ -355,7 +355,7 @@ try {
 			}
 		}
 	} else {
-		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
+		$db->where('covid19_id', $_POST['covid19SampleId']);
 		$db->delete($testTableName);
 		$covid19Data['sample_tested_datetime'] = null;
 	}
@@ -376,7 +376,7 @@ try {
 	$id = 0;
 
 	if (!empty($_POST['covid19SampleId'])) {
-		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
+		$db->where('covid19_id', $_POST['covid19SampleId']);
 		$id = $db->update($tableName, $covid19Data);
 	}
 

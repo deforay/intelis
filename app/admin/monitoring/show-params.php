@@ -21,7 +21,7 @@ $_COOKIE = $request->getCookieParams();
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
-$db = $db->where('api_track_id', $id);
+$db->where('api_track_id', $id);
 $result = $db->getOne('track_api_requests');
 $zip = new ZipArchive();
 $userRequest = $userResponse = "{}";

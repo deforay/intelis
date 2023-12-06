@@ -1,7 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\HepatitisService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -23,14 +24,17 @@ $sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? nul
 
 $prefix = $_POST['prefix'] ?? null;
 
-
-if (empty($sampleCollectionDate) || empty($prefix)) {
-  echo json_encode([]);
-} else {
-  $sampleCodeParams = [];
-  $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
-  $sampleCodeParams['prefix'] = $prefix;
-  $sampleCodeParams['provinceCode'] = $provinceCode;
-  $sampleCodeParams['insertOperation'] = false;
-  echo $hepatitisService->getSampleCode($sampleCodeParams);
+try {
+  if (empty($sampleCollectionDate) || empty($prefix)) {
+    echo json_encode([]);
+  } else {
+    $sampleCodeParams = [];
+    $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+    $sampleCodeParams['prefix'] = $prefix;
+    $sampleCodeParams['provinceCode'] = $provinceCode;
+    $sampleCodeParams['insertOperation'] = false;
+    echo $hepatitisService->getSampleCode($sampleCodeParams);
+  }
+} catch (Exception | SystemException $exception) {
+  error_log("Error while generating Sample Code : " . $exception->getMessage());
 }

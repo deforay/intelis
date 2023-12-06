@@ -17,7 +17,7 @@ try {
     $status = array(
         'contact_complete_status' => $_POST['value']
     );
-    $db = $db->where('vl_sample_id', $id);
+    $db->where('vl_sample_id', $id);
     $db->update($tableName, $status);
     $result = $id;
 } catch (Exception $exc) {

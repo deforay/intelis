@@ -398,7 +398,7 @@ try {
 
         $id = false;
         if (!empty($data['vlSampleId'])) {
-            $db = $db->where('vl_sample_id', $data['vlSampleId']);
+            $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
             //error_log($db->getLastError());
         }

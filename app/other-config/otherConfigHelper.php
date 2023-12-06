@@ -11,7 +11,7 @@ try {
     foreach ($_POST as $fieldName => $fieldValue) {
         if (trim($fieldName) != '') {
             $data = array('value' => $fieldValue);
-            $db = $db->where('name', $fieldName);
+            $db->where('name', $fieldName);
             $db->update($tableName, $data);
         }
     }

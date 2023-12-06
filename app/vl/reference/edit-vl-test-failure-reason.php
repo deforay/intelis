@@ -8,7 +8,7 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$db = $db->where('failure_id', $id);
+$db->where('failure_id', $id);
 $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
 ?>
 <!-- Content Wrapper. Contains page content -->

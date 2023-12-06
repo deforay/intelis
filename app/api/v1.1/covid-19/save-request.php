@@ -1,6 +1,5 @@
 <?php
 
-use App\Services\DatabaseService;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -8,6 +7,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -421,7 +421,7 @@ try {
         $covid19Data['request_created_by'] = $user['user_id'];
         $covid19Data['last_modified_by'] = $user['user_id'];
         if (isset($data['asymptomatic']) && $data['asymptomatic'] != "yes") {
-            $db = $db->where('covid19_id', $data['covid19SampleId']);
+            $db->where('covid19_id', $data['covid19SampleId']);
             $db->delete("covid19_patient_symptoms");
             if (!empty($data['symptomDetected']) || (!empty($data['symptom']))) {
                 for ($i = 0; $i < count($data['symptomDetected']); $i++) {
@@ -437,7 +437,7 @@ try {
             }
         }
 
-        $db = $db->where('covid19_id', $data['covid19SampleId']);
+        $db->where('covid19_id', $data['covid19SampleId']);
         $db->delete("covid19_reasons_for_testing");
         if (!empty($data['reasonDetails'])) {
             $reasonData = [];
@@ -449,7 +449,7 @@ try {
             error_log($db->getLastError());
         }
 
-        $db = $db->where('covid19_id', $data['covid19SampleId']);
+        $db->where('covid19_id', $data['covid19SampleId']);
         $db->delete("covid19_patient_comorbidities");
         if (!empty($data['comorbidityDetected'])) {
             for ($i = 0; $i < count($data['comorbidityDetected']); $i++) {
@@ -463,7 +463,7 @@ try {
         }
         if (isset($data['covid19SampleId']) && $data['covid19SampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
             if (!empty($data['c19Tests'])) {
-                $db = $db->where('covid19_id', $data['covid19SampleId']);
+                $db->where('covid19_id', $data['covid19SampleId']);
                 $db->delete($testTableName);
                 foreach ($data['c19Tests'] as $testKey => $test) {
                     if (!empty($test['testName'])) {
@@ -488,13 +488,13 @@ try {
                 }
             }
         } else {
-            $db = $db->where('covid19_id', $data['covid19SampleId']);
+            $db->where('covid19_id', $data['covid19SampleId']);
             $db->delete($testTableName);
             $covid19Data['sample_tested_datetime'] = null;
         }
         $id = false;
         if (!empty($data['covid19SampleId'])) {
-            $db = $db->where('covid19_id', $data['covid19SampleId']);
+            $db->where('covid19_id', $data['covid19SampleId']);
             $id = $db->update($tableName, $covid19Data);
         }
         if ($id === true) {

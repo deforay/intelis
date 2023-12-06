@@ -612,7 +612,7 @@ if (!empty($requestResult)) {
                $vlQuery = "SELECT result_printed_datetime FROM form_generic as vl WHERE vl.sample_id ='" . $result['sample_id'] . "'";
                $vlResult = $db->query($vlQuery);
                if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
-                    $db = $db->where('sample_id', $result['sample_id']);
+                    $db->where('sample_id', $result['sample_id']);
                     $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
                }
           }

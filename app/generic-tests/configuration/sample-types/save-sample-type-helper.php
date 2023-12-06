@@ -28,7 +28,7 @@ try {
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
         if (!empty($sampleTypeId)) {
-            $db = $db->where('sample_type_id', $sampleTypeId);
+            $db->where('sample_type_id', $sampleTypeId);
             $lastId = $db->update($tableName, $data);
             $_SESSION['alertMsg'] = _translate("Sample type updated successfully");
             if ($lastId > 0) {

@@ -21,7 +21,7 @@ try {
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
         if (!empty($symptomId)) {
-            $db = $db->where('symptom_id', $symptomId);
+            $db->where('symptom_id', $symptomId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Symptoms Details updated successfully");

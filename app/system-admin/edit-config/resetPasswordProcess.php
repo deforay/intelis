@@ -17,7 +17,7 @@ try {
     $userId = base64_decode((string) $_POST['userId']);
     if (isset($_POST['password']) && trim((string) $_POST['password']) != "") {
         $data['system_admin_password'] = $usersService->passwordHash($_POST['password']);
-        $db = $db->where('system_admin_id', $userId);
+        $db->where('system_admin_id', $userId);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = _translate("Password updated successfully");
     }

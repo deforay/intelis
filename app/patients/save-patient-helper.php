@@ -72,7 +72,7 @@ try {
     $id = 0;
 
     if (isset($_POST['patientId'])) {
-        $db = $db->where('patient_id', $_POST['patientId']);
+        $db->where('patient_id', $_POST['patientId']);
         $id = $db->update($tableName, $patientData);
     } else {
         $id = $db->insert($tableName, $patientData);

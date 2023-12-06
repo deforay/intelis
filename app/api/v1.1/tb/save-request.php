@@ -17,6 +17,8 @@ session_unset(); // no need of session in json response
 
 
 try {
+
+    $db->beginTransaction();
     ini_set('memory_limit', -1);
     set_time_limit(0);
     ini_set('max_execution_time', 20000);
@@ -404,7 +406,7 @@ try {
 
         if (isset($data['tbSampleId']) && $data['tbSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
             if (!empty($data['testResults'])) {
-                $db = $db->where('tb_id', $data['tbSampleId']);
+                $db->where('tb_id', $data['tbSampleId']);
                 $db->delete($testTableName);
 
                 foreach ($data['testResults'] as $testKey => $testResult) {
@@ -419,12 +421,12 @@ try {
                 }
             }
         } else {
-            $db = $db->where('tb_id', $data['tbSampleId']);
+            $db->where('tb_id', $data['tbSampleId']);
             $db->delete($testTableName);
         }
         $id = false;
         if (!empty($data['tbSampleId'])) {
-            $db = $db->where('tb_id', $data['tbSampleId']);
+            $db->where('tb_id', $data['tbSampleId']);
             $id = $db->update($tableName, $tbData);
         }
         if ($id === true) {
@@ -463,8 +465,9 @@ try {
         'data' => $responseData ?? []
     ];
     http_response_code(200);
+    $db->commitTransaction();
 } catch (SystemException $exc) {
-
+    $db->rollbackTransaction();
     http_response_code(500);
     $payload = [
         'status' => 'failed',

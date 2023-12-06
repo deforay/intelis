@@ -229,7 +229,7 @@ foreach ($formResults as $row) {
   }
 
   $updateData = ['result_sent_to_source' => 'sent'];
-  $db = $db->where('hepatitis_id', $row['hepatitis_id']);
+  $db->where('hepatitis_id', $row['hepatitis_id']);
   $db->update('form_hepatitis', $updateData);
   $counter++;
 

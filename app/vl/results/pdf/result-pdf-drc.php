@@ -496,7 +496,7 @@ if (!empty($requestResult)) {
 						FROM form_vl as vl WHERE vl.vl_sample_id = ?";
 			$vlResult = $db->rawQuery($vlQuery, [$result['vl_sample_id']]);
 			if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
-				$db = $db->where('vl_sample_id', $result['vl_sample_id']);
+				$db->where('vl_sample_id', $result['vl_sample_id']);
 				$db->update($tableName2, array('result_printed_datetime' => DateUtility::getCurrentDateTime()));
 			}
 		}

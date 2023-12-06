@@ -194,7 +194,7 @@ try {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['data_sync'] = 0;
 
-                        $db = $db->where('sample_code', $rResult['sample_code']);
+                        $db->where('sample_code', $rResult['sample_code']);
                         $result = $db->update('form_vl', $data);
 
                         $vlSampleId = $vlResult[0]['vl_sample_id'];
@@ -224,7 +224,7 @@ try {
                     )
                 );
             }
-            $db = $db->where('temp_sample_id', $id[$i]);
+            $db->where('temp_sample_id', $id[$i]);
             $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
         }
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'])) {
@@ -302,7 +302,7 @@ try {
                 $data['sample_batch_id'] = $db->getInsertId();
             }
             $data['data_sync'] = 0;
-            $db = $db->where('sample_code', $accResult[$i]['sample_code']);
+            $db->where('sample_code', $accResult[$i]['sample_code']);
             $result = $db->update('form_vl', $data);
 
             $numberOfResults++;
@@ -314,7 +314,7 @@ try {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']) && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'])) {
                 copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
             }
-            $db = $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
+            $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
             $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
         }
     }

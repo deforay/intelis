@@ -33,7 +33,7 @@ try {
 			'updated_datetime'  => DateUtility::getCurrentDateTime()
 		);
 		if (isset($_POST['artCodeId']) && $_POST['artCodeId'] != "") {
-			$db = $db->where($primaryKey, base64_decode((string) $_POST['artCodeId']));
+			$db->where($primaryKey, base64_decode((string) $_POST['artCodeId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$data['data_sync'] = 0;

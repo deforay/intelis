@@ -1,23 +1,26 @@
 <?php
 
 use App\Services\BatchService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-
 /** @var BatchService $batchService */
 $batchService = ContainerRegistry::get(BatchService::class);
+
+
 $tableName = "batch_details";
 try {
     $labelOrder = '';
@@ -44,7 +47,7 @@ try {
             'last_modified_by' => $_SESSION['userId'],
             'last_modified_datetime' => DateUtility::getCurrentDateTime()
         ];
-        $db = $db->where('batch_id', $_POST['batchId']);
+        $db->where('batch_id', $_POST['batchId']);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = _translate("Samples position in batch saved");
     }

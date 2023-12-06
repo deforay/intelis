@@ -178,7 +178,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                     $request['form_attributes'],
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $db = $db->where('sample_id', $existingSampleResult['sample_id']);
+                $db->where('sample_id', $existingSampleResult['sample_id']);
                 $id = $db->update('form_generic', $request);
             } else {
                 $request['source_of_request'] = 'vlsts';
@@ -212,7 +212,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
         $parsedData = Items::fromString($jsonResponse, $options);
 
         foreach ($parsedData as $genericId => $testResults) {
-            $db = $db->where('generic_id', $genericId);
+            $db->where('generic_id', $genericId);
             $db->delete("generic_test_results");
             foreach ($testResults as $genericTestData) {
                 unset($genericTestData['test_id']);
@@ -352,7 +352,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
-                $db = $db->where('vl_sample_id', $existingSampleResult['vl_sample_id']);
+                $db->where('vl_sample_id', $existingSampleResult['vl_sample_id']);
                 $id = $db->update('form_vl', $request);
             } else {
                 $request['source_of_request'] = 'vlsts';
@@ -486,7 +486,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                     ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $db = $db->where('eid_id', $existingSampleResult['eid_id']);
+                $db->where('eid_id', $existingSampleResult['eid_id']);
                 $id = $db->update('form_eid', $request);
             } else {
                 if (!empty($request['sample_collection_date'])) {
@@ -629,7 +629,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
-                $db = $db->where('covid19_id', $existingSampleResult['covid19_id']);
+                $db->where('covid19_id', $existingSampleResult['covid19_id']);
                 $db->update('form_covid19', $request);
                 $id = $existingSampleResult['covid19_id'];
             } else {
@@ -655,7 +655,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $covid19Id => $symptoms) {
-            $db = $db->where('covid19_id', $covid19Id);
+            $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_patient_symptoms");
             foreach ($symptoms as $symId => $symValue) {
                 $symptomData = [];
@@ -672,7 +672,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $covid19Id => $comorbidities) {
-            $db = $db->where('covid19_id', $covid19Id);
+            $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_patient_comorbidities");
 
             foreach ($comorbidities as $comoId => $comorbidityData) {
@@ -691,7 +691,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $parsedData = Items::fromString($jsonResponse, $options);
 
         foreach ($parsedData as $covid19Id => $testResults) {
-            $db = $db->where('covid19_id', $covid19Id);
+            $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_tests");
             foreach ($testResults as $covid19TestData) {
                 unset($covid19TestData['test_id']);
@@ -828,7 +828,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
-                $db = $db->where('hepatitis_id', $existingSampleResult['hepatitis_id']);
+                $db->where('hepatitis_id', $existingSampleResult['hepatitis_id']);
                 $db->update('form_hepatitis', $request);
                 $id = $existingSampleResult['hepatitis_id'];
             } else {
@@ -855,7 +855,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $hepatitisId => $risks) {
-            $db = $db->where('hepatitis_id', $hepatitisId);
+            $db->where('hepatitis_id', $hepatitisId);
             $db->delete("hepatitis_risk_factors");
 
             $rData = [];
@@ -879,7 +879,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $hepatitisId => $comorbidities) {
-            $db = $db->where('hepatitis_id', $hepatitisId);
+            $db->where('hepatitis_id', $hepatitisId);
             $db->delete("hepatitis_patient_comorbidities");
 
             $cData = [];
@@ -1016,7 +1016,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                     ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $db = $db->where('tb_id', $existingSampleResult['tb_id']);
+                $db->where('tb_id', $existingSampleResult['tb_id']);
                 $db->update('form_tb', $request);
                 $id = $existingSampleResult['tb_id'];
             } else {
@@ -1044,7 +1044,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 }
 
 $instanceId = $general->getInstanceId();
-$db = $db->where('vlsm_instance_id', $instanceId);
+$db->where('vlsm_instance_id', $instanceId);
 $id = $db->update('s_vlsm_instance', array('last_remote_requests_sync' => DateUtility::getCurrentDateTime()));
 
 if (isset($forceSyncModule) && trim((string) $forceSyncModule) != "" && isset($manifestCode) && trim((string) $manifestCode) != "") {

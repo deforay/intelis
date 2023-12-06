@@ -39,22 +39,22 @@ try {
             );
 
             if ($_POST['module'] == 'vl') {
-                $db = $db->where('sample_package_id', $lastId);
+                $db->where('sample_package_id', $lastId);
                 $db->update('form_vl', $value);
             } else if ($_POST['module'] == 'eid') {
-                $db = $db->where('sample_package_id', $lastId);
+                $db->where('sample_package_id', $lastId);
                 $db->update('form_eid', $value);
             } else if ($_POST['module'] == 'covid19') {
-                $db = $db->where('sample_package_id', $lastId);
+                $db->where('sample_package_id', $lastId);
                 $db->update('form_covid19', $value);
             } else if ($_POST['module'] == 'hepatitis') {
-                $db = $db->where('sample_package_id', $lastId);
+                $db->where('sample_package_id', $lastId);
                 $db->update('form_hepatitis', $value);
             } else if ($_POST['module'] == 'tb') {
-                $db = $db->where('sample_package_id', $lastId);
+                $db->where('sample_package_id', $lastId);
                 $db->update('form_tb', $value);
             } else if ($_POST['module'] == 'generic-tests') {
-                $db = $db->where('sample_package_id', $lastId);
+                $db->where('sample_package_id', $lastId);
                 $db->update('form_generic', $value);
             }
 
@@ -67,22 +67,22 @@ try {
                     'data_sync' => 0
                 );
                 if ($_POST['module'] == 'vl') {
-                    $db = $db->where('vl_sample_id', $uniqueSampleId[$j]);
+                    $db->where('vl_sample_id', $uniqueSampleId[$j]);
                     $db->update('form_vl', $value);
                 } else if ($_POST['module'] == 'eid') {
-                    $db = $db->where('eid_id', $uniqueSampleId[$j]);
+                    $db->where('eid_id', $uniqueSampleId[$j]);
                     $db->update('form_eid', $value);
                 } else if ($_POST['module'] == 'covid19') {
-                    $db = $db->where('covid19_id', $uniqueSampleId[$j]);
+                    $db->where('covid19_id', $uniqueSampleId[$j]);
                     $db->update('form_covid19', $value);
                 } else if ($_POST['module'] == 'hepatitis') {
-                    $db = $db->where('hepatitis_id', $uniqueSampleId[$j]);
+                    $db->where('hepatitis_id', $uniqueSampleId[$j]);
                     $db->update('form_hepatitis', $value);
                 } else if ($_POST['module'] == 'tb') {
-                    $db = $db->where('tb_id', $uniqueSampleId[$j]);
+                    $db->where('tb_id', $uniqueSampleId[$j]);
                     $db->update('form_tb', $value);
                 } else if ($_POST['module'] == 'generic-tests') {
-                    $db = $db->where('sample_id', $uniqueSampleId[$j]);
+                    $db->where('sample_id', $uniqueSampleId[$j]);
                     $db->update('form_generic', $value);
                 }
             }

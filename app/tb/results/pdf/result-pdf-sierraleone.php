@@ -564,7 +564,7 @@ if (!empty($requestResult)) {
             $tbQuery = "SELECT result_printed_datetime FROM form_tb as tb WHERE tb.tb_id ='" . $result['tb_id'] . "'";
             $tbResult = $db->query($tbQuery);
             if ($tbResult[0]['result_printed_datetime'] == null || trim((string) $tbResult[0]['result_printed_datetime']) == '' || $tbResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
-                $db = $db->where('tb_id', $result['tb_id']);
+                $db->where('tb_id', $result['tb_id']);
                 $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
             }
         }

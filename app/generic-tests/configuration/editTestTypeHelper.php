@@ -98,13 +98,13 @@ try {
             'test_results_config' => json_encode($_POST['resultConfig']),
             'test_status' => $_POST['status']
         );
-        $db = $db->where('test_type_id', $testTypeId);
+        $db->where('test_type_id', $testTypeId);
         $db->update($tableName, $data);
 
         if ($testTypeId != 0) {
 
             if (!empty($_POST['sampleType'])) {
-                $db = $db->where('test_type_id', $testTypeId);
+                $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName2);
                 foreach ($_POST['sampleType'] as $val) {
                     $value = array('sample_type_id' => $val, 'test_type_id' => $testTypeId);
@@ -113,7 +113,7 @@ try {
             }
 
             if (!empty($_POST['testingReason'])) {
-                $db = $db->where('test_type_id', $testTypeId);
+                $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName3);
                 foreach ($_POST['testingReason'] as $val) {
                     if (!is_numeric($val)) {
@@ -124,7 +124,7 @@ try {
                 }
             }
             if (!empty($_POST['symptoms'])) {
-                $db = $db->where('test_type_id', $testTypeId);
+                $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName4);
                 foreach ($_POST['symptoms'] as $val) {
                     $value = array('symptom_id' => $val, 'test_type_id' => $testTypeId);
@@ -133,7 +133,7 @@ try {
             }
 
             if (!empty($_POST['testFailureReason'])) {
-                $db = $db->where('test_type_id', $testTypeId);
+                $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName5);
                 foreach ($_POST['testFailureReason'] as $val) {
                     if (!is_numeric($val)) {
@@ -145,7 +145,7 @@ try {
             }
 
             if (!empty($_POST['rejectionReason'])) {
-                $db = $db->where('test_type_id', $testTypeId);
+                $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName6);
                 foreach ($_POST['rejectionReason'] as $val) {
                     if (!is_numeric($val)) {
@@ -157,7 +157,7 @@ try {
             }
 
             if (!empty($_POST['testMethod'])) {
-                $db = $db->where('test_type_id', $testTypeId);
+                $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName8);
                 foreach ($_POST['testMethod'] as $val) {
                     if (!is_numeric($val)) {

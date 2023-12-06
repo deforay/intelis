@@ -131,7 +131,7 @@ try {
     }
     $id = false;
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
-        $db = $db->where('user_id', $aRow['user_id']);
+        $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
     } else {
         $data['status'] = 'inactive';
@@ -139,7 +139,7 @@ try {
     }
 
     if ($id === true && trim($post['selectedFacility']) != '') {
-        $db = $db->where('user_id', $data['user_id']);
+        $db->where('user_id', $data['user_id']);
         $delId = $db->delete("user_facility_map");
         $selectedFacility = explode(",", $post['selectedFacility']);
         $uniqueFacilityId = array_unique($selectedFacility);

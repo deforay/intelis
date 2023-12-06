@@ -400,7 +400,7 @@ if (!empty($requestResult)) {
             $vlQuery = "SELECT result_printed_datetime FROM form_eid as vl WHERE vl.eid_id ='" . $result['eid_id'] . "'";
             $vlResult = $db->query($vlQuery);
             if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
-                $db = $db->where('eid_id', $result['eid_id']);
+                $db->where('eid_id', $result['eid_id']);
                 $db->update($tableName2, array('result_printed_datetime' => DateUtility::getCurrentDateTime()));
             }
         }

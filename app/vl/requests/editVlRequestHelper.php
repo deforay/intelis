@@ -90,7 +90,7 @@ try {
      //update facility code
      if (trim((string) $_POST['fCode']) != '') {
           $fData = array('facility_code' => $_POST['fCode']);
-          $db = $db->where('facility_id', $_POST['fName']);
+          $db->where('facility_id', $_POST['fName']);
           $id = $db->update($fDetails, $fData);
      }
 
@@ -347,7 +347,7 @@ try {
           $vlData['is_encrypted'] = NULL;
      }
 
-     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
+     $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vlData);
      error_log($db->getLastError());
      //die;

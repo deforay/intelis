@@ -119,7 +119,7 @@ try {
                     $lastId = $db->insert($tableName, $data);
                 } else {
                     $lastId = $sampleCode['covid19_id'];
-                    $db = $db->where('covid19_id', $lastId);
+                    $db->where('covid19_id', $lastId);
                     $db->update($tableName, $data);
                 }
 
@@ -133,7 +133,7 @@ try {
                 $testData[1]['testResult']      = $rowData['AH'];
                 if (!empty($testData)) {
                     /* Delete if already exist */
-                    $db = $db->where('covid19_id', $lastId);
+                    $db->where('covid19_id', $lastId);
                     $db->delete($testTableName);
 
                     foreach ($testData as $testKitName) {
@@ -149,7 +149,7 @@ try {
                         $covid19Data['sample_tested_datetime'] = DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true);
                     }
                 }
-                $db = $db->where('covid19_id', $lastId);
+                $db->where('covid19_id', $lastId);
                 $id = $db->update($tableName, $covid19Data);
             }
         }

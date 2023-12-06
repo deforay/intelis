@@ -489,7 +489,7 @@ if (!empty($requestResult)) {
             $vlQuery = "SELECT result_printed_datetime FROM form_hepatitis as vl WHERE vl.hepatitis_id ='" . $result['hepatitis_id'] . "'";
             $vlResult = $db->query($vlQuery);
             if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
-                $db = $db->where('hepatitis_id', $result['hepatitis_id']);
+                $db->where('hepatitis_id', $result['hepatitis_id']);
                 $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
             }
         }

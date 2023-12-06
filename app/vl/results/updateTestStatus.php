@@ -31,7 +31,7 @@ try {
             'data_sync' => 0
         );
         /* Check if already have reviewed and approved by */
-        $db = $db->where('vl_sample_id', $id[$i]);
+        $db->where('vl_sample_id', $id[$i]);
         $vlRow = $db->getOne($tableName);
         if (empty($vlRow['result_reviewed_by'])) {
             $status['result_reviewed_by'] = $_SESSION['userId'];
@@ -63,7 +63,7 @@ try {
         }
 
         // echo "<pre>";print_r($status);die;
-        $db = $db->where('vl_sample_id', $id[$i]);
+        $db->where('vl_sample_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];
 

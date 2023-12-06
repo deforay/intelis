@@ -93,7 +93,7 @@ try {
     //update facility code
     if (isset($_POST['fCode']) && trim((string) $_POST['fCode']) != '') {
         $fData = array('facility_code' => $_POST['fCode']);
-        $db = $db->where('facility_id', $_POST['fName']);
+        $db->where('facility_id', $_POST['fName']);
         $id = $db->update($fDetails, $fData);
     }
     //update facility emails
@@ -339,13 +339,13 @@ try {
             }
         }
     } else {
-        $db = $db->where('generic_id', $_POST['vlSampleId']);
+        $db->where('generic_id', $_POST['vlSampleId']);
         $db->delete($testTableName);
         $covid19Data['sample_tested_datetime'] = null;
     }
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
-        $db = $db->where('sample_id', $_POST['vlSampleId']);
+        $db->where('sample_id', $_POST['vlSampleId']);
         $id = $db->update($tableName, $vldata);
     } else {
         //check existing sample id

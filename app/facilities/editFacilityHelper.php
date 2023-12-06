@@ -129,11 +129,11 @@ try {
 			$data['facility_attributes'] = json_encode($facilityAttributes, true);
 		}
 
-		$db = $db->where('facility_id', $facilityId);
+		$db->where('facility_id', $facilityId);
 		$id = $db->update($tableName, $data);
 
 		// Mapping facility with users
-		$db = $db->where('facility_id', $facilityId);
+		$db->where('facility_id', $facilityId);
 		$delId = $db->delete($vlUserFacilityMapTable);
 		if ($facilityId > 0 && trim((string) $_POST['selectedUser']) != '') {
 			$selectedUser = explode(",", (string) $_POST['selectedUser']);
@@ -148,11 +148,11 @@ try {
 		$lastId = $facilityId;
 		// Mapping facility as a Testing Lab
 		// if (isset($_POST['testType']) && !empty($_POST['testType'])) {
-		// 	$db = $db->where('test_type NOT IN(' . sprintf("'%s'", implode("', '", $_POST['testType'])) . ')');
-		// 	$db = $db->where('facility_id', $facilityId);
+		// 	$db->where('test_type NOT IN(' . sprintf("'%s'", implode("', '", $_POST['testType'])) . ')');
+		// 	$db->where('facility_id', $facilityId);
 		// 	$delId = $db->delete($testingLabsTable);
 		// } else {
-		// 	$db = $db->where('facility_id', $facilityId);
+		// 	$db->where('facility_id', $facilityId);
 		// 	$delId = $db->delete($testingLabsTable);
 		// }
 		if ($lastId > 0) {
@@ -169,12 +169,12 @@ try {
 			if (!empty($_POST['testType'])) {
 
 				if (isset($_POST['facilityType']) && $_POST['facilityType'] == 1) {
-					$db = $db->where('facility_id', $facilityId);
+					$db->where('facility_id', $facilityId);
 					$delId = $db->delete($healthFacilityTable);
 				}
 				if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
 
-					$db = $db->where('facility_id', $facilityId);
+					$db->where('facility_id', $facilityId);
 					$delId = $db->delete($testingLabsTable);
 				}
 				$tid = $hid = 0;
@@ -209,7 +209,7 @@ try {
 			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage']);
 			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);
 			$data = array('facility_logo' => null);
-			$db = $db->where('facility_id', $lastId);
+			$db->where('facility_id', $lastId);
 			$db->update($tableName, $data);
 		}
 
@@ -234,7 +234,7 @@ try {
 				$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
 
 				$image = array('facility_logo' => $imageName);
-				$db = $db->where('facility_id', $lastId);
+				$db->where('facility_id', $lastId);
 				$db->update($tableName, $image);
 			}
 		}
@@ -242,7 +242,7 @@ try {
 		if ($_FILES['signature']['name'] != "" && !empty($_FILES['signature']['name']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
 			$deletedRow = explode(",", (string) $_POST['deletedRow']);
 			foreach ($deletedRow as $delete) {
-				$db = $db->where('signatory_id', $delete);
+				$db->where('signatory_id', $delete);
 				$db->delete($signTableName);
 			}
 			$pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures' . DIRECTORY_SEPARATOR;
@@ -258,7 +258,7 @@ try {
 						'signatory_status' 	=> $_POST['signStatus'][$key]
 					);
 					if (isset($_POST['signId'][$key]) && $_POST['signId'][$key] != "") {
-						$db = $db->where('signatory_id', $_POST['signId'][$key]);
+						$db->where('signatory_id', $_POST['signId'][$key]);
 						$db->update($signTableName, $signData);
 						$lastSignId = $_POST['signId'][$key];
 					} else {
@@ -288,7 +288,7 @@ try {
 							$resizeObj->save($pathname . $imageName);
 
 							$image = array('signature' => $imageName);
-							$db = $db->where('signatory_id', $lastSignId);
+							$db->where('signatory_id', $lastSignId);
 							$db->update($signTableName, $image);
 						}
 					}

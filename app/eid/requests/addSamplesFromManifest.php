@@ -60,7 +60,7 @@ $batResult = $db->rawQuery($batQuery);
 							<th scope="row" style="width:50%;vertical-align:middle;">
 								<?php echo _translate("Sample Received at Testing Lab"); ?> :
 							</th>
-							<td style="width:50%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select when the samples were received at the Testing Lab" readonly />
+							<td style="width:50%;vertical-align:middle;"><input type="text" name="sampleReceivedOn" id="sampleReceivedOn" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select when the samples were received at the Testing Lab" readonly />
 							</td>
 
 							<td style="width:100%;" colspan="3">
@@ -300,14 +300,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	<?php } ?>
 
 	function activateSamplesFromManifest() {
-		if ($("#testDate").val() == "") {
+		if ($("#sampleReceivedOn").val() == "") {
 			alert("<?= _translate("Please select when the samples were received at the Testing Lab", true); ?>");
 			return false;
 		}
 		$.blockUI();
 		$.post("/eid/requests/activate-samples-from-manifest.php", {
 				sampleId: $("#sampleId").val(),
-				testDate: $("#testDate").val()
+				sampleReceivedOn: $("#sampleReceivedOn").val()
 			},
 			function(data) {
 				if (data > 0) {

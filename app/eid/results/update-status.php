@@ -31,7 +31,7 @@ try {
         );
 
         /* Check if already have reviewed and approved by */
-        $db = $db->where('eid_id', $id[$i]);
+        $db->where('eid_id', $id[$i]);
         $reviewd = $db->getOne($tableName, array("result_reviewed_by", "result_approved_by"));
         if (empty($reviewd['result_reviewed_by'])) {
             $status['result_reviewed_by'] = $_SESSION['userId'];
@@ -48,7 +48,7 @@ try {
             $status['reason_for_sample_rejection'] = null;
         }
 
-        $db = $db->where('eid_id', $id[$i]);
+        $db->where('eid_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];
 

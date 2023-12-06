@@ -28,7 +28,7 @@ try {
             'data_sync'                 => 0
         );
         /* Check if already have reviewed and approved by */
-        $db = $db->where('sample_id', $id[$i]);
+        $db->where('sample_id', $id[$i]);
         $vlRow = $db->getOne($tableName);
         if (empty($vlRow['result_reviewed_by'])) {
             $status['result_reviewed_by'] = $_SESSION['userId'];
@@ -44,7 +44,7 @@ try {
             $status['is_sample_rejected'] = 'no';
         }
 
-        $db = $db->where('sample_id', $id[$i]);
+        $db->where('sample_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];
 

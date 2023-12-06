@@ -165,7 +165,7 @@ try {
                     $lastId = $db->insert($tableName, $eidData);
                 } else {
                     $lastId = $sampleCode['eid_id'];
-                    $db = $db->where('eid_id', $lastId);
+                    $db->where('eid_id', $lastId);
                     $db->update($tableName, $eidData);
                 }
             }

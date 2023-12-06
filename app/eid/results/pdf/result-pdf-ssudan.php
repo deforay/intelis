@@ -557,7 +557,7 @@ if (!empty($requestResult)) {
             $vlQuery = "SELECT result_printed_datetime FROM form_eid as vl WHERE vl.eid_id ='" . $result['eid_id'] . "'";
             $eidResult = $db->query($vlQuery);
             if ($eidResult[0]['result_printed_datetime'] == null || trim((string) $eidResult[0]['result_printed_datetime']) == '' || $eidResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
-                $db = $db->where('eid_id', $result['eid_id']);
+                $db->where('eid_id', $result['eid_id']);
                 $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
             }
         }

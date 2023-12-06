@@ -24,7 +24,7 @@ try {
         'status'            => $_POST['status'],
         'updated_datetime'  =>  DateUtility::getCurrentDateTime(),
     );
-    $db = $db->where('failure_id', $_POST['id']);
+    $db->where('failure_id', $_POST['id']);
     $result = $db->update($tableName, $status);
 } catch (Exception $exc) {
     error_log($exc->getMessage());

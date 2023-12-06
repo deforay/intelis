@@ -88,7 +88,7 @@ try {
 		'reason_for_vl_test'				  => $_POST['reasonVlTest'] ?? null,
 	);
 
-	$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
+	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 	$id = $db->update($tableName, $hepatitisData);
 	error_log($db->getLastError() . PHP_EOL);
 	if ($id === true) {

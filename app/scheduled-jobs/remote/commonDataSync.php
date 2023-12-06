@@ -332,7 +332,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
         if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
             if ($dataType === 'healthFacilities' && !empty($dataValues)) {
                 $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
-                $db = $db->where('facility_id', $updatedFacilities, 'IN');
+                $db->where('facility_id', $updatedFacilities, 'IN');
                 $id = $db->delete('health_facilities');
             } elseif ($dataType === 'testingLabs' && !empty($dataValues)) {
                 $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
@@ -426,5 +426,5 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
 }
 
 $instanceId = $general->getInstanceId();
-$db = $db->where('vlsm_instance_id', $instanceId);
+$db->where('vlsm_instance_id', $instanceId);
 $id = $db->update('s_vlsm_instance', array('last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()));

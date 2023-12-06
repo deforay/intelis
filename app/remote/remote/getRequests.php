@@ -115,7 +115,7 @@ try {
   }
 
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', $_SERVER['REQUEST_URI'], $jsonData, $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', $_SERVER['REQUEST_URI'], MiscUtility::convertToUtf8AndEncode($data), $payload, 'json', $labId);
 
 
   $general->updateTestRequestsSyncDateTime('vl', 'form_vl', 'vl_sample_id', $sampleIds, $transactionId, $facilityIds, $labId);

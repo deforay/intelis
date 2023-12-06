@@ -428,7 +428,7 @@ try {
 
         $id = false;
         if (!empty($data['eidSampleId'])) {
-            $db = $db->where('eid_id', $data['eidSampleId']);
+            $db->where('eid_id', $data['eidSampleId']);
             $id = $db->update('form_eid', $eidData);
             //error_log($db->getLastError());
         }

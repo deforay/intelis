@@ -81,7 +81,7 @@ if (isset($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSample
     ON vl.sample_code=tsr.sample_code";
     $sampleResultResult = $db->rawQuery($sampleQuery);
     if (empty($sampleResultResult)) {
-        $db = $db->where('sample_type', 'S');
+        $db->where('sample_type', 'S');
         $delId = $db->delete($tableName);
         $joinTypeWithTestTable = 'LEFT JOIN';
         $dtsQuery = "SELECT

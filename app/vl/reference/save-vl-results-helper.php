@@ -33,7 +33,7 @@ try {
 			'updated_datetime' 	=> DateUtility::getCurrentDateTime(),
 		);
 		if (isset($_POST['resultId']) && $_POST['resultId'] != "") {
-			$db = $db->where($primaryKey, base64_decode((string) $_POST['resultId']));
+			$db->where($primaryKey, base64_decode((string) $_POST['resultId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$db->insert($tableName, $data);

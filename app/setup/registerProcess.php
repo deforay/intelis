@@ -70,7 +70,7 @@ try {
         foreach ($configFields as $field) {
             if (isset($_POST[$field]) && !empty(trim((string) $_POST[$field]))) {
                 $data = array('value' => trim((string) $_POST[$field]));
-                $db = $db->where('name', $field);
+                $db->where('name', $field);
                 $id = $db->update('global_config', $data);
             }
         }

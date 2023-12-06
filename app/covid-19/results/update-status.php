@@ -29,7 +29,7 @@ try {
             'data_sync'                 => 0
         );
         /* Check if already have reviewed and approved by */
-        $db = $db->where('covid19_id', $id[$i]);
+        $db->where('covid19_id', $id[$i]);
         $reviewd = $db->getOne($tableName, array("result_reviewed_by", "result_approved_by"));
         if (empty($reviewd['result_reviewed_by'])) {
             $status['result_reviewed_by'] = $_SESSION['userId'];
@@ -45,7 +45,7 @@ try {
             $status['is_sample_rejected'] = 'no';
             $status['reason_for_sample_rejection'] = null;
         }
-        $db = $db->where('covid19_id', $id[$i]);
+        $db->where('covid19_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];
 

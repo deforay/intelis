@@ -118,7 +118,7 @@ try {
                 );
                 $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 if (!empty($sResult)) {
-                    $db = $db->where('tb_id', $sResult[0]['tb_id']);
+                    $db->where('tb_id', $sResult[0]['tb_id']);
                     $db->update('form_tb', $lab);
                     $id = $sResult[0]['tb_id'];
                 } else {

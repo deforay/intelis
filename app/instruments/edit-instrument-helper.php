@@ -72,7 +72,7 @@ try {
             'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
             'status' => $_POST['status']
         );
-        $db = $db->where('config_id', $configId);
+        $db->where('config_id', $configId);
         //print_r($vldata);die;
         $db->update($tableName, $importConfigData);
         if (count($_POST['configMachineName']) > 0) {
@@ -84,7 +84,7 @@ try {
                     }
                     if (isset($_POST['configMachineId'][$c]) && $_POST['configMachineId'][$c] != '') {
                         $configMachineData = array('config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime());
-                        $db = $db->where('config_machine_id', $_POST['configMachineId'][$c]);
+                        $db->where('config_machine_id', $_POST['configMachineId'][$c]);
                         $db->update($importMachineTable, $configMachineData);
                     } else {
                         $configMachineData = array('config_id' => $configId, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime());
@@ -101,8 +101,8 @@ try {
                     $cResult = $db->rawQueryOne($cQuery);
                     if (trim((string) $val) != '' && $cResult) {
                         $configControlData = array('number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
-                        $db = $db->where('config_id', $configId);
-                        $db = $db->where('test_type', $val);
+                        $db->where('config_id', $configId);
+                        $db->where('test_type', $val);
                         $db->update($importControlTable, $configControlData);
                     } else {
                         $configControlData = array('test_type' => $val, 'config_id' => $configId, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
