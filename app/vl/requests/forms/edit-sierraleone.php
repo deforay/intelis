@@ -383,6 +383,30 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 										</div>
 									</div>
 								</div>
+								<div class="row">
+										<div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
+												<div class="form-group">
+													<label for="patientPregnant">Is Patient Pregnant? </label><br>
+													<label class="radio-inline">
+														<input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+													</label>
+													<label class="radio-inline">
+														<input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
+													</label>
+												</div>
+											</div>
+											<div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
+												<div class="form-group">
+													<label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+													<label class="radio-inline">
+														<input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+													</label>
+													<label class="radio-inline">
+														<input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
+													</label>
+												</div>
+											</div>
+								</div>
 							</div>
 							<div class="box box-primary">
 								<div class="box-header with-border">
@@ -521,28 +545,6 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 											</div>
 										</div>
 										<div class="row ">
-											<div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
-												<div class="form-group">
-													<label for="patientPregnant">Is Patient Pregnant? </label><br>
-													<label class="radio-inline">
-														<input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
-													</label>
-													<label class="radio-inline">
-														<input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
-													</label>
-												</div>
-											</div>
-											<div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
-												<div class="form-group">
-													<label for="breastfeeding">Is Patient Breastfeeding? </label><br>
-													<label class="radio-inline">
-														<input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
-													</label>
-													<label class="radio-inline">
-														<input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
-													</label>
-												</div>
-											</div>
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
 													<label for="">Patient has active TB<span class="mandatory">*</span> </label>
@@ -605,7 +607,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<div class="col-md-4">
 													<label for="rmTestingVlValue" class="col-lg-3 control-label">Previous VL Result</label>
 													<div class="col-lg-7 resultInputContainer">
-														<input list="rmTestingPossibleVlResults" class="form-control" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['last_vl_date_routine']); ?>">
+														<input list="rmTestingPossibleVlResults" class="form-control" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['last_vl_result_routine']); ?>">
 														<datalist id="rmTestingPossibleVlResults" title="Please enter viral load result">
 
 														</datalist>

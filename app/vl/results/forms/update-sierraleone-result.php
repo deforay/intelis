@@ -930,7 +930,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			width: '100%',
 			placeholder: "Select Approved By"
 		});
-		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({
+		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
@@ -946,7 +946,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('.ui-datepicker-calendar').show();
 		});
 
-		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?> 99:99');
+		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?> 99:99');
 
 		//$("#hivDetection, #isSampleRejected").trigger('change');
 

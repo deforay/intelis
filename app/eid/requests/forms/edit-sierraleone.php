@@ -912,9 +912,9 @@ $aResult = $db->query($aQuery);
             placeholder: "Province"
         });
         getfacilityProvinceDetails($("#facilityId").val());
-        <?php if (isset($eidInfo['mother_treatment']) && in_array('Other', $eidInfo['mother_treatment'])) { ?>
-            $('#motherTreatmentOther').prop('disabled', false);
-        <?php } ?>
+        <?php //if (isset($eidInfo['mother_treatment']) && in_array('Other', $eidInfo['mother_treatment'])) { ?>
+           // $('#motherTreatmentOther').prop('disabled', false);
+        <?php //} ?>
 
         <?php if (!empty($eidInfo['mother_vl_result'])) { ?>
             updateMotherViralLoad();

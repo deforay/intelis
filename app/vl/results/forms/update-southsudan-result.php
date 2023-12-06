@@ -363,6 +363,30 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									</div>
 								</div>
 							</div>
+							<div class="row femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>">
+										<div class="col-xs-3 col-md-3">
+											<div class="form-group">
+												<label for="patientPregnant">Is Patient Pregnant? </label><br>
+												<label class="radio-inline">
+													<input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+												</label>
+												<label class="radio-inline">
+													<input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
+												</label>
+											</div>
+										</div>
+										<div class="col-xs-3 col-md-3">
+											<div class="form-group">
+												<label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+												<label class="radio-inline">
+													<input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+												</label>
+												<label class="radio-inline">
+													<input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
+												</label>
+											</div>
+										</div>
+							</div>
 						</div>
 						<div class="box box-primary">
 							<div class="box-header with-border">
@@ -451,29 +475,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 										</div>
 									</div>
-									<div class="row femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>">
-										<div class="col-xs-3 col-md-3">
-											<div class="form-group">
-												<label for="patientPregnant">Is Patient Pregnant? </label><br>
-												<label class="radio-inline">
-													<input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
-												</label>
-												<label class="radio-inline">
-													<input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
-												</label>
-											</div>
-										</div>
-										<div class="col-xs-3 col-md-3">
-											<div class="form-group">
-												<label for="breastfeeding">Is Patient Breastfeeding? </label><br>
-												<label class="radio-inline">
-													<input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
-												</label>
-												<label class="radio-inline">
-													<input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
-												</label>
-											</div>
-										</div>
+									<div class="row">
 										<div class="col-xs-3 col-md-3" style="display:none;">
 											<div class="form-group">
 												<label for="">How long has this patient been on treatment ? </label>
@@ -688,10 +690,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 												<div class="row">
 													<div class="col-md-6">
-														<label class="col-lg-5 control-label" for="sampleReceivedOn">Date
+														<label class="col-lg-5 control-label" for="sampleReceivedDate">Date
 															Sample Received at Testing Lab <span class="mandatory">*</span></label>
 														<div class="col-lg-7">
-															<input type="text" class="form-control labSection isRequired" id="sampleReceivedOn" name="sampleReceivedOn" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
+															<input type="text" class="form-control labSection isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
 														</div>
 													</div>
 													<div class="col-md-6">
@@ -925,7 +927,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			width: '100%',
 			placeholder: "Select Approved By"
 		});
-		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({
+		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
@@ -941,7 +943,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('.ui-datepicker-calendar').show();
 		});
 
-		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?> 99:99');
+		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?> 99:99');
 
 		//$("#hivDetection, #isSampleRejected").trigger('change');
 

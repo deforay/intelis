@@ -134,14 +134,14 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <td><label for="supportPartner">Implementing Partner </label></td>
                                         <td>
 
-                                            <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
-                                                <?php
-                                                foreach ($implementingPartnerList as $implementingPartner) {
-                                                ?>
-                                                    <option value="<?php echo ($implementingPartner['i_partner_id']); ?>" <?php echo ($covid19Info['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
-                                                <?php } ?>
-                                            </select>
+                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
+												<option value=""> -- Select -- </option>
+												<?php
+												foreach ($fundingSourceList as $fundingSource) {
+												?>
+													<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+												<?php } ?>
+											</select>
                                         </td>
                                         <td><label for="fundingSource">Funding Partner</label></td>
                                         <td>
@@ -150,7 +150,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                    <option value="<?php echo ($fundingSource['funding_source_id']); ?>" <?php echo ($covid19Info['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($covid19Info['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>

@@ -96,6 +96,13 @@ if (isset($arr['hepatitis_min_patient_id_length']) && $arr['hepatitis_min_patien
     $minPatientIdLength = $arr['hepatitis_min_patient_id_length'];
 }
 
+//Funding source list
+$fundingSourceList = $general->getFundingSources();
+
+//Implementing partner list
+$implementingPartnerList = $general->getImplementationPartners();
+
+
 $fileArray = array(
     1 => 'forms/add-southsudan.php',
     2 => 'forms/add-sierraleone.php',

@@ -125,31 +125,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>">
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <!-- <td><label for="supportPartner">Implementing Partner </label></td>
-                                        <td>
-                                         <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/>
-                                            <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
-                                                <?php
-                                                foreach ($implementingPartnerList as $implementingPartner) {
-                                                ?>
-                                                    <option value="<?php echo ($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
-                                                <?php } ?>
-                                            </select>
-                                        </td>
-                                        <td><label for="fundingSource">Funding Partner</label></td>
-                                        <td>
-                                            <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
-                                                <?php
-                                                foreach ($fundingSourceList as $fundingSource) {
-                                                ?>
-                                                    <option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
-                                                <?php } ?>
-                                            </select>
-                                        </td>-->
-                                    </tr>
+                                
                                     <tr>
                                         <td style="width:25%">
                                             <label for="fundingSource"><?= _translate('Project Name'); ?> </label><br>

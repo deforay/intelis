@@ -488,9 +488,9 @@ $disable = "disabled = 'disabled'";
 												<?php } ?>
 											</select>
 										</td>
-										<td class="receivedDate labels"><label for="sampleReceivedOn">Date Received</label></td>
+										<td class="receivedDate labels"><label for="sampleReceivedDate">Date Received</label></td>
 										<td>
-											<input type="text" class="form-control" name="sampleReceivedOn" id="sampleReceivedOn" placeholder="Received Date" title="Enter Received Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>">
+											<input type="text" class="form-control" name="sampleReceivedDate" id="sampleReceivedDate" placeholder="Received Date" title="Enter Received Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>">
 										</td>
 										<td class="techName labels"><label for="techName">Lab Tech. Name</label></td>
 										<td>
@@ -722,9 +722,9 @@ $disable = "disabled = 'disabled'";
 		});
 		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
 		$('.date').mask(dateFormatMask);
-		$('#collectionDate,#sampleReceivedOn,#sampleTestingDateAtLab,#failedTestDate').mask(dateFormatMask + ' 99:99');
+		$('#collectionDate,#sampleReceivedDate,#sampleTestingDateAtLab,#failedTestDate').mask(dateFormatMask + ' 99:99');
 
-		$('#collectionDate,#sampleReceivedOn,#sampleTestingDateAtLab,#failedTestDate').datetimepicker({
+		$('#collectionDate,#sampleReceivedDate,#sampleTestingDateAtLab,#failedTestDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',

@@ -75,15 +75,10 @@ $provinceInfo = [];
 foreach ($pdResult as $state) {
     $provinceInfo[$state['geo_name']] = ($state['geo_name']);
 }
-foreach ($implementingPartnerList as $implementingPartner) {
-    $implementingPartnerArray[$implementingPartner['i_partner_id']] = ($implementingPartner['i_partner_name']);
-}
-foreach ($fundingSourceList as $fundingSource) {
-    $fundingSourceArray[$fundingSource['funding_source_id']] = ($fundingSource['funding_source_name']);
-}
+
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
-$implementingPartnerOptions = $general->generateSelectOptions($implementingPartnerArray, $covid19Info['implementing_partner'], '-- Select --');
-$fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $covid19Info['funding_source'], '-- Select --');
+//$implementingPartnerOptions = $general->generateSelectOptions($implementingPartnerArray, $covid19Info['implementing_partner'], '-- Select --');
+//$fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $covid19Info['funding_source'], '-- Select --');
 
 ?>
 <div class="content-wrapper">
@@ -182,15 +177,25 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                 <tr>
                                     <td><label for="supportPartner">Implementing Partner </label></td>
                                     <td>
-                                        <select class="form-control select2" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                            <?php echo $implementingPartnerOptions; ?>
-                                        </select>
+                                            <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
+												<option value=""> -- Select -- </option>
+												<?php
+												foreach ($implementingPartnerList as $implementingPartner) {
+												?>
+													<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+												<?php } ?>
+											</select>
                                     </td>
                                     <td><label for="fundingSource">Funding Partner</label></td>
                                     <td>
-                                        <select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose source of funding" style="width:100%;">
-                                            <?php echo $fundingSourceOptions; ?>
-                                        </select>
+                                            <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
+												<option value=""> -- Select -- </option>
+												<?php
+												foreach ($fundingSourceList as $fundingSource) {
+												?>
+													<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+												<?php } ?>
+											</select>
                                     </td>
                                     <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                         <!-- <tr> -->

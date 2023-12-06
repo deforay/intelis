@@ -610,10 +610,10 @@ $disable = "disabled = 'disabled'";
 											</div>
 											<div class="row">
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="sampleReceivedOn">Date
+													<label class="col-lg-5 control-label" for="sampleReceivedDate">Date
 														Sample Received at Testing Lab <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control labSection isRequired" id="sampleReceivedOn" name="sampleReceivedOn" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
+														<input type="text" class="form-control labSection isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -787,7 +787,7 @@ $disable = "disabled = 'disabled'";
 			placeholder: "Select Approved By"
 		});
 
-		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({
+		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
@@ -802,7 +802,7 @@ $disable = "disabled = 'disabled'";
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
-		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?> 99:99');
+		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?> 99:99');
 		__clone = $("#vlRequestFormRwd .labSection").clone();
 		reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 		result = ($("#vlResult").length) ? $("#vlResult").val() : '';

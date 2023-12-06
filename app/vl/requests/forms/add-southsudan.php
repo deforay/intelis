@@ -286,6 +286,31 @@ $sFormat = '';
                                                   </div>
                                              </div>
                                         </div>
+                                        <div class="row">
+                                             <div class="col-xs-3 col-md-3 femaleSection">
+                                                       <div class="form-group">
+                                                            <label for="patientPregnant">Is Patient Pregnant? </label><br>
+                                                            <label class="radio-inline">
+                                                                 <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?"> Yes
+                                                            </label>
+                                                            <label class="radio-inline">
+                                                                 <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
+                                                            </label>
+                                                       </div>
+                                                  </div>
+                                                    
+                                                  <div class="col-xs-3 col-md-3 femaleSection">
+                                                       <div class="form-group">
+                                                            <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+                                                            <label class="radio-inline">
+                                                                 <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?"> Yes
+                                                            </label>
+                                                            <label class="radio-inline">
+                                                                 <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
+                                                            </label>
+                                                       </div>
+                                                  </div>
+                                        </div>
                                    </div>
                                    <div class="box box-primary">
                                         <div class="box-header with-border">
@@ -316,6 +341,7 @@ $sFormat = '';
                                                             </select>
                                                        </div>
                                                   </div>
+                                                  
                                              </div>
                                         </div>
                                         <div class="box box-primary">
@@ -374,28 +400,6 @@ $sFormat = '';
                                                        </div>
                                                   </div>
                                                   <div class="row ">
-                                                       <div class="col-xs-3 col-md-3 femaleSection">
-                                                            <div class="form-group">
-                                                                 <label for="patientPregnant">Is Patient Pregnant? </label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3 femaleSection">
-                                                            <div class="form-group">
-                                                                 <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
                                                        <div class="col-xs-3 col-md-3" style="display:none;">
                                                             <div class="form-group">
                                                                  <label for="">How long has this patient been on treatment ? </label>

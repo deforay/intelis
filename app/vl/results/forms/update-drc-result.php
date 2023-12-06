@@ -419,7 +419,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
 										<td><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedOn<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedOn<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
 										<td>
@@ -671,7 +671,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 	function checkSampleReceviedDate() {
 		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleReceivedDate = $("#sampleReceivedOn").val();
+		var sampleReceivedDate = $("#sampleReceivedDate").val();
 		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
 			//Set sample coll. datetime
 			splitSampleCollDateTime = sampleCollectionDate.split(" ");
@@ -686,8 +686,8 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			//Set sample rece. datetime
 			splitSampleReceivedDateTime = sampleReceivedDate.split(" ");
 			splitSampleReceivedDate = splitSampleReceivedDateTime[0].split("-");
-			var sampleReceivedOn = new Date(splitSampleReceivedDate[1] + splitSampleReceivedDate[2] + ", " + splitSampleReceivedDate[0]);
-			var monthDigit = sampleReceivedOn.getMonth();
+			var sampleReceivedDate = new Date(splitSampleReceivedDate[1] + splitSampleReceivedDate[2] + ", " + splitSampleReceivedDate[0]);
+			var monthDigit = sampleReceivedDate.getMonth();
 			var smplReceivedYear = splitSampleReceivedDate[2];
 			var smplReceivedMonth = isNaN(monthDigit) ? 0 : (parseInt(monthDigit) + parseInt(1));
 			smplReceivedMonth = (smplReceivedMonth < 10) ? '0' + smplReceivedMonth : smplReceivedMonth;
@@ -696,7 +696,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			//Check diff
 			if (moment(sampleCollDateTime).diff(moment(sampleReceivedDateTime)) > 0) {
 				alert("L'échantillon de données reçues ne peut pas être antérieur à la date de collecte de l'échantillon!");
-				$("#sampleReceivedOn").val("");
+				$("#sampleReceivedDate").val("");
 			}
 		}
 	}
