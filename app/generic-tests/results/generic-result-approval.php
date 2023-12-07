@@ -247,9 +247,7 @@ foreach ($rejectionTypeResult as $type) {
 										<?php echo _translate("Last Modified on"); ?>
 									</th>
 									<th>Status</th>
-									<?php if ((_isAllowed("/vl/requests/editVlRequest.php"))) { ?>
-										<!--<th>Action</th>-->
-									<?php } ?>
+									
 								</tr>
 							</thead>
 							<tbody>

@@ -173,10 +173,10 @@ $output = array(
 );
 $vlRequest = false;
 $vlView = false;
-if ((_isAllowed("/vl/requests/editVlRequest.php"))) {
+if ((_isAllowed("/generic-tests/requests/edit-request.php"))) {
      $vlRequest = true;
 }
-if ((_isAllowed("viewVlRequest.php"))) {
+if ((_isAllowed("view-requests.php"))) {
      $vlView = true;
 }
 

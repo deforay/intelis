@@ -1440,7 +1440,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
 		if ($.trim($("#" + id).val()) != '') {
 			$.blockUI();
-			$.post("/vl/requests/checkSampleDuplicate.php", {
+			$.post("/generic-tests/requests/checkSampleDuplicate.php", {
 					tableName: tableName,
 					fieldName: fieldName,
 					value: $("#" + id).val(),
@@ -1486,7 +1486,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	function showPatientList() {
 		$("#showEmptyResult").hide();
 		if ($.trim($("#artPatientNo").val()) != '') {
-			$.post("/vl/requests/search-patients.php", {
+			$.post("/generic-tests/requests/search-patients.php", {
 					artPatientNo: $.trim($("#artPatientNo").val())
 				},
 				function(data) {

@@ -283,7 +283,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					})
 					.always(function() {
 						$.unblockUI();
-						$.post("/vl/requests/getRemoteManifestHelper.php", {
+						$.post("/eid/requests/getRemoteManifestHelper.php", {
 								samplePackageCode: $("#samplePackageCode").val()
 							},
 							function(data) {

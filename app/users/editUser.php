@@ -206,7 +206,7 @@ $ftResult = $db->rawQuery($fQuery);
                                                                  $signFileName = basename($userInfo['user_signature']); 
                                                             ?>
                                                                  <img src="/uploads/users-signature/<?php echo $signFileName; ?>" alt="Signature image">
-                                                            <?php } else {  echo 'no image';?>
+                                                            <?php } else { ?>
 
                                                             <?php } ?>
                                                        </div>

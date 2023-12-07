@@ -186,7 +186,7 @@ $output = array(
     "aaData" => []
 );
 $editRequest = false;
-if ((_isAllowed("/vl/requests/editVlRequest.php"))) {
+if ((_isAllowed("/generic-tests/requests/edit-request.php"))) {
     $editRequest = true;
 }
 

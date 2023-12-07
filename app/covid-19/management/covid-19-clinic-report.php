@@ -886,22 +886,6 @@ $state = $geolocationService->getProvinces("yes");
 		$.unblockUI();
 	}
 
-	function updateStatus(id, value) {
-		conf = confirm("<?php echo _translate("Do you wisht to change the contact completed status?"); ?>");
-		if (conf) {
-			$.post("/vl/program-management/updateContactCompletedStatus.php", {
-					id: id,
-					value: value
-				},
-				function(data) {
-					alert("<?php echo _translate("Status updated successfully"); ?>");
-					oTableViralLoad.fnDraw();
-				});
-		} else {
-			oTableViralLoad.fnDraw();
-		}
-	}
-
 	function exportHighViralLoadInexcel() {
 		if (searchExecuted === false) {
 			searchVlRequestData();

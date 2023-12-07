@@ -135,7 +135,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
             let lab = $(this).attr('data-lab');
             let daterange = $(this).attr('data-daterange');
             let type = $(this).attr('data-type');
-            let link = "/vl/requests/vl-requests.php?labId=" + lab + "&facilityId=" + facilityId + "&daterange=" + daterange + "&type=" + type;
+            let link = "/generic-tests/requests/view-requests.php?labId=" + lab + "&facilityId=" + facilityId + "&daterange=" + daterange + "&type=" + type;
             window.open(link);
         });
     });
