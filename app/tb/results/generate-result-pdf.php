@@ -107,16 +107,23 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
 
 $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
+
+//set mField Array
+$mFieldArray = [];
+if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
+	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
+}
+
 //print_r($requestResult);die;
 //header and footer
 class MYPDF extends TCPDF
 {
-    public string $logo = '';
-    public string $text = '';
+    public $logo = '';
+    public $text = '';
     public string $lab = '';
     public string $htitle = '';
-    public string $labFacilityId = '';
-    public string $formId = '';
+    public $labFacilityId = null;
+    public $formId = '';
     public array $facilityInfo = [];
 
 

@@ -174,10 +174,10 @@ if (!empty($requestResult)) {
             $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
         }
         if (!empty($result['reviewedBySignature'])) {
-            $reviewedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['reviewedBySignature'];
+            $reviewedBySignaturePath =  $result['reviewedBySignature'];
         }
         if (!empty($result['approvedBySignature'])) {
-            $approvedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
+            $approvedBySignaturePath =  $result['approvedBySignature'];
         }
         if (!empty($revisedByRes['user_signature'])) {
             $revisedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];

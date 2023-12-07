@@ -22,12 +22,20 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 $formId = $general->getGlobalConfig('vl_form');
+$arr = $general->getGlobalConfig();
 
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
 $printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
+
+//set mField Array
+$mFieldArray = [];
+if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
+	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
+}
+
 //set query
 $allQuery = $_SESSION['eidPrintQuery'];
 if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
@@ -84,8 +92,8 @@ class MYPDF extends TCPDF
 	public string $text = '';
 	public string $lab = '';
 	public string $htitle = '';
-	public string $labFacilityId = '';
-	public string $formId = '';
+	public $labFacilityId = null;
+	public $formId = null;
 
 	//Page header
 	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null)

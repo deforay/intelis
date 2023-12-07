@@ -15,8 +15,8 @@ class SouthSudan_PDF extends MYPDF
     public string $logo = '';
     public string $text = '';
     public string $lab = '';
-    public array $facilityInfo = [];
-    public string $formId = 1;
+    public $facilityInfo;
+    public $formId = null;
     public string $htitle = '';
     //Page header
     public function Header()
@@ -521,6 +521,7 @@ if (!empty($requestResult)) {
         $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
         $html .= '</table>';
+        $showQR = false;
         if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
             $showQR = true;
         }
