@@ -206,7 +206,7 @@ try {
     } */
 
 
-    $vldata = array(
+    $genericData = array(
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['countryFormId'],
         'sample_reordered' => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] : 'no',
@@ -269,13 +269,13 @@ try {
     );
 
     if (isset($systemType) && ($systemType == "vluser" || $systemType == "standalone")) {
-        $vldata['source_of_request'] = 'vlsm';
+        $genericData['source_of_request'] = 'vlsm';
     } elseif (isset($systemType) && ($systemType == "remoteuser")) {
-        $vldata['source_of_request'] = 'vlsts';
+        $genericData['source_of_request'] = 'vlsts';
     }
 
-    $vldata['request_created_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
-    $vldata['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
+    $genericData['request_created_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
+    $genericData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
     if (isset($_POST['cdDate']) && trim((string) $_POST['cdDate']) != "") {
         $_POST['cdDate'] = DateUtility::isoDateFormat($_POST['cdDate']);
@@ -306,7 +306,7 @@ try {
     }
 
 
-    $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_id']);
+    $genericData['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $genericData['patient_id']);
     $id = 0;
 
     //Update patient Information in Patients Table
@@ -337,16 +337,17 @@ try {
                     }
                 }
             }
+            $genericData['result'] = 'Tested';
         }
     } else {
         $db->where('generic_id', $_POST['vlSampleId']);
         $db->delete($testTableName);
-        $covid19Data['sample_tested_datetime'] = null;
+        $genericData['sample_tested_datetime'] = null;
     }
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db->where('sample_id', $_POST['vlSampleId']);
-        $id = $db->update($tableName, $vldata);
+        $id = $db->update($tableName, $genericData);
     } else {
         //check existing sample id
 
@@ -367,15 +368,15 @@ try {
         }
 
         if ($_SESSION['instanceType'] == 'remoteuser') {
-            $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : null;
-            $vldata['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] : null;
-            $vldata['remote_sample'] = 'yes';
+            $genericData['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : null;
+            $genericData['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] : null;
+            $genericData['remote_sample'] = 'yes';
         } else {
-            $vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : null;
-            $vldata['sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] : null;
+            $genericData['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : null;
+            $genericData['sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] : null;
         }
-        $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] : null;
-        $id = $db->insert($tableName, $vldata);
+        $genericData['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] : null;
+        $id = $db->insert($tableName, $genericData);
     }
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("Lab test request added successfully");

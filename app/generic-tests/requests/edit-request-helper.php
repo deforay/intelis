@@ -172,7 +172,7 @@ try {
      if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
           $vl_result_category = 'rejected';
           $isRejected = true;
-          $vldata['result_status'] = SAMPLE_STATUS\REJECTED;
+          $genericData['result_status'] = SAMPLE_STATUS\REJECTED;
      }
 
      $reasonForChanges = '';
@@ -210,7 +210,7 @@ try {
      // }
 
 
-     $vldata = array(
+     $genericData = array(
           'vlsm_instance_id' => $instanceId,
           'vlsm_country_id' => $_POST['countryFormId'] ?? 1,
           'sample_reordered' => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] : 'no',
@@ -271,15 +271,15 @@ try {
 
      // only if result status has changed, let us update
      if (!empty($resultStatus)) {
-          $vldata['result_status'] = $resultStatus;
+          $genericData['result_status'] = $resultStatus;
      }
 
-     $vldata['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
+     $genericData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
      if ($_SESSION['instanceType'] == 'remoteuser') {
-          $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : null;
+          $genericData['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : null;
      } elseif ($_POST['sampleCodeCol'] != '') {
-          $vldata['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : null;
+          $genericData['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : null;
      }
 
      //Update patient Information in Patients Table
@@ -314,16 +314,17 @@ try {
                          }
                     }
                }
+               $genericData['result'] = 'Tested';
           }
      } else {
           $db->where('generic_id', $_POST['vlSampleId']);
           $db->delete('generic_test_results');
-          $covid19Data['sample_tested_datetime'] = null;
+          $genericData['sample_tested_datetime'] = null;
      }
 
-     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_id']);
+     $genericData['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $genericData['patient_id']);
      $db->where('sample_id', $_POST['vlSampleId']);
-     $id = $db->update($tableName, $vldata);
+     $id = $db->update($tableName, $genericData);
      error_log($db->getLastError());
      if ($id === true) {
           $_SESSION['alertMsg'] = _translate("Request updated successfully");

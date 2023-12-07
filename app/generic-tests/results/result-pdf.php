@@ -9,12 +9,15 @@ use App\Utilities\MiscUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$resultFilename = '';
+/** @var GenericTestsService $genericTestsService */
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
+$resultFilename = '';
 if (!empty($requestResult)) {
      $_SESSION['rVal'] = $general->generateRandomString(6);
      $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
@@ -24,10 +27,17 @@ if (!empty($requestResult)) {
      foreach ($requestResult as $result) {
           $currentTime = DateUtility::getCurrentDateTime();
 
-          $genericTestQuery = "SELECT res.*, m.test_method_name from generic_test_results as res INNER JOIN r_generic_test_methods AS m ON m.test_method_id=res.test_name where res.generic_id=? ORDER BY res.test_id ASC";
+          $testResultUnits = $genericTestsService->getTestResultUnit($result['testType']);
+          $testUnits = [];
+          foreach($testResultUnits as $key=>$unit){
+               $testUnits[$unit['unit_id']] = $unit['unit_name'];
+          }
+          // $genericTestQuery = "SELECT res.*, m.test_method_name from generic_test_results as res INNER JOIN r_generic_test_methods AS m ON m.test_method_id=res.test_name where res.generic_id=? ORDER BY res.test_id ASC";
+          // $genericTestInfo = $db->rawQuery($genericTestQuery, array($result['sample_id']));
+          $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
           $genericTestInfo = $db->rawQuery($genericTestQuery, array($result['sample_id']));
-
-          $testedBy = '';
+          // echo "<pre>";print_r($genericTestInfo);die;
+          // $testedBy = '';
           if (!empty($result['tested_by'])) {
                $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
                if ($testedByRes) {
@@ -80,7 +90,7 @@ if (!empty($requestResult)) {
           } else {
                $resultApprovedBy  = '';
           }
-
+          
           $userSignaturePath = null;
           if (!empty($userRes['user_signature'])) {
                $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
@@ -91,12 +101,17 @@ if (!empty($requestResult)) {
           }
           $draftTextShow = false;
           //Set watermark text
-          for ($m = 0; $m < count($mFieldArray); $m++) {
-               if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
-                    $draftTextShow = true;
-                    break;
+          /* echo "<pre>";
+          print_r($mFieldArray);die; */
+          if(isset($mFieldArray) && count($mFieldArray) > 0){
+               for ($m = 0; $m < count($mFieldArray); $m++) {
+                    if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+                         $draftTextShow = true;
+                         break;
+                    }
                }
           }
+          
           // create new PDF document
           $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
           if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
@@ -335,6 +350,7 @@ if (!empty($requestResult)) {
           } else {
                //$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LOINC CODE</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
           }
           $html .= '</tr>';
           $html .= '<tr>';
@@ -346,22 +362,29 @@ if (!empty($requestResult)) {
           } else {
                // $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['test_loinc_code'] . '</td>';
                $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
+               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
           }
           $html .= '</tr>';
 
-          $html .= '<tr>';
-          $html .= '<td colspan="4" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING CLINICIAN NAME</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEL</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EMAIL</td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ($result['request_clinician_name']) . '</td>';
-          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
-          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
-          $html .= '</tr>';
+          if(
+               (isset($result['request_clinician_name']) && !empty($result['request_clinician_name'])) ||
+               (isset($result['request_clinician_phone_number']) && !empty($result['request_clinician_phone_number'])) ||
+               (isset($result['facility_emails']) && !empty($result['facility_emails']))
+          ){
+               $html .= '<tr>';
+               $html .= '<td colspan="4" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
+               $html .= '</tr>';
+               $html .= '<tr>';
+               $html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING CLINICIAN NAME</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEL</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EMAIL</td>';
+               $html .= '</tr>';
+               $html .= '<tr>';
+               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['request_clinician_name']) . '</td>';
+               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
+               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
+               $html .= '</tr>';
+          }
           $html .= '</table>';
           $html .= '</td>';
           $html .= '</tr>';
@@ -402,29 +425,57 @@ if (!empty($requestResult)) {
           // $html .= '<td colspan="3" style="line-height:10px;"></td>';
           // $html .= '</tr>';
 
-          if (!empty($genericTestInfo)) {
+          if (!empty($genericTestInfo) && isset($result['sub_tests']) && !empty($result['sub_tests'])) {
                /* Test Result Section */
                $html .= '<tr>';
                $html .= '<td colspan="4"  >';
-               $html .= '<table border="1" style="padding:2px;">
-                                    <tr>
-                                        <td align="center" width="10%" style="line-height:20px;font-size:11px;font-weight:bold;">Test No.</td>
-                                        <td align="center" width="25%" style="line-height:20px;font-size:11px;font-weight:bold;">Test Method</td>
-                                        <td align="center" width="20%" style="line-height:20px;font-size:11px;font-weight:bold;">Date of Testing</td>
-                                        <td align="center" width="25%" style="line-height:20px;font-size:11px;font-weight:bold;">Test Platform/Test Kit</td>
-                                        <td align="center" width="20%" style="line-height:20px;font-size:11px;font-weight:bold;">Test Result</td>
-                                    </tr>';
-
-               foreach ($genericTestInfo as $indexKey => $rows) {
-                    $html .= '<tr>
-                                        <td align="center" style="line-height:20px;font-size:11px;">' . ($indexKey + 1) . '</td>
-                                        <td align="center" style="line-height:20px;font-size:11px;">' . $rows['test_method_name'] . '</td>
-                                        <td align="center" style="line-height:20px;font-size:11px;">' . date("d-M-Y H:i:s", strtotime((string) $rows['sample_tested_datetime'])) . '</td>
-                                        <td align="center" style="line-height:20px;font-size:11px;">' . $rows['testing_platform'] . '</td>
-                                        <td align="center" style="line-height:20px;font-size:11px;">' . ($rows['result']) . '</td>
-                                    </tr>';
+               foreach(explode("##", $result['sub_tests']) as $key => $subTestName){
+                    $n = 1;
+                    $finalResult = [];
+                    $html .= '<span style="text-align:left;font-weight:bolt;font-size:15px;">'.$subTestName.'</span><br><table border="1" style="padding:2px;">
+                                         <tr>
+                                             <td align="center" width="5%" style="line-height:10px;font-size:11px;font-weight:bold;">Test No.</td>
+                                             <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Method</td>
+                                             <td align="center" width="15%" style="line-height:10px;font-size:11px;font-weight:bold;">Date of Testing</td>
+                                             <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Platform/Test Kit</td>
+                                             <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Result</td>
+                                             <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Result Unit</td>
+                                         </tr>';
+     
+                    foreach ($genericTestInfo as $indexKey => $rows) {
+                         if (strtolower($subTestName) == $rows['sub_test_name']) {
+                              $html .= '<tr>
+                                                  <td align="center" style="line-height:10px;font-size:11px;">' . $n . '</td>
+                                                  <td align="center" style="line-height:10px;font-size:11px;">' . $rows['test_name'] . '</td>
+                                                  <td align="center" style="line-height:10px;font-size:11px;">' . DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>
+                                                  <td align="center" style="line-height:10px;font-size:11px;">' . $rows['testing_platform'] . '</td>
+                                                  <td align="center" style="line-height:10px;font-size:11px;">' . $rows['result'] . '</td>
+                                                  <td align="center" style="line-height:10px;font-size:11px;">' . ucwords($testUnits[$rows['result_unit']]) . '</td>
+                                              </tr>';
+                              $finalResult['finalResult'] = $rows['final_result'];
+                              $finalResult['finalResultUnit'] = ucwords($testUnits[$rows['final_result_unit']]);
+                              $finalResult['finalResultInterpretation'] = $rows['final_result_interpretation'];
+                         }
+                         $n++;
+                    }
+                    $html .= '</table><br><table border="0" style="padding:10px;width:100%;">';
+                    $html .= '<tr>';
+                    if(isset($finalResult['finalResult']) && !empty($finalResult['finalResult'])){
+                         $html .= '<td style="line-height:10px;font-size:11px;border-bottom:1px solid black;"><strong>Final Result : </strong>'.ucwords($finalResult['finalResult']).'</td>';
+                    }else{
+                         $html .= '<td style="line-height:10px;font-size:11px;border-bottom:1px solid black;"></td>';
+                    } if(isset($finalResult['finalResultUnit']) && !empty($finalResult['finalResultUnit'])){
+                         $html .= '<td style="line-height:10px;font-size:11px;border-bottom:1px solid black;"><strong>Final Result Unit :</strong>'.$finalResult['finalResultUnit'].'</td>';
+                    }else{
+                         $html .= '<td style="line-height:10px;font-size:11px;border-bottom:1px solid black;"></td>';
+                    }if(isset($finalResult['finalResultInterpretation']) && !empty($finalResult['finalResultInterpretation'])){
+                         $html .= '<td style="line-height:10px;font-size:11px;border-bottom:1px solid black;"><strong>Result Interpretation :</strong>'.$finalResult['finalResultInterpretation'].'</td>';
+                    }else{
+                         $html .= '<td style="line-height:10px;font-size:11px;border-bottom:1px solid black;"></td>';
+                    }
+                    $html .= '</tr>';
+                    $html .= '</table>';
                }
-               $html .= '</table>';
                $html .= '</td>';
                $html .= '</tr>';
           }
@@ -432,7 +483,7 @@ if (!empty($requestResult)) {
 
           $html .= '<td colspan="3">';
           $html .= '<table style="padding:10px 2px 2px 2px;">';
-          $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $vlResult . '</td><td >' . $smileyContent . '</td></tr>';
+          // $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $vlResult . '</td><td >' . $smileyContent . '</td></tr>';
           if ($result['reason_for_sample_rejection'] != '') {
                $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
           }
