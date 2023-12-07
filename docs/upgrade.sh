@@ -185,7 +185,7 @@ fi
 
 # Download New Version of VLSM from GitHub
 echo "Downloading new version of VLSM from GitHub..."
-wget -q -O vlsm-new-version.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip &
+wget -q --show-progress --progress=dot:giga -O vlsm-new-version.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip &
 download_pid=$!         # Save the process ID of the wget command
 spinner "$download_pid" # Start the spinner
 wait $download_pid      # Wait for the download to finish

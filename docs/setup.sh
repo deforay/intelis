@@ -194,7 +194,7 @@ done
 if [ ! -d "/var/www/phpmyadmin" ]; then
     # phpMyAdmin Setup
     echo "Downloading and setting up phpMyAdmin..."
-    wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+    wget -q --show-progress --progress=dot:giga https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
     tar xzf phpMyAdmin-latest-all-languages.tar.gz
     DIR_NAME=$(tar tzf phpMyAdmin-latest-all-languages.tar.gz | head -1 | cut -f1 -d"/")
     mv $DIR_NAME /var/www/phpmyadmin
@@ -251,7 +251,7 @@ vlsm_path="${vlsm_path:-/var/www/vlsm}"
 
 # VLSM Setup
 echo "Downloading VLSM..."
-wget -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
+wget -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 
 # Unzip the file into a temporary directory
 temp_dir=$(mktemp -d)
