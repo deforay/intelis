@@ -8,13 +8,13 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
-use App\Services\DatabaseService;
 use PhpMyAdmin\SqlParser\Parser;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-// Ensure the script only runs for VERSION >= 5.2.5
-if (version_compare(VERSION, '5.2.5', '<')) {
-    exit("This script requires VERSION 5.2.5 or higher. Current version: " . VERSION . "\n");
+// Ensure the script only runs for VLSM APP VERSION >= 4.5.3
+if (version_compare(VERSION, '4.5.3', '<')) {
+    exit("This script requires VERSION 4.5.3 or higher. Current version: " . VERSION . "\n");
 }
 
 /** @var DatabaseService $db */
@@ -23,7 +23,15 @@ $db = ContainerRegistry::get('db');
 $db->where('name', 'sc_version');
 $currentVersion = $db->getValue('system_config', 'value');
 $migrationFiles = glob(APPLICATION_PATH . '/../dev/migrations/*.sql');
-usort($migrationFiles, 'version_compare');
+
+// Extract version numbers and map them to files
+$versions = array_map(function ($file) {
+    return basename($file, '.sql');
+}, $migrationFiles);
+
+// Sort versions
+usort($versions, 'version_compare');
+
 
 $options = getopt("yq");  // Parse command line options for -y and -q
 $autoContinueOnError = isset($options['y']);  // Set a flag if -y option is provided
@@ -33,8 +41,9 @@ if ($quietMode) {
     error_reporting(0);  // Suppress warnings and notices
 }
 
-foreach ($migrationFiles as $file) {
-    $version = basename($file, '.sql');
+foreach ($versions as $version) {
+    $file = APPLICATION_PATH . '/../dev/migrations/' . $version . '.sql';
+
     if (version_compare($version, $currentVersion, '>=')) {
         if (!$quietMode) { // Only output messages if -q option is not provided
             echo "Migrating to version $version...\n";
@@ -44,6 +53,7 @@ foreach ($migrationFiles as $file) {
         $parser = new Parser($sql_contents);
 
         $db->beginTransaction();  // Start a new transaction
+        $db->rawQuery("SET FOREIGN_KEY_CHECKS = 0;"); // Disable foreign key checks
         $errorOccurred = false;
         foreach ($parser->statements as $statement) {
             try {
@@ -75,10 +85,11 @@ foreach ($migrationFiles as $file) {
         }
 
         //if (!$quietMode) { // Only output messages if -q option is not provided
-        echo "Migration to version $version completed.\n";
+        echo "Migration to version $version completed." . PHP_EOL;
         //}
 
-        $db->where('name', 'sc_version')->update('system_config', ['value' => $version]);
+        //$db->where('name', 'sc_version')->update('system_config', ['value' => $version]);
+        $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Re-enable foreign key checks
         $db->commitTransaction();  // Commit the transaction if no error occurred
     }
 }

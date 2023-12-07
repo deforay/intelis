@@ -38,7 +38,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) != "") {
 
      $output = [];
-     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Child's ID", "Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Child's ID", "Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "Result");
      if ($sarr['sc_user_type'] == 'standalone') {
           if (($key = array_search("Remote Sample ID", $headings)) !== false) {
                unset($headings[$key]);
@@ -92,32 +92,32 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           // we dont need the $output variable anymore
           unset($output);
           echo base64_encode((string) $fileName);
-               } else {
+     } else {
 
-                    $excel = new Spreadsheet();
-                    $sheet = $excel->getActiveSheet();              
+          $excel = new Spreadsheet();
+          $sheet = $excel->getActiveSheet();
 
 
-                    $styleArray = array(
-                         'font' => array(
-                              'bold' => true,
-                              'size' => '13',
-                         ),
-                         'alignment' => array(
-                              'horizontal' => Alignment::HORIZONTAL_CENTER,
-                              'vertical' => Alignment::VERTICAL_CENTER,
-                         ),
-                         'borders' => array(
-                              'outline' => array(
-                                   'style' => Border::BORDER_THIN,
-                              ),
-                         )
-                    );
-               
-               
-                    $sheet->mergeCells('A1:AE1');
-               
-                    /*$filters = array(
+          $styleArray = array(
+               'font' => array(
+                    'bold' => true,
+                    'size' => '13',
+               ),
+               'alignment' => array(
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+               ),
+               'borders' => array(
+                    'outline' => array(
+                         'style' => Border::BORDER_THIN,
+                    ),
+               )
+          );
+
+
+          $sheet->mergeCells('A1:AE1');
+
+          /*$filters = array(
                          'hvlSampleTestDate' => 'Sample Test Date',
                          'hvlBatchCode' => 'Batch Code',
                          'hvlSampleType' => 'Sample Type',
@@ -125,28 +125,28 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
                          'hvlContactStatus' => 'Contact Status',
                          'hvlGender' => 'Gender'
                     );*/
-               
-               
-                    $sheet->fromArray($headings, null, 'A3');
 
-                    $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
-                    $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
-                    $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
-                    $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
-                    $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
-                    $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
-                    $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
-                    $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
-                    $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
-                    if ($_SESSION['instanceType'] != 'standalone') {
-                         $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
-                    }
 
-                    foreach ($output as $rowNo => $rowData) {
-                         $rRowCount = $rowNo + 4;
-                         $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-                    }
-          
+          $sheet->fromArray($headings, null, 'A3');
+
+          $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
+          $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
+          $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
+          $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
+          $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
+          $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
+          $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
+          $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
+          $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
+          if ($_SESSION['instanceType'] != 'standalone') {
+               $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
+          }
+
+          foreach ($output as $rowNo => $rowData) {
+               $rRowCount = $rowNo + 4;
+               $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+          }
+
 
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-CLINIC-RESULT-EXPORT-' . date('d-M-Y-H-i-s') . '.xlsx';

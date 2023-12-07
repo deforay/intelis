@@ -419,9 +419,7 @@ class VlService extends AbstractTestService
             $formId = $this->commonService->getGlobalConfig('vl_form');
 
             $params['tries'] = $params['tries'] ?? 0;
-            if ($params['tries'] >= $this->maxTries) {
-                throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
-            }
+
 
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
@@ -507,16 +505,25 @@ class VlService extends AbstractTestService
                     'line' => __LINE__,
                 ]);
 
-                // Rollback the current transaction to release locks and undo changes
-                $this->db->rollbackTransaction();
 
                 // If this sample id exists, let us regenerate the sample id and insert
                 $params['tries']++;
-                $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
-                return $this->insertSample($params);
+
+                if ($params['tries'] >= $this->maxTries) {
+                    throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
+                } else {
+
+                    // Rollback the current transaction to release locks and undo changes
+                    $this->db->rollbackTransaction();
+
+                    $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
+                    return $this->insertSample($params);
+                }
             }
         } catch (Exception | SystemException $e) {
-            //error_log('Insert VL Sample : ' . $this->db->getLastQuery());
+            // Rollback the current transaction to release locks and undo changes
+            $this->db->rollbackTransaction();
+
             LoggerUtility::log('error', 'Insert VL Sample : ' . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(), // File where the error occurred

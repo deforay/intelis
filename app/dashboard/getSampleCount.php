@@ -116,7 +116,7 @@ if ($table == "form_eid") {
 				ELSE 0
 			END) AS acceptCount,
 		SUM(CASE
-			WHEN (DATE(eid.result_printed_datetime) > '1970-01-01') THEN 1
+			WHEN (eid.result_printed_datetime IS NOT NULL AND DATE(eid.result_printed_datetime) > '0000-00-00') THEN 1
 				ELSE 0
 			END) AS printCount
 		FROM $table as eid JOIN facility_details as f ON f.facility_id=eid.facility_id
@@ -157,7 +157,7 @@ if ($table == "form_eid") {
                         ELSE 0
                     END) AS acceptCount,
                 SUM(CASE
-                    WHEN (DATE(vl.result_printed_datetime) > '1970-01-01') THEN 1
+                    WHEN (vl.result_printed_datetime IS NOT NULL AND DATE(vl.result_printed_datetime) > '0000-00-00') THEN 1
                         ELSE 0
                     END) AS printCount
                 FROM $table as vl JOIN facility_details as f ON f.facility_id=vl.facility_id

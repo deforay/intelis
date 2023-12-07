@@ -956,7 +956,7 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function convertResultToPdf(id, newData) {
-		$.blockUI();
+		// $.blockUI();
 		<?php
 		$path = '';
 		$path = '/generic-tests/results/generate-result-pdf.php';

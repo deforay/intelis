@@ -31,6 +31,7 @@ if ((isset($_POST['id']) && !empty(trim((string) $_POST['id']))) || (isset($_POS
 
 	$searchQuery = "SELECT vl.*,
                   f.*,
+				  vl.test_type as testType, 
                   imp.i_partner_name,
                   rst.*,
                   vltr.test_reason,
@@ -65,11 +66,10 @@ if ((isset($_POST['id']) && !empty(trim((string) $_POST['id']))) || (isset($_POS
 	if (!empty($searchQueryWhere)) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
-	//echo ($searchQuery);
+	// echo ($searchQuery);die;
 	$requestResult = $db->query($searchQuery);
+	// echo "<pre>";print_r($requestResult);die;
 }
-
-
 if (empty($requestResult) || !$requestResult) {
 	return null;
 }
@@ -197,5 +197,4 @@ class MYPDF extends TCPDF
 		//$this->Cell(0, 10, 'Page 1 of 1', 0, false, 'C', 0);
 	}
 }
-
 include('result-pdf.php');
