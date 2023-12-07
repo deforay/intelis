@@ -169,6 +169,9 @@ class EidService extends AbstractTestService
                 return $this->insertSample($params);
             }
         } catch (Exception | SystemException $e) {
+            // Rollback the current transaction to release locks and undo changes
+            $this->db->rollbackTransaction();
+
             LoggerUtility::log('error', 'Insert EID Sample : ' . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(), // File where the error occurred

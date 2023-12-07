@@ -1,9 +1,10 @@
 <?php
 
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -35,6 +36,10 @@ try {
   $labId = $data['labName'] ?? $data['labId'] ?? null;
 
   if (empty($labId)) {
+    LoggerUtility::log('error', 'Lab ID is missing in the request', [
+      'line' => __LINE__,
+      'file' => __FILE__
+    ]);
     exit(0);
   }
 
