@@ -546,7 +546,7 @@ $state = $geolocationService->getProvinces("yes");
     function exportTestRequests() {
         $.blockUI();
         var requestSampleType = $('#requestSampleType').val();
-        $.post("/vl/requests/export-vl-requests.php", {
+        $.post("/generic-tests/requests/export-geeric-tests-requests.php", {
                 reqSampleType: requestSampleType
             },
             function(data) {

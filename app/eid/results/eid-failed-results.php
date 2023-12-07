@@ -464,7 +464,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 }, {
                     "sClass": "center"
                 },
-                <?php if ((_isAllowed("/vl/requests/editVlRequest.php"))) { ?> {
+                <?php if ((_isAllowed("/eid/requests/eid-edit-request.php"))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },

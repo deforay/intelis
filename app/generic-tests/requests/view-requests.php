@@ -491,7 +491,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		if (stValue != '' && testIds != '') {
 			conf = confirm("<?php echo _translate("Do you wish to change the test status ?"); ?>");
 			if (conf) {
-				$.post("/vl/results/updateTestStatus.php", {
+				$.post("/generic-tests/results/update-test-status.php", {
 						status: stValue,
 						id: testIds,
 						format: "html"
@@ -565,66 +565,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 	<?php } ?>
 
-	function receiveEMRDataFromFHIR() {
-		$.blockUI({
-			message: "<h3><?php echo _translate("Trying to sync from EMR/FHIR"); ?> " + "<br><?php echo _translate("Please wait", true); ?>...</h3>"
-		});
-
-
-		var jqxhr = $.ajax({
-				url: "/vl/interop/fhir/vl-receive.php",
-			})
-			.done(function(data) {
-				////console.log(data);
-				//alert( "success" );
-				$.unblockUI();
-				//alert(data.processed + " records added from EMR/FHIR");
-				alert("EMR/FHIR sync completed");
-				if (data.error) {
-					alert(data.error);
-				}
-				oTable.fnDraw();
-				$.unblockUI();
-			})
-			.fail(function() {
-				$.unblockUI();
-			})
-			.always(function() {
-				oTable.fnDraw();
-				$.unblockUI();
-			});
-
-	}
-
-	function sendEMRDataToFHIR() {
-		$.blockUI({
-			message: "<h3><?php echo _translate("Trying to sync to EMR/FHIR"); ?> " + "<br><?php echo _translate("Please wait", true); ?>...</h3>"
-		});
-
-		var jqxhr = $.ajax({
-				url: "/vl/interop/fhir/vl-send.php",
-			})
-			.done(function(data) {
-				////console.log(data);
-				//alert( "success" );
-				$.unblockUI();
-				alert(data.processed + " records sent to EMR/FHIR");
-				if (data.error) {
-					alert(data.error);
-				}
-				oTable.fnDraw();
-				$.unblockUI();
-			})
-			.fail(function() {
-				$.unblockUI();
-			})
-			.always(function() {
-				oTable.fnDraw();
-				$.unblockUI();
-			});
-
-	}
-
+	
 
 	function getByProvince(provinceId) {
 		$("#district").html('');

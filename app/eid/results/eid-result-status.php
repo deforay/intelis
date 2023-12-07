@@ -179,7 +179,7 @@ foreach ($rejectionTypeResult as $type) {
                   <th><?php echo _translate("Result"); ?></th>
                   <th><?php echo _translate("Last Modified on") ?></th>
                   <th scope="row"><?php echo _translate("Status"); ?></th>
-                  <?php if ((_isAllowed("/vl/requests/editVlRequest.php"))) { ?>
+                  <?php if ((_isAllowed("/eid/requests/eid-edit-request.php"))) { ?>
                     <!--<th>Action</th>-->
                   <?php } ?>
                 </tr>

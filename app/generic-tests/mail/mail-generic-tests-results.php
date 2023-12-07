@@ -288,7 +288,7 @@ if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
 						<input type="hidden" id="toEmail" name="toEmail" />
 						<input type="hidden" id="reportEmail" name="reportEmail" />
 						<input type="hidden" name="pdfFile" id="pdfFile" />
-						<a href="/vl/result-mail/testResultEmailConfig.php" class="btn btn-default"> Cancel</a>&nbsp;
+						<a href="/generic-tests/result-mail/testResultEmailConfig.php" class="btn btn-default"> Cancel</a>&nbsp;
 						<a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;">Next <em class="fa-solid fa-chevron-right"></em></a>
 					</div>
 					<!-- /.box-footer -->

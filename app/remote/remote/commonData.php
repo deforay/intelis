@@ -327,6 +327,11 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
     }
     $response['geoDivisions'] = $general->fetchDataFromTable('geographical_divisions', $condition);
 
+    if (!empty($data['patientsLastModified'])) {
+        $condition = "updated_datetime > '" . $data['patientsLastModified'] . "'";
+    }
+    $response['patients'] = $general->fetchDataFromTable('patients', $condition);
+
 
     if (!empty($response)) {
         // using array_filter without callback will remove keys with empty values
