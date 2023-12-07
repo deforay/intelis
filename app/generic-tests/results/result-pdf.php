@@ -430,18 +430,17 @@ if (!empty($requestResult)) {
                $html .= '<tr>';
                $html .= '<td colspan="4"  >';
                foreach(explode("##", $result['sub_tests']) as $key => $subTestName){
-                    $n = 1;
-                    $finalResult = [];
+                    $finalResult = [];$n = 1;
                     $html .= '<span style="text-align:left;font-weight:bolt;font-size:15px;">'.$subTestName.'</span><br><table border="1" style="padding:2px;">
-                                         <tr>
-                                             <td align="center" width="5%" style="line-height:10px;font-size:11px;font-weight:bold;">Test No.</td>
-                                             <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Method</td>
-                                             <td align="center" width="15%" style="line-height:10px;font-size:11px;font-weight:bold;">Date of Testing</td>
-                                             <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Platform/Test Kit</td>
-                                             <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Result</td>
-                                             <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Result Unit</td>
-                                         </tr>';
-     
+                    <tr>
+                    <td align="center" width="5%" style="line-height:10px;font-size:11px;font-weight:bold;">Test No.</td>
+                    <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Method</td>
+                    <td align="center" width="15%" style="line-height:10px;font-size:11px;font-weight:bold;">Date of Testing</td>
+                    <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Platform/Test Kit</td>
+                    <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Result</td>
+                    <td align="center" width="20%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Result Unit</td>
+                    </tr>';
+                    
                     foreach ($genericTestInfo as $indexKey => $rows) {
                          if (strtolower($subTestName) == $rows['sub_test_name']) {
                               $html .= '<tr>
@@ -455,8 +454,8 @@ if (!empty($requestResult)) {
                               $finalResult['finalResult'] = $rows['final_result'];
                               $finalResult['finalResultUnit'] = ucwords($testUnits[$rows['final_result_unit']]);
                               $finalResult['finalResultInterpretation'] = $rows['final_result_interpretation'];
+                              $n++;
                          }
-                         $n++;
                     }
                     $html .= '</table><br><table border="0" style="padding:10px;width:100%;">';
                     $html .= '<tr>';
