@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
@@ -11,8 +11,11 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$sarr = $general->getSystemConfig();
-$gconfig = $general->getGlobalConfig();
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
@@ -25,7 +28,7 @@ $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sam
 $orderColumns = array('vl.sample_code', 'vl.last_modified_datetime', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} elseif ($sarr['sc_user_type'] == 'standalone') {
+} elseif ($_SESSION['instanceType'] == 'standalone') {
      $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
      $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
 }
@@ -38,7 +41,7 @@ $sTable = $tableName;
 /*
  * Paging
  */
-$sLimit = null;
+$sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
      $sLimit = $_POST['iDisplayLength'];
@@ -46,48 +49,9 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 
 
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-     $sOrder = "";
-     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-               $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-/*
- * Filtering
- * NOTE this does not match the built-in DataTables filtering which does it
- * word by word on any field. It's possible to do here, but concerned about efficiency
- * on very large tables, and MySQL's regex functionality is very limited
- */
-
-$sWhere = "";
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", (string) $_POST['sSearch']);
-     $sWhereSub = "";
-     foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
-               $sWhereSub .= "(";
-          } else {
-               $sWhereSub .= " AND (";
-          }
-          $colSize = count($aColumns);
-
-          for ($i = 0; $i < $colSize; $i++) {
-               if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-               } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-               }
-          }
-          $sWhereSub .= ")";
-     }
-     $sWhere .= $sWhereSub;
-}
+$sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
 
 
@@ -95,7 +59,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
  * SQL queries
  * Get data to display
  */
-$aWhere = '';
+
 $sQuery = "SELECT vl.sample_collection_date,
                     vl.vl_sample_id,
                     vl.last_modified_datetime,
@@ -120,38 +84,27 @@ $sQuery = "SELECT vl.sample_collection_date,
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-if (!empty($sWhere)) {
-     $sWhere = ' WHERE ' . $sWhere;
-     if (isset($_POST['samplePackageCode']) && $_POST['samplePackageCode'] != '') {
-          $sWhere = $sWhere . ' AND vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '"';
-     }
-} else {
-     if (isset($_POST['samplePackageCode']) && trim((string) $_POST['samplePackageCode']) != '') {
-          $sWhere = ' WHERE ' . $sWhere;
-          $sWhere = $sWhere . ' vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '"';
-     }
+if (!empty($_POST['samplePackageCode'])) {
+     $sWhere[] = ' vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '" ';
 }
 
-$sFilter = '';
-$sQuery = $sQuery . ' ' . $sWhere;
+if (!empty($sWhere)) {
+     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
+}
+
 if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 
-$rResult = $db->rawQuery($sQuery);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
-
-/*
- * Output
- */
-$output = array(
+$output = [
      "sEcho" => (int) $_POST['sEcho'],
      "iTotalRecords" => $resultCount,
      "iTotalDisplayRecords" => $resultCount,
      "aaData" => []
-);
+];
 
 foreach ($rResult as $aRow) {
 

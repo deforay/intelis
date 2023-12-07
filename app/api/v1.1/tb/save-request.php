@@ -1,6 +1,5 @@
 <?php
 
-use App\Services\DatabaseService;
 use JsonMachine\Items;
 use App\Services\TbService;
 use App\Services\ApiService;
@@ -8,6 +7,7 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;

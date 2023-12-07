@@ -78,7 +78,7 @@ $orderColumns = array('p.package_id', 'p.module', 'facility_name', 'p.package_co
 /*
  * Paging
  */
-$sLimit = null;
+$sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];

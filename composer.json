@@ -53,7 +53,8 @@
         "gettext/gettext": "^5.7",
         "nesbot/carbon": "^2.71",
         "brick/phonenumber": "^0.5.0",
-        "phpmyadmin/sql-parser": "^5.8"
+        "phpmyadmin/sql-parser": "^5.8",
+        "nikic/iter": "^2.3"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"

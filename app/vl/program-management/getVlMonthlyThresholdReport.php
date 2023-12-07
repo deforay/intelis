@@ -46,7 +46,7 @@ $sTable = $tableName;
 /*
  * Paging
  */
-$sLimit = null;
+$sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
      $sLimit = $_POST['iDisplayLength'];
