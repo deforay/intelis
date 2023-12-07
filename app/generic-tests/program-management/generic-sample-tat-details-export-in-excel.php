@@ -41,10 +41,10 @@ INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
 LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-WHERE (vl.sample_collection_date is not null AND vl.sample_collection_date not like ''
-AND DATE(vl.sample_collection_date) > '1970-01-01') AND (vl.sample_tested_datetime is not null
-AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01'
-AND DATE(vl.sample_tested_datetime) NOT LIKE '0000-00-00') AND vl.result is not null AND vl.result != ''";
+WHERE
+(vl.sample_collection_date is not null AND vl.sample_collection_date > '0000-00-00') AND
+(vl.sample_tested_datetime is not null AND vl.sample_tested_datetime > '0000-00-00') AND
+vl.result is not null AND vl.result != ''";
 
 if (!empty($_SESSION['vlTatData']['sWhere'])) {
 	$sQuery = $sQuery . $_SESSION['vlTatData']['sWhere'];

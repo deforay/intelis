@@ -1,13 +1,13 @@
 <?php
 
 use App\Services\BatchService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Helpers\BatchPdfHelper;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Helpers\BatchPdfHelper;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
@@ -111,22 +111,22 @@ if (!empty($id)) {
                         ct.kit_expiry_date,
                         covid19.lot_number,
                         CASE
-                            WHEN covid19.lot_expiration_date IS NULL OR covid19.lot_expiration_date = '0000-00-00' THEN NULL
+                            WHEN covid19.lot_expiration_date IS NOT NULL AND DATE(covid19.lot_expiration_date) > '0000-00-00' THEN NULL
                             ELSE DATE_FORMAT(covid19.lot_expiration_date, '%d-%b-%Y')
                         END AS lot_expiration_date,
                         covid19.result_printed_datetime
                     FROM form_covid19 as covid19
                     LEFT JOIN covid19_tests as ct on covid19.covid19_id = ct.covid19_id
-                    WHERE sample_batch_id='$id'
+                    WHERE sample_batch_id= ?
                     GROUP BY covid19.covid19_id";
     } else {
         $dateQuery = "SELECT sample_tested_datetime,
                         result_reviewed_datetime
                         FROM $refTable
-                        WHERE sample_batch_id='$id'";
+                        WHERE sample_batch_id= ?";
     }
     // die($dateQuery);
-    $dateResult = $db->rawQueryOne($dateQuery);
+    $dateResult = $db->rawQueryOne($dateQuery, [$id]);
     $resulted = DateUtility::humanReadableDateFormat($dateResult['sample_tested_datetime'] ?? '', true);
     $reviewed = DateUtility::humanReadableDateFormat($dateResult['result_reviewed_datetime'] ?? '', true);
     if (!empty($bResult)) {

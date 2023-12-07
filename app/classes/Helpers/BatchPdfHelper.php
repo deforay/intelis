@@ -1,19 +1,20 @@
 <?php
 
 namespace App\Helpers;
+
+use TCPDF;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
-use TCPDF;
 
 class BatchPdfHelper extends TCPDF
 {
-    public string $logo;
-    public string $text;
-    public string $batch;
-    public string $resulted;
-    public string $reviewed;
-    public string $createdBy;
-    public string $worksheetName;
+    public ?string $logo;
+    public ?string $text;
+    public ?string $batch;
+    public ?string $resulted;
+    public ?string $reviewed;
+    public ?string $createdBy;
+    public ?string $worksheetName;
 
 
     public function setHeading($logo, $text, $batch, $resulted, $reviewed, $createdBy, $worksheetName): void
@@ -60,7 +61,7 @@ class BatchPdfHelper extends TCPDF
         // Set font
         $this->SetFont('helvetica', 'I', 8);
         // Page number
-        $text = _translate("Batch file generated on") .' : ' . DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime(), true);
+        $text = _translate("Batch file generated on") . ' : ' . DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime(), true);
         $this->Cell(0, 10, $text, 0, false, 'L  ', 0);
         $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
     }

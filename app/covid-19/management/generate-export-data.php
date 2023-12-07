@@ -103,8 +103,8 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 		$row = [];
 		if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
 			// Get testing platform and test method
-			$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id ASC";
-			$covid19TestInfo = $db->rawQuery($covid19TestQuery);
+			$covid19TestQuery = "SELECT * FROM covid19_tests where covid19_id= ? ORDER BY test_id ASC";
+			$covid19TestInfo = $db->rawQuery($covid19TestQuery, [$aRow['covid19_id']]);
 			foreach ($covid19TestInfo as $indexKey => $rows) {
 				$testPlatform = $rows['testing_platform'];
 				$testMethod = $rows['test_name'];

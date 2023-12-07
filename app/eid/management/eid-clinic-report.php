@@ -1,7 +1,7 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 $title = _translate("EID | Clinics Report");
@@ -59,10 +59,6 @@ foreach ($rejectionTypeResult as $type) {
 <style>
 	.select2-selection__choice {
 		color: #000000 !important;
-	}
-
-	.center {
-		/*text-align:left;*/
 	}
 </style>
 <!-- Content Wrapper. Contains page content -->
@@ -295,7 +291,7 @@ foreach ($rejectionTypeResult as $type) {
 														<th><?php echo _translate("Child's ID"); ?></th>
 														<th><?php echo _translate("Child's Name"); ?></th>
 														<th><?php echo _translate("Sample Collection Date"); ?></th>
-														<th><?php echo _translate("VL Lab Name"); ?></th>
+														<th><?php echo _translate("Testing Lab Name"); ?></th>
 														<th><?php echo _translate("Rejection Reason"); ?></th>
 														<th><?php echo _translate("Recommended Corrective action"); ?></th>
 													</tr>
@@ -392,7 +388,7 @@ foreach ($rejectionTypeResult as $type) {
 														<th><?php echo _translate("Child's ID"); ?></th>
 														<th><?php echo _translate("Child's Name"); ?></th>
 														<th><?php echo _translate("Sample Collection Date"); ?></th>
-														<th><?php echo _translate("VL Lab Name"); ?></th>
+														<th><?php echo _translate("Testing Lab Name"); ?></th>
 														<th><?php echo _translate("Sample Status"); ?></th>
 													</tr>
 												</thead>

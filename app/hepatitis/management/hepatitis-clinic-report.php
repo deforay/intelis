@@ -293,7 +293,7 @@ $state = $geolocationService->getProvinces("yes");
 														<th><?php echo _translate("Patient's ID"); ?></th>
 														<th><?php echo _translate("Patient's Name"); ?></th>
 														<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
-														<th><?php echo _translate("VL Lab Name"); ?></th>
+														<th><?php echo _translate("Testing Lab Name"); ?></th>
 														<th><?php echo _translate("Rejection Reason"); ?></th>
 													</tr>
 												</thead>
@@ -389,7 +389,7 @@ $state = $geolocationService->getProvinces("yes");
 														<th><?php echo _translate("Patient's ID"); ?></th>
 														<th><?php echo _translate("Patient's Name"); ?></th>
 														<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
-														<th><?php echo _translate("VL Lab Name"); ?></th>
+														<th><?php echo _translate("Testing Lab Name"); ?></th>
 														<th><?php echo _translate("Sample Status"); ?></th>
 
 													</tr>

@@ -365,7 +365,7 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													
+
 												</tr>
 												<tr>
 													<td style="width: 10%;"><strong>
@@ -373,7 +373,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td style="width: 23.33%;">
 														<select class="form-control select2 select2-element" id="pregnancy" name="pregnancy" title="<?php echo _translate('Please select pregnancy'); ?>">
-														<option value="">
+															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
@@ -381,7 +381,8 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 															<option value="no">
 																<?php echo _translate("No"); ?>
-															</option>														</select>
+															</option>
+														</select>
 													</td>
 													<td style="width: 10%;"><strong>
 															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
@@ -396,7 +397,7 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 															<option value="no">
 																<?php echo _translate("No"); ?>
-															</option>														
+															</option>
 														</select>
 													</td>
 													<td style="width: 10%;">
@@ -625,7 +626,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Sample Collection Date"); ?>
 														</th>
 														<th>
-															<?php echo _translate("VL Lab Name"); ?>
+															<?php echo _translate("Testing Lab Name"); ?>
 														</th>
 														<th>
 															<?php echo _translate("Rejection Reason"); ?>
@@ -827,7 +828,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Sample Collection Date"); ?>
 														</th>
 														<th>
-															<?php echo _translate("VL Lab Name"); ?>
+															<?php echo _translate("Testing Lab Name"); ?>
 														</th>
 														<th>
 															<?php echo _translate("Sample Status"); ?>
@@ -1010,7 +1011,7 @@ $state = $geolocationService->getProvinces("yes");
 			width: '100%',
 			placeholder: "<?php echo _translate("Select Fields"); ?>"
 		});
-		
+
 		$(".select2").select2({
 			width: '100%',
 			placeholder: "<?php echo _translate("Select Option"); ?>"
@@ -1098,7 +1099,7 @@ $state = $geolocationService->getProvinces("yes");
 				state: $('#vfVlnsState').val(),
 				district: $('#vfVlnsDistrict').val(),
 				facilityName: $('#vfVlnsfacilityName').val(),
-				gender:$('#vfvlnGender').val(),
+				gender: $('#vfvlnGender').val(),
 				pregnancy: $('#pregnancy').val(),
 				breastfeeding: $('#breastfeeding').val(),
 				minAge: $('#min_age').val(),
@@ -1106,7 +1107,7 @@ $state = $geolocationService->getProvinces("yes");
 				withAlphaNum: 'yes',
 			},
 			function(data) {
-				if(data == "age"){
+				if (data == "age") {
 					$.unblockUI();
 					alert("Age range is incorrect");
 				} else if (data == "" || data == null || data == undefined) {
