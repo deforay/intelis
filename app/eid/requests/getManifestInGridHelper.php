@@ -62,8 +62,9 @@ $sQuery = "SELECT vl.sample_collection_date,
                     vl.result_status,
                     f.facility_name,
                     f.facility_state,
-                    f.facility_district
-                    ts.status_name FROM form_eid as vl
+                    f.facility_district,
+                    ts.status_name
+                    FROM form_eid as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
