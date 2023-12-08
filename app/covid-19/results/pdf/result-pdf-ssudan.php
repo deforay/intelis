@@ -12,10 +12,10 @@ use App\Registries\ContainerRegistry;
 
 class SouthSudan_PDF extends MYPDF
 {
-    public string $lab = '';
+    public ?string $lab = '';
     public $facilityInfo;
     public $formId = null;
-    public string $htitle = '';
+    public ?string $htitle = '';
     //Page header
     public function Header()
     {

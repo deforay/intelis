@@ -5,10 +5,10 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -18,11 +18,14 @@ $_POST = $request->getParsedBody();
 
 $tableName1 = "activity_log";
 $tableName2 = "form_vl";
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
 $arr = $general->getGlobalConfig();
@@ -103,10 +106,10 @@ $_SESSION['aliasPage'] = 1;
 //header and footer
 class MYPDF extends TCPDF
 {
-	public string $logo = '';
-	public string $text = '';
-	public string $lab = '';
-	public string $htitle = '';
+	public ?string $logo = '';
+	public ?string $text = '';
+	public ?string $lab = '';
+	public ?string $htitle = '';
 	public $labFacilityId = null;
 	public $trainingTxt = null;
 

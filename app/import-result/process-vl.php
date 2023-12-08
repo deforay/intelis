@@ -185,7 +185,7 @@ try {
 
                     if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
                         $data['result_status'] = SAMPLE_STATUS\TEST_FAILED;
-                    } elseif ($vldata['vl_result_category'] == 'rejected') {
+                    } elseif ($data['vl_result_category'] == 'rejected') {
                         $data['result_status'] = SAMPLE_STATUS\REJECTED;
                     }
                     $data['cv_number'] = $rResult['cv_number'];

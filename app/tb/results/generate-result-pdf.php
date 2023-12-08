@@ -111,7 +111,7 @@ $_SESSION['aliasPage'] = 1;
 //set mField Array
 $mFieldArray = [];
 if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
-	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
+    $mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
 }
 
 //print_r($requestResult);die;
@@ -120,8 +120,8 @@ class MYPDF extends TCPDF
 {
     public $logo = '';
     public $text = '';
-    public string $lab = '';
-    public string $htitle = '';
+    public ?string $lab = '';
+    public ?string $htitle = '';
     public $labFacilityId = null;
     public $formId = '';
     public array $facilityInfo = [];

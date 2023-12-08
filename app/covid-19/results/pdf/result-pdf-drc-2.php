@@ -7,7 +7,7 @@ use App\Registries\ContainerRegistry;
 
 class DRC_PDF extends MYPDF
 {
-    public string $htitle = '';
+    public ?string $htitle = '';
     public array $facilityInfo = [];
     public $resultPrintedDate = null;
     public $systemConfig = null;
