@@ -126,14 +126,15 @@ try {
 
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
-                if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
-                    $sQuery = "SELECT covid19_id,sample_code,remote_sample_code,remote_sample_code_key
-                            FROM form_covid19 WHERE remote_sample_code= ?";
+                if (!empty($lab['remote_sample_code'])) {
+                    $sQuery = "SELECT covid19_id FROM form_covid19 WHERE remote_sample_code= ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
                 } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
-                    $sQuery = "SELECT covid19_id,sample_code,remote_sample_code,remote_sample_code_key
-                            FROM form_covid19 WHERE sample_code= ? AND facility_id = ?";
+                    $sQuery = "SELECT covid19_id FROM form_covid19 WHERE sample_code=? AND facility_id = ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                } elseif (!empty($lab['unique_id'])) {
+                    $sQuery = "SELECT covid19_id FROM form_covid19 WHERE unique_id=?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
                 } else {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
@@ -172,14 +173,15 @@ try {
             foreach ($testResults as $testId => $test) {
                 $db->insert(
                     "covid19_tests",
-                    array(
+                    [
                         "covid19_id" => $test['covid19_id'],
                         "test_name" => $test['test_name'],
                         "facility_id" => $test['facility_id'],
                         "sample_tested_datetime" => $test['sample_tested_datetime'],
                         "testing_platform" => $test['testing_platform'],
                         "result" => $test['result']
-                    )
+                    ]
+
                 );
             }
         }

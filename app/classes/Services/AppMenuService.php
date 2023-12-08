@@ -15,7 +15,7 @@ class AppMenuService
     protected CommonService $commonService;
     protected UsersService $usersService;
 
-    public function __construct(?DatabaseService $db = null, CommonService $commonService, UsersService $usersService)
+    public function __construct(?DatabaseService $db, CommonService $commonService, UsersService $usersService)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
         $this->commonService = $commonService;

@@ -26,9 +26,6 @@ $apiService = ContainerRegistry::get(ApiService::class);
 $payload = [];
 
 
-
-//$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
-
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
@@ -36,7 +33,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 $request = $GLOBALS['request'];
 $data = $apiService->getJsonFromRequest($request, true);
 
-//error_log($jsonData);
+
 $counter = 0;
 
 $transactionId = $general->generateUUID();
@@ -343,7 +340,7 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
     $payload =  json_encode(array('status' => 'error', 'message' => 'Invalid request'));
 }
 
-$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], $jsonData, $payload, 'json', $labId);
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
 
 $sql = 'UPDATE facility_details
             SET facility_attributes

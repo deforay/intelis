@@ -28,6 +28,8 @@ class ErrorResponseGenerator
 
     public function __invoke(Throwable $exception, ServerRequestInterface $request): ResponseInterface
     {
+        $response = new Response();
+
         if ($this->isDebug) {
             $whoops = new Run();
             $whoops->allowQuit(false);
@@ -59,6 +61,7 @@ class ErrorResponseGenerator
                 str_starts_with($request->getUri()->getPath(), '/api/') ||
                 str_starts_with($request->getUri()->getPath(), '/remote/remote/')
             ) {
+                $response = $response->withHeader('Content-Type', 'application/json');
                 $responseBody = json_encode([
                     'error' => [
                         'code' => $httpCode,
@@ -73,7 +76,6 @@ class ErrorResponseGenerator
             }
         }
 
-        $response = new Response();
         $response->getBody()->write($responseBody);
         return $response->withStatus(500);
     }

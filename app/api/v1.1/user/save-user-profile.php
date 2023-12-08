@@ -9,7 +9,7 @@ use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
-
+use Crunz\Logger\Logger;
 
 /** @var Slim\Psr7\Request $request */
 $request = $GLOBALS['request'];
@@ -52,7 +52,6 @@ try {
     if ((empty($input['post']) || $input['post'] === false) && empty($user)) {
         throw new SystemException("3 Invalid request. Please check your request parameters.");
     } else {
-        $input = array_map('htmlspecialchars', $input);
         if (!empty($user)) {
             $post = $input;
         } else {
@@ -60,7 +59,9 @@ try {
         }
     }
 
-
+    if (MiscUtility::isJSON($post)) {
+        $post = json_decode($post, true);
+    }
     $post['loginId'] = $post['loginId'] ?? null;
     $post['role'] = $post['role'] ?? null;
     $post['hashAlgorithm'] = $post['hashAlgorithm'] ?? 'phb';
@@ -166,10 +167,10 @@ try {
     }
 
     $payload = json_encode($payload);
-} catch (SystemException $exc) {
+} catch (Exception | SystemException $exc) {
     $payload = [
         'status' => 'failed',
-        'error' => $exc->getMessage(),
+        'error' => $exc->getLine() . " | " . $exc->getMessage(),
         'timestamp' => time(),
     ];
 

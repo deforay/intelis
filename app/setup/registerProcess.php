@@ -1,25 +1,28 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
-use App\Services\UsersService;
-use App\Services\SystemService;
 use GuzzleHttp\Client;
+use App\Services\UsersService;
+use App\Services\CommonService;
+use App\Services\SystemService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $tableName = "user_details";
-$userName = ($_POST['userName']);
-$emailId = ($_POST['email']);
-$loginId = ($_POST['loginId']);
-$password = ($_POST['password']);
-$vlForm = ($_POST['vl_form']);
-$timeZone = ($_POST['default_time_zone']);
-$locale = ($_POST['app_locale']);
+$userName = $_POST['userName'];
+$emailId = $_POST['email'];
+$loginId = $_POST['loginId'];
+$password = $_POST['password'];
+$vlForm = $_POST['vl_form'];
+$timeZone = $_POST['default_time_zone'];
+$locale = $_POST['app_locale'];
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
@@ -115,7 +118,10 @@ try {
         $_SESSION['alertMsg'] = "New admin user added successfully";
     }
     header("Location:/login/login.php");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+} catch (Exception | SystemException $exc) {
+    LoggerUtility::log('error', $exc->getMessage(), [
+        'exception' => $exc->getMessage(),
+        'line' => __LINE__,
+        'file' => __FILE__
+    ]);
 }

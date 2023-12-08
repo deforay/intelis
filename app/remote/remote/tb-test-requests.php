@@ -11,7 +11,6 @@ use App\Registries\ContainerRegistry;
 header('Content-Type: application/json');
 try {
     $db->beginTransaction();
-    //$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
     /** @var ApiService $apiService */
     $apiService = ContainerRegistry::get(ApiService::class);
@@ -51,7 +50,7 @@ try {
     }
 
     $tbRemoteResult = $db->rawQuery($tbQuery);
-    $data = [];
+    $response = [];
     $counter = 0;
     $sampleIds = $facilityIds = [];
     if ($db->count > 0) {
@@ -60,12 +59,12 @@ try {
         $sampleIds = array_column($tbRemoteResult, 'tb_id');
         $facilityIds = array_column($tbRemoteResult, 'facility_id');
 
-        $data['result'] = $tbRemoteResult;
+        $response['result'] = $tbRemoteResult;
     }
 
-    $payload = json_encode($data);
+    $payload = json_encode($response);
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'tb', $_SERVER['REQUEST_URI'], $jsonData, $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'tb', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
 
 
     $general->updateTestRequestsSyncDateTime('tb', 'form_tb', 'tb_id', $sampleIds, $transactionId, $facilityIds, $labId);
