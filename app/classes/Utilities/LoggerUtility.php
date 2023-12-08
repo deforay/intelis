@@ -8,9 +8,9 @@ use Monolog\Handler\RotatingFileHandler;
 class LoggerUtility
 {
     // Log the error with Monolog, including the file, line, and stack trace
-    public static function log($level, $message, $context = [])
+    public static function log($level, $message, $context = [], $name = 'logger')
     {
-        $logger = new Logger('error_logger');
+        $logger = new Logger($name);
 
         $handler = new RotatingFileHandler(ROOT_PATH . '/logs/logfile.log', 30, Logger::ERROR, true, 0777);
         $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');

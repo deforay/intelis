@@ -193,7 +193,10 @@ try {
     if ($table == "form_vl") {
         $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
     }
-    $accessionQuery = "SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(unique_id) as `count` FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
+    $accessionQuery = "SELECT DATE(vl.sample_collection_date) as `collection_date`,
+                        COUNT(unique_id) as `count`
+                        FROM $table as vl
+                        LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
                         WHERE $whereCondition DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
                         GROUP BY `collection_date`
                         ORDER BY `collection_date`";

@@ -125,13 +125,17 @@ try {
 
   $general->updateTestRequestsSyncDateTime('generic', 'form_generic', 'sample_id', $sampleIds, $transactionId, $facilityIds, $labId);
   $db->commitTransaction();
-} catch (Exception $e) {
+} catch (Exception | SystemException $e) {
   $db->rollbackTransaction();
 
-  error_log($db->getLastError());
-  error_log($e->getMessage());
-  error_log($e->getTraceAsString());
-  throw new SystemException($e->getMessage(), $e->getCode(), $e);
+  $payload = json_encode([]);
+
+  if ($db->getLastErrno() > 0) {
+    error_log($db->getLastErrno());
+    error_log($db->getLastError());
+    error_log($db->getLastQuery());
+  }
+  throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
 
 echo $payload;

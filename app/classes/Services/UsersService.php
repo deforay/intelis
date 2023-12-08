@@ -183,7 +183,6 @@ class UsersService
             $userData = [
                 'user_id' => $userId,
                 'user_name' => $name,
-                'interface_user_name' => $name,
                 'role_id' => $role,
                 'status' => $status
             ];

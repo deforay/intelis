@@ -120,8 +120,8 @@ class MYPDF extends TCPDF
 {
     public $logo = '';
     public $text = '';
-    public ?string $lab = '';
-    public ?string $htitle = '';
+    public ?string $lab;
+    public ?string $htitle;
     public $labFacilityId = null;
     public $formId = '';
     public array $facilityInfo = [];

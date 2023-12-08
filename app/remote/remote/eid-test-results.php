@@ -1,13 +1,14 @@
 <?php
 //this file receives the lab results and updates in the remote db
 
-use App\Services\DatabaseService;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -112,22 +113,22 @@ try {
                 unset($lab['reason_for_sample_rejection']);
             }
 
+            $primaryKey = 'eid_id';
+            $tableName = 'form_eid';
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
-                if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
-                    $sQuery = "SELECT eid_id FROM form_eid WHERE remote_sample_code=?";
+                if (!empty($lab['remote_sample_code'])) {
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE remote_sample_code= ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
-                } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
-                    $sQuery = "SELECT eid_id FROM form_eid WHERE sample_code=? AND facility_id = ?";
+                } elseif (!empty($lab['sample_code']) && !empty($lab['lab_id'])) {
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE sample_code=? AND lab_id = ?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['lab_id']]);
+                } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id'])) {
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE sample_code=? AND facility_id = ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
                 } elseif (!empty($lab['unique_id'])) {
-                    $sQuery = "SELECT eid_id FROM form_eid WHERE unique_id=?";
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE unique_id=?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
-                } else {
-
-                    $sampleCodes[] = $lab['sample_code'];
-                    $facilityIds[] = $lab['facility_id'];
-                    continue;
                 }
 
                 $formAttributes = $general->jsonToSetString(
@@ -135,16 +136,21 @@ try {
                     'form_attributes'
                 );
                 $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+
                 if (!empty($sResult)) {
-                    $db->where('eid_id', $sResult['eid_id']);
-                    $id = $db->update('form_eid', $lab);
+                    $db->where($primaryKey, $sResult[$primaryKey]);
+                    $id = $db->update($tableName, $lab);
                 } else {
-                    $id = $db->insert('form_eid', $lab);
+                    //$db->onDuplicate(array_keys($lab), $primaryKey);
+                    $id = $db->insert($tableName, $lab);
                 }
-            } catch (Exception $e) {
-                error_log($db->getLastError());
-                error_log($e->getMessage());
-                error_log($e->getTraceAsString());
+            } catch (Exception | SystemException $e) {
+                if ($db->getLastErrno() > 0) {
+                    error_log($db->getLastErrno());
+                    error_log($db->getLastError());
+                    error_log($db->getLastQuery());
+                }
+                LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                 continue;
             }
 
@@ -164,13 +170,17 @@ try {
 
     $general->updateResultSyncDateTime('eid', 'form_eid', $sampleCodes, $transactionId, $facilityIds, $labId);
     $db->commitTransaction();
-} catch (Exception $e) {
+} catch (Exception | SystemException $e) {
     $db->rollbackTransaction();
 
-    error_log($db->getLastError());
-    error_log($e->getMessage());
-    error_log($e->getTraceAsString());
-    throw new SystemException($e->getMessage(), $e->getCode(), $e);
+    $payload = json_encode([]);
+
+    if ($db->getLastErrno() > 0) {
+        error_log($db->getLastErrno());
+        error_log($db->getLastError());
+        error_log($db->getLastQuery());
+    }
+    throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
 
 echo $payload;

@@ -10,6 +10,7 @@ use TCPDF2DBarcode;
 use Ramsey\Uuid\Uuid;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -725,7 +726,8 @@ class CommonService
                 MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'responses');
                 MiscUtility::zipJson($responseData, "$folderPath/responses/$transactionId.json");
             }
-            return $this->db->insert("track_api_requests", [
+
+            $data = [
                 'transaction_id' => $transactionId ?? null,
                 'requested_by' => $user ?? 'system',
                 'requested_on' => DateUtility::getCurrentDateTime(),
@@ -735,11 +737,15 @@ class CommonService
                 'api_url' => $url ?? null,
                 'facility_id' => $labId ?? null,
                 'data_format' => $format ?? null
-            ]);
-        } catch (Exception $exc) {
-            error_log($exc->getMessage());
-            error_log($this->db->getLastError());
-            error_log($exc->getTraceAsString());
+            ];
+            return $this->db->insert("track_api_requests", $data);
+        } catch (Exception | SystemException $exc) {
+            if ($this->db->getLastErrno() > 0) {
+                error_log($this->db->getLastErrno());
+                error_log($this->db->getLastError());
+                error_log($this->db->getLastQuery());
+            }
+            LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
             return 0;
         }
     }

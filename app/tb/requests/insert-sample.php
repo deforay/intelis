@@ -23,7 +23,7 @@ try {
 } catch (Exception | SystemException $exception) {
     // Rollback transaction in case of error
     $db->rollbackTransaction();
-    LoggerUtility::log('error', $exception->getMessage(), [
+    LoggerUtility::log('error', $exception->getFile() . ':' . $exception->getLine()  . ':' .  $exception->getMessage(), [
         'exception' => $exception,
         'file' => $exception->getFile(), // File where the error occurred
         'line' => $exception->getLine(), // Line number of the error

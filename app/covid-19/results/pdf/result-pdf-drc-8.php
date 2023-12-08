@@ -11,6 +11,10 @@ if (!class_exists('DRC_PDF')) {
 
     class DRC_PDF extends MYPDF
     {
+        public ?string $logo;
+        public ?string $text;
+        public ?string $lab;
+        public ?string $htitle;
         //Page header
         public function Header()
         {

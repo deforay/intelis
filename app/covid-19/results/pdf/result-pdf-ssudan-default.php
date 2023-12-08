@@ -6,6 +6,10 @@ use App\Utilities\DateUtility;
 
 class SouthSudan_PDF extends MYPDF
 {
+    public ?string $logo;
+    public ?string $text;
+    public ?string $lab;
+    public ?string $htitle;
     //Page header
     public function Header()
     {

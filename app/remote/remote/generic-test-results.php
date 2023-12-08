@@ -1,12 +1,13 @@
 <?php
 
-use App\Services\DatabaseService;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -119,41 +120,44 @@ try {
 
 
 
+            $primaryKey = 'sample_id';
+            $tableName = 'form_generic';
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
                 if (!empty($lab['remote_sample_code'])) {
-                    $sQuery = "SELECT sample_id FROM form_generic WHERE remote_sample_code= ?";
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE remote_sample_code= ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
-                } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
-                    $sQuery = "SELECT sample_id FROM form_generic WHERE sample_code=? AND facility_id = ?";
+                } elseif (!empty($lab['sample_code']) && !empty($lab['lab_id'])) {
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE sample_code=? AND lab_id = ?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['lab_id']]);
+                } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id'])) {
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE sample_code=? AND facility_id = ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
                 } elseif (!empty($lab['unique_id'])) {
-                    $sQuery = "SELECT sample_id FROM form_generic WHERE unique_id=?";
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE unique_id=?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
-                } else {
-                    $sampleCodes[] = $lab['sample_code'];
-                    $facilityIds[] = $lab['facility_id'];
-                    continue;
                 }
-
 
                 $formAttributes = $general->jsonToSetString(
                     $lab['form_attributes'],
                     'form_attributes'
                 );
                 $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+
                 if (!empty($sResult)) {
-                    $db->where('sample_id', $sResult['sample_id']);
-                    $id = $db->update('form_generic', $lab);
-                    $sampleId = $sResult['sample_id'];
+                    $db->where($primaryKey, $sResult[$primaryKey]);
+                    $id = $db->update($tableName, $lab);
                 } else {
-                    $id = $db->insert('form_generic', $lab);
-                    $sampleId = $db->getInsertId();
+                    //$db->onDuplicate(array_keys($lab), $primaryKey);
+                    $id = $db->insert($tableName, $lab);
                 }
-            } catch (Exception $e) {
-                error_log($db->getLastError());
-                error_log($e->getMessage());
-                error_log($e->getTraceAsString());
+            } catch (Exception | SystemException $e) {
+                if ($db->getLastErrno() > 0) {
+                    error_log($db->getLastErrno());
+                    error_log($db->getLastError());
+                    error_log($db->getLastQuery());
+                }
+                LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                 continue;
             }
 
@@ -164,6 +168,9 @@ try {
         }
 
         foreach ($testResultsData as $genId => $testResults) {
+            if (empty($genId) || empty($testResults)) {
+                continue;
+            }
             $db->where('generic_id', $genId);
             $db->delete("generic_test_results");
             foreach ($testResults as $testId => $test) {
@@ -186,13 +193,17 @@ try {
     $general->updateResultSyncDateTime('generic', 'form_generic', $sampleCodes, $transactionId, $facilityIds, $labId);
 
     $db->commitTransaction();
-} catch (Exception $e) {
+} catch (Exception | SystemException $e) {
     $db->rollbackTransaction();
 
-    error_log($db->getLastError());
-    error_log($e->getMessage());
-    error_log($e->getTraceAsString());
-    throw new SystemException($e->getMessage(), $e->getCode(), $e);
+    $payload = json_encode([]);
+
+    if ($db->getLastErrno() > 0) {
+        error_log($db->getLastErrno());
+        error_log($db->getLastError());
+        error_log($db->getLastQuery());
+    }
+    throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
 
 echo $payload;

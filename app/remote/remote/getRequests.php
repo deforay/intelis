@@ -30,14 +30,12 @@ $data = $apiService->getJsonFromRequest($request, true);
 $labId = $data['labName'] ?? $data['labId'] ?? null;
 
 if (empty($labId)) {
-  LoggerUtility::log('error', 'Lab ID missing in payload', [
-    'exception' => 'Lab ID missing in payload',
-    'file' => __FILE__, // File where the error occurred
-    'line' => __LINE__, // Line number of the error
+  LoggerUtility::log('error', 'Lab ID is missing in the VL request', [
+    'line' => __LINE__,
+    'file' => __FILE__
   ]);
   exit(0);
 }
-
 $payload = [];
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
@@ -120,13 +118,17 @@ try {
 
   $general->updateTestRequestsSyncDateTime('vl', 'form_vl', 'vl_sample_id', $sampleIds, $transactionId, $facilityIds, $labId);
   $db->commitTransaction();
-} catch (Exception $e) {
+} catch (Exception | SystemException $e) {
   $db->rollbackTransaction();
 
-  error_log($db->getLastError());
-  error_log($e->getMessage());
-  error_log($e->getTraceAsString());
-  throw new SystemException($e->getMessage(), $e->getCode(), $e);
+  $payload = json_encode([]);
+
+  if ($db->getLastErrno() > 0) {
+    error_log($db->getLastErrno());
+    error_log($db->getLastError());
+    error_log($db->getLastQuery());
+  }
+  throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
 
 echo $payload;

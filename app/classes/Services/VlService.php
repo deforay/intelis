@@ -524,6 +524,12 @@ class VlService extends AbstractTestService
             // Rollback the current transaction to release locks and undo changes
             $this->db->rollbackTransaction();
 
+            if ($this->db->getLastErrno() > 0) {
+                error_log($this->db->getLastErrno());
+                error_log($this->db->getLastError());
+                error_log($this->db->getLastQuery());
+            }
+
             LoggerUtility::log('error', 'Insert VL Sample : ' . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(), // File where the error occurred

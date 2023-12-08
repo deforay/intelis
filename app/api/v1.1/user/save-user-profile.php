@@ -85,11 +85,13 @@ try {
         }
         $aRow = $db->getOne("user_details");
     }
+
+
     $data = [
         'user_id' => (!empty($userId) && $userId != "") ? $userId : $general->generateUUID(),
         'user_name' => $db->escape($post['userName']),
         'email' => $db->escape($post['email']),
-        'interface_user_name' => json_encode(array_map('trim', explode(",", $db->escape($post['interfaceUserName'])))),
+        'interface_user_name' => !empty($post['interfaceUserName']) ? json_encode(array_map('trim', explode(",", $post['interfaceUserName']))) : null,
         'phone_number' => $db->escape($post['phoneNo'])
     ];
 

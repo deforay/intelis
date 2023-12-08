@@ -49,7 +49,7 @@ try {
         if (empty($sampleRow['sample_code']) || $sampleRow['sample_code'] == 'null') {
 
             $sampleCodeParams = [];
-            $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($formData['sample_collection_date'] ?? '');
+            $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
             $sampleCodeParams['provinceCode'] = $provinceCode;
             $sampleCodeParams['insertOperation'] = true;
             $sampleJson = $covid19Service->getSampleCode($sampleCodeParams);

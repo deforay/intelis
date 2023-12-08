@@ -1,9 +1,10 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
@@ -349,7 +350,13 @@ try {
 
      $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vlData);
-     error_log($db->getLastError());
+     if ($db->getLastErrno() > 0) {
+          LoggerUtility::log('error', "DB ERROR :: " . $db->getLastError(), [
+               'exception' => $db->getLastError(),
+               'file' => __FILE__,
+               'line' => __LINE__
+          ]);
+     }
      //die;
      if ($id === true) {
           $_SESSION['alertMsg'] = _translate("VL request updated successfully");

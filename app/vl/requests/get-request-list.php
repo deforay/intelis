@@ -92,6 +92,7 @@ $sQuery = "SELECT
                vl.last_modified_datetime,
                vl.result_status,
                vl.locked,
+               vl.data_sync,
                vl.is_encrypted,
                s.sample_name as sample_name,
                b.batch_code,
