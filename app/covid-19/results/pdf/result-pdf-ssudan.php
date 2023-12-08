@@ -3,17 +3,15 @@
 // this file is included in covid-19/results/generate-result-pdf.php
 
 
-use App\Helpers\PdfWatermarkHelper;
-use App\Services\Covid19Service;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Services\Covid19Service;
+use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
 
 class SouthSudan_PDF extends MYPDF
 {
-    public string $logo = '';
-    public string $text = '';
     public string $lab = '';
     public $facilityInfo;
     public $formId = null;

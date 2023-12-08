@@ -1,17 +1,16 @@
 <?php
 
-use App\Helpers\PdfWatermarkHelper;
-use App\Registries\ContainerRegistry;
-use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Helpers\PdfWatermarkHelper;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 if (!class_exists('DRC_PDF')) {
 
     class DRC_PDF extends MYPDF
     {
         public string $htitle = '';
-        public string $logo = '';
         public array $facilityInfo = [];
         public $resultPrintedDate = null;
         public $systemConfig = null;

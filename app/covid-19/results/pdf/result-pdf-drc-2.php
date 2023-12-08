@@ -1,14 +1,13 @@
 <?php
 
-use App\Helpers\PdfWatermarkHelper;
-use App\Registries\ContainerRegistry;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
 
 class DRC_PDF extends MYPDF
 {
     public string $htitle = '';
-    public string $logo = '';
     public array $facilityInfo = [];
     public $resultPrintedDate = null;
     public $systemConfig = null;
@@ -373,7 +372,7 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     $pdf->writeHTML($html);
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
         $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid, 'QRCODE,H', 20, 235, 30, 30, $style, 'N');
+        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid, 'QRCODE,H', 20, 235, 30, 30, [], 'N');
         $pdf->writeHTML('<span style="font-size:12px;font-weight:normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scan me</span>');
     }
     $pdf->lastPage();

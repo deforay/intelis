@@ -9,10 +9,7 @@ use App\Helpers\PdfConcatenateHelper;
 
 class DRC_PDF extends MYPDF
 {
-	public $text = '';
-	public $lab = '';
 	public $formId = '';
-	public $logo = '';
 	public $labFacilityId = '';
 
 	//Page header

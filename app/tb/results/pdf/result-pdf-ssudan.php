@@ -12,8 +12,6 @@ use App\Registries\ContainerRegistry;
 
 class SouthSudan_PDF extends MYPDF
 {
-    public $logo = '';
-    public $text = '';
     public string $lab = '';
     public string $htitle = '';
     public $labFacilityId = null;
