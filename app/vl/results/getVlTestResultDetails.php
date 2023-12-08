@@ -108,8 +108,7 @@ if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
 }
 
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-     $key = base64_decode((string) $general->getGlobalConfig('key'));
-     $sWhere[] = ' DES_DECRYPT(vl.patient_art_no,' . $key . ') like "%' . $_POST['patientId'] . '%"';
+     $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
 }
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
@@ -169,9 +168,9 @@ if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPa
 // Only approved results can be printed
 if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
      if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
-          $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND result_printed_datetime is NOT NULL AND result_printed_datetime not like ''";
+          $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND result_printed_datetime is NOT NULL AND result_printed_datetime  > '0000-00-00'";
      } else {
-          $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
+          $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
      }
 } else {
      $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
