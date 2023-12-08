@@ -277,9 +277,21 @@ if (!empty($testResultsAttribute)) {
                         $resultSection .= $general->generateSelectOptions($testPlatformList, $row['testing_platform'], '-- Select --');
                         $resultSection .= '</select>
                                 </td>
-                                <td>
-                                        <input type="text" value="' . $row['result'] . '" id="testResult' . $key . $i . '" name="testResult[' . $subTest . '][]" class="form-control" placeholder="Enter result" title="Please enter final results">
-                                </td>
+                                <td>';
+                                if ($resultType == 'qualitative') {
+                                    $resultSection .= '<select class="form-control result-select" name="testResult[' . $subTest . '][]" id="testResult' . $key . $i . '" title="Enter result" title="Please enter final results"><option value="">-- Select --</option>';
+                                    if (!empty($testResultsAttribute[$resultType])) {
+                                        foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
+                                            $selected = isset($row['result']) && $row['result'] == trim((string) $r) ? "selected='selected'" : "";
+                                            $resultSection .= '<option value="' . trim((string) $r) . '" ' . $selected . '>' . $r . '</option>';
+                                        }
+                                    }
+                                    $resultSection .= '</select>';
+                                }else{
+                                    $resultSection .= '<input type="text" value="' . $row['result'] . '" id="testResult' . $key . $i . '" name="testResult[' . $subTest . '][]" class="form-control" placeholder="Enter result" title="Please enter final results">';
+                                }
+                                
+                                $resultSection .= '</td>
                                 <td class="testResultUnit">
                                         <select class="form-control" id="testResultUnit' . $key . $i . '" name="testResultUnit[' . $subTest . '][]" placeholder=' . _translate("Enter test result unit") . ' title=' . _translate("Please enter test result unit") . '>
                                             <option value="">--Select--</option>';
@@ -317,9 +329,20 @@ if (!empty($testResultsAttribute)) {
                 $resultSection .= $general->generateSelectOptions($testPlatformList, null, '-- Select --');
                 $resultSection .= '</select>
                         </td>
-                        <td>
-                                <input type="text" id="testResult' . $key . $n . '" name="testResult[' . $subTest . '][]" class="form-control" placeholder="Enter result" title="Please enter final results">
-                        </td>
+                        <td>';
+                        if ($resultType == 'qualitative') {
+                            $resultSection .= '<select class="form-control result-select" name="testResult[' . $subTest . '][]" id="testResult' . $key . $i . '" title="Enter result" title="Please enter final results"><option value="">-- Select --</option>';
+                            if (!empty($testResultsAttribute[$resultType])) {
+                                foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
+                                    $resultSection .= '<option value="' . trim((string) $r) . '">' . $r . '</option>';
+                                }
+                            }
+                            $resultSection .= '</select>';
+                        }else{
+                            $resultSection .= '<input type="text" value="' . $row['result'] . '" id="testResult' . $key . $i . '" name="testResult[' . $subTest . '][]" class="form-control" placeholder="Enter result" title="Please enter final results">';
+                        }
+                        
+                        $resultSection .= '</td>
                         <td class="testResultUnit">
                                 <select class="form-control" id="testResultUnit' . $key . $n . '" name="testResultUnit[' . $subTest . '][]" placeholder=' . _translate("Enter test result unit") . ' title=' . _translate("Please enter test result unit") . '>
                                     <option value="">--Select--</option>';
