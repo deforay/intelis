@@ -27,7 +27,7 @@ done
 
 spinner() {
     local pid=$!
-    local delay=0.75
+    local delay=0.1
     local spinstr='|/-\'
     while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
         local temp=${spinstr#?}
@@ -192,13 +192,29 @@ done
 
 # phpMyAdmin Setup
 if [ ! -d "/var/www/phpmyadmin" ]; then
-    # phpMyAdmin Setup
     echo "Downloading and setting up phpMyAdmin..."
-    wget -q --show-progress --progress=dot:giga https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
-    tar xzf phpMyAdmin-latest-all-languages.tar.gz
-    DIR_NAME=$(tar tzf phpMyAdmin-latest-all-languages.tar.gz | head -1 | cut -f1 -d"/")
-    mv $DIR_NAME /var/www/phpmyadmin
-    rm phpMyAdmin-latest-all-languages.tar.gz
+
+    # Create the directory if it does not exist
+    mkdir -p /var/www/phpmyadmin
+
+    # Download the ZIP file
+    # Replace the URL with the latest ZIP file URL from the phpMyAdmin website
+    wget -q --show-progress --progress=dot:giga https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.zip
+
+    # Extract directly into the /var/www/phpmyadmin directory
+    unzip -q phpMyAdmin-latest-all-languages.zip -d /var/www/phpmyadmin || {
+        echo "Extraction failed"
+        exit 1
+    }
+
+    # Clean up the downloaded ZIP file
+    rm phpMyAdmin-latest-all-languages.zip
+
+    # The unzip command extracts the files into a subdirectory. We need to move them up one level.
+    PHPMYADMIN_DIR=$(ls /var/www/phpmyadmin)
+    mv /var/www/phpmyadmin/$PHPMYADMIN_DIR/* /var/www/phpmyadmin/
+    mv /var/www/phpmyadmin/$PHPMYADMIN_DIR/.[!.]* /var/www/phpmyadmin/ 2>/dev/null
+    rmdir /var/www/phpmyadmin/$PHPMYADMIN_DIR
 
     echo "Configuring Apache for phpMyAdmin..."
     desired_alias="Alias /phpmyadmin /var/www/phpmyadmin"

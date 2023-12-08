@@ -49,7 +49,8 @@ if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sa
 
 
 $no = 1;
-foreach ($db->rawQueryGenerator($_SESSION['eidRequestSearchResultQuery']) as $aRow) {
+$resultSet = $db->rawQuery($_SESSION['eidRequestSearchResultQuery']);
+foreach ($resultSet as $aRow) {
     $row = [];
     //set gender
     $gender = '';

@@ -43,7 +43,8 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
     }
 
     $no = 1;
-    foreach ($db->rawQueryGenerator($sessionQuery) as $aRow) {
+    $resultSet = $db->rawQuery($sessionQuery);
+    foreach ($resultSet as $aRow) {
         $row = [];
 
         //Gender

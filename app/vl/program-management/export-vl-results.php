@@ -48,7 +48,8 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 
 
 	$no = 1;
-	foreach ($db->rawQueryGenerator($_SESSION['vlResultQuery']) as $aRow) {
+	$resultSet = $db->rawQueryGenerator($_SESSION['vlResultQuery']);
+	foreach ($resultSet as $aRow) {
 		$row = [];
 
 		$age = null;

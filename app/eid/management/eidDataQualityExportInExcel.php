@@ -38,8 +38,8 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           }
      }
 
-
-	foreach ($db->rawQueryGenerator($_SESSION['vlIncompleteForm']) as $aRow) {
+     $resultSet = $db->rawQuery($_SESSION['vlIncompleteForm']);
+     foreach ($resultSet as $aRow) {
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
@@ -74,47 +74,46 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
      }
 
      if (isset($_SESSION['vlIncompleteFormCount']) && $_SESSION['vlIncompleteFormCount'] > 75000) {
-                    $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.csv';
-                    $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-                    // we dont need the $output variable anymore
-                    unset($output);
-                    echo base64_encode((string) $fileName);
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.csv';
+          $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+          // we dont need the $output variable anymore
+          unset($output);
+          echo base64_encode((string) $fileName);
+     } else {
+          $excel = new Spreadsheet();
+          $sheet = $excel->getActiveSheet();
 
-               } else {
-                    $excel = new Spreadsheet();
-                    $sheet = $excel->getActiveSheet();     
-               
-          
-                    $styleArray = array(
-                         'font' => array(
-                              'bold' => true,
-                              'size' => '13',
-                         ),
-                         'alignment' => array(
-                              'horizontal' => Alignment::HORIZONTAL_CENTER,
-                              'vertical' => Alignment::VERTICAL_CENTER,
-                         ),
-                         'borders' => array(
-                              'outline' => array(
-                                   'style' => Border::BORDER_THIN,
-                              ),
-                         )
-                    );
 
-     
-                    $sheet->mergeCells('A1:AE1');
-                    $sheet->getStyle('A3:M3')->applyFromArray($styleArray);
-               
-                    $sheet->fromArray($headings, null, 'A3');
+          $styleArray = array(
+               'font' => array(
+                    'bold' => true,
+                    'size' => '13',
+               ),
+               'alignment' => array(
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+               ),
+               'borders' => array(
+                    'outline' => array(
+                         'style' => Border::BORDER_THIN,
+                    ),
+               )
+          );
 
-                    foreach ($output as $rowNo => $rowData) {
-                         $rRowCount = $rowNo + 4;
-                         $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-                    }
 
-                    $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-                    $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.xlsx';
-                    $writer->save($fileName);
-                    echo base64_encode($fileName);
+          $sheet->mergeCells('A1:AE1');
+          $sheet->getStyle('A3:M3')->applyFromArray($styleArray);
+
+          $sheet->fromArray($headings, null, 'A3');
+
+          foreach ($output as $rowNo => $rowData) {
+               $rRowCount = $rowNo + 4;
+               $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+          }
+
+          $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.xlsx';
+          $writer->save($fileName);
+          echo base64_encode($fileName);
      }
 }

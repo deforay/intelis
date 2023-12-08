@@ -46,7 +46,8 @@ if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sa
 
 
 $no = 1;
-foreach ($db->rawQueryGenerator($_SESSION['covid19RequestSearchResultQuery']) as $aRow) {
+$resultSet = $db->rawQueryGenerator($_SESSION['covid19RequestSearchResultQuery']);
+foreach ($resultSet as $aRow) {
     $symptomList = [];
     $squery = "SELECT s.*, ps.* FROM form_covid19 as c19
         INNER JOIN covid19_patient_symptoms AS ps ON c19.covid19_id = ps.covid19_id

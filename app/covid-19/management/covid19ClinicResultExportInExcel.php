@@ -39,7 +39,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) != "") {
      error_log($_SESSION['highViralResult']);
-    // $rResult = $db->rawQuery($_SESSION['highViralResult']);
+     // $rResult = $db->rawQuery($_SESSION['highViralResult']);
 
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART no.", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
@@ -82,7 +82,8 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           }
      }
      $vlSampleId = [];
-	foreach ($db->rawQueryGenerator($_SESSION['highViralResult']) as $aRow) {
+     $resultSet = $db->rawQuery($_SESSION['highViralResult']);
+     foreach ($resultSet as $aRow) {
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
@@ -123,16 +124,16 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
 
      if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 75000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Covid-19-Report' . date('d-M-Y-H-i-s') . '.csv';
-		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-		// we dont need the $output variable anymore
-		unset($output);
-		echo base64_encode((string) $fileName);
+          $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+          // we dont need the $output variable anymore
+          unset($output);
+          echo base64_encode((string) $fileName);
      } else {
           $colNo = 1;
           $nameValue = '';
 
           $excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
+          $sheet = $excel->getActiveSheet();
           $sheet->mergeCells('A1:AE1');
           $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
 
@@ -140,25 +141,25 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
                  $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
                  $colNo++;
             }*/
-            $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
-            $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
-            $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
-            $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
-            $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
-            $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
-            $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
-            $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
-            $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
-            if ($_SESSION['instanceType'] != 'standalone') {
-                 $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
-            }       
+          $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
+          $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
+          $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
+          $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
+          $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
+          $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
+          $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
+          $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
+          $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
+          if ($_SESSION['instanceType'] != 'standalone') {
+               $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
+          }
 
           $sheet->fromArray($headings, null, 'A3');
 
           foreach ($output as $rowNo => $rowData) {
-			$rRowCount = $rowNo + 4;
-			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-		}
+               $rRowCount = $rowNo + 4;
+               $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+          }
 
           /*foreach ($output as $rowNo => $rowData) {
                $colNo = 1;

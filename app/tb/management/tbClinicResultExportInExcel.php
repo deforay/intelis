@@ -39,7 +39,8 @@ if (isset($_SESSION['highTbResult']) && trim((string) $_SESSION['highTbResult'])
      }
 
      $vlSampleId = [];
-     foreach ($db->rawQueryGenerator($_SESSION['highTbResult']) as $aRow) {
+     $resultSet = $db->rawQueryGenerator($_SESSION['highTbResult']);
+     foreach ($resultSet as $aRow) {
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';

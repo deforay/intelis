@@ -103,10 +103,7 @@ if (!empty($sOrder)) {
 }
 $_SESSION['auditLogQuery'] = $sQuery;
 
-
-$rResult = $db->rawQuery($sQuery);
-
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 /*
 * Output

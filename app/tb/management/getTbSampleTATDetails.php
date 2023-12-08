@@ -191,7 +191,7 @@ if (!empty($sOrder)) {
 $_SESSION['tbTatData'] = $sQuery;
 
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 /*
  * Output

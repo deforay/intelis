@@ -225,7 +225,7 @@ if (!empty($sOrder)) {
 
 $_SESSION['covid19ResultQuery'] = $sQuery;
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 $_SESSION['covid19ResultQueryCount'] = $resultCount;
 

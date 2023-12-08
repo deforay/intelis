@@ -169,7 +169,7 @@ if (!empty($sOrder)) {
 }
 $_SESSION['resultNotAvailable'] = $sQuery;
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 $_SESSION['resultNotAvailableCount'] = $resultCount;
 

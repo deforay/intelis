@@ -146,7 +146,7 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 $output = [
      "sEcho" => (int) $_POST['sEcho'],

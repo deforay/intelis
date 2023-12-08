@@ -9,11 +9,11 @@ use App\Helpers\PdfConcatenateHelper;
 
 class DRC_PDF extends MYPDF
 {
-	public string $text = '';
-	public string $lab = '';
-	public string $formId = '';
-	public string $logo = '';
-	public string $labFacilityId = '';
+	public $text = '';
+	public $lab = '';
+	public $formId = '';
+	public $logo = '';
+	public $labFacilityId = '';
 
 	//Page header
 	public function Header()

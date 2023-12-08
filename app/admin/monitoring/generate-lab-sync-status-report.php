@@ -32,7 +32,8 @@ $today = new DateTimeImmutable();
 $twoWeekExpiry = $today->sub(DateInterval::createFromDateString('2 weeks'));
 $threeWeekExpiry = $today->sub(DateInterval::createFromDateString('4 weeks'));
 
-foreach ($db->rawQueryGenerator($_SESSION['labSyncStatus']) as $aRow) {
+$resultSet = $db->rawQueryGenerator($_SESSION['labSyncStatus']);
+foreach ($resultSet as $aRow) {
     $row = [];
     $_color = "f08080";
 

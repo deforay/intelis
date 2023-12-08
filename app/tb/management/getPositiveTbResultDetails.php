@@ -185,13 +185,9 @@ if (!empty($sOrder)) {
 }
 $_SESSION['highTbResult'] = $sQuery;
 
-$rResult = $db->rawQuery($sQuery);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
-
-//[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-$_SESSION['highViralResultCount'] = $iTotal;
+$_SESSION['highViralResultCount'] = $resultCount;
 
 
 /*
@@ -199,8 +195,8 @@ $_SESSION['highViralResultCount'] = $iTotal;
         */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
 );
 

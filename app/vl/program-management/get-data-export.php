@@ -1,14 +1,10 @@
 <?php
 
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
-
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
 
 
 /** @var DatabaseService $db */
@@ -49,9 +45,6 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-* Ordering
-*/
 
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
@@ -162,6 +155,7 @@ if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
 
 [$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
+
 /* Viral load filter */
 if (isset($_POST['vLoad']) && trim((string) $_POST['vLoad']) != '') {
      if ($_POST['vLoad'] === 'suppressed') {
@@ -170,17 +164,7 @@ if (isset($_POST['vLoad']) && trim((string) $_POST['vLoad']) != '') {
           $sWhere[] =   "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL ";
      }
 }
-$sPrintDate = '';
-$ePrintDate = '';
-if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
-     $s_p_date = explode("to", (string) $_POST['printDate']);
-     if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
-     }
-     if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
-     }
-}
+
 /* Gender filter */
 if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
      if (trim((string) $_POST['gender']) == "not_recorded") {
@@ -243,6 +227,7 @@ if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !
      }
 }
 if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
+     [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
      if (trim((string) $sPrintDate) == trim((string) $eTestDate)) {
           $sWhere[] =  '  DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
      } else {

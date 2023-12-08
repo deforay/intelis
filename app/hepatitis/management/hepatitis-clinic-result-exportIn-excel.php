@@ -40,7 +40,8 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
      }
 
      $vlSampleId = [];
-     foreach ($db->rawQueryGenerator($_SESSION['highViralResult']) as $aRow) {
+     $resultSet = $db->rawQueryGenerator($_SESSION['highViralResult']);
+     foreach ($resultSet as $aRow) {
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';

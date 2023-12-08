@@ -48,7 +48,8 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 
 
 	$no = 1;
-	foreach ($db->rawQueryGenerator($_SESSION['tbResultQuery']) as $aRow) {
+	$resultSet = $db->rawQuery($_SESSION['tbResultQuery']);
+	foreach ($resultSet as $aRow) {
 		$row = [];
 
 		// Get testing platform and test method
@@ -62,12 +63,12 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 
 
 		//set gender
-        $gender = match (strtolower((string)$aRow['patient_gender'])) {
-            'male', 'm' => 'M',
-            'female', 'f' => 'F',
-            'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
-            default => '',
-        };
+		$gender = match (strtolower((string)$aRow['patient_gender'])) {
+			'male', 'm' => 'M',
+			'female', 'f' => 'F',
+			'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
+			default => '',
+		};
 
 		//set sample rejection
 		$sampleRejection = 'No';

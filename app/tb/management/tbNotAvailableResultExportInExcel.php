@@ -47,8 +47,8 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         }
     }
 
-
-    foreach ($db->rawQueryGenerator($_SESSION['resultNotAvailable']) as $aRow) {
+    $resultSet = $db->rawQuery($_SESSION['resultNotAvailable']);
+    foreach ($resultSet as $aRow) {
         $row = [];
         //sample collecion date
         $sampleCollectionDate = '';

@@ -182,21 +182,18 @@ if (!empty($sOrder)) {
 }
 
 $_SESSION['rejectedViralLoadResult'] = $sQuery;
-$rResult = $db->rawQuery($sQuery);
 
-//[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
-$_SESSION['rejectedViralLoadResultCount'] = $iTotal;
+$_SESSION['rejectedViralLoadResultCount'] = $resultCount;
 
 /*
          * Output
         */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
 );
 

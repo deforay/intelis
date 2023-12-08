@@ -177,7 +177,7 @@ if (!empty($sOrder)) {
 $_SESSION['tbRequestSearchResultQuery'] = $sQuery;
 
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 $_SESSION['tbRequestSearchResultQueryCount'] = $resultCount;
 $output = array(

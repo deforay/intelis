@@ -138,7 +138,7 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 /*
  * Output

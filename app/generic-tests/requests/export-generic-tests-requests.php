@@ -76,7 +76,8 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 	$sheet->getStyle('A3:' . $lastColumn . '3')->applyFromArray($styleArray);*/
 
 	$no = 1;
-	foreach ($db->rawQueryGenerator($_SESSION['genericRequestQuery']) as $key => $aRow) {
+	$resultSet = $db->rawQuery($_SESSION['genericRequestQuery']);
+	foreach ($resultSet as $key => $aRow) {
 		$row = [];
 
 
@@ -89,12 +90,12 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 			}
 		}
 		//set gender
-        $gender = match (strtolower((string)$aRow['patient_gender'])) {
-            'male', 'm' => 'M',
-            'female', 'f' => 'F',
-            'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
-            default => '',
-        };
+		$gender = match (strtolower((string)$aRow['patient_gender'])) {
+			'male', 'm' => 'M',
+			'female', 'f' => 'F',
+			'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
+			default => '',
+		};
 		//requested date
 		$requestedDate = '';
 		if (!empty($aRow['test_requested_on'])) {

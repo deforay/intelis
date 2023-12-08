@@ -142,7 +142,7 @@ if (!empty($sOrder)) {
 }
 $_SESSION['vlIncompleteForm'] = $sQuery;
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 $_SESSION['vlIncompleteFormCount'] = $resultCount;
 

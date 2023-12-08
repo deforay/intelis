@@ -64,7 +64,8 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 	}
 
 	$no = 1;
-	foreach ($db->rawQueryGenerator($_SESSION['genericResultQuery']) as $key => $aRow) {
+	$resultSet = $db->rawQuery($_SESSION['genericResultQuery']);
+	foreach ($resultSet as $key => $aRow) {
 		$row = [];
 		$age = null;
 		$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
@@ -75,12 +76,12 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 			}
 		}
 		//set gender
-        $gender = match (strtolower((string)$aRow['patient_gender'])) {
-            'male', 'm' => 'M',
-            'female', 'f' => 'F',
-            'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
-            default => '',
-        };
+		$gender = match (strtolower((string)$aRow['patient_gender'])) {
+			'male', 'm' => 'M',
+			'female', 'f' => 'F',
+			'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
+			default => '',
+		};
 		//sample collecion date
 		$sampleCollectionDate = '';
 		if (!empty($aRow['sample_collection_date'])) {

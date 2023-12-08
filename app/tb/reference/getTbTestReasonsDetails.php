@@ -106,11 +106,7 @@ if (!empty($sOrder)) {
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
 
-if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 /*
          * Output

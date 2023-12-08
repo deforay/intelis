@@ -33,7 +33,8 @@ if ($_SESSION['instanceType'] == 'standalone') {
 	$headings = array_values(array_diff($headings, [_translate("Remote Sample ID")]));
 }
 $no = 1;
-foreach ($db->rawQueryGenerator($_SESSION['vlRequestQuery']) as $aRow) {
+$resultSet = $db->rawQueryGenerator($_SESSION['vlRequestQuery']);
+foreach ($resultSet as $aRow) {
 	$row = [];
 	$age = null;
 	$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];

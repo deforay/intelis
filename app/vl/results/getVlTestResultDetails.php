@@ -1,8 +1,8 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
@@ -18,19 +18,11 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$sarr = $general->getSystemConfig();
-
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
-$tableName = "form_vl";
-$primaryKey = "vl_sample_id";
-
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
@@ -40,72 +32,21 @@ if (!empty($_POST['from']) && $_POST['from'] == "enterresult") {
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} else if ($_SESSION['instanceType'] == 'standalone') {
-     if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
-          unset($aColumns[$key]);
-          $aColumns = array_values($aColumns);
-          unset($orderColumns[$key]);
-          $orderColumns = array_values($orderColumns);
-     }
+} elseif ($_SESSION['instanceType'] == 'standalone') {
+     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+     $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
 }
 
-/* Indexed column (used for fast and accurate table cardinality) */
-$sIndexColumn = $primaryKey;
-
-$sTable = $tableName;
-/*
- * Paging
- */
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
      $sLimit = $_POST['iDisplayLength'];
 }
 
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-     $sOrder = "";
-     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-               if (!empty($orderColumns[(int) $_POST['iSortCol_' . $i]]))
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
-}
-//echo $sOrder;
+$sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
-
-$sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", (string) $_POST['sSearch']);
-     $sWhereSub = "";
-     foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
-               $sWhereSub .= " (";
-          } else {
-               $sWhereSub .= " AND (";
-          }
-          $colSize = count($aColumns);
-
-          for ($i = 0; $i < $colSize; $i++) {
-               if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-               } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-               }
-          }
-          $sWhereSub .= ") ";
-     }
-     $sWhere[] = $sWhereSub;
-}
-
-/*
- * SQL queries
- * Get data to display
- */
 $sQuery = "SELECT vl.vl_sample_id,
      vl.sample_code,
      vl.remote_sample,
@@ -127,19 +68,10 @@ $sQuery = "SELECT vl.vl_sample_id,
      vl.last_modified_datetime,
      vl.vl_test_platform,
      vl.result_status,
-     vl.requesting_vl_service_sector,
      vl.request_clinician_name,
      vl.requesting_phone,
-     vl.patient_responsible_person,
      vl.patient_mobile_number,
-     vl.consent_to_receive_sms,
      vl.result_value_log,
-     vl.last_vl_date_routine,
-     vl.last_vl_date_ecd,
-     vl.last_vl_date_failure,
-     vl.last_vl_date_failure_ac,
-     vl.last_vl_date_cf,
-     vl.last_vl_date_if,
      vl.lab_technician,
      vl.patient_gender,
      vl.locked,
@@ -162,8 +94,6 @@ $sQuery = "SELECT vl.vl_sample_id,
      INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 
-$t_start_date = '';
-$t_end_date = '';
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {

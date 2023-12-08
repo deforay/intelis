@@ -185,7 +185,7 @@ if (!empty($sOrder)) {
 //echo $sQuery; die;
 $_SESSION['samplewiseReportsQuery'] = $sQuery;
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 
 $calcValueQuery = "SELECT SUM(CASE WHEN (vl.request_created_datetime is not null AND vl.request_created_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesRequested',
@@ -211,7 +211,6 @@ $_SESSION['samplewiseReportsCalc'] = $calcValueQuery;
 $calculateFields = $db->rawQuery($calcValueQuery);
 
 
-//echo count($rResult); die;
 /*
  * Output
  */

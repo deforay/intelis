@@ -260,10 +260,8 @@ if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }
-// die($sQuery);
-$rResult = $db->rawQuery($sQuery);
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 /*
  * Output
  */

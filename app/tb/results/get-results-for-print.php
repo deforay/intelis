@@ -251,7 +251,7 @@ if (!empty($sOrder)) {
 }
 $_SESSION['tbPrintQuery'] = $sQuery;
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 /*
  * Output

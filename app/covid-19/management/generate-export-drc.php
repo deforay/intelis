@@ -100,7 +100,8 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
     }
 
     $no = 1;
-    foreach ($db->rawQueryGenerator($_SESSION['covid19ResultQuery']) as $aRow) {
+    $resultSet = $db->rawQueryGenerator($_SESSION['covid19ResultQuery']);
+    foreach ($resultSet as $aRow) {
 
         $symptomList = [];
         $squery = "SELECT s.*, ps.* FROM form_covid19 as c19

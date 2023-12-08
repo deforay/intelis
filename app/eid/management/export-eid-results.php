@@ -51,7 +51,8 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 	}
 
 	$no = 1;
-	foreach ($db->rawQueryGenerator($_SESSION['eidExportResultQuery']) as $aRow) {
+	$resultSet = $db->rawQuery($_SESSION['eidExportResultQuery']);
+	foreach ($resultSet as $aRow) {
 		$row = [];
 
 		//set gender

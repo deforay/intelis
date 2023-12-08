@@ -38,8 +38,8 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
                unset($headings[$key]);
           }
      }
-
-     foreach ($db->rawQueryGenerator($_SESSION['vlIncompleteForm']) as $aRow) {
+     $resultSet = $db->rawQuery($_SESSION['vlIncompleteForm']);
+     foreach ($resultSet as $aRow) {
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';

@@ -44,8 +44,8 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           }
      }
 
-
-     foreach ($db->rawQueryGenerator($_SESSION['rejectedViralLoadResult']) as $aRow) {
+     $resultSet = $db->rawQuery($_SESSION['rejectedViralLoadResult']);
+     foreach ($resultSet as $aRow) {
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';

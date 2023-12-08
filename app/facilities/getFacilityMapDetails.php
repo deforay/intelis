@@ -107,10 +107,7 @@ if (!empty($sOrder)) {
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
 
-$rResult = $db->rawQuery($sQuery);
-
-
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 /*
  * Output

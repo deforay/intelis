@@ -43,8 +43,8 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 	$no = 1;
 	$sysmtomsArr = [];
 	$comorbiditiesArr = [];
-
-	foreach ($db->rawQueryGenerator($_SESSION['covid19ResultQuery']) as $aRow) {
+	$resultSet = $db->rawQuery($_SESSION['covid19ResultQuery']);
+	foreach ($resultSet as $aRow) {
 		$row = [];
 		//set gender
 		$gender = match (strtolower((string)$aRow['patient_gender'])) {

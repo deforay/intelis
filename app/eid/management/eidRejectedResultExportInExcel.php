@@ -36,8 +36,8 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           }
      }
 
-
-	foreach ($db->rawQueryGenerator($_SESSION['rejectedViralLoadResult']) as $aRow) {
+     $resultSet = $db->rawQuery($_SESSION['rejectedViralLoadResult']);
+     foreach ($resultSet as $aRow) {
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
@@ -68,45 +68,45 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $output[] = $row;
      }
      if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 75000) {
-                    $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
-                    $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-                    // we dont need the $output variable anymore
-                    unset($output);
-                    echo base64_encode((string) $fileName);
-               } else {
-                    $excel = new Spreadsheet();
-                    $sheet = $excel->getActiveSheet();
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
+          $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+          // we dont need the $output variable anymore
+          unset($output);
+          echo base64_encode((string) $fileName);
+     } else {
+          $excel = new Spreadsheet();
+          $sheet = $excel->getActiveSheet();
 
-                    $styleArray = array(
-                         'font' => array(
-                              'bold' => true,
-                              'size' => '13',
-                         ),
-                         'alignment' => array(
-                              'horizontal' => Alignment::HORIZONTAL_CENTER,
-                              'vertical' => Alignment::VERTICAL_CENTER,
-                         ),
-                         'borders' => array(
-                              'outline' => array(
-                                   'style' => Border::BORDER_THIN,
-                              ),
-                         )
-                    );
-               
-               
-                    $sheet->mergeCells('A1:AE1');
-                   
-                    $sheet->getStyle('A3:I3')->applyFromArray($styleArray);
-                    $sheet->fromArray($headings, null, 'A3');
+          $styleArray = array(
+               'font' => array(
+                    'bold' => true,
+                    'size' => '13',
+               ),
+               'alignment' => array(
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+               ),
+               'borders' => array(
+                    'outline' => array(
+                         'style' => Border::BORDER_THIN,
+                    ),
+               )
+          );
 
-                    foreach ($output as $rowNo => $rowData) {
-                         $rRowCount = $rowNo + 4;
-                         $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-                    }
-          
-               $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-               $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
-               $writer->save($filename);
-               echo base64_encode($filename);
+
+          $sheet->mergeCells('A1:AE1');
+
+          $sheet->getStyle('A3:I3')->applyFromArray($styleArray);
+          $sheet->fromArray($headings, null, 'A3');
+
+          foreach ($output as $rowNo => $rowData) {
+               $rRowCount = $rowNo + 4;
+               $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+          }
+
+          $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
+          $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
+          $writer->save($filename);
+          echo base64_encode($filename);
      }
 }

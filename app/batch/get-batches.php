@@ -65,51 +65,10 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sLimit = $_POST['iDisplayLength'];
 }
 
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-
-            $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				" . ($_POST['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
-}
-
-/*
- * Filtering
- * NOTE this does not match the built-in DataTables filtering which does it
- * word by word on any field. It's possible to do here, but concerned about efficiency
- * on very large tables, and MySQL's regex functionality is very limited
- */
-
+$sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 $sWhere[] = " b.test_type like '" . $_POST['type'] . "'";
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", (string) $_POST['sSearch']);
-    $sWhereSub = "";
-    foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
-            $sWhereSub .= "(";
-        } else {
-            $sWhereSub .= " AND (";
-        }
-        $colSize = count($aColumns);
-
-        for ($i = 0; $i < $colSize; $i++) {
-            if ($i < $colSize - 1) {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-            } else {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-            }
-        }
-        $sWhereSub .= ")";
-    }
-    $sWhere[] = $sWhereSub;
-}
 
 
 if (isset($_POST['testType']) && ($_POST['testType'] != "")) {
@@ -150,9 +109,7 @@ if (!empty($sOrder)) {
 
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
-/*
- * Output
- */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,
@@ -203,7 +160,7 @@ foreach ($rResult as $aRow) {
     $lastDate = DateUtility::humanReadableDateFormat($aRow['last_tested_date'] ?? '');
 
     $row = [];
-    $row[] = ($aRow['batch_code']);
+    $row[] = $aRow['batch_code'];
     if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
         $row[] = $testTypes[$aRow['test_type']];
     }

@@ -32,7 +32,8 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 	$output = [];
 
 	$no = 1;
-	foreach ($db->rawQueryGenerator($_SESSION['hepatitisResultQuery']) as $aRow) {
+	$resultSet = $db->rawQuery($_SESSION['hepatitisResultQuery']);
+	foreach ($resultSet as $aRow) {
 		$row = [];
 		//set gender
 		$gender = match (strtolower((string)$aRow['patient_gender'])) {
