@@ -122,14 +122,19 @@ try {
 
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
-                if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
-                    $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key
-                                FROM form_vl WHERE remote_sample_code= ?";
+                if (!empty($lab['remote_sample_code'])) {
+                    $sQuery = "SELECT vl_sample_id FROM form_vl WHERE remote_sample_code= ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
-                } elseif (isset($lab['sample_code']) && $lab['sample_code'] != '') {
-                    $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key
-                                FROM form_vl WHERE sample_code=? AND facility_id = ?";
+                } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
+                    $sQuery = "SELECT vl_sample_id FROM form_vl WHERE sample_code=? AND facility_id = ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                } elseif (!empty($lab['unique_id'])) {
+                    $sQuery = "SELECT vl_sample_id FROM form_vl WHERE unique_id=?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
+                } else {
+                    $sampleCodes[] = $lab['sample_code'];
+                    $facilityIds[] = $lab['facility_id'];
+                    continue;
                 }
 
                 $formAttributes = $general->jsonToSetString(

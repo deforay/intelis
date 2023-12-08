@@ -119,14 +119,15 @@ try {
 
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
-                if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
-                    $sQuery = "SELECT hepatitis_id,sample_code,remote_sample_code,remote_sample_code_key
-                            FROM form_hepatitis WHERE remote_sample_code=?";
+                if (!empty($lab['remote_sample_code'])) {
+                    $sQuery = "SELECT hepatitis_id FROM form_hepatitis WHERE remote_sample_code= ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
                 } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
-                    $sQuery = "SELECT hepatitis_id,sample_code,remote_sample_code,remote_sample_code_key
-                            FROM form_hepatitis WHERE sample_code=? AND facility_id = ?";
+                    $sQuery = "SELECT hepatitis_id FROM form_hepatitis WHERE sample_code=? AND facility_id = ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                } elseif (!empty($lab['unique_id'])) {
+                    $sQuery = "SELECT hepatitis_id FROM form_hepatitis WHERE unique_id=?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
                 } else {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];

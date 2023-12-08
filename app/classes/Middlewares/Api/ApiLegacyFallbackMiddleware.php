@@ -44,10 +44,10 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
                 $response->getBody()->write($output);
             } catch (SystemException | Exception $e) {
                 ob_end_clean(); // Clean the buffer in case of an error
-                throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
+                throw new SystemException("An error occurred while processing the request: " . $e->getFile() . " : " . $e->getLine() . " : " . $e->getMessage(), 500, $e);
             } catch (Throwable $e) {
                 ob_end_clean(); // Clean the buffer in case of an error
-                throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500);
+                throw new SystemException("An error occurred while processing the request: " . $e->getFile() . " : " . $e->getLine() . " : " . $e->getMessage(), 500);
             }
         }
 

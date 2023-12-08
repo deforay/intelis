@@ -22,7 +22,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 try {
   $db->beginTransaction();
-  //$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
   /** @var ApiService $apiService */
   $apiService = ContainerRegistry::get(ApiService::class);
@@ -65,7 +64,7 @@ try {
 
   $covid19RemoteResult = $db->rawQuery($covid19Query);
 
-  $data  = $sampleIds = $facilityIds = [];
+  $response  = $sampleIds = $facilityIds = [];
   $counter = 0;
   if ($db->count > 0) {
     $counter = $db->count;
@@ -79,17 +78,17 @@ try {
     $comorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($sampleIds);
     $testResults = $covid19Service->getCovid19TestsByFormId($sampleIds);
 
-    $data = [];
-    $data['result'] = $covid19RemoteResult;
-    $data['symptoms'] = $symptoms;
-    $data['comorbidities'] = $comorbidities;
-    $data['testResults'] = $testResults;
+    $response = [];
+    $response['result'] = $covid19RemoteResult;
+    $response['symptoms'] = $symptoms;
+    $response['comorbidities'] = $comorbidities;
+    $response['testResults'] = $testResults;
   }
 
 
-  $payload = json_encode($data);
+  $payload = json_encode($response);
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', $_SERVER['REQUEST_URI'], $jsonData, $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
 
   $general->updateTestRequestsSyncDateTime('covid19', 'form_covid19', 'covid19_id', $sampleIds, $transactionId, $facilityIds, $labId);
   $db->commitTransaction();

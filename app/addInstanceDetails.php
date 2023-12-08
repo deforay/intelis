@@ -7,9 +7,8 @@ use App\Registries\ContainerRegistry;
 $general = ContainerRegistry::get(CommonService::class);
 $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 2', array('facility_id', 'facility_name', 'facility_code'));
 ?>
-<link rel="stylesheet" media="all" type="text/css" href="assets/css/jquery-ui.1.11.0.css" />
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
-<link href="assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jasny-bootstrap.min.css" />
 <!-- Bootstrap 3.3.6 -->
 <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.min.css" />
@@ -146,14 +145,16 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 			width: '100%',
 			placeholder: "<?= _translate("Select Lab", true); ?>"
 		});
-		<?php if (empty($labResults)) { ?>
-			async function callFun() {
+		<?php if (!empty(trim((string) SYSTEM_CONFIG['remoteURL'])) && isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser' && empty($labResults)) { ?>
+
+			window.parent.remoteSync = true;
+			async function syncData() {
 				$.blockUI({
 					message: "<h3><?= _translate("Trying to sync Lab Details", true); ?><br><?= _translate("Please wait..."); ?></h3>"
 				});
 				window.parent.syncRemoteData();
 			}
-			callFun().then(
+			syncData().then(
 				function(value) {
 					location.reload();
 				},
@@ -161,6 +162,7 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 					console.log(error);
 				}
 			);
+
 		<?php } ?>
 	});
 	<?php if (isset($_SESSION['success']) && trim((string) $_SESSION['success']) != "") { ?>

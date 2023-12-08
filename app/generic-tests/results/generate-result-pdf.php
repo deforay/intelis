@@ -31,7 +31,7 @@ if ((isset($_POST['id']) && !empty(trim((string) $_POST['id']))) || (isset($_POS
 
 	$searchQuery = "SELECT vl.*,
                   f.*,
-				  vl.test_type as testType, 
+				  vl.test_type as testType,
                   imp.i_partner_name,
                   rst.*,
                   vltr.test_reason,
@@ -96,12 +96,12 @@ $_SESSION['aliasPage'] = 1;
 //header and footer
 class MYPDF extends TCPDF
 {
-	public string $logo = '';
+	public ?string $logo = '';
 	public string $text = '';
-	public string $lab = '';
-	public string $htitle = '';
+	public ?string $lab = '';
+	public ?string $htitle = '';
 	public $labFacilityId = null;
-	public string $labName = '';
+	public ?string $labName = '';
 	public string $testType = '';
 
 	//Page header

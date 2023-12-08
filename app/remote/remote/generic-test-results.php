@@ -121,16 +121,19 @@ try {
 
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
-                if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
-                    //error_log("INSIDE REMOTE");
-                    $sQuery = "SELECT sample_id,sample_code,remote_sample_code,remote_sample_code_key
-                                FROM form_generic WHERE remote_sample_code= ?";
+                if (!empty($lab['remote_sample_code'])) {
+                    $sQuery = "SELECT sample_id FROM form_generic WHERE remote_sample_code= ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
-                } elseif (isset($lab['sample_code']) && $lab['sample_code'] != '') {
-                    //error_log("INSIDE LOCAL");
-                    $sQuery = "SELECT sample_id,sample_code,remote_sample_code,remote_sample_code_key
-                                FROM form_generic WHERE sample_code=? AND facility_id = ?";
+                } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
+                    $sQuery = "SELECT sample_id FROM form_generic WHERE sample_code=? AND facility_id = ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                } elseif (!empty($lab['unique_id'])) {
+                    $sQuery = "SELECT sample_id FROM form_generic WHERE unique_id=?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
+                } else {
+                    $sampleCodes[] = $lab['sample_code'];
+                    $facilityIds[] = $lab['facility_id'];
+                    continue;
                 }
 
 
@@ -158,22 +161,21 @@ try {
                 $sampleCodes[] = $lab['sample_code'];
                 $facilityIds[] = $lab['facility_id'];
             }
+        }
 
-            foreach ($testResultsData as $genId => $testResults) {
-                $db->where('generic_id', $sampleId);
-                $db->delete("generic_test_results");
-                foreach ($testResults as $testId => $test) {
-                    $testResultValues = array(
-                        "generic_id" => $sampleId,
-                        "test_name" => $test['test_name'],
-                        "facility_id" => $test['facility_id'],
-                        "sample_tested_datetime" => $test['sample_tested_datetime'],
-                        "testing_platform" => $test['testing_platform'],
-                        "result" => $test['result'],
-                        "updated_datetime" => DateUtility::getCurrentDateTime()
-                    );
-                    $_id[$testId] = $db->insert("generic_test_results", $testResultValues);
-                }
+        foreach ($testResultsData as $genId => $testResults) {
+            $db->where('generic_id', $genId);
+            $db->delete("generic_test_results");
+            foreach ($testResults as $testId => $test) {
+                $db->insert("generic_test_results", [
+                    "generic_id" => $sampleId,
+                    "test_name" => $test['test_name'],
+                    "facility_id" => $test['facility_id'],
+                    "sample_tested_datetime" => $test['sample_tested_datetime'],
+                    "testing_platform" => $test['testing_platform'],
+                    "result" => $test['result'],
+                    "updated_datetime" => DateUtility::getCurrentDateTime()
+                ]);
             }
         }
     }
@@ -181,8 +183,8 @@ try {
     $payload = json_encode($sampleCodes);
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'generic-tests', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
-
     $general->updateResultSyncDateTime('generic', 'form_generic', $sampleCodes, $transactionId, $facilityIds, $labId);
+
     $db->commitTransaction();
 } catch (Exception $e) {
     $db->rollbackTransaction();

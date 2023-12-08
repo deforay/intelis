@@ -111,44 +111,19 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 				$.blockUI({
 					message: "<h3><?= _translate("Preparing for STS sync.", true); ?><br><?= _translate("Please wait..."); ?></h3>"
 				});
-				var jqxhr = $.ajax({
+				$.ajax({
 						url: "/scheduled-jobs/remote/commonDataSync.php",
 					})
 					.done(function(data) {
-						////console.log(data);
-						//alert( "success" );
+						console.log("Common Data Synced | STS -> LIS");
+						$.unblockUI();
 					})
 					.fail(function() {
 						$.unblockUI();
 						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", true); ?>");
 					})
 					.always(function() {
-						$.unblockUI();
 						syncResults();
-					});
-			}
-		}
-
-		function syncRequests() {
-			$.blockUI({
-				message: "<h3><?= _translate("Trying to sync Test Requests", true); ?><br><?= _translate("Please wait..."); ?></h3>"
-			});
-
-			if (remoteSync) {
-				var jqxhr = $.ajax({
-						url: "/scheduled-jobs/remote/requestsSync.php",
-					})
-					.done(function(data) {
-						////console.log(data);
-						//alert( "success" );
-					})
-					.fail(function() {
-						$.unblockUI();
-						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
-					})
-					.always(function() {
-						$.unblockUI();
-						//syncResults();
 					});
 			}
 		}
@@ -160,20 +135,40 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 			});
 
 			if (remoteSync) {
-				var jqxhr = $.ajax({
+				$.ajax({
 						url: "/scheduled-jobs/remote/resultsSync.php",
 					})
 					.done(function(data) {
-						////console.log(data);
-						//alert( "success" );
+						console.log("Results Synced | LIS -> STS");
+						$.unblockUI();
 					})
 					.fail(function() {
 						$.unblockUI();
 						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", true); ?>");
 					})
 					.always(function() {
-						$.unblockUI();
 						syncRequests();
+					});
+			}
+		}
+
+
+		function syncRequests() {
+			$.blockUI({
+				message: "<h3><?= _translate("Trying to sync Test Requests", true); ?><br><?= _translate("Please wait..."); ?></h3>"
+			});
+
+			if (remoteSync) {
+				$.ajax({
+						url: "/scheduled-jobs/remote/requestsSync.php",
+					})
+					.done(function(data) {
+						console.log("Requests Synced | STS -> LIS");
+						$.unblockUI();
+					})
+					.fail(function() {
+						$.unblockUI();
+						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
 					});
 			}
 		}

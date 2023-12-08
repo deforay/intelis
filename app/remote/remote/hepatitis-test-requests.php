@@ -13,8 +13,6 @@ header('Content-Type: application/json');
 try {
     $db->beginTransaction();
 
-    //$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
-
     /** @var ApiService $apiService */
     $apiService = ContainerRegistry::get(ApiService::class);
 
@@ -57,7 +55,7 @@ try {
 
 
     $hepatitisRemoteResult = $db->rawQuery($hepatitisQuery);
-    $data = [];
+    $response = [];
     $counter = 0;
 
     $sampleIds = $facilityIds = [];
@@ -74,14 +72,14 @@ try {
         $risks = $hepatitisService->getRiskFactorsByHepatitisId($sampleIds);
 
 
-        $data['result'] = $hepatitisRemoteResult ?? [];
-        $data['risks'] = $risks ?? [];
-        $data['comorbidities'] = $comorbidities ?? [];
+        $response['result'] = $hepatitisRemoteResult ?? [];
+        $response['risks'] = $risks ?? [];
+        $response['comorbidities'] = $comorbidities ?? [];
     }
 
-    $payload = json_encode($data);
+    $payload = json_encode($response);
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], $jsonData, $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
 
     $general->updateTestRequestsSyncDateTime('hepatitis', 'form_hepatitis', 'hepatitis_id', $sampleIds, $transactionId, $facilityIds, $labId);
     $db->commitTransaction();

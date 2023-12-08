@@ -725,8 +725,7 @@ class CommonService
                 MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'responses');
                 MiscUtility::zipJson($responseData, "$folderPath/responses/$transactionId.json");
             }
-
-            $data = [
+            return $this->db->insert("track_api_requests", [
                 'transaction_id' => $transactionId ?? null,
                 'requested_by' => $user ?? 'system',
                 'requested_on' => DateUtility::getCurrentDateTime(),
@@ -736,8 +735,7 @@ class CommonService
                 'api_url' => $url ?? null,
                 'facility_id' => $labId ?? null,
                 'data_format' => $format ?? null
-            ];
-            return $this->db->insert("track_api_requests", $data);
+            ]);
         } catch (Exception $exc) {
             error_log($exc->getMessage());
             error_log($this->db->getLastError());

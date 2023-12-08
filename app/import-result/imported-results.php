@@ -705,7 +705,7 @@ foreach ($rejectionTypeResult as $type) {
 	}
 
 	function acceptAllSamples() {
-		conf = confirm("<?= _translate("Are you sure you want to mark all samples as 'Accepted'?", true); ?>");
+		conf = confirm("<?= _translate("Are you sure you want to mark all samples as Accepted?", true); ?>");
 		if (conf) {
 			$.blockUI();
 			$.post("/import-result/updateAllSampleStatus.php", {},

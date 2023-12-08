@@ -1,10 +1,12 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
@@ -138,7 +140,10 @@ try {
     $general->activityLog($eventType, $action, $resource);
 
     header("Location:users.php");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+} catch (Exception | SystemException $exc) {
+    LoggerUtility::log('error', $exc->getMessage(), [
+        'exception' => $exc->getMessage(),
+        'line' => __LINE__,
+        'file' => __FILE__
+    ]);
 }

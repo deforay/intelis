@@ -98,14 +98,15 @@ try {
 
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
-                if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
-                    $sQuery = "SELECT tb_id,sample_code,remote_sample_code,remote_sample_code_key
-                            FROM form_tb WHERE remote_sample_code=?";
-                    $sResult = $db->rawQuery($sQuery, [$lab['remote_sample_code']]);
-                } else if (!empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
-                    $sQuery = "SELECT tb_id,sample_code,remote_sample_code,remote_sample_code_key
-                                FROM form_tb WHERE sample_code=? AND facility_id = ?";
-                    $sResult = $db->rawQuery($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                if (!empty($lab['remote_sample_code'])) {
+                    $sQuery = "SELECT tb_id FROM form_tb WHERE remote_sample_code= ?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
+                } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
+                    $sQuery = "SELECT tb_id FROM form_tb WHERE sample_code=? AND facility_id = ?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                } elseif (!empty($lab['unique_id'])) {
+                    $sQuery = "SELECT tb_id FROM form_tb WHERE unique_id=?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
                 } else {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
@@ -118,12 +119,10 @@ try {
                 );
                 $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 if (!empty($sResult)) {
-                    $db->where('tb_id', $sResult[0]['tb_id']);
-                    $db->update('form_tb', $lab);
-                    $id = $sResult[0]['tb_id'];
+                    $db->where('tb_id', $sResult['tb_id']);
+                    $id = $db->update('form_tb', $lab);
                 } else {
-                    $db->insert('form_tb', $lab);
-                    $id = $db->getInsertId();
+                    $id = $db->insert('form_tb', $lab);
                 }
             } catch (Exception $e) {
                 error_log($db->getLastError());

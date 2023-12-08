@@ -115,13 +115,14 @@ try {
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
                 if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
-                    $sQuery = "SELECT eid_id,sample_code,remote_sample_code,remote_sample_code_key
-                            FROM form_eid WHERE remote_sample_code=?";
-                    $sResult = $db->rawQuery($sQuery, [$lab['remote_sample_code']]);
+                    $sQuery = "SELECT eid_id FROM form_eid WHERE remote_sample_code=?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
                 } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
-                    $sQuery = "SELECT eid_id,sample_code,remote_sample_code,remote_sample_code_key
-                            FROM form_eid WHERE sample_code=? AND facility_id = ?";
-                    $sResult = $db->rawQuery($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                    $sQuery = "SELECT eid_id FROM form_eid WHERE sample_code=? AND facility_id = ?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                } elseif (!empty($lab['unique_id'])) {
+                    $sQuery = "SELECT eid_id FROM form_eid WHERE unique_id=?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
                 } else {
 
                     $sampleCodes[] = $lab['sample_code'];
@@ -135,7 +136,7 @@ try {
                 );
                 $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 if (!empty($sResult)) {
-                    $db->where('eid_id', $sResult[0]['eid_id']);
+                    $db->where('eid_id', $sResult['eid_id']);
                     $id = $db->update('form_eid', $lab);
                 } else {
                     $id = $db->insert('form_eid', $lab);

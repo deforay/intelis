@@ -20,7 +20,6 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 try {
   $db->beginTransaction();
-  //$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
   /** @var ApiService $apiService */
   $apiService = ContainerRegistry::get(ApiService::class);
@@ -101,7 +100,7 @@ try {
 
   $genericRemoteResult = $db->rawQuery($vlQuery);
 
-  $data = $sampleIds = $facilityIds = [];
+  $response = $sampleIds = $facilityIds = [];
   if ($db->count > 0) {
 
     $payload = $genericRemoteResult;
@@ -115,13 +114,13 @@ try {
     $generic = ContainerRegistry::get(GenericTestsService::class);
     $testResults = $generic->getTestsByGenericSampleIds($sampleIds);
 
-    $data = [];
-    $data['result'] = $genericRemoteResult;
-    $data['testResults'] = $testResults;
+    $response = [];
+    $response['result'] = $genericRemoteResult;
+    $response['testResults'] = $testResults;
   }
-  $payload = json_encode($data);
+  $payload = json_encode($response);
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'generic-tests', $_SERVER['REQUEST_URI'], $jsonData, $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'generic-tests', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
 
 
   $general->updateTestRequestsSyncDateTime('generic', 'form_generic', 'sample_id', $sampleIds, $transactionId, $facilityIds, $labId);

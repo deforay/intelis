@@ -41,7 +41,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
       // create new PDF document
       class MYPDF extends TCPDF
       {
-         public string $logo = '';
+         public ?string $logo = '';
          public string $text = '';
          //Page header
          public function setHeading($logo, $text)
