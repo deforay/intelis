@@ -30,7 +30,6 @@ try {
     $request = $GLOBALS['request'];
     $jsonResponse = $apiService->getJsonFromRequest($request);
 
-
     /** @var DatabaseService $db */
     $db = ContainerRegistry::get('db');
 
@@ -40,10 +39,6 @@ try {
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
 
-
-
-
-
     $transactionId = $general->generateUUID();
 
     $sampleCodes = $facilityIds = [];
@@ -51,14 +46,23 @@ try {
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_SCHEMA = ? AND table_name='form_covid19'";
-        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
+                        WHERE TABLE_SCHEMA = ? AND table_name=?";
+        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db'], 'form_covid19']);
+        $columnNames = array_column($allColResult, 'COLUMN_NAME');
 
-        $oneDimensionalArray = array_map('current', $allColResult);
+        // Create an array with all column names set to null
+        $emptyLabArray = array_fill_keys($columnNames, null);
 
+        //remove fields that we DO NOT NEED here
+        $unwantedColumns = [
+            'covid19_id',
+            'sample_package_id',
+            'sample_package_code',
+            //'last_modified_by',
+            'request_created_by'
+        ];
+        $emptyLabArray = MiscUtility::removeFromAssociativeArray($emptyLabArray, $unwantedColumns);
 
-
-        $lab = [];
         $resultData = [];
         $testResultsData = [];
         $symptomsData = [];
@@ -84,25 +88,8 @@ try {
         $counter = 0;
         foreach ($resultData as $key => $resultRow) {
             $counter++;
-            foreach ($oneDimensionalArray as $result) {
-                if (isset($resultRow[$result])) {
-                    $lab[$result] = $resultRow[$result];
-                } else {
-                    $lab[$result] = null;
-                }
-            }
-
-            //remove fields that we DO NOT NEED here
-            $removeKeys = array(
-                'covid19_id',
-                'sample_package_id',
-                'sample_package_code',
-                //'last_modified_by',
-                'request_created_by',
-            );
-            foreach ($removeKeys as $keys) {
-                unset($lab[$keys]);
-            }
+            // Overwrite the values in $emptyLabArray with the values in $resultRow
+            $lab = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
 
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
@@ -120,9 +107,12 @@ try {
             // unset($lab['request_created_datetime']);
 
             if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                unset($lab['result']);
-                unset($lab['is_sample_rejected']);
-                unset($lab['reason_for_sample_rejection']);
+                $keysToRemove = [
+                    'result',
+                    'is_sample_rejected',
+                    'reason_for_sample_rejection'
+                ];
+                $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
             }
 
             $primaryKey = 'covid19_id';

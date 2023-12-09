@@ -38,9 +38,6 @@ try {
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
 
-
-
-
     $sampleCodes = $facilityIds = [];
     $labId = null;
 
@@ -50,9 +47,21 @@ try {
 
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_SCHEMA = ? AND table_name='form_eid'";
-        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-        $oneDimensionalArray = array_map('current', $allColResult);
+                        WHERE TABLE_SCHEMA = ? AND table_name= ?";
+        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db'], 'form_eid']);
+        $columnNames = array_column($allColResult, 'COLUMN_NAME');
+
+        // Create an array with all column names set to null
+        $emptyLabArray = array_fill_keys($columnNames, null);
+
+        $unwantedColumns = [
+            'eid_id',
+            'sample_package_id',
+            'sample_package_code',
+            //'last_modified_by',
+            'request_created_by'
+        ];
+        $emptyLabArray = MiscUtility::removeFromAssociativeArray($emptyLabArray, $unwantedColumns);
 
         $resultData = [];
         $options = [
@@ -70,27 +79,8 @@ try {
         $counter = 0;
         foreach ($resultData as $key => $resultRow) {
             $counter++;
-            foreach ($oneDimensionalArray as $result) {
-                if (isset($resultRow[$result])) {
-                    $lab[$result] = $resultRow[$result];
-                } else {
-                    $lab[$result] = null;
-                }
-            }
-            //remove result value
-
-            $removeKeys = array(
-                'eid_id',
-                'sample_package_id',
-                'sample_package_code',
-                //'last_modified_by',
-                'request_created_by',
-            );
-            foreach ($removeKeys as $keys) {
-                unset($lab[$keys]);
-            }
-
-
+            // Overwrite the values in $emptyLabArray with the values in $resultRow
+            $lab = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
 
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
@@ -103,14 +93,14 @@ try {
             $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
             $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            // unset($lab['request_created_by']);
-            // unset($lab['last_modified_by']);
-            // unset($lab['request_created_datetime']);
 
             if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                unset($lab['result']);
-                unset($lab['is_sample_rejected']);
-                unset($lab['reason_for_sample_rejection']);
+                $keysToRemove = [
+                    'result',
+                    'is_sample_rejected',
+                    'reason_for_sample_rejection'
+                ];
+                $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
             }
 
             $primaryKey = 'eid_id';
@@ -166,9 +156,8 @@ try {
 
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
-
-
     $general->updateResultSyncDateTime('eid', 'form_eid', $sampleCodes, $transactionId, $facilityIds, $labId);
+
     $db->commitTransaction();
 } catch (Exception | SystemException $e) {
     $db->rollbackTransaction();

@@ -260,4 +260,8 @@ class MiscUtility
             };
         });
     }
+    public static function removeFromAssociativeArray($fullArray, $unwantedKeys)
+    {
+        return array_diff_key($fullArray, array_flip($unwantedKeys));
+    }
 }

@@ -36,8 +36,6 @@ $testingLabsTable = "testing_labs";
 $healthFacilityTable = "health_facilities";
 $labSignTable = "lab_report_signatories";
 
-//$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
-
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 

@@ -32,9 +32,6 @@ try {
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
 
-    // Takes raw data from the request
-    //$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
-
     /** @var ApiService $apiService */
     $apiService = ContainerRegistry::get(ApiService::class);
 

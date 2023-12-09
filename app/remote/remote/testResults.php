@@ -11,7 +11,6 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
-use function Symfony\Component\String\s;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
@@ -32,13 +31,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $apiService = ContainerRegistry::get(ApiService::class);
 
 try {
-
     $db->beginTransaction();
-
-
-    //this file receives the lab results and updates in the remote db
-    //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
-
 
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = $GLOBALS['request'];
@@ -46,16 +39,30 @@ try {
 
 
     $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_SCHEMA = ? AND table_name='form_vl'";
-    $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-    $oneDimensionalArray = array_map('current', $allColResult);
+                        WHERE TABLE_SCHEMA = ? AND table_name= ?";
+    $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db'], 'form_vl']);
+    $columnNames = array_column($allColResult, 'COLUMN_NAME');
+
+    // Create an array with all column names set to null
+    $emptyLabArray = array_fill_keys($columnNames, null);
+
+    //remove unwanted columns
+    $unwantedColumns = [
+        'vl_sample_id',
+        'sample_package_id',
+        'sample_package_code',
+        //'last_modified_by',
+        'request_created_by',
+        'result_printed_datetime'
+    ];
+
+    $emptyLabArray = MiscUtility::removeFromAssociativeArray($emptyLabArray, $unwantedColumns);
 
     $transactionId = $general->generateUUID();
 
     $sampleCodes = $facilityIds = [];
     $labId = null;
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
-
 
         $resultData = [];
         $options = [
@@ -74,27 +81,8 @@ try {
         foreach ($resultData as $key => $resultRow) {
 
             $counter++;
-            $lab = [];
-            foreach ($oneDimensionalArray as $columnName) {
-                if (isset($resultRow[$columnName])) {
-                    $lab[$columnName] = $resultRow[$columnName];
-                } else {
-                    $lab[$columnName] = null;
-                }
-            }
-            //remove unwanted columns
-            $unwantedColumns = array(
-                'vl_sample_id',
-                'sample_package_id',
-                'sample_package_code',
-                //'last_modified_by',
-                'request_created_by',
-                'result_printed_datetime'
-            );
-            foreach ($unwantedColumns as $removeColumn) {
-                unset($lab[$removeColumn]);
-            }
-
+            // Overwrite the values in $emptyLabArray with the values in $resultRow
+            $lab = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
 
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
@@ -104,22 +92,23 @@ try {
                 //unset($resultRow['approved_by_name']);
             }
 
-
             //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
             $lab['data_sync'] = 1;
             $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
 
             if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                unset($lab['result']);
-                unset($lab['result_value_log']);
-                unset($lab['result_value_absolute']);
-                unset($lab['result_value_text']);
-                unset($lab['result_value_absolute_decimal']);
-                unset($lab['is_sample_rejected']);
-                unset($lab['reason_for_sample_rejection']);
+                $keysToRemove = [
+                    'result',
+                    'result_value_log',
+                    'result_value_absolute',
+                    'result_value_text',
+                    'result_value_absolute_decimal',
+                    'is_sample_rejected',
+                    'reason_for_sample_rejection'
+                ];
+                $lab = MiscUtility::removeFromAssociativeArray($lab, $unwantedColumns);
             }
-
 
             $primaryKey = 'vl_sample_id';
             $tableName = 'form_vl';
@@ -139,10 +128,7 @@ try {
                     $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
                 }
 
-                $formAttributes = $general->jsonToSetString(
-                    $lab['form_attributes'],
-                    'form_attributes'
-                );
+                $formAttributes = $general->jsonToSetString($lab['form_attributes'], 'form_attributes');
                 $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
                 if (!empty($sResult)) {
@@ -174,7 +160,6 @@ try {
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'vl', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
     $general->updateResultSyncDateTime('vl', 'form_vl', $sampleCodes, $transactionId, $facilityIds, $labId);
 
-
     $db->commitTransaction();
 } catch (Exception | SystemException $e) {
     $db->rollbackTransaction();
@@ -188,6 +173,5 @@ try {
     }
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
-
 
 echo $payload;

@@ -44,14 +44,27 @@ try {
     $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
                         WHERE TABLE_SCHEMA = ? AND table_name='form_generic'";
     $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-    $oneDimensionalArray = array_map('current', $allColResult);
+    $columnNames = array_column($allColResult, 'COLUMN_NAME');
+
+    // Create an array with all column names set to null
+    $emptyLabArray = array_fill_keys($columnNames, null);
+
+    //remove unwanted columns
+    $unwantedColumns = [
+        'sample_id',
+        'sample_package_id',
+        'sample_package_code',
+        //'last_modified_by',
+        'request_created_by',
+        'result_printed_datetime'
+    ];
+    $emptyLabArray = MiscUtility::removeFromAssociativeArray($emptyLabArray, $unwantedColumns);
 
     $transactionId = $general->generateUUID();
 
     $sampleCodes = $facilityIds = [];
     $labId = null;
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
-
 
         $resultData = [];
         $testResultsData = [];
@@ -73,27 +86,8 @@ try {
         foreach ($resultData as $key => $resultRow) {
 
             $counter++;
-            $lab = [];
-            foreach ($oneDimensionalArray as $columnName) {
-                if (isset($resultRow[$columnName])) {
-                    $lab[$columnName] = $resultRow[$columnName];
-                } else {
-                    $lab[$columnName] = null;
-                }
-            }
-            //remove unwan  ted columns
-            $unwantedColumns = array(
-                'sample_id',
-                'sample_package_id',
-                'sample_package_code',
-                //'last_modified_by',
-                'request_created_by',
-                'result_printed_datetime'
-            );
-            foreach ($unwantedColumns as $removeColumn) {
-                unset($lab[$removeColumn]);
-            }
-
+            // Overwrite the values in $emptyLabArray with the values in $resultRow
+            $lab = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
 
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
@@ -103,22 +97,18 @@ try {
                 //unset($resultRow['approved_by_name']);
             }
 
-
             //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
             $lab['data_sync'] = 1;
             $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            // unset($lab['request_created_by']);
-            // unset($lab['last_modified_by']);
-            // unset($lab['request_created_datetime']);
-
             if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                unset($lab['result']);
-                unset($lab['is_sample_rejected']);
-                unset($lab['reason_for_sample_rejection']);
+                $keysToRemove = [
+                    'result',
+                    'is_sample_rejected',
+                    'reason_for_sample_rejection'
+                ];
+                $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
             }
-
-
 
             $primaryKey = 'sample_id';
             $tableName = 'form_generic';

@@ -16,13 +16,11 @@ require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
-ini_set('max_execution_time', 20000);
-set_time_limit(0);
+ini_set('max_execution_time', 300000);
 
 try {
     $db->beginTransaction();
     //this file receives the lab results and updates in the remote db
-    //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
     /** @var ApiService $apiService */
     $apiService = ContainerRegistry::get(ApiService::class);
@@ -40,10 +38,6 @@ try {
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
 
-
-
-
-
     $transactionId = $general->generateUUID();
 
     $sampleCodes = $facilityIds = [];
@@ -54,16 +48,27 @@ try {
                         WHERE TABLE_SCHEMA = ? AND table_name='form_hepatitis'";
         $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
 
-        $oneDimensionalArray = array_map('current', $allColResult);
+        $columnNames = array_column($allColResult, 'COLUMN_NAME');
+
+        // Create an array with all column names set to null
+        $emptyLabArray = array_fill_keys($columnNames, null);
+
+        //remove fields that we DO NOT NEED here
+        $unwantedColumns = [
+            'hepatitis_id',
+            'sample_package_id',
+            'sample_package_code',
+            //'last_modified_by',
+            'request_created_by'
+        ];
+        $emptyLabArray = MiscUtility::removeFromAssociativeArray($emptyLabArray, $unwantedColumns);
+
+
         $counter = 0;
 
-
-        $lab = [];
         $options = [
             'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = Items::fromString($jsonResponse, $options);
-
         $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $name => $data) {
             if ($name === 'labId') {
@@ -76,26 +81,8 @@ try {
         $counter = 0;
         foreach ($resultData as $key => $resultRow) {
             $counter++;
-            $lab = [];
-            foreach ($oneDimensionalArray as $result) {
-                if (isset($resultRow[$result])) {
-                    $lab[$result] = $resultRow[$result];
-                } else {
-                    $lab[$result] = null;
-                }
-            }
-
-            //remove fields that we DO NOT NEED here
-            $removeKeys = array(
-                'hepatitis_id',
-                'sample_package_id',
-                'sample_package_code',
-                //'last_modified_by',
-                'request_created_by',
-            );
-            foreach ($removeKeys as $keys) {
-                unset($lab[$keys]);
-            }
+            // Overwrite the values in $emptyLabArray with the values in $resultRow
+            $lab = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
 
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
@@ -113,9 +100,12 @@ try {
             // unset($lab['request_created_datetime']);
 
             if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                unset($lab['result']);
-                unset($lab['is_sample_rejected']);
-                unset($lab['reason_for_sample_rejection']);
+                $keysToRemove = [
+                    'result',
+                    'is_sample_rejected',
+                    'reason_for_sample_rejection'
+                ];
+                $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
             }
 
             $primaryKey = 'hepatitis_id';

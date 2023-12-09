@@ -44,37 +44,43 @@ try {
     $sampleCodes = $facilityIds = [];
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_SCHEMA = ? AND table_name='form_tb'";
-        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-        $oneDimensionalArray = array_map('current', $allColResult);
+                        WHERE TABLE_SCHEMA = ? AND table_name= ?";
+        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db'], 'form_tb']);
+        $columnNames = array_column($allColResult, 'COLUMN_NAME');
 
+        // Create an array with all column names set to null
+        $emptyLabArray = array_fill_keys($columnNames, null);
+
+        //remove fields that we DO NOT NEED here
+        $unwantedColumns = [
+            'tb_id',
+            'sample_package_id',
+            'sample_package_code',
+            //'last_modified_by',
+            'request_created_by',
+        ];
+        $emptyLabArray = MiscUtility::removeFromAssociativeArray($emptyLabArray, $unwantedColumns);
 
         $lab = [];
         $options = [
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($jsonResponse, $options);
+        foreach ($parsedData as $name => $data) {
+            if ($name === 'labId') {
+                $labId = $data;
+            } elseif ($name === 'result') {
+                $resultData = $data;
+            }
+        }
+
+
         foreach ($parsedData as $key => $resultRow) {
             $counter++;
-            foreach ($oneDimensionalArray as $result) {
-                if (isset($resultRow[$result])) {
-                    $lab[$result] = $resultRow[$result];
-                } else {
-                    $lab[$result] = null;
-                }
-            }
+            // Overwrite the values in $emptyLabArray with the values in $resultRow
+            $lab = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
 
-            //remove fields that we DO NOT NEED here
-            $removeKeys = array(
-                'tb_id',
-                'sample_package_id',
-                'sample_package_code',
-                //'last_modified_by',
-                'request_created_by',
-            );
-            foreach ($removeKeys as $keys) {
-                unset($lab[$keys]);
-            }
 
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
@@ -92,9 +98,12 @@ try {
             //unset($lab['request_created_datetime']);
 
             if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                unset($lab['result']);
-                unset($lab['is_sample_rejected']);
-                unset($lab['reason_for_sample_rejection']);
+                $keysToRemove = [
+                    'result',
+                    'is_sample_rejected',
+                    'reason_for_sample_rejection'
+                ];
+                $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
             }
 
             $primaryKey = 'tb_id';
