@@ -5,6 +5,7 @@ namespace App\Abstracts;
 use COUNTRY;
 use Exception;
 use DateTimeImmutable;
+use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -18,6 +19,8 @@ abstract class AbstractTestService
     protected CommonService $commonService;
     protected GeoLocationsService $geoLocationsService;
     protected int $maxTries = 5; // Max tries for generating sample code
+    protected string $table;
+    protected string $testType;
 
     public function __construct(
         DatabaseService $db,
@@ -27,6 +30,7 @@ abstract class AbstractTestService
         $this->db = $db;
         $this->commonService = $commonService;
         $this->geoLocationsService = $geoLocationsService;
+        $this->table = TestsService::getTestTableName($this->testType);
     }
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);
@@ -59,7 +63,6 @@ abstract class AbstractTestService
             //$provinceId = $params['provinceId'] ?? null;
             $sampleCodeFormat = $params['sampleCodeFormat'] ?? 'MMYY';
             $prefix = $params['prefix'] ?? 'T';
-            $testType = $params['testType'];
             $existingMaxId = $params['existingMaxId'] ?? null;
 
             if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false) {
@@ -99,21 +102,35 @@ abstract class AbstractTestService
                 }
                 $yearData = $this->db->rawQueryOne($sql, [
                     $currentYear,
-                    $testType,
+                    $this->testType,
                     $sampleCodeType
                 ]);
+
                 if (!empty($yearData)) {
                     $maxId = $yearData['max_sequence_number'] + 1;
                 } else {
-                    $maxId = 1;
+                    // If no sequence number exists for this year, get the max sequence number from form table
+                    $sql = "SELECT MAX({$sampleCodeType}_key) AS max_sequence_number
+                    FROM $this->table
+                    WHERE YEAR(sample_collection_date) = ? AND
+                    {$sampleCodeType}_key IS NOT NULL AND
+                    {$sampleCodeType}_key != ''";
+                    if ($insertOperation) {
+                        $sql .= " FOR UPDATE";
+                    }
+                    $yearData = $this->db->rawQueryOne($sql, [$currentYear]);
+                    if (!empty($yearData)) {
+                        $maxId = $yearData['max_sequence_number'] + 1;
+                    } else {
+                        $maxId = 1;
+                    }
                 }
             }
 
-            //$maxId = sprintf("%04d", (int) $maxId);
+            // padding with zeroes
+            $maxId = sprintf("%04d", (int) $maxId);
 
             $sampleCodeGenerator = [
-                'sampleCode' => $remotePrefix . $prefix . $year . $maxId,
-                'sampleCodeInText' => $remotePrefix . $prefix . $year . $maxId,
                 'sampleCodeFormat' => $sampleCodeFormat,
                 'sampleCodeKey' => $maxId,
                 'maxId' => $maxId,
@@ -126,7 +143,6 @@ abstract class AbstractTestService
                 $remotePrefix = $remotePrefix . "R";
             }
 
-            //$sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
 
             if ($sampleCodeFormat == 'auto') {
                 $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
@@ -156,7 +172,7 @@ abstract class AbstractTestService
 
                 //Insert or update the sequence counter for this test type and year
                 $data = [
-                    'test_type' => $testType,
+                    'test_type' => $this->testType,
                     'year' => $currentYear,
                     'max_sequence_number' => $maxId,
                     'code_type' => $sampleCodeType

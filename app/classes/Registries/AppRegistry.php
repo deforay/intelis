@@ -2,6 +2,8 @@
 
 namespace App\Registries;
 
+use Exception;
+
 class AppRegistry
 {
     private static ?AppRegistry $instance = null;
@@ -29,17 +31,17 @@ class AppRegistry
     public function __construct()
     {
         if (self::$instance) {
-            throw new \Exception("Cannot instantiate a singleton.");
+            throw new Exception("Cannot instantiate a singleton.");
         }
         self::$instance = $this;
     }
 
     public function __clone()
     {
-        throw new \Exception("Cannot clone a singleton.");
+        throw new Exception("Cannot clone a singleton.");
     }
     public function __wakeup()
     {
-        throw new \Exception("Cannot unserialize a singleton.");
+        throw new Exception("Cannot unserialize a singleton.");
     }
 }

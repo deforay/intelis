@@ -288,8 +288,11 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 		<?php } ?>
 
 		$('.phone-number').on('change blur', function() {
-			var phoneNumber = $(this).val();
 
+			if ($(this).val() == "" || $(this).length == 0) {
+				return;
+			}
+			let phoneNumber = $(this).val();
 			$.ajax({
 				type: 'POST',
 				url: '/includes/validatePhoneNumber.php',

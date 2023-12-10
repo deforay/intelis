@@ -16,6 +16,7 @@ class TbService extends AbstractTestService
     protected string $table = 'form_tb';
     protected string $shortCode = 'TB';
     protected int $maxTries = 5; // Max tries to insert sample
+    protected string $testType = 'tb';
 
     public function getSampleCode($params)
     {
@@ -25,8 +26,18 @@ class TbService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['tb_sample_code'] ?? 'MMYY';
             $params['prefix'] = $params['prefix'] ?? $globalConfig['tb_sample_code_prefix'] ?? $this->shortCode;
-            $params['testType'] = 'tb';
-            return $this->generateSampleCode($this->table, $params);
+
+            try {
+                return $this->generateSampleCode($this->table, $params);
+            } catch (SystemException $e) {
+                LoggerUtility::log('error', 'Generate Sample Code : ' . $e->getMessage(), [
+                    'exception' => $e,
+                    'file' => $e->getFile(), // File where the error occurred
+                    'line' => $e->getLine(), // Line number of the error
+                    'stacktrace' => $e->getTraceAsString()
+                ]);
+                return json_encode([]);
+            }
         }
     }
 

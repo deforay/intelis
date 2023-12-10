@@ -17,6 +17,7 @@ class GenericTestsService extends AbstractTestService
     protected string $table = 'form_generic';
     protected string $shortCode = 'T';
     protected int $maxTries = 5; // Max tries to insert sample
+    protected string $testType = 'generic-tests';
 
     public function getSampleCode($params)
     {
@@ -25,8 +26,19 @@ class GenericTestsService extends AbstractTestService
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
+
             $params['prefix'] = $params['testType'] ?? $this->shortCode;
-            return $this->generateSampleCode($this->table, $params);
+            try {
+                return $this->generateSampleCode($this->table, $params);
+            } catch (SystemException $e) {
+                LoggerUtility::log('error', 'Generate Sample Code : ' . $e->getMessage(), [
+                    'exception' => $e,
+                    'file' => $e->getFile(), // File where the error occurred
+                    'line' => $e->getLine(), // Line number of the error
+                    'stacktrace' => $e->getTraceAsString()
+                ]);
+                return json_encode([]);
+            }
         }
     }
 

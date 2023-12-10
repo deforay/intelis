@@ -7,34 +7,32 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
-use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 
 class ApiService
 {
-
-    protected ?DatabaseService $db;
     protected ?Client $client = null;
+    protected int $maxRetries;
+    protected int $delayMultiplier;
 
-    public function __construct(?DatabaseService $db)
+    public function __construct(int $maxRetries = 3, int $delayMultiplier = 1000)
     {
-        $this->db = $db ?? ContainerRegistry::get('db');
+        $this->maxRetries = $maxRetries;
+        $this->delayMultiplier = $delayMultiplier;
         $this->client = $this->createApiClient();
     }
 
     protected function createApiClient(): Client
     {
         $handlerStack = HandlerStack::create();
-
-        // Add retry middleware with exponential backoff
-        $handlerStack->push(Middleware::retry(function ($retries, $request, $response = null, $exception = null) {
-            // Retry up to 3 times
-            return $retries < 3 && ($exception instanceof RequestException);
-        }, function ($retries) {
-            return 1000 * 2 ** $retries; // Exponential backoff with a base delay of 1 second
-        }));
+        $handlerStack->push(Middleware::retry(
+            fn ($retries, $request, $response = null, $exception = null) =>
+            $retries < $this->maxRetries && ($exception instanceof RequestException),
+            fn ($retries) =>
+            $this->delayMultiplier * 2 ** $retries
+        ));
 
         return new Client(['handler' => $handlerStack]);
     }
@@ -51,7 +49,7 @@ class ApiService
             } else {
                 return false; // API returned a non-200 status code
             }
-        } catch (RequestException | Exception $e) {
+        } catch (GuzzleException | RequestException | Exception $e) {
             error_log($e->getMessage());
             return false; // Error occurred while making the request
         }
@@ -59,7 +57,6 @@ class ApiService
 
     public function post($url, $payload, $gzip = true): string|null
     {
-
         $options = [
             RequestOptions::HEADERS => ['Content-Type' => 'application/json']
         ];
@@ -73,11 +70,10 @@ class ApiService
                 $options[RequestOptions::JSON] = $payload;
             }
 
-
             $response = $this->client->post($url, $options);
 
             return $response->getBody()->getContents();
-        } catch (RequestException | Exception $e) {
+        } catch (GuzzleException | RequestException | Exception $e) {
             error_log($e->getMessage());
             return null; // Error occurred while making the request
         }
@@ -121,7 +117,7 @@ class ApiService
             $response = $this->client->post($url, $options);
 
             return $response->getBody()->getContents();
-        } catch (RequestException | Exception $e) {
+        } catch (GuzzleException | RequestException | Exception $e) {
             error_log($e->getMessage());
             return null; // Error occurred while making the request
         }
@@ -158,7 +154,7 @@ class ApiService
                 $response = json_decode((string) $response, true);
             }
             return $response;
-        } catch (Exception $e) {
+        } catch (GuzzleException | SystemException | Exception $e) {
             throw new SystemException("Unable to retrieve json : " . $e->getMessage(), 500);
         }
     }

@@ -36,6 +36,7 @@ class HepatitisService extends AbstractTestService
     protected string $table = 'form_hepatitis';
     protected string $shortCode = 'HEP';
     protected int $maxTries = 5; // Max tries to insert sample
+    protected string $testType = 'hepatitis';
 
 
     public function getSampleCode($params)
@@ -46,8 +47,18 @@ class HepatitisService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['hepatitis_sample_code'] ?? 'MMYY';
             $params['prefix'] = $params['prefix'] ?? $globalConfig['hepatitis_sample_code_prefix'] ?? $this->shortCode;
-            $params['testType'] = 'hepatitis';
-            return $this->generateSampleCode($this->table, $params);
+
+            try {
+                return $this->generateSampleCode($this->table, $params);
+            } catch (SystemException $e) {
+                LoggerUtility::log('error', 'Generate Sample Code : ' . $e->getMessage(), [
+                    'exception' => $e,
+                    'file' => $e->getFile(), // File where the error occurred
+                    'line' => $e->getLine(), // Line number of the error
+                    'stacktrace' => $e->getTraceAsString()
+                ]);
+                return json_encode([]);
+            }
         }
     }
 

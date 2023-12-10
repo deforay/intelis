@@ -35,20 +35,31 @@ class VlService extends AbstractTestService
         'negat'
     ];
     protected int $suppressionLimit = 1000;
-    protected string $table = 'form_vl';
+    //protected string $table = 'form_vl';
     protected string $shortCode = 'VL';
+    protected string $testType = 'vl';
     protected int $maxTries = 5; // Max tries to insert sample
 
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
-            return json_encode([]);
+            throw new SystemException("Sample Collection Date is required");
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
             $params['prefix'] = $params['prefix'] ?? $globalConfig['sample_code_prefix'] ?? $this->shortCode;
-            $params['testType'] = 'vl';
-            return $this->generateSampleCode($this->table, $params);
+
+            try {
+                return $this->generateSampleCode($this->table, $params);
+            } catch (SystemException $e) {
+                LoggerUtility::log('error', 'Generate Sample Code : ' . $e->getMessage(), [
+                    'exception' => $e,
+                    'file' => $e->getFile(), // File where the error occurred
+                    'line' => $e->getLine(), // Line number of the error
+                    'stacktrace' => $e->getTraceAsString()
+                ]);
+                return json_encode([]);
+            }
         }
     }
 
@@ -59,7 +70,11 @@ class VlService extends AbstractTestService
             $where = " AND sample_name LIKE '$name%'";
         }
         $query = "SELECT * FROM r_vl_sample_type WHERE `status` like 'active' $where";
-        return $this->db->rawQuery($query);
+        try {
+            return $this->db->rawQuery($query);
+        } catch (Exception $e) {
+            return [];
+        }
     }
 
     public function getVlSampleTypes($updatedDateTime = null): array

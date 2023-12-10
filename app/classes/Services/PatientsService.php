@@ -219,7 +219,7 @@ class PatientsService
         $this->db->where("patient_gender", $patientGender);
         $this->db->where("patient_dob", $patientDob);
         $result = $this->db->getOne($this->table, "system_patient_code");
-        return $result['system_patient_code'];
+        return $result['system_patient_code'] ?? null;
     }
 
     public function getLastRequestForPatientID(string $testType, string $patientId)
