@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use Crunz\Schedule;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use Crunz\Schedule;
+use App\Registries\ContainerRegistry;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
@@ -18,6 +18,7 @@ $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
 $timeZone = $_SESSION['APP_TIMEZONE'];
 
 $schedule = new Schedule();
+
 
 // DB Backup
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/db-backups.php")

@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\SystemException;
+use App\Registries\AppRegistry;
 use App\Services\ApiService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
@@ -14,7 +15,7 @@ set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
 /** @var Slim\Psr7\Request $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 
 $origJson = $request->getBody()->getContents();
 $input = $request->getParsedBody();

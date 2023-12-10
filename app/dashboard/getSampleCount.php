@@ -1,63 +1,49 @@
 <?php
 
-use App\Services\DatabaseService;
+use App\Services\TestsService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $facilityInfo = $facilitiesService->getAllFacilities();
 
-if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
-    $table = "form_eid";
-    $primaryKey = "eid_id";
-    $unique = "Test2";
+$testType = (string) $_POST['type'];
+$table = TestsService::getTestTableName($testType);
+$primaryKey = TestsService::getTestPrimaryKeyName($testType);
+
+$recencyWhere = "";
+if ($testType == 'eid') {
     $requestCountDataTable = "eidRequestCountDataTable";
     $samplesCollectionChart = "eidSamplesCollectionChart";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'vl') {
+} elseif ($testType == 'vl') {
     $recencyWhere = " AND IFNULL(reason_for_vl_testing, 0)  != 9999";
-    $table = "form_vl";
-    $primaryKey = "vl_sample_id";
-    $unique = "Test1";
     $requestCountDataTable = "vlRequestCountDataTable";
     $samplesCollectionChart = "vlSamplesCollectionChart";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'covid19') {
+} elseif ($testType == 'covid19') {
     $samplesCollectionChart = "covid19SamplesCollectionChart";
-    $table = "form_covid19";
-    $primaryKey = "covid19_id";
-    $unique = "Test3";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'hepatitis') {
+} elseif ($testType == 'hepatitis') {
     $samplesCollectionChart = "hepatitisSamplesCollectionChart";
-    $table = "form_hepatitis";
-    $primaryKey = "hepatitis_id";
-    $unique = "Test4";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'recency') {
+} elseif ($testType == 'recency') {
     $samplesCollectionChart = "recencySamplesCollectionChart";
-    $table = "form_vl";
-    $primaryKey = "vl_sample_id";
-    $unique = "Test5";
 
     // For VL Tab we do not want to show Recency Counts
     $recencyWhere = " AND reason_for_vl_testing = 9999";
     $requestCountDataTable = "recencyRequestCountDataTable";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'tb') {
-    $table = "form_tb";
-    $primaryKey = "tb_id";
-    $unique = "Test6";
+} elseif ($testType == 'tb') {
     $samplesCollectionChart = "tbSamplesCollectionChart";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'generic-tests') {
-    $table = "form_generic";
-    $primaryKey = "sample_id";
-    $unique = "Test7";
+} elseif ($testType == 'generic-tests') {
     $samplesCollectionChart = "genericSamplesCollectionChart";
 }
 
@@ -176,7 +162,7 @@ $tableResult = $db->rawQuery($sQuery);
             <th style="vertical-align:middle;padding-left: 0px;"><strong>
                     <?php echo _translate("Collection Point"); ?>&nbsp;:
                 </strong>
-                <select id="facilityId<?php echo $unique; ?>" name="facilityId" class="form-control" multiple title="<?php echo _translate('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
+                <select id="facilityId<?php echo $testType; ?>" name="facilityId" class="form-control" multiple title="<?php echo _translate('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
                     <?php foreach ($facilityInfo as $facility) { ?>
                         <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?>
                         </option>
@@ -199,7 +185,7 @@ $tableResult = $db->rawQuery($sQuery);
                 <em class="fa-solid fa-chart-pie"></em>
             </div>
         </div>
-        <div id="collectionSite<?php echo $unique; ?>">
+        <div id="collectionSite<?php echo $testType; ?>">
             <div id="<?php echo $samplesCollectionChart; ?>" style="min-height:250px;"></div>
         </div>
     </div>
@@ -300,16 +286,16 @@ $tableResult = $db->rawQuery($sQuery);
         $.blockUI();
         $.post("/dashboard/get-collection-samples.php", {
                 table: '<?php echo $table; ?>',
-                facilityId: $('#facilityId<?php echo $unique; ?>').val(),
+                facilityId: $('#facilityId<?php echo $testType; ?>').val(),
                 sampleCollectionDate: '<?php echo htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>',
             },
             function(data) {
-                $("#collectionSite<?php echo $unique; ?>").html(data);
+                $("#collectionSite<?php echo $testType; ?>").html(data);
             });
         $.unblockUI();
     }
     $(document).ready(function() {
-        $('#facilityId<?php echo $unique; ?>').select2({
+        $('#facilityId<?php echo $testType; ?>').select2({
             width: '100%',
             placeholder: "<?= _translate("Select Collection Point(s)"); ?>"
         });
@@ -384,11 +370,7 @@ $tableResult = $db->rawQuery($sQuery);
                 enabled: false
             },
             xAxis: {
-                categories: [<?php
-                                foreach ($tableResult as $tRow) {
-                                    echo "'" . addslashes((string) $tRow['facility_name']) . "',";
-                                }
-                                ?>],
+                categories: [<?= "'" . implode("','", array_map('addslashes', array_column($tableResult, 'facility_name'))) . "'"; ?>],
                 crosshair: true,
                 scrollbar: {
                     enabled: true
@@ -418,11 +400,7 @@ $tableResult = $db->rawQuery($sQuery);
             series: [{
                 showInLegend: false,
                 name: 'Samples',
-                data: [<?php
-                        foreach ($tableResult as $tRow) {
-                            echo ($tRow['totalCount']) . ",";
-                        }
-                        ?>]
+                data: [<?= implode(",", array_column($tableResult, 'totalCount')); ?>]
 
             }],
             colors: ['#f36a5a']

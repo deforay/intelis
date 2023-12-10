@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\SystemException;
+use App\Registries\AppRegistry;
 use App\Services\ApiService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -9,7 +10,7 @@ use App\Services\UsersService;
 
 
 /** @var Slim\Psr7\Request $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 
 
 $input = $request->getParsedBody();

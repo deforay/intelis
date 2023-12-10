@@ -2,6 +2,7 @@
 
 // File included in import-file-helper.php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use League\Csv\Reader;
 use App\Services\BatchService;
@@ -23,7 +24,7 @@ $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 try {

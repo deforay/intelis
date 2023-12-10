@@ -7,6 +7,7 @@ namespace App\Services;
 use Exception;
 use TCPDFBarcode;
 use TCPDF2DBarcode;
+use SodiumException;
 use Ramsey\Uuid\Uuid;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -19,10 +20,10 @@ use App\Registries\ContainerRegistry;
 class CommonService
 {
 
-    protected ?DatabaseService $db = null;
+    protected ?DatabaseService $db;
 
 
-    public function __construct(?DatabaseService $db = null)
+    public function __construct(?DatabaseService $db)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
     }
@@ -229,25 +230,23 @@ class CommonService
     public static function encrypt($message, $key): string
     {
         try {
-            $key = hex2bin($key); // Convert hexadecimal key to binary format
-
-            $iv = random_bytes(16); // Initialization Vector
-            $cipherText = openssl_encrypt(
-                $message,
-                'aes-256-cbc',
-                $key,
-                OPENSSL_RAW_DATA,
-                $iv
+            $nonce = random_bytes(
+                SODIUM_CRYPTO_SECRETBOX_NONCEBYTES
             );
 
-            if ($cipherText === false) {
-                throw new Exception("Encryption failed.");
-            }
-
-            $encryptedData = $iv . $cipherText;
-            return base64_encode($encryptedData);
-        } catch (Exception $e) {
-            // Return the original message on error
+            $cipher = sodium_bin2base64(
+                $nonce .
+                    sodium_crypto_secretbox(
+                        (string) $message,
+                        $nonce,
+                        (string) $key
+                    ),
+                SODIUM_BASE64_VARIANT_URLSAFE
+            );
+            sodium_memzero($message);
+            sodium_memzero($key);
+            return $cipher;
+        } catch (SodiumException $e) {
             return $message;
         }
     }
@@ -255,27 +254,28 @@ class CommonService
     public static function decrypt($encrypted, $key): string
     {
         try {
-            $key = hex2bin($key); // Convert hexadecimal key to binary format
-
-            $decodedData = base64_decode($encrypted);
-            $iv = substr($decodedData, 0, 16); // Extract IV
-            $ciphertext = substr($decodedData, 16); // Extract ciphertext
-
-            $plain = openssl_decrypt(
-                $ciphertext,
-                'aes-256-cbc',
-                $key,
-                OPENSSL_RAW_DATA,
-                $iv
-            );
-
-            if ($plain === false) {
-                throw new Exception("Decryption failed.");
+            $decoded = sodium_base642bin((string) $encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
+            if (empty($decoded)) {
+                throw new SystemException('The message encoding failed');
             }
+            if (mb_strlen($decoded, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
+                throw new SystemException('The message was truncated');
+            }
+            $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
+            $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
 
+            $plain = sodium_crypto_secretbox_open(
+                $ciphertext,
+                $nonce,
+                $key
+            );
+            if ($plain === false) {
+                throw new SystemException('The message was tampered with in transit');
+            }
+            sodium_memzero($ciphertext);
+            sodium_memzero($key);
             return $plain;
-        } catch (Exception $e) {
-            // Return the original encrypted string on error
+        } catch (SodiumException | SystemException $e) {
             return $encrypted;
         }
     }
@@ -671,7 +671,7 @@ class CommonService
             return isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser';
         });
     }
-    public function getLastSyncDateTime()
+    public function getLastRemoteSyncDateTime()
     {
         if ($this->isRemoteUser()) {
             $dateTime = $this->db->rawQueryOne("SELECT MAX(`requested_on`) AS `dateTime`
@@ -869,9 +869,6 @@ class CommonService
         }
     }
 
-
-
-
     public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false)
     {
         $str = str_replace($character, '', ucwords((string) $string, $character));
@@ -880,10 +877,10 @@ class CommonService
 
     public function getPrimaryKeyField($table)
     {
-        if (!$table) {
+        if (empty($table)) {
             return null;
         }
-        $response = $this->db->rawQueryOne("SHOW KEYS FROM " . $table . " WHERE Key_name = 'PRIMARY';");
+        $response = $this->db->rawQueryOne("SHOW KEYS FROM ? WHERE Key_name = 'PRIMARY'", [$table]);
         return $response['Column_name'] ?? null;
     }
 
@@ -903,7 +900,10 @@ class CommonService
 
     public function getSourceOfRequest($table)
     {
-        $srcQuery = "SELECT DISTINCT source_of_request from $table where source_of_request is not null AND source_of_request not like ''";
+        $srcQuery = "SELECT DISTINCT source_of_request
+                        FROM $table
+                        WHERE source_of_request IS NOT NULL AND
+                        source_of_request not like ''";
         return $this->db->rawQuery($srcQuery);
     }
 

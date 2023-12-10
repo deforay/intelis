@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\DatabaseService;
@@ -12,7 +13,7 @@ $title = _translate("Edit User");
 require_once APPLICATION_PATH . '/header.php';
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
@@ -26,7 +27,7 @@ $userInfo = $db->rawQueryOne(
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 $interfaceUsers = "";
@@ -203,7 +204,7 @@ $ftResult = $db->rawQuery($fQuery);
                                                        <div class="fileinput-preview thumbnail image-placeholder" data-trigger="fileinput" style="width:200px; height:150px;">
                                                             <?php
                                                             if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && file_exists($userInfo['user_signature'])) {
-                                                                 $signFileName = basename($userInfo['user_signature']); 
+                                                                 $signFileName = basename($userInfo['user_signature']);
                                                             ?>
                                                                  <img src="/uploads/users-signature/<?php echo $signFileName; ?>" alt="Signature image">
                                                             <?php } else { ?>

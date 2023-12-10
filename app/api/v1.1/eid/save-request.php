@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\EidService;
@@ -38,7 +39,7 @@ try {
     $db->beginTransaction();
 
     /** @var Slim\Psr7\Request $request */
-    $request = $GLOBALS['request'];
+    $request = AppRegistry::get('request');
 
     $noOfFailedRecords = 0;
 

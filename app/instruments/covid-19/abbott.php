@@ -1,6 +1,7 @@
 <?php
 
 // File included in import-file-helper.php
+use App\Registries\AppRegistry;
 use League\Csv\Reader;
 use League\Csv\Statement;
 use App\Services\BatchService;
@@ -12,7 +13,7 @@ use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 try {

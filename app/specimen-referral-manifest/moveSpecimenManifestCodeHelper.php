@@ -1,35 +1,25 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Services\TestsService;
+use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
-
-
+use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 
-$table = 'form_vl';
+
 if (isset($_POST['testType']) && $_POST['testType'] == "") {
     $_POST['testType'] = "generic-tests";
 }
-if ($_POST['testType'] == 'vl') {
-    $table = 'form_vl';
-} else if ($_POST['testType'] == 'eid') {
-    $table = 'form_eid';
-} else if ($_POST['testType'] == 'covid19') {
-    $table = 'form_covid19';
-} else if ($_POST['testType'] == 'hepatitis') {
-    $table = 'form_hepatitis';
-} else if ($_POST['testType'] == 'tb') {
-    $table = 'form_tb';
-} else if ($_POST['testType'] == 'generic-tests') {
-    $table = 'form_generic';
-}
+
+$table = TestsService::getTestTableName($_POST['testType'] ?? 'vl');
+
 //echo $table; die;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');

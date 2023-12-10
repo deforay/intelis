@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Services\CommonService;
@@ -8,8 +9,6 @@ use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
-
-$applicationConfig = ContainerRegistry::get('applicationConfig');
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
@@ -52,12 +51,12 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuse
 	$shortCode = 'STS';
 }
 
-if (!empty($applicationConfig['instanceName'])) {
-	$systemType = $applicationConfig['instanceName'];
-}
+
+$systemType = SYSTEM_CONFIG['instanceName'] ?? $systemType;
+
 
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 
 
 if (!_isAllowed($request)) {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\SystemException;
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
@@ -9,7 +10,7 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 $provinceCode = $_POST['pName'] ?? $_POST['provinceCode'] ?? null;

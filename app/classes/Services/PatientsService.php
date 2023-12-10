@@ -12,11 +12,11 @@ use App\Registries\ContainerRegistry;
 class PatientsService
 {
 
-    protected ?DatabaseService $db = null;
+    protected ?DatabaseService $db;
     protected string $table = 'patients';
     protected CommonService $commonService;
 
-    public function __construct($db = null, $commonService = null)
+    public function __construct(?DatabaseService $db, CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
         $this->commonService = $commonService;

@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Registries\AppRegistry;
 use JsonMachine\Items;
 use App\Services\VlService;
 use App\Services\ApiService;
@@ -38,7 +39,7 @@ try {
     $db->beginTransaction();
 
     /** @var Slim\Psr7\Request $request */
-    $request = $GLOBALS['request'];
+    $request = AppRegistry::get('request');
     $noOfFailedRecords = 0;
 
     $origJson = $request->getBody()->getContents();

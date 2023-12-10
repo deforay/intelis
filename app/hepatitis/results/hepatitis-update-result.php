@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -42,7 +43,7 @@ foreach ($userResult as $user) {
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
@@ -59,7 +60,7 @@ $pdResult = $db->query($pdQuery);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 

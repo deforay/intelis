@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -10,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 try {

@@ -1,8 +1,8 @@
 <?php
 
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
@@ -46,7 +46,7 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 		$syncHistory = "javascript:void(0);";
 	}
 
-	$syncLatestTime = $general->getLastSyncDateTime();
+	$syncLatestTime = $general->getLastRemoteSyncDateTime();
 
 	if (empty($syncLatestTime)) {
 		$syncHistoryDisplay = "display:none;";
@@ -228,7 +228,7 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 		}
 
 		if (remoteSync) {
-			(function getLastSyncDateTime() {
+			(function getLastRemoteSyncDateTime() {
 				let currentDateTime = new Date();
 				$.ajax({
 					url: '/scheduled-jobs/remote/getLastSyncTime.php',
@@ -241,7 +241,7 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 					},
 					error: function(data) {}
 				});
-				setTimeout(getLastSyncDateTime, 15 * 60 * 1000);
+				setTimeout(getLastRemoteSyncDateTime, 15 * 60 * 1000);
 			})();
 
 			// Every 5 mins check if STS is reachable

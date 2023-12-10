@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
 use App\Services\UsersService;
 use App\Registries\ContainerRegistry;
@@ -10,7 +11,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\TbService;
 use App\Services\UsersService;
@@ -16,7 +17,7 @@ ini_set('max_execution_time', 300000);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 $tableName1 = "activity_log";

@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\Covid19Service;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -35,7 +36,7 @@ foreach ($testKitInfo as $kits) {
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
@@ -269,7 +270,7 @@ foreach ($pdResult as $provinceName) {
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
@@ -279,7 +280,7 @@ foreach ($pdResult as $provinceName) {
         $('.date-time').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -293,7 +294,7 @@ foreach ($pdResult as $provinceName) {
             $('.ui-datepicker-calendar').show();
         });
 
-        let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
+        let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
         $('.date').mask(dateFormatMask);
         $('.dateTime').mask(dateFormatMask + ' 99:99');
     });

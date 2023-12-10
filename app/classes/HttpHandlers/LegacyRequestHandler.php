@@ -5,6 +5,7 @@ namespace App\HttpHandlers;
 use Exception;
 use Throwable;
 use App\Services\CommonService;
+use App\Registries\AppRegistry;
 use Laminas\Diactoros\Response;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -36,7 +37,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
             $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
             $uri = trim(parse_url($uri, PHP_URL_PATH), "/");
 
-            $GLOBALS['request'] = $request;
+            AppRegistry::set('request', $request);
 
             switch ($uri) {
                 case null:

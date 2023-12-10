@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Services\CommonService;
@@ -56,7 +57,7 @@ $specimenTypeResult = $db->query($sQuery);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 

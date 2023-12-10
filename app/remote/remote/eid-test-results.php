@@ -1,6 +1,7 @@
 <?php
 //this file receives the lab results and updates in the remote db
 
+use App\Registries\AppRegistry;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -26,7 +27,7 @@ try {
     $apiService = ContainerRegistry::get(ApiService::class);
 
     /** @var Laminas\Diactoros\ServerRequest $request */
-    $request = $GLOBALS['request'];
+    $request = AppRegistry::get('request');
     $jsonResponse = $apiService->getJsonFromRequest($request);
 
     /** @var DatabaseService $db */

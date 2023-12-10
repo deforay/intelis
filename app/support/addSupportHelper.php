@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\SystemException;
+use App\Registries\AppRegistry;
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -9,7 +10,7 @@ $tableName = "support";
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 try {

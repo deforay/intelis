@@ -10,10 +10,10 @@ use App\Registries\ContainerRegistry;
 class InstrumentsService
 {
 
-    protected ?DatabaseService $db = null;
+    protected ?DatabaseService $db;
     protected string $table = 'instruments';
 
-    public function __construct($db = null)
+    public function __construct(?DatabaseService $db)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
@@ -20,7 +21,7 @@ $systemService = ContainerRegistry::get(SystemService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 

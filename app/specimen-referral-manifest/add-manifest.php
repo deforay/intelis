@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\TbService;
 use App\Services\VlService;
@@ -27,7 +28,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 $module = $_GET['t'];
 $testingLabs = $facilitiesService->getTestingLabs($module);

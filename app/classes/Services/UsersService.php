@@ -4,24 +4,22 @@ namespace App\Services;
 
 use DateTime;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
-
-
+use Psr\Container\ContainerInterface;
 
 class UsersService
 {
 
-    protected ?DatabaseService $db = null;
-    protected mixed $applicationConfig = null;
+    protected ?DatabaseService $db;
     protected string $table = 'user_details';
     protected CommonService $commonService;
 
-    public function __construct($db = null, $applicationConfig = null, $commonService = null)
+    public function __construct(?DatabaseService $db, ?CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
-        $this->applicationConfig = $applicationConfig;
         $this->commonService = $commonService;
     }
 

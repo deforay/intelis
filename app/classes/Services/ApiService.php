@@ -15,10 +15,10 @@ use GuzzleHttp\Exception\RequestException;
 class ApiService
 {
 
-    protected ?DatabaseService $db = null;
+    protected ?DatabaseService $db;
     protected ?Client $client = null;
 
-    public function __construct($db = null)
+    public function __construct(?DatabaseService $db)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
         $this->client = $this->createApiClient();

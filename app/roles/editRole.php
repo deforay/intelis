@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
@@ -10,7 +11,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 

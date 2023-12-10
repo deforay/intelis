@@ -1,10 +1,10 @@
 <?php
 
+use App\Services\UsersService;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\UsersService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
@@ -18,11 +18,10 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$arr = $general->getGlobalConfig();
-$sarr = $general->getSystemConfig();
+$formId = $general->getGlobalConfig('vl_form');
 
 
-if ($arr['vl_form'] == '3') {
+if ($formId == '3') {
 	$GLOBALS['option'] = '<option value=""><?= _translate("-- Select --"); ?> </option>';
 } else {
 	$GLOBALS['option'] = '<option value=""> ' . _translate("-- Select --") . ' </option>';

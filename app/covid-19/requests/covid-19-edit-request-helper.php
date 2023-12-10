@@ -4,6 +4,7 @@
 // Path   /vlsm/api/covid-19/v1/update-request.php
 
 use App\Exceptions\SystemException;
+use App\Registries\AppRegistry;
 use App\Services\ApiService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
@@ -41,7 +42,7 @@ $testTableName = 'covid19_tests';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 try {

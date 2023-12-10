@@ -1,5 +1,7 @@
 <?php
 
+use App\Registries\AppRegistry;
+
 $title = _translate("Recommended Corrective Action");
 
 require_once APPLICATION_PATH . '/header.php';
@@ -8,7 +10,7 @@ $testType = 'vl';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 
 

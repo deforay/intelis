@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -21,7 +22,7 @@ $db = ContainerRegistry::get('db');
 
 // Sanitized values from $request object
 /** @var ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
@@ -273,7 +274,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 															<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $testAttributeId; ?>" />
 														</td>
 														<td align="center" style="vertical-align:middle;">
-															<input type="text" name="fieldCode[]" id="fieldCode<?php echo $i;?>" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDublicateName(this, \'fieldCode\');" value="<?php echo $testAttribute['field_code'];?>" onchange="this.value=formatStringToSnakeCase(this.value)"/>
+															<input type="text" name="fieldCode[]" id="fieldCode<?php echo $i; ?>" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDublicateName(this, \'fieldCode\');" value="<?php echo $testAttribute['field_code']; ?>" onchange="this.value=formatStringToSnakeCase(this.value)" />
 														</td>
 														<td align="center" style="vertical-align:middle;padding-top: 20px;">
 															<select class="form-control isRequired" name="fieldType[]" id="fieldType<?php echo $i ?>" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, <?php echo $i ?>)">
@@ -337,7 +338,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 																<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $otherAttributeId; ?>" />
 															</td>
 															<td align="center" style="vertical-align:middle;">
-																<input type="text" name="fieldCode[]" id="fieldCode<?php echo $i;?>" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDublicateName(this, \'fieldCode\');" value="<?php echo $testAttribute['field_code'];?>" onchange="this.value=formatStringToSnakeCase(this.value)"/>
+																<input type="text" name="fieldCode[]" id="fieldCode<?php echo $i; ?>" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDublicateName(this, \'fieldCode\');" value="<?php echo $testAttribute['field_code']; ?>" onchange="this.value=formatStringToSnakeCase(this.value)" />
 															</td>
 															<td align="center" style="vertical-align:middle;padding-top: 20px;">
 																<select class="form-control isRequired" name="fieldType[]" id="fieldType<?php echo $i ?>" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, <?php echo $i ?>)">
@@ -400,7 +401,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 												<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control isRequired" />
 											</td>
 											<td align="center" style="vertical-align:middle;">
-												<input type="text" name="fieldCode[]" id="fieldCode1" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDublicateName(this, \'fieldCode\');" onchange="this.value=formatStringToSnakeCase(this.value)"/>
+												<input type="text" name="fieldCode[]" id="fieldCode1" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDublicateName(this, \'fieldCode\');" onchange="this.value=formatStringToSnakeCase(this.value)" />
 											</td>
 											<td>
 												<select class="form-control isRequired" name="fieldType[]" id="fieldType1" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, 1)">

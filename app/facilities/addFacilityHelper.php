@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -16,7 +17,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 /** @var DatabaseService $db */
@@ -40,7 +41,7 @@ $labSignTable = "lab_report_signatories";
 $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $apiData = $apiService->getJsonFromRequest($request, true);
 
 if (!empty($apiData['result'])) {

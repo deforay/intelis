@@ -8,11 +8,13 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
-use App\Services\DatabaseService;
 use App\Services\VlService;
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\SystemService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 if (
@@ -95,28 +97,11 @@ if (!empty($interfaceData)) {
 
     $availableModules = [];
 
-    if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-        $availableModules['vl_sample_id'] = 'form_vl';
-        $platform["vl_sample_id"] = "vl_test_platform";
-    }
+    $activeModules = SystemService::getActiveModules(true);
 
-    if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-        $availableModules['eid_id'] = 'form_eid';
-        $platform["eid_id"] = "eid_test_platform";
-    }
-
-    if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-        $availableModules['covid19_id'] = 'form_covid19';
-        $platform["covid19_id"] = "covid19_test_platform";
-    }
-
-    if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
-        $availableModules['hepatitis_id'] = 'form_hepatitis';
-        $platform["hepatitis_id"] = "hepatitis_test_platform";
-    }
-    if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-        $availableModules['tb_id'] = 'form_tb';
-        $platform["tb_id"] = "tb_test_platform";
+    foreach ($activeModules as $module) {
+        $primaryKey = TestsService::getTestPrimaryKeyName($module);
+        $availableModules[$primaryKey] = TestsService::getTestTableName($module);
     }
 
     $processedResults = [];
@@ -134,7 +119,7 @@ if (!empty($interfaceData)) {
 
         $tableInfo = [];
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
-            $tableQuery = "SELECT * FROM $individualTableName WHERE sample_code = ?";
+            $tableQuery = "SELECT $individualIdColumn FROM $individualTableName WHERE sample_code = ?";
             $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id']]);
             if (!empty($tableInfo[$individualIdColumn])) {
                 break;

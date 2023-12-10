@@ -9,9 +9,9 @@ use App\Registries\ContainerRegistry;
 class GeoLocationsService
 {
 
-    protected ?DatabaseService $db = null;
+    protected ?DatabaseService $db;
 
-    public function __construct($db = null)
+    public function __construct(?DatabaseService $db)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
     }

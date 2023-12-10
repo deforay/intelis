@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GenericTestsService;
@@ -12,7 +13,7 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
@@ -278,28 +279,28 @@ if (!empty($testResultsAttribute)) {
                         $resultSection .= '</select>
                                 </td>
                                 <td>';
-                                if ($resultType == 'qualitative') {
-                                    $resultSection .= '<select class="form-control result-select" name="testResult[' . $subTest . '][]" id="testResult' . $key . $i . '" title="Enter result" title="Please enter final results"><option value="">-- Select --</option>';
-                                    if (!empty($testResultsAttribute[$resultType])) {
-                                        foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
-                                            $selected = isset($row['result']) && $row['result'] == trim((string) $r) ? "selected='selected'" : "";
-                                            $resultSection .= '<option value="' . trim((string) $r) . '" ' . $selected . '>' . $r . '</option>';
-                                        }
-                                    }
-                                    $resultSection .= '</select>';
-                                }else{
-                                    $resultSection .= '<input type="text" value="' . $row['result'] . '" id="testResult' . $key . $i . '" name="testResult[' . $subTest . '][]" class="form-control" placeholder="Enter result" title="Please enter final results">';
+                        if ($resultType == 'qualitative') {
+                            $resultSection .= '<select class="form-control result-select" name="testResult[' . $subTest . '][]" id="testResult' . $key . $i . '" title="Enter result" title="Please enter final results"><option value="">-- Select --</option>';
+                            if (!empty($testResultsAttribute[$resultType])) {
+                                foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
+                                    $selected = isset($row['result']) && $row['result'] == trim((string) $r) ? "selected='selected'" : "";
+                                    $resultSection .= '<option value="' . trim((string) $r) . '" ' . $selected . '>' . $r . '</option>';
                                 }
-                                
-                                $resultSection .= '</td>
+                            }
+                            $resultSection .= '</select>';
+                        } else {
+                            $resultSection .= '<input type="text" value="' . $row['result'] . '" id="testResult' . $key . $i . '" name="testResult[' . $subTest . '][]" class="form-control" placeholder="Enter result" title="Please enter final results">';
+                        }
+
+                        $resultSection .= '</td>
                                 <td class="testResultUnit">
                                         <select class="form-control" id="testResultUnit' . $key . $i . '" name="testResultUnit[' . $subTest . '][]" placeholder=' . _translate("Enter test result unit") . ' title=' . _translate("Please enter test result unit") . '>
                                             <option value="">--Select--</option>';
-                                            foreach ($testResultUnits as $unit) {
-                                                $selected = isset($row['result_unit']) && $row['result_unit'] == $unit['unit_id'] ? "selected='selected'" : "";
-                                                $resultSection .= '<option value="' . $unit['unit_id'] . '" ' . $selected . '>' . $unit['unit_name'] . '</option>';
-                                            }
-                                         $resultSection .= '</select>
+                        foreach ($testResultUnits as $unit) {
+                            $selected = isset($row['result_unit']) && $row['result_unit'] == $unit['unit_id'] ? "selected='selected'" : "";
+                            $resultSection .= '<option value="' . $unit['unit_id'] . '" ' . $selected . '>' . $unit['unit_name'] . '</option>';
+                        }
+                        $resultSection .= '</select>
                                 </td>
                                 <td style="vertical-align:middle;text-align: center;width:100px;">
                                     <a class="btn btn-xs btn-primary ins-row-' . $key . $i . ' test-name-table" href="javascript:void(0);" onclick="addTestRow(' . $key . ', \'' . $subTest . '\');"><em class="fa-solid fa-plus"></em></a>&nbsp;
@@ -330,19 +331,19 @@ if (!empty($testResultsAttribute)) {
                 $resultSection .= '</select>
                         </td>
                         <td>';
-                        if ($resultType == 'qualitative') {
-                            $resultSection .= '<select class="form-control result-select" name="testResult[' . $subTest . '][]" id="testResult' . $key . $i . '" title="Enter result" title="Please enter final results"><option value="">-- Select --</option>';
-                            if (!empty($testResultsAttribute[$resultType])) {
-                                foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
-                                    $resultSection .= '<option value="' . trim((string) $r) . '">' . $r . '</option>';
-                                }
-                            }
-                            $resultSection .= '</select>';
-                        }else{
-                            $resultSection .= '<input type="text" value="' . $row['result'] . '" id="testResult' . $key . $i . '" name="testResult[' . $subTest . '][]" class="form-control" placeholder="Enter result" title="Please enter final results">';
+                if ($resultType == 'qualitative') {
+                    $resultSection .= '<select class="form-control result-select" name="testResult[' . $subTest . '][]" id="testResult' . $key . $i . '" title="Enter result" title="Please enter final results"><option value="">-- Select --</option>';
+                    if (!empty($testResultsAttribute[$resultType])) {
+                        foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
+                            $resultSection .= '<option value="' . trim((string) $r) . '">' . $r . '</option>';
                         }
-                        
-                        $resultSection .= '</td>
+                    }
+                    $resultSection .= '</select>';
+                } else {
+                    $resultSection .= '<input type="text" value="' . $row['result'] . '" id="testResult' . $key . $i . '" name="testResult[' . $subTest . '][]" class="form-control" placeholder="Enter result" title="Please enter final results">';
+                }
+
+                $resultSection .= '</td>
                         <td class="testResultUnit">
                                 <select class="form-control" id="testResultUnit' . $key . $n . '" name="testResultUnit[' . $subTest . '][]" placeholder=' . _translate("Enter test result unit") . ' title=' . _translate("Please enter test result unit") . '>
                                     <option value="">--Select--</option>';
@@ -371,7 +372,7 @@ if (!empty($testResultsAttribute)) {
                 $subTestResultSection .= '</select></td></tr>';
             } else {
                 $subTestResultSection .= '<tr><th scope="row" colspan="5" class="text-right final-result-row">Final Result</th>';
-                $subTestResultSection .= '<td><input type="text" list="resultList" id="finalResult' . $key . '" name="finalResult[' . $subTest . ']" class="form-control result-text" value="' . $finalTestResults[strtolower($subTest)]['final_result'] . '" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this, \''.strtolower($subTest).'\');">';
+                $subTestResultSection .= '<td><input type="text" list="resultList" id="finalResult' . $key . '" name="finalResult[' . $subTest . ']" class="form-control result-text" value="' . $finalTestResults[strtolower($subTest)]['final_result'] . '" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this, \'' . strtolower($subTest) . '\');">';
                 if (!empty($testResultsAttribute['quantitative_result'])) {
                     $subTestResultSection .= '<datalist id="resultList">';
                     if (!empty($testResultsAttribute['quantitative_result'])) {
@@ -384,7 +385,7 @@ if (!empty($testResultsAttribute)) {
                 }
                 $subTestResultSection .= '<tr class="testResultUnit"><th scope="row" colspan="5" class="text-right final-result-row">Test Result Unit</th>';
                 $subTestResultSection .= '<td>
-                <select class="form-control testResultUnit resultUnit" id="finalTestResultUnit'.$key.'" name="finalTestResultUnit[' . $subTest . ']" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
+                <select class="form-control testResultUnit resultUnit" id="finalTestResultUnit' . $key . '" name="finalTestResultUnit[' . $subTest . ']" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
                 foreach ($testResultUnits as $unit) {
                     $selected = isset($finalTestResults[strtolower($subTest)]['final_result_unit']) && $finalTestResults[strtolower($subTest)]['final_result_unit'] == $unit['unit_id'] ? "selected='selected'" : "";
                     $subTestResultSection .= '<option value="' . $unit['unit_id'] . '" ' . $selected . '>' . $unit['unit_name'] . '</option>';
@@ -396,7 +397,7 @@ if (!empty($testResultsAttribute)) {
 
             $resultSection .= '</select></td></tr>';
             $resultSection .= '<tr><th scope="row" colspan="5" class="text-right final-result-row">Result Interpretation</th>';
-            $resultSection .= '<td><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation'.$key.'" value="' . $finalTestResults[strtolower($subTest)]['final_result_interpretation'] . '" name="resultInterpretation['.$subTest.']"></input>';
+            $resultSection .= '<td><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation' . $key . '" value="' . $finalTestResults[strtolower($subTest)]['final_result_interpretation'] . '" name="resultInterpretation[' . $subTest . ']"></input>';
             $resultSection .= '<input type="hidden" id="resultType" name="resultType[' . $subTest . ']" class="form-control result-text" value="' . $testResultsAttribute['final_result_interpretation'][$key] . '"></td></tr>';
 
             $resultSection .= '</tfoot>

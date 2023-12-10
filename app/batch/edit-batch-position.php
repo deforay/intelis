@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\BatchService;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
@@ -18,7 +19,7 @@ $batchService = ContainerRegistry::get(BatchService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 $title = "Viral Load";
 $refTable = "form_vl";

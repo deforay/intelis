@@ -10,7 +10,7 @@ use App\Registries\ContainerRegistry;
 
 class AppMenuService
 {
-    protected ?DatabaseService $db = null;
+    protected ?DatabaseService $db;
     protected string $table = 's_app_menu';
     protected CommonService $commonService;
     protected UsersService $usersService;

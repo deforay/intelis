@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\TbService;
 use App\Services\ApiService;
@@ -17,7 +18,7 @@ ini_set('max_execution_time', 20000);
 
 
 /** @var Slim\Psr7\Request $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 
 $origJson = $request->getBody()->getContents();
 $input = $request->getParsedBody();

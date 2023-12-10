@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\PatientsService;
 use App\Registries\ContainerRegistry;
 
@@ -8,7 +9,7 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 $result = $patientsService->getLastRequestForPatientID($_POST['testType'] ?? '',  $_POST['patientId']);

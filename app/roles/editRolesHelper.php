@@ -3,10 +3,11 @@
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
 
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 /** @var DatabaseService $db */

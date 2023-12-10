@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\ApiService;
 use App\Services\DatabaseService;
 use App\Services\UsersService;
@@ -12,7 +13,7 @@ use App\Utilities\ImageResizeUtility;
 use Crunz\Logger\Logger;
 
 /** @var Slim\Psr7\Request $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 
 $origJson = $request->getBody()->getContents();
 

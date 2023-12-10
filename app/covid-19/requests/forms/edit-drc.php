@@ -2,6 +2,7 @@
 
 // imported in covid-19-edit-request.php based on country in global config
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\Covid19Service;
@@ -14,7 +15,7 @@ $db = ContainerRegistry::get('db');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 
 

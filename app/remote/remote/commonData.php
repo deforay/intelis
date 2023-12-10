@@ -1,5 +1,6 @@
 <?php
 //get data from remote db send to lab db
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\ApiService;
 use App\Services\CommonService;
@@ -30,7 +31,7 @@ $payload = [];
 $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $data = $apiService->getJsonFromRequest($request, true);
 
 

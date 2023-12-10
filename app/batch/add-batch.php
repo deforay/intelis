@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\BatchService;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -8,7 +9,7 @@ use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 $sampleTypeStatus = "status";
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {

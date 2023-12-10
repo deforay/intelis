@@ -4,6 +4,7 @@ namespace App\Middlewares\Api;
 
 use Exception;
 use Throwable;
+use App\Registries\AppRegistry;
 use Laminas\Diactoros\Response;
 use App\Exceptions\SystemException;
 use Psr\Http\Message\ResponseInterface;
@@ -30,7 +31,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
             $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
             $uri = trim(parse_url($uri, PHP_URL_PATH), "/");
 
-            $GLOBALS['request'] = $request;
+            AppRegistry::set('request', $request);
 
             try {
                 ob_start();
@@ -44,10 +45,10 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
                 $response->getBody()->write($output);
             } catch (SystemException | Exception $e) {
                 ob_end_clean(); // Clean the buffer in case of an error
-                throw new SystemException("An error occurred while processing the request: " . $e->getFile() . " : " . $e->getLine() . " : " . $e->getMessage(), 500, $e);
+                throw new SystemException("Error in " . $e->getFile() . ":" . $e->getLine() . " : " . $e->getMessage() . PHP_EOL, 500, $e);
             } catch (Throwable $e) {
                 ob_end_clean(); // Clean the buffer in case of an error
-                throw new SystemException("An error occurred while processing the request: " . $e->getFile() . " : " . $e->getLine() . " : " . $e->getMessage(), 500);
+                throw new SystemException("Error in " . $e->getFile() . ":" . $e->getLine() . " : " . $e->getMessage() . PHP_EOL, 500);
             }
         }
 

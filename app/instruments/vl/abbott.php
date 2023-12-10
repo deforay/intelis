@@ -2,6 +2,7 @@
 
 // File included in import-file-helper.php
 
+use App\Registries\AppRegistry;
 use App\Services\BatchService;
 use App\Services\DatabaseService;
 use App\Services\UsersService;
@@ -16,7 +17,7 @@ $db = ContainerRegistry::get('db');
 try {
     // Sanitized values from $request object
     /** @var Laminas\Diactoros\ServerRequest $request */
-    $request = $GLOBALS['request'];
+    $request = AppRegistry::get('request');
     $_POST = $request->getParsedBody();
 
     /** @var TestResultsService $testResultsService */

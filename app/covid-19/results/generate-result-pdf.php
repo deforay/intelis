@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -30,7 +31,7 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 $arr = $general->getGlobalConfig();

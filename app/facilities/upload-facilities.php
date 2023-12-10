@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Services\CommonService;
@@ -18,7 +19,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 
 $fQuery = "SELECT * FROM facility_type";

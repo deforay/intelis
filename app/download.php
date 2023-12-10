@@ -1,13 +1,14 @@
 <?php
 
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Exceptions\SystemException;
 
 $webRootPath = realpath(WEB_ROOT);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 
 if (!isset($_GET['f']) || !is_file(base64_decode((string) $_GET['f']))) {

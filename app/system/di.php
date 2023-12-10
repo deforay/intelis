@@ -6,10 +6,12 @@ use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\EidService;
 use App\Services\BatchService;
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Helpers\BatchPdfHelper;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\AppMenuService;
@@ -35,6 +37,7 @@ use App\Middlewares\Api\ApiAuthMiddleware;
 use App\Middlewares\App\AppAuthMiddleware;
 use App\Middlewares\ErrorHandlerMiddleware;
 use Laminas\Config\Factory as ConfigFactory;
+use Symfony\Component\VarDumper\Cloner\Data;
 use App\ErrorHandlers\ErrorResponseGenerator;
 use App\Middlewares\SystemAdminAuthMiddleware;
 use App\Middlewares\Api\ApiErrorHandlingMiddleware;
@@ -78,59 +81,41 @@ $builder->addDefinitions([
         function (ContainerInterface $c) {
             return new DatabaseService($c->get('applicationConfig')['database']);
         }
-    )
+    ),
+    DatabaseService::class => DI\get('db')
 ]);
 
 // Services
 $builder->addDefinitions([
-    SystemService::class => DI\create(SystemService::class)
-        ->constructor(DI\get(CommonService::class)),
-    CommonService::class => DI\create(CommonService::class)
-        ->constructor(DI\get('db')),
-    BatchService::class => DI\create(BatchService::class)
-        ->constructor(DI\get('db')),
-    VlService::class => DI\create(VlService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
-    EidService::class => DI\create(EidService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
-    Covid19Service::class => DI\create(Covid19Service::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
-    HepatitisService::class => DI\create(HepatitisService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
-    TbService::class => DI\create(TbService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
-    GenericTestsService::class => DI\create(GenericTestsService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
-    UsersService::class => DI\create(UsersService::class)
-        ->constructor(DI\get('db'), DI\get('applicationConfig'), DI\get(CommonService::class)),
-    GeoLocationsService::class => DI\create(GeoLocationsService::class)
-        ->constructor(DI\get('db')),
-    TestResultsService::class => DI\create(TestResultsService::class)
-        ->constructor(DI\get('db')),
-    AppMenuService::class => DI\create(AppMenuService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(UsersService::class)),
-    FacilitiesService::class => DI\create(FacilitiesService::class)
-        ->constructor(DI\get('db')),
-    InstrumentsService::class => DI\create(InstrumentsService::class)
-        ->constructor(DI\get('db')),
-    PatientsService::class => DI\create(PatientsService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
-    ApiService::class => DI\create(ApiService::class)
-        ->constructor(DI\get('db')),
+    SystemService::class  => DI\autowire(),
+    CommonService::class  => DI\autowire(),
+    BatchService::class  => DI\autowire(),
+    VlService::class => DI\autowire(),
+    EidService::class =>  DI\autowire(),
+    Covid19Service::class => DI\autowire(),
+    HepatitisService::class => DI\autowire(),
+    TbService::class => DI\autowire(),
+    GenericTestsService::class => DI\autowire(),
+    UsersService::class => DI\autowire(),
+    GeoLocationsService::class => DI\autowire(),
+    TestResultsService::class => DI\autowire(),
+    AppMenuService::class => DI\autowire(),
+    FacilitiesService::class => DI\autowire(),
+    InstrumentsService::class => DI\autowire(),
+    PatientsService::class => DI\autowire(),
+    ApiService::class => DI\autowire(),
+    TestsService::class => DI\autowire()
 ]);
 
 // Middlewares
 $builder->addDefinitions([
-    LegacyRequestHandler::class => DI\create(LegacyRequestHandler::class),
-    AppAuthMiddleware::class => DI\create(AppAuthMiddleware::class),
-    SystemAdminAuthMiddleware::class => DI\create(SystemAdminAuthMiddleware::class),
-    ApiAuthMiddleware::class => DI\create(ApiAuthMiddleware::class)
-        ->constructor(DI\get(UsersService::class)),
-    ErrorHandlerMiddleware::class => DI\create(ErrorHandlerMiddleware::class)
-        ->constructor(DI\get(ErrorResponseGenerator::class)),
-    ApiErrorHandlingMiddleware::class => DI\create(ApiErrorHandlingMiddleware::class)
-        ->constructor(DI\get(ErrorResponseGenerator::class)),
-    ApiLegacyFallbackMiddleware::class => DI\create(ApiLegacyFallbackMiddleware::class)
+    LegacyRequestHandler::class => DI\autowire(),
+    AppAuthMiddleware::class => DI\autowire(),
+    SystemAdminAuthMiddleware::class => DI\autowire(),
+    ApiAuthMiddleware::class => DI\autowire(),
+    ErrorHandlerMiddleware::class => DI\autowire(),
+    ApiErrorHandlingMiddleware::class => DI\autowire(),
+    ApiLegacyFallbackMiddleware::class => DI\autowire(),
 ]);
 
 // Utilities, Helpers and Other Classes
@@ -144,7 +129,8 @@ $builder->addDefinitions([
         ->constructor($debugMode),
     PdfConcatenateHelper::class => DI\create(PdfConcatenateHelper::class),
     PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class),
-    BatchPdfHelper::class => DI\create(BatchPdfHelper::class)
+    BatchPdfHelper::class => DI\create(BatchPdfHelper::class),
+    AppRegistry::class => DI\create(AppRegistry::class)
 ]);
 
 

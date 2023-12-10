@@ -2,6 +2,7 @@
 
 // imported in eid-edit-request.php based on country in global config
 
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
@@ -9,7 +10,7 @@ use App\Utilities\DateUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 
 

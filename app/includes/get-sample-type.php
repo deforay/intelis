@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
@@ -12,7 +13,7 @@ if (empty($_POST)) {
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 $db->where('facility_id', $_POST['facilityId']);

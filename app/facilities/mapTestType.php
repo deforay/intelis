@@ -3,7 +3,10 @@
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+
+use App\Registries\AppRegistry;
+
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 
 $mappingType = $_GET['type'] ?? 'health-facilities';

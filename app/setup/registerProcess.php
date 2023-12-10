@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Services\CommonService;
@@ -12,7 +13,7 @@ use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 $tableName = "user_details";

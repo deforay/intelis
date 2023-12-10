@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -7,7 +8,7 @@ use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 $_COOKIE = $request->getCookieParams();
 

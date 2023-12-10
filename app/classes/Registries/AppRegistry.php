@@ -4,25 +4,9 @@ namespace App\Registries;
 
 class AppRegistry
 {
-    /**
-     * The instance of the AppRegistry.
-     *
-     * @var AppRegistry
-     */
-    private static AppRegistry $instance;
+    private static ?AppRegistry $instance = null;
+    private static array $items = [];
 
-    /**
-     * The array of stored values.
-     *
-     * @var array
-     */
-    private array $values = [];
-
-    /**
-     * Gets the instance of the AppRegistry.
-     *
-     * @return AppRegistry
-     */
     public static function getInstance(): AppRegistry
     {
         if (null === static::$instance) {
@@ -32,46 +16,30 @@ class AppRegistry
         return static::$instance;
     }
 
-    /**
-     * Stores a value in the registry.
-     *
-     * @param string $key
-     * @param mixed $value
-     */
-    public function set(string $key, mixed $value): void
+    public static function set(string $key, $value): void
     {
-        $this->values[$key] = $value;
+        self::$items[$key] = $value;
     }
 
-    /**
-     * Gets a value from the registry.
-     *
-     * @param string $key
-     * @return mixed
-     */
-    public function get(string $key): mixed
+    public static function get(string $key)
     {
-        return $this->values[$key] ?? null;
+        return self::$items[$key] ?? null;
     }
 
-    /**
-     * AppRegistry constructor.
-     */
-    protected function __construct()
+    public function __construct()
     {
+        if (self::$instance) {
+            throw new \Exception("Cannot instantiate a singleton.");
+        }
+        self::$instance = $this;
     }
 
-    /**
-     * Prevent the instance from being cloned.
-     */
-    private function __clone()
+    public function __clone()
     {
+        throw new \Exception("Cannot clone a singleton.");
     }
-
-    /**
-     * Prevent the instance from being unserialized.
-     */
-    private function __wakeup()
+    public function __wakeup()
     {
+        throw new \Exception("Cannot unserialize a singleton.");
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use JsonMachine\Items;
 use App\Services\TbService;
 use App\Services\ApiService;
@@ -24,7 +25,7 @@ try {
     ini_set('max_execution_time', 20000);
 
     /** @var Slim\Psr7\Request $request */
-    $request = $GLOBALS['request'];
+    $request = AppRegistry::get('request');
     $noOfFailedRecords = 0;
 
     $origJson = $request->getBody()->getContents();

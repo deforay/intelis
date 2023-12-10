@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -19,7 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 $id = base64_decode((string) $_POST['id']);

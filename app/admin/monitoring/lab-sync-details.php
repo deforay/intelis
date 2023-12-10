@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\GeoLocationsService;
@@ -16,7 +17,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 
 $facilityId = base64_decode((string) $_GET['labId']);

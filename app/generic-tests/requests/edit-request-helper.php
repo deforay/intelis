@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -29,7 +30,7 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 // echo "<pre>";print_r($_POST);die;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 $tableName = "form_generic";
 $testTableName = "generic_test_results";

@@ -2,6 +2,7 @@
 
 // this file is included in /import-result/processImportedResults.php
 
+use App\Registries\AppRegistry;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -11,7 +12,7 @@ use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 /** @var DatabaseService $db */

@@ -114,7 +114,6 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
             a_u_d.user_name as approvedBy,
             c.iso_name as nationality,
             rs.rejection_reason_name,
-            r_c_a.recommended_corrective_action_name,
             b.batch_code
             FROM form_covid19 as vl
             LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
@@ -126,7 +125,6 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
             LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
             LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
             LEFT JOIN r_covid19_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
-            LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
             LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
 $start_date = '';
 $end_date = '';

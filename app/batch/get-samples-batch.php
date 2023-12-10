@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -8,7 +9,7 @@ use App\Utilities\DateUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
@@ -42,7 +43,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'vl') {
     $sampleTypeColumn = "sample_type";
 }
 
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');

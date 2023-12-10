@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -25,7 +26,7 @@ try {
   $apiService = ContainerRegistry::get(ApiService::class);
 
   /** @var Laminas\Diactoros\ServerRequest $request */
-  $request = $GLOBALS['request'];
+  $request = AppRegistry::get('request');
   $data = $apiService->getJsonFromRequest($request, true);
 
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -23,12 +24,12 @@ $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_COOKIE = $request->getCookieParams();
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_COOKIE = $request->getCookieParams();
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");

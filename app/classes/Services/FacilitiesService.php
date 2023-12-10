@@ -9,12 +9,12 @@ use App\Registries\ContainerRegistry;
 class FacilitiesService
 {
 
-    protected ?DatabaseService $db = null;
+    protected ?DatabaseService $db;
     protected string $table = 'facility_details';
 
-    public function __construct($db = null)
+    public function __construct(?DatabaseService $db)
     {
-        $this->db = $db ?? ContainerRegistry::get('db');
+        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
     }
 
     public function getAllFacilities($facilityType = null, $onlyActive = true)

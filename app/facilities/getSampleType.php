@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\TbService;
 use App\Services\VlService;
 use App\Services\EidService;
@@ -13,7 +14,7 @@ $db = ContainerRegistry::get('db');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
+$request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
 

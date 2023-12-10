@@ -1,20 +1,14 @@
 <?php
-// Allow from any origin
-use App\Exceptions\SystemException;
+
 use App\Services\ApiService;
-use App\Services\DatabaseService;
+use App\Services\TestsService;
 use App\Services\UsersService;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\FacilitiesService;
+use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Services\GeoLocationsService;
 
-/** @var Slim\Psr7\Request $request */
-$request = $GLOBALS['request'];
-$origJson = $request->getBody()->getContents();
-$input = $request->getParsedBody();
-
-$applicationConfig = ContainerRegistry::get('applicationConfig');
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
@@ -28,6 +22,20 @@ $app = ContainerRegistry::get(ApiService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
+/** @var Slim\Psr7\Request $request */
+$request = AppRegistry::get('request');
+$origJson = $request->getBody()->getContents();
+$input = $request->getParsedBody();
+
+if (
+    empty($input) ||
+    empty($input['testType']) ||
+    (empty($input['uniqueId']) && empty($input['sampleCode']))
+) {
+    http_response_code(400);
+    throw new SystemException('Invalid request');
+}
+
 
 $transactionId = $general->generateUUID();
 
@@ -37,25 +45,12 @@ $requestUrl .= $_SERVER['REQUEST_URI'];
 $authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserByToken($authToken);
 
-$testType = [
-    'vl' => 'form_vl',
-    'eid' => 'form_eid',
-    'covid19' => 'form_covid19',
-    'hepatitis' => 'form_hepatitis',
-    'tb' => 'form_tb',
-    'generic-tests' => 'form_generic'
-];
-$testTypePrimary = [
-    'vl' => 'vl_sample_id',
-    'eid' => 'eid_id',
-    'covid19' => 'covid19_id',
-    'hepatitis' => 'hepatitis_id',
-    'tb' => 'tb_id',
-    'generic-tests' => 'sample_id'
-];
+$tableName = TestsService::getTestTableName($input['testType']);
+$primaryKeyName = TestsService::getTestPrimaryKeyName($input['testType']);
+
 try {
-    $sQuery = 'SELECT * FROM ' . $testType[$input['testType']] . ' as vl
-    LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status';
+    $sQuery = "SELECT * FROM $tableName as vl
+    LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
     $where = [];
     /* To check the uniqueId filter */
@@ -79,8 +74,8 @@ try {
     foreach ($rowData as $key => $row) {
         if (!empty($row['result_status'])) {
             if (!in_array($row['result_status'], [4, 7, 8])) {
-                $db->where($testTypePrimary[$input['testType']], $row[$testTypePrimary[$input['testType']]]);
-                $status = $db->update($testType[$input['testType']], array('result_status' => 12));
+                $db->where($primaryKeyName, $row[$primaryKeyName]);
+                $status = $db->update($tableName, array('result_status' => 12));
                 if ($status) {
                     $response[$key]['status'] = 'success';
                 } else {
@@ -99,7 +94,7 @@ try {
         'timestamp' => time(),
         'data' => $response
     ];
-} catch (SystemException $exc) {
+} catch (Exception | InvalidArgumentException | SystemException $exc) {
 
     // http_response_code(500);
     $payload = [
@@ -111,6 +106,7 @@ try {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
+
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'cancel-requests', $input['testType'], $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'cancel-requests', $input['testType'], $requestUrl, $origJson, $payload, 'json');
 echo $payload;
