@@ -37,7 +37,6 @@ use App\Middlewares\Api\ApiAuthMiddleware;
 use App\Middlewares\App\AppAuthMiddleware;
 use App\Middlewares\ErrorHandlerMiddleware;
 use Laminas\Config\Factory as ConfigFactory;
-use Symfony\Component\VarDumper\Cloner\Data;
 use App\ErrorHandlers\ErrorResponseGenerator;
 use App\Middlewares\SystemAdminAuthMiddleware;
 use App\Middlewares\Api\ApiErrorHandlingMiddleware;

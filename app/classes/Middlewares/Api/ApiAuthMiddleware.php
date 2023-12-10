@@ -13,7 +13,7 @@ readonly class ApiAuthMiddleware implements MiddlewareInterface
 {
     private UsersService $userModel;
 
-    public function __construct($userModel)
+    public function __construct(UsersService $userModel)
     {
         $this->userModel = $userModel;
     }
