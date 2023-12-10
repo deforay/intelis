@@ -1,52 +1,39 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Services\TestsService;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$table = "form_vl";
 
-$testType = 'vl';
 
-if (!empty($_POST['testType'])) {
-    $testType = $_POST['testType'];
-}
+$testType = $_POST['testType'] ?? 'vl';
 
-if (isset($testType) && $testType == 'vl') {
-    $url = "/vl/requests/vl-requests.php";
-    $table = "form_vl";
-    $testName = 'Viral Load';
-}
-if (isset($testType) && $testType == 'eid') {
-    $url = "/eid/requests/eid-requests.php";
-    $table = "form_eid";
-    $testName = 'EID';
-}
-if (isset($testType) && $testType == 'covid19') {
-    $url = "/covid-19/requests/covid-19-requests.php";
-    $table = "form_covid19";
-    $testName = 'Covid-19';
-}
-if (isset($testType) && $testType == 'hepatitis') {
-    $url = "/hepatitis/requests/hepatitis-requests.php";
-    $table = "form_hepatitis";
-    $testName = 'Hepatitis';
-}
-if (isset($testType) && $testType == 'tb') {
-    $url = "/tb/requests/tb-requests.php";
-    $table = "form_tb";
-    $testName = 'TB';
-}
+$table = TestsService::getTestTableName($testType);
+$testName = TestsService::getTestName($testType);
+
+// if (isset($testType) && $testType == 'vl') {
+//     $url = "/vl/requests/vl-requests.php";
+// }
+// if (isset($testType) && $testType == 'eid') {
+//     $url = "/eid/requests/eid-requests.php";
+// }
+// if (isset($testType) && $testType == 'covid19') {
+//     $url = "/covid-19/requests/covid-19-requests.php";
+// }
+// if (isset($testType) && $testType == 'hepatitis') {
+//     $url = "/hepatitis/requests/hepatitis-requests.php";
+// }
+// if (isset($testType) && $testType == 'tb') {
+//     $url = "/tb/requests/tb-requests.php";
+// }
 
 /*
  * Array of database columns which should be read and sent back to DataTables. Use a space where

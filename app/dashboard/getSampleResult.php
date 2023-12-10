@@ -1,13 +1,14 @@
 <?php
 
-use App\Registries\AppRegistry;
+use App\Services\TestsService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -17,6 +18,10 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
+$testType = (string) $_POST['type'];
+$table = TestsService::getTestTableName($testType);
+$primaryKey = TestsService::getTestPrimaryKeyName($testType);
+
 $waitingTotal = 0;
 $rejectedTotal = 0;
 $receivedTotal = 0;
@@ -24,53 +29,46 @@ $dFormat = '';
 $waitingDate = '';
 $rejectedDate = '';
 $i = 0;
-if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
-    $table = "form_eid";
+if ($testType == 'eid') {
     $samplesReceivedChart = "eidSamplesReceivedChart";
     $samplesTestedChart = "eidSamplesTestedChart";
     $samplesRejectedChart = "eidSamplesRejectedChart";
     $samplesWaitingChart = "eidSamplesWaitingChart";
     $samplesOverviewChart = "eidSamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'covid19') {
-    $table = "form_covid19";
+} elseif ($testType == 'covid19') {
     $samplesReceivedChart = "covid19SamplesReceivedChart";
     $samplesTestedChart = "covid19SamplesTestedChart";
     $samplesNotTestedChart = "covid19SamplesNotTestedChart";
     $samplesRejectedChart = "covid19SamplesRejectedChart";
     $samplesWaitingChart = "covid19SamplesWaitingChart";
     $samplesOverviewChart = "covid19SamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'hepatitis') {
-    $table = "form_hepatitis";
+} elseif ($testType == 'hepatitis') {
     $samplesReceivedChart = "hepatitisSamplesReceivedChart";
     $samplesTestedChart = "hepatitisSamplesTestedChart";
     $samplesRejectedChart = "hepatitisSamplesRejectedChart";
     $samplesWaitingChart = "hepatitisSamplesWaitingChart";
     $samplesOverviewChart = "hepatitisSamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'vl') {
+} elseif ($testType == 'vl') {
     $recencyWhere = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
-    $table = "form_vl";
     $samplesReceivedChart = "vlSamplesReceivedChart";
     $samplesTestedChart = "vlSamplesTestedChart";
     $samplesRejectedChart = "vlSamplesRejectedChart";
     $samplesWaitingChart = "vlSamplesWaitingChart";
     $samplesOverviewChart = "vlSamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'recency') {
+} elseif ($testType == 'recency') {
     $recencyWhere = " reason_for_vl_testing = 9999 ";
-    $table = "form_vl";
     $samplesReceivedChart = "recencySamplesReceivedChart";
     $samplesTestedChart = "recencySamplesTestedChart";
     $samplesRejectedChart = "recencySamplesRejectedChart";
     $samplesWaitingChart = "recencySamplesWaitingChart";
     $samplesOverviewChart = "recencySamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'tb') {
-    $table = "form_tb";
+} elseif ($testType == 'tb') {
     $samplesReceivedChart = "tbSamplesReceivedChart";
     $samplesTestedChart = "tbSamplesTestedChart";
     $samplesRejectedChart = "tbSamplesRejectedChart";
     $samplesWaitingChart = "tbSamplesWaitingChart";
     $samplesOverviewChart = "tbSamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'generic-tests') {
-    $table = "form_generic";
+} elseif ($testType == 'generic-tests') {
     $samplesReceivedChart = "genericTestsSamplesReceivedChart";
     $samplesTestedChart = "genericTestsSamplesTestedChart";
     $samplesRejectedChart = "genericTestsSamplesRejectedChart";
