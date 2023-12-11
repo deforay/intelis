@@ -6,10 +6,6 @@ $userQuery = "SELECT * from system_admin where system_admin_id='" . $id . "'";
 $userInfo = $db->query($userQuery);
 ?>
 
-<link href="vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
-
-<!-- DataTables Responsive CSS -->
-<link href="vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -70,10 +66,6 @@ $userInfo = $db->query($userQuery);
   </section>
   <!-- /.content -->
 </div>
-<script src="vendor/jquery/jquery.min.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 
 
 <script type="text/javascript">

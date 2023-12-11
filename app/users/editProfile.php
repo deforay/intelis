@@ -30,11 +30,6 @@ $data = $db->get("user_login_history", 25);
 
 ?>
 
-<link href="vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
-
-<!-- DataTables Responsive CSS -->
-<link href="vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
-
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -132,24 +127,24 @@ $data = $db->get("user_login_history", 25);
           <!-- /.box-body -->
           <div class="box-footer">
             <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-            <a href="/dashboard/index.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
+            <a href="/dashboard/index.php" class="btn btn-default"> <?= _translate("Cancel"); ?></a>
           </div>
           <!-- /.box-footer -->
         </form>
         <!-- /.row -->
       </div>
       <div class="box-body">
-        <h4 style="font-weight:bold;border-bottom:1px solid #ccc;padding-bottom:10px;">Recent Login Attempts</h4>
+        <h4 style="font-weight:bold;border-bottom:1px solid #ccc;padding-bottom:10px;"><?= _translate("Recent Login Attempts"); ?></h4>
         <table aria-describedby="table" class="table table-striped table-bordered table-hover" id="loginAttempts">
           <thead>
             <tr>
 
-              <th>Login Attempt Date and Time</th>
-              <th>Login ID</th>
-              <th>IP Address</th>
-              <th>Browser</th>
-              <th>Operating System</th>
-              <th>Login Status</th>
+              <th><?= _translate("Login Attempt Date and Time"); ?></th>
+              <th><?= _translate("Login ID"); ?></th>
+              <th><?= _translate("IP Address"); ?></th>
+              <th><?= _translate("Browser"); ?></th>
+              <th><?= _translate("Operating System"); ?></th>
+              <th><?= _translate("Login Status"); ?></th>
             </tr>
           </thead>
           <tbody>
@@ -175,7 +170,7 @@ $data = $db->get("user_login_history", 25);
             ?>
 
               <tr>
-                <td class="center" colspan="6">No record found</td>
+                <td class="center" colspan="6"><?= _translate("No record found"); ?></td>
               </tr>
             <?php
             } ?>
@@ -188,13 +183,6 @@ $data = $db->get("user_login_history", 25);
   </section>
   <!-- /.content -->
 </div>
-<script src="vendor/jquery/jquery.min.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-
-<script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
-<script src="vendor/datatables-responsive/dataTables.responsive.js"></script>
 
 <!-- $(document).ready(function() {
 $('#example').DataTable({
@@ -249,7 +237,7 @@ responsive: true
     var pwd = $('#confirmPassword').val();
     var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
     if (regex.test(pwd) == false) {
-      alert("<?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
+      alert("<?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.", true) ?>");
       $('.ppwd').focus();
     }
     return regex.test(pwd);
@@ -267,7 +255,7 @@ responsive: true
       const success = await Utilities.copyToClipboard(data);
       if (success) {
         Toastify({
-          text: "Random password generated and copied to clipboard",
+          text: "<?= _translate("Random password generated and copied to clipboard", true); ?>",
           duration: 3000,
         }).showToast();
       } else {
