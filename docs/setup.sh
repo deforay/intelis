@@ -23,8 +23,6 @@ for cmd in "apt"; do
     fi
 done
 
-# START OF SCRIPT - BE CAREFUL OF WHAT YOU CHANGE BELOW THIS LINE
-
 spinner() {
     local pid=$!
     local delay=0.1
@@ -60,6 +58,7 @@ else
     apt install -y apache2
     a2dismod mpm_event
     a2enmod rewrite headers deflate env mpm_prefork
+
     service apache2 restart || {
         echo "Failed to restart Apache2. Exiting..."
         exit 1
@@ -71,7 +70,7 @@ fi
 mysql_root_password=""
 mysql_root_password_confirm=""
 while :; do # Infinite loop to keep asking until a correct password is provided
-    while [ -z "${mysql_root_password}" ] || [ "${mysql_root_password}" != "${mysql_root_password}_confirm" ]; do
+    while [ -z "${mysql_root_password}" ] || [ "${mysql_root_password}" != "${mysql_root_password_confirm}" ]; do
         read -sp "Please enter the MySQL root password (cannot be blank): " mysql_root_password
         echo
         read -sp "Please confirm the MySQL root password: " mysql_root_password_confirm
@@ -79,7 +78,7 @@ while :; do # Infinite loop to keep asking until a correct password is provided
 
         if [ -z "${mysql_root_password}" ]; then
             echo "Password cannot be blank."
-        elif [ "${mysql_root_password}" != "${mysql_root_password}_confirm" ]; then
+        elif [ "${mysql_root_password}" != "${mysql_root_password_confirm}" ]; then
             echo "Passwords do not match. Please try again."
         fi
     done
@@ -330,7 +329,7 @@ if [[ "$install_alongside" =~ ^[Yy][Ee][Ss]$ ]]; then
     vhost_file="/etc/apache2/sites-available/${hostname}.conf"
     echo "Creating ${vhost_file} with VLSM configuration..."
     {
-        echo "<VirtualHost *:80>"
+        echo "<VirtualHost *:8080>"
         echo "${vlsm_config_block}"
         echo "</VirtualHost>"
     } >"${vhost_file}"
