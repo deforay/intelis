@@ -2,7 +2,7 @@
 
 use App\Registries\AppRegistry;
 
-ob_start();
+
 $title = _translate("Test Methods");
 
 require_once APPLICATION_PATH . '/header.php';

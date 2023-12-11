@@ -2,7 +2,7 @@
 
 use App\Registries\AppRegistry;
 
-ob_start();
+
 $title = _translate("Sample Type");
 
 require_once APPLICATION_PATH . '/header.php';

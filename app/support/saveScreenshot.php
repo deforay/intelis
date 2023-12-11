@@ -1,14 +1,12 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use PHPMailer\PHPMailer\PHPMailer;
+use App\Registries\ContainerRegistry;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
 $tableName = "support";
 
 /** @var DatabaseService $db */
@@ -62,8 +60,8 @@ try {
 	//Send mail to support
 	$supportEmail = $general->getGlobalConfig('support_email');
 	if (!empty($supportEmail)) {
-		$sQuery = "SELECT * FROM support WHERE support_id = $supportId";
-		$sResult = $db->rawQuery($sQuery);
+		$sQuery = "SELECT * FROM support WHERE support_id = ?";
+		$sResult = $db->rawQuery($sQuery, [$supportId]);
 		if (isset($sResult[0]['support_id']) && trim((string) $sResult[0]['support_id']) != "") {
 			$feedback = $sResult[0]['feedback'];
 			$feedbackUrl = $sResult[0]['feedback_url'];
@@ -74,7 +72,7 @@ try {
 
 			if (isset($smtpEmail) && trim((string) $smtpEmail) != "" && trim((string) $smtpPassword) != "") {
 				//Create a new PHPMailer instance
-				$mail = new PHPMailer\PHPMailer\PHPMailer();
+				$mail = new PHPMailer();
 				//Tell PHPMailer to use SMTP
 				$mail->isSMTP();
 				//Enable SMTP debugging

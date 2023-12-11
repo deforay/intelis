@@ -2,7 +2,6 @@
 
 use App\Registries\AppRegistry;
 
-ob_start();
 $title = _translate("Test Failure Reason");
 
 require_once APPLICATION_PATH . '/header.php';

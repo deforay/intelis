@@ -1,5 +1,4 @@
 <?php
-ob_start();
 $title = _translate("Symptoms");
 
 require_once APPLICATION_PATH . '/header.php';

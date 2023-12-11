@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = _translate("Test Methods");
 
 require_once APPLICATION_PATH . '/header.php';

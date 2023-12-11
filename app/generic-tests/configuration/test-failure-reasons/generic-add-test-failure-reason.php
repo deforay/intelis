@@ -1,5 +1,4 @@
 <?php
-ob_start();
 $title = _translate("Test Failure Reasons");
 
 require_once APPLICATION_PATH . '/header.php';
