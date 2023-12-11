@@ -19,7 +19,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";

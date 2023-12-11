@@ -1,11 +1,11 @@
 <?php
 
+use App\Services\UsersService;
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-use App\Services\UsersService;
 
 
 
@@ -15,7 +15,11 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$geolocation = new GeoLocationsService();
+
+
+/** @var GeoLocationsService $geolocation */
+$geolocation = ContainerRegistry::get(GeoLocationsService::class);
+
 
 
 /** @var UsersService $usersService */
@@ -146,7 +150,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required field"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -229,7 +233,12 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="testingPoints" class="col-lg-4 control-label"><?php echo _translate("Testing Point(s)"); ?><br> <small><?php echo _translate("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="testingPoints" name="testingPoints" placeholder="<?php echo _translate('eg. VCT, PMTCT'); ?>" value="<?php echo implode(", ", json_decode((string) $facilityInfo['testing_points'], true)); ?>" />
+										<?php
+										$testingPointsJSON = $facilityInfo['testing_points'] ?? '[]';
+										$decoded = json_decode($testingPointsJSON, true);
+										$testingPoints = is_array($decoded) ? implode(", ", $decoded) : '';
+										?>
+										<input type="text" class="form-control" id="testingPoints" name="testingPoints" placeholder="<?php echo _translate('eg. VCT, PMTCT'); ?>" value="<?= $testingPoints ?>" />
 									</div>
 								</div>
 							</div>

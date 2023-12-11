@@ -13,7 +13,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 //main query
 $query = "SELECT covid19.sample_code,covid19.covid19_id,covid19.facility_id,f.facility_name,f.facility_code FROM form_covid19 as covid19 LEFT JOIN facility_details as f ON covid19.facility_id=f.facility_id where is_result_mail_sent like 'no' AND covid19.result IS NOT NULL AND covid19.result!= '' ORDER BY f.facility_name ASC";
@@ -52,7 +52,7 @@ $batchResult = $db->rawQuery($batchQuery);
 
     <div class="box box-default">
       <div class="box-header with-border">
-        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">

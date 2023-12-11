@@ -18,7 +18,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 
 if ($formId == '3') {

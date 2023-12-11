@@ -84,7 +84,7 @@ try {
     $responseData = [];
 
     $instanceId = $general->getInstanceId();
-    $formId = $general->getGlobalConfig('vl_form');
+    $formId = (int) $general->getGlobalConfig('vl_form');
 
     /* Update form attributes */
     $transactionId = $general->generateUUID();

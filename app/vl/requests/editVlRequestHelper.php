@@ -23,7 +23,7 @@ $vlService = ContainerRegistry::get(VlService::class);
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */

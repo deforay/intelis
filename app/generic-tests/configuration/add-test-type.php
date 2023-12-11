@@ -65,7 +65,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required field"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -287,81 +287,85 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							</div>
 						</div>
 						<div class="box-body">
-						<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix" id="vlSampleTable">
-							<tbody>
-								<tr class="result-type">
-									<td>
-										<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">
-											<tr>
-												<td class="hide firstSubTest" style="width:20%;"><lable for="resultSubGroup1" class="form-label-control">Enter the test name</lable></td>
-												<td class="hide firstSubTest" style="width:30%;">
-													<input type="text" name="resultConfig[sub_test_name][1]"id="resultSubGroup1" class="form-control input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for 1st row"/>
-												</td>
-												<td style="width:20%;"><lable for="testType1" class="form-label-control">Select result type</lable></td>
-												<td style="width:30%;">
-													<select type="text" name="resultConfig[result_type][1]"id="testType1" class="form-control input-sm" title="Please select the type of result" onchange="setResultType(this.value, 1)">
-														<option value=""> --<?= _translate("select");?>-- </option>
-														<option value="qualitative"><?= _translate("Qualitative");?></option>
-														<option value="quantitative"><?= _translate("Quantitative");?></option>
-													</select>
-												</td>
-											</tr>
-											<tr class="qualitative-div hide" id="qualitativeRow1">
-												<td colspan="4">
-													<table style="width:100%;" class="table table-bordered table-striped clearfix">
-														<tr>
-															<th>Expected Result</th>
-															<th>Result Code</th>
-															<th>Sort Order</th>
-															<th>Action</th>
-														</tr>
-														<tr>
-															<td>
-																<input type="text" name="resultConfig[qualitative][expectedResult][1][1]" class="form-control qualitative-input-11 input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />
-															</td>
-															<td>
-																<input type="text" name="resultConfig[qualitative][resultCode][1][1]" class="form-control qualitative-input-11 input-sm" placeholder="Enter the result code" title="Please enter the result code" />
-															</td>
-															<td>
-																<input type="text" name="resultConfig[qualitative][sortOrder][1][1]" class="form-control qualitative-input-11 input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />
-															</td>
-															<td style="text-align:center;">
-																<a href="javascript:void(0);" onclick="addQualitativeRow(this, 1,2);" class="btn btn-xs btn-info qualitative-insrow-11"><i class="fa-solid fa-plus"></i></a>
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-											<tr class="quantitative-div hide" id="quantitativeRow1">
-												<td colspan="4">
-													<table style="width:100%;" class="table table-bordered table-striped clearfix">
-														<tr>
-															<th>High Range</th>
-															<th>Threshold Range</th>
-															<th>Low Range</th>
-														</tr>
-														<tr>
-															<td>
-																<input type="text" name="resultConfig[quantitative][high_range][1]" class="form-control quantitative-input-11 input-sm" placeholder="Enter the high value" title="Please enter the high value" />
-															</td>
-															<td>
-																<input type="text" name="resultConfig[quantitative][threshold_range][1]" class="form-control quantitative-input-11 input-sm" placeholder="Enter the threshold value" title="Please enter the threshold value" />
-															</td>
-															<td>
-																<input type="text" name="resultConfig[quantitative][low_range][1]" class="form-control quantitative-input-11 input-sm" placeholder="Enter the low value" title="Please enter the low value" />
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</table>
-									</td>
-									<td style=" text-align:center;vertical-align: middle;">
-										<a href="javascript:void(0);" onclick="addTbRow(this);" class="btn btn-xs btn-info"><i class="fa-solid fa-plus"></i></a>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+							<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix" id="vlSampleTable">
+								<tbody>
+									<tr class="result-type">
+										<td>
+											<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">
+												<tr>
+													<td class="hide firstSubTest" style="width:20%;">
+														<lable for="resultSubGroup1" class="form-label-control">Enter the test name</lable>
+													</td>
+													<td class="hide firstSubTest" style="width:30%;">
+														<input type="text" name="resultConfig[sub_test_name][1]" id="resultSubGroup1" class="form-control input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for 1st row" />
+													</td>
+													<td style="width:20%;">
+														<lable for="testType1" class="form-label-control">Select result type</lable>
+													</td>
+													<td style="width:30%;">
+														<select type="text" name="resultConfig[result_type][1]" id="testType1" class="form-control input-sm" title="Please select the type of result" onchange="setResultType(this.value, 1)">
+															<option value=""> --<?= _translate("select"); ?>-- </option>
+															<option value="qualitative"><?= _translate("Qualitative"); ?></option>
+															<option value="quantitative"><?= _translate("Quantitative"); ?></option>
+														</select>
+													</td>
+												</tr>
+												<tr class="qualitative-div hide" id="qualitativeRow1">
+													<td colspan="4">
+														<table style="width:100%;" class="table table-bordered table-striped clearfix">
+															<tr>
+																<th>Expected Result</th>
+																<th>Result Code</th>
+																<th>Sort Order</th>
+																<th>Action</th>
+															</tr>
+															<tr>
+																<td>
+																	<input type="text" name="resultConfig[qualitative][expectedResult][1][1]" class="form-control qualitative-input-11 input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />
+																</td>
+																<td>
+																	<input type="text" name="resultConfig[qualitative][resultCode][1][1]" class="form-control qualitative-input-11 input-sm" placeholder="Enter the result code" title="Please enter the result code" />
+																</td>
+																<td>
+																	<input type="text" name="resultConfig[qualitative][sortOrder][1][1]" class="form-control qualitative-input-11 input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />
+																</td>
+																<td style="text-align:center;">
+																	<a href="javascript:void(0);" onclick="addQualitativeRow(this, 1,2);" class="btn btn-xs btn-info qualitative-insrow-11"><i class="fa-solid fa-plus"></i></a>
+																</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+												<tr class="quantitative-div hide" id="quantitativeRow1">
+													<td colspan="4">
+														<table style="width:100%;" class="table table-bordered table-striped clearfix">
+															<tr>
+																<th>High Range</th>
+																<th>Threshold Range</th>
+																<th>Low Range</th>
+															</tr>
+															<tr>
+																<td>
+																	<input type="text" name="resultConfig[quantitative][high_range][1]" class="form-control quantitative-input-11 input-sm" placeholder="Enter the high value" title="Please enter the high value" />
+																</td>
+																<td>
+																	<input type="text" name="resultConfig[quantitative][threshold_range][1]" class="form-control quantitative-input-11 input-sm" placeholder="Enter the threshold value" title="Please enter the threshold value" />
+																</td>
+																<td>
+																	<input type="text" name="resultConfig[quantitative][low_range][1]" class="form-control quantitative-input-11 input-sm" placeholder="Enter the low value" title="Please enter the low value" />
+																</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+										</td>
+										<td style=" text-align:center;vertical-align: middle;">
+											<a href="javascript:void(0);" onclick="addTbRow(this);" class="btn btn-xs btn-info"><i class="fa-solid fa-plus"></i></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 						<!-- /.box-body -->
 						<div class="box-footer">
@@ -720,18 +724,19 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 		$(obj).attr('disabled', true);
 		var html = '<tr align="center"> \
 			<td>\
-				<input type="text" name="resultConfig[qualitative][expectedResult]['+row1+']['+row2+']" class="form-control qualitative-input-'+row1+row2+' input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />\
+				<input type="text" name="resultConfig[qualitative][expectedResult][' + row1 + '][' + row2 + ']" class="form-control qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />\
 			</td>\
 			<td>\
-				<input type="text" name="resultConfig[qualitative][resultCode]['+row1+']['+row2+']" class="form-control qualitative-input-'+row1+row2+' input-sm" placeholder="Enter the result code" title="Please enter the result code" />\
+				<input type="text" name="resultConfig[qualitative][resultCode][' + row1 + '][' + row2 + ']" class="form-control qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the result code" title="Please enter the result code" />\
 			</td>\
 			<td>\
-				<input type="text" name="resultConfig[qualitative][sortOrder]['+row1+']['+row2+']" class="form-control qualitative-input-'+row1+row2+' input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />\
+				<input type="text" name="resultConfig[qualitative][sortOrder][' + row1 + '][' + row2 + ']" class="form-control qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />\
 			</td>\
-			<td><a href="javascript:void(0);" onclick="addQualitativeRow(this, '+row1+','+(row2+1)+');" class="btn btn-xs btn-info qualitative-insrow-'+row1+row2+'"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a  href="javascript:void(0);" onclick="removeQualitativeRow(this, '+row1+', '+(row2-1)+')" class="btn btn-xs btn-danger"  title="Remove this row completely" alt="Remove this row completely"><i class="fa-solid fa-minus"></i></a></td> \
+			<td><a href="javascript:void(0);" onclick="addQualitativeRow(this, ' + row1 + ',' + (row2 + 1) + ');" class="btn btn-xs btn-info qualitative-insrow-' + row1 + row2 + '"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a  href="javascript:void(0);" onclick="removeQualitativeRow(this, ' + row1 + ', ' + (row2 - 1) + ')" class="btn btn-xs btn-danger"  title="Remove this row completely" alt="Remove this row completely"><i class="fa-solid fa-minus"></i></a></td> \
 		</tr>'
 		$(obj.parentNode.parentNode).after(html);
 	}
+
 	function addTbRow(obj) {
 		$('.firstSubTest').removeClass('hide');
 		$('#resultSubGroup1').addClass('isRequired');
@@ -740,20 +745,20 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 				<td>\
 					<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">\
 						<tr>\
-							<td style="width:20%;"><lable for="resultSubGroup'+sampleCounter+'" class="form-label-control">Enter the test name</lable></td>\
+							<td style="width:20%;"><lable for="resultSubGroup' + sampleCounter + '" class="form-label-control">Enter the test name</lable></td>\
 							<td style="width:30%;">\
-								<input type="text" name="resultConfig[sub_test_name]['+sampleCounter+']"id="resultSubGroup'+sampleCounter+'" class="form-control isRequired input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for '+sampleCounter+' row"/>\
+								<input type="text" name="resultConfig[sub_test_name][' + sampleCounter + ']"id="resultSubGroup' + sampleCounter + '" class="form-control isRequired input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for ' + sampleCounter + ' row"/>\
 							</td>\
-							<td style="width:20%;"><lable for="testType'+sampleCounter+'" class="form-label-control">Select result type</lable></td>\
+							<td style="width:20%;"><lable for="testType' + sampleCounter + '" class="form-label-control">Select result type</lable></td>\
 							<td style="width:30%;">\
-								<select type="text" name="resultConfig[result_type]['+sampleCounter+']"id="testType'+sampleCounter+'" class="form-control isRequired input-sm" title="Please select the type of result" onchange="setResultType(this.value, '+sampleCounter+')">\
-									<option value=""> --<?= _translate("select");?>-- </option>\
-									<option value="qualitative"><?= _translate("Qualitative");?></option>\
-									<option value="quantitative"><?= _translate("Quantitative");?></option>\
+								<select type="text" name="resultConfig[result_type][' + sampleCounter + ']"id="testType' + sampleCounter + '" class="form-control isRequired input-sm" title="Please select the type of result" onchange="setResultType(this.value, ' + sampleCounter + ')">\
+									<option value=""> --<?= _translate("select"); ?>-- </option>\
+									<option value="qualitative"><?= _translate("Qualitative"); ?></option>\
+									<option value="quantitative"><?= _translate("Quantitative"); ?></option>\
 								</select>\
 							</td>\
 						</tr>\
-						<tr class="qualitative-div hide" id="qualitativeRow'+sampleCounter+'">\
+						<tr class="qualitative-div hide" id="qualitativeRow' + sampleCounter + '">\
 							<td colspan="4">\
 								<table style="width:100%;" class="table table-bordered table-striped clearfix">\
 									<tr>\
@@ -764,22 +769,22 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 									</tr>\
 									<tr>\
 										<td>\
-											<input type="text" name="resultConfig[qualitative][expectedResult]['+sampleCounter+'][1]" class="form-control qualitative-input-'+sampleCounter+'1 input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />\
+											<input type="text" name="resultConfig[qualitative][expectedResult][' + sampleCounter + '][1]" class="form-control qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />\
 										</td>\
 										<td>\
-											<input type="text" name="resultConfig[qualitative][resultCode]['+sampleCounter+'][1]" class="form-control qualitative-input-'+sampleCounter+'1 input-sm" placeholder="Enter the result code" title="Please enter the result code" />\
+											<input type="text" name="resultConfig[qualitative][resultCode][' + sampleCounter + '][1]" class="form-control qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the result code" title="Please enter the result code" />\
 										</td>\
 										<td>\
-											<input type="text" name="resultConfig[qualitative][sortOrder]['+sampleCounter+'][1]" class="form-control qualitative-input-'+sampleCounter+'1 input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />\
+											<input type="text" name="resultConfig[qualitative][sortOrder][' + sampleCounter + '][1]" class="form-control qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />\
 										</td>\
 										<td style="text-align:center;">\
-											<a href="javascript:void(0);" onclick="addQualitativeRow(this, '+sampleCounter+', 2);" class="btn btn-xs btn-info qualitative-insrow-'+sampleCounter+'1"><i class="fa-solid fa-plus"></i></a>\
+											<a href="javascript:void(0);" onclick="addQualitativeRow(this, ' + sampleCounter + ', 2);" class="btn btn-xs btn-info qualitative-insrow-' + sampleCounter + '1"><i class="fa-solid fa-plus"></i></a>\
 										</td>\
 									</tr>\
 								</table>\
 							</td>\
 						</tr>\
-						<tr class="quantitative-div hide" id="quantitativeRow'+sampleCounter+'" class="table table-bordered table-striped clearfix">\
+						<tr class="quantitative-div hide" id="quantitativeRow' + sampleCounter + '" class="table table-bordered table-striped clearfix">\
 							<td colspan="4">\
 								<table style="width:100%;" class="table table-bordered table-striped clearfix">\
 									<tr>\
@@ -789,13 +794,13 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 									</tr>\
 									<tr>\
 										<td>\
-											<input type="text" name="resultConfig[quantitative][high_range]['+sampleCounter+']" class="form-control quantitative-input-'+sampleCounter+'1 input-sm" placeholder="Enter the high value" title="Please enter the high value" />\
+											<input type="text" name="resultConfig[quantitative][high_range][' + sampleCounter + ']" class="form-control quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the high value" title="Please enter the high value" />\
 										</td>\
 										<td>\
-											<input type="text" name="resultConfig[quantitative][threshold_range]['+sampleCounter+']" class="form-control quantitative-input-'+sampleCounter+'1 input-sm" placeholder="Enter the threshold value" title="Please enter the threshold value" />\
+											<input type="text" name="resultConfig[quantitative][threshold_range][' + sampleCounter + ']" class="form-control quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the threshold value" title="Please enter the threshold value" />\
 										</td>\
 										<td>\
-											<input type="text" name="resultConfig[quantitative][low_range]['+sampleCounter+']" class="form-control quantitative-input-'+sampleCounter+'1 input-sm" placeholder="Enter the low value" title="Please enter the low value" />\
+											<input type="text" name="resultConfig[quantitative][low_range][' + sampleCounter + ']" class="form-control quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the low value" title="Please enter the low value" />\
 										</td>\
 									</tr>\
 								</table>\
@@ -811,30 +816,31 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 	}
 
 	function removeQualitativeRow(obj, row1, row2) {
-		if(row2 <=2 ){
-			$('.qualitative-insrow-'+row1+row2).attr('disabled', false);
+		if (row2 <= 2) {
+			$('.qualitative-insrow-' + row1 + row2).attr('disabled', false);
 		}
 		$(obj.parentNode.parentNode).fadeOut("normal", function() {
 			$(this).remove();
 		});
 	}
+
 	function removeRow(obj) {
 		$(obj.parentNode.parentNode).fadeOut("normal", function() {
 			$(this).remove();
 		});
 	}
 
-	function setResultType(id, row){
-		if(id == 'qualitative'){
-			$('.quantitative-input'+row).removeClass('isRequired');
-			$('#qualitativeRow'+row).removeClass('hide');
-			$('.qualitative-input'+row).addClass('isRequired');
-			$('#quantitativeRow'+row).addClass('hide');
-		}else if(id == 'quantitative'){
-			$('.qualitative-input'+row).removeClass('isRequired');
-			$('#quantitativeRow'+row).removeClass('hide');
-			$('.quantitative-input'+row).addClass('isRequired');
-			$('#qualitativeRow'+row).addClass('hide');
+	function setResultType(id, row) {
+		if (id == 'qualitative') {
+			$('.quantitative-input' + row).removeClass('isRequired');
+			$('#qualitativeRow' + row).removeClass('hide');
+			$('.qualitative-input' + row).addClass('isRequired');
+			$('#quantitativeRow' + row).addClass('hide');
+		} else if (id == 'quantitative') {
+			$('.qualitative-input' + row).removeClass('isRequired');
+			$('#quantitativeRow' + row).removeClass('hide');
+			$('.quantitative-input' + row).addClass('isRequired');
+			$('#qualitativeRow' + row).addClass('hide');
 		}
 	}
 </script>

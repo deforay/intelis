@@ -147,7 +147,7 @@ $fundingSourceList = $general->getFundingSources();
                         <div class="col-xs-6 col-md-6">
                             <div class="box-header with-border">
                                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
-                                    <?php echo _translate("indicates required field"); ?> &nbsp;
+                                    <?php echo _translate("indicates required fields"); ?> &nbsp;
                                 </div>
                             </div>
                         </div>
@@ -156,7 +156,7 @@ $fundingSourceList = $general->getFundingSources();
             <?php } else { ?>
                 <div class="box-header with-border">
                     <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
-                        <?php echo _translate("indicates required field"); ?> &nbsp;
+                        <?php echo _translate("indicates required fields"); ?> &nbsp;
                     </div>
                 </div>
             <?php } ?>

@@ -22,7 +22,7 @@ $arr = $general->getGlobalConfig();
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 $sQuery = "SELECT * FROM r_covid19_sample_type WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);

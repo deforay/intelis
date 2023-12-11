@@ -106,7 +106,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">

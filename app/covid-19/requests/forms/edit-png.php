@@ -108,7 +108,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         <div class="box box-default">
             <div class="box-header with-border">
 
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -190,7 +190,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <tr>
                                         <td><label for="supportPartner">Implementing Partner </label></td>
                                         <td>
-                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
+                                            <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
@@ -208,7 +208,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 ?>
                                                     <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($eidInfo['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
-                                            </select>
+                                                </select>
                                         </td>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <!-- <tr> -->

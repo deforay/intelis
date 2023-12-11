@@ -1,8 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
@@ -16,7 +16,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 // Get locale directory list
-$localeLists = $general->getLocaleList('all');
+$localeLists = $general->getLocaleList(0);
 
 $formQuery = "SELECT * FROM s_available_country_forms ORDER by form_name ASC";
 $formResult = $db->query($formQuery);

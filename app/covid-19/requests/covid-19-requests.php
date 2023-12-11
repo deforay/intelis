@@ -57,7 +57,7 @@ $global = $general->getGlobalConfig();
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, $facilityId, "-- Select --");
 $testingLabs = $facilitiesService->getTestingLabs('covid19');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "-- Select --");
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
@@ -65,7 +65,7 @@ $fundingSourceList = $general->getFundingSources();
 //Implementing partner list
 $implementingPartnerList = $general->getImplementationPartners();
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 $sQuery = "SELECT * FROM r_covid19_sample_type WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);

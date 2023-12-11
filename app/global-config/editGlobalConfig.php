@@ -14,14 +14,14 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-// Get locale directory list
-$localeLists = $general->getLocaleList();
+
 $instanceQuery = "SELECT * FROM s_vlsm_instance
 					WHERE vlsm_instance_id= ?";
 $instanceResult = $db->rawQuery($instanceQuery, [$_SESSION['instanceId']]);
 
 
-$formQuery = "SELECT * FROM s_available_country_forms ORDER by form_name ASC";
+$formQuery = "SELECT * FROM s_available_country_forms
+				ORDER by form_name ASC";
 $formResult = $db->query($formQuery);
 $globalConfigQuery = "SELECT * FROM global_config";
 $configResult = $db->query($globalConfigQuery);
@@ -30,6 +30,11 @@ $arr = [];
 for ($i = 0; $i < sizeof($configResult); $i++) {
 	$arr[$configResult[$i]['name']] = $configResult[$i]['value'];
 }
+
+// Get locale directory list
+$localeLists = $general->getLocaleList((int)($arr['vl_form'] ?? 0));
+
+
 $mFieldArray = [];
 if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
 	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);

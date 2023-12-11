@@ -31,7 +31,7 @@ $vl_result_category = null;
 $finalResult = null;
 
 $systemType = $general->getSystemConfig('sc_user_type');
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */

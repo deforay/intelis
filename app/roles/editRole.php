@@ -1,11 +1,10 @@
 <?php
 
-
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
-use App\Services\DatabaseService;
 use App\Services\SystemService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -147,7 +146,7 @@ if ($priInfo) {
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
-					<?php echo _translate("indicates required field"); ?> &nbsp;
+					<?php echo _translate("indicates required fields"); ?> &nbsp;
 				</div>
 			</div>
 			<!-- /.box-header -->

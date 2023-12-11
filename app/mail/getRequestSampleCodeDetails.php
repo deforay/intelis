@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 if (!is_array($_POST['batch']) || empty($_POST['batch'])) {
   $_POST['batch'] = [];

@@ -75,9 +75,6 @@ foreach ($resultSet as $aRow) {
     $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= ? ORDER BY test_id DESC LIMIT 1";
     $covid19TestInfo = $db->rawQueryOne($covid19TestQuery, [$aRow['covid19_id']]);
     if (!empty($covid19TestInfo)) {
-        ob_start();
-        var_dump($covid19TestInfo);
-        error_log(ob_get_clean());
         foreach ($covid19TestInfo as $indexKey => $rows) {
             $testPlatform = $rows['testing_platform'] ?? null;
             $testMethod = $rows['test_name'] ?? null;

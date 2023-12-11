@@ -83,7 +83,7 @@ try {
     $roleUser = $usersService->getUserRole($user['user_id']);
 
     $instanceId = $general->getInstanceId();
-    $formId = $general->getGlobalConfig('vl_form');
+    $formId = (int) $general->getGlobalConfig('vl_form');
 
     /* Update form attributes */
     $version = $general->getSystemConfig('sc_version');

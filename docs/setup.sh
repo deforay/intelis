@@ -71,15 +71,15 @@ fi
 mysql_root_password=""
 mysql_root_password_confirm=""
 while :; do # Infinite loop to keep asking until a correct password is provided
-    while [ -z "$mysql_root_password" ] || [ "$mysql_root_password" != "$mysql_root_password_confirm" ]; do
+    while [ -z "${mysql_root_password}" ] || [ "${mysql_root_password}" != "${mysql_root_password}_confirm" ]; do
         read -sp "Please enter the MySQL root password (cannot be blank): " mysql_root_password
         echo
         read -sp "Please confirm the MySQL root password: " mysql_root_password_confirm
         echo
 
-        if [ -z "$mysql_root_password" ]; then
+        if [ -z "${mysql_root_password}" ]; then
             echo "Password cannot be blank."
-        elif [ "$mysql_root_password" != "$mysql_root_password_confirm" ]; then
+        elif [ "${mysql_root_password}" != "${mysql_root_password}_confirm" ]; then
             echo "Passwords do not match. Please try again."
         fi
     done
@@ -87,7 +87,7 @@ while :; do # Infinite loop to keep asking until a correct password is provided
     # MySQL Setup
     if command -v mysql &>/dev/null; then
         echo "MySQL is already installed. Verifying password..."
-        if mysqladmin ping -u root -p"$mysql_root_password" &>/dev/null; then
+        if mysqladmin ping -u root -p"${mysql_root_password}" &>/dev/null; then
             echo "Password verified."
             break # Exit the loop if the password is correct
         else
@@ -103,14 +103,14 @@ while :; do # Infinite loop to keep asking until a correct password is provided
         echo "Setting MySQL root password and creating databases..."
         mysql -e "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
         mysql -e "CREATE DATABASE interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-        mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$mysql_root_password'; FLUSH PRIVILEGES;"
+        mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${mysql_root_password}'; FLUSH PRIVILEGES;"
 
         echo "Configuring MySQL..."
         desired_sql_mode="sql_mode ="
         desired_innodb_strict_mode="innodb_strict_mode = 0"
         config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
 
-        awk -v dsm="$desired_sql_mode" -v dism="$desired_innodb_strict_mode" \
+        awk -v dsm="${desired_sql_mode}" -v dism="${desired_innodb_strict_mode}" \
             'BEGIN { sql_mode_added=0; innodb_strict_mode_added=0; }
             /sql_mode[[:space:]]*=/ {
                 if ($0 ~ dsm) {sql_mode_added=1;}
@@ -128,7 +128,7 @@ while :; do # Infinite loop to keep asking until a correct password is provided
                 if (innodb_strict_mode_added == 0) {print dism; innodb_strict_mode_added=1;}
                 next;
             }
-            { print; }' $config_file >tmpfile && mv tmpfile $config_file
+            { print; }' ${config_file} >tmpfile && mv tmpfile ${config_file}
 
         service mysql restart || {
             echo "Failed to restart MySQL. Exiting..."
@@ -221,7 +221,7 @@ if [ ! -d "/var/www/phpmyadmin" ]; then
     config_file="/etc/apache2/sites-available/000-default.conf"
 
     # Check if the desired alias already exists
-    if ! grep -q "$desired_alias" $config_file; then
+    if ! grep -q "$desired_alias" ${config_file}; then
         awk -v da="$desired_alias" \
             'BEGIN {added=0; alias_added=0}
         /Alias \/phpmyadmin[[:space:]]/ {
@@ -236,7 +236,7 @@ if [ ! -d "/var/www/phpmyadmin" ]; then
             }
             next;
         }
-        { print }' $config_file >tmpfile && mv tmpfile $config_file
+        { print }' ${config_file} >tmpfile && mv tmpfile ${config_file}
     fi
 
     service apache2 restart
@@ -274,82 +274,103 @@ temp_dir=$(mktemp -d)
 unzip master.zip -d "$temp_dir"
 
 # backup old code if it exists
-if [ -d "$vlsm_path" ]; then
-    cp -R "$vlsm_path" "$vlsm_path"-$(date +%Y%m%d-%H%M%S)
+if [ -d "${vlsm_path}" ]; then
+    cp -R "${vlsm_path}" "${vlsm_path}"-$(date +%Y%m%d-%H%M%S)
 else
-    mkdir -p "$vlsm_path"
+    mkdir -p "${vlsm_path}"
 fi
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-cp -R "$temp_dir/vlsm-master/"* "$vlsm_path"
+cp -R "$temp_dir/vlsm-master/"* "${vlsm_path}"
 
 # Remove the empty directory and the downloaded zip file
 rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
 
 # Set proper permissions
-chown -R www-data:www-data "$vlsm_path"
+chown -R www-data:www-data "${vlsm_path}"
 
 # Run Composer Update as www-data
 echo "Running composer update as www-data user..."
-cd "$vlsm_path"
+cd "${vlsm_path}"
 sudo -u www-data composer update
 
 # Import init.sql into the vlsm database
 echo "Importing init.sql into the vlsm database..."
-mysql -u root -p"$mysql_root_password" vlsm <"$vlsm_path/sql/init.sql"
+mysql -u root -p"${mysql_root_password}" vlsm <"${vlsm_path}/sql/init.sql"
 
 # Ask user for the hostname
 read -p "Enter the hostname [vlsm]: " hostname
 hostname="${hostname:-vlsm}"
 
 # Check if the hostname entry is already in /etc/hosts
-if ! grep -q "127.0.0.1 $hostname" /etc/hosts; then
-    echo "Adding $hostname to hosts file..."
-    echo "127.0.0.1 $hostname" | tee -a /etc/hosts
+if ! grep -q "127.0.0.1 ${hostname}" /etc/hosts; then
+    echo "Adding ${hostname} to hosts file..."
+    echo "127.0.0.1 ${hostname}" | tee -a /etc/hosts
 else
-    echo "$hostname entry is already in the hosts file."
+    echo "${hostname} entry is already in the hosts file."
 fi
+
+# Ask the user for installation preference
+echo "Do you want to install VLSM alongside other apps? (yes/no)"
+read -r install_alongside
+
 # Define the desired configuration using the variable for VLSM installation path
-vlsm_config_block="DocumentRoot \"$vlsm_path/public\"
-ServerName $hostname
-<Directory \"$vlsm_path/public\">
-    Options Indexes FollowSymLinks
-    AllowOverride All
-    Require all granted
-</Directory>"
+vlsm_config_block="DocumentRoot \"${vlsm_path}/public\"
+    ServerName ${hostname}
+    <Directory \"${vlsm_path}/public\">
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>"
 
-# Path to the default Apache2 vhost file
-apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
+if [[ "$install_alongside" =~ ^[Yy][Ee][Ss]$ ]]; then
+    # Create and configure ${hostname}.conf
+    vhost_file="/etc/apache2/sites-available/${hostname}.conf"
+    echo "Creating ${vhost_file} with VLSM configuration..."
+    {
+        echo "<VirtualHost *:80>"
+        echo "${vlsm_config_block}"
+        echo "</VirtualHost>"
+    } >"${vhost_file}"
 
-# Make a backup of the current Apache2 vhost file
-cp "$apache_vhost_file" "${apache_vhost_file}.bak"
+    # Enable the new site and disable the default site
+    a2ensite "${hostname}.conf"
+    #a2dissite 000-default.conf
 
-# Convert newlines to a unique pattern for single-line pattern matching
-pattern=$(echo "$vlsm_config_block" | tr '\n' '\a')
-
-# Check if the pattern already exists in the file
-if ! grep -qza "$pattern" "$apache_vhost_file"; then
-    # The pattern doesn't exist, so we insert/update the configuration
-
-    # Replace the existing DocumentRoot line with the desired configuration
-    # Restore newlines from the unique pattern before using awk
-    vlsm_config_block=$(echo "$vlsm_config_block" | tr '\a' '\n')
-    awk -v vlsm_config_block="$vlsm_config_block" \
-        'BEGIN {printed=0}
-    /DocumentRoot/ && !printed {
-        print vlsm_config_block;
-        printed=1;
-        next;
-    }
-    {print}' "$apache_vhost_file" >temp_vhost && mv temp_vhost "$apache_vhost_file"
-
-    # No need to check for ServerName and <Directory> separately as they are included in the block
-    echo "Apache configuration has been updated."
 else
-    echo "Apache configuration is already set as desired."
-fi
 
+    # Path to the default Apache2 vhost file
+    apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
+
+    # Make a backup of the current Apache2 vhost file
+    cp "${apache_vhost_file}" "${apache_vhost_file}.bak"
+
+    # Convert newlines to a unique pattern for single-line pattern matching
+    pattern=$(echo "${vlsm_config_block}" | tr '\n' '\a')
+
+    # Check if the pattern already exists in the file
+    if ! grep -qza "${pattern}" "${apache_vhost_file}"; then
+        # The pattern doesn't exist, so we insert/update the configuration
+
+        # Replace the existing DocumentRoot line with the desired configuration
+        # Restore newlines from the unique pattern before using awk
+        vlsm_config_block=$(echo "${vlsm_config_block}" | tr '\a' '\n')
+        awk -v vlsm_config_block="${vlsm_config_block}" \
+            'BEGIN {printed=0}
+        /DocumentRoot/ && !printed {
+            print vlsm_config_block;
+            printed=1;
+            next;
+        }
+        {print}' "${apache_vhost_file}" >temp_vhost && mv temp_vhost "${apache_vhost_file}"
+
+        # No need to check for ServerName and <Directory> separately as they are included in the block
+        echo "Apache configuration has been updated."
+    else
+        echo "Apache configuration is already set as desired."
+    fi
+fi
 # Restart Apache to apply changes
 service apache2 restart || {
     echo "Failed to restart Apache. Please check the configuration."
@@ -357,43 +378,46 @@ service apache2 restart || {
 }
 
 # cron job
-cron_job="* * * * * cd /var/www/vlsm/ && ./vendor/bin/crunz schedule:run"
+
+chmod +x ${vlsm_path}/cron.sh
+
+cron_job="* * * * * cd ${vlsm_path} && ./cron.sh"
 
 # Check if the cron job already exists
-if ! crontab -l | grep -qF "$cron_job"; then
+if ! crontab -l | grep -qF "${cron_job}"; then
     echo "Adding cron job for VLSM..."
     (
         crontab -l
-        echo "$cron_job"
+        echo "${cron_job}"
     ) | crontab -
 else
     echo "Cron job for VLSM already exists. Skipping."
 fi
 
 # Update VLSM config.production.php with database credentials
-config_file="/var/www/vlsm/configs/config.production.php"
-source_file="/var/www/vlsm/configs/config.production.dist.php"
+config_file="${vlsm_path}/configs/config.production.php"
+source_file="${vlsm_path}/configs/config.production.dist.php"
 
-if [ ! -e "$config_file" ]; then
+if [ ! -e "${config_file}" ]; then
     echo "Renaming config.production.dist.php to config.production.php..."
-    mv "$source_file" "$config_file"
+    mv "${source_file}" "${config_file}"
 else
     echo "File config.production.php already exists. Skipping renaming."
 fi
 
 # Escape special characters in password for sed
 # This uses Perl's quotemeta which is more reliable when dealing with many special characters
-escaped_mysql_root_password=$(perl -e 'print quotemeta $ARGV[0]' -- "$mysql_root_password")
+escaped_mysql_root_password=$(perl -e 'print quotemeta $ARGV[0]' -- "${mysql_root_password}")
 
 # Use sed to update database configurations, using | as a delimiter instead of /
-sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database']['host'] = 'localhost';|" "$config_file"
-sed -i "s|\$systemConfig\['database'\]\['username'\]\s*=.*|\$systemConfig['database']['username'] = 'root';|" "$config_file"
-sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "$config_file"
+sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database']['host'] = 'localhost';|" "${config_file}"
+sed -i "s|\$systemConfig\['database'\]\['username'\]\s*=.*|\$systemConfig['database']['username'] = 'root';|" "${config_file}"
+sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "${config_file}"
 
 # Run Migrations
 # Run the database migrations
 echo "Running database migrations..."
-php "$vlsm_path/app/system/migrate.php" -yq &
+php "${vlsm_path}/app/system/migrate.php" -yq &
 
 # Get the PID of the migrate.php script
 pid=$!
@@ -415,12 +439,12 @@ if [ ! -z "$remote_sts_url" ]; then
     # Define desired_sts_url
     desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
 
-    config_file="$vlsm_path/configs/config.production.php"
+    config_file="${vlsm_path}/configs/config.production.php"
 
     # Check if the desired configuration already exists in the file
-    if ! grep -qF "$desired_sts_url" "$config_file"; then
+    if ! grep -qF "$desired_sts_url" "${config_file}"; then
         # The desired configuration does not exist, so update the file
-        sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|$desired_sts_url|" "$config_file"
+        sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|$desired_sts_url|" "${config_file}"
         echo "Remote STS URL updated in the configuration file."
     else
         # The configuration already exists as desired
@@ -429,7 +453,7 @@ if [ ! -z "$remote_sts_url" ]; then
 
     # Run the PHP script for remote data sync
     echo "Running remote data sync script. Please wait..."
-    php "$vlsm_path/app/scheduled-jobs/remote/commonDataSync.php" &
+    php "${vlsm_path}/app/scheduled-jobs/remote/commonDataSync.php" &
     # Get the PID of the commonDataSync.php script
     pid=$!
     # Use the spinner function for visual feedback
@@ -440,13 +464,13 @@ if [ ! -z "$remote_sts_url" ]; then
 fi
 
 # Ask User to Run 'run-once' Scripts
-echo "Do you want to run scripts from $vlsm_path/run-once/? (yes/no)"
+echo "Do you want to run scripts from ${vlsm_path}/run-once/? (yes/no)"
 read -r run_once_answer
 
 if [[ "$run_once_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
     # List the files in run-once directory
     echo "Available scripts to run:"
-    files=("$vlsm_path/run-once/"*.php)
+    files=("${vlsm_path}/run-once/"*.php)
     for i in "${!files[@]}"; do
         filename=$(basename "${files[$i]}")
         echo "$((i + 1))) $filename"

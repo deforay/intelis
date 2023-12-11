@@ -42,7 +42,7 @@ $geoInfo = $db->rawQueryOne($query);
 
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required field"); ?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
             </div>
             <form class="form-horizontal" method='post' name='geographicalDivisionsDetails' id='geographicalDivisionsDetails' autocomplete="off" enctype="multipart/form-data" action="save-geographical-divisions-helper.php">
                 <!-- /.box-header -->

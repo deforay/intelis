@@ -96,7 +96,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         <div class="box box-default">
             <div class="box-header with-border">
 
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -177,25 +177,25 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 <tr>
                                     <td><label for="supportPartner">Implementing Partner </label></td>
                                     <td>
-                                            <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-												<option value=""> -- Select -- </option>
-												<?php
-												foreach ($implementingPartnerList as $implementingPartner) {
-												?>
-													<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
-												<?php } ?>
-											</select>
+                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
+                                            <option value=""> -- Select -- </option>
+                                            <?php
+                                            foreach ($implementingPartnerList as $implementingPartner) {
+                                            ?>
+                                                <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                            <?php } ?>
+                                        </select>
                                     </td>
                                     <td><label for="fundingSource">Funding Partner</label></td>
                                     <td>
-                                            <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
-												<option value=""> -- Select -- </option>
-												<?php
-												foreach ($fundingSourceList as $fundingSource) {
-												?>
-													<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
-												<?php } ?>
-											</select>
+                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
+                                            <option value=""> -- Select -- </option>
+                                            <?php
+                                            foreach ($fundingSourceList as $fundingSource) {
+                                            ?>
+                                                <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                            <?php } ?>
+                                        </select>
                                     </td>
                                     <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                         <!-- <tr> -->

@@ -90,7 +90,7 @@ $dateUtils = new DateUtility();
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 $covid19Results = $covid19Service->getCovid19Results();
 
-$countryFormId = $general->getGlobalConfig('vl_form');
+$countryFormId = (int) $general->getGlobalConfig('vl_form');
 $resultFilename = '';
 
 if (!empty($requestResult)) {

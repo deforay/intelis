@@ -351,52 +351,52 @@ if (!empty($requestResult)) {
 
           $html .= '<tr>';
           $html .= '<td colspan="3">';
-          $html .= '<table style="padding:8px 2px 2px 2px;">';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">AGE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">GENDER</td>';
-          if ($result['patient_gender'] == 'female') {
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">BREAST FEEDING</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PREGNANCY STATUS</td>';
-          } else {
-               //$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LOINC CODE</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-          }
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $age . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
-          if ($result['patient_gender'] == 'female') {
-               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", (string) $result['is_patient_breastfeeding'])) . '</td>';
-               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", (string) $result['is_patient_pregnant'])) . '</td>';
-          } else {
-               // $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['test_loinc_code'] . '</td>';
-               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
-               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
-          }
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="4" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
-          $html .= '</tr>';
-
-          if(
-               (isset($result['request_clinician_name']) && !empty($result['request_clinician_name'])) ||
-               (isset($result['request_clinician_phone_number']) && !empty($result['request_clinician_phone_number'])) ||
-               (isset($result['facility_emails']) && !empty($result['facility_emails']))
-          ){
+               $html .= '<table style="padding:8px 2px 2px 2px;">';
                $html .= '<tr>';
-               $html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING CLINICIAN NAME</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEL</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EMAIL</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">AGE</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">GENDER</td>';
+               if ($result['patient_gender'] == 'female') {
+                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">BREAST FEEDING</td>';
+                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PREGNANCY STATUS</td>';
+               } else {
+                    //$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LOINC CODE</td>';
+                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
+                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
+               }
                $html .= '</tr>';
                $html .= '<tr>';
-               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['request_clinician_name']) . '</td>';
-               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
-               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $age . '</td>';
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
+               if ($result['patient_gender'] == 'female') {
+                    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", (string) $result['is_patient_breastfeeding'])) . '</td>';
+                    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", (string) $result['is_patient_pregnant'])) . '</td>';
+               } else {
+                    // $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['test_loinc_code'] . '</td>';
+                    $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
+                    $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
+               }
                $html .= '</tr>';
-          }
-          $html .= '</table>';
+               
+               if(
+                    (isset($result['request_clinician_name']) && !empty($result['request_clinician_name'])) ||
+                    (isset($result['request_clinician_phone_number']) && !empty($result['request_clinician_phone_number'])) ||
+                    (isset($result['facility_emails']) && !empty($result['facility_emails']))
+               ){
+                    $html .= '<tr>';
+                    $html .= '<td colspan="4" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
+                    $html .= '</tr>';
+                    $html .= '<tr>';
+                    $html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING CLINICIAN NAME</td>';
+                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEL</td>';
+                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EMAIL</td>';
+                    $html .= '</tr>';
+                    $html .= '<tr>';
+                    $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['request_clinician_name']) . '</td>';
+                    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
+                    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
+                    $html .= '</tr>';
+               }
+               $html .= '</table>';
           $html .= '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
@@ -433,114 +433,78 @@ if (!empty($requestResult)) {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_type_name']) . '</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:10px;"></td>';
-          $html .= '</tr>';
+          $html .= '</tr></table>';
 
           if (!empty($genericTestInfo) && isset($result['sub_tests']) && !empty($result['sub_tests'])) {
                /* Test Result Section */
-               $html .= '<tr>';
-               $html .= '<td colspan="3"><br><br>';
-               $innerHtml = '';
-               foreach(explode("##", $result['sub_tests']) as $key => $subTestName){
-                    $finalResult = [];$n = 1;
-                    $w = 22.5;
-                    if(isset($subTestKey[$subTestName]) && !empty($subTestKey[$subTestName])){
-                         $w = 18;
+               $innerHtml .= '<table border="0" style="padding:5px;">';
+               $innerHtml .= '<tr>
+                    <th align="left" style="width:25%;line-height:15px;font-size:11px;font-weight:bold;border-right-color:white;border-bottom-color:black;border-top-color:black;">Test Name</th>
+                    <th align="left" style="width:25%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-right-color:white;border-bottom-color:black;border-top-color:black;">Result</th>
+                    <th align="left" style="width:25%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-right-color:white;border-bottom-color:black;border-top-color:black;">Range</th>
+                    <th align="left" style="width:25%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-bottom-color:black;border-top-color:black;">Unit</th>
+               </tr>';
+               $subTestsList = explode("##", $result['sub_tests']);
+               $subTestCnt = count($subTestsList); $n = 1;
+               foreach($subTestsList as $key => $subTestName){
+                    $finalResult = [];
+                    $lastLineBorder = '';
+                    if(($subTestCnt - 1) == $n){
+                         $lastLineBorder = 'border-bottom-color:black';
                     }
-                    $innerHtml .= '<span style="text-align:left;font-weight:bolt;font-size:15px;">'.$subTestName.'</span>
-                    <br><table border="1" style="padding:2px;">
-                    <tr>
-                    <td align="center" width="10%" style="line-height:10px;font-size:11px;font-weight:bold;">Test No.</td>
-                    <td align="center" width="'.$w.'%" style="line-height:10px;font-size:11px;font-weight:bold;">Test Date</td>
-                    <td align="center" width="'.$w.'%" style="line-height:10px;font-size:11px;font-weight:bold;">Lab Test</td>
-                    <td align="center" width="'.$w.'%" style="line-height:10px;font-size:11px;font-weight:bold;">Result</td>';
-                    if(isset($subTestKey[$subTestName]) && !empty($subTestKey[$subTestName])){
-                        $innerHtml .= '<td align="center" width="'.$w.'%" style="line-height:10px;font-size:11px;font-weight:bold;">Result Range</td>';
-                    }
-                    $innerHtml .= '<td align="center" width="'.$w.'%" style="line-height:10px;font-size:11px;font-weight:bold;">Unit</td>
-                    </tr>';
+                    $innerHtml .= '<tr><td style="line-height:10px;font-size:11px;'.$lastLineBorder.';">'.$subTestName.'</td>';
                     foreach ($genericTestInfo as $indexKey => $rows) {
                          if (strtolower($subTestName) == $rows['sub_test_name']) {
-                              $rangeTxt = '<span style="color:black;">';
-                              if(isset($subTestKey[$subTestName]) && !empty($subTestKey[$subTestName])){
-                                   if(($testResultsAttribute['quantitative']['high_range'][$subTestKey[$subTestName]] <= $rows['result']) || ($testResultsAttribute['quantitative']['threshold_range'][$subTestKey[$subTestName]] < $rows['result'])){
-                                        $rangeTxt = '<span style="color:red;">HIGH : ';
-                                   }
-                                   if($testResultsAttribute['quantitative']['threshold_range'][$subTestKey[$subTestName]] == $rows['result']){
-                                        $rangeTxt = '<span style="color:green;">THRESHOLD : ';
-                                   }
-                                   if($testResultsAttribute['quantitative']['low_range'][$subTestKey[$subTestName]] >= $rows['result']){
-                                        $rangeTxt = '<span style="color:blue;">LOW : ';
-                                   }
-
-                              }
-                              $innerHtml .= '<tr>
-                                                  <td align="center" style="line-height:10px;font-size:11px;border-bottom-color:white;border-right-color:black;border-left-color:black;">' . $n . '</td>
-                                                  <td align="center" style="line-height:10px;font-size:11px;border-bottom-color:white;border-right-color:black;border-left-color:black;">' . DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>
-                                                  <td align="center" style="line-height:10px;font-size:11px;border-bottom-color:white;border-right-color:black;border-left-color:black;">' . $rows['test_name'] . '</td>
-                                                  <td align="center" style="line-height:10px;font-size:11px;border-bottom-color:white;border-right-color:black;border-left-color:black;">' . $rangeTxt. $rows['result'] . '</span></td>';
-                                                  if(isset($subTestKey[$subTestName]) && !empty($subTestKey[$subTestName])){
-                                                    $innerHtml .= '<td align="center" style="line-height:10px;font-size:11px;border-bottom-color:white;border-right-color:black;border-left-color:black;">
-                                                       <span style="color:red;">'.$testResultsAttribute['quantitative']['high_range'][$subTestKey[$subTestName]].'</span>-
-                                                       <span style="color:green;">'.$testResultsAttribute['quantitative']['threshold_range'][$subTestKey[$subTestName]].'</span>-
-                                                       <span style="color:blue;">'.$testResultsAttribute['quantitative']['low_range'][$subTestKey[$subTestName]].'</span>
-                                                       </td>';
-                                                  }
-                                                  $innerHtml .= '<td align="center" style="line-height:10px;font-size:11px;border-bottom-color:white;border-right-color:black;border-left-color:black;">' . $testUnits[$rows['result_unit']] . '</td>
-                                              </tr>';
                               $finalResult['finalResult'] = $rows['final_result'];
                               $finalResult['finalResultUnit'] = $testUnits[$rows['final_result_unit']];
-                              $finalResult['finalResultInterpretation'] = $rows['final_result_interpretation'];
+                              // $finalResult['finalResultInterpretation'] = $rows['final_result_interpretation'];
                               $n++;
                          }
                     }
                     $rangeTxt = '<span style="color:black;">';
                     if(isset($subTestKey[$subTestName]) && !empty($subTestKey[$subTestName])){
                          if(($testResultsAttribute['quantitative']['high_range'][$subTestKey[$subTestName]] <= $finalResult['finalResult']) || ($testResultsAttribute['quantitative']['threshold_range'][$subTestKey[$subTestName]] < $finalResult['finalResult'])){
-                              $rangeTxt = '<span style="color:red;">HIGH : ';
+                              $highRange = $testResultsAttribute['quantitative']['high_range'][$subTestKey[$subTestName]];
                          }
                          if($testResultsAttribute['quantitative']['threshold_range'][$subTestKey[$subTestName]] == $finalResult['finalResult']){
-                              $rangeTxt = '<span style="color:green;">THRESHOLD : ';
+                              $thresholdRange = $testResultsAttribute['quantitative']['threshold_range'][$subTestKey[$subTestName]];
                          }
                          if(($testResultsAttribute['quantitative']['low_range'][$subTestKey[$subTestName]] >= $finalResult['finalResult']) || ($testResultsAttribute['quantitative']['threshold_range'][$subTestKey[$subTestName]] >= $finalResult['finalResult'])){
-                              $rangeTxt = '<span style="color:blue;">LOW : ';
+                              $lowRange = $testResultsAttribute['quantitative']['low_range'][$subTestKey[$subTestName]];
                          }
                     }
 
-                    $innerHtml .= '</table><br><table border="0" style="padding:10px;width:100%;">';
-                    $innerHtml .= '<tr>';
-                    $finalResultUnit = '';
-                    if(isset($finalResult['finalResultUnit']) && !empty($finalResult['finalResultUnit'])){
-                        $finalResultUnit = ' ('.$finalResult['finalResultUnit'] .') ';
-                    }
                     if(isset($finalResult['finalResult']) && !empty($finalResult['finalResult'])){
-                        $innerHtml .= '<td style="line-height:10px;font-size:11px;border-bottom:1px solid black;"><strong>Final Result : </strong> ' . $rangeTxt . ucwords($finalResult['finalResult']) . $finalResultUnit .'</span></td>';
+                        $innerHtml .= '<td style="line-height:10px;font-size:11px;'.$lastLineBorder.';">' . ucwords($finalResult['finalResult']) . '</td>';
                     }else{
-                        $innerHtml .= '<td style="line-height:10px;font-size:11px;border-bottom:1px solid black;"></td>';
-                    }if(isset($finalResult['finalResultInterpretation']) && !empty($finalResult['finalResultInterpretation'])){
-                        $innerHtml .= '<td style="line-height:10px;font-size:11px;border-bottom:1px solid black;"><strong>Result Interpretation :</strong>'.$finalResult['finalResultInterpretation'].'</td>';
-                    }else{
-                        $innerHtml .= '<td style="line-height:10px;font-size:11px;border-bottom:1px solid black;"></td>';
+                        $innerHtml .= '<td style="line-height:10px;font-size:11px;'.$lastLineBorder.';"></td>';
                     }
+                    
+                    if((isset($highRange) && !empty($highRange)) || isset($thresholdRange) && !empty($thresholdRange) || isset($lowRange) && !empty($lowRange)){
+                         $innerHtml .= '<td align="left" style="line-height:10px;font-size:11px;'.$lastLineBorder.';">
+                         <span>'.$testResultsAttribute['quantitative']['high_range'][$subTestKey[$subTestName]].'</span>-
+                         <span>'.$testResultsAttribute['quantitative']['threshold_range'][$subTestKey[$subTestName]].'</span>-
+                         <span>'.$testResultsAttribute['quantitative']['low_range'][$subTestKey[$subTestName]].'</span>
+                         </td>';
+                    }else{
+                         $innerHtml .= '<td style="line-height:10px;font-size:11px;'.$lastLineBorder.';">&nbsp;&nbsp;&nbsp; -</td>';
+                    }
+                    if(isset($finalResult['finalResultUnit']) && !empty($finalResult['finalResultUnit'])){
+                        $innerHtml .= '<td style="line-height:10px;font-size:11px;'.$lastLineBorder.';">' . $finalResult['finalResultUnit'] . '</td>';
+                    }else{
+                        $innerHtml .= '<td style="line-height:10px;font-size:11px;'.$lastLineBorder.';">&nbsp; -</td>';
+                    }
+
                     $innerHtml .= '</tr>';
-                    $innerHtml .= '</table>';
+                    $n++;
                }
-               if(isset($rangeTxt) && !empty($rangeTxt)){
-                $innerHtml .= '<br><span style="line-height:10px;font-size:11px;"><i>Note color values denote the range of the results</i>
-                    <span style="color:red;">HIGH</span> | 
-                    <span style="color:green;">THRESHOLD</span> | 
-                    <span style="color:blue;">LOW</span>';
-               }
-            //    echo '<pre>' . $innerHtml ;die;
+               $innerHtml .= '</table>';
                $html .= $innerHtml;
-               $html .= '<br><br></td>';
-               $html .= '</tr>';
           }
+          $html .= '<table style="padding:4px 2px 2px 2px;width:100%;">';
           $html .= '<tr>';
 
-          $html .= '<td colspan="3">';
+          $html .= '<td colspan="3"><br><br>';
           $html .= '<table style="padding:10px 2px 2px 2px;">';
           // $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $vlResult . '</td><td >' . $smileyContent . '</td></tr>';
           if ($result['reason_for_sample_rejection'] != '') {
@@ -575,7 +539,7 @@ if (!empty($requestResult)) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
           $html .= '</tr>';
-          $html .= '<tr>';
+          /* $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:15px;font-size:11px;font-weight:bold;">TEST PLATFORM &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ($result['test_platform']) . '</span></td>';
           $html .= '</tr>';
 
@@ -600,7 +564,7 @@ if (!empty($requestResult)) {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
                     $html .= '</tr>';
                }
-          }
+          } */
           if (!empty($reviewedBy)) {
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:8px;"></td>';

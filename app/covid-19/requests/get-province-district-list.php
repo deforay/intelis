@@ -1,10 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-
-$geoDb = new GeoLocationsService($db);
 
 /** @var GeoLocationsService $geoDb */
 $geoDb = ContainerRegistry::get(GeoLocationsService::class);
