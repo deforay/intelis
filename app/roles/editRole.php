@@ -146,7 +146,7 @@ if ($priInfo) {
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
-					<?php echo _translate("indicates required field"); ?> &nbsp;
+					<?php echo _translate("indicates required fields"); ?> &nbsp;
 				</div>
 			</div>
 			<!-- /.box-header -->

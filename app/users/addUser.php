@@ -61,7 +61,7 @@ $ftResult = $db->rawQuery($fQuery);
 
           <div class="box box-default">
                <div class="box-header with-border">
-                    <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required field"); ?> &nbsp;</div>
+                    <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
                </div>
                <!-- /.box-header -->
                <div class="box-body">
@@ -183,7 +183,7 @@ $ftResult = $db->rawQuery($fQuery);
                                              <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
                                                   <input type="password" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" /><br>
-                                                  <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><strong>Generate Random Password</strong></button><br>
+                                                  <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><strong><?= _translate("Generate Random Password"); ?></strong></button><br>
                                                   <code><?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                                              </div>
                                         </div>

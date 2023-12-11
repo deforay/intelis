@@ -181,7 +181,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			<div class="box-body">
 				<!-- form start -->

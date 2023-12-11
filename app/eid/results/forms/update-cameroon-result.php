@@ -73,7 +73,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
 
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate('indicates required field'); ?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate('indicates required fields'); ?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">

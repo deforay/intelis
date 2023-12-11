@@ -119,7 +119,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      <section class="content">
           <div class="box box-default">
                <div class="box-header with-border">
-                    <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate('indicates required field'); ?> &nbsp;</div>
+                    <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate('indicates required fields'); ?> &nbsp;</div>
                </div>
                <div class="box-body">
                     <!-- form start -->

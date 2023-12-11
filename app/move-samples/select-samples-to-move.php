@@ -68,7 +68,7 @@ foreach ($fResult as $fDetails) {
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 90%;">
 				<tr>
