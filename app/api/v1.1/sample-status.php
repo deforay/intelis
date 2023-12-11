@@ -26,7 +26,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $request = AppRegistry::get('request');
 $origJson = $request->getBody()->getContents();
 $input = $request->getParsedBody();
-
 if (
     empty($input) ||
     empty($input['testType']) ||
@@ -49,7 +48,7 @@ $tableName = TestsService::getTestTableName($input['testType']);
 $primaryKeyName = TestsService::getTestPrimaryKeyName($input['testType']);
 
 try {
-    $sQuery = "SELECT * FROM $tableName as vl
+    $sQuery = "SELECT ts.status_name as result_status, sample_code, remote_sample_code, app_sample_code,unique_id, '".$transactionId."' as transactionId  FROM $tableName as vl
     LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
     $where = [];
@@ -63,36 +62,18 @@ try {
     $sampleCode = $input['sampleCode'] ?? [];
     if (!empty($sampleCode)) {
         $sampleCode = implode("','", $sampleCode);
-        $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') ) ";
+        $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode')) ";
     }
 
     /* To skip some status */
     // $where[] = " (vl.result_status NOT IN (4, 7, 8)) ";
     $sQuery .= ' WHERE ' . implode(' AND ', $where);
+    // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
-    $response = [];
-    foreach ($rowData as $key => $row) {
-        if (!empty($row['result_status'])) {
-            if (!in_array($row['result_status'], [4, 7, 8])) {
-                $db->where($primaryKeyName, $row[$primaryKeyName]);
-                $status = $db->update($tableName, array('result_status' => 12));
-                if ($status) {
-                    $response[$key]['status'] = 'success';
-                } else {
-                    $response[$key]['status'] = 'fail';
-                    $response[$key]['message'] = 'Already cancelled';
-                }
-            } else {
-                $response[$key]['status'] = 'fail';
-                $response[$key]['message'] = 'Cancellation not allowed';
-            }
-        }
-        $response[$key]['sampleCode'] = $row['remote_sample_code'] ??  $row['sample_code'];
-    }
     $payload = [
         'status' => 'success',
         'timestamp' => time(),
-        'data' => $response
+        'data' => $rowData
     ];
 } catch (Exception | InvalidArgumentException | SystemException $exc) {
 
@@ -108,5 +89,5 @@ try {
 }
 
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'cancel-requests', $input['testType'], $requestUrl, $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'sample-status', $input['testType'], $requestUrl, $origJson, $payload, 'json');
 echo $payload;
