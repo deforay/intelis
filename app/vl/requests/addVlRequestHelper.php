@@ -278,7 +278,8 @@ try {
         'vl_test_number' => $_POST['viralLoadNo'] ?? null,
         'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-        'manual_result_entry' => 'yes'
+        'result_modified'  => 'no',
+        'manual_result_entry' => 'yes',
     );
 
 

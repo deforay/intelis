@@ -16,3 +16,7 @@ UPDATE `privileges` SET `privilege_name` = '/vl/results/email-results.php', `sha
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'eid-results', '/eid/results/email-results.php', '[\"/eid/results/email-results.php\", \"/eid/results/email-results-confirmation.php\"]', NULL, NULL, 'always');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'hepatitis-results', '/hepatitis/results/email-results.php', '[\"/hepatitis/results/email-results.php\", \"/hepatitis/results/email-results-confirmation.php\"]', NULL, NULL, 'always');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'tb-results', '/tb/results/email-results.php', '[\"/tb/results/email-results.php\", \"/tb/results/email-results-confirmation.php\"]', NULL, NULL, 'always');
+
+-- Jeyabanu 11-Dec-2023
+ALTER TABLE `form_vl` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `approver_comments`;
+ALTER TABLE `audit_form_vl` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `approver_comments`;
