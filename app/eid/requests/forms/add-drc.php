@@ -147,7 +147,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</td>
 										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien </label></td>
 										<td>
-											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="" style="width:100%;" />
 										</td>
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 									<tr>
@@ -480,13 +480,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label>
 											</td>
 											<td style="width: 25%;">
-												<select name="eidPlatform" id="eidPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
+												<select name="eidPlatform" id="eidPlatform" class="form-control" title="Please choose VL Testing Platform" style="width:100%;" onchange="getVlResults(this.value)">
 													<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
 												</select>
 											</td>
 											<th scope="row" style="width:15%;"><label for="">Date de réception de l'échantillon </label></th>
 											<td style="width:35%;">
-												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" onchange="" style="width:100%;" />
 											</td>
 
 										<tr>
@@ -509,7 +509,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
 
-												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Please choose a Rejection Reason" <?php echo $labFieldDisabled; ?>>
+												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Please choose a Rejection Reason">
 													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
 														<optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
@@ -534,7 +534,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<tr>
 											<th scope="row"><label for="">Test effectué le </label></th>
 											<td>
-												<input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" onchange="" style="width:100%;" />
 											</td>
 
 
@@ -579,8 +579,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-							<input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
-							<input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
+							<input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="" />
+							<input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="" />
 						<?php } ?>
 						<a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<input type="hidden" name="formId" id="formId" value="3" />

@@ -331,7 +331,7 @@ if (!empty($requestResult)) {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Contact") . " : " . $result['patient_mobile_number'] . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Collection Date") . " : " . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Date of Sample Collection") . " : " . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Collected By") . " : " . $result['facility_name'] . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';

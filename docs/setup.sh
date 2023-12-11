@@ -310,46 +310,67 @@ if ! grep -q "127.0.0.1 $hostname" /etc/hosts; then
 else
     echo "$hostname entry is already in the hosts file."
 fi
+
+# Ask the user for installation preference
+echo "Do you want to install VLSM alongside other apps? (yes/no)"
+read -r install_alongside
+
 # Define the desired configuration using the variable for VLSM installation path
 vlsm_config_block="DocumentRoot \"$vlsm_path/public\"
-ServerName $hostname
-<Directory \"$vlsm_path/public\">
-    Options Indexes FollowSymLinks
-    AllowOverride All
-    Require all granted
-</Directory>"
+    ServerName $hostname
+    <Directory \"$vlsm_path/public\">
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>"
 
-# Path to the default Apache2 vhost file
-apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
+if [[ "$install_alongside" =~ ^[Yy][Ee][Ss]$ ]]; then
+    # Create and configure vlsm.conf
+    vlsm_conf="/etc/apache2/sites-available/vlsm.conf"
+    echo "Creating $vlsm_conf with VLSM configuration..."
+    {
+        echo "<VirtualHost *:80>"
+        echo "$vlsm_config_block"
+        echo "</VirtualHost>"
+    } >"$vlsm_conf"
 
-# Make a backup of the current Apache2 vhost file
-cp "$apache_vhost_file" "${apache_vhost_file}.bak"
+    # Enable the new site and disable the default site
+    a2ensite vlsm.conf
+    a2dissite 000-default.conf
 
-# Convert newlines to a unique pattern for single-line pattern matching
-pattern=$(echo "$vlsm_config_block" | tr '\n' '\a')
-
-# Check if the pattern already exists in the file
-if ! grep -qza "$pattern" "$apache_vhost_file"; then
-    # The pattern doesn't exist, so we insert/update the configuration
-
-    # Replace the existing DocumentRoot line with the desired configuration
-    # Restore newlines from the unique pattern before using awk
-    vlsm_config_block=$(echo "$vlsm_config_block" | tr '\a' '\n')
-    awk -v vlsm_config_block="$vlsm_config_block" \
-        'BEGIN {printed=0}
-    /DocumentRoot/ && !printed {
-        print vlsm_config_block;
-        printed=1;
-        next;
-    }
-    {print}' "$apache_vhost_file" >temp_vhost && mv temp_vhost "$apache_vhost_file"
-
-    # No need to check for ServerName and <Directory> separately as they are included in the block
-    echo "Apache configuration has been updated."
 else
-    echo "Apache configuration is already set as desired."
-fi
 
+    # Path to the default Apache2 vhost file
+    apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
+
+    # Make a backup of the current Apache2 vhost file
+    cp "$apache_vhost_file" "${apache_vhost_file}.bak"
+
+    # Convert newlines to a unique pattern for single-line pattern matching
+    pattern=$(echo "$vlsm_config_block" | tr '\n' '\a')
+
+    # Check if the pattern already exists in the file
+    if ! grep -qza "$pattern" "$apache_vhost_file"; then
+        # The pattern doesn't exist, so we insert/update the configuration
+
+        # Replace the existing DocumentRoot line with the desired configuration
+        # Restore newlines from the unique pattern before using awk
+        vlsm_config_block=$(echo "$vlsm_config_block" | tr '\a' '\n')
+        awk -v vlsm_config_block="$vlsm_config_block" \
+            'BEGIN {printed=0}
+        /DocumentRoot/ && !printed {
+            print vlsm_config_block;
+            printed=1;
+            next;
+        }
+        {print}' "$apache_vhost_file" >temp_vhost && mv temp_vhost "$apache_vhost_file"
+
+        # No need to check for ServerName and <Directory> separately as they are included in the block
+        echo "Apache configuration has been updated."
+    else
+        echo "Apache configuration is already set as desired."
+    fi
+fi
 # Restart Apache to apply changes
 service apache2 restart || {
     echo "Failed to restart Apache. Please check the configuration."
