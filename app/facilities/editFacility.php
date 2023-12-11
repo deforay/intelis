@@ -233,7 +233,12 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="testingPoints" class="col-lg-4 control-label"><?php echo _translate("Testing Point(s)"); ?><br> <small><?php echo _translate("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="testingPoints" name="testingPoints" placeholder="<?php echo _translate('eg. VCT, PMTCT'); ?>" value="<?php echo implode(", ", json_decode((string) $facilityInfo['testing_points'], true)); ?>" />
+										<?php
+										$testingPointsJSON = $facilityInfo['testing_points'] ?? '[]';
+										$decoded = json_decode($testingPointsJSON, true);
+										$testingPoints = is_array($decoded) ? implode(", ", $decoded) : '';
+										?>
+										<input type="text" class="form-control" id="testingPoints" name="testingPoints" placeholder="<?php echo _translate('eg. VCT, PMTCT'); ?>" value="<?= $testingPoints ?>" />
 									</div>
 								</div>
 							</div>
