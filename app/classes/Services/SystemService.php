@@ -64,11 +64,13 @@ class SystemService
 
     public static function translate($text)
     {
-        if (empty($_SESSION['translations']) || empty($_SESSION['translations']->find(null, $text))) {
-            return $text;
-        } else {
-            return $_SESSION['translations']->find(null, $text)->getTranslation();
-        }
+            if($text!=null){
+                if (empty($_SESSION['translations']) || empty($_SESSION['translations']->find(null, $text))) {
+                    return $text;
+                } else {
+                    return $_SESSION['translations']->find(null, $text)->getTranslation();
+                }
+            }
     }
 
 

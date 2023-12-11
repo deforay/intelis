@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-12-11 16:17+0530\n"
-"PO-Revision-Date: 2023-12-11 16:17+0530\n"
+"POT-Creation-Date: 2023-12-11 19:13+0530\n"
+"PO-Revision-Date: 2023-12-11 19:13+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -99,7 +99,7 @@ msgstr ""
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:22
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:34
 #: generic-tests/mail/mail-generic-tests-results.php:71
-#: generic-tests/requests/add-request.php:226
+#: generic-tests/requests/add-request.php:225
 #: generic-tests/requests/clone-request.php:396
 #: generic-tests/requests/edit-request.php:398
 #: generic-tests/results/update-generic-test-result.php:390
@@ -120,7 +120,7 @@ msgstr ""
 #: patients/edit-patient.php:50 roles/addRole.php:126 roles/editRole.php:149
 #: specimen-referral-manifest/add-manifest.php:126
 #: specimen-referral-manifest/edit-manifest.php:182
-#: system-admin/edit-config/resetPassword.php:29
+#: system-admin/edit-config/resetPassword.php:25
 #: tb/reference/add-tb-results.php:30
 #: tb/reference/add-tb-sample-rejection-reason.php:22
 #: tb/reference/add-tb-sample-type.php:22
@@ -131,7 +131,7 @@ msgstr ""
 #: tb/requests/forms/edit-southsudan.php:102
 #: tb/results/forms/update-sierraleone.php:109
 #: tb/results/forms/update-southsudan.php:109 users/addUser.php:64
-#: users/editProfile.php:54 users/editUser.php:111
+#: users/editProfile.php:49 users/editUser.php:111
 #: vl/program-management/addContactNotes.php:56
 #: vl/reference/add-vl-art-code-details.php:35
 #: vl/reference/add-vl-results.php:48
@@ -323,7 +323,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: roles/addRole.php:113 roles/editRole.php:136 roles/roles.php:13
 #: system-admin/api-stats/api-stats.php:16
 #: system-admin/edit-config/index.php:28
-#: system-admin/edit-config/resetPassword.php:19
+#: system-admin/edit-config/resetPassword.php:15
 #: system-admin/instance-overview/instanceIndex.php:44
 #: system-admin/log-files/log-files.php:22
 #: system-admin/user-login-history/userLoginIndex.php:15
@@ -340,7 +340,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: tb/results/forms/update-southsudan.php:101
 #: tb/results/tb-failed-results.php:58 tb/results/tb-manual-results.php:77
 #: tb/results/tb-print-results.php:43 tb/results/tb-result-status.php:65
-#: users/addUser.php:54 users/editProfile.php:44 users/editUser.php:101
+#: users/addUser.php:54 users/editProfile.php:39 users/editUser.php:101
 #: users/users.php:13 vl/program-management/highViralLoad.php:60
 #: vl/program-management/sampleRejectionReport.php:50
 #: vl/program-management/vl-sample-status.php:58
@@ -400,7 +400,7 @@ msgid "Enter date range"
 msgstr "Saisissez une plage de dates"
 
 #: admin/monitoring/activity-log.php:69 system/translate-strings.php:11
-#: users/addUser.php:55 users/editProfile.php:45 users/editUser.php:102
+#: users/addUser.php:55 users/editProfile.php:40 users/editUser.php:102
 #: users/users.php:2 users/users.php:11 users/users.php:14
 msgid "Users"
 msgstr "Utilisateurs"
@@ -587,6 +587,7 @@ msgstr "Journal d'audit"
 
 #: admin/monitoring/activity-log.php:108
 #: system-admin/user-login-history/userLoginIndex.php:64
+#: users/editProfile.php:144
 msgid "IP Address"
 msgstr "Adresse IP"
 
@@ -1577,13 +1578,13 @@ msgstr "ID de l'échantillon"
 #: instruments/edit-instrument.php:571 patients/add-patient.php:237
 #: patients/edit-patient.php:252 roles/addRole.php:372 roles/editRole.php:366
 #: system-admin/edit-config/index.php:131
-#: system-admin/edit-config/resetPassword.php:60
+#: system-admin/edit-config/resetPassword.php:56
 #: system-admin/setup/index.php:99 tb/reference/add-tb-results.php:89
 #: tb/reference/add-tb-sample-rejection-reason.php:74
 #: tb/reference/add-tb-sample-type.php:56
 #: tb/reference/add-tb-test-reasons.php:75
 #: tb/requests/addSamplesFromManifest.php:37 users/addUser.php:257
-#: users/editProfile.php:134 users/editUser.php:338
+#: users/editProfile.php:129 users/editUser.php:338
 #: vl/reference/add-vl-art-code-details.php:92
 #: vl/reference/add-vl-results.php:122
 #: vl/reference/add-vl-sample-rejection-reasons.php:74
@@ -2466,7 +2467,7 @@ msgstr "Nom du Labo"
 #: tb/requests/forms/add-southsudan.php:174
 #: tb/requests/forms/edit-sierraleone.php:239
 #: tb/requests/forms/edit-southsudan.php:206 users/addUser.php:103
-#: users/addUser.php:137 users/editProfile.php:78 users/editUser.php:152
+#: users/addUser.php:137 users/editProfile.php:73 users/editUser.php:152
 #: users/editUser.php:189 vl/reference/add-vl-art-code-details.php:69
 #: vl/reference/add-vl-art-code-details.php:80
 #: vl/reference/add-vl-test-failure-reason.php:44
@@ -3186,13 +3187,13 @@ msgstr "Sauvegarder et Suivant"
 #: instruments/edit-instrument.php:574 mail/vlResultMail.php:333
 #: patients/add-patient.php:238 patients/edit-patient.php:253
 #: roles/addRole.php:375 roles/editRole.php:369
-#: system-admin/edit-config/resetPassword.php:61
+#: system-admin/edit-config/resetPassword.php:57
 #: system-admin/instance-overview/instanceIndex.php:133
 #: tb/reference/add-tb-results.php:92
 #: tb/reference/add-tb-sample-rejection-reason.php:75
 #: tb/reference/add-tb-sample-type.php:57
 #: tb/reference/add-tb-test-reasons.php:76 users/addUser.php:258
-#: users/editProfile.php:135 users/editUser.php:339
+#: users/editProfile.php:130 users/editUser.php:339
 #: vl/reference/add-vl-art-code-details.php:93
 #: vl/reference/add-vl-results.php:125
 #: vl/reference/add-vl-sample-rejection-reasons.php:75
@@ -3207,7 +3208,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: batch/add-batch.php:306 batch/batches.php:177 facilities/addFacility.php:709
-#: facilities/editFacility.php:668 generic-tests/requests/add-request.php:814
+#: facilities/editFacility.php:668 generic-tests/requests/add-request.php:813
 #: generic-tests/requests/clone-request.php:1198
 #: generic-tests/requests/edit-request.php:1083
 #: generic-tests/requests/view-requests.php:292
@@ -5085,7 +5086,7 @@ msgstr "Labo de test"
 #: vl/requests/addSamplesFromManifest.php:99 vl/requests/vl-requests.php:590
 #: vl/requests/vl-requests.php:643 vl/results/get-manual-results.php:283
 #: vl/results/getVlTestResultDetails.php:219
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:371
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:355
 #: vl/results/vl-failed-results.php:180 vl/results/vl-failed-results.php:210
 #: vl/results/vlPrintResult.php:257 vl/results/vlPrintResult.php:305
 #: vl/results/vlPrintResult.php:500 vl/results/vlPrintResult.php:547
@@ -5719,7 +5720,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: vl/results/forms/update-cameroon-result.php:379
 #: vl/results/forms/update-cameroon-result.php:396
 #: vl/results/forms/update-cameroon-result.php:701
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:212
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:209
 msgid "Yes"
 msgstr "Oui"
 
@@ -5865,7 +5866,7 @@ msgstr "Oui"
 #: vl/results/forms/update-cameroon-result.php:382
 #: vl/results/forms/update-cameroon-result.php:399
 #: vl/results/forms/update-cameroon-result.php:702
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:210
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:207
 msgid "No"
 msgstr "Non"
 
@@ -5928,7 +5929,7 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: vl/requests/export-vl-requests.php:27 vl/requests/export-vl-requests.php:29
 #: vl/requests/export-vl-requests.php:30 vl/requests/patientModal.php:104
 #: vl/requests/vl-requests.php:446
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:326
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:310
 #: vl/results/vl-failed-results.php:120 vl/results/vlPrintResult.php:199
 #: vl/results/vlPrintResult.php:441
 msgid "Patient Name"
@@ -7626,7 +7627,7 @@ msgstr ""
 #: covid-19/requests/covid-19-edit-request.php:169
 #: covid-19/requests/covid-19-quick-add.php:237
 #: eid/requests/eid-add-request.php:259 eid/requests/eid-edit-request.php:234
-#: generic-tests/requests/add-request.php:1472
+#: generic-tests/requests/add-request.php:1471
 #: generic-tests/requests/clone-request.php:1454
 #: generic-tests/requests/edit-request.php:1339
 #: generic-tests/results/update-generic-test-result.php:1320
@@ -7675,8 +7676,8 @@ msgstr "La demande de Covid-19 a été mise à jour avec succès"
 #: generic-tests/results/update-generic-test-result-helper.php:207
 #: hepatitis/requests/hepatitis-edit-request-helper.php:255
 #: hepatitis/results/hepatitis-update-result-helper.php:97
-#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:397
-#: vl/requests/editVlRequestHelper.php:371
+#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:398
+#: vl/requests/editVlRequestHelper.php:380
 #: vl/results/updateVlTestResultHelper.php:190
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
@@ -8095,7 +8096,7 @@ msgstr "DÉTAILS DE L'AFFAIRE/DONNÉES DÉMOGRAPHIQUES"
 #: vl/requests/forms/add-cameroon.php:211
 #: vl/requests/forms/edit-cameroon.php:253
 #: vl/results/forms/update-cameroon-result.php:307
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:316
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:300
 msgid "Patient Information"
 msgstr "Information du patient"
 
@@ -8304,7 +8305,7 @@ msgstr "Numéro de téléphone"
 #: facilities/editFacility.php:261 facilities/editFacility.php:263
 #: patients/add-patient.php:203 patients/edit-patient.php:220
 #: patients/view-patients.php:37 users/addUser.php:92 users/addUser.php:94
-#: users/editProfile.php:102 users/editProfile.php:104 users/editUser.php:140
+#: users/editProfile.php:97 users/editProfile.php:99 users/editUser.php:140
 #: users/editUser.php:142 vl/requests/forms/add-cameroon.php:287
 #: vl/requests/forms/add-cameroon.php:368
 #: vl/requests/forms/edit-cameroon.php:327
@@ -8508,7 +8509,7 @@ msgstr "Réservé à l'usage des laboratoires"
 #: vl/requests/forms/edit-cameroon.php:648
 #: vl/result-mail/editTestResultEmailConfig.php:88
 #: vl/results/forms/update-cameroon-result.php:678
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:355
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:339
 msgid "Sample Received Date"
 msgstr "Date de réception de l'échantillon"
 
@@ -8584,7 +8585,7 @@ msgstr "Date de réception de l'échantillon"
 #: eid/results/forms/update-southsudan-result.php:425
 #: eid/results/forms/update-southsudan-result.php:469
 #: eid/results/forms/update-southsudan-result.php:491
-#: generic-tests/requests/add-request.php:685
+#: generic-tests/requests/add-request.php:684
 #: generic-tests/requests/clone-request.php:1027
 #: generic-tests/requests/edit-request.php:906
 #: generic-tests/results/update-generic-test-result.php:887
@@ -9041,7 +9042,7 @@ msgstr "Âge (en années)"
 #: vl/program-management/export-vl-results.php:35
 #: vl/program-management/export-vl-results.php:38
 #: vl/requests/export-vl-requests.php:27 vl/requests/patientModal.php:107
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:327
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:311
 msgid "Age"
 msgstr "Age"
 
@@ -10805,7 +10806,6 @@ msgstr "Âge (mois) de l'arrêt de l'allaitement"
 #: eid/results/forms/update-rwanda-result.php:158
 #: eid/results/forms/update-sierraleone-result.php:161
 #: eid/results/forms/update-southsudan-result.php:161
-#: vl/requests/forms/add-cameroon.php:361
 #: vl/requests/forms/edit-cameroon.php:404
 #: vl/results/forms/update-cameroon-result.php:443
 msgid "Requesting Clinician Name"
@@ -11440,8 +11440,8 @@ msgstr "Veuillez saisir la désignation"
 #: facilities/addFacility.php:623 facilities/editFacility.php:577
 #: facilities/editFacility.php:605 facilities/editFacility.php:951
 #: users/addUser.php:149 users/editUser.php:201
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:416
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:421
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:394
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:399
 msgid "Signature"
 msgstr "Signature"
 
@@ -12029,7 +12029,7 @@ msgstr "Texte"
 #: generic-tests/configuration/edit-test-type.php:821
 #: system-admin/log-files/log-files.php:34
 #: system-admin/user-login-history/userLoginIndex.php:29
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:392
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:370
 msgid "Date"
 msgstr "Date"
 
@@ -12175,7 +12175,7 @@ msgstr "Envoie de résultats par email"
 #: generic-tests/configuration/add-test-type.php:283
 #: generic-tests/configuration/clone-test-type.php:567
 #: generic-tests/configuration/edit-test-type.php:456
-#: generic-tests/requests/add-request.php:1741
+#: generic-tests/requests/add-request.php:1740
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1983
@@ -12189,7 +12189,7 @@ msgstr "Covid-19-Saisir le résultat manuellement"
 #: generic-tests/configuration/add-test-type.php:283
 #: generic-tests/configuration/clone-test-type.php:567
 #: generic-tests/configuration/edit-test-type.php:456
-#: generic-tests/requests/add-request.php:1741
+#: generic-tests/requests/add-request.php:1740
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1983
@@ -13126,8 +13126,8 @@ msgstr "Veuillez vérifier votre numéro d'identification de l'échantillon"
 msgid "Lab test request added successfully"
 msgstr "Demande de test de laboratoire ajoutée avec succès"
 
-#: generic-tests/requests/add-request.php:772
-#: generic-tests/requests/add-request.php:1707
+#: generic-tests/requests/add-request.php:771
+#: generic-tests/requests/add-request.php:1706
 #: generic-tests/requests/edit-request.php:968
 #: generic-tests/requests/edit-request.php:1839
 #: generic-tests/results/update-generic-test-result.php:950
@@ -13135,13 +13135,13 @@ msgstr "Demande de test de laboratoire ajoutée avec succès"
 msgid "Select Sub Tests"
 msgstr "Sélectionner les tests secondaires"
 
-#: generic-tests/requests/add-request.php:810
+#: generic-tests/requests/add-request.php:809
 #: generic-tests/requests/clone-request.php:1190
 #: generic-tests/requests/edit-request.php:1075
 msgid "Select Specimen Type"
 msgstr "Sélectionner le type de spécimen"
 
-#: generic-tests/requests/add-request.php:1388
+#: generic-tests/requests/add-request.php:1387
 #: generic-tests/requests/clone-request.php:1420
 #: generic-tests/requests/edit-request.php:1305
 #: generic-tests/results/update-generic-test-result.php:1286 vl/vl.js.php:90
@@ -13152,7 +13152,7 @@ msgstr ""
 "Échantillon reçu au laboratoire d'essai La date ne peut être antérieure à la "
 "date de prélèvement de l'échantillon"
 
-#: generic-tests/requests/add-request.php:1403
+#: generic-tests/requests/add-request.php:1402
 #: generic-tests/requests/clone-request.php:1405
 #: generic-tests/requests/edit-request.php:1290
 #: generic-tests/results/update-generic-test-result.php:1271 vl/vl.js.php:105
@@ -13162,7 +13162,7 @@ msgstr ""
 "La date de réception de l'échantillon au carrefour ne peut être antérieure à "
 "la date de prélèvement de l'échantillon"
 
-#: generic-tests/requests/add-request.php:1418
+#: generic-tests/requests/add-request.php:1417
 #: generic-tests/requests/clone-request.php:1435
 #: generic-tests/requests/edit-request.php:1320
 #: generic-tests/results/update-generic-test-result.php:1301 vl/vl.js.php:120
@@ -13171,14 +13171,14 @@ msgstr ""
 "La date d'analyse de l'échantillon ne peut être antérieure à la date de "
 "prélèvement de l'échantillon"
 
-#: generic-tests/requests/add-request.php:1506
+#: generic-tests/requests/add-request.php:1505
 #: generic-tests/requests/clone-request.php:1613
 #: vl/requests/addVlRequest.php:171
 msgid "Could not save this form. Please try again."
 msgstr "Impossible d'enregistrer ce formulaire. Veuillez réessayer."
 
-#: generic-tests/requests/add-request.php:1613
-#: generic-tests/requests/add-request.php:1617
+#: generic-tests/requests/add-request.php:1612
+#: generic-tests/requests/add-request.php:1616
 #: generic-tests/requests/clone-request.php:1910
 #: generic-tests/requests/clone-request.php:1914
 #: generic-tests/requests/edit-request.php:1714
@@ -14279,7 +14279,7 @@ msgstr "Désolé"
 msgid "You do not have permission to access this page."
 msgstr "Vous n’avez pas la permission d'accéder à cette page."
 
-#: header.php:172 users/editProfile.php:42
+#: header.php:172 users/editProfile.php:37
 msgid "Edit Profile"
 msgstr "Modifier le profil"
 
@@ -15321,11 +15321,11 @@ msgid "Please enter your user name"
 msgstr "Veuillez entrer votre nom d’utilisateur"
 
 #: login/login.php:161 setup/index.php:169
-#: system-admin/edit-config/resetPassword.php:40
-#: system-admin/edit-config/resetPassword.php:42
+#: system-admin/edit-config/resetPassword.php:36
+#: system-admin/edit-config/resetPassword.php:38
 #: system-admin/login/login.php:65 system-admin/setup/index.php:90
-#: users/addUser.php:183 users/addUser.php:185 users/editProfile.php:113
-#: users/editProfile.php:115 users/editUser.php:248 users/editUser.php:250
+#: users/addUser.php:183 users/addUser.php:185 users/editProfile.php:108
+#: users/editProfile.php:110 users/editUser.php:248 users/editUser.php:250
 #: vl/result-mail/editTestResultEmailConfig.php:65
 #: vl/result-mail/editTestResultEmailConfig.php:67
 msgid "Password"
@@ -15865,14 +15865,14 @@ msgstr "Email ID"
 
 #: setup/index.php:165 system-admin/setup/index.php:86
 #: system-admin/user-login-history/userLoginIndex.php:34 users/addUser.php:173
-#: users/users.php:58
+#: users/editProfile.php:143 users/users.php:58
 msgid "Login ID"
 msgstr "Identifiant de connexion"
 
-#: setup/index.php:173 system-admin/edit-config/resetPassword.php:49
-#: system-admin/edit-config/resetPassword.php:51
+#: setup/index.php:173 system-admin/edit-config/resetPassword.php:45
+#: system-admin/edit-config/resetPassword.php:47
 #: system-admin/setup/index.php:94 users/addUser.php:193 users/addUser.php:195
-#: users/editProfile.php:123 users/editProfile.php:125 users/editUser.php:258
+#: users/editProfile.php:118 users/editProfile.php:120 users/editUser.php:258
 #: users/editUser.php:260
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
@@ -15881,10 +15881,10 @@ msgstr "Confirmer le mot de passe"
 msgid "Create User"
 msgstr "Créer un utilisateur"
 
-#: setup/index.php:212 system-admin/edit-config/resetPassword.php:43
-#: system-admin/edit-config/resetPassword.php:103
+#: setup/index.php:212 system-admin/edit-config/resetPassword.php:39
+#: system-admin/edit-config/resetPassword.php:95
 #: system-admin/setup/index.php:132 users/addUser.php:187 users/addUser.php:397
-#: users/editProfile.php:117 users/editProfile.php:252 users/editUser.php:252
+#: users/editProfile.php:112 users/editProfile.php:240 users/editUser.php:252
 #: users/editUser.php:487
 msgid ""
 "Password must be at least 8 characters long and must include AT LEAST one "
@@ -16045,17 +16045,17 @@ msgstr "Paramétrage SMTP"
 msgid "Reload"
 msgstr "Rafraichir"
 
-#: system-admin/edit-config/resetPassword.php:17
+#: system-admin/edit-config/resetPassword.php:13
 msgid "Edit Password"
 msgstr "Modifier le mot de passe"
 
-#: system-admin/edit-config/resetPassword.php:20
+#: system-admin/edit-config/resetPassword.php:16
 msgid "Manage Password"
 msgstr "Gérer le mot de passe"
 
-#: system-admin/edit-config/resetPassword.php:42
+#: system-admin/edit-config/resetPassword.php:38
 #: system-admin/login/login.php:65 system-admin/setup/index.php:90
-#: users/addUser.php:185 users/editProfile.php:115 users/editUser.php:250
+#: users/addUser.php:185 users/editProfile.php:110 users/editUser.php:250
 msgid "Please enter the password"
 msgstr "Veuillez saisir votre mot de passe actuel"
 
@@ -16124,6 +16124,7 @@ msgid "Remote Reference Last Sync"
 msgstr "Référence à distance Dernière synchronisation"
 
 #: system-admin/instance-overview/instanceIndex.php:142
+#: users/editProfile.php:173
 msgid "No record found"
 msgstr "Aucun enregistrement trouvé"
 
@@ -16198,10 +16199,12 @@ msgid "Attempted Datetime"
 msgstr "Date de la tentative"
 
 #: system-admin/user-login-history/userLoginIndex.php:65
+#: users/editProfile.php:145
 msgid "Browser"
 msgstr "Navigateur"
 
 #: system-admin/user-login-history/userLoginIndex.php:66
+#: users/editProfile.php:146
 msgid "Operating System"
 msgstr "Système d'exploitation"
 
@@ -17175,7 +17178,7 @@ msgstr "Tubercolose-Imprimer le résultat"
 msgid "Add User"
 msgstr "Ajouter un utilisateur"
 
-#: users/addUser.php:76 users/editProfile.php:66 users/editUser.php:123
+#: users/addUser.php:76 users/editProfile.php:61 users/editUser.php:123
 msgid "Please enter user name"
 msgstr "Veuillez saisir votre nom d'utilisateur"
 
@@ -17184,18 +17187,18 @@ msgstr "Veuillez saisir votre nom d'utilisateur"
 msgid "Email"
 msgstr "Courriel"
 
-#: users/addUser.php:84 users/editProfile.php:96 users/editUser.php:132
+#: users/addUser.php:84 users/editProfile.php:91 users/editUser.php:132
 #: vl/result-mail/editTestResultEmailConfig.php:57
 msgid "Please enter email"
 msgstr "Veuillez entrer votre email"
 
-#: users/addUser.php:84 users/editProfile.php:96 users/editUser.php:132
+#: users/addUser.php:84 users/editProfile.php:91 users/editUser.php:132
 msgid "This email id that you entered already exists.Try another email id"
 msgstr ""
 "L'adresse électronique que vous avez saisie existe déjà. Essayez une autre "
 "adresse électronique"
 
-#: users/addUser.php:94 users/editProfile.php:104 users/editUser.php:142
+#: users/addUser.php:94 users/editProfile.php:99 users/editUser.php:142
 #: vl/requests/forms/add-drc.php:124 vl/results/forms/update-drc-result.php:150
 msgid "Please enter phone number"
 msgstr "Veuillez saisir votre numéro de téléphone"
@@ -17271,7 +17274,7 @@ msgid "This login id that you entered already exists.Try another login id"
 msgstr ""
 "L'identifiant que vous avez saisi existe déjà. Essayez un autre identifiant"
 
-#: users/addUser.php:186 users/editProfile.php:116 users/editUser.php:251
+#: users/addUser.php:186 users/editProfile.php:111 users/editUser.php:251
 msgid "Generate Random Password"
 msgstr "Générer un mot de passe aléatoire"
 
@@ -17299,21 +17302,37 @@ msgstr ""
 msgid "User saved successfully!"
 msgstr "L'utilisateur a été enregistré avec succès !"
 
-#: users/editProfile.php:64 users/editProfile.php:66
+#: users/editProfile.php:59 users/editProfile.php:61
 msgid "Your Full Name"
 msgstr "Votre nom complet"
 
-#: users/editProfile.php:75
+#: users/editProfile.php:70
 msgid "Preferred Language"
 msgstr "Préférence linguistique"
 
-#: users/editProfile.php:77
+#: users/editProfile.php:72
 msgid "Please select your Locale"
 msgstr "Veuillez sélectionner votre localité"
 
-#: users/editProfile.php:94 users/editProfile.php:96
+#: users/editProfile.php:89 users/editProfile.php:91
 msgid "Official Email"
 msgstr "Email officiel"
+
+#: users/editProfile.php:137
+msgid "Recent Login Attempts"
+msgstr "Tentatives de connexion récentes"
+
+#: users/editProfile.php:142
+msgid "Login Attempt Date and Time"
+msgstr "Date et heure de la tentative de connexion"
+
+#: users/editProfile.php:147
+msgid "Login Status"
+msgstr "Statut de connexion"
+
+#: users/editProfile.php:258
+msgid "Random password generated and copied to clipboard"
+msgstr "Mot de passe aléatoire généré et copié dans le presse-papiers"
 
 #: users/editProfileHelper.php:68
 msgid ""
@@ -17537,7 +17556,7 @@ msgstr "Numéro de téléphone portable du patient"
 #: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:338
 #: vl/requests/forms/edit-cameroon.php:378
 #: vl/results/forms/update-cameroon-result.php:421
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:334
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:318
 msgid "Date of Sample Collection"
 msgstr "Date de collecte de l’échantillon"
 
@@ -18121,11 +18140,11 @@ msgstr "Ajouter le motif du test VL"
 msgid "Failure Reason"
 msgstr "Raison de l'échec"
 
-#: vl/requests/addVlRequestHelper.php:368
+#: vl/requests/addVlRequestHelper.php:369
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: vl/requests/editVlRequestHelper.php:363
+#: vl/requests/editVlRequestHelper.php:372
 #: vl/results/updateVlTestResultHelper.php:180
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
@@ -18283,6 +18302,10 @@ msgstr "Veuillez sélectionner la date de prélèvement de l'échantillon"
 #: vl/results/forms/update-cameroon-result.php:429
 msgid "Please choose sample type"
 msgstr "Veuillez choisir le type d'échantillon"
+
+#: vl/requests/forms/add-cameroon.php:361
+msgid "Name Of Requester"
+msgstr "Nom du demandeur"
 
 #: vl/requests/forms/add-cameroon.php:362
 #: vl/requests/forms/edit-cameroon.php:406
@@ -18865,117 +18888,87 @@ msgstr "Veuillez sélectionner si l'échantillon est rejeté"
 msgid "Please select reason for rejection"
 msgstr "Veuillez sélectionner la raison du rejet"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:315
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:299
 msgid "HIV VIRAL LOAD RESULT SHEET"
 msgstr "FICHE DE RESULTAT CHARGE VIRAL VIH"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:322
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:306
 msgid "Unique Code"
 msgstr "Code unique"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:323
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:307
 msgid "Region"
 msgstr "Région"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:327
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:311
 msgid "Sex : "
 msgstr "Sexe : "
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:330
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:314
 msgid "Type of Sample"
 msgstr "Type d'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:331
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:315
 msgid "Contact"
 msgstr "Contact"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:335
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:319
 msgid "Collected By"
 msgstr "Recueilli par"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:338
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:322
 msgid "Name of Requestor"
 msgstr "Nom du demandeur"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:339
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:323
 msgid "Contact of Requestor"
 msgstr "Contact du demandeur"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:342
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:326
 msgid "Treatment center"
 msgstr "Centre de traitement"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:343
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:327
 msgid "ARV initiation date"
 msgstr "Date d'initiation aux ARV"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:346
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:330
 msgid "Modified"
 msgstr "Modifier"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:347
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:331
 msgid "Modification date"
 msgstr "Date de modification"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:357
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:341
 msgid "Viral Load Serial Number"
 msgstr "Numéro de série de la charge virale"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:363
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:347
 msgid "Test Name"
 msgstr "Nom du test"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:365
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:349
 msgid "Test Date"
 msgstr "Date du test"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:373
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:357
 msgid "Results (log)"
 msgstr "Résultats (log)"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:375
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:359
 msgid "Test Done By"
 msgstr "Test effectué par"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:381
-msgid ""
-"N.B.: The Abbott 0.6ml test has a lower limit of quantification of 40 copies/"
-"ml and an upper limit of quantification\n"
-"          of 10,000,000 copies/ml. For any results between these limits, the "
-"number of copies per ml is reported. When the virus is\n"
-"          detected above or below the limits of quantification, this is "
-"reported. If the test is successful and no viruses are found\n"
-"          detected, the result is reported as undetected target. For a "
-"variation in viral load to be significant, it is necessary\n"
-"          that the difference between two measurements is at least 0.5 Log10 "
-"or a reduction or increase by a factor of 3 of the\n"
-"          number of copies/ml.\n"
-"          "
-msgstr ""
-"N.B. : Le test Abbott 0,6 ml a une limite inférieure de quantification de 40 "
-"copies/ml et une limite supérieure de quantification de 10 000 000 copies/"
-"ml\n"
-"          de 10 000 000 copies/ml. Pour tout résultat compris entre ces "
-"limites, le nombre de copies par ml est indiqué. Lorsque le virus est\n"
-"          est détecté au-dessus ou au-dessous des limites de quantification, "
-"il en est fait mention. Si le test est réussi et qu'aucun virus n'est "
-"détecté, le résultat est indiqué comme \"non détecté\"\n"
-"          détecté, le résultat est indiqué comme cible non détectée. Pour "
-"qu'une variation de la charge virale soit significative, il faut\n"
-"          que la différence entre deux mesures soit d'au moins 0,5 Log10 ou "
-"que le nombre de copies/ml soit réduit ou augmenté d'un facteur 3\n"
-"          nombre de copies/ml.\n"
-"          "
-
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:390
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:368
 msgid "Comment, if applicable"
 msgstr "Commentaire, le cas échéant"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:399
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:377
 msgid "Validated by"
 msgstr "Validé par"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:400
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:378
 msgid "Authorized by"
 msgstr "Autorisé par"
 
@@ -19127,6 +19120,35 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid ""
+#~ "N.B.: The Abbott 0.6ml test has a lower limit of quantification of 40 "
+#~ "copies/ml and an upper limit of quantification\n"
+#~ "          of 10,000,000 copies/ml. For any results between these limits, "
+#~ "the number of copies per ml is reported. When the virus is\n"
+#~ "          detected above or below the limits of quantification, this is "
+#~ "reported. If the test is successful and no viruses are found\n"
+#~ "          detected, the result is reported as undetected target. For a "
+#~ "variation in viral load to be significant, it is necessary\n"
+#~ "          that the difference between two measurements is at least 0.5 "
+#~ "Log10 or a reduction or increase by a factor of 3 of the\n"
+#~ "          number of copies/ml.\n"
+#~ "          "
+#~ msgstr ""
+#~ "N.B. : Le test Abbott 0,6 ml a une limite inférieure de quantification de "
+#~ "40 copies/ml et une limite supérieure de quantification de 10 000 000 "
+#~ "copies/ml\n"
+#~ "          de 10 000 000 copies/ml. Pour tout résultat compris entre ces "
+#~ "limites, le nombre de copies par ml est indiqué. Lorsque le virus est\n"
+#~ "          est détecté au-dessus ou au-dessous des limites de "
+#~ "quantification, il en est fait mention. Si le test est réussi et qu'aucun "
+#~ "virus n'est détecté, le résultat est indiqué comme \"non détecté\"\n"
+#~ "          détecté, le résultat est indiqué comme cible non détectée. Pour "
+#~ "qu'une variation de la charge virale soit significative, il faut\n"
+#~ "          que la différence entre deux mesures soit d'au moins 0,5 Log10 "
+#~ "ou que le nombre de copies/ml soit réduit ou augmenté d'un facteur 3\n"
+#~ "          nombre de copies/ml.\n"
+#~ "          "
 
 #~ msgid "Collection Date"
 #~ msgstr "Date de collecte de"

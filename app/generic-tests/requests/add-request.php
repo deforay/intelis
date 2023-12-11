@@ -1,6 +1,5 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Services\CommonService;
@@ -10,7 +9,7 @@ use App\Services\GenericTestsService;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-$request = AppRegistry::get('request');
+$request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
 $title = " Add New Test";
@@ -866,7 +865,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF END
 
           $("#reqClinician").select2({
-               placeholder: "Enter Requesting Clinician Name",
+               placeholder: "Enter Request Clinician name",
                minimumInputLength: 0,
                width: '100%',
                allowClear: true,
@@ -1459,7 +1458,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
           if ($.trim($("#" + id).val()) != '') {
                //$.blockUI();
-               $.post("/vl/requests/checkSampleDuplicate.php", {
+               $.post("/generic-tests/requests/checkSampleDuplicate.php", {
                          tableName: tableName,
                          fieldName: fieldName,
                          value: $("#" + id).val(),

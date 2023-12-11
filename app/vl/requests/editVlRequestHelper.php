@@ -278,7 +278,16 @@ try {
           'manual_result_entry' => 'yes',
           'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'] ?? null
      );
-
+     //$db->select('result');
+     $db->where('vl_sample_id', $_POST['vlSampleId']);
+     $getPrevResult = $db->getOne('form_vl');
+     if($getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult)
+     {
+          $vlData['result_modified'] = "yes";
+     }
+     else{
+          $vlData['result_modified'] = "no";
+     }
 
      $vlData['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vlData['patient_art_no']);
      $vlData['patient_middle_name'] = $general->crypto('doNothing', $_POST['patientMiddleName'], $vlData['patient_art_no']);
