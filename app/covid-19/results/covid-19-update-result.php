@@ -24,7 +24,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var CommonService $commonService */
 $general = ContainerRegistry::get(CommonService::class);
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 //Funding source list
 $fundingSourceList = $general->getFundingSources();

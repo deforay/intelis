@@ -15,7 +15,9 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$localeLists = $general->getLocaleList();
+$globalConfig = $general->getGlobalConfig();
+
+$localeLists = $general->getLocaleList((int)($globalConfig['vl_form'] ?? 0));
 
 $db->where("user_id", $_SESSION['userId']);
 $userInfo = $db->getOne("user_details");
@@ -75,7 +77,7 @@ $data = $db->get("user_login_history", 25);
                     <select class="form-control isRequired" name="userLocale" id="userLocale" title="<?php echo _translate('Please select your Locale'); ?>">
                       <option value=""><?= _translate("--Select--"); ?></option>
                       <?php
-                      $selectedLocale = $userInfo['user_locale'] ?? $general->getGlobalConfig('app_locale') ?? 'en_US';
+                      $selectedLocale = $userInfo['user_locale'] ?? $globalConfig['app_locale'] ?? 'en_US';
                       foreach ($localeLists as $locale => $localeName) { ?>
                         <option value="<?php echo $locale; ?>" <?php echo ($selectedLocale == $locale) ? 'selected="selected"' : ''; ?>><?= $localeName; ?></option>
                       <?php } ?>

@@ -91,7 +91,7 @@ $dateUtils = new DateUtility();
 $tbLamResults = $tbService->getTbResults('lam');
 $tbXPertResults = $tbService->getTbResults('x-pert');
 
-$countryFormId = $general->getGlobalConfig('vl_form');
+$countryFormId = (int) $general->getGlobalConfig('vl_form');
 $resultFilename = '';
 
 if (!empty($requestResult)) {

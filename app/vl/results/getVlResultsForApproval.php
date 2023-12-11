@@ -20,8 +20,8 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
-$vlsmFormId = $general->getGlobalConfig('vl_form');
-$systemType = $general->getSystemConfig('sc_user_type');
+$vlsmFormId = (int) $general->getGlobalConfig('vl_form');
+$systemType = (string) $general->getSystemConfig('sc_user_type');
 
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where

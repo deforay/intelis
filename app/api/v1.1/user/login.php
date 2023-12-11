@@ -74,7 +74,7 @@ try {
             unset($userResult['password']);
 
             $data['user'] = $userResult;
-            $data['form'] = $general->getGlobalConfig('vl_form');
+            $data['form'] = (int) $general->getGlobalConfig('vl_form');
             $data['api_token'] = $tokenData['token'];
             $data['new_token'] = $tokenData['token_updated'];
             $data['appMenuName'] = $general->getGlobalConfig('app_menu_name');

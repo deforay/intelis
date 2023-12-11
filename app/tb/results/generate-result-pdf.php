@@ -37,7 +37,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 //set print time
 $printedTime = date('Y-m-d H:i:s');

@@ -13,7 +13,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 //main query
 $query = "SELECT covid19.sample_code,covid19.covid19_id,covid19.facility_id,f.facility_name,f.facility_code FROM form_covid19 as covid19 LEFT JOIN facility_details as f ON covid19.facility_id=f.facility_id where is_result_mail_sent like 'no' AND covid19.result IS NOT NULL AND covid19.result!= '' ORDER BY f.facility_name ASC";

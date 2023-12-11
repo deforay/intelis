@@ -14,7 +14,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$countryFormId = $general->getGlobalConfig('vl_form');
+$countryFormId = (int) $general->getGlobalConfig('vl_form');
 $fileName = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'covid-19' . DIRECTORY_SEPARATOR . $countryFormId . DIRECTORY_SEPARATOR . 'Eid_Bulk_Import_Excel_Format.xlsx';
 ?>
 <!-- Content Wrapper. Contains page content -->

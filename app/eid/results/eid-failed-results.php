@@ -32,7 +32,7 @@ $healthFacilites = $facilitiesService->getHealthFacilities('eid');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type = 'eid' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);

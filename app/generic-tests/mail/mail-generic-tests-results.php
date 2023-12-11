@@ -13,7 +13,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 //main query
 $query = "SELECT generic.sample_code,generic.sample_id,generic.facility_id,f.facility_name,f.facility_code, rtt.test_standard_name,rtt.test_loinc_code FROM form_generic as generic LEFT JOIN facility_details as f ON generic.facility_id=f.facility_id INNER JOIN r_test_types as rtt ON generic.test_type=rtt.test_type_id where is_result_mail_sent like 'no' AND generic.result IS NOT NULL AND generic.result!= '' ORDER BY f.facility_name ASC";

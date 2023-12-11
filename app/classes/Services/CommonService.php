@@ -1,9 +1,8 @@
 <?php
 
-
-
 namespace App\Services;
 
+use COUNTRY;
 use Exception;
 use TCPDFBarcode;
 use TCPDF2DBarcode;
@@ -15,6 +14,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+
 
 
 class CommonService
@@ -481,12 +481,11 @@ class CommonService
         });
     }
 
-    public function getLocaleList($formId = null)
+    public function getLocaleList(int $formId = null)
     {
         if (empty($formId)) {
-            $formId = $this->getGlobalConfig('vl_form') ?? 'all';
+            $formId = (int)$this->getGlobalConfig('vl_form') ?? 0;
         }
-
         // Locale mapping
         $localeMap = [
             'en_US' => 'English',
@@ -498,27 +497,18 @@ class CommonService
         // Define Cameroon locales
         $cameroonLocales = ['en_CM', 'fr_CM'];
 
-        $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locales';
-
-        // Filter out unwanted directory entries
-        $localeList = array_diff(scandir($path), ['.', '..', '.DS_Store']);
-
-        // Initialize empty array for locales
-        $locales = [];
-
-        foreach ($localeList as $locale) {
-            // Include all locales if formId is 'all' or apply specific filtering based on formId
-            if (
-                $formId === 'all' ||
-                ($formId === 'COUNTRY\CAMEROON' && in_array($locale, $cameroonLocales)) ||
-                ($formId !== 'COUNTRY\CAMEROON' && !in_array($locale, $cameroonLocales))
-            ) {
-                $locales[$locale] = $localeMap[$locale] ?? $locale;
-            }
+        if ($formId === COUNTRY\CAMEROON) {
+            // Keep only Cameroon locales
+            $localeMap = array_intersect_key($localeMap, array_flip($cameroonLocales));
+        } elseif ($formId !== 0) {
+            // Remove Cameroon locales for other specific countries
+            $localeMap = array_diff_key($localeMap, array_flip($cameroonLocales));
         }
+        // If 0, keep all locales in $localeMap
 
-        return $locales;
+        return $localeMap;
     }
+
 
 
 

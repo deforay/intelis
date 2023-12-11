@@ -26,7 +26,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 $facilityQuery = "SELECT * FROM facility_details WHERE `status`='active' order by facility_name ASC";
 $facilityResult = $db->rawQuery($facilityQuery);
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 //main query
 //$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE 1=0 AND is_result_mail_sent ='no' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";

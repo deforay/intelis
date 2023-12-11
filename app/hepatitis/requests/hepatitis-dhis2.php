@@ -24,7 +24,7 @@ $arr = $general->getGlobalConfig();
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 //Funding source list
 $fundingSourceList = $general->getFundingSources();

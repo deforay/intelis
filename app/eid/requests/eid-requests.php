@@ -56,7 +56,7 @@ $healthFacilites = $facilitiesService->getHealthFacilities('eid');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, $facilityId, "-- Select --");
 $testingLabs = $facilitiesService->getTestingLabs('eid');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "-- Select --");
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
