@@ -599,7 +599,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-4">
 													<label for="reqClinician" class="col-lg-5 control-label">Request Clinician</label>
 													<div class="col-lg-7">
-														<select class="form-control ajax-select2" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>">
+														<select class="form-control ajax-select2" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>">
 															<option value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" selected='selected'> <?php echo $vlQueryInfo['request_clinician_name']; ?></option>
 														</select>
 													</div>
@@ -1037,7 +1037,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		checkPatientReceivesms('<?php echo $vlQueryInfo['consent_to_receive_sms']; ?>');
 
 		$("#reqClinician").select2({
-			placeholder: "Enter Request Clinician name",
+			placeholder: "Enter Requesting Clinician Name",
 			minimumInputLength: 0,
 			width: '100%',
 			allowClear: true,

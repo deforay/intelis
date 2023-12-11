@@ -358,8 +358,8 @@ $sFormat = '';
 
                                                   <div class="col-md-3">
                                                        <div class="form-group">
-                                                            <label for="reqClinician" class=""><?= _translate('Name of health personnel collecting sample'); ?></label>
-                                                            <input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="<?= _translate('Request Clinician name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" />
+                                                            <label for="reqClinician" class=""><?= _translate('Requesting Clinician Name'); ?></label>
+                                                            <input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="<?= _translate('Requesting Clinician name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" />
                                                        </div>
                                                   </div>
                                                   <div class="col-md-3">

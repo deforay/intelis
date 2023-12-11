@@ -364,28 +364,28 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								</div>
 							</div>
 							<div class="row femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>">
-										<div class="col-xs-3 col-md-3">
-											<div class="form-group">
-												<label for="patientPregnant">Is Patient Pregnant? </label><br>
-												<label class="radio-inline">
-													<input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
-												</label>
-												<label class="radio-inline">
-													<input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
-												</label>
-											</div>
-										</div>
-										<div class="col-xs-3 col-md-3">
-											<div class="form-group">
-												<label for="breastfeeding">Is Patient Breastfeeding? </label><br>
-												<label class="radio-inline">
-													<input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
-												</label>
-												<label class="radio-inline">
-													<input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
-												</label>
-											</div>
-										</div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="patientPregnant">Is Patient Pregnant? </label><br>
+										<label class="radio-inline">
+											<input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+										</label>
+										<label class="radio-inline">
+											<input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
+										</label>
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+										<label class="radio-inline">
+											<input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+										</label>
+										<label class="radio-inline">
+											<input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
+										</label>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="box box-primary">
@@ -615,7 +615,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<label for="reqClinician" class="col-lg-5 control-label">Request
 													Clinician</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">

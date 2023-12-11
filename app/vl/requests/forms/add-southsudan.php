@@ -288,28 +288,28 @@ $sFormat = '';
                                         </div>
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3 femaleSection">
-                                                       <div class="form-group">
-                                                            <label for="patientPregnant">Is Patient Pregnant? </label><br>
-                                                            <label class="radio-inline">
-                                                                 <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?"> Yes
-                                                            </label>
-                                                            <label class="radio-inline">
-                                                                 <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
-                                                            </label>
-                                                       </div>
+                                                  <div class="form-group">
+                                                       <label for="patientPregnant">Is Patient Pregnant? </label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?"> Yes
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
+                                                       </label>
                                                   </div>
-                                                    
-                                                  <div class="col-xs-3 col-md-3 femaleSection">
-                                                       <div class="form-group">
-                                                            <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
-                                                            <label class="radio-inline">
-                                                                 <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?"> Yes
-                                                            </label>
-                                                            <label class="radio-inline">
-                                                                 <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
-                                                            </label>
-                                                       </div>
+                                             </div>
+
+                                             <div class="col-xs-3 col-md-3 femaleSection">
+                                                  <div class="form-group">
+                                                       <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?"> Yes
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
+                                                       </label>
                                                   </div>
+                                             </div>
                                         </div>
                                    </div>
                                    <div class="box box-primary">
@@ -341,7 +341,7 @@ $sFormat = '';
                                                             </select>
                                                        </div>
                                                   </div>
-                                                  
+
                                              </div>
                                         </div>
                                         <div class="box box-primary">
@@ -499,7 +499,7 @@ $sFormat = '';
                                                             <div class="col-md-4">
                                                                  <label for="reqClinician" class="col-lg-5 control-label">Requesting Clinician</label>
                                                                  <div class="col-lg-7">
-                                                                      <select class="form-control ajax-select2" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician"></select>
+                                                                      <select class="form-control ajax-select2" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician" title="Please enter request clinician"></select>
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
@@ -917,7 +917,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF END
 
           $("#reqClinician").select2({
-               placeholder: "Enter Request Clinician name",
+               placeholder: "Enter Requesting Clinician Name",
                minimumInputLength: 0,
                width: '100%',
                allowClear: true,

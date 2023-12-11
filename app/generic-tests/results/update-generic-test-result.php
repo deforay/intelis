@@ -1129,7 +1129,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		checkPatientReceivesms('<?php echo $genericResultInfo['consent_to_receive_sms']; ?>');
 
 		$("#reqClinician").select2({
-			placeholder: "Enter Request Clinician name",
+			placeholder: "Enter Requesting Clinician Name",
 			minimumInputLength: 0,
 			width: '100%',
 			allowClear: true,

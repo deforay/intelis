@@ -1151,7 +1151,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		checkPatientReceivesms('<?php echo $genericResultInfo['consent_to_receive_sms']; ?>');
 
 		$("#reqClinician").select2({
-			placeholder: "Enter Request Clinician name",
+			placeholder: "Enter Requesting Clinician Name",
 			minimumInputLength: 0,
 			width: '100%',
 			allowClear: true,

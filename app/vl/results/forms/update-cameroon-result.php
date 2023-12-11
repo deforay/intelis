@@ -440,9 +440,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								</div>
 								<div class="col-md-3">
 									<div class="form-group">
-										<label for="reqClinician" class=""><?= _translate('Name of health personnel collecting sample'); ?></label>
+										<label for="reqClinician" class=""><?= _translate('Requesting Clinician Name'); ?></label>
 
-										<input type="text" class="form-control" id="reqClinician" name="reqClinician" value="<?= $vlQueryInfo['request_clinician_name']; ?>" placeholder="<?= _translate('Request Clinician name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" <?php echo $disable; ?> />
+										<input type="text" class="form-control" id="reqClinician" name="reqClinician" value="<?= $vlQueryInfo['request_clinician_name']; ?>" placeholder="<?= _translate('Requesting Clinician name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" <?php echo $disable; ?> />
 									</div>
 								</div>
 								<div class="col-md-3">

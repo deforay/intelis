@@ -125,7 +125,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>">
                                         </td>
                                     </tr>
-                                
+
                                     <tr>
                                         <td style="width:25%">
                                             <label for="fundingSource"><?= _translate('Project Name'); ?> </label><br>
@@ -391,7 +391,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                     <tr>
                                         <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
-                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Request Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" /></td>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Requesting Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" /></td>
 
                                     </tr>
                                     <tr>

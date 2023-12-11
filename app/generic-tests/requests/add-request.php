@@ -866,7 +866,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF END
 
           $("#reqClinician").select2({
-               placeholder: "Enter Request Clinician name",
+               placeholder: "Enter Requesting Clinician Name",
                minimumInputLength: 0,
                width: '100%',
                allowClear: true,

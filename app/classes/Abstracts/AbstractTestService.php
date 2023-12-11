@@ -109,15 +109,15 @@ abstract class AbstractTestService
                 if (!empty($yearData)) {
                     $maxId = $yearData['max_sequence_number'] + 1;
                 } else {
-                    // If no sequence number exists for this year, get the max sequence number from form table
+                    // If no sequence number exists in sequence_counter table, get the max sequence number from form table
                     $sql = "SELECT MAX({$sampleCodeType}_key) AS max_sequence_number
                     FROM $this->table
                     WHERE YEAR(sample_collection_date) = ? AND
                     {$sampleCodeType}_key IS NOT NULL AND
                     {$sampleCodeType}_key != ''";
-                    if ($insertOperation) {
-                        $sql .= " FOR UPDATE";
-                    }
+                    // if ($insertOperation) {
+                    //     $sql .= " FOR UPDATE";
+                    // }
                     $yearData = $this->db->rawQueryOne($sql, [$currentYear]);
                     if (!empty($yearData)) {
                         $maxId = $yearData['max_sequence_number'] + 1;

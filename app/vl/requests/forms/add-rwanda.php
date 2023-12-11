@@ -467,7 +467,7 @@ $sFormat = '';
                                                             <div class="col-md-6">
                                                                  <label for="reqClinician" class="col-lg-5 control-label">Request Clinician <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Request Clinician name" title="Please enter request clinician" />
+                                                                      <input type="text" class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician Name" title="Please enter request clinician" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">

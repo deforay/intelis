@@ -476,7 +476,7 @@ $sFormat = '';
                                                             <div class="col-md-4">
                                                                  <label for="reqClinician" class="col-lg-5 control-label">Requesting Clinician</label>
                                                                  <div class="col-lg-7">
-                                                                      <select class="form-control ajax-select2" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician"></select>
+                                                                      <select class="form-control ajax-select2" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician" title="Please enter request clinician"></select>
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
@@ -886,7 +886,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF END
 
           $("#reqClinician").select2({
-               placeholder: "Enter Request Clinician name",
+               placeholder: "Enter Requesting Clinician Name",
                minimumInputLength: 0,
                width: '100%',
                allowClear: true,
