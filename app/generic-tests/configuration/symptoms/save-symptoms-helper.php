@@ -1,14 +1,15 @@
 <?php
 
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-ob_start();
 
-$general = new CommonService();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+
+
 $tableName = "r_generic_symptoms";
 $symptomId = (int) base64_decode((string) $_POST['symptomId']);
 try {

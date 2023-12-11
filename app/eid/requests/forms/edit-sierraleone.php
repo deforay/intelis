@@ -70,7 +70,7 @@ $aResult = $db->query($aQuery);
 
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -912,10 +912,10 @@ $aResult = $db->query($aQuery);
             placeholder: "Province"
         });
         getfacilityProvinceDetails($("#facilityId").val());
-        <?php //if (isset($eidInfo['mother_treatment']) && in_array('Other', $eidInfo['mother_treatment'])) { 
+        <?php //if (isset($eidInfo['mother_treatment']) && in_array('Other', $eidInfo['mother_treatment'])) {
         ?>
         // $('#motherTreatmentOther').prop('disabled', false);
-        <?php //} 
+        <?php //}
         ?>
 
         <?php if (!empty($eidInfo['mother_vl_result'])) { ?>

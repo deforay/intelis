@@ -23,7 +23,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $tableName = "form_generic";
 $primaryKey = "sample_id";
 
-$vlsmFormId = $general->getGlobalConfig('vl_form');
+$vlsmFormId = (int) $general->getGlobalConfig('vl_form');
 $systemType = $general->getSystemConfig('sc_user_type');
 
 

@@ -54,7 +54,7 @@ $healthFacilites = $facilitiesService->getHealthFacilities('tb');
 $arr = $general->getGlobalConfig();
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, $facilityId, "-- Select --");
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 $testingLabs = $facilitiesService->getTestingLabs('tb');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "-- Select --");
 

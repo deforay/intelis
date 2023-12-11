@@ -15,7 +15,9 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$localeLists = $general->getLocaleList();
+$globalConfig = $general->getGlobalConfig();
+
+$localeLists = $general->getLocaleList((int)($globalConfig['vl_form'] ?? 0));
 
 $db->where("user_id", $_SESSION['userId']);
 $userInfo = $db->getOne("user_details");
@@ -49,7 +51,7 @@ $data = $db->get("user_login_history", 25);
 
     <div class="box box-default">
       <div class="box-header with-border">
-        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
@@ -75,7 +77,7 @@ $data = $db->get("user_login_history", 25);
                     <select class="form-control isRequired" name="userLocale" id="userLocale" title="<?php echo _translate('Please select your Locale'); ?>">
                       <option value=""><?= _translate("--Select--"); ?></option>
                       <?php
-                      $selectedLocale = $userInfo['user_locale'] ?? $general->getGlobalConfig('app_locale') ?? 'en_US';
+                      $selectedLocale = $userInfo['user_locale'] ?? $globalConfig['app_locale'] ?? 'en_US';
                       foreach ($localeLists as $locale => $localeName) { ?>
                         <option value="<?php echo $locale; ?>" <?php echo ($selectedLocale == $locale) ? 'selected="selected"' : ''; ?>><?= $localeName; ?></option>
                       <?php } ?>
@@ -111,7 +113,7 @@ $data = $db->get("user_login_history", 25);
                   <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?> </label>
                   <div class="col-lg-8">
                     <input type="password" class="form-control ppwd" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" /><br>
-                    <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><strong>Generate Random Password</strong></button><br>
+                    <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><strong><?= _translate("Generate Random Password"); ?></strong></button><br>
                     <code><?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                   </div>
                 </div>

@@ -29,7 +29,7 @@ $vlService = ContainerRegistry::get(VlService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
 $healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('vl', false, true);

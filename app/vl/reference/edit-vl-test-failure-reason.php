@@ -30,7 +30,7 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
         <div class="box box-default">
             <!-- /.box-header -->
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required field"); ?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
             </div>
             <!-- form start -->
             <form class="form-horizontal" method='post' name='referenceForm' id='referenceForm' autocomplete="off" enctype="multipart/form-data" action="save-vl-test-failure-reason-helper.php">

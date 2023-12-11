@@ -278,7 +278,7 @@ if (!empty($requestResult)) {
 		/** @var Covid19Service $covid19Service */
 		$covid19Service = ContainerRegistry::get(Covid19Service::class);
 		$covid19Results = $covid19Service->getCovid19Results();
-		$countryFormId = $general->getGlobalConfig('vl_form');
+		$countryFormId = (int) $general->getGlobalConfig('vl_form');
 
 		$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
 		$covid19TestInfo = $db->rawQuery($covid19TestQuery);
