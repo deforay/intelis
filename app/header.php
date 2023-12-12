@@ -64,10 +64,11 @@ if (!_isAllowed($request)) {
 	throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page.'), 401);
 }
 $countryCode = $arr['default_phone_prefix'] ?? '';
-$minNumberOfDigits = (int) ($arr['min_phone_length'] ?? 0);
-$maxNumberOfDigits = (int) ($arr['max_phone_length'] ?? 15);
+$minNumberOfDigits = !empty($arr['min_phone_length']) ? (int) $arr['min_phone_length'] : 15;
+$maxNumberOfDigits = !empty($arr['max_phone_length']) ? (int) $arr['max_phone_length'] : 15;
 
 $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
+
 ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
