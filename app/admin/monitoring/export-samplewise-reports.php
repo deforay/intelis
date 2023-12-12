@@ -24,8 +24,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$dateTimeUtil = new DateUtility();
-
 $sQuery = $_SESSION['samplewiseReportsQuery'];
 $rResult = $db->rawQuery($sQuery);
 

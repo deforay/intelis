@@ -14,6 +14,7 @@ use App\Helpers\BatchPdfHelper;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Helpers\ResultPdfHelper;
 use App\Services\AppMenuService;
 use App\Services\Covid19Service;
 use App\Utilities\LoggerUtility;
@@ -76,11 +77,12 @@ if (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemCo
 // Configuration and DB
 $builder->addDefinitions([
     'applicationConfig' => $systemConfig,
-    DatabaseService::class => DI\factory(
+    'db' => DI\factory(
         function (ContainerInterface $c) {
             return new DatabaseService($c->get('applicationConfig')['database']);
         }
-    )
+    ),
+    DatabaseService::class => DI\get('db')
 ]);
 
 // Services
@@ -128,7 +130,7 @@ $builder->addDefinitions([
     PdfConcatenateHelper::class => DI\create(PdfConcatenateHelper::class),
     PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class),
     BatchPdfHelper::class => DI\create(BatchPdfHelper::class),
-    AppRegistry::class => DI\create(AppRegistry::class)
+    AppRegistry::class => DI\create(AppRegistry::class),
 ]);
 
 

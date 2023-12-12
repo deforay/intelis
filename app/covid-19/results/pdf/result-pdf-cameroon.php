@@ -10,15 +10,8 @@ use App\Services\Covid19Service;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 
-class SouthSudan_PDF extends MYPDF
+class CameroonCovid19PDF extends Covid19ResultPDF
 {
-
-    public ?string $logo;
-    public ?string $text;
-    public ?string $lab;
-    public ?string $htitle;
-    public $facilityInfo = [];
-    public $formId = 1;
     //Page header
     public function Header()
     {
@@ -84,10 +77,6 @@ class SouthSudan_PDF extends MYPDF
     }
 }
 
-
-
-$dateUtils = new DateUtility();
-
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
@@ -141,7 +130,7 @@ if (!empty($requestResult)) {
             }
         }
         // create new PDF document
-        $pdf = new SouthSudan_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new CameroonCovid19PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
         } else {

@@ -5,18 +5,8 @@ use App\Utilities\DateUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 
-class DRC_PDF extends MYPDF
+class DRCCovid19PDF2 extends Covid19ResultPDF
 {
-    public ?string $logo;
-    public ?string $text;
-    public ?string $lab;
-    public ?string $htitle;
-    public array $facilityInfo = [];
-    public $resultPrintedDate = null;
-    public $systemConfig = null;
-
-
-
     //Page header
     public function Header()
     {
@@ -99,7 +89,7 @@ class DRC_PDF extends MYPDF
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // create new PDF document
-$pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = new DRCCovid19PDF2(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 $pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $currentDateTime, $result['dataSync'], $systemConfig);
 // set document information
 $pdf->SetCreator('VLSM');

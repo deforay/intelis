@@ -81,7 +81,7 @@ $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
 //print_r($requestResult);die;
 //header and footer
-class MYPDF extends TCPDF
+class HepatitisResultPdf extends TCPDF
 {
 	public ?string $logo;
 	public string $text = '';

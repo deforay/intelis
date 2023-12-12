@@ -8,14 +8,8 @@ use App\Registries\ContainerRegistry;
 
 if (!class_exists('DRC_PDF')) {
 
-    class DRC_PDF extends MYPDF
+    class DRC_PDF extends Covid19ResultPDF
     {
-        public ?string $logo;
-        public ?string $text;
-        public ?string $lab;
-        public ?string $htitle;
-        public array $facilityInfo = [];
-
         //Page header
         public function Header()
         {

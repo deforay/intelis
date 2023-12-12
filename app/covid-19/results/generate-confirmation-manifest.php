@@ -21,7 +21,7 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 // die($id);
 // Extend the TCPDF class to create custom Header and Footer
-class MYPDF extends TCPDF
+class Covid19ConfirmationManifestPDF extends TCPDF
 {
     public ?string $logo;
     public ?string $text;
@@ -112,7 +112,7 @@ if (trim($id) != '') {
 
 
         // create new PDF document
-        $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new Covid19ConfirmationManifestPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         $pdf->setHeading($arr['logo'], $arr['header'], $labname);
 

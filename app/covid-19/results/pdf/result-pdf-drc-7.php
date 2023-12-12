@@ -7,14 +7,10 @@ use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-if (!class_exists('DRC_PDF')) {
+if (!class_exists('DRCCovid19PDF7')) {
 
-    class DRC_PDF extends MYPDF
+    class DRCCovid19PDF7 extends Covid19ResultPDF
     {
-        public ?string $logo;
-        public ?string $text;
-        public ?string $lab;
-        public ?string $htitle;
         //Page header
         public function Header()
         {
@@ -109,7 +105,7 @@ if (!class_exists('DRC_PDF')) {
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // create new PDF document
-$pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = new DRCCovid19PDF7(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
     $logoPrintInPdf = $result['facilityLogo'];
 } else {
@@ -409,7 +405,7 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
 
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
         $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . urlencode($Cid), 'QRCODE,H', 170, 60, 100, 100, $style, 'N');
+        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . urlencode($Cid), 'QRCODE,H', 170, 60, 100, 100, [], 'N');
     }
     $pdf->lastPage();
     $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

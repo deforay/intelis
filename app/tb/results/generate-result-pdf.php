@@ -117,7 +117,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 
 //print_r($requestResult);die;
 //header and footer
-class MYPDF extends TCPDF
+class TBResultPdf extends TCPDF
 {
     public $logo = '';
     public $text = '';

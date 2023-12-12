@@ -35,7 +35,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
    if (isset($mailconf['rs_field']) && trim((string) $mailconf['rs_field']) != '') {
       //Pdf code start
       // create new PDF document
-      class MYPDF extends TCPDF
+      class Covid19MailPDF extends TCPDF
       {
          public ?string $logo;
          public ?string  $text = '';
@@ -82,7 +82,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
             $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
          }
       }
-      $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+      $pdf = new Covid19MailPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
       $pdf->setHeading($global['logo'], $global['header']);
       $pdf->setPageOrientation('L');
       // set document information
