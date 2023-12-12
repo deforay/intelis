@@ -3,15 +3,15 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 
 
 ini_set('memory_limit', -1);
@@ -19,7 +19,7 @@ set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

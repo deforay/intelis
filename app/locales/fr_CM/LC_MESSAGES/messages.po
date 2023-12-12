@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-12-11 19:13+0530\n"
-"PO-Revision-Date: 2023-12-11 19:13+0530\n"
+"POT-Creation-Date: 2023-12-12 13:25+0530\n"
+"PO-Revision-Date: 2023-12-12 13:25+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -523,7 +523,7 @@ msgstr "Rechercher"
 #: covid-19/results/covid-19-manual-results.php:226
 #: covid-19/results/covid-19-print-results.php:431
 #: covid-19/results/covid-19-result-status.php:213 dashboard/index.php:472
-#: dashboard/index.php:780 dashboard/vlTestResultStatus.php:189
+#: dashboard/index.php:779 dashboard/vlTestResultStatus.php:189
 #: eid/management/eid-clinic-report.php:495
 #: eid/management/eid-export-data.php:360
 #: eid/management/eid-export-data.php:389
@@ -707,7 +707,7 @@ msgstr "Enregistré le"
 msgid "Loading data from server"
 msgstr "Chargement des données depuis le serveur"
 
-#: admin/monitoring/api-sync-history.php:7 system/translate-strings.php:164
+#: admin/monitoring/api-sync-history.php:7 system/translate-strings.php:169
 msgid "API Sync History"
 msgstr "Historique de la synchronisation de l'API"
 
@@ -2232,7 +2232,7 @@ msgid "RESPONSE"
 msgstr "Réponse"
 
 #: admin/monitoring/sources-of-requests.php:66
-#: admin/monitoring/sources-of-requests.php:73 system/translate-strings.php:165
+#: admin/monitoring/sources-of-requests.php:73 system/translate-strings.php:170
 msgid "Sources of Requests Report"
 msgstr "Rapport sur les sources des demandes"
 
@@ -2357,6 +2357,7 @@ msgstr ""
 "source des demandes"
 
 #: admin/monitoring/sync-status.php:66 admin/monitoring/sync-status.php:73
+#: system/translate-strings.php:86
 msgid "Lab Sync Status"
 msgstr "État de la synchronisation du laboratoire"
 
@@ -3381,7 +3382,7 @@ msgid "Edit Batch Controls Position"
 msgstr "Éditer la position des contrôles de lots"
 
 #: batch/edit-batch.php:9 batch/edit-batch.php:154
-#: system/translate-strings.php:117
+#: system/translate-strings.php:123
 msgid "Edit Batch"
 msgstr "Éditer un lot"
 
@@ -3578,7 +3579,7 @@ msgstr "Calibrateurs"
 #: generic-tests/requests/get-request-list.php:183
 #: hepatitis/requests/get-request-list.php:323
 #: instruments/get-instruments.php:120 patients/get-patients-helper.php:134
-#: roles/getRoleDetails.php:115 system/translate-strings.php:99
+#: roles/getRoleDetails.php:115 system/translate-strings.php:104
 #: tb/requests/get-request-list.php:283 users/getUserDetails.php:140
 #: vl/reference/get-vl-results-helper.php:133
 #: vl/reference/get-vl-test-failure-reasons-helper.php:140
@@ -3924,7 +3925,7 @@ msgstr "Divisions géographiques"
 
 #: common/reference/add-geographical-divisions.php:32
 #: common/reference/add-geographical-divisions.php:35
-#: system/translate-strings.php:153
+#: system/translate-strings.php:158
 msgid "Add Geographical Divisions"
 msgstr "Divisions géographiques"
 
@@ -4279,7 +4280,7 @@ msgstr ""
 
 #: common/reference/edit-geographical-divisions.php:33
 #: common/reference/edit-geographical-divisions.php:36
-#: system/translate-strings.php:154
+#: system/translate-strings.php:159
 msgid "Edit Geographical Divisions"
 msgstr "Editer les divisions géographiques"
 
@@ -4385,6 +4386,7 @@ msgstr "Code"
 #: common/reference/recommended-corrective-actions.php:5
 #: common/reference/recommended-corrective-actions.php:24
 #: common/reference/recommended-corrective-actions.php:27
+#: system/translate-strings.php:87
 msgid "Recommended Corrective Actions"
 msgstr "Mesures correctives recommandées"
 
@@ -5338,7 +5340,7 @@ msgstr "Voulez-vous les marquer comme complets ?"
 #: generic-tests/program-management/generic-export-data.php:10
 #: hepatitis/management/hepatitis-export-data.php:10
 #: hepatitis/management/hepatitis-export-data.php:68
-#: system/translate-strings.php:121 tb/management/tb-export-data.php:10
+#: system/translate-strings.php:127 tb/management/tb-export-data.php:10
 #: tb/management/tb-export-data.php:69
 #: vl/program-management/vl-export-data.php:9
 msgid "Export Data"
@@ -5434,7 +5436,7 @@ msgstr "Tous les statuts"
 #: hepatitis/requests/hepatitis-requests.php:239
 #: hepatitis/results/get-hepatitis-result-status.php:224
 #: hepatitis/results/hepatitis-result-status.php:143 mail/vlResultMail.php:258
-#: system/translate-strings.php:92 tb/management/tb-export-data.php:147
+#: system/translate-strings.php:96 tb/management/tb-export-data.php:147
 #: tb/requests/tb-requests.php:205 tb/results/get-tb-result-status.php:214
 #: tb/results/tb-result-status.php:143
 #: vl/program-management/vl-export-data.php:194
@@ -5458,7 +5460,7 @@ msgstr "Accepté"
 #: hepatitis/requests/hepatitis-requests.php:242
 #: hepatitis/results/get-hepatitis-result-status.php:225
 #: hepatitis/results/hepatitis-result-status.php:144 mail/vlResultMail.php:261
-#: system/translate-strings.php:89 tb/management/getSampleStatus.php:371
+#: system/translate-strings.php:93 tb/management/getSampleStatus.php:371
 #: tb/management/tb-export-data.php:148 tb/requests/tb-requests.php:206
 #: tb/results/get-tb-result-status.php:215 tb/results/tb-result-status.php:144
 #: vl/program-management/vl-export-data.php:196
@@ -5472,7 +5474,7 @@ msgstr "Rejeté"
 #: eid/management/eid-export-data.php:159 eid/requests/eid-requests.php:256
 #: generic-tests/program-management/generic-export-data.php:141
 #: hepatitis/requests/hepatitis-requests.php:245
-#: system/translate-strings.php:93 tb/management/tb-export-data.php:149
+#: system/translate-strings.php:97 tb/management/tb-export-data.php:149
 #: tb/requests/tb-requests.php:207 vl/program-management/vl-export-data.php:199
 msgid "Awaiting Approval"
 msgstr "En attente d'approbation"
@@ -5496,8 +5498,8 @@ msgstr "Enregistré au laboratoire de test"
 #: generic-tests/results/generic-failed-results.php:110
 #: hepatitis/requests/hepatitis-requests.php:251
 #: hepatitis/results/hepatitis-failed-results.php:147
-#: tb/management/tb-export-data.php:151 tb/requests/tb-requests.php:209
-#: tb/results/tb-failed-results.php:148
+#: system/translate-strings.php:99 tb/management/tb-export-data.php:151
+#: tb/requests/tb-requests.php:209 tb/results/tb-failed-results.php:148
 #: vl/program-management/vl-export-data.php:205
 #: vl/results/vl-failed-results.php:112
 msgid "Expired"
@@ -6681,7 +6683,7 @@ msgstr "Date de publication du résultat"
 #: eid/management/get-data-export.php:296
 #: hepatitis/management/get-data-export.php:289
 #: hepatitis/management/get-data-export.php:292
-#: system/translate-strings.php:100 tb/management/get-data-export.php:300
+#: system/translate-strings.php:105 tb/management/get-data-export.php:300
 #: tb/management/get-data-export.php:302
 msgid "View"
 msgstr "Voir"
@@ -7677,7 +7679,7 @@ msgstr "La demande de Covid-19 a été mise à jour avec succès"
 #: hepatitis/requests/hepatitis-edit-request-helper.php:255
 #: hepatitis/results/hepatitis-update-result-helper.php:97
 #: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:398
-#: vl/requests/editVlRequestHelper.php:380
+#: vl/requests/editVlRequestHelper.php:378
 #: vl/results/updateVlTestResultHelper.php:190
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
@@ -7789,7 +7791,7 @@ msgstr "Covid-19-Ajouter une demande rapide"
 #: hepatitis/requests/hepatitis-dhis2.php:272
 #: hepatitis/requests/hepatitis-requests.php:379
 #: hepatitis/requests/hepatitis-requests.php:395
-#: system/translate-strings.php:213 tb/requests/tb-requests.php:286
+#: system/translate-strings.php:227 tb/requests/tb-requests.php:286
 #: tb/requests/tb-requests.php:300
 msgid "Export Requests"
 msgstr "Demandes d'exportation"
@@ -9438,7 +9440,7 @@ msgstr "Échec/Echantillons en attente"
 #: eid/results/eid-failed-results.php:140
 #: generic-tests/results/generic-failed-results.php:107
 #: hepatitis/results/hepatitis-failed-results.php:138
-#: system/translate-strings.php:86 tb/results/tb-failed-results.php:139
+#: system/translate-strings.php:90 tb/results/tb-failed-results.php:139
 #: vl/results/vl-failed-results.php:109
 msgid "Hold"
 msgstr "En attente"
@@ -9454,7 +9456,7 @@ msgstr "En attente"
 #: hepatitis/results/get-hepatitis-result-status.php:226
 #: hepatitis/results/hepatitis-failed-results.php:141
 #: hepatitis/results/hepatitis-result-status.php:145
-#: system/translate-strings.php:87 tb/results/get-tb-result-status.php:216
+#: system/translate-strings.php:91 tb/results/get-tb-result-status.php:216
 #: tb/results/tb-failed-results.php:142 tb/results/tb-result-status.php:145
 #: vl/results/getVlResultsForApproval.php:166
 #: vl/results/vl-failed-results.php:110 vl/results/vlResultApproval.php:206
@@ -9680,7 +9682,7 @@ msgstr "Ajouter de nouvelles données Covid-19 QC"
 #: eid/results/eid-result-status.php:8
 #: generic-tests/results/generic-result-approval.php:8
 #: hepatitis/results/hepatitis-result-status.php:2
-#: system/translate-strings.php:119 tb/results/tb-result-status.php:2
+#: system/translate-strings.php:125 tb/results/tb-result-status.php:2
 #: vl/results/vlResultApproval.php:8
 msgid "Manage Result Status"
 msgstr "Gérer le status des résultats"
@@ -10007,7 +10009,7 @@ msgid "Samples Registered at Collection Site"
 msgstr "Échantillons enregistrés au site de collecte"
 
 #: dashboard/index.php:3 roles/addRole.php:168 roles/editRole.php:191
-#: system/translate-strings.php:107
+#: system/translate-strings.php:112
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
@@ -10040,42 +10042,42 @@ msgstr "Tests de confirmation de la récence"
 msgid "Select Sample Collection daterange"
 msgstr "Date de prélèvement de l'échantillon"
 
-#: dashboard/index.php:822
+#: dashboard/index.php:821
 msgid "EID testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) d'essais de l'EID n'a (n'ont) pas atteint l'objectif "
 "d'essais mensuels"
 
-#: dashboard/index.php:822 dashboard/index.php:846 dashboard/index.php:869
-#: dashboard/index.php:893 dashboard/index.php:917 dashboard/index.php:938
+#: dashboard/index.php:821 dashboard/index.php:845 dashboard/index.php:868
+#: dashboard/index.php:892 dashboard/index.php:916 dashboard/index.php:937
 msgid "more"
 msgstr "plus"
 
-#: dashboard/index.php:846
+#: dashboard/index.php:845
 msgid "VL testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) d'analyse VL n'a (n'ont) pas atteint l'objectif mensuel "
 "d'analyse"
 
-#: dashboard/index.php:869
+#: dashboard/index.php:868
 msgid "VL testing lab(s) did not meet suppression targets"
 msgstr ""
 "Le(s) laboratoire(s) d'analyse VL n'a (n'ont) pas atteint les objectifs de "
 "suppression"
 
-#: dashboard/index.php:893
+#: dashboard/index.php:892
 msgid "Covid-19 testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) d'analyse Covid-19 n'a (n'ont) pas atteint l'objectif "
 "mensuel d'analyse"
 
-#: dashboard/index.php:917
+#: dashboard/index.php:916
 msgid "Hepatitis testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) de dépistage de l'hépatite n'a (n'ont) pas atteint "
 "l'objectif mensuel de dépistage"
 
-#: dashboard/index.php:938
+#: dashboard/index.php:937
 msgid "TB testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) de dépistage de la tuberculose n'a (n'ont) pas atteint "
@@ -12271,7 +12273,7 @@ msgstr "Type de test ajouté avec succès"
 #: generic-tests/configuration/clone-test-type.php:98
 #: generic-tests/configuration/edit-test-type.php:94
 #: generic-tests/configuration/edit-test-type.php:97
-#: system/translate-strings.php:171
+#: system/translate-strings.php:176
 msgid "Edit Test Type"
 msgstr "Modifier le profil"
 
@@ -12414,6 +12416,7 @@ msgstr ""
 
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:11
 #: generic-tests/configuration/sample-types/generic-sample-type.php:30
+#: system/translate-strings.php:177
 msgid "Add Sample Type"
 msgstr "Ajouter un type d'échantillon"
 
@@ -12459,6 +12462,7 @@ msgid "Please select sample type status"
 msgstr "Veuillez sélectionner le statut du type d'échantillon"
 
 #: generic-tests/configuration/sample-types/generic-edit-sample-type.php:23
+#: system/translate-strings.php:179
 msgid "Edit Sample Type"
 msgstr "Modifier le type d'échantillon"
 
@@ -15403,6 +15407,7 @@ msgid "Email VL Test Results"
 msgstr "Résultats du test VL par courriel"
 
 #: mail/vlResultMail.php:57 mail/vlResultMail.php:64
+#: system/translate-strings.php:89
 msgid "E-mail Test Result"
 msgstr "Envoie de résultats par email"
 
@@ -15529,7 +15534,7 @@ msgstr ""
 msgid "Patients"
 msgstr "Patients"
 
-#: patients/add-patient.php:22
+#: patients/add-patient.php:22 system/translate-strings.php:231
 msgid "Add Patient"
 msgstr "Ajouter le patient"
 
@@ -15704,7 +15709,7 @@ msgstr "Veuillez sélectionner le statut du patient"
 msgid "Select Distrct"
 msgstr "Sélectionner le district"
 
-#: patients/edit-patient.php:39
+#: patients/edit-patient.php:39 system/translate-strings.php:232
 msgid "Edit Patient"
 msgstr "Modifier le patient"
 
@@ -16398,613 +16403,657 @@ msgstr "Manifestation d'hépatite"
 msgid "TB Manifest"
 msgstr "Manifeste de la CT"
 
-#: system/translate-strings.php:88 vl/requests/forms/add-cameroon.php:108
+#: system/translate-strings.php:88
+msgid "Send Result Mail"
+msgstr "Envoyer le résultat par courrier"
+
+#: system/translate-strings.php:92 vl/requests/forms/add-cameroon.php:108
 #: vl/requests/forms/edit-cameroon.php:149
 #: vl/results/forms/update-cameroon-result.php:190
 msgid "Sample Reordered"
 msgstr "Échantillon réorganisé"
 
-#: system/translate-strings.php:90
+#: system/translate-strings.php:94
 msgid "Failed/Invalid"
 msgstr "Échec/Invalidité"
 
-#: system/translate-strings.php:91
+#: system/translate-strings.php:95
 msgid "Sample Registered at Testing Lab"
 msgstr "Échantillon enregistré au laboratoire d'essai"
 
-#: system/translate-strings.php:94
+#: system/translate-strings.php:98
 msgid "Sample Registered at Health Center"
 msgstr "Échantillon enregistré au centre de santé"
 
-#: system/translate-strings.php:95
-msgid "Sample Expired"
-msgstr "Échantillon expiré"
-
-#: system/translate-strings.php:96
+#: system/translate-strings.php:100
 msgid "No Result"
 msgstr "Aucun résultats"
 
-#: system/translate-strings.php:97
+#: system/translate-strings.php:101
+msgid "Cancelled"
+msgstr "Annulée"
+
+#: system/translate-strings.php:102
 msgid "Access"
 msgstr "Accès"
 
-#: system/translate-strings.php:98
+#: system/translate-strings.php:103
 msgid "Add"
 msgstr "Ajouter"
 
-#: system/translate-strings.php:101
+#: system/translate-strings.php:106
 msgid "Print Result PDF"
 msgstr "Imprimer Résultat PDF"
 
-#: system/translate-strings.php:102
+#: system/translate-strings.php:107
 msgid "Export VL Data"
 msgstr "Exporter les données VL"
 
-#: system/translate-strings.php:103
+#: system/translate-strings.php:108
 msgid "Email Test Request"
 msgstr "Demande de test par courriel"
 
-#: system/translate-strings.php:104
+#: system/translate-strings.php:109
 msgid "Manage VL Result Status (Approve/Reject)"
 msgstr "Gérer le statut des résultats VL (approbation/refus)"
 
-#: system/translate-strings.php:105
+#: system/translate-strings.php:110
 msgid "High VL Report"
 msgstr "Rapport VL élevé"
 
-#: system/translate-strings.php:106
+#: system/translate-strings.php:111
 msgid "Contact Notes (High VL Reports)"
 msgstr "Notes de contact (rapports sur les taux élevés de VL)"
 
-#: system/translate-strings.php:108
+#: system/translate-strings.php:113
 msgid "Email Test Result"
 msgstr "Résultat du test de l'email"
 
-#: system/translate-strings.php:109
+#: system/translate-strings.php:114
 msgid "VL Weekly Report"
 msgstr "Rapport hebdomadaire du VL"
 
-#: system/translate-strings.php:110
+#: system/translate-strings.php:115
+msgid "Manage QR Code Rwd Form"
+msgstr "Gérer le formulaire QR Code Rwd"
+
+#: system/translate-strings.php:116
 msgid "Controls Report"
 msgstr "Rapport sur les contrôles"
 
-#: system/translate-strings.php:111
+#: system/translate-strings.php:117
 msgid "Add Facility Map"
 msgstr "Ajouter un plan de l'installation"
 
-#: system/translate-strings.php:112
+#: system/translate-strings.php:118
 msgid "Access Facility Map"
 msgstr "Contrôle d'accès"
 
-#: system/translate-strings.php:113
+#: system/translate-strings.php:119
 msgid "Edit Facility Map"
 msgstr "Modifier le plan de l'établissement"
 
-#: system/translate-strings.php:114
+#: system/translate-strings.php:120
 msgid "Export VL Data in Excel"
 msgstr "Exporter les données VL dans Excel"
 
-#: system/translate-strings.php:115
+#: system/translate-strings.php:121
 msgid "View Batches"
 msgstr "Voir les lots"
 
-#: system/translate-strings.php:116
+#: system/translate-strings.php:122
 msgid "Add Batch"
 msgstr "Ajouter un lot"
 
-#: system/translate-strings.php:118
+#: system/translate-strings.php:124
 msgid "Import Result File"
 msgstr "Importer un fichier de résultats"
 
-#: system/translate-strings.php:120
+#: system/translate-strings.php:126
 msgid "Print Results"
 msgstr "Résultats d'impression"
 
-#: system/translate-strings.php:122
+#: system/translate-strings.php:128
 msgid "Record Final Result"
 msgstr "Enregistrer le résultat final"
 
-#: system/translate-strings.php:123
+#: system/translate-strings.php:129
 msgid "Can Record Confirmatory Tests"
 msgstr "Peut enregistrer des tests de confirmation"
 
-#: system/translate-strings.php:124
+#: system/translate-strings.php:130
 msgid "Update Record Confirmatory Tests"
 msgstr "Mise à jour de l'enregistrement Tests de confirmation"
 
-#: system/translate-strings.php:125
+#: system/translate-strings.php:131
 msgid "Covid-19 Confirmation Manifest"
 msgstr "Manifeste de confirmation Covid-19"
 
-#: system/translate-strings.php:126
+#: system/translate-strings.php:132
 msgid "Add New Confirmation Manifest"
 msgstr "Ajouter un nouveau manifeste de confirmation"
 
-#: system/translate-strings.php:127
+#: system/translate-strings.php:133
 msgid "Generate Positive Confirmation Manifest"
 msgstr "Générer un manifeste de confirmation positive"
 
-#: system/translate-strings.php:128
+#: system/translate-strings.php:134
 msgid "Edit Positive Confirmation Manifest"
 msgstr "Modifier le manifeste de confirmation positive"
 
-#: system/translate-strings.php:129
+#: system/translate-strings.php:135
 msgid "EID Clinic Reports"
 msgstr "Rapports cliniques de l'EID"
 
-#: system/translate-strings.php:130
+#: system/translate-strings.php:136
 msgid "Covid-19 Clinic Reports"
 msgstr "Rapports cliniques Covid-19"
 
-#: system/translate-strings.php:131
+#: system/translate-strings.php:137
 msgid "Manage Reference"
 msgstr "Gérer la référence"
 
-#: system/translate-strings.php:132
+#: system/translate-strings.php:138
 msgid "Manage Comorbidities"
 msgstr "Gérer les comorbidités"
 
-#: system/translate-strings.php:133
+#: system/translate-strings.php:139
 msgid "Add Comorbidities"
 msgstr "Ajouter les comorbidités"
 
-#: system/translate-strings.php:134
+#: system/translate-strings.php:140
 msgid "Edit Comorbidities"
 msgstr "EID-Modifier la demande de test"
 
-#: system/translate-strings.php:135
+#: system/translate-strings.php:141
 msgid "Manage Sample Rejection Reasons"
 msgstr "Motifs de rejet"
 
-#: system/translate-strings.php:136
+#: system/translate-strings.php:142
 msgid "Add Sample Rejection Reason"
 msgstr "Ajouter le motif de rejet de l'échantillon"
 
-#: system/translate-strings.php:137
+#: system/translate-strings.php:143
 msgid "Edit Sample Rejection Reason"
 msgstr "Modifier l'échantillon Motif du rejet"
 
-#: system/translate-strings.php:138
+#: system/translate-strings.php:144
 msgid "Manage VL Reference Tables"
 msgstr "Gérer les tableaux de référence VL"
 
-#: system/translate-strings.php:139
+#: system/translate-strings.php:145
 msgid "Manage EID Reference Tables"
 msgstr "Gérer les tableaux de référence de l'EID"
 
-#: system/translate-strings.php:140
-msgid "Manage Common Reference Tables"
-msgstr "Gérer les tableaux de référence communs"
-
-#: system/translate-strings.php:141
+#: system/translate-strings.php:146
 msgid "Edit Locked VL Samples"
 msgstr "Editer les échantillons VL verrouillés"
 
-#: system/translate-strings.php:142
+#: system/translate-strings.php:147
 msgid "Edit Locked EID Samples"
 msgstr "Modifier les échantillons EID verrouillés"
 
-#: system/translate-strings.php:143
+#: system/translate-strings.php:148
 msgid "Edit Locked Covid-19 Samples"
 msgstr "Modifier les échantillons verrouillés de Covid-19"
 
-#: system/translate-strings.php:144
+#: system/translate-strings.php:149
 msgid "Monthly Threshold Report"
 msgstr "Rapport mensuel sur les seuils"
 
-#: system/translate-strings.php:145
+#: system/translate-strings.php:150
 msgid "Manage Hepatitis Reference"
 msgstr "Gérer l'hépatite Référence"
 
-#: system/translate-strings.php:146
+#: system/translate-strings.php:151
 msgid "Suppressed Target report"
 msgstr "Rapport sur les cibles supprimées"
 
-#: system/translate-strings.php:147
+#: system/translate-strings.php:152
 msgid "Hepatitis Clinic Reports"
 msgstr "Rapports sur la clinique de l'hépatite"
 
-#: system/translate-strings.php:148
+#: system/translate-strings.php:153
 msgid "Hepatitis Testing Target Reports"
 msgstr "Rapports ciblés sur les tests de dépistage de l'hépatite"
 
-#: system/translate-strings.php:149
+#: system/translate-strings.php:154
 msgid "Hepatitis Sample Rejection Reports"
 msgstr "Rapports de rejet des échantillons d'hépatite"
 
-#: system/translate-strings.php:150
+#: system/translate-strings.php:155
 msgid "Hepatitis Sample Status Reports"
 msgstr "Rapports sur l'état des échantillons d'hépatite"
 
-#: system/translate-strings.php:151
+#: system/translate-strings.php:156
 msgid "DHIS2"
 msgstr "DHIS2"
 
-#: system/translate-strings.php:152
+#: system/translate-strings.php:157
 msgid "Manage Geographical Divisions"
 msgstr "Gérer les divisions géographiques"
 
-#: system/translate-strings.php:155
+#: system/translate-strings.php:160
 msgid "Sync History"
 msgstr "Historique de la synchronisation"
 
-#: system/translate-strings.php:156
+#: system/translate-strings.php:161
 msgid "Hepatitis Export"
 msgstr "Hépatite Export"
 
-#: system/translate-strings.php:157
+#: system/translate-strings.php:162
 msgid "Add Move Samples"
 msgstr "Ajouter des échantillons de mouvements"
 
-#: system/translate-strings.php:158
+#: system/translate-strings.php:163
 msgid "TB Clinic Report"
 msgstr "Rapport sur la clinique de la tuberculose"
 
-#: system/translate-strings.php:159
+#: system/translate-strings.php:164
 msgid "Export VL Requests"
 msgstr "Demandes d'exportation de VL"
 
-#: system/translate-strings.php:160
+#: system/translate-strings.php:165
 msgid "Export EID Requests"
 msgstr "Demandes d'exportation d'EID"
 
-#: system/translate-strings.php:161
+#: system/translate-strings.php:166
 msgid "Export Covid-19 Requests "
 msgstr "Demandes d'exportation Covid-19 "
 
-#: system/translate-strings.php:162
+#: system/translate-strings.php:167
 msgid "Export Hepatitis Requests"
 msgstr "Demandes d'exportation relatives à l'hépatite"
 
-#: system/translate-strings.php:163
+#: system/translate-strings.php:168
 msgid "Export TB Requests"
 msgstr "Demandes d'exportation de la tuberculose"
 
-#: system/translate-strings.php:166
+#: system/translate-strings.php:171
 msgid "Add Covid-19 QC Data"
 msgstr "Ajouter les données Covid-19 QC"
 
-#: system/translate-strings.php:167
+#: system/translate-strings.php:172
 msgid "Edit Covid-19 QC Data"
 msgstr "Modifier les données de contrôle de qualité du Covid-19"
 
-#: system/translate-strings.php:168
+#: system/translate-strings.php:173
 msgid "Manage VL Reference"
 msgstr "Gérer la référence VL"
 
-#: system/translate-strings.php:169
+#: system/translate-strings.php:174
 msgid "Manage VL Results"
 msgstr "Gérer les résultats de la VL"
 
-#: system/translate-strings.php:170
+#: system/translate-strings.php:175
 msgid "Sync Status"
 msgstr "Statuts de synchronisation"
 
-#: system/translate-strings.php:172
+#: system/translate-strings.php:178
+msgid "Access Sample Type"
+msgstr "Accès au type d'échantillon"
+
+#: system/translate-strings.php:180
+msgid "Access Test Reason"
+msgstr "Accès Test Raison"
+
+#: system/translate-strings.php:181
+msgid "Edit Test Reason"
+msgstr "Modifier le motif du test"
+
+#: system/translate-strings.php:182
+msgid "Add Test Reason"
+msgstr "Ajouter un motif de test"
+
+#: system/translate-strings.php:183
+msgid "Access Symptom"
+msgstr "Accès Symptôme"
+
+#: system/translate-strings.php:184
+msgid "Add Symptom"
+msgstr "Ajouter un symptôme"
+
+#: system/translate-strings.php:185
+msgid "Edit Symptom"
+msgstr "Modifier le symptôme"
+
+#: system/translate-strings.php:186
 msgid "View Generic Tests"
 msgstr "Voir les tests génériques"
 
-#: system/translate-strings.php:173
+#: system/translate-strings.php:187
 msgid "Add Generic Tests"
 msgstr "Ajouter des tests génériques"
 
-#: system/translate-strings.php:174
+#: system/translate-strings.php:188
 msgid "Add Samples From Manifest"
 msgstr "Ajouter des échantillons à partir du manifeste"
 
-#: system/translate-strings.php:175
+#: system/translate-strings.php:189
 msgid "Specimen Referral Manifest List"
 msgstr "Liste des manifestes d'envoi de spécimens"
 
-#: system/translate-strings.php:176
+#: system/translate-strings.php:190
 msgid "Edit Generic Tests"
 msgstr "Modifier les tests génériques"
 
-#: system/translate-strings.php:177
+#: system/translate-strings.php:191
 msgid "Manage Test Results"
 msgstr "Gérer les résultats des tests"
 
-#: system/translate-strings.php:178
+#: system/translate-strings.php:192
 msgid "Manage Failed Results"
 msgstr "Gérer les échecs"
 
-#: system/translate-strings.php:179
+#: system/translate-strings.php:193
 msgid "Approve Test Results"
 msgstr "Approuver les résultats des tests"
 
-#: system/translate-strings.php:180
+#: system/translate-strings.php:194
 msgid "Export Report in Excel"
 msgstr "Exporter le rapport dans Excel"
 
-#: system/translate-strings.php:181
+#: system/translate-strings.php:195
 msgid "Export Report in PDF"
 msgstr "Exporter le rapport au format PDF"
 
-#: system/translate-strings.php:182
+#: system/translate-strings.php:196
 msgid "Add VL Result Types"
 msgstr "Ajouter des types de résultats VL"
 
-#: system/translate-strings.php:183
+#: system/translate-strings.php:197
 msgid "Edit VL Result Types"
 msgstr "Modifier les types de résultats VL"
 
-#: system/translate-strings.php:184
+#: system/translate-strings.php:198
 msgid "Import Result from Files"
 msgstr "Importer des résultats à partir de fichiers"
 
-#: system/translate-strings.php:185
+#: system/translate-strings.php:199
 msgid "View VL Manifests"
 msgstr "Voir les manifestes VL"
 
-#: system/translate-strings.php:186
+#: system/translate-strings.php:200
 msgid "View EID Manifests"
 msgstr "Voir les manifestes EID"
 
-#: system/translate-strings.php:187
+#: system/translate-strings.php:201
 msgid "View COVID-19 Manifests"
 msgstr "Voir les manifestes COVID-19"
 
-#: system/translate-strings.php:188
+#: system/translate-strings.php:202
 msgid "View Hepatitis Manifests"
 msgstr "Voir les manifestations de l'hépatite"
 
-#: system/translate-strings.php:189
+#: system/translate-strings.php:203
 msgid "View TB Manifests"
 msgstr "Voir les manifestes du CT"
 
-#: system/translate-strings.php:190
+#: system/translate-strings.php:204
 msgid "View Lab Tests Manifests"
 msgstr "Voir les manifestations des tests de laboratoire"
 
-#: system/translate-strings.php:191
+#: system/translate-strings.php:205
 msgid "Add VL Manifests"
 msgstr "Ajouter des manifestes VL"
 
-#: system/translate-strings.php:192
+#: system/translate-strings.php:206
 msgid "Add EID Manifests"
 msgstr "Ajouter des manifestes EID"
 
-#: system/translate-strings.php:193
+#: system/translate-strings.php:207
 msgid "Add COVID-19 Manifests"
 msgstr "Ajouter les manifestes COVID-19"
 
-#: system/translate-strings.php:194
+#: system/translate-strings.php:208
 msgid "Add Hepatitis Manifests"
 msgstr "Ajouter les manifestations de l'hépatite"
 
-#: system/translate-strings.php:195
+#: system/translate-strings.php:209
 msgid "Add TB Manifests"
 msgstr "Ajouter les manifestes du CT"
 
-#: system/translate-strings.php:196
+#: system/translate-strings.php:210
 msgid "Add Lab Tests Manifests"
 msgstr "Ajouter des manifestations de tests de laboratoire"
 
-#: system/translate-strings.php:197
+#: system/translate-strings.php:211
 msgid "Edit VL Manifests"
 msgstr "Modifier les manifestes VL"
 
-#: system/translate-strings.php:198
+#: system/translate-strings.php:212
 msgid "Edit EID Manifests"
 msgstr "Modifier les manifestes EID"
 
-#: system/translate-strings.php:199
+#: system/translate-strings.php:213
 msgid "Edit COVID-19 Manifests"
 msgstr "Modifier les manifestes COVID-19"
 
-#: system/translate-strings.php:200
+#: system/translate-strings.php:214
 msgid "Edit Hepatitis Manifests"
 msgstr "Modifier les manifestations de l'hépatite"
 
-#: system/translate-strings.php:201
+#: system/translate-strings.php:215
 msgid "Edit TB Manifests"
 msgstr "Modifier les manifestes de la tuberculose"
 
-#: system/translate-strings.php:202
+#: system/translate-strings.php:216
 msgid "Edit Lab Tests Manifests"
 msgstr "Modifier les tests de laboratoire Manifestations"
 
-#: system/translate-strings.php:203
+#: system/translate-strings.php:217
 msgid "Add New Batch"
 msgstr "Ajouter un nouveau lot"
 
-#: system/translate-strings.php:204
+#: system/translate-strings.php:218
 msgid "Add/Edit Test Types"
 msgstr "Ajouter/modifier des types de tests"
 
-#: system/translate-strings.php:205
+#: system/translate-strings.php:219
 msgid "Manage Sample Types"
 msgstr "Gérer les types d'échantillons"
 
-#: system/translate-strings.php:206
+#: system/translate-strings.php:220
 msgid "Manage Testing Reasons"
 msgstr "Gérer les raisons des tests"
 
-#: system/translate-strings.php:207
+#: system/translate-strings.php:221
 msgid "Manage Symptoms"
 msgstr "Gérer les symptômes"
 
-#: system/translate-strings.php:208
+#: system/translate-strings.php:222
 msgid "Manage Test Failure Reasons"
 msgstr "Motifs du test"
 
-#: system/translate-strings.php:209
+#: system/translate-strings.php:223
 msgid "Manage Test Result Units"
 msgstr "Configuration de l'e-mail des résultats"
 
-#: system/translate-strings.php:210
+#: system/translate-strings.php:224
 msgid "Manage Test Methods"
 msgstr "Gérer les méthodes d'essai"
 
-#: system/translate-strings.php:211
+#: system/translate-strings.php:225
 msgid "Manage Test Categories"
 msgstr "Gérer les catégories de tests"
 
-#: system/translate-strings.php:212
+#: system/translate-strings.php:226
 msgid "Edit Locked Samples"
 msgstr "Modifier les échantillons verrouillés"
 
-#: system/translate-strings.php:214
+#: system/translate-strings.php:228
+msgid "Upload Facilities"
+msgstr "Facilités de téléchargement"
+
+#: system/translate-strings.php:229
+msgid "Clone Generic Tests"
+msgstr "Cloner les tests génériques"
+
+#: system/translate-strings.php:230
+msgid "Manage Patients"
+msgstr "Gérer les patients"
+
+#: system/translate-strings.php:233
+msgid "Edit Locked Generic Tests Samples"
+msgstr "Modifier les échantillons de tests génériques verrouillés"
+
+#: system/translate-strings.php:234
 msgid "Common Reference Tables"
 msgstr "Tableaux de référence communs"
 
-#: system/translate-strings.php:215
+#: system/translate-strings.php:235
 msgid "Covid-19 Batch Management"
 msgstr "Covid-19 Gestion des lots"
 
-#: system/translate-strings.php:216
+#: system/translate-strings.php:236
 msgid "Covid-19 Reports"
 msgstr "Rapports Covid-19"
 
-#: system/translate-strings.php:217
+#: system/translate-strings.php:237
 msgid "Covid-19 Reference Tables"
 msgstr "Covid-19 Tableaux de référence"
 
-#: system/translate-strings.php:218
+#: system/translate-strings.php:238
 msgid "Covid-19 Request Management"
 msgstr "Gestion des demandes Covid-19"
 
-#: system/translate-strings.php:219
+#: system/translate-strings.php:239
 msgid "Covid-19 Result Management"
 msgstr "Covid-19 Gestion des résultats"
 
-#: system/translate-strings.php:220
+#: system/translate-strings.php:240
 msgid "EID Batch Management"
 msgstr "Gestion des lots EID"
 
-#: system/translate-strings.php:221
+#: system/translate-strings.php:241
 msgid "EID Reports"
 msgstr "Rapports de l'EID"
 
-#: system/translate-strings.php:222
+#: system/translate-strings.php:242
 msgid "EID Reference Management"
 msgstr "Gestion des références EID"
 
-#: system/translate-strings.php:223
+#: system/translate-strings.php:243
 msgid "EID Request Management"
 msgstr "Gestion des demandes d'EID"
 
-#: system/translate-strings.php:224
+#: system/translate-strings.php:244
 msgid "EID Result Management"
 msgstr "Gestion des résultats de l'EID"
 
-#: system/translate-strings.php:225
+#: system/translate-strings.php:245
 msgid "Manage Facility"
 msgstr "Gérer l'installation"
 
-#: system/translate-strings.php:226
+#: system/translate-strings.php:246
 msgid "Lab Tests Report Management"
 msgstr "Gestion des rapports de tests de laboratoire"
 
-#: system/translate-strings.php:227
+#: system/translate-strings.php:247
 msgid "Lab Tests Request Management"
 msgstr "Gestion des demandes de tests de laboratoire"
 
-#: system/translate-strings.php:228
+#: system/translate-strings.php:248
 msgid "Lab Tests Result Management"
 msgstr "Gestion des résultats des tests de laboratoire"
 
-#: system/translate-strings.php:229
+#: system/translate-strings.php:249
 msgid "Lab Tests Batch Management"
 msgstr "Gestion des lots de tests de laboratoire"
 
-#: system/translate-strings.php:230
+#: system/translate-strings.php:250
 msgid "Configure Generic Tests"
 msgstr "Configurer les tests génériques"
 
-#: system/translate-strings.php:231
+#: system/translate-strings.php:251
 msgid "Manage General Config"
 msgstr "Gérer la configuration générale"
 
-#: system/translate-strings.php:232
+#: system/translate-strings.php:252
 msgid "Hepatitis Batch Management"
 msgstr "Gestion des lots d'hépatite"
 
-#: system/translate-strings.php:233
+#: system/translate-strings.php:253
 msgid "Hepatitis Reports"
 msgstr "Rapports sur l'hépatite"
 
-#: system/translate-strings.php:234
+#: system/translate-strings.php:254
 msgid "Hepatitis Reference Management"
 msgstr "Gestion de la référence de l'hépatite"
 
-#: system/translate-strings.php:235
+#: system/translate-strings.php:255
 msgid "Hepatitis Request Management"
 msgstr "Gestion des demandes relatives à l'hépatite"
 
-#: system/translate-strings.php:236
+#: system/translate-strings.php:256
 msgid "Hepatitis Results Management"
 msgstr "Gestion des résultats de l'hépatite"
 
-#: system/translate-strings.php:237
-msgid "Import Results using file Import"
-msgstr "Importer des résultats à l'aide d'un fichier d'importation"
-
-#: system/translate-strings.php:238
+#: system/translate-strings.php:257
 msgid "Manage Instruments"
 msgstr "Gérer les instruments"
 
-#: system/translate-strings.php:239
+#: system/translate-strings.php:258
 msgid "Move Samples"
 msgstr "Déplacer les échantillons"
 
-#: system/translate-strings.php:240
+#: system/translate-strings.php:259
 msgid "Manage Roles"
 msgstr "Gérer les rôles"
 
-#: system/translate-strings.php:241
+#: system/translate-strings.php:260
 msgid "TB Batch Management"
 msgstr "Gestion des lots de la tuberculose"
 
-#: system/translate-strings.php:242
+#: system/translate-strings.php:261
 msgid "TB Reports"
 msgstr "Rapports du CT"
 
-#: system/translate-strings.php:243
+#: system/translate-strings.php:262
 msgid "TB Reference"
 msgstr "Référence TB"
 
-#: system/translate-strings.php:244
+#: system/translate-strings.php:263
 msgid "TB Request Management"
 msgstr "Gestion des demandes de la CT"
 
-#: system/translate-strings.php:245
+#: system/translate-strings.php:264
 msgid "TB Result Management"
 msgstr "Gestion des résultats de la tuberculose"
 
-#: system/translate-strings.php:246
+#: system/translate-strings.php:265
 msgid "Manage Test Request Email Config"
 msgstr "Gérer la configuration des courriels de demande de test"
 
-#: system/translate-strings.php:247
+#: system/translate-strings.php:266
 msgid "Manage Test Result Email Config"
 msgstr "Gérer la configuration des courriels de résultats de tests"
 
-#: system/translate-strings.php:248
+#: system/translate-strings.php:267
 msgid "Manage Test Type"
 msgstr "Gérer le type de test"
 
-#: system/translate-strings.php:249
+#: system/translate-strings.php:268
 msgid "Manage Users"
 msgstr "Gérez les utilisateurs"
 
-#: system/translate-strings.php:250
+#: system/translate-strings.php:269
 msgid "Manage VL Batch"
 msgstr "Gestion des lots VL"
 
-#: system/translate-strings.php:251
+#: system/translate-strings.php:270
 msgid "VL Reference Management"
 msgstr "Gestion des références VL"
 
-#: system/translate-strings.php:252
+#: system/translate-strings.php:271
 msgid "VL Reports"
 msgstr "Rapports VL"
 
-#: system/translate-strings.php:253
+#: system/translate-strings.php:272
 msgid "VL Requests"
 msgstr "Demandes VL"
 
-#: system/translate-strings.php:254 vl/reference/add-vl-results.php:37
+#: system/translate-strings.php:273 vl/reference/add-vl-results.php:37
 #: vl/reference/vl-results.php:2 vl/reference/vl-results.php:13
 msgid "VL Results"
 msgstr "Résultats VL"
@@ -18144,7 +18193,7 @@ msgstr "Raison de l'échec"
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: vl/requests/editVlRequestHelper.php:372
+#: vl/requests/editVlRequestHelper.php:370
 #: vl/results/updateVlTestResultHelper.php:180
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
@@ -19120,6 +19169,15 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Sample Expired"
+#~ msgstr "Échantillon expiré"
+
+#~ msgid "Manage Common Reference Tables"
+#~ msgstr "Gérer les tableaux de référence communs"
+
+#~ msgid "Import Results using file Import"
+#~ msgstr "Importer des résultats à l'aide d'un fichier d'importation"
 
 #~ msgid ""
 #~ "N.B.: The Abbott 0.6ml test has a lower limit of quantification of 40 "

@@ -8,7 +8,7 @@ use App\Services\TbService;
 use App\Utilities\DateUtility;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);

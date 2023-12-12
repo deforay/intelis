@@ -24,7 +24,7 @@ $_POST = $request->getParsedBody();
 $uploadedFiles = $request->getUploadedFiles();
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);

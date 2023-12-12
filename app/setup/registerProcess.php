@@ -26,7 +26,7 @@ $timeZone = $_POST['default_time_zone'];
 $locale = $_POST['app_locale'];
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

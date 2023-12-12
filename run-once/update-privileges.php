@@ -7,7 +7,7 @@ use App\Services\DatabaseService;
 require_once(__DIR__ . '/../bootstrap.php');
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $sharedPrivileges = [
     '/import-result/imported-results.php?t=vl' => '/import-result/import-file.php?t=vl',

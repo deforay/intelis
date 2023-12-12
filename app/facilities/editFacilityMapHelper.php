@@ -4,7 +4,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $tableName = "testing_lab_health_facilities_map";
 try {

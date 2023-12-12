@@ -13,7 +13,7 @@ if (php_sapi_name() !== 'cli' && !isset($_SESSION['userId'])) {
 
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

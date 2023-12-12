@@ -15,7 +15,7 @@ $tableName = "move_samples";
 $primaryKey = "move_sample_id";
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

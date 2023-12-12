@@ -6,7 +6,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 $sQuery = "SELECT * FROM user_login_history";

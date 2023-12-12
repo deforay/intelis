@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -48,7 +48,7 @@ $tableName = TestsService::getTestTableName($input['testType']);
 $primaryKeyName = TestsService::getTestPrimaryKeyName($input['testType']);
 
 try {
-    $sQuery = "SELECT ts.status_name as result_status, sample_code, remote_sample_code, app_sample_code,unique_id, '".$transactionId."' as transactionId  FROM $tableName as vl
+    $sQuery = "SELECT ts.status_name as result_status, sample_code, remote_sample_code, app_sample_code,unique_id, '" . $transactionId . "' as transactionId  FROM $tableName as vl
     LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
     $where = [];

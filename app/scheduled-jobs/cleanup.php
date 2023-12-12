@@ -25,7 +25,7 @@ $cleanup = [
 ];
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 foreach ($cleanup as $folder) {
     if (file_exists($folder)) {

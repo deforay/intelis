@@ -11,7 +11,7 @@ $_POST = $request->getParsedBody();
 
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $mappingType     = $_POST['mappingType'];
 $testType   = $_POST['testType'];

@@ -13,7 +13,7 @@ $title = _translate("COVID-19 | Edit Request");
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 ?>
 <style>

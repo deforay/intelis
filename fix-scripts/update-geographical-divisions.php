@@ -7,7 +7,7 @@ use App\Registries\ContainerRegistry;
 require_once(__DIR__ . '/../bootstrap.php');
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /* Save Province / State details to geolocation table */
 $query = "SELECT DISTINCT facility_state

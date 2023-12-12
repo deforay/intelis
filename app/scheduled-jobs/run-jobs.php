@@ -11,7 +11,7 @@ try {
     $phpPath = SYSTEM_CONFIG['system']['php_path'] ?? PHP_BINARY;
 
     /** @var DatabaseService $db */
-    $db = ContainerRegistry::get('db');
+    $db = ContainerRegistry::get(DatabaseService::class);
 
     $db->where("status = 'pending'");
     $db->where("IFNULL(scheduled_on, now()) <= now() OR IFNULL(run_once, 'no') = 'yes'");

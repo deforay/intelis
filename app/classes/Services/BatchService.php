@@ -14,7 +14,7 @@ class BatchService
 
     public function __construct(?DatabaseService $db)
     {
-        $this->db = $db ?? ContainerRegistry::get('db');
+        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
     }
 
     public function doesBatchCodeExist($code)

@@ -25,7 +25,7 @@ class CommonService
 
     public function __construct(?DatabaseService $db)
     {
-        $this->db = $db ?? ContainerRegistry::get('db');
+        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
     }
 
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false): array

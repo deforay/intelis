@@ -6,7 +6,7 @@ use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $_SESSION['dateFormat'] = 'dd-m-yy';
 $_SESSION['jsDateFormatMask'] = '99-99-9999';

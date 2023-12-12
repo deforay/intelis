@@ -8,7 +8,6 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
-use Psr\Container\ContainerInterface;
 
 class UsersService
 {
@@ -19,7 +18,7 @@ class UsersService
 
     public function __construct(?DatabaseService $db, ?CommonService $commonService)
     {
-        $this->db = $db ?? ContainerRegistry::get('db');
+        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
         $this->commonService = $commonService;
     }
 

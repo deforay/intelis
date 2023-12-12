@@ -6,7 +6,7 @@ use App\Services\FacilitiesService;
 use App\Services\DatabaseService;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $title = _translate("Edit User");
 

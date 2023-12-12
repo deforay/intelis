@@ -12,7 +12,7 @@ use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 try {
     // Sanitized values from $request object

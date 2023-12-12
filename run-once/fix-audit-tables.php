@@ -6,6 +6,123 @@ use App\Services\DatabaseService;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
+function createAndModifyAuditTable($db, $fromDbName, $toDbName, $formTable, $auditTable)
+{
+    echo "Table $toDbName.$auditTable does not exist. Creating...\n";
+    $createTableQuery = "CREATE TABLE $toDbName.$auditTable SELECT * FROM $fromDbName.$formTable WHERE 1=0;";
+    $modifyTableQuery = "ALTER TABLE `$toDbName`.`$auditTable`
+                        MODIFY COLUMN `sample_id` int(11) NOT NULL,
+                        ENGINE = MyISAM,
+                        ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
+                        ADD `revision` INT(6) NOT NULL AUTO_INCREMENT AFTER `action`,
+                        ADD `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`,
+                        ADD PRIMARY KEY (`sample_id`, `revision`)";
+
+    // Execute the create and modify table queries
+    $db->rawQuery($createTableQuery);
+    $db->rawQuery($modifyTableQuery);
+}
+
+function setupTriggers($mysqli, $fromDbName, $toDbName, $formTable, $auditTable)
+{
+    // Set up the triggers
+    $triggers = [
+        "{$formTable}_data__ai" => "AFTER INSERT",
+        "{$formTable}_data__au" => "AFTER UPDATE",
+        "{$formTable}_data__bd" => "BEFORE DELETE",
+    ];
+
+    foreach ($triggers as $triggerName => $timing) {
+        $action = strtolower(str_replace($formTable . '_data__', '', $triggerName));
+        $triggerQuery = "DROP TRIGGER IF EXISTS `$triggerName`;
+                            CREATE TRIGGER `$triggerName` $timing ON `$fromDbName`.`$formTable`
+                            FOR EACH ROW
+                            INSERT INTO `$toDbName`.`$auditTable` SELECT '$action', NULL, NOW(), d.*
+                            FROM `$fromDbName`.`$formTable` AS d
+                            WHERE d.sample_id = " . ($action === 'delete' ? "OLD" : "NEW") . ".sample_id";
+
+        // Execute the DROP TRIGGER and CREATE TRIGGER statements directly
+        if (!$mysqli->multi_query($triggerQuery)) {
+            echo "Error executing trigger statement for $triggerName: " . $mysqli->error . "\n";
+            do {
+                if ($res = $mysqli->store_result()) {
+                    $res->free();
+                }
+            } while ($mysqli->more_results() && $mysqli->next_result());
+        } else {
+            echo "Trigger $triggerName created successfully.\n";
+        }
+    }
+}
+
+function addMissingColumns($db, $fromDbName, $toDbName, $formTable, $auditTable)
+{
+    // Query to find the missing columns
+    $query = "SELECT COLUMN_NAME, COLUMN_TYPE
+                FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = '$fromDbName'
+                AND TABLE_NAME = '{$db->escape($formTable)}'
+                AND COLUMN_NAME NOT IN
+                    (SELECT COLUMN_NAME
+                        FROM information_schema.COLUMNS
+                        WHERE TABLE_SCHEMA = '$toDbName'
+                        AND TABLE_NAME = '{$db->escape($auditTable)}')
+                ORDER BY COLUMN_NAME";
+
+    $columns = $db->rawQuery($query);
+
+    if ($db->getLastErrno() > 0) {
+        echo "Error checking columns for $fromDbName.$formTable and $toDbName.$auditTable: " . $db->getLastError() . "\n";
+        return;
+    }
+
+    if (empty($columns)) {
+        echo "All columns for $fromDbName.$formTable exist in $toDbName.$auditTable.\n";
+        return;
+    }
+
+    // Loop through the result and generate ALTER TABLE statements
+    foreach ($columns as $column) {
+        $alterQuery = "ALTER TABLE `$toDbName`.`$auditTable` ADD `" . $column['COLUMN_NAME'] . "` " . $column['COLUMN_TYPE'] . ";";
+
+        if (!$db->rawQuery($alterQuery)) {
+            echo "Error altering $toDbName.$auditTable for column " . $column['COLUMN_NAME'] . ": " . $db->getLastError() . "\n";
+        } else {
+            echo "Column " . $column['COLUMN_NAME'] . " added to $toDbName.$auditTable successfully.\n";
+        }
+    }
+}
+
+function dropExtraColumns($db, $fromDbName, $toDbName, $formTable, $auditTable)
+{
+    $query = "SELECT COLUMN_NAME
+                FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = '$toDbName'
+                AND TABLE_NAME = '{$db->escape($auditTable)}'
+                AND COLUMN_NAME NOT IN (
+                    SELECT COLUMN_NAME
+                    FROM information_schema.COLUMNS
+                    WHERE TABLE_SCHEMA = '$fromDbName'
+                    AND TABLE_NAME = '{$db->escape($formTable)}')
+                ORDER BY COLUMN_NAME";
+
+    $extraColumns = $db->rawQuery($query);
+
+    if ($db->getLastErrno() > 0) {
+        echo "Error checking extra columns for $toDbName.$auditTable and $fromDbName.$formTable: " . $db->getLastError() . "\n";
+    } else {
+        foreach ($extraColumns as $column) {
+            $dropColumnQuery = "ALTER TABLE `$toDbName`.`$auditTable` DROP COLUMN `" . $column['COLUMN_NAME'] . "`;";
+            if (!$db->rawQuery($dropColumnQuery)) {
+                echo "Error dropping column " . $column['COLUMN_NAME'] . " from $toDbName.$auditTable: " . $db->getLastError() . "\n";
+            } else {
+                echo "Column " . $column['COLUMN_NAME'] . " dropped from $toDbName.$auditTable successfully.\n";
+            }
+        }
+    }
+}
+
+
 function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
 {
     $auditTables = [
@@ -20,137 +137,47 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
     // Get the mysqli connection from the DatabaseService instance
     $mysqli = $db->mysqli();
     foreach ($auditTables as $formTable => $auditTable) {
+
+        $mysqli->begin_transaction();
+
         // Check if the audit table exists
         $auditTableEscaped = $db->escape($auditTable);
-        $auditTableExists = $db->rawQuery("SHOW TABLES IN `$toDbName` LIKE '$auditTableEscaped'");
+        try {
+            $auditTableExists = $db->rawQuery("SHOW TABLES IN `$toDbName` LIKE '$auditTableEscaped'");
+        } catch (Exception $e) {
+            $mysqli->rollback();
+            error_log("Error checking existence of $toDbName.$auditTable: " . $e->getMessage());
+            continue;  // Skip to the next table if we can't even check existence
+        }
+        try {
 
+            if (!$auditTableExists) {
 
-        if (!$auditTableExists) {
-            echo "Table $toDbName.$auditTable does not exist. Creating...\n";
-            $createTableQuery = "CREATE TABLE $toDbName.$auditTable SELECT * FROM $fromDbName.$formTable WHERE 1=0;";
-            $modifyTableQuery = "
-            ALTER TABLE `$toDbName`.`$auditTable`
-            MODIFY COLUMN `sample_id` int(11) NOT NULL,
-            ENGINE = MyISAM,
-            ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
-            ADD `revision` INT(6) NOT NULL AUTO_INCREMENT AFTER `action`,
-            ADD `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`,
-            ADD PRIMARY KEY (`sample_id`, `revision`);
-        ";
+                createAndModifyAuditTable($db, $fromDbName, $toDbName, $formTable, $auditTable);
 
-            // Execute the create and modify table queries
-            $db->rawQuery($createTableQuery);
-            $db->rawQuery($modifyTableQuery);
-
-            if ($setupTriggers) {
-                // Set up the triggers
-                $triggers = [
-                    "{$formTable}_data__ai" => "AFTER INSERT",
-                    "{$formTable}_data__au" => "AFTER UPDATE",
-                    "{$formTable}_data__bd" => "BEFORE DELETE",
-                ];
-
-                foreach ($triggers as $triggerName => $timing) {
-                    $action = strtolower(str_replace($formTable . '_data__', '', $triggerName));
-                    $triggerQuery = "
-                DROP TRIGGER IF EXISTS `$triggerName`;
-                CREATE TRIGGER `$triggerName` $timing ON `$fromDbName`.`$formTable` FOR EACH ROW
-                INSERT INTO `$toDbName`.`$auditTable` SELECT '$action', NULL, NOW(), d.*
-                FROM `$fromDbName`.`$formTable` AS d WHERE d.sample_id = " . ($action === 'delete' ? "OLD" : "NEW") . ".sample_id;
-            ";
-
-                    // Execute the DROP TRIGGER and CREATE TRIGGER statements directly
-                    if (!$mysqli->multi_query($triggerQuery)) {
-                        echo "Error executing trigger statement for $triggerName: " . $mysqli->error . "\n";
-                        do {
-                            if ($res = $mysqli->store_result()) {
-                                $res->free();
-                            }
-                        } while ($mysqli->more_results() && $mysqli->next_result());
-                    } else {
-                        echo "Trigger $triggerName created successfully.\n";
-                        // Make sure to clear results to be ready for the next statement
-                        //                        while ($mysqli->next_result()) {
-                        //                        }
-                    }
+                if ($setupTriggers) {
+                    setupTriggers($mysqli, $fromDbName, $toDbName, $formTable, $auditTable);
                 }
-            }
 
-            echo "Audit table $toDbName.$auditTable and triggers created successfully.\n";
-        } else {
-            // Query to find the missing columns
-            $query = "
-            SELECT COLUMN_NAME, COLUMN_TYPE
-            FROM information_schema.COLUMNS
-            WHERE TABLE_SCHEMA = '$fromDbName'
-            AND TABLE_NAME = '{$db->escape($formTable)}'
-            AND COLUMN_NAME NOT IN (
-                SELECT COLUMN_NAME
-                FROM information_schema.COLUMNS
-                WHERE TABLE_SCHEMA = '$toDbName'
-                AND TABLE_NAME = '{$db->escape($auditTable)}'
-            )
-            ORDER BY COLUMN_NAME;
-            ";
-
-            $columns = $db->rawQuery($query);
-
-            if ($db->getLastErrno() > 0) {
-                echo "Error checking columns for $fromDbName.$formTable and $toDbName.$auditTable: " . $db->getLastError() . "\n";
-                continue;
-            }
-
-            if (empty($columns)) {
-                echo "All columns for $fromDbName.$formTable exist in $toDbName.$auditTable.\n";
-                continue;
-            }
-
-            // Loop through the result and generate ALTER TABLE statements
-            foreach ($columns as $column) {
-                $alterQuery = "ALTER TABLE `$toDbName`.`$auditTable` ADD `" . $column['COLUMN_NAME'] . "` " . $column['COLUMN_TYPE'] . ";";
-
-                if (!$db->rawQuery($alterQuery)) {
-                    echo "Error altering $toDbName.$auditTable for column " . $column['COLUMN_NAME'] . ": " . $db->getLastError() . "\n";
-                } else {
-                    echo "Column " . $column['COLUMN_NAME'] . " added to $toDbName.$auditTable successfully.\n";
-                }
-            }
-
-            // After adding missing columns, now check for extra columns in audit table
-            $query = "
-                SELECT COLUMN_NAME
-                FROM information_schema.COLUMNS
-                WHERE TABLE_SCHEMA = '$toDbName'
-                AND TABLE_NAME = '{$db->escape($auditTable)}'
-                AND COLUMN_NAME NOT IN (
-                    SELECT COLUMN_NAME
-                    FROM information_schema.COLUMNS
-                    WHERE TABLE_SCHEMA = '$fromDbName'
-                    AND TABLE_NAME = '{$db->escape($formTable)}'
-                )
-                ORDER BY COLUMN_NAME;
-                ";
-
-            $extraColumns = $db->rawQuery($query);
-
-            if ($db->getLastErrno() > 0) {
-                echo "Error checking extra columns for $toDbName.$auditTable and $fromDbName.$formTable: " . $db->getLastError() . "\n";
+                echo "Audit table $toDbName.$auditTable and triggers created successfully.\n";
             } else {
-                foreach ($extraColumns as $column) {
-                    $dropColumnQuery = "ALTER TABLE `$toDbName`.`$auditTable` DROP COLUMN `" . $column['COLUMN_NAME'] . "`;";
-                    if (!$db->rawQuery($dropColumnQuery)) {
-                        echo "Error dropping column " . $column['COLUMN_NAME'] . " from $toDbName.$auditTable: " . $db->getLastError() . "\n";
-                    } else {
-                        echo "Column " . $column['COLUMN_NAME'] . " dropped from $toDbName.$auditTable successfully.\n";
-                    }
-                }
+
+                addMissingColumns($db, $fromDbName, $toDbName, $formTable, $auditTable);
+
+                // After adding missing columns, now check for extra columns in audit table
+                dropExtraColumns($db, $fromDbName, $toDbName, $formTable, $auditTable);
             }
+            $mysqli->commit();
+        } catch (Exception $e) {
+            $mysqli->rollback();
+            error_log("Error: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
+            continue;
         }
     }
 }
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 $mainDbName = SYSTEM_CONFIG['database']['db'];
 $archiveDbName = null;
 

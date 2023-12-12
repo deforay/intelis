@@ -10,7 +10,7 @@ use App\Registries\ContainerRegistry;
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 try {
     // Start transaction

@@ -5,6 +5,7 @@ use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\EidService;
 use App\Services\UsersService;
+use App\Services\DatabaseService;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\Covid19Service;
@@ -20,8 +21,8 @@ $input = $request->getParsedBody();
 
 $applicationConfig = ContainerRegistry::get('applicationConfig');
 
-/** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

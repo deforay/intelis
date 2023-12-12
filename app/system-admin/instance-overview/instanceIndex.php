@@ -4,7 +4,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $title = _translate("System Instance Overview") . " - " . _translate("System Admin");
 require_once(APPLICATION_PATH . '/system-admin/admin-header.php');

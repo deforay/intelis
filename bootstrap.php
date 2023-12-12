@@ -11,6 +11,7 @@ require_once(__DIR__ . '/app/system/constants.php');
 require_once(ROOT_PATH . '/vendor/autoload.php');
 
 use App\Services\SystemService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Dependency Injection
@@ -21,7 +22,7 @@ require_once(APPLICATION_PATH . '/system/functions.php');
 
 // Just putting $db and SYSTEM_CONFIG here in case there are
 // some old scripts that are still depending on these.
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 defined('SYSTEM_CONFIG') ||
     define('SYSTEM_CONFIG', ContainerRegistry::get('applicationConfig'));
