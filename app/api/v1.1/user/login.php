@@ -83,8 +83,9 @@ try {
             $payload = array(
                 'status' => 1,
                 'message' => 'Login Success',
-                'data' => $data,
                 'timestamp' => time(),
+                'transactionId' => $transactionId,
+                'data' => $data,
             );
         }
     } else {
@@ -96,6 +97,7 @@ try {
         'status' => 2,
         'message' => 'Login failed. Please contact system administrator.',
         'timestamp' => time(),
+        'transactionId' => $transactionId,
     );
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

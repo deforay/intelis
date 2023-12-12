@@ -465,8 +465,8 @@ try {
 
     $payload = [
         'status' => $payloadStatus,
-        'transactionId' => $transactionId,
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'data' => $responseData ?? []
     ];
     $db->commitTransaction();
@@ -476,6 +476,7 @@ try {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'error' => $exc->getMessage(),
         'data' => []
     ];
