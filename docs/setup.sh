@@ -293,7 +293,8 @@ chown -R www-data:www-data "${vlsm_path}"
 # Run Composer Update as www-data
 echo "Running composer update as www-data user..."
 cd "${vlsm_path}"
-sudo -u www-data composer update
+sudo -u www-data composer update --no-dev &&
+    sudo -u www-data composer dump-autoload -o
 
 # Import init.sql into the vlsm database
 echo "Importing init.sql into the vlsm database..."
@@ -414,21 +415,12 @@ sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database'
 sed -i "s|\$systemConfig\['database'\]\['username'\]\s*=.*|\$systemConfig['database']['username'] = 'root';|" "${config_file}"
 sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "${config_file}"
 
-# Run Migrations
 # Run the database migrations
 echo "Running database migrations..."
-php "${vlsm_path}/app/system/migrate.php" -yq &
-
-# Get the PID of the migrate.php script
+sudo -u www-data composer migrate &
 pid=$!
-
-# Use the spinner function for visual feedback
 spinner "$pid"
-
-# Wait for the migration script to complete
 wait $pid
-
-echo "Migration script completed."
 
 # Prompt for Remote STS URL
 read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url

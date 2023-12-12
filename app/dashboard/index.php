@@ -622,7 +622,6 @@ require_once APPLICATION_PATH . '/header.php';
 					}
 				});
 		} else if (requestType == 'generic-tests') {
-			console.log($("#genericTestsSampleCollectionDate").val());
 			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
 					type: 'generic-tests'

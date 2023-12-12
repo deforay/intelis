@@ -17,8 +17,8 @@ read -p "Enter the VLSM installation path [/var/www/vlsm]: " vlsm_path
 vlsm_path="${vlsm_path:-/var/www/vlsm}"
 
 # Check if VLSM folder exists
-if [ ! -d "$vlsm_path" ]; then
-    echo "VLSM folder does not exist at $vlsm_path. Please first run the setup script."
+if [ ! -d "${vlsm_path}" ]; then
+    echo "VLSM folder does not exist at ${vlsm_path}. Please first run the setup script."
     exit 1
 fi
 
@@ -44,22 +44,22 @@ fi
 php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
 desired_php_version="8.2"
 
-if [[ "$php_version" != "$desired_php_version" ]]; then
-    echo "Current PHP version is $php_version. Switching to PHP $desired_php_version."
+if [[ "${php_version}" != "${desired_php_version}" ]]; then
+    echo "Current PHP version is ${php_version}. Switching to PHP ${desired_php_version}."
 
     # Download and install switch-php script
     wget https://gist.githubusercontent.com/amitdugar/339470e36f6ad6c1910914e854384294/raw/switch-php -O /usr/local/bin/switch-php
     chmod +x /usr/local/bin/switch-php
 
     # Switch to PHP 8.2
-    switch-php $desired_php_version
+    switch-php ${desired_php_version}
 
     if [ $? -ne 0 ]; then
-        echo "Failed to switch to PHP $desired_php_version. Please check your setup."
+        echo "Failed to switch to PHP ${desired_php_version}. Please check your setup."
         exit 1
     fi
 else
-    echo "PHP version is already $desired_php_version."
+    echo "PHP version is already ${desired_php_version}."
 fi
 
 # Check for Composer
@@ -96,7 +96,7 @@ get_databases() {
     echo "Fetching available databases..."
     local IFS=$'\n'
     # Exclude the databases you do not want to back up from the list
-    databases=($(mysql -u root -p"$mysql_root_password" -e "SHOW DATABASES;" | sed 1d | egrep -v 'information_schema|mysql|performance_schema|sys|phpmyadmin'))
+    databases=($(mysql -u root -p"${mysql_root_password}" -e "SHOW DATABASES;" | sed 1d | egrep -v 'information_schema|mysql|performance_schema|sys|phpmyadmin'))
     local -i cnt=1
     for db in "${databases[@]}"; do
         echo "$cnt) $db"
@@ -113,7 +113,7 @@ backup_database() {
     for i in "$@"; do
         local db="${db_list[$i]}"
         echo "Backing up database: $db"
-        mysqldump -u root -p"$mysql_root_password" "$db" | gzip >"${backup_location}/${db}_${timestamp}.sql.gz"
+        mysqldump -u root -p"${mysql_root_password}" "$db" | gzip >"${backup_location}/${db}_${timestamp}.sql.gz"
         if [[ $? -eq 0 ]]; then
             echo "Backup of $db completed successfully."
         else
@@ -176,8 +176,8 @@ if [[ "$backup_vlsm_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
     echo "Backing up old VLSM folder..."
     timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
     backup_folder="/var/vlsm-backup/www/vlsm-backup-$timestamp"
-    mkdir -p "$backup_folder"
-    rsync -a --delete --exclude "public/temporary/" "$vlsm_path/" "$backup_folder/" &
+    mkdir -p "${backup_folder}"
+    rsync -a --delete --exclude "public/temporary/" "${vlsm_path}/" "${backup_folder}/" &
     spinner # This will show the spinner until the above process is completed
 else
     echo "Skipping VLSM folder backup as per user request."
@@ -186,50 +186,53 @@ fi
 # Download New Version of VLSM from GitHub
 echo "Downloading new version of VLSM from GitHub..."
 wget -q --show-progress --progress=dot:giga -O vlsm-new-version.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip &
-download_pid=$!         # Save the process ID of the wget command
-spinner "$download_pid" # Start the spinner
-wait $download_pid      # Wait for the download to finish
+download_pid=$!           # Save the process ID of the wget command
+spinner "${download_pid}" # Start the spinner
+wait ${download_pid}      # Wait for the download to finish
 
 # Unzip New VLSM Version
 echo "Unzipping new VLSM version..."
 temp_dir=$(mktemp -d)
-unzip vlsm-new-version.zip -d "$temp_dir" &
-unzip_pid=$!         # Save the process ID of the unzip command
-spinner "$unzip_pid" # Start the spinner
-wait $unzip_pid      # Wait for the unzip process to finish
+unzip vlsm-new-version.zip -d "${temp_dir}" &
+unzip_pid=$!           # Save the process ID of the unzip command
+spinner "${unzip_pid}" # Start the spinner
+wait ${unzip_pid}      # Wait for the unzip process to finish
 
 # Copy the unzipped content to the VLSM directory, overwriting any existing files
 echo "Updating VLSM files..."
-cp -RT "$temp_dir/vlsm-master/" "$vlsm_path" &
-cp_pid=$!         # Save the process ID of the cp command
-spinner "$cp_pid" # Start the spinner
-wait $cp_pid      # Wait for the copy process to finish
+cp -RT "${temp_dir}/vlsm-master/" "${vlsm_path}" &
+cp_pid=$!           # Save the process ID of the cp command
+spinner "${cp_pid}" # Start the spinner
+wait ${cp_pid}      # Wait for the copy process to finish
 
 # Cleanup downloaded and temporary files
 rm vlsm-new-version.zip
-rm -r "$temp_dir"
+rm -r "${temp_dir}"
 
 # Set proper permissions
-chown -R www-data:www-data "$vlsm_path"
+chown -R www-data:www-data "${vlsm_path}"
 
 # Run Composer Update as www-data
 echo "Running composer update as www-data user..."
-cd "$vlsm_path"
-sudo -u www-data composer update
+cd "${vlsm_path}"
+sudo -u www-data composer update --no-dev &&
+    sudo -u www-data composer dump-autoload -o
 
-# Run Migrations
+# Run the database migrations
 echo "Running database migrations..."
-php "$vlsm_path/app/system/migrate.php" -yq &
-spinner
+sudo -u www-data composer migrate &
+pid=$!
+spinner "$pid"
+wait $pid
 
 # Ask User to Run 'run-once' Scripts
-echo "Do you want to run scripts from $vlsm_path/run-once/? (yes/no)"
+echo "Do you want to run scripts from ${vlsm_path}/run-once/? (yes/no)"
 read -r run_once_answer
 
 if [[ "$run_once_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
     # List the files in run-once directory
     echo "Available scripts to run:"
-    files=("$vlsm_path/run-once/"*.php)
+    files=("${vlsm_path}/run-once/"*.php)
     for i in "${!files[@]}"; do
         filename=$(basename "${files[$i]}")
         echo "$((i + 1))) $filename"
@@ -266,7 +269,7 @@ fi
 
 # Run the PHP script for remote data sync
 echo "Running remote data sync script. Please wait..."
-php "$vlsm_path/app/scheduled-jobs/remote/commonDataSync.php" &
+php "${vlsm_path}/app/scheduled-jobs/remote/commonDataSync.php" &
 # Get the PID of the commonDataSync.php script
 pid=$!
 # Use the spinner function for visual feedback
@@ -275,8 +278,8 @@ spinner "$pid"
 wait $pid
 echo "Remote data sync completed."
 
-if [ -f "$vlsm_path/cache/CompiledContainer.php" ]; then
-    rm "$vlsm_path/cache/CompiledContainer.php"
+if [ -f "${vlsm_path}/cache/CompiledContainer.php" ]; then
+    rm "${vlsm_path}/cache/CompiledContainer.php"
 fi
 
 service apache2 restart
