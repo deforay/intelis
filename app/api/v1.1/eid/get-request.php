@@ -199,6 +199,7 @@ try {
     $payload = [
         'status' => 'success',
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'data' => $rowData ?? []
     ];
 } catch (SystemException $exc) {
@@ -207,6 +208,7 @@ try {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'error' => $exc->getMessage(),
         'data' => []
     ];

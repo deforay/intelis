@@ -100,6 +100,7 @@ try {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'error' => $exc->getMessage(),
         'data' => []
     ];

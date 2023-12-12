@@ -125,6 +125,7 @@ $data['nationalityList'] = $nationalityList;
 $data['labTechniciansList'] = $general->generateSelectOptionsAPI($labTechniciansList);
 $data['sampleStatusList'] = $general->generateSelectOptionsAPI($statusList);
 
+$statusFilterList = $general->generateSelectOptionsAPI($general->getSampleStatus(true));
 $modules = SYSTEM_CONFIG['modules'];
 
 $rejectionReason = [];
@@ -260,11 +261,7 @@ if (
     $data['covid19']['symptomsList'] = $general->generateSelectOptionsAPI($covid19Service->getCovid19Symptoms($updatedDateTime));
     $data['covid19']['comorbiditiesList'] = $general->generateSelectOptionsAPI($covid19Service->getCovid19Comorbidities($updatedDateTime));
 
-    $data['covid19']['statusFilterList'] = [
-        ['value' => '7', 'show' => 'Approved'],
-        ['value' => '1', 'show' => 'Pending'],
-        ['value' => '4', 'show' => 'Rejected']
-    ];
+    $data['covid19']['statusFilterList'] = $statusFilterList;
     $status = true;
 }
 
@@ -320,11 +317,7 @@ if (isset($applicationConfig['modules']['eid']) && $applicationConfig['modules']
 
     $data['eid']['resultsList'] = $general->generateSelectOptionsAPI($eidService->getEidResults());
 
-    $data['eid']['statusFilterList'] = [
-        ['value' => '7', 'show' => 'Approved'],
-        ['value' => '1', 'show' => 'Pending'],
-        ['value' => '4', 'show' => 'Rejected']
-    ];
+    $data['eid']['statusFilterList'] = $statusFilterList;
     $status = true;
 }
 
@@ -366,11 +359,7 @@ if (isset($applicationConfig['modules']['vl']) && $applicationConfig['modules'][
     $data['vl']['testPlatformList'] = $general->generateSelectOptionsAPI($testPlatformList);
     $data['vl']['reasonForFailure'] = $vlService->getReasonForFailure(false, $updatedDateTime);
 
-    $data['vl']['statusFilterList'] = [
-        ['value' => '7', 'show' => 'Approved'],
-        ['value' => '1', 'show' => 'Pending'],
-        ['value' => '4', 'show' => 'Rejected']
-    ];
+    $data['vl']['statusFilterList'] = $statusFilterList;
     $data['vl']['vlResults'] = $general->fetchDataFromTable('r_vl_results');
     $status = true;
 }
@@ -397,11 +386,7 @@ if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules'][
 
     $data['tb']['resultsList'] = $general->generateSelectOptionsAPI($tbService->getTbResults(null, $updatedDateTime));
 
-    $data['tb']['statusFilterList'] = [
-        ['value' => '7', 'show' => 'Approved'],
-        ['value' => '1', 'show' => 'Pending'],
-        ['value' => '4', 'show' => 'Rejected']
-    ];
+    $data['tb']['statusFilterList'] = $statusFilterList;
     $status = true;
 }
 
@@ -421,11 +406,7 @@ if (isset($applicationConfig['modules']['generic-tests']) && $applicationConfig[
         $testPlatformList[$row['machine_name']] = $row['machine_name'];
     }
     $data['genericTests']['testPlatformList'] = $general->generateSelectOptionsAPI($testPlatformList);
-    $data['genericTests']['statusFilterList'] = [
-        ['value' => '7', 'show' => 'Approved'],
-        ['value' => '1', 'show' => 'Pending'],
-        ['value' => '4', 'show' => 'Rejected']
-    ];
+    $data['genericTests']['statusFilterList'] = $statusFilterList;
     $status = true;
 }
 
@@ -433,13 +414,15 @@ if ($status) {
     $payload = [
         'status' => 1,
         'message' => 'Success',
-        'data' => $data,
         'timestamp' => time(),
+        'transactionId' => $transactionId,
+        'data' => $data,
     ];
 } else {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'error' => 'Please contact system administrator.',
         'data' => []
     ];

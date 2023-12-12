@@ -48,7 +48,7 @@ $tableName = TestsService::getTestTableName($input['testType']);
 $primaryKeyName = TestsService::getTestPrimaryKeyName($input['testType']);
 
 try {
-    $sQuery = "SELECT ts.status_name as result_status, sample_code, remote_sample_code, app_sample_code,unique_id, '".$transactionId."' as transactionId  FROM $tableName as vl
+    $sQuery = "SELECT ts.status_name as resultStatus, sample_code as sampleCode, remote_sample_code as remoteSampleCode, app_sample_code as appSampleCode, unique_id as uniqueId, '".$transactionId."' as transactionId  FROM $tableName as vl
     LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
     $where = [];
@@ -73,6 +73,7 @@ try {
     $payload = [
         'status' => 'success',
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'data' => $rowData
     ];
 } catch (Exception | InvalidArgumentException | SystemException $exc) {

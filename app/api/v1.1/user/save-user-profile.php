@@ -173,8 +173,9 @@ try {
 } catch (Exception | SystemException $exc) {
     $payload = [
         'status' => 'failed',
-        'error' => $exc->getLine() . " | " . $exc->getMessage(),
         'timestamp' => time(),
+        'transactionId' => $transactionId,
+        'error' => $exc->getLine() . " | " . $exc->getMessage(),
     ];
 
     $payload = json_encode($payload);

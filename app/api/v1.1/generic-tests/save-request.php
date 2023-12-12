@@ -446,8 +446,8 @@ try {
 
     $payload = [
         'status' => $payloadStatus,
-        'transactionId' => $transactionId,
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'data' => $responseData ?? []
     ];
     http_response_code(200);
@@ -458,6 +458,7 @@ try {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'error' => $exc->getMessage(),
         'data' => []
     ];

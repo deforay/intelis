@@ -897,11 +897,20 @@ class CommonService
         return $this->db->rawQuery($srcQuery);
     }
 
-    public function getSampleStatus()
+    public function getSampleStatus($api = false)
     {
         $this->db->where("status", "active");
         $this->db->orderBy('status_name', "ASC");
-        return $this->db->get('r_sample_status');
+        $result =  $this->db->get('r_sample_status');
+        $response = [];
+        if($api){
+            foreach($result as $row){
+                $response[$row['status_id']] = $row['status_name'];
+            }
+        }else{
+            $response = $result;
+        }
+        return $response;
     }
     public function multipleColumnSearch($searchText, $allColumns)
     {
