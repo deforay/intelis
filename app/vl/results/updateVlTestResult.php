@@ -209,21 +209,10 @@ if ($vlQueryInfo['remote_sample'] == 'yes') {
 	$sampleCode = $vlQueryInfo['sample_code'];
 }
 
-if ($vlQueryInfo['patient_first_name'] != '') {
-	$patientFirstName = $general->crypto('doNothing', $vlQueryInfo['patient_first_name'], $vlQueryInfo['patient_art_no']);
-} else {
-	$patientFirstName = '';
-}
-if ($vlQueryInfo['patient_middle_name'] != '') {
-	$patientMiddleName = $general->crypto('doNothing', $vlQueryInfo['patient_middle_name'], $vlQueryInfo['patient_art_no']);
-} else {
-	$patientMiddleName = '';
-}
-if ($vlQueryInfo['patient_last_name'] != '') {
-	$patientLastName = $general->crypto('doNothing', $vlQueryInfo['patient_last_name'], $vlQueryInfo['patient_art_no']);
-} else {
-	$patientLastName = '';
-}
+$patientFirstName = $vlQueryInfo['patient_first_name'] ?? '';
+$patientMiddleName = $vlQueryInfo['patient_middle_name'] ?? '';
+$patientLastName = $vlQueryInfo['patient_last_name'] ?? '';
+
 
 if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
 	$key = (string) $general->getGlobalConfig('key');

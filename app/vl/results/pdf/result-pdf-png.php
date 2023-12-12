@@ -215,8 +215,8 @@ if (!empty($requestResult)) {
                $html .= '</tr>';
                $html .= '<tr>';
 
-               $patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_art_no']));
-               $patientLname = ($general->crypto('doNothing', $result['patient_last_name'], $result['patient_art_no']));
+               $patientFname = $result['patient_first_name'] ?? '';
+               $patientLname = $result['patient_last_name'] ?? '';
 
                if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
                     $key = (string) $general->getGlobalConfig('key');

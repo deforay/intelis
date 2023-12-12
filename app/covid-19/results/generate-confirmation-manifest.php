@@ -24,7 +24,7 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 class MYPDF extends TCPDF
 {
     public ?string $logo;
-    public string $text;
+    public ?string $text;
     public ?string $labname;
 
     public function setHeading($logo, $text, $labname)

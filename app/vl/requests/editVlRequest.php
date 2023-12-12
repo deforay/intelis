@@ -124,22 +124,9 @@ $vlQueryInfo['result_printed_datetime'] = DateUtility::humanReadableDateFormat($
 //reviewed datetime
 $vlQueryInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($vlQueryInfo['result_reviewed_datetime'] ?? '', true);
 
-
-if ($vlQueryInfo['patient_first_name'] != '') {
-     $patientFirstName = $general->crypto('doNothing', $vlQueryInfo['patient_first_name'], $vlQueryInfo['patient_art_no']);
-} else {
-     $patientFirstName = '';
-}
-if ($vlQueryInfo['patient_middle_name'] != '') {
-     $patientMiddleName = $general->crypto('doNothing', $vlQueryInfo['patient_middle_name'], $vlQueryInfo['patient_art_no']);
-} else {
-     $patientMiddleName = '';
-}
-if ($vlQueryInfo['patient_last_name'] != '') {
-     $patientLastName = $general->crypto('doNothing', $vlQueryInfo['patient_last_name'], $vlQueryInfo['patient_art_no']);
-} else {
-     $patientLastName = '';
-}
+$patientFirstName = $vlQueryInfo['patient_first_name'] ?? '';
+$patientMiddleName = $vlQueryInfo['patient_middle_name'] ?? '';
+$patientLastName = $vlQueryInfo['patient_last_name'] ?? '';
 
 //Funding source list
 $fundingSourceList = $general->getFundingSources();

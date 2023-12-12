@@ -278,7 +278,7 @@ if (!empty($requestResult)) {
           $html .= '</tr>';
           $html .= '<tr>';
 
-          $patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_art_no']));
+          $patientFname = $result['patient_first_name'] ?? '';
 
 
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';

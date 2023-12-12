@@ -8,10 +8,14 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+use App\Utilities\LoggerUtility;
 use PhpMyAdmin\SqlParser\Parser;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\LoggerUtility;
+
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
 
 // Ensure the script only runs for VLSM APP VERSION >= 4.5.3
 if (version_compare(VERSION, '4.5.3', '<')) {

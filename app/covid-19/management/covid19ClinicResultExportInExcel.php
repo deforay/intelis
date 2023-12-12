@@ -102,7 +102,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           } else {
                $decrypt = 'sample_code';
           }
-          $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow[$decrypt]));
+          $patientFname = $aRow['patient_first_name'] ?? '';
           $row[] = $aRow['sample_code'];
           if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];

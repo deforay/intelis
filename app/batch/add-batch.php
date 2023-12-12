@@ -12,6 +12,7 @@ use App\Registries\ContainerRegistry;
 $request = AppRegistry::get('request');
 $_GET = $request->getQueryParams();
 $sampleTypeStatus = "status";
+$genericHide = "";
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $title = "Viral Load";
     $sampleTypeTable = "r_vl_sample_type";

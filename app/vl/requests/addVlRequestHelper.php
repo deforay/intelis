@@ -184,7 +184,7 @@ try {
     //Update patient Information in Patients Table
     $patientsService->savePatient($_POST, 'form_vl');
 
-    $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
+    $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'] ?? '', $_POST['gender'] ?? '', DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
     $vlData = array(
         'vlsm_instance_id' => $instanceId,
