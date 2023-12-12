@@ -21,7 +21,7 @@ $origJson = $request->getBody()->getContents();
 $input = $request->getParsedBody();
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -115,6 +115,7 @@ try {
     $payload = [
         'status' => 'success',
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'data' => $rowData ?? []
     ];
 } catch (SystemException $exc) {
@@ -123,6 +124,7 @@ try {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'error' => $exc->getMessage(),
         'data' => []
     ];

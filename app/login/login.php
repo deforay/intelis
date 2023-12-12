@@ -12,7 +12,7 @@ if (isset($_SESSION['userId'])) {
 }
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 
 // If there are NO users, then we need to register the admin user

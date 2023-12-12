@@ -20,7 +20,7 @@ set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -528,8 +528,8 @@ try {
 
     $payload = [
         'status' => $payloadStatus,
-        'transactionId' => $transactionId,
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'data' => $responseData ?? []
     ];
     $db->commitTransaction();
@@ -539,6 +539,7 @@ try {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
+        'transactionId' => $transactionId,
         'error' => $exc->getMessage(),
         'data' => []
     ];

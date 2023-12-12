@@ -18,7 +18,7 @@ $request = AppRegistry::get('request');
 $origJson = $request->getBody()->getContents();
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -173,8 +173,9 @@ try {
 } catch (Exception | SystemException $exc) {
     $payload = [
         'status' => 'failed',
-        'error' => $exc->getLine() . " | " . $exc->getMessage(),
         'timestamp' => time(),
+        'transactionId' => $transactionId,
+        'error' => $exc->getLine() . " | " . $exc->getMessage(),
     ];
 
     $payload = json_encode($payload);

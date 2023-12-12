@@ -182,23 +182,22 @@ if (!empty($requestResult)) {
 
           if (isset($result['sample_collection_date']) && trim((string) $result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $result['sample_collection_date']);
-			$result['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+               $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
           } else {
                $result['sample_collection_date'] = '';
           }
-         
+
           if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
-			$result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-          }
-          else{
+               $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+          } else {
                $result['sample_received_at_lab_datetime'] = "";
           }
           $sampleDispatchDate = '';
           $sampleDispatchTime = '';
           if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $result['result_printed_datetime']);
-			$result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+               $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
           } else {
                $expStr = explode(" ", $currentTime);
                $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
@@ -206,7 +205,7 @@ if (!empty($requestResult)) {
           }
 
           $modified = _translate("No");
-          if ($result['result_modified']=="yes") {
+          if ($result['result_modified'] == "yes") {
                $modified = _translate("Yes");
           }
 
@@ -214,21 +213,21 @@ if (!empty($requestResult)) {
 
           if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $result['sample_tested_datetime']);
-			$result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+               $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
           } else {
                $result['sample_tested_datetime'] = '';
           }
 
           if (isset($result['treatment_initiated_date']) && trim((string) $result['treatment_initiated_date']) != '' && $result['treatment_initiated_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $result['treatment_initiated_date']);
-			$result['treatment_initiated_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+               $result['treatment_initiated_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
           } else {
                $result['treatment_initiated_date'] = '';
           }
 
           if (isset($result['last_modified_datetime']) && trim((string) $result['last_modified_datetime']) != '' && $result['last_modified_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $result['last_modified_datetime']);
-			$result['last_modified_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+               $result['last_modified_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
           } else {
                $result['last_modified_datetime'] = '';
           }
@@ -236,7 +235,7 @@ if (!empty($requestResult)) {
 
           if (isset($result['result_reviewed_datetime']) && trim((string) $result['result_reviewed_datetime']) != '' && $result['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $result['result_reviewed_datetime']);
-			$result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+               $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
           } else {
                $result['result_reviewed_datetime'] = '';
           }
@@ -363,7 +362,7 @@ if (!empty($requestResult)) {
           $html .= '</tr>';
           $html .= '<tr><td width="100%" style="line-height:18px;font-size:10px;">';
           $html .= '<br>';
-          $html .= '<p>' . _translate("N.B : Le test Abbott 0.6ml a une limite inférieure de quantification de 40 copies/ml et une limite supérieure de quantification de 10.000.000 copies/ml. Pour tout résultat entre ces limites, le nombre de copies par ml est signalé. Lorsque le virus est détecté au dessus ou en dessous des limites de quantification, ceci est signalé. Si le test est réussi et qu'aucun virus n'est détecté, le résultat est signalé comme cible non détectée. Pour qu'une variation de la charge virale soit significative, il faut que la différence entre deux mesures soit d'au moins 0.5 Log10 soit une réduction ou une augmentation d'un facteur de 3 du nombre de copies/ml") . '</p>';
+          $html .= '<p>' . "N.B : Le test Abbott 0.6ml a une limite inférieure de quantification de 40 copies/ml et une limite supérieure de quantification de 10.000.000 copies/ml. Pour tout résultat entre ces limites, le nombre de copies par ml est signalé. Lorsque le virus est détecté au dessus ou en dessous des limites de quantification, ceci est signalé. Si le test est réussi et qu'aucun virus n'est détecté, le résultat est signalé comme cible non détectée. Pour qu'une variation de la charge virale soit significative, il faut que la différence entre deux mesures soit d'au moins 0.5 Log10 soit une réduction ou une augmentation d'un facteur de 3 du nombre de copies/ml" . '</p>';
           $html .= '<table border="0" style="margin-top:24px;">';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Comment, if applicable') . ' : </td>';

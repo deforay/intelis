@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $generic = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
 /** @var ServerRequest $request */

@@ -7,7 +7,7 @@ use App\Services\DatabaseService;
 
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 
 //check remote user

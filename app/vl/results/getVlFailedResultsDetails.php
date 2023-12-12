@@ -8,7 +8,7 @@ use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

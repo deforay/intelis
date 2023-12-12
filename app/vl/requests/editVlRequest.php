@@ -14,7 +14,7 @@ require_once APPLICATION_PATH . '/header.php';
 $sCode = $labFieldDisabled = '';
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-12-11 16:17+0530\n"
-"PO-Revision-Date: 2023-12-11 16:17+0530\n"
+"POT-Creation-Date: 2023-12-12 13:25+0530\n"
+"PO-Revision-Date: 2023-12-12 13:25+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -99,7 +99,7 @@ msgstr ""
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:22
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:34
 #: generic-tests/mail/mail-generic-tests-results.php:71
-#: generic-tests/requests/add-request.php:226
+#: generic-tests/requests/add-request.php:225
 #: generic-tests/requests/clone-request.php:396
 #: generic-tests/requests/edit-request.php:398
 #: generic-tests/results/update-generic-test-result.php:390
@@ -120,7 +120,7 @@ msgstr ""
 #: patients/edit-patient.php:50 roles/addRole.php:126 roles/editRole.php:149
 #: specimen-referral-manifest/add-manifest.php:126
 #: specimen-referral-manifest/edit-manifest.php:182
-#: system-admin/edit-config/resetPassword.php:29
+#: system-admin/edit-config/resetPassword.php:25
 #: tb/reference/add-tb-results.php:30
 #: tb/reference/add-tb-sample-rejection-reason.php:22
 #: tb/reference/add-tb-sample-type.php:22
@@ -131,7 +131,7 @@ msgstr ""
 #: tb/requests/forms/edit-southsudan.php:102
 #: tb/results/forms/update-sierraleone.php:109
 #: tb/results/forms/update-southsudan.php:109 users/addUser.php:64
-#: users/editProfile.php:54 users/editUser.php:111
+#: users/editProfile.php:49 users/editUser.php:111
 #: vl/program-management/addContactNotes.php:56
 #: vl/reference/add-vl-art-code-details.php:35
 #: vl/reference/add-vl-results.php:48
@@ -323,7 +323,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: roles/addRole.php:113 roles/editRole.php:136 roles/roles.php:13
 #: system-admin/api-stats/api-stats.php:16
 #: system-admin/edit-config/index.php:28
-#: system-admin/edit-config/resetPassword.php:19
+#: system-admin/edit-config/resetPassword.php:15
 #: system-admin/instance-overview/instanceIndex.php:44
 #: system-admin/log-files/log-files.php:22
 #: system-admin/user-login-history/userLoginIndex.php:15
@@ -340,7 +340,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: tb/results/forms/update-southsudan.php:101
 #: tb/results/tb-failed-results.php:58 tb/results/tb-manual-results.php:77
 #: tb/results/tb-print-results.php:43 tb/results/tb-result-status.php:65
-#: users/addUser.php:54 users/editProfile.php:44 users/editUser.php:101
+#: users/addUser.php:54 users/editProfile.php:39 users/editUser.php:101
 #: users/users.php:13 vl/program-management/highViralLoad.php:60
 #: vl/program-management/sampleRejectionReport.php:50
 #: vl/program-management/vl-sample-status.php:58
@@ -400,7 +400,7 @@ msgid "Enter date range"
 msgstr "Saisissez une plage de dates"
 
 #: admin/monitoring/activity-log.php:69 system/translate-strings.php:11
-#: users/addUser.php:55 users/editProfile.php:45 users/editUser.php:102
+#: users/addUser.php:55 users/editProfile.php:40 users/editUser.php:102
 #: users/users.php:2 users/users.php:11 users/users.php:14
 msgid "Users"
 msgstr "Utilisateurs"
@@ -523,7 +523,7 @@ msgstr "Rechercher"
 #: covid-19/results/covid-19-manual-results.php:226
 #: covid-19/results/covid-19-print-results.php:431
 #: covid-19/results/covid-19-result-status.php:213 dashboard/index.php:472
-#: dashboard/index.php:780 dashboard/vlTestResultStatus.php:189
+#: dashboard/index.php:779 dashboard/vlTestResultStatus.php:189
 #: eid/management/eid-clinic-report.php:495
 #: eid/management/eid-export-data.php:360
 #: eid/management/eid-export-data.php:389
@@ -587,6 +587,7 @@ msgstr "Journal d'audit"
 
 #: admin/monitoring/activity-log.php:108
 #: system-admin/user-login-history/userLoginIndex.php:64
+#: users/editProfile.php:144
 msgid "IP Address"
 msgstr "Adresse IP"
 
@@ -706,7 +707,7 @@ msgstr "Enregistré le"
 msgid "Loading data from server"
 msgstr "Chargement des données depuis le serveur"
 
-#: admin/monitoring/api-sync-history.php:7 system/translate-strings.php:164
+#: admin/monitoring/api-sync-history.php:7 system/translate-strings.php:169
 msgid "API Sync History"
 msgstr "Historique de la synchronisation de l'API"
 
@@ -1577,13 +1578,13 @@ msgstr "ID de l'échantillon"
 #: instruments/edit-instrument.php:571 patients/add-patient.php:237
 #: patients/edit-patient.php:252 roles/addRole.php:372 roles/editRole.php:366
 #: system-admin/edit-config/index.php:131
-#: system-admin/edit-config/resetPassword.php:60
+#: system-admin/edit-config/resetPassword.php:56
 #: system-admin/setup/index.php:99 tb/reference/add-tb-results.php:89
 #: tb/reference/add-tb-sample-rejection-reason.php:74
 #: tb/reference/add-tb-sample-type.php:56
 #: tb/reference/add-tb-test-reasons.php:75
 #: tb/requests/addSamplesFromManifest.php:37 users/addUser.php:257
-#: users/editProfile.php:134 users/editUser.php:338
+#: users/editProfile.php:129 users/editUser.php:338
 #: vl/reference/add-vl-art-code-details.php:92
 #: vl/reference/add-vl-results.php:122
 #: vl/reference/add-vl-sample-rejection-reasons.php:74
@@ -2231,7 +2232,7 @@ msgid "RESPONSE"
 msgstr "Réponse"
 
 #: admin/monitoring/sources-of-requests.php:66
-#: admin/monitoring/sources-of-requests.php:73 system/translate-strings.php:165
+#: admin/monitoring/sources-of-requests.php:73 system/translate-strings.php:170
 msgid "Sources of Requests Report"
 msgstr "Rapport sur les sources des demandes"
 
@@ -2356,6 +2357,7 @@ msgstr ""
 "source des demandes"
 
 #: admin/monitoring/sync-status.php:66 admin/monitoring/sync-status.php:73
+#: system/translate-strings.php:86
 msgid "Lab Sync Status"
 msgstr "État de la synchronisation du laboratoire"
 
@@ -2466,7 +2468,7 @@ msgstr "Nom du Labo"
 #: tb/requests/forms/add-southsudan.php:174
 #: tb/requests/forms/edit-sierraleone.php:239
 #: tb/requests/forms/edit-southsudan.php:206 users/addUser.php:103
-#: users/addUser.php:137 users/editProfile.php:78 users/editUser.php:152
+#: users/addUser.php:137 users/editProfile.php:73 users/editUser.php:152
 #: users/editUser.php:189 vl/reference/add-vl-art-code-details.php:69
 #: vl/reference/add-vl-art-code-details.php:80
 #: vl/reference/add-vl-test-failure-reason.php:44
@@ -3186,13 +3188,13 @@ msgstr "Sauvegarder et Suivant"
 #: instruments/edit-instrument.php:574 mail/vlResultMail.php:333
 #: patients/add-patient.php:238 patients/edit-patient.php:253
 #: roles/addRole.php:375 roles/editRole.php:369
-#: system-admin/edit-config/resetPassword.php:61
+#: system-admin/edit-config/resetPassword.php:57
 #: system-admin/instance-overview/instanceIndex.php:133
 #: tb/reference/add-tb-results.php:92
 #: tb/reference/add-tb-sample-rejection-reason.php:75
 #: tb/reference/add-tb-sample-type.php:57
 #: tb/reference/add-tb-test-reasons.php:76 users/addUser.php:258
-#: users/editProfile.php:135 users/editUser.php:339
+#: users/editProfile.php:130 users/editUser.php:339
 #: vl/reference/add-vl-art-code-details.php:93
 #: vl/reference/add-vl-results.php:125
 #: vl/reference/add-vl-sample-rejection-reasons.php:75
@@ -3207,7 +3209,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: batch/add-batch.php:306 batch/batches.php:177 facilities/addFacility.php:709
-#: facilities/editFacility.php:668 generic-tests/requests/add-request.php:814
+#: facilities/editFacility.php:668 generic-tests/requests/add-request.php:813
 #: generic-tests/requests/clone-request.php:1198
 #: generic-tests/requests/edit-request.php:1083
 #: generic-tests/requests/view-requests.php:292
@@ -3380,7 +3382,7 @@ msgid "Edit Batch Controls Position"
 msgstr "Éditer la position des contrôles de lots"
 
 #: batch/edit-batch.php:9 batch/edit-batch.php:154
-#: system/translate-strings.php:117
+#: system/translate-strings.php:123
 msgid "Edit Batch"
 msgstr "Éditer un lot"
 
@@ -3577,7 +3579,7 @@ msgstr "Calibrateurs"
 #: generic-tests/requests/get-request-list.php:183
 #: hepatitis/requests/get-request-list.php:323
 #: instruments/get-instruments.php:120 patients/get-patients-helper.php:134
-#: roles/getRoleDetails.php:115 system/translate-strings.php:99
+#: roles/getRoleDetails.php:115 system/translate-strings.php:104
 #: tb/requests/get-request-list.php:283 users/getUserDetails.php:140
 #: vl/reference/get-vl-results-helper.php:133
 #: vl/reference/get-vl-test-failure-reasons-helper.php:140
@@ -3923,7 +3925,7 @@ msgstr "Divisions géographiques"
 
 #: common/reference/add-geographical-divisions.php:32
 #: common/reference/add-geographical-divisions.php:35
-#: system/translate-strings.php:153
+#: system/translate-strings.php:158
 msgid "Add Geographical Divisions"
 msgstr "Divisions géographiques"
 
@@ -4278,7 +4280,7 @@ msgstr ""
 
 #: common/reference/edit-geographical-divisions.php:33
 #: common/reference/edit-geographical-divisions.php:36
-#: system/translate-strings.php:154
+#: system/translate-strings.php:159
 msgid "Edit Geographical Divisions"
 msgstr "Editer les divisions géographiques"
 
@@ -4384,6 +4386,7 @@ msgstr "Code"
 #: common/reference/recommended-corrective-actions.php:5
 #: common/reference/recommended-corrective-actions.php:24
 #: common/reference/recommended-corrective-actions.php:27
+#: system/translate-strings.php:87
 msgid "Recommended Corrective Actions"
 msgstr "Mesures correctives recommandées"
 
@@ -5085,7 +5088,7 @@ msgstr "Labo de test"
 #: vl/requests/addSamplesFromManifest.php:99 vl/requests/vl-requests.php:590
 #: vl/requests/vl-requests.php:643 vl/results/get-manual-results.php:283
 #: vl/results/getVlTestResultDetails.php:219
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:371
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:355
 #: vl/results/vl-failed-results.php:180 vl/results/vl-failed-results.php:210
 #: vl/results/vlPrintResult.php:257 vl/results/vlPrintResult.php:305
 #: vl/results/vlPrintResult.php:500 vl/results/vlPrintResult.php:547
@@ -5337,7 +5340,7 @@ msgstr "Voulez-vous les marquer comme complets ?"
 #: generic-tests/program-management/generic-export-data.php:10
 #: hepatitis/management/hepatitis-export-data.php:10
 #: hepatitis/management/hepatitis-export-data.php:68
-#: system/translate-strings.php:121 tb/management/tb-export-data.php:10
+#: system/translate-strings.php:127 tb/management/tb-export-data.php:10
 #: tb/management/tb-export-data.php:69
 #: vl/program-management/vl-export-data.php:9
 msgid "Export Data"
@@ -5433,7 +5436,7 @@ msgstr "Tous les statuts"
 #: hepatitis/requests/hepatitis-requests.php:239
 #: hepatitis/results/get-hepatitis-result-status.php:224
 #: hepatitis/results/hepatitis-result-status.php:143 mail/vlResultMail.php:258
-#: system/translate-strings.php:92 tb/management/tb-export-data.php:147
+#: system/translate-strings.php:96 tb/management/tb-export-data.php:147
 #: tb/requests/tb-requests.php:205 tb/results/get-tb-result-status.php:214
 #: tb/results/tb-result-status.php:143
 #: vl/program-management/vl-export-data.php:194
@@ -5457,7 +5460,7 @@ msgstr "Accepté"
 #: hepatitis/requests/hepatitis-requests.php:242
 #: hepatitis/results/get-hepatitis-result-status.php:225
 #: hepatitis/results/hepatitis-result-status.php:144 mail/vlResultMail.php:261
-#: system/translate-strings.php:89 tb/management/getSampleStatus.php:371
+#: system/translate-strings.php:93 tb/management/getSampleStatus.php:371
 #: tb/management/tb-export-data.php:148 tb/requests/tb-requests.php:206
 #: tb/results/get-tb-result-status.php:215 tb/results/tb-result-status.php:144
 #: vl/program-management/vl-export-data.php:196
@@ -5471,7 +5474,7 @@ msgstr "Rejeté"
 #: eid/management/eid-export-data.php:159 eid/requests/eid-requests.php:256
 #: generic-tests/program-management/generic-export-data.php:141
 #: hepatitis/requests/hepatitis-requests.php:245
-#: system/translate-strings.php:93 tb/management/tb-export-data.php:149
+#: system/translate-strings.php:97 tb/management/tb-export-data.php:149
 #: tb/requests/tb-requests.php:207 vl/program-management/vl-export-data.php:199
 msgid "Awaiting Approval"
 msgstr "En attente d'approbation"
@@ -5495,8 +5498,8 @@ msgstr "Enregistré au laboratoire de test"
 #: generic-tests/results/generic-failed-results.php:110
 #: hepatitis/requests/hepatitis-requests.php:251
 #: hepatitis/results/hepatitis-failed-results.php:147
-#: tb/management/tb-export-data.php:151 tb/requests/tb-requests.php:209
-#: tb/results/tb-failed-results.php:148
+#: system/translate-strings.php:99 tb/management/tb-export-data.php:151
+#: tb/requests/tb-requests.php:209 tb/results/tb-failed-results.php:148
 #: vl/program-management/vl-export-data.php:205
 #: vl/results/vl-failed-results.php:112
 msgid "Expired"
@@ -5719,7 +5722,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: vl/results/forms/update-cameroon-result.php:379
 #: vl/results/forms/update-cameroon-result.php:396
 #: vl/results/forms/update-cameroon-result.php:701
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:212
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:209
 msgid "Yes"
 msgstr "Oui"
 
@@ -5865,7 +5868,7 @@ msgstr "Oui"
 #: vl/results/forms/update-cameroon-result.php:382
 #: vl/results/forms/update-cameroon-result.php:399
 #: vl/results/forms/update-cameroon-result.php:702
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:210
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:207
 msgid "No"
 msgstr "Non"
 
@@ -5928,7 +5931,7 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: vl/requests/export-vl-requests.php:27 vl/requests/export-vl-requests.php:29
 #: vl/requests/export-vl-requests.php:30 vl/requests/patientModal.php:104
 #: vl/requests/vl-requests.php:446
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:326
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:310
 #: vl/results/vl-failed-results.php:120 vl/results/vlPrintResult.php:199
 #: vl/results/vlPrintResult.php:441
 msgid "Patient Name"
@@ -6680,7 +6683,7 @@ msgstr "Date de publication du résultat"
 #: eid/management/get-data-export.php:296
 #: hepatitis/management/get-data-export.php:289
 #: hepatitis/management/get-data-export.php:292
-#: system/translate-strings.php:100 tb/management/get-data-export.php:300
+#: system/translate-strings.php:105 tb/management/get-data-export.php:300
 #: tb/management/get-data-export.php:302
 msgid "View"
 msgstr "Voir"
@@ -7626,7 +7629,7 @@ msgstr ""
 #: covid-19/requests/covid-19-edit-request.php:169
 #: covid-19/requests/covid-19-quick-add.php:237
 #: eid/requests/eid-add-request.php:259 eid/requests/eid-edit-request.php:234
-#: generic-tests/requests/add-request.php:1472
+#: generic-tests/requests/add-request.php:1471
 #: generic-tests/requests/clone-request.php:1454
 #: generic-tests/requests/edit-request.php:1339
 #: generic-tests/results/update-generic-test-result.php:1320
@@ -7675,8 +7678,8 @@ msgstr "La demande de Covid-19 a été mise à jour avec succès"
 #: generic-tests/results/update-generic-test-result-helper.php:207
 #: hepatitis/requests/hepatitis-edit-request-helper.php:255
 #: hepatitis/results/hepatitis-update-result-helper.php:97
-#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:397
-#: vl/requests/editVlRequestHelper.php:371
+#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:398
+#: vl/requests/editVlRequestHelper.php:378
 #: vl/results/updateVlTestResultHelper.php:190
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
@@ -7788,7 +7791,7 @@ msgstr "Covid-19-Ajouter une demande rapide"
 #: hepatitis/requests/hepatitis-dhis2.php:272
 #: hepatitis/requests/hepatitis-requests.php:379
 #: hepatitis/requests/hepatitis-requests.php:395
-#: system/translate-strings.php:213 tb/requests/tb-requests.php:286
+#: system/translate-strings.php:227 tb/requests/tb-requests.php:286
 #: tb/requests/tb-requests.php:300
 msgid "Export Requests"
 msgstr "Demandes d'exportation"
@@ -8095,7 +8098,7 @@ msgstr "DÉTAILS DE L'AFFAIRE/DONNÉES DÉMOGRAPHIQUES"
 #: vl/requests/forms/add-cameroon.php:211
 #: vl/requests/forms/edit-cameroon.php:253
 #: vl/results/forms/update-cameroon-result.php:307
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:316
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:300
 msgid "Patient Information"
 msgstr "Information du patient"
 
@@ -8304,7 +8307,7 @@ msgstr "Numéro de téléphone"
 #: facilities/editFacility.php:261 facilities/editFacility.php:263
 #: patients/add-patient.php:203 patients/edit-patient.php:220
 #: patients/view-patients.php:37 users/addUser.php:92 users/addUser.php:94
-#: users/editProfile.php:102 users/editProfile.php:104 users/editUser.php:140
+#: users/editProfile.php:97 users/editProfile.php:99 users/editUser.php:140
 #: users/editUser.php:142 vl/requests/forms/add-cameroon.php:287
 #: vl/requests/forms/add-cameroon.php:368
 #: vl/requests/forms/edit-cameroon.php:327
@@ -8508,7 +8511,7 @@ msgstr "Réservé à l'usage des laboratoires"
 #: vl/requests/forms/edit-cameroon.php:648
 #: vl/result-mail/editTestResultEmailConfig.php:88
 #: vl/results/forms/update-cameroon-result.php:678
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:355
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:339
 msgid "Sample Received Date"
 msgstr "Date de réception de l'échantillon"
 
@@ -8584,7 +8587,7 @@ msgstr "Date de réception de l'échantillon"
 #: eid/results/forms/update-southsudan-result.php:425
 #: eid/results/forms/update-southsudan-result.php:469
 #: eid/results/forms/update-southsudan-result.php:491
-#: generic-tests/requests/add-request.php:685
+#: generic-tests/requests/add-request.php:684
 #: generic-tests/requests/clone-request.php:1027
 #: generic-tests/requests/edit-request.php:906
 #: generic-tests/results/update-generic-test-result.php:887
@@ -9041,7 +9044,7 @@ msgstr "Âge (en années)"
 #: vl/program-management/export-vl-results.php:35
 #: vl/program-management/export-vl-results.php:38
 #: vl/requests/export-vl-requests.php:27 vl/requests/patientModal.php:107
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:327
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:311
 msgid "Age"
 msgstr "Age"
 
@@ -9437,7 +9440,7 @@ msgstr "Échec/Echantillons en attente"
 #: eid/results/eid-failed-results.php:140
 #: generic-tests/results/generic-failed-results.php:107
 #: hepatitis/results/hepatitis-failed-results.php:138
-#: system/translate-strings.php:86 tb/results/tb-failed-results.php:139
+#: system/translate-strings.php:90 tb/results/tb-failed-results.php:139
 #: vl/results/vl-failed-results.php:109
 msgid "Hold"
 msgstr "En attente"
@@ -9453,7 +9456,7 @@ msgstr "En attente"
 #: hepatitis/results/get-hepatitis-result-status.php:226
 #: hepatitis/results/hepatitis-failed-results.php:141
 #: hepatitis/results/hepatitis-result-status.php:145
-#: system/translate-strings.php:87 tb/results/get-tb-result-status.php:216
+#: system/translate-strings.php:91 tb/results/get-tb-result-status.php:216
 #: tb/results/tb-failed-results.php:142 tb/results/tb-result-status.php:145
 #: vl/results/getVlResultsForApproval.php:166
 #: vl/results/vl-failed-results.php:110 vl/results/vlResultApproval.php:206
@@ -9679,7 +9682,7 @@ msgstr "Ajouter de nouvelles données Covid-19 QC"
 #: eid/results/eid-result-status.php:8
 #: generic-tests/results/generic-result-approval.php:8
 #: hepatitis/results/hepatitis-result-status.php:2
-#: system/translate-strings.php:119 tb/results/tb-result-status.php:2
+#: system/translate-strings.php:125 tb/results/tb-result-status.php:2
 #: vl/results/vlResultApproval.php:8
 msgid "Manage Result Status"
 msgstr "Gérer le status des résultats"
@@ -10006,7 +10009,7 @@ msgid "Samples Registered at Collection Site"
 msgstr "Échantillons enregistrés au site de collecte"
 
 #: dashboard/index.php:3 roles/addRole.php:168 roles/editRole.php:191
-#: system/translate-strings.php:107
+#: system/translate-strings.php:112
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
@@ -10039,42 +10042,42 @@ msgstr "Tests de confirmation de la récence"
 msgid "Select Sample Collection daterange"
 msgstr "Date de prélèvement de l'échantillon"
 
-#: dashboard/index.php:822
+#: dashboard/index.php:821
 msgid "EID testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) d'essais de l'EID n'a (n'ont) pas atteint l'objectif "
 "d'essais mensuels"
 
-#: dashboard/index.php:822 dashboard/index.php:846 dashboard/index.php:869
-#: dashboard/index.php:893 dashboard/index.php:917 dashboard/index.php:938
+#: dashboard/index.php:821 dashboard/index.php:845 dashboard/index.php:868
+#: dashboard/index.php:892 dashboard/index.php:916 dashboard/index.php:937
 msgid "more"
 msgstr "plus"
 
-#: dashboard/index.php:846
+#: dashboard/index.php:845
 msgid "VL testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) d'analyse VL n'a (n'ont) pas atteint l'objectif mensuel "
 "d'analyse"
 
-#: dashboard/index.php:869
+#: dashboard/index.php:868
 msgid "VL testing lab(s) did not meet suppression targets"
 msgstr ""
 "Le(s) laboratoire(s) d'analyse VL n'a (n'ont) pas atteint les objectifs de "
 "suppression"
 
-#: dashboard/index.php:893
+#: dashboard/index.php:892
 msgid "Covid-19 testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) d'analyse Covid-19 n'a (n'ont) pas atteint l'objectif "
 "mensuel d'analyse"
 
-#: dashboard/index.php:917
+#: dashboard/index.php:916
 msgid "Hepatitis testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) de dépistage de l'hépatite n'a (n'ont) pas atteint "
 "l'objectif mensuel de dépistage"
 
-#: dashboard/index.php:938
+#: dashboard/index.php:937
 msgid "TB testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) de dépistage de la tuberculose n'a (n'ont) pas atteint "
@@ -10805,7 +10808,6 @@ msgstr "Âge (mois) de l'arrêt de l'allaitement"
 #: eid/results/forms/update-rwanda-result.php:158
 #: eid/results/forms/update-sierraleone-result.php:161
 #: eid/results/forms/update-southsudan-result.php:161
-#: vl/requests/forms/add-cameroon.php:361
 #: vl/requests/forms/edit-cameroon.php:404
 #: vl/results/forms/update-cameroon-result.php:443
 msgid "Requesting Clinician Name"
@@ -11440,8 +11442,8 @@ msgstr "Veuillez saisir la désignation"
 #: facilities/addFacility.php:623 facilities/editFacility.php:577
 #: facilities/editFacility.php:605 facilities/editFacility.php:951
 #: users/addUser.php:149 users/editUser.php:201
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:416
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:421
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:394
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:399
 msgid "Signature"
 msgstr "Signature"
 
@@ -12029,7 +12031,7 @@ msgstr "Texte"
 #: generic-tests/configuration/edit-test-type.php:821
 #: system-admin/log-files/log-files.php:34
 #: system-admin/user-login-history/userLoginIndex.php:29
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:392
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:370
 msgid "Date"
 msgstr "Date"
 
@@ -12175,7 +12177,7 @@ msgstr "Envoie de résultats par email"
 #: generic-tests/configuration/add-test-type.php:283
 #: generic-tests/configuration/clone-test-type.php:567
 #: generic-tests/configuration/edit-test-type.php:456
-#: generic-tests/requests/add-request.php:1741
+#: generic-tests/requests/add-request.php:1740
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1983
@@ -12189,7 +12191,7 @@ msgstr "Covid-19-Saisir le résultat manuellement"
 #: generic-tests/configuration/add-test-type.php:283
 #: generic-tests/configuration/clone-test-type.php:567
 #: generic-tests/configuration/edit-test-type.php:456
-#: generic-tests/requests/add-request.php:1741
+#: generic-tests/requests/add-request.php:1740
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1983
@@ -12271,7 +12273,7 @@ msgstr "Type de test ajouté avec succès"
 #: generic-tests/configuration/clone-test-type.php:98
 #: generic-tests/configuration/edit-test-type.php:94
 #: generic-tests/configuration/edit-test-type.php:97
-#: system/translate-strings.php:171
+#: system/translate-strings.php:176
 msgid "Edit Test Type"
 msgstr "Modifier le profil"
 
@@ -12414,6 +12416,7 @@ msgstr ""
 
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:11
 #: generic-tests/configuration/sample-types/generic-sample-type.php:30
+#: system/translate-strings.php:177
 msgid "Add Sample Type"
 msgstr "Ajouter un type d'échantillon"
 
@@ -12459,6 +12462,7 @@ msgid "Please select sample type status"
 msgstr "Veuillez sélectionner le statut du type d'échantillon"
 
 #: generic-tests/configuration/sample-types/generic-edit-sample-type.php:23
+#: system/translate-strings.php:179
 msgid "Edit Sample Type"
 msgstr "Modifier le type d'échantillon"
 
@@ -13126,8 +13130,8 @@ msgstr "Veuillez vérifier votre numéro d'identification de l'échantillon"
 msgid "Lab test request added successfully"
 msgstr "Demande de test de laboratoire ajoutée avec succès"
 
-#: generic-tests/requests/add-request.php:772
-#: generic-tests/requests/add-request.php:1707
+#: generic-tests/requests/add-request.php:771
+#: generic-tests/requests/add-request.php:1706
 #: generic-tests/requests/edit-request.php:968
 #: generic-tests/requests/edit-request.php:1839
 #: generic-tests/results/update-generic-test-result.php:950
@@ -13135,13 +13139,13 @@ msgstr "Demande de test de laboratoire ajoutée avec succès"
 msgid "Select Sub Tests"
 msgstr "Sélectionner les tests secondaires"
 
-#: generic-tests/requests/add-request.php:810
+#: generic-tests/requests/add-request.php:809
 #: generic-tests/requests/clone-request.php:1190
 #: generic-tests/requests/edit-request.php:1075
 msgid "Select Specimen Type"
 msgstr "Sélectionner le type de spécimen"
 
-#: generic-tests/requests/add-request.php:1388
+#: generic-tests/requests/add-request.php:1387
 #: generic-tests/requests/clone-request.php:1420
 #: generic-tests/requests/edit-request.php:1305
 #: generic-tests/results/update-generic-test-result.php:1286 vl/vl.js.php:90
@@ -13152,7 +13156,7 @@ msgstr ""
 "Échantillon reçu au laboratoire d'essai La date ne peut être antérieure à la "
 "date de prélèvement de l'échantillon"
 
-#: generic-tests/requests/add-request.php:1403
+#: generic-tests/requests/add-request.php:1402
 #: generic-tests/requests/clone-request.php:1405
 #: generic-tests/requests/edit-request.php:1290
 #: generic-tests/results/update-generic-test-result.php:1271 vl/vl.js.php:105
@@ -13162,7 +13166,7 @@ msgstr ""
 "La date de réception de l'échantillon au carrefour ne peut être antérieure à "
 "la date de prélèvement de l'échantillon"
 
-#: generic-tests/requests/add-request.php:1418
+#: generic-tests/requests/add-request.php:1417
 #: generic-tests/requests/clone-request.php:1435
 #: generic-tests/requests/edit-request.php:1320
 #: generic-tests/results/update-generic-test-result.php:1301 vl/vl.js.php:120
@@ -13171,14 +13175,14 @@ msgstr ""
 "La date d'analyse de l'échantillon ne peut être antérieure à la date de "
 "prélèvement de l'échantillon"
 
-#: generic-tests/requests/add-request.php:1506
+#: generic-tests/requests/add-request.php:1505
 #: generic-tests/requests/clone-request.php:1613
 #: vl/requests/addVlRequest.php:171
 msgid "Could not save this form. Please try again."
 msgstr "Impossible d'enregistrer ce formulaire. Veuillez réessayer."
 
-#: generic-tests/requests/add-request.php:1613
-#: generic-tests/requests/add-request.php:1617
+#: generic-tests/requests/add-request.php:1612
+#: generic-tests/requests/add-request.php:1616
 #: generic-tests/requests/clone-request.php:1910
 #: generic-tests/requests/clone-request.php:1914
 #: generic-tests/requests/edit-request.php:1714
@@ -14279,7 +14283,7 @@ msgstr "Désolé"
 msgid "You do not have permission to access this page."
 msgstr "Vous n’avez pas la permission d'accéder à cette page."
 
-#: header.php:172 users/editProfile.php:42
+#: header.php:172 users/editProfile.php:37
 msgid "Edit Profile"
 msgstr "Modifier le profil"
 
@@ -15321,11 +15325,11 @@ msgid "Please enter your user name"
 msgstr "Veuillez entrer votre nom d’utilisateur"
 
 #: login/login.php:161 setup/index.php:169
-#: system-admin/edit-config/resetPassword.php:40
-#: system-admin/edit-config/resetPassword.php:42
+#: system-admin/edit-config/resetPassword.php:36
+#: system-admin/edit-config/resetPassword.php:38
 #: system-admin/login/login.php:65 system-admin/setup/index.php:90
-#: users/addUser.php:183 users/addUser.php:185 users/editProfile.php:113
-#: users/editProfile.php:115 users/editUser.php:248 users/editUser.php:250
+#: users/addUser.php:183 users/addUser.php:185 users/editProfile.php:108
+#: users/editProfile.php:110 users/editUser.php:248 users/editUser.php:250
 #: vl/result-mail/editTestResultEmailConfig.php:65
 #: vl/result-mail/editTestResultEmailConfig.php:67
 msgid "Password"
@@ -15403,6 +15407,7 @@ msgid "Email VL Test Results"
 msgstr "Résultats du test VL par courriel"
 
 #: mail/vlResultMail.php:57 mail/vlResultMail.php:64
+#: system/translate-strings.php:89
 msgid "E-mail Test Result"
 msgstr "Envoie de résultats par email"
 
@@ -15529,7 +15534,7 @@ msgstr ""
 msgid "Patients"
 msgstr "Patients"
 
-#: patients/add-patient.php:22
+#: patients/add-patient.php:22 system/translate-strings.php:231
 msgid "Add Patient"
 msgstr "Ajouter le patient"
 
@@ -15704,7 +15709,7 @@ msgstr "Veuillez sélectionner le statut du patient"
 msgid "Select Distrct"
 msgstr "Sélectionner le district"
 
-#: patients/edit-patient.php:39
+#: patients/edit-patient.php:39 system/translate-strings.php:232
 msgid "Edit Patient"
 msgstr "Modifier le patient"
 
@@ -15865,14 +15870,14 @@ msgstr "Email ID"
 
 #: setup/index.php:165 system-admin/setup/index.php:86
 #: system-admin/user-login-history/userLoginIndex.php:34 users/addUser.php:173
-#: users/users.php:58
+#: users/editProfile.php:143 users/users.php:58
 msgid "Login ID"
 msgstr "Identifiant de connexion"
 
-#: setup/index.php:173 system-admin/edit-config/resetPassword.php:49
-#: system-admin/edit-config/resetPassword.php:51
+#: setup/index.php:173 system-admin/edit-config/resetPassword.php:45
+#: system-admin/edit-config/resetPassword.php:47
 #: system-admin/setup/index.php:94 users/addUser.php:193 users/addUser.php:195
-#: users/editProfile.php:123 users/editProfile.php:125 users/editUser.php:258
+#: users/editProfile.php:118 users/editProfile.php:120 users/editUser.php:258
 #: users/editUser.php:260
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
@@ -15881,10 +15886,10 @@ msgstr "Confirmer le mot de passe"
 msgid "Create User"
 msgstr "Créer un utilisateur"
 
-#: setup/index.php:212 system-admin/edit-config/resetPassword.php:43
-#: system-admin/edit-config/resetPassword.php:103
+#: setup/index.php:212 system-admin/edit-config/resetPassword.php:39
+#: system-admin/edit-config/resetPassword.php:95
 #: system-admin/setup/index.php:132 users/addUser.php:187 users/addUser.php:397
-#: users/editProfile.php:117 users/editProfile.php:252 users/editUser.php:252
+#: users/editProfile.php:112 users/editProfile.php:240 users/editUser.php:252
 #: users/editUser.php:487
 msgid ""
 "Password must be at least 8 characters long and must include AT LEAST one "
@@ -16045,17 +16050,17 @@ msgstr "Paramétrage SMTP"
 msgid "Reload"
 msgstr "Rafraichir"
 
-#: system-admin/edit-config/resetPassword.php:17
+#: system-admin/edit-config/resetPassword.php:13
 msgid "Edit Password"
 msgstr "Modifier le mot de passe"
 
-#: system-admin/edit-config/resetPassword.php:20
+#: system-admin/edit-config/resetPassword.php:16
 msgid "Manage Password"
 msgstr "Gérer le mot de passe"
 
-#: system-admin/edit-config/resetPassword.php:42
+#: system-admin/edit-config/resetPassword.php:38
 #: system-admin/login/login.php:65 system-admin/setup/index.php:90
-#: users/addUser.php:185 users/editProfile.php:115 users/editUser.php:250
+#: users/addUser.php:185 users/editProfile.php:110 users/editUser.php:250
 msgid "Please enter the password"
 msgstr "Veuillez saisir votre mot de passe actuel"
 
@@ -16124,6 +16129,7 @@ msgid "Remote Reference Last Sync"
 msgstr "Référence à distance Dernière synchronisation"
 
 #: system-admin/instance-overview/instanceIndex.php:142
+#: users/editProfile.php:173
 msgid "No record found"
 msgstr "Aucun enregistrement trouvé"
 
@@ -16198,10 +16204,12 @@ msgid "Attempted Datetime"
 msgstr "Date de la tentative"
 
 #: system-admin/user-login-history/userLoginIndex.php:65
+#: users/editProfile.php:145
 msgid "Browser"
 msgstr "Navigateur"
 
 #: system-admin/user-login-history/userLoginIndex.php:66
+#: users/editProfile.php:146
 msgid "Operating System"
 msgstr "Système d'exploitation"
 
@@ -16395,613 +16403,657 @@ msgstr "Manifestation d'hépatite"
 msgid "TB Manifest"
 msgstr "Manifeste de la CT"
 
-#: system/translate-strings.php:88 vl/requests/forms/add-cameroon.php:108
+#: system/translate-strings.php:88
+msgid "Send Result Mail"
+msgstr "Envoyer le résultat par courrier"
+
+#: system/translate-strings.php:92 vl/requests/forms/add-cameroon.php:108
 #: vl/requests/forms/edit-cameroon.php:149
 #: vl/results/forms/update-cameroon-result.php:190
 msgid "Sample Reordered"
 msgstr "Échantillon réorganisé"
 
-#: system/translate-strings.php:90
+#: system/translate-strings.php:94
 msgid "Failed/Invalid"
 msgstr "Échec/Invalidité"
 
-#: system/translate-strings.php:91
+#: system/translate-strings.php:95
 msgid "Sample Registered at Testing Lab"
 msgstr "Échantillon enregistré au laboratoire d'essai"
 
-#: system/translate-strings.php:94
+#: system/translate-strings.php:98
 msgid "Sample Registered at Health Center"
 msgstr "Échantillon enregistré au centre de santé"
 
-#: system/translate-strings.php:95
-msgid "Sample Expired"
-msgstr "Échantillon expiré"
-
-#: system/translate-strings.php:96
+#: system/translate-strings.php:100
 msgid "No Result"
 msgstr "Aucun résultats"
 
-#: system/translate-strings.php:97
+#: system/translate-strings.php:101
+msgid "Cancelled"
+msgstr "Annulée"
+
+#: system/translate-strings.php:102
 msgid "Access"
 msgstr "Accès"
 
-#: system/translate-strings.php:98
+#: system/translate-strings.php:103
 msgid "Add"
 msgstr "Ajouter"
 
-#: system/translate-strings.php:101
+#: system/translate-strings.php:106
 msgid "Print Result PDF"
 msgstr "Imprimer Résultat PDF"
 
-#: system/translate-strings.php:102
+#: system/translate-strings.php:107
 msgid "Export VL Data"
 msgstr "Exporter les données VL"
 
-#: system/translate-strings.php:103
+#: system/translate-strings.php:108
 msgid "Email Test Request"
 msgstr "Demande de test par courriel"
 
-#: system/translate-strings.php:104
+#: system/translate-strings.php:109
 msgid "Manage VL Result Status (Approve/Reject)"
 msgstr "Gérer le statut des résultats VL (approbation/refus)"
 
-#: system/translate-strings.php:105
+#: system/translate-strings.php:110
 msgid "High VL Report"
 msgstr "Rapport VL élevé"
 
-#: system/translate-strings.php:106
+#: system/translate-strings.php:111
 msgid "Contact Notes (High VL Reports)"
 msgstr "Notes de contact (rapports sur les taux élevés de VL)"
 
-#: system/translate-strings.php:108
+#: system/translate-strings.php:113
 msgid "Email Test Result"
 msgstr "Résultat du test de l'email"
 
-#: system/translate-strings.php:109
+#: system/translate-strings.php:114
 msgid "VL Weekly Report"
 msgstr "Rapport hebdomadaire du VL"
 
-#: system/translate-strings.php:110
+#: system/translate-strings.php:115
+msgid "Manage QR Code Rwd Form"
+msgstr "Gérer le formulaire QR Code Rwd"
+
+#: system/translate-strings.php:116
 msgid "Controls Report"
 msgstr "Rapport sur les contrôles"
 
-#: system/translate-strings.php:111
+#: system/translate-strings.php:117
 msgid "Add Facility Map"
 msgstr "Ajouter un plan de l'installation"
 
-#: system/translate-strings.php:112
+#: system/translate-strings.php:118
 msgid "Access Facility Map"
 msgstr "Contrôle d'accès"
 
-#: system/translate-strings.php:113
+#: system/translate-strings.php:119
 msgid "Edit Facility Map"
 msgstr "Modifier le plan de l'établissement"
 
-#: system/translate-strings.php:114
+#: system/translate-strings.php:120
 msgid "Export VL Data in Excel"
 msgstr "Exporter les données VL dans Excel"
 
-#: system/translate-strings.php:115
+#: system/translate-strings.php:121
 msgid "View Batches"
 msgstr "Voir les lots"
 
-#: system/translate-strings.php:116
+#: system/translate-strings.php:122
 msgid "Add Batch"
 msgstr "Ajouter un lot"
 
-#: system/translate-strings.php:118
+#: system/translate-strings.php:124
 msgid "Import Result File"
 msgstr "Importer un fichier de résultats"
 
-#: system/translate-strings.php:120
+#: system/translate-strings.php:126
 msgid "Print Results"
 msgstr "Résultats d'impression"
 
-#: system/translate-strings.php:122
+#: system/translate-strings.php:128
 msgid "Record Final Result"
 msgstr "Enregistrer le résultat final"
 
-#: system/translate-strings.php:123
+#: system/translate-strings.php:129
 msgid "Can Record Confirmatory Tests"
 msgstr "Peut enregistrer des tests de confirmation"
 
-#: system/translate-strings.php:124
+#: system/translate-strings.php:130
 msgid "Update Record Confirmatory Tests"
 msgstr "Mise à jour de l'enregistrement Tests de confirmation"
 
-#: system/translate-strings.php:125
+#: system/translate-strings.php:131
 msgid "Covid-19 Confirmation Manifest"
 msgstr "Manifeste de confirmation Covid-19"
 
-#: system/translate-strings.php:126
+#: system/translate-strings.php:132
 msgid "Add New Confirmation Manifest"
 msgstr "Ajouter un nouveau manifeste de confirmation"
 
-#: system/translate-strings.php:127
+#: system/translate-strings.php:133
 msgid "Generate Positive Confirmation Manifest"
 msgstr "Générer un manifeste de confirmation positive"
 
-#: system/translate-strings.php:128
+#: system/translate-strings.php:134
 msgid "Edit Positive Confirmation Manifest"
 msgstr "Modifier le manifeste de confirmation positive"
 
-#: system/translate-strings.php:129
+#: system/translate-strings.php:135
 msgid "EID Clinic Reports"
 msgstr "Rapports cliniques de l'EID"
 
-#: system/translate-strings.php:130
+#: system/translate-strings.php:136
 msgid "Covid-19 Clinic Reports"
 msgstr "Rapports cliniques Covid-19"
 
-#: system/translate-strings.php:131
+#: system/translate-strings.php:137
 msgid "Manage Reference"
 msgstr "Gérer la référence"
 
-#: system/translate-strings.php:132
+#: system/translate-strings.php:138
 msgid "Manage Comorbidities"
 msgstr "Gérer les comorbidités"
 
-#: system/translate-strings.php:133
+#: system/translate-strings.php:139
 msgid "Add Comorbidities"
 msgstr "Ajouter les comorbidités"
 
-#: system/translate-strings.php:134
+#: system/translate-strings.php:140
 msgid "Edit Comorbidities"
 msgstr "EID-Modifier la demande de test"
 
-#: system/translate-strings.php:135
+#: system/translate-strings.php:141
 msgid "Manage Sample Rejection Reasons"
 msgstr "Motifs de rejet"
 
-#: system/translate-strings.php:136
+#: system/translate-strings.php:142
 msgid "Add Sample Rejection Reason"
 msgstr "Ajouter le motif de rejet de l'échantillon"
 
-#: system/translate-strings.php:137
+#: system/translate-strings.php:143
 msgid "Edit Sample Rejection Reason"
 msgstr "Modifier l'échantillon Motif du rejet"
 
-#: system/translate-strings.php:138
+#: system/translate-strings.php:144
 msgid "Manage VL Reference Tables"
 msgstr "Gérer les tableaux de référence VL"
 
-#: system/translate-strings.php:139
+#: system/translate-strings.php:145
 msgid "Manage EID Reference Tables"
 msgstr "Gérer les tableaux de référence de l'EID"
 
-#: system/translate-strings.php:140
-msgid "Manage Common Reference Tables"
-msgstr "Gérer les tableaux de référence communs"
-
-#: system/translate-strings.php:141
+#: system/translate-strings.php:146
 msgid "Edit Locked VL Samples"
 msgstr "Editer les échantillons VL verrouillés"
 
-#: system/translate-strings.php:142
+#: system/translate-strings.php:147
 msgid "Edit Locked EID Samples"
 msgstr "Modifier les échantillons EID verrouillés"
 
-#: system/translate-strings.php:143
+#: system/translate-strings.php:148
 msgid "Edit Locked Covid-19 Samples"
 msgstr "Modifier les échantillons verrouillés de Covid-19"
 
-#: system/translate-strings.php:144
+#: system/translate-strings.php:149
 msgid "Monthly Threshold Report"
 msgstr "Rapport mensuel sur les seuils"
 
-#: system/translate-strings.php:145
+#: system/translate-strings.php:150
 msgid "Manage Hepatitis Reference"
 msgstr "Gérer l'hépatite Référence"
 
-#: system/translate-strings.php:146
+#: system/translate-strings.php:151
 msgid "Suppressed Target report"
 msgstr "Rapport sur les cibles supprimées"
 
-#: system/translate-strings.php:147
+#: system/translate-strings.php:152
 msgid "Hepatitis Clinic Reports"
 msgstr "Rapports sur la clinique de l'hépatite"
 
-#: system/translate-strings.php:148
+#: system/translate-strings.php:153
 msgid "Hepatitis Testing Target Reports"
 msgstr "Rapports ciblés sur les tests de dépistage de l'hépatite"
 
-#: system/translate-strings.php:149
+#: system/translate-strings.php:154
 msgid "Hepatitis Sample Rejection Reports"
 msgstr "Rapports de rejet des échantillons d'hépatite"
 
-#: system/translate-strings.php:150
+#: system/translate-strings.php:155
 msgid "Hepatitis Sample Status Reports"
 msgstr "Rapports sur l'état des échantillons d'hépatite"
 
-#: system/translate-strings.php:151
+#: system/translate-strings.php:156
 msgid "DHIS2"
 msgstr "DHIS2"
 
-#: system/translate-strings.php:152
+#: system/translate-strings.php:157
 msgid "Manage Geographical Divisions"
 msgstr "Gérer les divisions géographiques"
 
-#: system/translate-strings.php:155
+#: system/translate-strings.php:160
 msgid "Sync History"
 msgstr "Historique de la synchronisation"
 
-#: system/translate-strings.php:156
+#: system/translate-strings.php:161
 msgid "Hepatitis Export"
 msgstr "Hépatite Export"
 
-#: system/translate-strings.php:157
+#: system/translate-strings.php:162
 msgid "Add Move Samples"
 msgstr "Ajouter des échantillons de mouvements"
 
-#: system/translate-strings.php:158
+#: system/translate-strings.php:163
 msgid "TB Clinic Report"
 msgstr "Rapport sur la clinique de la tuberculose"
 
-#: system/translate-strings.php:159
+#: system/translate-strings.php:164
 msgid "Export VL Requests"
 msgstr "Demandes d'exportation de VL"
 
-#: system/translate-strings.php:160
+#: system/translate-strings.php:165
 msgid "Export EID Requests"
 msgstr "Demandes d'exportation d'EID"
 
-#: system/translate-strings.php:161
+#: system/translate-strings.php:166
 msgid "Export Covid-19 Requests "
 msgstr "Demandes d'exportation Covid-19 "
 
-#: system/translate-strings.php:162
+#: system/translate-strings.php:167
 msgid "Export Hepatitis Requests"
 msgstr "Demandes d'exportation relatives à l'hépatite"
 
-#: system/translate-strings.php:163
+#: system/translate-strings.php:168
 msgid "Export TB Requests"
 msgstr "Demandes d'exportation de la tuberculose"
 
-#: system/translate-strings.php:166
+#: system/translate-strings.php:171
 msgid "Add Covid-19 QC Data"
 msgstr "Ajouter les données Covid-19 QC"
 
-#: system/translate-strings.php:167
+#: system/translate-strings.php:172
 msgid "Edit Covid-19 QC Data"
 msgstr "Modifier les données de contrôle de qualité du Covid-19"
 
-#: system/translate-strings.php:168
+#: system/translate-strings.php:173
 msgid "Manage VL Reference"
 msgstr "Gérer la référence VL"
 
-#: system/translate-strings.php:169
+#: system/translate-strings.php:174
 msgid "Manage VL Results"
 msgstr "Gérer les résultats de la VL"
 
-#: system/translate-strings.php:170
+#: system/translate-strings.php:175
 msgid "Sync Status"
 msgstr "Statuts de synchronisation"
 
-#: system/translate-strings.php:172
+#: system/translate-strings.php:178
+msgid "Access Sample Type"
+msgstr "Accès au type d'échantillon"
+
+#: system/translate-strings.php:180
+msgid "Access Test Reason"
+msgstr "Accès Test Raison"
+
+#: system/translate-strings.php:181
+msgid "Edit Test Reason"
+msgstr "Modifier le motif du test"
+
+#: system/translate-strings.php:182
+msgid "Add Test Reason"
+msgstr "Ajouter un motif de test"
+
+#: system/translate-strings.php:183
+msgid "Access Symptom"
+msgstr "Accès Symptôme"
+
+#: system/translate-strings.php:184
+msgid "Add Symptom"
+msgstr "Ajouter un symptôme"
+
+#: system/translate-strings.php:185
+msgid "Edit Symptom"
+msgstr "Modifier le symptôme"
+
+#: system/translate-strings.php:186
 msgid "View Generic Tests"
 msgstr "Voir les tests génériques"
 
-#: system/translate-strings.php:173
+#: system/translate-strings.php:187
 msgid "Add Generic Tests"
 msgstr "Ajouter des tests génériques"
 
-#: system/translate-strings.php:174
+#: system/translate-strings.php:188
 msgid "Add Samples From Manifest"
 msgstr "Ajouter des échantillons à partir du manifeste"
 
-#: system/translate-strings.php:175
+#: system/translate-strings.php:189
 msgid "Specimen Referral Manifest List"
 msgstr "Liste des manifestes d'envoi de spécimens"
 
-#: system/translate-strings.php:176
+#: system/translate-strings.php:190
 msgid "Edit Generic Tests"
 msgstr "Modifier les tests génériques"
 
-#: system/translate-strings.php:177
+#: system/translate-strings.php:191
 msgid "Manage Test Results"
 msgstr "Gérer les résultats des tests"
 
-#: system/translate-strings.php:178
+#: system/translate-strings.php:192
 msgid "Manage Failed Results"
 msgstr "Gérer les échecs"
 
-#: system/translate-strings.php:179
+#: system/translate-strings.php:193
 msgid "Approve Test Results"
 msgstr "Approuver les résultats des tests"
 
-#: system/translate-strings.php:180
+#: system/translate-strings.php:194
 msgid "Export Report in Excel"
 msgstr "Exporter le rapport dans Excel"
 
-#: system/translate-strings.php:181
+#: system/translate-strings.php:195
 msgid "Export Report in PDF"
 msgstr "Exporter le rapport au format PDF"
 
-#: system/translate-strings.php:182
+#: system/translate-strings.php:196
 msgid "Add VL Result Types"
 msgstr "Ajouter des types de résultats VL"
 
-#: system/translate-strings.php:183
+#: system/translate-strings.php:197
 msgid "Edit VL Result Types"
 msgstr "Modifier les types de résultats VL"
 
-#: system/translate-strings.php:184
+#: system/translate-strings.php:198
 msgid "Import Result from Files"
 msgstr "Importer des résultats à partir de fichiers"
 
-#: system/translate-strings.php:185
+#: system/translate-strings.php:199
 msgid "View VL Manifests"
 msgstr "Voir les manifestes VL"
 
-#: system/translate-strings.php:186
+#: system/translate-strings.php:200
 msgid "View EID Manifests"
 msgstr "Voir les manifestes EID"
 
-#: system/translate-strings.php:187
+#: system/translate-strings.php:201
 msgid "View COVID-19 Manifests"
 msgstr "Voir les manifestes COVID-19"
 
-#: system/translate-strings.php:188
+#: system/translate-strings.php:202
 msgid "View Hepatitis Manifests"
 msgstr "Voir les manifestations de l'hépatite"
 
-#: system/translate-strings.php:189
+#: system/translate-strings.php:203
 msgid "View TB Manifests"
 msgstr "Voir les manifestes du CT"
 
-#: system/translate-strings.php:190
+#: system/translate-strings.php:204
 msgid "View Lab Tests Manifests"
 msgstr "Voir les manifestations des tests de laboratoire"
 
-#: system/translate-strings.php:191
+#: system/translate-strings.php:205
 msgid "Add VL Manifests"
 msgstr "Ajouter des manifestes VL"
 
-#: system/translate-strings.php:192
+#: system/translate-strings.php:206
 msgid "Add EID Manifests"
 msgstr "Ajouter des manifestes EID"
 
-#: system/translate-strings.php:193
+#: system/translate-strings.php:207
 msgid "Add COVID-19 Manifests"
 msgstr "Ajouter les manifestes COVID-19"
 
-#: system/translate-strings.php:194
+#: system/translate-strings.php:208
 msgid "Add Hepatitis Manifests"
 msgstr "Ajouter les manifestations de l'hépatite"
 
-#: system/translate-strings.php:195
+#: system/translate-strings.php:209
 msgid "Add TB Manifests"
 msgstr "Ajouter les manifestes du CT"
 
-#: system/translate-strings.php:196
+#: system/translate-strings.php:210
 msgid "Add Lab Tests Manifests"
 msgstr "Ajouter des manifestations de tests de laboratoire"
 
-#: system/translate-strings.php:197
+#: system/translate-strings.php:211
 msgid "Edit VL Manifests"
 msgstr "Modifier les manifestes VL"
 
-#: system/translate-strings.php:198
+#: system/translate-strings.php:212
 msgid "Edit EID Manifests"
 msgstr "Modifier les manifestes EID"
 
-#: system/translate-strings.php:199
+#: system/translate-strings.php:213
 msgid "Edit COVID-19 Manifests"
 msgstr "Modifier les manifestes COVID-19"
 
-#: system/translate-strings.php:200
+#: system/translate-strings.php:214
 msgid "Edit Hepatitis Manifests"
 msgstr "Modifier les manifestations de l'hépatite"
 
-#: system/translate-strings.php:201
+#: system/translate-strings.php:215
 msgid "Edit TB Manifests"
 msgstr "Modifier les manifestes de la tuberculose"
 
-#: system/translate-strings.php:202
+#: system/translate-strings.php:216
 msgid "Edit Lab Tests Manifests"
 msgstr "Modifier les tests de laboratoire Manifestations"
 
-#: system/translate-strings.php:203
+#: system/translate-strings.php:217
 msgid "Add New Batch"
 msgstr "Ajouter un nouveau lot"
 
-#: system/translate-strings.php:204
+#: system/translate-strings.php:218
 msgid "Add/Edit Test Types"
 msgstr "Ajouter/modifier des types de tests"
 
-#: system/translate-strings.php:205
+#: system/translate-strings.php:219
 msgid "Manage Sample Types"
 msgstr "Gérer les types d'échantillons"
 
-#: system/translate-strings.php:206
+#: system/translate-strings.php:220
 msgid "Manage Testing Reasons"
 msgstr "Gérer les raisons des tests"
 
-#: system/translate-strings.php:207
+#: system/translate-strings.php:221
 msgid "Manage Symptoms"
 msgstr "Gérer les symptômes"
 
-#: system/translate-strings.php:208
+#: system/translate-strings.php:222
 msgid "Manage Test Failure Reasons"
 msgstr "Motifs du test"
 
-#: system/translate-strings.php:209
+#: system/translate-strings.php:223
 msgid "Manage Test Result Units"
 msgstr "Configuration de l'e-mail des résultats"
 
-#: system/translate-strings.php:210
+#: system/translate-strings.php:224
 msgid "Manage Test Methods"
 msgstr "Gérer les méthodes d'essai"
 
-#: system/translate-strings.php:211
+#: system/translate-strings.php:225
 msgid "Manage Test Categories"
 msgstr "Gérer les catégories de tests"
 
-#: system/translate-strings.php:212
+#: system/translate-strings.php:226
 msgid "Edit Locked Samples"
 msgstr "Modifier les échantillons verrouillés"
 
-#: system/translate-strings.php:214
+#: system/translate-strings.php:228
+msgid "Upload Facilities"
+msgstr "Facilités de téléchargement"
+
+#: system/translate-strings.php:229
+msgid "Clone Generic Tests"
+msgstr "Cloner les tests génériques"
+
+#: system/translate-strings.php:230
+msgid "Manage Patients"
+msgstr "Gérer les patients"
+
+#: system/translate-strings.php:233
+msgid "Edit Locked Generic Tests Samples"
+msgstr "Modifier les échantillons de tests génériques verrouillés"
+
+#: system/translate-strings.php:234
 msgid "Common Reference Tables"
 msgstr "Tableaux de référence communs"
 
-#: system/translate-strings.php:215
+#: system/translate-strings.php:235
 msgid "Covid-19 Batch Management"
 msgstr "Covid-19 Gestion des lots"
 
-#: system/translate-strings.php:216
+#: system/translate-strings.php:236
 msgid "Covid-19 Reports"
 msgstr "Rapports Covid-19"
 
-#: system/translate-strings.php:217
+#: system/translate-strings.php:237
 msgid "Covid-19 Reference Tables"
 msgstr "Covid-19 Tableaux de référence"
 
-#: system/translate-strings.php:218
+#: system/translate-strings.php:238
 msgid "Covid-19 Request Management"
 msgstr "Gestion des demandes Covid-19"
 
-#: system/translate-strings.php:219
+#: system/translate-strings.php:239
 msgid "Covid-19 Result Management"
 msgstr "Covid-19 Gestion des résultats"
 
-#: system/translate-strings.php:220
+#: system/translate-strings.php:240
 msgid "EID Batch Management"
 msgstr "Gestion des lots EID"
 
-#: system/translate-strings.php:221
+#: system/translate-strings.php:241
 msgid "EID Reports"
 msgstr "Rapports de l'EID"
 
-#: system/translate-strings.php:222
+#: system/translate-strings.php:242
 msgid "EID Reference Management"
 msgstr "Gestion des références EID"
 
-#: system/translate-strings.php:223
+#: system/translate-strings.php:243
 msgid "EID Request Management"
 msgstr "Gestion des demandes d'EID"
 
-#: system/translate-strings.php:224
+#: system/translate-strings.php:244
 msgid "EID Result Management"
 msgstr "Gestion des résultats de l'EID"
 
-#: system/translate-strings.php:225
+#: system/translate-strings.php:245
 msgid "Manage Facility"
 msgstr "Gérer l'installation"
 
-#: system/translate-strings.php:226
+#: system/translate-strings.php:246
 msgid "Lab Tests Report Management"
 msgstr "Gestion des rapports de tests de laboratoire"
 
-#: system/translate-strings.php:227
+#: system/translate-strings.php:247
 msgid "Lab Tests Request Management"
 msgstr "Gestion des demandes de tests de laboratoire"
 
-#: system/translate-strings.php:228
+#: system/translate-strings.php:248
 msgid "Lab Tests Result Management"
 msgstr "Gestion des résultats des tests de laboratoire"
 
-#: system/translate-strings.php:229
+#: system/translate-strings.php:249
 msgid "Lab Tests Batch Management"
 msgstr "Gestion des lots de tests de laboratoire"
 
-#: system/translate-strings.php:230
+#: system/translate-strings.php:250
 msgid "Configure Generic Tests"
 msgstr "Configurer les tests génériques"
 
-#: system/translate-strings.php:231
+#: system/translate-strings.php:251
 msgid "Manage General Config"
 msgstr "Gérer la configuration générale"
 
-#: system/translate-strings.php:232
+#: system/translate-strings.php:252
 msgid "Hepatitis Batch Management"
 msgstr "Gestion des lots d'hépatite"
 
-#: system/translate-strings.php:233
+#: system/translate-strings.php:253
 msgid "Hepatitis Reports"
 msgstr "Rapports sur l'hépatite"
 
-#: system/translate-strings.php:234
+#: system/translate-strings.php:254
 msgid "Hepatitis Reference Management"
 msgstr "Gestion de la référence de l'hépatite"
 
-#: system/translate-strings.php:235
+#: system/translate-strings.php:255
 msgid "Hepatitis Request Management"
 msgstr "Gestion des demandes relatives à l'hépatite"
 
-#: system/translate-strings.php:236
+#: system/translate-strings.php:256
 msgid "Hepatitis Results Management"
 msgstr "Gestion des résultats de l'hépatite"
 
-#: system/translate-strings.php:237
-msgid "Import Results using file Import"
-msgstr "Importer des résultats à l'aide d'un fichier d'importation"
-
-#: system/translate-strings.php:238
+#: system/translate-strings.php:257
 msgid "Manage Instruments"
 msgstr "Gérer les instruments"
 
-#: system/translate-strings.php:239
+#: system/translate-strings.php:258
 msgid "Move Samples"
 msgstr "Déplacer les échantillons"
 
-#: system/translate-strings.php:240
+#: system/translate-strings.php:259
 msgid "Manage Roles"
 msgstr "Gérer les rôles"
 
-#: system/translate-strings.php:241
+#: system/translate-strings.php:260
 msgid "TB Batch Management"
 msgstr "Gestion des lots de la tuberculose"
 
-#: system/translate-strings.php:242
+#: system/translate-strings.php:261
 msgid "TB Reports"
 msgstr "Rapports du CT"
 
-#: system/translate-strings.php:243
+#: system/translate-strings.php:262
 msgid "TB Reference"
 msgstr "Référence TB"
 
-#: system/translate-strings.php:244
+#: system/translate-strings.php:263
 msgid "TB Request Management"
 msgstr "Gestion des demandes de la CT"
 
-#: system/translate-strings.php:245
+#: system/translate-strings.php:264
 msgid "TB Result Management"
 msgstr "Gestion des résultats de la tuberculose"
 
-#: system/translate-strings.php:246
+#: system/translate-strings.php:265
 msgid "Manage Test Request Email Config"
 msgstr "Gérer la configuration des courriels de demande de test"
 
-#: system/translate-strings.php:247
+#: system/translate-strings.php:266
 msgid "Manage Test Result Email Config"
 msgstr "Gérer la configuration des courriels de résultats de tests"
 
-#: system/translate-strings.php:248
+#: system/translate-strings.php:267
 msgid "Manage Test Type"
 msgstr "Gérer le type de test"
 
-#: system/translate-strings.php:249
+#: system/translate-strings.php:268
 msgid "Manage Users"
 msgstr "Gérez les utilisateurs"
 
-#: system/translate-strings.php:250
+#: system/translate-strings.php:269
 msgid "Manage VL Batch"
 msgstr "Gestion des lots VL"
 
-#: system/translate-strings.php:251
+#: system/translate-strings.php:270
 msgid "VL Reference Management"
 msgstr "Gestion des références VL"
 
-#: system/translate-strings.php:252
+#: system/translate-strings.php:271
 msgid "VL Reports"
 msgstr "Rapports VL"
 
-#: system/translate-strings.php:253
+#: system/translate-strings.php:272
 msgid "VL Requests"
 msgstr "Demandes VL"
 
-#: system/translate-strings.php:254 vl/reference/add-vl-results.php:37
+#: system/translate-strings.php:273 vl/reference/add-vl-results.php:37
 #: vl/reference/vl-results.php:2 vl/reference/vl-results.php:13
 msgid "VL Results"
 msgstr "Résultats VL"
@@ -17175,7 +17227,7 @@ msgstr "Tubercolose-Imprimer le résultat"
 msgid "Add User"
 msgstr "Ajouter un utilisateur"
 
-#: users/addUser.php:76 users/editProfile.php:66 users/editUser.php:123
+#: users/addUser.php:76 users/editProfile.php:61 users/editUser.php:123
 msgid "Please enter user name"
 msgstr "Veuillez saisir votre nom d'utilisateur"
 
@@ -17184,18 +17236,18 @@ msgstr "Veuillez saisir votre nom d'utilisateur"
 msgid "Email"
 msgstr "Courriel"
 
-#: users/addUser.php:84 users/editProfile.php:96 users/editUser.php:132
+#: users/addUser.php:84 users/editProfile.php:91 users/editUser.php:132
 #: vl/result-mail/editTestResultEmailConfig.php:57
 msgid "Please enter email"
 msgstr "Veuillez entrer votre email"
 
-#: users/addUser.php:84 users/editProfile.php:96 users/editUser.php:132
+#: users/addUser.php:84 users/editProfile.php:91 users/editUser.php:132
 msgid "This email id that you entered already exists.Try another email id"
 msgstr ""
 "L'adresse électronique que vous avez saisie existe déjà. Essayez une autre "
 "adresse électronique"
 
-#: users/addUser.php:94 users/editProfile.php:104 users/editUser.php:142
+#: users/addUser.php:94 users/editProfile.php:99 users/editUser.php:142
 #: vl/requests/forms/add-drc.php:124 vl/results/forms/update-drc-result.php:150
 msgid "Please enter phone number"
 msgstr "Veuillez saisir votre numéro de téléphone"
@@ -17271,7 +17323,7 @@ msgid "This login id that you entered already exists.Try another login id"
 msgstr ""
 "L'identifiant que vous avez saisi existe déjà. Essayez un autre identifiant"
 
-#: users/addUser.php:186 users/editProfile.php:116 users/editUser.php:251
+#: users/addUser.php:186 users/editProfile.php:111 users/editUser.php:251
 msgid "Generate Random Password"
 msgstr "Générer un mot de passe aléatoire"
 
@@ -17299,21 +17351,37 @@ msgstr ""
 msgid "User saved successfully!"
 msgstr "L'utilisateur a été enregistré avec succès !"
 
-#: users/editProfile.php:64 users/editProfile.php:66
+#: users/editProfile.php:59 users/editProfile.php:61
 msgid "Your Full Name"
 msgstr "Votre nom complet"
 
-#: users/editProfile.php:75
+#: users/editProfile.php:70
 msgid "Preferred Language"
 msgstr "Préférence linguistique"
 
-#: users/editProfile.php:77
+#: users/editProfile.php:72
 msgid "Please select your Locale"
 msgstr "Veuillez sélectionner votre localité"
 
-#: users/editProfile.php:94 users/editProfile.php:96
+#: users/editProfile.php:89 users/editProfile.php:91
 msgid "Official Email"
 msgstr "Email officiel"
+
+#: users/editProfile.php:137
+msgid "Recent Login Attempts"
+msgstr "Tentatives de connexion récentes"
+
+#: users/editProfile.php:142
+msgid "Login Attempt Date and Time"
+msgstr "Date et heure de la tentative de connexion"
+
+#: users/editProfile.php:147
+msgid "Login Status"
+msgstr "Statut de connexion"
+
+#: users/editProfile.php:258
+msgid "Random password generated and copied to clipboard"
+msgstr "Mot de passe aléatoire généré et copié dans le presse-papiers"
 
 #: users/editProfileHelper.php:68
 msgid ""
@@ -17537,7 +17605,7 @@ msgstr "Numéro de téléphone portable du patient"
 #: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:338
 #: vl/requests/forms/edit-cameroon.php:378
 #: vl/results/forms/update-cameroon-result.php:421
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:334
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:318
 msgid "Date of Sample Collection"
 msgstr "Date de collecte de l’échantillon"
 
@@ -18121,11 +18189,11 @@ msgstr "Ajouter le motif du test VL"
 msgid "Failure Reason"
 msgstr "Raison de l'échec"
 
-#: vl/requests/addVlRequestHelper.php:368
+#: vl/requests/addVlRequestHelper.php:369
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: vl/requests/editVlRequestHelper.php:363
+#: vl/requests/editVlRequestHelper.php:370
 #: vl/results/updateVlTestResultHelper.php:180
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
@@ -18283,6 +18351,10 @@ msgstr "Veuillez sélectionner la date de prélèvement de l'échantillon"
 #: vl/results/forms/update-cameroon-result.php:429
 msgid "Please choose sample type"
 msgstr "Veuillez choisir le type d'échantillon"
+
+#: vl/requests/forms/add-cameroon.php:361
+msgid "Name Of Requester"
+msgstr "Nom du demandeur"
 
 #: vl/requests/forms/add-cameroon.php:362
 #: vl/requests/forms/edit-cameroon.php:406
@@ -18865,117 +18937,87 @@ msgstr "Veuillez sélectionner si l'échantillon est rejeté"
 msgid "Please select reason for rejection"
 msgstr "Veuillez sélectionner la raison du rejet"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:315
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:299
 msgid "HIV VIRAL LOAD RESULT SHEET"
 msgstr "FICHE DE RESULTAT CHARGE VIRAL VIH"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:322
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:306
 msgid "Unique Code"
 msgstr "Code unique"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:323
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:307
 msgid "Region"
 msgstr "Région"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:327
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:311
 msgid "Sex : "
 msgstr "Sexe : "
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:330
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:314
 msgid "Type of Sample"
 msgstr "Type d'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:331
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:315
 msgid "Contact"
 msgstr "Contact"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:335
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:319
 msgid "Collected By"
 msgstr "Recueilli par"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:338
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:322
 msgid "Name of Requestor"
 msgstr "Nom du demandeur"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:339
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:323
 msgid "Contact of Requestor"
 msgstr "Contact du demandeur"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:342
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:326
 msgid "Treatment center"
 msgstr "Centre de traitement"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:343
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:327
 msgid "ARV initiation date"
 msgstr "Date d'initiation aux ARV"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:346
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:330
 msgid "Modified"
 msgstr "Modifier"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:347
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:331
 msgid "Modification date"
 msgstr "Date de modification"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:357
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:341
 msgid "Viral Load Serial Number"
 msgstr "Numéro de série de la charge virale"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:363
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:347
 msgid "Test Name"
 msgstr "Nom du test"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:365
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:349
 msgid "Test Date"
 msgstr "Date du test"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:373
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:357
 msgid "Results (log)"
 msgstr "Résultats (log)"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:375
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:359
 msgid "Test Done By"
 msgstr "Test effectué par"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:381
-msgid ""
-"N.B.: The Abbott 0.6ml test has a lower limit of quantification of 40 copies/"
-"ml and an upper limit of quantification\n"
-"          of 10,000,000 copies/ml. For any results between these limits, the "
-"number of copies per ml is reported. When the virus is\n"
-"          detected above or below the limits of quantification, this is "
-"reported. If the test is successful and no viruses are found\n"
-"          detected, the result is reported as undetected target. For a "
-"variation in viral load to be significant, it is necessary\n"
-"          that the difference between two measurements is at least 0.5 Log10 "
-"or a reduction or increase by a factor of 3 of the\n"
-"          number of copies/ml.\n"
-"          "
-msgstr ""
-"N.B. : Le test Abbott 0,6 ml a une limite inférieure de quantification de 40 "
-"copies/ml et une limite supérieure de quantification de 10 000 000 copies/"
-"ml\n"
-"          de 10 000 000 copies/ml. Pour tout résultat compris entre ces "
-"limites, le nombre de copies par ml est indiqué. Lorsque le virus est\n"
-"          est détecté au-dessus ou au-dessous des limites de quantification, "
-"il en est fait mention. Si le test est réussi et qu'aucun virus n'est "
-"détecté, le résultat est indiqué comme \"non détecté\"\n"
-"          détecté, le résultat est indiqué comme cible non détectée. Pour "
-"qu'une variation de la charge virale soit significative, il faut\n"
-"          que la différence entre deux mesures soit d'au moins 0,5 Log10 ou "
-"que le nombre de copies/ml soit réduit ou augmenté d'un facteur 3\n"
-"          nombre de copies/ml.\n"
-"          "
-
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:390
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:368
 msgid "Comment, if applicable"
 msgstr "Commentaire, le cas échéant"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:399
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:377
 msgid "Validated by"
 msgstr "Validé par"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:400
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:378
 msgid "Authorized by"
 msgstr "Autorisé par"
 
@@ -19127,6 +19169,44 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Sample Expired"
+#~ msgstr "Échantillon expiré"
+
+#~ msgid "Manage Common Reference Tables"
+#~ msgstr "Gérer les tableaux de référence communs"
+
+#~ msgid "Import Results using file Import"
+#~ msgstr "Importer des résultats à l'aide d'un fichier d'importation"
+
+#~ msgid ""
+#~ "N.B.: The Abbott 0.6ml test has a lower limit of quantification of 40 "
+#~ "copies/ml and an upper limit of quantification\n"
+#~ "          of 10,000,000 copies/ml. For any results between these limits, "
+#~ "the number of copies per ml is reported. When the virus is\n"
+#~ "          detected above or below the limits of quantification, this is "
+#~ "reported. If the test is successful and no viruses are found\n"
+#~ "          detected, the result is reported as undetected target. For a "
+#~ "variation in viral load to be significant, it is necessary\n"
+#~ "          that the difference between two measurements is at least 0.5 "
+#~ "Log10 or a reduction or increase by a factor of 3 of the\n"
+#~ "          number of copies/ml.\n"
+#~ "          "
+#~ msgstr ""
+#~ "N.B. : Le test Abbott 0,6 ml a une limite inférieure de quantification de "
+#~ "40 copies/ml et une limite supérieure de quantification de 10 000 000 "
+#~ "copies/ml\n"
+#~ "          de 10 000 000 copies/ml. Pour tout résultat compris entre ces "
+#~ "limites, le nombre de copies par ml est indiqué. Lorsque le virus est\n"
+#~ "          est détecté au-dessus ou au-dessous des limites de "
+#~ "quantification, il en est fait mention. Si le test est réussi et qu'aucun "
+#~ "virus n'est détecté, le résultat est indiqué comme \"non détecté\"\n"
+#~ "          détecté, le résultat est indiqué comme cible non détectée. Pour "
+#~ "qu'une variation de la charge virale soit significative, il faut\n"
+#~ "          que la différence entre deux mesures soit d'au moins 0,5 Log10 "
+#~ "ou que le nombre de copies/ml soit réduit ou augmenté d'un facteur 3\n"
+#~ "          nombre de copies/ml.\n"
+#~ "          "
 
 #~ msgid "Collection Date"
 #~ msgstr "Date de collecte de"

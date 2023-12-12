@@ -12,7 +12,7 @@ use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -281,11 +281,9 @@ try {
      //$db->select('result');
      $db->where('vl_sample_id', $_POST['vlSampleId']);
      $getPrevResult = $db->getOne('form_vl');
-     if($getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult)
-     {
+     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult) {
           $vlData['result_modified'] = "yes";
-     }
-     else{
+     } else {
           $vlData['result_modified'] = "no";
      }
 

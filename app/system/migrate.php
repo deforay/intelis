@@ -18,7 +18,7 @@ if (version_compare(VERSION, '4.5.3', '<')) {
 }
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $db->where('name', 'sc_version');
 $currentVersion = $db->getValue('system_config', 'value');

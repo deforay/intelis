@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 require_once(__DIR__ . '/../bootstrap.php');
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

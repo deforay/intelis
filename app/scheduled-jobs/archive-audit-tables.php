@@ -22,7 +22,7 @@ if (
 }
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 if (empty(SYSTEM_CONFIG['archive'])) {
     echo "No archive database settings in System Config";

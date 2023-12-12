@@ -13,7 +13,7 @@ $_POST = $request->getParsedBody();
 $currentDateTime = DateUtility::getCurrentDateTime();
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $mappingType = $_POST['mappingType'];
 $testType   = $_POST['testType'];

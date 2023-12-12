@@ -7,7 +7,7 @@ require_once(__DIR__ . '/../bootstrap.php');
 
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 
 ini_set('memory_limit', -1);

@@ -7,7 +7,7 @@ use App\Services\UsersService;
 require_once(__DIR__ . '/../bootstrap.php');
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 
 /** @var UsersService $usersService */

@@ -23,7 +23,7 @@ $_POST = $request->getParsedBody();
 $tableName1 = "activity_log";
 $tableName2 = "form_tb";
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

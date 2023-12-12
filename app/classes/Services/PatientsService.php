@@ -18,7 +18,7 @@ class PatientsService
 
     public function __construct(?DatabaseService $db, CommonService $commonService)
     {
-        $this->db = $db ?? ContainerRegistry::get('db');
+        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
         $this->commonService = $commonService;
     }
 

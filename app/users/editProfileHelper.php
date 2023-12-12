@@ -10,7 +10,7 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var UsersService $userModel */
 $userModel = ContainerRegistry::get(UsersService::class);

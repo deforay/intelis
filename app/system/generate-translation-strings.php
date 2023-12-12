@@ -1,12 +1,12 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $tablesToTranslate = [
     's_app_menu' => [
@@ -82,7 +82,9 @@ foreach ($tablesToTranslate as $tableName => $tableInfo) {
 $translatableStrings = array_unique($translatableStrings);
 
 foreach ($translatableStrings as $string) {
-    echo '_translate("' . $string . "\");\n";
+    if (!empty($string)) {
+        echo '_translate("' . $string . "\");\n";
+    }
 }
 
 // Get the content of the output buffer and write it to the file

@@ -13,7 +13,7 @@ class GeoLocationsService
 
     public function __construct(?DatabaseService $db)
     {
-        $this->db = $db ?? ContainerRegistry::get('db');
+        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
     }
 
     public function getProvinces($isApi = "no", $onlyActive = true, $facilityMap = null)

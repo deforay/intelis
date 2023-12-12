@@ -15,7 +15,7 @@ use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
 /** @var DatabaseService $db */
-$db = ContainerRegistry::get('db');
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

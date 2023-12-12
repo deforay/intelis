@@ -76,12 +76,11 @@ if (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemCo
 // Configuration and DB
 $builder->addDefinitions([
     'applicationConfig' => $systemConfig,
-    'db' => DI\factory(
+    DatabaseService::class => DI\factory(
         function (ContainerInterface $c) {
             return new DatabaseService($c->get('applicationConfig')['database']);
         }
-    ),
-    DatabaseService::class => DI\get('db')
+    )
 ]);
 
 // Services
