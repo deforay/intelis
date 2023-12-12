@@ -337,27 +337,27 @@ if (!empty($requestResult)) {
           $html .= '<table border="0">';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Sample Received Date') . ' : </td>';
-          $html .= '<td style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">' . $result['sample_received_at_lab_datetime'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Viral Load Serial Number') . ' : </td>';
-          $html .= '<td style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">' . ($result['cv_number']) . '</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $result['sample_received_at_lab_datetime'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Viral Load Serial Number') . ' : &nbsp;</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . ($result['cv_number']) . '</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td></td></tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Test Name') . ' : </td>';
-          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $result['vl_test_platform'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Test Date') . ' : </td>';
-          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $result['sample_tested_datetime'] . '</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $result['vl_test_platform'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Test Date') . ' : &nbsp;</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $result['sample_tested_datetime'] . '</td>';
           $html .= '</tr>';
 
           $html .= '<tr><td></td></tr>';
           $html .= '<tr>';
           $html .= '<td width="15%" style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Result') . ' (copies/ml) : </td>';
-          $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . htmlspecialchars((string) $result['result']) . '</td>';
-          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Results (log)') . ' : </td>';
-          $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $logValue . '</td>';
-          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Test Done By') . ' : </td>';
-          $html .= '<td width="30%" style="line-height:10px;font-size:10px;text-align:left; border: 1px solid black">' . $result['labName'] . '</td>';
+          $html .= '<td width="10%" style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . htmlspecialchars((string) $result['result']) . '</td>';
+          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Results (log)') . ' : &nbsp;</td>';
+          $html .= '<td width="10%" style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $logValue . '</td>';
+          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Test Done By') . ' : &nbsp;</td>';
+          $html .= '<td width="25%" style="line-height:15px;font-size:10px;text-align:left; padding-left:5px !important; border: 1px solid black">&nbsp;' . $result['labName'] . '</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td width="100%" style="line-height:18px;font-size:10px;">';
@@ -366,9 +366,9 @@ if (!empty($requestResult)) {
           $html .= '<table border="0" style="margin-top:24px;">';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Comment, if applicable') . ' : </td>';
-          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $result['lab_tech_comments'] . '</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $result['lab_tech_comments'] . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Date') . ' : </td>';
-          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $finalDate . '</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $finalDate . '</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td></td></tr>';
