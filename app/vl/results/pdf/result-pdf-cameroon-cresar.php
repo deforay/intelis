@@ -132,16 +132,16 @@ if (!empty($requestResult)) {
           $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
           // set font
-          $pdf->SetFont('helvetica', '', 18);
+          $pdf->SetFont('helvetica', '', 16);
 
 
           $pdf->AddPage();
-          $logo = '<img style="width:100px;" src="' . $logoPrintInPdf . '" />';
+          $logo = '<img style="width:96px;" src="' . $logoPrintInPdf . '" />';
 
           //$htmlTitle = "<div style='width: 50px; height:50px;border:1px solid;'>CRESAR<br>RESEARCH CENTER FOR ARMY HEALTH<br>MILITARY HEALTH RESEARCH CENTER<br><span>B.P. 7039; stewardship crossroads</span></div>";
           $header = '<table style="padding:4px 2px 2px 2px;width:100%; border:1px solid black">';
           $header .= '<tr>';
-          $header .= '<td style="line-height:20px;text-align:center;padding-top:15px;" width="15%">' . $logo . '</td>';
+          $header .= '<td style="text-align:center;" width="15%">' . $logo . '</td>';
           $header .= '<td width="85%">' . $result['labName'] . "<br><span style='font-weight:bold;font-size:5px;'>CENTRE DE RECHERCHE POUR LA SANTÉ DES ARMÉES<br>MILITARY HEALTH RESEARCH CENTER</span><br><span style='font-size:10px;'>B.P.7039;carrefour de l'intendance : Tel : 222229161</span></td>";
           $header .= '</tr>';
           $header .= '</table>';
@@ -297,7 +297,7 @@ if (!empty($requestResult)) {
           }
 
           $html = '<h5 align="center"><u>' . _translate('HIV VIRAL LOAD RESULT SHEET') . '</u></h5>';
-          $html .= '<p style="font: size 6px;"><u>' . _translate("Patient Information") . '</u></p>';
+          $html .= '<p><u>' . _translate("Patient Information") . '</u></p>';
           $html .= '<table style="width:100%;">';
           $html .= '<tr>';
           $html .= '<td colspan="3">';
