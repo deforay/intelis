@@ -20,3 +20,118 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 -- Jeyabanu 11-Dec-2023
 ALTER TABLE `form_vl` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `approver_comments`;
 ALTER TABLE `audit_form_vl` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `approver_comments`;
+
+-- Amit 12-Dec-2023
+DROP TABLE IF EXISTS `sequence_counter`;
+CREATE TABLE IF NOT EXISTS sequence_counter (
+    test_type VARCHAR(32),
+    year INT,
+    code_type VARCHAR(32) COMMENT 'sample_code or remote_sample_code',
+    max_sequence_number INT,
+    PRIMARY KEY (test_type, year, code_type)
+);
+
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT 'vl' AS test_type, YEAR(sample_collection_date) AS year, 'sample_code' AS code_type, MAX(sample_code_key) AS max_sequence_number
+FROM form_vl
+GROUP BY YEAR(sample_collection_date)
+HAVING MAX(sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT 'vl' AS test_type, YEAR(sample_collection_date) AS year, 'remote_sample_code' AS code_type, MAX(remote_sample_code_key) AS max_sequence_number
+FROM form_vl
+GROUP BY YEAR(sample_collection_date)
+HAVING MAX(remote_sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT 'eid' AS test_type, YEAR(sample_collection_date) AS year, 'sample_code' AS code_type, MAX(sample_code_key) AS max_sequence_number
+FROM form_eid
+GROUP BY YEAR(sample_collection_date)
+HAVING MAX(sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT 'eid' AS test_type, YEAR(sample_collection_date) AS year, 'remote_sample_code' AS code_type, MAX(remote_sample_code_key) AS max_sequence_number
+FROM form_eid
+GROUP BY YEAR(sample_collection_date)
+HAVING MAX(remote_sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT 'tb' AS test_type, YEAR(sample_collection_date) AS year, 'sample_code' AS code_type, MAX(sample_code_key) AS max_sequence_number
+FROM form_tb
+GROUP BY YEAR(sample_collection_date)
+HAVING MAX(sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT 'tb' AS test_type, YEAR(sample_collection_date) AS year, 'remote_sample_code' AS code_type, MAX(remote_sample_code_key) AS max_sequence_number
+FROM form_tb
+GROUP BY YEAR(sample_collection_date)
+HAVING MAX(remote_sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT 'covid19' AS test_type, YEAR(sample_collection_date) AS year, 'sample_code' AS code_type, MAX(sample_code_key) AS max_sequence_number
+FROM form_covid19
+GROUP BY YEAR(sample_collection_date)
+HAVING MAX(sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT 'covid19' AS test_type, YEAR(sample_collection_date) AS year, 'remote_sample_code' AS code_type, MAX(remote_sample_code_key) AS max_sequence_number
+FROM form_covid19
+GROUP BY YEAR(sample_collection_date)
+HAVING MAX(remote_sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT 'hepatitis' AS test_type, YEAR(sample_collection_date) AS year, 'sample_code' AS code_type, MAX(sample_code_key) AS max_sequence_number
+FROM form_hepatitis
+GROUP BY YEAR(sample_collection_date)
+HAVING MAX(sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT 'hepatitis' AS test_type, YEAR(sample_collection_date) AS year, 'remote_sample_code' AS code_type, MAX(remote_sample_code_key) AS max_sequence_number
+FROM form_hepatitis
+GROUP BY YEAR(sample_collection_date)
+HAVING MAX(remote_sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT test_short_code, YEAR(sample_collection_date) AS year, 'sample_code' AS code_type, MAX(sample_code_key) AS max_sequence_number
+FROM form_generic
+INNER JOIN r_test_types ON r_test_types.test_type_id = form_generic.test_type
+GROUP BY test_short_code, YEAR(sample_collection_date)
+HAVING MAX(sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+
+INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+SELECT test_short_code, YEAR(sample_collection_date) AS year, 'remote_sample_code' AS code_type, MAX(remote_sample_code_key) AS max_sequence_number
+FROM form_generic
+INNER JOIN r_test_types ON r_test_types.test_type_id = form_generic.test_type
+GROUP BY test_short_code, YEAR(sample_collection_date)
+HAVING MAX(remote_sample_code_key) IS NOT NULL
+ON DUPLICATE KEY UPDATE
+max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
+
+
