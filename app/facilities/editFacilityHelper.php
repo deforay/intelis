@@ -70,13 +70,15 @@ try {
 		$email = '';
 		if (isset($_POST['reportEmail']) && trim((string) $_POST['reportEmail']) != '') {
 			$expEmail = explode(",", (string) $_POST['reportEmail']);
-			for ($i = 0; $i < count($expEmail); $i++) {
-				$reportEmail = filter_var($expEmail[$i], FILTER_VALIDATE_EMAIL);
-				if ($reportEmail != '') {
-					if ($email != '') {
-						$email .= "," . $reportEmail;
-					} else {
-						$email .= $reportEmail;
+			if (!empty($_POST['reportEmail'])) {
+				for ($i = 0; $i < count($expEmail); $i++) {
+					$reportEmail = filter_var($expEmail[$i], FILTER_VALIDATE_EMAIL);
+					if ($reportEmail != '') {
+						if ($email != '') {
+							$email .= "," . $reportEmail;
+						} else {
+							$email .= $reportEmail;
+						}
 					}
 				}
 			}
@@ -109,7 +111,7 @@ try {
 			'report_email' => $email,
 			'contact_person' => $_POST['contactPerson'],
 			'facility_type' => $_POST['facilityType'],
-			'test_type' => implode(', ', $_POST['testType']),
+			'test_type' => implode(', ', $_POST['testType'] ?? []),
 			'testing_points' => $_POST['testingPoints'],
 			'header_text' => $_POST['headerText'],
 			'report_format' => (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) ? json_encode($_POST['reportFormat'], true) : null,
@@ -123,7 +125,7 @@ try {
 		}
 		if (!empty($_POST['sampleType'])) {
 			foreach ($_POST['sampleType'] as $testType => $sampleTypes) {
-				$facilityAttributes['sampleType'][$testType] = implode(",", $sampleTypes);
+				$facilityAttributes['sampleType'][$testType] = implode(",", $sampleTypes ?? []);
 			}
 		}
 		if (!empty($facilityAttributes)) {
@@ -138,12 +140,14 @@ try {
 		$delId = $db->delete($vlUserFacilityMapTable);
 		if ($facilityId > 0 && trim((string) $_POST['selectedUser']) != '') {
 			$selectedUser = explode(",", (string) $_POST['selectedUser']);
-			for ($j = 0; $j < count($selectedUser); $j++) {
-				$data = array(
-					'user_id' => $selectedUser[$j],
-					'facility_id' => $facilityId,
-				);
-				$db->insert($vlUserFacilityMapTable, $data);
+			if (!empty($_POST['selectedUser'])) {
+				for ($j = 0; $j < count($selectedUser); $j++) {
+					$data = array(
+						'user_id' => $selectedUser[$j],
+						'facility_id' => $facilityId,
+					);
+					$db->insert($vlUserFacilityMapTable, $data);
+				}
 			}
 		}
 		$lastId = $facilityId;
@@ -157,15 +161,17 @@ try {
 		// 	$delId = $db->delete($testingLabsTable);
 		// }
 		if ($lastId > 0) {
-			for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
-				$dataTest = array(
-					'test_type' => $_POST['testData'][$tf],
-					'facility_id' => $lastId,
-					'monthly_target' => $_POST['monTar'][$tf],
-					'suppressed_monthly_target' => $_POST['supMonTar'][$tf],
-					"updated_datetime" => DateUtility::getCurrentDateTime()
-				);
-				$db->insert($testingLabsTable, $dataTest);
+			if (!empty(!empty($_POST['testData']))) {
+				for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
+					$dataTest = array(
+						'test_type' => $_POST['testData'][$tf],
+						'facility_id' => $lastId,
+						'monthly_target' => $_POST['monTar'][$tf],
+						'suppressed_monthly_target' => $_POST['supMonTar'][$tf],
+						"updated_datetime" => DateUtility::getCurrentDateTime()
+					);
+					$db->insert($testingLabsTable, $dataTest);
+				}
 			}
 			if (!empty($_POST['testType'])) {
 
@@ -253,7 +259,7 @@ try {
 					$signData = array(
 						'name_of_signatory'	=> $name,
 						'designation' 		=> $_POST['designation'][$key],
-						'test_types' 		=> implode(",", $_POST['testSignType'][($key + 1)]),
+						'test_types' 		=> implode(",", $_POST['testSignType'][($key + 1)] ?? []),
 						'lab_id' 			=> $lastId,
 						'display_order' 	=> $_POST['sortOrder'][$key],
 						'signatory_status' 	=> $_POST['signStatus'][$key]

@@ -57,9 +57,9 @@ try {
                 $comments = $_POST['comments'];
             }
 
-            if ($rResult['sample_type'] != 'S' && $rResult['sample_type'] != 's') {
+            if (strtolower($rResult['sample_type']) != 's') {
                 $data = array(
-                    'control_code' => $rResult[0]['sample_code'] ?? ($rResult[0]['sample_type'] . "-" . $rResult[0]['batch_code']),
+                    'control_code' => $rResult['sample_code'] ?? ($rResult['sample_type'] . "-" . $rResult['batch_code']),
                     'lab_id' => $rResult['lab_id'],
                     'control_type' => $rResult['sample_type'],
                     'lot_number' => $rResult['lot_number'],
