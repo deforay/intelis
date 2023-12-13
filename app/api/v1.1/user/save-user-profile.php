@@ -166,6 +166,7 @@ try {
             'status' => 'failed',
             'message' => _translate("Something went wrong. Please try again later."),
             'timestamp' => time(),
+            'transactionId' => $transactionId,
         ];
     }
 
