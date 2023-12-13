@@ -7,6 +7,7 @@ ini_set('max_execution_time', 300000);
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -127,15 +128,11 @@ class VLResultPDF extends TCPDF
 
 	public function imageExists($filePath): bool
 	{
-		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+		return MiscUtility::imageExists($filePath);
 	}
 	//Page header
 	public function Header()
 	{
-		// Logo
-		//$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
-		//$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		// Set font
 		if ($this->htitle != '') {
 			if (trim($this->logo) != '') {
 				if ($this->imageExists($this->logo)) {

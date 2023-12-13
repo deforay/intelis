@@ -1,9 +1,10 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 ini_set('memory_limit', -1);
@@ -108,7 +109,7 @@ class EIDResultPdf extends TCPDF
 
 	public function imageExists($filePath): bool
 	{
-		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+		return MiscUtility::imageExists($filePath);
 	}
 
 	//Page header

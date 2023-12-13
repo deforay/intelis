@@ -30,10 +30,7 @@ class BatchPdfHelper extends TCPDF
     //Page header
     public function Header(): void
     {
-        // Logo
-        //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
-        //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-        // Set font
+
         if (trim($this->logo) != "") {
             if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;

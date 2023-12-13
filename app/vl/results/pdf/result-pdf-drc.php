@@ -19,10 +19,6 @@ class DRC_VL_PDF extends VLResultPDF
 	//Page header
 	public function Header()
 	{
-		// Logo
-		//$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
-		//$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		// Set font
 		$imageFilePath = null;
 		if (trim($this->logo) != '') {
 			if ($this->imageExists($this->logo)) {

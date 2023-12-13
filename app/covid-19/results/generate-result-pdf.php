@@ -140,7 +140,7 @@ class Covid19ResultPDF extends TCPDF
 	}
 	public function imageExists($filePath): bool
 	{
-		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+		return MiscUtility::imageExists($filePath);
 	}
 	//Page header
 	public function Header()
