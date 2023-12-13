@@ -575,11 +575,10 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                 <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                             </td>
 
-
                                             <th scope="row"><?= _translate('Result'); ?></th>
                                             <td>
                                                 <select class="form-control result-focus" name="result" id="result">
-                                                    <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                    <option value=''><?= _translate('-- Select --'); ?> </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                         <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
                                                     <?php } ?>
