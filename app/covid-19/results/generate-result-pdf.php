@@ -110,17 +110,17 @@ $_SESSION['aliasPage'] = 1;
 
 //print_r($requestResult);die;
 //header and footer
-class MYPDF extends TCPDF
+class Covid19ResultPDF extends TCPDF
 {
 	public ?string $logo;
-	public string $text = '';
+	public ?string $text = '';
 	public ?string $lab;
 	public ?string $htitle;
 	public $labFacilityId = null;
 	public $formId = null;
-	public $facilityInfo;
-	public $resultPrintedDate;
-	public $systemConfig;
+	public ?array $facilityInfo = [];
+	public ?string $resultPrintedDate;
+	public ?array $systemConfig = [];
 	public $dataSync;
 
 
@@ -140,7 +140,7 @@ class MYPDF extends TCPDF
 	}
 	public function imageExists($filePath): bool
 	{
-		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+		return MiscUtility::imageExists($filePath);
 	}
 	//Page header
 	public function Header()

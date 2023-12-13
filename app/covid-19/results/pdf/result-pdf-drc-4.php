@@ -6,18 +6,10 @@ use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-if (!class_exists('DRC_PDF')) {
+if (!class_exists('DRCCovid19PDF4')) {
 
-    class DRC_PDF extends MYPDF
+    class DRCCovid19PDF4 extends Covid19ResultPDF
     {
-        public ?string $logo;
-        public ?string $text;
-        public ?string $lab;
-        public ?string $htitle;
-        public array $facilityInfo = [];
-        public $resultPrintedDate = null;
-        public $systemConfig = null;
-
         //Page header
         public function Header()
         {
@@ -91,7 +83,7 @@ if (!class_exists('DRC_PDF')) {
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // create new PDF document
-$pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = new DRCCovid19PDF4(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
     $logoPrintInPdf = $result['facilityLogo'];
 } else {

@@ -287,9 +287,9 @@ try {
           $vlData['result_modified'] = "no";
      }
 
-     $vlData['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vlData['patient_art_no']);
-     $vlData['patient_middle_name'] = $general->crypto('doNothing', $_POST['patientMiddleName'], $vlData['patient_art_no']);
-     $vlData['patient_last_name'] = $general->crypto('doNothing', $_POST['patientLastName'], $vlData['patient_art_no']);
+     $vlData['patient_first_name'] = $_POST['patientFirstName'] ?? '';
+     $vlData['patient_middle_name'] = $_POST['patientMiddleName'] ?? '';
+     $vlData['patient_last_name'] = $_POST['patientMiddleName'] ?? '';
 
 
      // only if result status has changed, let us update

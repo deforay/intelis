@@ -37,8 +37,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 
-/** @var DateUtility $dateTimeUtil */
-$dateTimeUtil = new DateUtility();
 $headerStyleArray = [
      'font' => [
           'bold' => true,
@@ -111,7 +109,7 @@ if (
 
 /* Sample collection date filter */
 if (!empty(trim((string) $_POST['sampleCollectionDate']))) {
-     [$sampleCollectionDateStart, $sampleCollectionDateEnd] = $dateTimeUtil->convertDateRange($_POST['sampleCollectionDate']);
+     [$sampleCollectionDateStart, $sampleCollectionDateEnd] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
 
      if ($sampleCollectionDateStart == $sampleCollectionDateEnd) {
           $sWhere[] =  "DATE(vl.sample_collection_date) = '$sampleCollectionDateStart'";
@@ -122,7 +120,7 @@ if (!empty(trim((string) $_POST['sampleCollectionDate']))) {
 /* Sample test date filter */
 
 if (!empty(trim((string) $_POST['sampleTestDate']))) {
-     [$sampleTestDateStart, $sampleTestDateEnd] = $dateTimeUtil->convertDateRange($_POST['sampleTestDate']);
+     [$sampleTestDateStart, $sampleTestDateEnd] = DateUtility::convertDateRange($_POST['sampleTestDate']);
 
      if ($sampleTestDateStart == $sampleTestDateEnd) {
           $sWhere[] =  "DATE(vl.sample_tested_datetime) = '$sampleTestDateStart'";

@@ -1,9 +1,10 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 ini_set('memory_limit', -1);
@@ -86,7 +87,7 @@ $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
 //print_r($requestResult);die;
 //header and footer
-class MYPDF extends TCPDF
+class EIDResultPdf extends TCPDF
 {
 	public ?string $logo;
 	public string $text = '';
@@ -108,7 +109,7 @@ class MYPDF extends TCPDF
 
 	public function imageExists($filePath): bool
 	{
-		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+		return MiscUtility::imageExists($filePath);
 	}
 
 	//Page header

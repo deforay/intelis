@@ -18,9 +18,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var DateUtility $dateTimeUtil */
-$dateTimeUtil = new DateUtility();
-
 $arr = $general->getGlobalConfig();
 $formId = $arr['vl_form'];
 

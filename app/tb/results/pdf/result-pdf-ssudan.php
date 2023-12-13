@@ -10,7 +10,7 @@ use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 
-class SouthSudan_PDF extends MYPDF
+class SouthSudan_PDF extends TBResultPdf
 {
     public ?string $logo;
     public ?string $text;
@@ -87,7 +87,7 @@ class SouthSudan_PDF extends MYPDF
 }
 
 $usersService = ContainerRegistry::get(UsersService::class);
-$dateUtils = new DateUtility();
+
 $tbLamResults = $tbService->getTbResults('lam');
 $tbXPertResults = $tbService->getTbResults('x-pert');
 

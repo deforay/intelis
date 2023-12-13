@@ -28,7 +28,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
-$dateTimeUtil = new DateUtility();
 //system config
 $arr = $general->getGlobalConfig();
 

@@ -1,10 +1,11 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Helpers\ManifestPdfHelper;
+use App\Registries\ContainerRegistry;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -29,70 +30,6 @@ $id = base64_decode((string) $_POST['id']);
 if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) == 'pk2') {
     $id = $_POST['ids'];
 }
-
-// Extend the TCPDF class to create custom Header and Footer
-class MYPDF extends TCPDF
-{
-    public ?string $logo = "";
-    public string $text = "";
-    public ?string $labname = "";
-
-    public function setHeading($logo, $text, $labname)
-    {
-        $this->logo = $logo;
-        $this->text = $text;
-        $this->labname = $labname;
-    }
-    public function imageExists($filePath): bool
-    {
-        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
-    }
-    //Page header
-    public function Header()
-    {
-        // Logo
-        //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
-        //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-        // Set font
-        if (trim($this->logo) != "") {
-            if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
-            }
-        }
-        $this->SetFont('helvetica', '', 7);
-        $this->writeHTMLCell(30, 0, 10, 26, $this->text, 0, 0, 0, true, 'A');
-        $this->SetFont('helvetica', '', 13);
-        $this->writeHTMLCell(0, 0, 0, 10, 'EID Sample Referral Manifest ', 0, 0, 0, true, 'C');
-        $this->SetFont('helvetica', '', 10);
-        $this->writeHTMLCell(0, 0, 0, 20, $this->labname, 0, 0, 0, true, 'C');
-
-        if (trim($this->logo) != "") {
-            if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T');
-            }
-        }
-        $this->SetFont('helvetica', '', 7);
-        $this->writeHTMLCell(30, 0, 255, 26, $this->text, 0, 0, 0, true, 'A');
-        $html = '<hr/>';
-        $this->writeHTMLCell(0, 0, 10, 32, $html, 0, 0, 0, true, 'J');
-    }
-
-    // Page footer
-    public function Footer()
-    {
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        // Set font
-        $this->SetFont('helvetica', '', 8);
-        // Page number
-        $this->Cell(0, 10,  'Specimen Manifest Generated On : ' . date('d/m/Y H:i:s') . ' | Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
-    }
-}
-
-
-
 
 if (trim((string) $id) != '') {
 
@@ -121,7 +58,7 @@ if (trim((string) $id) != '') {
 
 
         // create new PDF document
-        $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new ManifestPdfHelper(_translate('EID Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         $pdf->setHeading($arr['logo'], $arr['header'], $labname);
 

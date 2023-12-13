@@ -1,10 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -17,7 +16,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$dateTimeUtil = new DateUtility();
+
 
 $excel = new Spreadsheet();
 $output = [];

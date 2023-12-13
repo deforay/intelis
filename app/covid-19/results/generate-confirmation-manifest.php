@@ -1,11 +1,12 @@
 <?php
 
 
+use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -21,10 +22,10 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 // die($id);
 // Extend the TCPDF class to create custom Header and Footer
-class MYPDF extends TCPDF
+class Covid19ConfirmationManifestPDF extends TCPDF
 {
     public ?string $logo;
-    public string $text;
+    public ?string $text;
     public ?string $labname;
 
     public function setHeading($logo, $text, $labname)
@@ -35,15 +36,12 @@ class MYPDF extends TCPDF
     }
     public function imageExists($filePath): bool
     {
-        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+        return MiscUtility::imageExists($filePath);
     }
     //Page header
     public function Header()
     {
-        // Logo
-        //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
-        //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-        // Set font
+
         if (trim($this->logo) != "") {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
@@ -112,7 +110,7 @@ if (trim($id) != '') {
 
 
         // create new PDF document
-        $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new Covid19ConfirmationManifestPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         $pdf->setHeading($arr['logo'], $arr['header'], $labname);
 

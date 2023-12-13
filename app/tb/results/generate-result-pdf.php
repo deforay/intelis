@@ -117,7 +117,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 
 //print_r($requestResult);die;
 //header and footer
-class MYPDF extends TCPDF
+class TBResultPdf extends TCPDF
 {
     public $logo = '';
     public $text = '';
@@ -141,7 +141,7 @@ class MYPDF extends TCPDF
     }
     public function imageExists($filePath): bool
     {
-        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+        return MiscUtility::imageExists($filePath);
     }
     //Page header
     public function Header()

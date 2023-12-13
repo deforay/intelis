@@ -8,9 +8,14 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+use App\Utilities\LoggerUtility;
 use PhpMyAdmin\SqlParser\Parser;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
 
 // Ensure the script only runs for VLSM APP VERSION >= 4.5.3
 if (version_compare(VERSION, '4.5.3', '<')) {
@@ -62,15 +67,20 @@ foreach ($versions as $version) {
                 $errorOccurred = false;
             } catch (Exception $e) {
 
+                $message = "Exception : " . $e->getMessage() . PHP_EOL;
+                LoggerUtility::log('error', $message);
+
                 $errorOccurred = true;
                 if (!$quietMode) {  // Only show error messages if -q option is not provided
-                    echo "Exception : " . $e->getMessage() . "\n";
+                    echo $message;
                 }
             }
             if ($db->getLastErrno() > 0 || $errorOccurred) {
+                $dbMessage = "Error executing query: " . $db->getLastErrno() . ":" . $db->getLastError() . PHP_EOL . $db->getLastQuery() . PHP_EOL;
                 if (!$quietMode) {  // Only show error messages if -q option is not provided
-                    echo "Error executing query: " . $db->getLastError() . "\n";
+                    echo $dbMessage;
                 }
+                LoggerUtility::log('error', $dbMessage);
                 if (!$autoContinueOnError) {  // Only prompt user if -y option is not provided
                     echo "Do you want to continue? (y/n): ";
                     $handle = fopen("php://stdin", "r");

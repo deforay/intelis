@@ -231,9 +231,9 @@ foreach ($rResult as $aRow) {
     } else {
         $decrypt = 'sample_code';
     }
-    $patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow[$decrypt]);
-    $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow[$decrypt]);
-    $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow[$decrypt]);
+    $patientFname = $aRow['patient_first_name'] ?? '';
+    $patientMname = $aRow['patient_middle_name'] ?? '';
+    $patientLname = $aRow['patient_last_name'] ?? '';
     $row = [];
     $row[] = $aRow['sample_code'];
     if ($_SESSION['instanceType'] != 'standalone') {

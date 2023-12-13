@@ -9,14 +9,8 @@ use App\Services\Covid19Service;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 
-class SouthSudan_PDF extends MYPDF
+class SierraLeoneCovid19PDF extends Covid19ResultPDF
 {
-    public ?string $logo;
-    public ?string $text;
-    public ?string $lab;
-    public ?string $htitle;
-    public $facilityInfo = [];
-    public $formId = 1;
     //Page header
     public function Header()
     {
@@ -82,10 +76,6 @@ class SouthSudan_PDF extends MYPDF
     }
 }
 
-
-
-$dateUtils = new DateUtility();
-
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 $covid19Results = $covid19Service->getCovid19Results();
@@ -134,7 +124,7 @@ if (!empty($requestResult)) {
             }
         }
         // create new PDF document
-        $pdf = new SouthSudan_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new SierraLeoneCovid19PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
         } else {
@@ -549,7 +539,7 @@ if (!empty($requestResult)) {
                 }
                 if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                     $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid, 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
+                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid, 'QRCODE,H', 170, $h, 20, 20, [], 'N');
                 }
             }
             $pdf->lastPage();

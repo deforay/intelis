@@ -32,7 +32,7 @@ if (!empty($requestResult)) {
                }
           }
           // create new PDF document
-          $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+          $pdf = new VLResultPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
           if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
                $logoPrintInPdf = $result['facilityLogo'];
           } else {
@@ -234,7 +234,7 @@ if (!empty($requestResult)) {
                $html .= '</tr>';
                $html .= '<tr>';
 
-               $patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_art_no']));
+               $patientFname = $result['patient_first_name'] ?? '';
 
                if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
                     $key = (string) $general->getGlobalConfig('key');

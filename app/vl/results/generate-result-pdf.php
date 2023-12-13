@@ -5,9 +5,10 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
-use App\Registries\AppRegistry;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -105,14 +106,14 @@ $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
 //print_r($requestResult);die;
 //header and footer
-class MYPDF extends TCPDF
+class VLResultPDF extends TCPDF
 {
-	public $logo;
-	public $text;
-	public $lab;
-	public $htitle = null;
-	public $labFacilityId = null;
-	public $trainingTxt = null;
+	public ?string $logo;
+	public ?string $text;
+	public ?string $lab;
+	public ?string $htitle;
+	public ?string $labFacilityId = null;
+	public ?string $trainingTxt = null;
 
 	//Page header
 	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $trainingTxt = null)
@@ -127,18 +128,13 @@ class MYPDF extends TCPDF
 
 	public function imageExists($filePath): bool
 	{
-		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+		return MiscUtility::imageExists($filePath);
 	}
 	//Page header
 	public function Header()
 	{
-		// Logo
-		//$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
-		//$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		// Set font
 		if ($this->htitle != '') {
 			if (trim($this->logo) != '') {
-				error_log($this->logo);
 				if ($this->imageExists($this->logo)) {
 					$this->Image($this->logo, 10, 5, 15, '', '', '', 'T');
 				} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -180,22 +176,14 @@ class MYPDF extends TCPDF
 				$this->SetFont('helvetica', '', 16);
 				$this->writeHTMLCell(0, 0, 10, 12, strtoupper($this->text), 0, 0, 0, true, 'C');
 				$thirdHeading = '21';
-				$fourthHeading = '28';
-				$hrLine = '36';
-				$marginTop = '14';
 			} else {
 				$thirdHeading = '14';
-				$fourthHeading = '23';
-				$hrLine = '30';
-				$marginTop = '9';
 			}
 			if (trim($this->lab) != '') {
 				$this->SetFont('helvetica', '', 10);
 				$this->writeHTMLCell(0, 0, 8, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
 			}
 			$this->SetFont('helvetica', '', 12);
-			//  $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'VIRAL LOAD TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
-			//  $this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
 		}
 	}
 

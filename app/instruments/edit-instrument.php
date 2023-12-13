@@ -45,9 +45,9 @@ if (!empty($sInfo['approved_by'])) {
 	$sInfo['approved_by'] = json_decode((string) $sInfo['approved_by'], true);
 }
 
-$configMachineQuery = "SELECT * from instrument_machines where config_id=?";
+$configMachineQuery = "SELECT * FROM instrument_machines WHERE config_id=?";
 $configMachineInfo = $db->rawQuery($configMachineQuery, [$id]);
-$configControlQuery = "SELECT * from instrument_controls where config_id=?";
+$configControlQuery = "SELECT * FROM instrument_controls WHERE config_id=?";
 $configControlInfo = $db->rawQuery($configControlQuery, [$id]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
@@ -55,6 +55,8 @@ foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noManufacturerCtrl'] = $info['number_of_manufacturer_controls'];
 	$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
 }
+$sInfo['supported_tests'] = $sInfo['supported_tests'] ?? [];
+
 $vl = in_array('vl', $sInfo['supported_tests']) ? "" : "style='display:none;'";
 $eid = in_array('eid', $sInfo['supported_tests']) ? "" : "style='display:none;'";
 $covid19 = in_array('covid19', $sInfo['supported_tests']) ? "" : "style='display:none;'";

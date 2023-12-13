@@ -1,10 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -38,7 +40,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
    if (isset($mailconf['rs_field']) && trim((string) $mailconf['rs_field']) != '') {
       //Pdf code start
       // create new PDF document
-      class MYPDF extends TCPDF
+      class VLMailPDF extends TCPDF
       {
          public ?string $logo;
          public string $text = '';
@@ -51,15 +53,12 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
          }
          public function imageExists($filePath): bool
          {
-            return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+            return MiscUtility::imageExists($filePath);
          }
          //Page header
          public function Header()
          {
-            // Logo
-            //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
-            //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-            // Set font
+
             if (trim($this->logo) != '') {
                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                   $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
@@ -84,7 +83,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
             $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
          }
       }
-      $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+      $pdf = new VLMailPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
       $pdf->setHeading($global['logo'], $global['header']);
       $pdf->setPageOrientation('L');
       // set document information

@@ -7,7 +7,7 @@ use App\Utilities\MiscUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\PdfConcatenateHelper;
 
-class DRC_PDF extends MYPDF
+class DRC_VL_PDF extends VLResultPDF
 {
 	public ?string $logo;
 	public ?string $text;
@@ -19,10 +19,6 @@ class DRC_PDF extends MYPDF
 	//Page header
 	public function Header()
 	{
-		// Logo
-		//$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
-		//$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		// Set font
 		$imageFilePath = null;
 		if (trim($this->logo) != '') {
 			if ($this->imageExists($this->logo)) {
@@ -92,7 +88,7 @@ if (!empty($requestResult)) {
 		// 	}
 		// }
 		// create new PDF document
-		$pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+		$pdf = new DRC_VL_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 		if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
 			$logoPrintInPdf = $result['facilityLogo'];
 		} else {

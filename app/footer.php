@@ -287,40 +287,49 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 		?> showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 
-		$('.phone-number').on('change blur', function() {
+		let phoneNumberDebounceTimeout;
+		const countryCode = "<?= $countryCode ?? ''; ?>";
 
-			if ($(this).val() == "" || $(this).length == 0) {
-				return;
-			}
-			let phoneNumber = $(this).val();
-			$.ajax({
-				type: 'POST',
-				url: '/includes/validatePhoneNumber.php',
-				data: {
-					phoneNumber: phoneNumber
-				},
-				success: function(response) {
-					if (!response.isValid) {
-						Toastify({
-							text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
-							duration: 3000,
-							style: {
-								background: 'red',
-							}
-						}).showToast();
-					}
-				},
-				error: function() {
-					console.error("An error occurred while validating the phone number.");
+		$('.phone-number').on('input', function() {
+			clearTimeout(phoneNumberDebounceTimeout);
+			phoneNumberDebounceTimeout = setTimeout(function() {
+				let phoneNumber = $('.phone-number').val().trim();
+
+				if (phoneNumber === countryCode || phoneNumber === "") {
+					$('.phone-number').val("");
+					return;
 				}
-			});
+
+				$.ajax({
+					type: 'POST',
+					url: '/includes/validatePhoneNumber.php',
+					data: {
+						phoneNumber: phoneNumber
+					},
+					success: function(response) {
+						if (!response.isValid) {
+							Toastify({
+								text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+								duration: 3000,
+								style: {
+									background: 'red'
+								}
+							}).showToast();
+						}
+					},
+					error: function() {
+						console.error("An error occurred while validating the phone number.");
+					}
+				});
+			}, 1000); // Increased delay to 1000 milliseconds (1 second)
 		});
 
 		$('.phone-number').on('focus', function() {
-			if ($(this).val() == "") {
-				$(this).val("<?php echo $countryCode ?? null; ?>")
-			};
+			if ($(this).val().trim() === "") {
+				$(this).val(countryCode || null);
+			}
 		});
+
 
 		$('.patientId').on('change', function() {
 			var patientId = $(this).val();

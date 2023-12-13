@@ -23,10 +23,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var DateUtility $dateTimeUtil */
-$dateTimeUtil = new DateUtility();
-
-
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();

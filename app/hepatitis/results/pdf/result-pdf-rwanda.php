@@ -44,7 +44,7 @@ if (!empty($requestResult)) {
             }
         }
         // create new PDF document
-        $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new HepatitisResultPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         $pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'HEPATATIS - VIRAL LOAD PATIENT REPORT');
         // set document information
         $pdf->setCreator('VLSM');
