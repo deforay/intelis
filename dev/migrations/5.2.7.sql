@@ -144,3 +144,18 @@ ON DUPLICATE KEY UPDATE
 max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);
 
 
+-- Jeyabanu 13-Dec-2023
+ALTER TABLE `form_eid` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `result`;
+ALTER TABLE `audit_form_eid` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `result`;
+
+ALTER TABLE `form_covid19` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `revised_on`;
+ALTER TABLE `audit_form_covid19` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `revised_on`;
+
+ALTER TABLE `form_hepatitis` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `revised_on`;
+ALTER TABLE `audit_form_hepatitis` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `revised_on`;
+
+ALTER TABLE `form_tb` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `xpert_mtb_result`;
+ALTER TABLE `audit_form_tb` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL AFTER `xpert_mtb_result`;
+
+ALTER TABLE `form_eid` CHANGE `is_child_symptomatic` `is_child_symptomatic` VARCHAR(3) NULL DEFAULT NULL;
+ALTER TABLE `audit_form_eid` CHANGE `is_child_symptomatic` `is_child_symptomatic` VARCHAR(3) NULL DEFAULT NULL;

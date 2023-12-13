@@ -89,6 +89,14 @@ try {
 	);
 
 	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
+     $getPrevResult = $db->getOne('form_hepatitis');
+     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+          $hepatitisData['result_modified'] = "yes";
+     } else {
+          $hepatitisData['result_modified'] = "no";
+     }
+
+	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 	$id = $db->update($tableName, $hepatitisData);
 	error_log($db->getLastError() . PHP_EOL);
 	if ($id === true) {

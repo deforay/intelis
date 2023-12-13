@@ -166,6 +166,14 @@ try {
         'qc_tech_sign' => $_POST['qcTechSign'] ?? null,
     );
 
+    $db->where('vl_sample_id', $_POST['vlSampleId']);
+    $getPrevResult = $db->getOne('form_vl');
+    if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult) {
+         $vlData['result_modified'] = "yes";
+    } else {
+         $vlData['result_modified'] = "no";
+    }
+
 
     // only if result status has changed, let us update
     if (!empty($resultStatus)) {

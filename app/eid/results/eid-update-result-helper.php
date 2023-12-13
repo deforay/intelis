@@ -104,6 +104,14 @@ try {
     'last_modified_datetime' => DateUtility::getCurrentDateTime()
   );
 
+    $db->where('eid_id', $_POST['eidSampleId']);
+		$getPrevResult = $db->getOne('form_eid');
+		if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+			$eidData['result_modified'] = "yes";
+		} else {
+			$eidData['result_modified'] = "no";
+		}
+
 
   if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
     $eidData['result'] = null;
