@@ -2,11 +2,11 @@
 
 // File included in import-file-helper.php
 
-use App\Registries\AppRegistry;
 use App\Services\BatchService;
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;

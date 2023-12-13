@@ -56,7 +56,7 @@ try {
 
             if ($rResult[0]['sample_type'] != 'S' && $rResult[0]['sample_type'] != 's') {
                 $data = array(
-                    'control_code' => $rResult[0]['sample_code'],
+                    'control_code' => $rResult[0]['sample_code'] ?? ($rResult[0]['sample_type'] . "-" . $rResult[0]['batch_code']),
                     'lab_id' => $rResult[0]['lab_id'],
                     'control_type' => $rResult[0]['sample_type'],
                     'lot_number' => $rResult[0]['lot_number'],

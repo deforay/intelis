@@ -2,12 +2,13 @@
 
 // this file is included in /import-result/processImportedResults.php
 
-use App\Registries\AppRegistry;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -58,7 +59,7 @@ try {
 
             if ($rResult['sample_type'] != 'S' && $rResult['sample_type'] != 's') {
                 $data = array(
-                    'control_code' => $rResult['sample_code'],
+                    'control_code' => $rResult[0]['sample_code'] ?? ($rResult[0]['sample_type'] . "-" . $rResult[0]['batch_code']),
                     'lab_id' => $rResult['lab_id'],
                     'control_type' => $rResult['sample_type'],
                     'lot_number' => $rResult['lot_number'],
@@ -331,7 +332,7 @@ try {
     }
 
     echo "importedStatistics.php";
-} catch (Exception $exc) {
+} catch (SystemException | Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
