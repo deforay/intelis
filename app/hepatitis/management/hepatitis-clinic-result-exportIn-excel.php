@@ -85,7 +85,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
      if ($_POST['markAsComplete'] == 'true') {
           $vlId = implode(",", $vlSampleId);
      }
-     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 75000) {
+     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 50000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore

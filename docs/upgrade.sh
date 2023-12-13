@@ -121,53 +121,59 @@ backup_database() {
         fi
     done
 }
+# Ask the user if they want to backup the database
+read -p "Do you want to backup the database? (yes/no) " backup_database_answer
+if [[ "$backup_database_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
+    # Ask for MySQL root password
+    echo "Please enter your MySQL root password:"
+    read -s mysql_root_password
 
-# Ask for MySQL root password
-echo "Please enter your MySQL root password:"
-read -s mysql_root_password
+    # Ask for the backup location and create it if it doesn't exist
+    read -p "Enter the backup location [/var/vlsm-backup/db/]: " backup_location
+    backup_location="${backup_location:-/var/vlsm-backup/db/}"
 
-# Ask for the backup location and create it if it doesn't exist
-read -p "Enter the backup location [/var/vlsm-backup/db/]: " backup_location
-backup_location="${backup_location:-/var/vlsm-backup/db/}"
-
-# Create the backup directory if it does not exist
-if [ ! -d "$backup_location" ]; then
-    echo "Backup directory does not exist. Creating it now..."
-    mkdir -p "$backup_location"
-    if [ $? -ne 0 ]; then
-        echo "Failed to create backup directory. Please check your permissions."
-        exit 1
-    fi
-fi
-
-# Change to the backup directory
-cd "$backup_location" || exit
-
-# List databases and ask for user choice
-get_databases
-echo "Enter the numbers of the databases you want to backup, separated by space or comma, or type 'all' for all databases:"
-read -r input_selections
-
-# Convert input selection to array indexes
-selected_indexes=()
-if [[ "$input_selections" == "all" ]]; then
-    selected_indexes=("${!databases[@]}")
-else
-    # Split input by space and comma
-    IFS=', ' read -ra selections <<<"$input_selections"
-
-    for selection in "${selections[@]}"; do
-        if [[ "$selection" =~ ^[0-9]+$ ]]; then
-            # Subtract 1 to convert from human-readable number to zero-indexed array
-            selected_indexes+=($(($selection - 1)))
-        else
-            echo "Invalid selection: $selection. Ignoring."
+    # Create the backup directory if it does not exist
+    if [ ! -d "$backup_location" ]; then
+        echo "Backup directory does not exist. Creating it now..."
+        mkdir -p "$backup_location"
+        if [ $? -ne 0 ]; then
+            echo "Failed to create backup directory. Please check your permissions."
+            exit 1
         fi
-    done
-fi
+    fi
 
-# Backup the selected databases
-backup_database "${selected_indexes[@]}"
+    # Change to the backup directory
+    cd "$backup_location" || exit
+
+    # List databases and ask for user choice
+    get_databases
+    echo "Enter the numbers of the databases you want to backup, separated by space or comma, or type 'all' for all databases:"
+    read -r input_selections
+
+    # Convert input selection to array indexes
+    selected_indexes=()
+    if [[ "$input_selections" == "all" ]]; then
+        selected_indexes=("${!databases[@]}")
+    else
+        # Split input by space and comma
+        IFS=', ' read -ra selections <<<"$input_selections"
+
+        for selection in "${selections[@]}"; do
+            if [[ "$selection" =~ ^[0-9]+$ ]]; then
+                # Subtract 1 to convert from human-readable number to zero-indexed array
+                selected_indexes+=($(($selection - 1)))
+            else
+                echo "Invalid selection: $selection. Ignoring."
+            fi
+        done
+    fi
+
+    # Backup the selected databases
+    backup_database "${selected_indexes[@]}"
+
+else
+    echo "Skipping database backup as per user request."
+fi
 
 # Ask the user if they want to backup the VLSM folder
 read -p "Do you want to backup the VLSM folder before updating? (yes/no) " backup_vlsm_answer
@@ -215,6 +221,9 @@ chown -R www-data:www-data "${vlsm_path}"
 # Run Composer Update as www-data
 echo "Running composer update as www-data user..."
 cd "${vlsm_path}"
+
+sudo -u www-data composer config process-timeout 30000
+
 sudo -u www-data composer update --no-dev &&
     sudo -u www-data composer dump-autoload -o
 

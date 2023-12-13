@@ -47,7 +47,7 @@ class CommonService
             }
 
             // If limit and offset are set, execute the count query.
-            if ($limitOffsetSet) {
+            if ($limitOffsetSet || $returnGenerator) {
                 if (stripos($sql, 'GROUP BY') !== false) {
                     // If the query contains GROUP BY
                     $countSql = "SELECT COUNT(*) as totalCount FROM ($sql) as subquery";
@@ -58,7 +58,7 @@ class CommonService
                 $count = (int)$this->db->rawQueryOne($countSql)['totalCount'];
             } else {
                 // if limit not set then count full resultset
-                $count = is_array($queryResult) ? count($queryResult) : \iter\count($queryResult);
+                $count = count($queryResult);
             }
 
             return [$queryResult, $count];
@@ -106,25 +106,23 @@ class CommonService
 
     public function getClientIpAddress()
     {
-        return once(function () {
-            $ipAddress = null;
+        $ipAddress = null;
 
-            if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-                $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-                $ipAddress = $_SERVER['HTTP_X_FORWARDED'];
-            } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-                $ipAddress = $_SERVER['HTTP_FORWARDED_FOR'];
-            } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-                $ipAddress = $_SERVER['HTTP_FORWARDED'];
-            } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-                $ipAddress = $_SERVER['REMOTE_ADDR'];
-            }
+        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+            $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
+            $ipAddress = $_SERVER['HTTP_X_FORWARDED'];
+        } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+            $ipAddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
+            $ipAddress = $_SERVER['HTTP_FORWARDED'];
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            $ipAddress = $_SERVER['REMOTE_ADDR'];
+        }
 
-            return $ipAddress;
-        });
+        return $ipAddress;
     }
 
     // get data from the system_config table from database
@@ -563,87 +561,84 @@ class CommonService
     public function getOperatingSystem($userAgent = null): string
     {
 
-        return once(function () use ($userAgent) {
-            if ($userAgent === null) {
-                return "Unknown OS";
+        if ($userAgent === null) {
+            return "Unknown OS";
+        }
+
+        $osArray = [
+            '/windows nt 10/i' => 'Windows 10',
+            '/windows nt 6.3/i' => 'Windows 8.1',
+            '/windows nt 6.2/i' => 'Windows 8',
+            '/windows nt 6.1/i' => 'Windows 7',
+            '/windows nt 6.0/i' => 'Windows Vista',
+            '/windows nt 5.2/i' => 'Windows Server 2003/XP x64',
+            '/windows nt 5.1/i' => 'Windows XP',
+            '/windows xp/i' => 'Windows XP',
+            '/windows nt 5.0/i' => 'Windows 2000',
+            '/windows me/i' => 'Windows ME',
+            '/win98/i' => 'Windows 98',
+            '/win95/i' => 'Windows 95',
+            '/win16/i' => 'Windows 3.11',
+            '/macintosh|mac os x/i' => 'Mac OS X',
+            '/mac_powerpc/i' => 'Mac OS 9',
+            '/linux/i' => 'Linux',
+            '/ubuntu/i' => 'Ubuntu',
+            '/iphone/i' => 'iPhone',
+            '/ipod/i' => 'iPod',
+            '/ipad/i' => 'iPad',
+            '/android/i' => 'Android',
+            '/blackberry/i' => 'BlackBerry',
+            '/webos/i' => 'Mobile',
+            '/fedora/i' => 'Fedora',
+            '/debian/i' => 'Debian',
+            '/freebsd/i' => 'FreeBSD',
+            '/openbsd/i' => 'OpenBSD',
+            '/netbsd/i' => 'NetBSD',
+            '/sunos/i' => 'SunOS',
+            '/solaris/i' => 'Solaris',
+            '/aix/i' => 'AIX'
+        ];
+
+        foreach ($osArray as $regex => $value) {
+            if (preg_match($regex, (string) $userAgent)) {
+                return $value;
             }
+        }
 
-            $osArray = [
-                '/windows nt 10/i' => 'Windows 10',
-                '/windows nt 6.3/i' => 'Windows 8.1',
-                '/windows nt 6.2/i' => 'Windows 8',
-                '/windows nt 6.1/i' => 'Windows 7',
-                '/windows nt 6.0/i' => 'Windows Vista',
-                '/windows nt 5.2/i' => 'Windows Server 2003/XP x64',
-                '/windows nt 5.1/i' => 'Windows XP',
-                '/windows xp/i' => 'Windows XP',
-                '/windows nt 5.0/i' => 'Windows 2000',
-                '/windows me/i' => 'Windows ME',
-                '/win98/i' => 'Windows 98',
-                '/win95/i' => 'Windows 95',
-                '/win16/i' => 'Windows 3.11',
-                '/macintosh|mac os x/i' => 'Mac OS X',
-                '/mac_powerpc/i' => 'Mac OS 9',
-                '/linux/i' => 'Linux',
-                '/ubuntu/i' => 'Ubuntu',
-                '/iphone/i' => 'iPhone',
-                '/ipod/i' => 'iPod',
-                '/ipad/i' => 'iPad',
-                '/android/i' => 'Android',
-                '/blackberry/i' => 'BlackBerry',
-                '/webos/i' => 'Mobile',
-                '/fedora/i' => 'Fedora',
-                '/debian/i' => 'Debian',
-                '/freebsd/i' => 'FreeBSD',
-                '/openbsd/i' => 'OpenBSD',
-                '/netbsd/i' => 'NetBSD',
-                '/sunos/i' => 'SunOS',
-                '/solaris/i' => 'Solaris',
-                '/aix/i' => 'AIX'
-            ];
-
-            foreach ($osArray as $regex => $value) {
-                if (preg_match($regex, (string) $userAgent)) {
-                    return $value;
-                }
-            }
-
-            return "Unknown OS - " . $userAgent;
-        });
+        return "Unknown OS - " . $userAgent;
     }
 
 
     public function getBrowser($userAgent = null): string
     {
-        return once(function () use ($userAgent) {
-            if ($userAgent === null) {
-                return "Unknown Browser";
+
+        if ($userAgent === null) {
+            return "Unknown Browser";
+        }
+
+        $browserArray = [
+            '/msie/i' => 'Internet Explorer',
+            '/trident/i' => 'Internet Explorer',
+            '/firefox/i' => 'Firefox',
+            '/safari/i' => 'Safari',
+            '/chrome/i' => 'Chrome',
+            '/edge/i' => 'Edge',
+            '/opera/i' => 'Opera',
+            '/netscape/i' => 'Netscape',
+            '/maxthon/i' => 'Maxthon',
+            '/konqueror/i' => 'Konqueror',
+            '/mobile/i' => 'Mobile Browser',
+            '/applewebkit/i' => 'Webkit Browser',
+            '/brave/i' => 'Brave'
+        ];
+
+        foreach ($browserArray as $regex => $value) {
+            if (preg_match($regex, (string) $userAgent)) {
+                return $value;
             }
+        }
 
-            $browserArray = [
-                '/msie/i' => 'Internet Explorer',
-                '/trident/i' => 'Internet Explorer',
-                '/firefox/i' => 'Firefox',
-                '/safari/i' => 'Safari',
-                '/chrome/i' => 'Chrome',
-                '/edge/i' => 'Edge',
-                '/opera/i' => 'Opera',
-                '/netscape/i' => 'Netscape',
-                '/maxthon/i' => 'Maxthon',
-                '/konqueror/i' => 'Konqueror',
-                '/mobile/i' => 'Mobile Browser',
-                '/applewebkit/i' => 'Webkit Browser',
-                '/brave/i' => 'Brave'
-            ];
-
-            foreach ($browserArray as $regex => $value) {
-                if (preg_match($regex, (string) $userAgent)) {
-                    return $value;
-                }
-            }
-
-            return "Unknown Browser - " . $userAgent;
-        });
+        return "Unknown Browser - " . $userAgent;
     }
 
 
@@ -657,9 +652,7 @@ class CommonService
 
     public function isRemoteUser(): bool
     {
-        return once(function () {
-            return isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser';
-        });
+        return isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser';
     }
     public function getLastRemoteSyncDateTime()
     {
@@ -703,7 +696,6 @@ class CommonService
     public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
     {
         try {
-
             $requestData = MiscUtility::toJSON($requestData);
             $responseData = MiscUtility::toJSON($responseData);
 
@@ -903,55 +895,51 @@ class CommonService
         $this->db->orderBy('status_name', "ASC");
         $result =  $this->db->get('r_sample_status');
         $response = [];
-        if($api){
-            foreach($result as $row){
+        if ($api) {
+            foreach ($result as $row) {
                 $response[$row['status_id']] = $row['status_name'];
             }
-        }else{
+        } else {
             $response = $result;
         }
         return $response;
     }
     public function multipleColumnSearch($searchText, $allColumns)
     {
-        return once(function () use ($searchText, $allColumns) {
-            $sWhere = [];
+        $sWhere = [];
 
-            if (!empty($searchText)) {
-                // Split the search query into separate words
-                $searchArray = explode(" ", (string) $searchText);
-                $colSize = count($allColumns);
+        if (!empty($searchText)) {
+            // Split the search query into separate words
+            $searchArray = explode(" ", (string) $searchText);
+            $colSize = count($allColumns);
 
-                foreach ($searchArray as $search) {
-                    $sWhereSub = [];
+            foreach ($searchArray as $search) {
+                $sWhereSub = [];
 
-                    for ($i = 0; $i < $colSize; $i++) {
-                        $sWhereSub[] = "$allColumns[$i] LIKE '%$search%'";
-                    }
-
-                    $sWhere[] = " (" . implode(' OR ', array_filter($sWhereSub)) . ") ";
+                for ($i = 0; $i < $colSize; $i++) {
+                    $sWhereSub[] = "$allColumns[$i] LIKE '%$search%'";
                 }
-            }
 
-            return $sWhere;
-        });
+                $sWhere[] = " (" . implode(' OR ', array_filter($sWhereSub)) . ") ";
+            }
+        }
+
+        return $sWhere;
     }
 
     public function generateDataTablesSorting($postData, $orderColumns)
     {
-        return once(function () use ($postData, $orderColumns) {
-            $sOrder = "";
-            if (isset($postData['iSortCol_0'])) {
-                for ($i = 0; $i < (int) $postData['iSortingCols']; $i++) {
-                    if ($postData['bSortable_' . (int) $postData['iSortCol_' . $i]] == "true") {
-                        $sOrder .= $orderColumns[(int) $postData['iSortCol_' . $i]] . " " . ($postData['sSortDir_' . $i]) . ", ";
-                    }
+        $sOrder = "";
+        if (isset($postData['iSortCol_0'])) {
+            for ($i = 0; $i < (int) $postData['iSortingCols']; $i++) {
+                if ($postData['bSortable_' . (int) $postData['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $postData['iSortCol_' . $i]] . " " . ($postData['sSortDir_' . $i]) . ", ";
                 }
-                $sOrder = substr_replace($sOrder, "", -2);
             }
+            $sOrder = substr_replace($sOrder, "", -2);
+        }
 
-            return $sOrder;
-        });
+        return $sOrder;
     }
 
     public function generateSelectOptionsAPI($options): array

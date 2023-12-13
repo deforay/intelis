@@ -33,6 +33,8 @@ if ($_SESSION['instanceType'] == 'standalone') {
 	$headings = array_values(array_diff($headings, [_translate("Remote Sample ID")]));
 }
 $no = 1;
+
+$key = (string) $general->getGlobalConfig('key');
 $resultSet = $db->rawQueryGenerator($_SESSION['vlRequestQuery']);
 foreach ($resultSet as $aRow) {
 	$row = [];
@@ -86,8 +88,7 @@ foreach ($resultSet as $aRow) {
 	$row[] = $aRow['facility_district'];
 	$row[] = $aRow['facility_state'];
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-			$key = (string) $general->getGlobalConfig('key');
+		if (!empty($key) && !empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
 			$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
 			$patientFname = $general->crypto('decrypt', $patientFname, $key);
 			$patientMname = $general->crypto('decrypt', $patientMname, $key);
@@ -96,31 +97,31 @@ foreach ($resultSet as $aRow) {
 		$row[] = $aRow['patient_art_no'];
 		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 	}
-	$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
+	$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
 	$aRow['patient_age_in_years'] ??= 0;
 	$row[] = ($aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
 	$row[] = $gender;
 	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 	$row[] = $aRow['sample_name'] ?? null;
-	$row[] = DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date']);
+	$row[] = DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date'] ?? '');
 	$row[] = $aRow['current_regimen'];
-	$row[] = DateUtility::humanReadableDateFormat($aRow['date_of_initiation_of_current_regimen']);
+	$row[] = DateUtility::humanReadableDateFormat($aRow['date_of_initiation_of_current_regimen'] ?? '');
 	$row[] = $aRow['is_patient_pregnant'];
 	$row[] = $aRow['is_patient_breastfeeding'];
 	$row[] = $arvAdherence;
 	$row[] = isset($aRow['test_reason_name']) ? (str_replace("_", " ", (string) $aRow['test_reason_name'])) : null;
 	$row[] = $aRow['request_clinician_name'];
-	$row[] = DateUtility::humanReadableDateFormat($aRow['test_requested_on']);
+	$row[] = DateUtility::humanReadableDateFormat($aRow['test_requested_on'] ?? '');
 	$row[] = $sampleRejection;
 	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 	$row[] = $aRow['result'];
 	$row[] = $aRow['result_value_log'];
 	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
 	$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
-	$row[] = $aRow['lab_tech_comments'];
+	$row[] = $aRow['lab_tech_comments'] ?? null;
 	$row[] = $aRow['funding_source_name'] ?? null;
 	$row[] = $aRow['i_partner_name'] ?? null;
-	$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
+	$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
 	$output[] = $row;
 	unset($row);
 	$no++;
