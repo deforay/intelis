@@ -323,7 +323,7 @@ try {
             'result_approved_datetime' => DateUtility::isoDateFormat($data['approvedOnDateTime'] ?? '', true),
             'revised_by' => $data['revisedBy'] ?? null,
             'revised_on' => DateUtility::isoDateFormat($data['revisedOn'] ?? '', true),
-            'reason_for_vl_result_changes' => $data['reasonForVlResultChanges'] ?? null,
+            'reason_for_result_changes' => $data['reasonForVlResultChanges'] ?? null,
             'lab_tech_comments' => $data['labComments'] ?? null,
             'result_status' => $status,
             'funding_source' => $data['fundingSource'] ?? null,

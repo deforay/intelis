@@ -331,7 +331,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                     'result_approved_by',
                     'result_approved_datetime',
                     'lab_tech_comments',
-                    'reason_for_vl_result_changes',
+                    'reason_for_result_changes',
                     'revised_by',
                     'revised_on',
                     'last_modified_by',

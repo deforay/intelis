@@ -141,7 +141,7 @@ try {
         'result_approved_by' => $_POST['approvedBy'] ?? null,
         'result_approved_datetime' => $_POST['approvedOnDateTime'] ?? null,
         'lab_tech_comments' => $_POST['labComments'] ?? null,
-        'reason_for_vl_result_changes' => $allChange ?? null,
+        'reason_for_result_changes' => $allChange ?? null,
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? ($_SESSION['userId'] ?? $_POST['userId']) : null,
         'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
         'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'],
@@ -169,9 +169,9 @@ try {
     $db->where('vl_sample_id', $_POST['vlSampleId']);
     $getPrevResult = $db->getOne('form_vl');
     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult) {
-         $vlData['result_modified'] = "yes";
+        $vlData['result_modified'] = "yes";
     } else {
-         $vlData['result_modified'] = "no";
+        $vlData['result_modified'] = "no";
     }
 
 

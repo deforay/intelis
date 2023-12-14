@@ -68,8 +68,8 @@ if (!isset($facilityResult[0]['facility_district'])) {
 //set reason for changes history
 $rch = '';
 $allChange = [];
-if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != '' && $vlQueryInfo['reason_for_vl_result_changes'] != null) {
-	$allChange = json_decode((string) $vlQueryInfo['reason_for_vl_result_changes'], true);
+if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for_result_changes'] != '' && $vlQueryInfo['reason_for_result_changes'] != null) {
+	$allChange = json_decode((string) $vlQueryInfo['reason_for_result_changes'], true);
 	if (!empty($allChange)) {
 		$rch .= '<h4>Result Changes History</h4>';
 		$rch .= '<table style="width:100%;">';
@@ -1003,7 +1003,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 							<input type="hidden" name="revised" id="revised" value="no" />
 							<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
 							<input type="hidden" name="isRemoteSample" value="<?= ($vlQueryInfo['remote_sample']); ?>" />
-							<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_vl_result_changes']); ?>" />
+							<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_result_changes']); ?>" />
 							<input type="hidden" name="oldStatus" value="<?= ($vlQueryInfo['result_status']); ?>" />
 							<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
