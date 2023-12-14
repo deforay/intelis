@@ -40,6 +40,17 @@ if ! command -v php &>/dev/null; then
     exit 1
 fi
 
+ask_yes_no() {
+    while true; do
+        read -p "$1 (yes/no): " answer
+        case $(echo "$answer" | awk '{print tolower($0)}') in
+        'yes' | 'y') return 0 ;;
+        'no' | 'n') return 1 ;;
+        *) echo "Please answer yes or no." ;;
+        esac
+    done
+}
+
 # Check for PHP version 8.2.x
 php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
 desired_php_version="8.2"
@@ -122,8 +133,7 @@ backup_database() {
     done
 }
 # Ask the user if they want to backup the database
-read -p "Do you want to backup the database? (yes/no) " backup_database_answer
-if [[ "$backup_database_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
+if ask_yes_no "Do you want to backup the database"; then
     # Ask for MySQL root password
     echo "Please enter your MySQL root password:"
     read -s mysql_root_password
@@ -176,8 +186,7 @@ else
 fi
 
 # Ask the user if they want to backup the VLSM folder
-read -p "Do you want to backup the VLSM folder before updating? (yes/no) " backup_vlsm_answer
-if [[ "$backup_vlsm_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
+if ask_yes_no "Do you want to backup the VLSM folder before updating? (yes/no)"; then
     # Backup Old VLSM Folder
     echo "Backing up old VLSM folder..."
     timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
@@ -235,10 +244,7 @@ spinner "$pid"
 wait $pid
 
 # Ask User to Run 'run-once' Scripts
-echo "Do you want to run scripts from ${vlsm_path}/run-once/? (yes/no)"
-read -r run_once_answer
-
-if [[ "$run_once_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
+if ask_yes_no "Do you want to run scripts from ${vlsm_path}/run-once/? (yes/no)"; then
     # List the files in run-once directory
     echo "Available scripts to run:"
     files=("${vlsm_path}/run-once/"*.php)

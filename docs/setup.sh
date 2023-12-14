@@ -279,6 +279,17 @@ else
     mkdir -p "${vlsm_path}"
 fi
 
+ask_yes_no() {
+    while true; do
+        read -p "$1 (yes/no): " answer
+        case $(echo "$answer" | awk '{print tolower($0)}') in
+        'yes' | 'y') return 0 ;;
+        'no' | 'n') return 1 ;;
+        *) echo "Please answer yes or no." ;;
+        esac
+    done
+}
+
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
 cp -R "$temp_dir/vlsm-master/"* "${vlsm_path}"
 
@@ -327,22 +338,7 @@ vlsm_config_block="DocumentRoot \"${vlsm_path}/public\"
         Require all granted
     </Directory>"
 
-if [[ "$install_alongside" =~ ^[Yy][Ee][Ss]$ ]]; then
-    # Create and configure ${hostname}.conf
-    vhost_file="/etc/apache2/sites-available/${hostname}.conf"
-    echo "Creating ${vhost_file} with VLSM configuration..."
-    {
-        echo "<VirtualHost *:8080>"
-        echo "${vlsm_config_block}"
-        echo "</VirtualHost>"
-    } >"${vhost_file}"
-
-    # Enable the new site and disable the default site
-    a2ensite "${hostname}.conf"
-    #a2dissite 000-default.conf
-
-else
-
+if ask_yes_no "Is this computer going to be primarily only for VLSM?"; then
     # Path to the default Apache2 vhost file
     apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
 
@@ -373,6 +369,20 @@ else
     else
         echo "Apache configuration is already set as desired."
     fi
+
+else
+    # Create and configure ${hostname}.conf
+    vhost_file="/etc/apache2/sites-available/${hostname}.conf"
+    echo "Creating ${vhost_file} with VLSM configuration..."
+    {
+        echo "<VirtualHost *:8080>"
+        echo "${vlsm_config_block}"
+        echo "</VirtualHost>"
+    } >"${vhost_file}"
+
+    # Enable the new site and disable the default site
+    a2ensite "${hostname}.conf"
+    #a2dissite 000-default.conf
 fi
 # Restart Apache to apply changes
 service apache2 restart || {
@@ -457,11 +467,7 @@ if [ ! -z "$remote_sts_url" ]; then
     echo "Remote data sync completed."
 fi
 
-# Ask User to Run 'run-once' Scripts
-echo "Do you want to run scripts from ${vlsm_path}/run-once/? (yes/no)"
-read -r run_once_answer
-
-if [[ "$run_once_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
+if ask_yes_no "Do you want to run scripts from ${vlsm_path}/run-once/? (yes/no)"; then
     # List the files in run-once directory
     echo "Available scripts to run:"
     files=("${vlsm_path}/run-once/"*.php)

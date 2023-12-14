@@ -28,7 +28,9 @@ $userResult = $usersService->getAllUsers();
 
 $userInfo = [];
 foreach ($userResult as $user) {
-	$userInfo[$user['user_id']] = ($user['user_name']);
+	if (!empty($user['user_name'])) {
+		$userInfo[$user['user_id']] = $user['user_name'];
+	}
 }
 
 // Sanitized values from $request object
@@ -38,7 +40,7 @@ $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 //$id = $_GET['id'];
-$facilityInfo = $db->rawQueryOne('SELECT * from facility_details where facility_id= ?', [$id]);
+$facilityInfo = $db->rawQueryOne('SELECT * FROM facility_details WHERE facility_id= ?', [$id]);
 
 $facilityAttributes = json_decode((string) $facilityInfo['facility_attributes']);
 
@@ -53,17 +55,14 @@ $chkHcResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as
 
 $fType = $facilityInfo['facility_type'];
 
-$testTypeInfo = $db->rawQueryOne('SELECT * FROM testing_labs WHERE facility_id = ?', [$id]);
+$testTypeInfo = $db->rawQuery('SELECT * FROM testing_labs WHERE facility_id = ?', [$id]);
 $availPlatforms = [];
-if (!empty($testTypeInfo)) {
+if (!empty($testTypeInfo) && !empty($testTypeInfo['attributes'])) {
 	$attrValue = json_decode((string) $testTypeInfo['attributes']);
 	$availPlatforms = $attrValue->platforms;
 }
 
-
-
 $signResults = $db->rawQuery('SELECT * FROM lab_report_signatories WHERE lab_id=? ORDER BY display_order, name_of_signatory', array($id));
-
 
 $editTestType = '';
 $div = '';
@@ -162,7 +161,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="facilityName" class="col-lg-4 control-label"><?php echo _translate("Facility Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="facilityName" name="facilityName" placeholder="<?php echo _translate('Facility Name'); ?>" title="<?php echo _translate('Please enter facility name'); ?>" value="<?= htmlspecialchars((string) $facilityInfo['facility_name'], ENT_QUOTES, 'UTF-8'); ?>" onblur="checkNameValidation('facility_details','facility_name',this,'<?php echo "facility_id##" . htmlspecialchars((string) $facilityInfo['facility_id'],  ENT_QUOTES, 'UTF-8'); ?>','<?php echo _translate("The facility name that you entered already exists.Enter another name"); ?>',null)" />
+										<input type="text" class="form-control isRequired" id="facilityName" name="facilityName" placeholder="<?php echo _translate('Facility Name'); ?>" title="<?php echo _translate('Please enter facility name'); ?>" value="<?= ((string) $facilityInfo['facility_name']); ?>" onblur="checkNameValidation('facility_details','facility_name',this,'<?php echo "facility_id##" . ((string) $facilityInfo['facility_id']); ?>','<?php echo _translate("The facility name that you entered already exists.Enter another name"); ?>',null)" />
 										<input type="hidden" class="form-control isRequired" id="facilityId" name="facilityId" value="<?php echo base64_encode((string) $facilityInfo['facility_id']); ?>" />
 									</div>
 								</div>
@@ -171,7 +170,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="facilityCode" class="col-lg-4 control-label"><?php echo _translate("Facility Code"); ?><br> <small><?php echo _translate("(National Unique Code)"); ?></small> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?php echo _translate('Facility Code'); ?>" title="<?php echo _translate('Please enter facility code'); ?>" value="<?= htmlspecialchars((string) $facilityInfo['facility_code']); ?>" onblur="checkNameValidation('facility_details','facility_code',this,'<?php echo "facility_id##" . htmlspecialchars((string) $facilityInfo['facility_id'],  ENT_QUOTES, 'UTF-8'); ?>','<?php echo _translate("The code that you entered already exists.Try another code"); ?>',null)" />
+										<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?php echo _translate('Facility Code'); ?>" title="<?php echo _translate('Please enter facility code'); ?>" value="<?= ((string) $facilityInfo['facility_code']); ?>" onblur="checkNameValidation('facility_details','facility_code',this,'<?php echo 'facility_id##' . ((string) $facilityInfo['facility_id']); ?>','<?php echo _translate("The code that you entered already exists.Try another code"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -181,7 +180,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="otherId" class="col-lg-4 control-label"><?php echo _translate("Other/External Code"); ?> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="otherId" name="otherId" placeholder="<?php echo _translate('Other/External Code'); ?>" value="<?= htmlspecialchars((string) $facilityInfo['other_id'],  ENT_QUOTES, 'UTF-8'); ?>" />
+										<input type="text" class="form-control" id="otherId" name="otherId" placeholder="<?php echo _translate('Other/External Code'); ?>" value="<?= ((string) $facilityInfo['other_id']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -195,7 +194,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											$k = 10;
 											foreach ($fResult as $type) {
 											?>
-												<option data-disable="<?php echo $k; ?>" value="<?= htmlspecialchars((string) $type['facility_type_id']); ?>" <?php echo ($facilityInfo['facility_type'] == $type['facility_type_id']) ? "selected='selected'" : "" ?>><?php echo ($type['facility_type_name']); ?></option>
+												<option data-disable="<?php echo $k; ?>" value="<?= ((string) $type['facility_type_id']); ?>" <?php echo ($facilityInfo['facility_type'] == $type['facility_type_id']) ? "selected='selected'" : "" ?>><?php echo ($type['facility_type_name']); ?></option>
 											<?php
 												$k = $k + 10;
 											}
@@ -210,7 +209,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="email" class="col-lg-4 control-label"><?php echo _translate("Email(s)"); ?> <br> <small><?php echo _translate("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _translate('eg-email1@gmail.com,email2@gmail.com'); ?>" value="<?= htmlspecialchars((string) $facilityInfo['facility_emails']); ?>" />
+										<input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _translate('eg-email1@gmail.com,email2@gmail.com'); ?>" value="<?= ((string) $facilityInfo['facility_emails']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -260,7 +259,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="phoneNo" class="col-lg-4 control-label"><?php echo _translate("Phone Number"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="<?php echo _translate('Phone Number'); ?>" value="<?= htmlspecialchars((string) $facilityInfo['facility_mobile_numbers']); ?>" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,'<?php echo "facility_id##" . $facilityInfo['facility_id']; ?>','<?php echo _translate("The mobile no that you entered already exists.Enter another mobile no."); ?>',null)" />
+										<input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="<?php echo _translate('Phone Number'); ?>" value="<?= ((string) $facilityInfo['facility_mobile_numbers']); ?>" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,'<?php echo "facility_id##" . $facilityInfo['facility_id']; ?>','<?php echo _translate("The mobile no that you entered already exists.Enter another mobile no."); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -274,10 +273,10 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value="other">Other</option>
 											</select>
 											<input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="<?php echo _translate('Enter Province/State'); ?>" title="<?php echo _translate('Please enter province/state'); ?>" style="margin-top:4px;display:none;" />
-											<input type="hidden" name="state" id="state" value="<?= htmlspecialchars((string) $facilityInfo['facility_state']); ?>" />
+											<input type="hidden" name="state" id="state" value="<?= ((string) $facilityInfo['facility_state']); ?>" />
 										<?php }
 										if ((!isset($facilityInfo['facility_state_id']) || $facilityInfo['facility_state_id'] == "") && (isset($facilityInfo['facility_state']) || $facilityInfo['facility_state'] != "")) { ?>
-											<input type="text" value="<?= htmlspecialchars((string) $facilityInfo['facility_state']); ?>" class="form-control isRequired" name="oldState" id="oldState" placeholder="<?php echo _translate('Enter Province/State'); ?>" title="<?php echo _translate('Please enter province/state'); ?>" />
+											<input type="text" value="<?= ((string) $facilityInfo['facility_state']); ?>" class="form-control isRequired" name="oldState" id="oldState" placeholder="<?php echo _translate('Enter Province/State'); ?>" title="<?php echo _translate('Please enter province/state'); ?>" />
 										<?php } ?>
 									</div>
 								</div>
@@ -295,9 +294,9 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											<option value="other">Other</option>
 										</select>
 										<input type="text" class="form-control" name="districtNew" id="districtNew" placeholder="<?php echo _translate('Enter District/County'); ?>" title="<?php echo _translate('Please enter District/County'); ?>" style="margin-top:4px;display:none;" />
-										<input type="hidden" id="district" name="district" value="<?= htmlspecialchars((string) $facilityInfo['facility_district']); ?>" />
+										<input type="hidden" id="district" name="district" value="<?= ((string) $facilityInfo['facility_district']); ?>" />
 										<?php if ((!isset($facilityInfo['facility_district_id']) || $facilityInfo['facility_district_id'] == "") && (isset($facilityInfo['facility_district']) || $facilityInfo['facility_district'] != "")) { ?>
-											<input type="text" value="<?= htmlspecialchars((string) $facilityInfo['facility_district']); ?>" class="form-control isRequired" name="oldDistrict" id="oldDistrict" placeholder="<?php echo _translate('Enter District/County'); ?>" title="<?php echo _translate('Please enter district/county'); ?>" />
+											<input type="text" value="<?= ((string) $facilityInfo['facility_district']); ?>" class="form-control isRequired" name="oldDistrict" id="oldDistrict" placeholder="<?php echo _translate('Enter District/County'); ?>" title="<?php echo _translate('Please enter district/county'); ?>" />
 										<?php } ?>
 									</div>
 								</div>
@@ -306,7 +305,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="hubName" class="col-lg-4 control-label"><?php echo _translate("Linked Hub Name (if applicable)"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="hubName" name="hubName" placeholder="<?php echo _translate('Hub Name'); ?>" title="<?php echo _translate('Please enter hub name'); ?>" value="<?= htmlspecialchars((string) $facilityInfo['facility_hub_name']); ?>" />
+										<input type="text" class="form-control" id="hubName" name="hubName" placeholder="<?php echo _translate('Hub Name'); ?>" title="<?php echo _translate('Please enter hub name'); ?>" value="<?= ((string) $facilityInfo['facility_hub_name']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -318,7 +317,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="address" class="col-lg-4 control-label"><?php echo _translate("Address"); ?></label>
 									<div class="col-lg-7">
-										<textarea class="form-control" name="address" id="address" placeholder="<?php echo _translate('Address'); ?>"><?= htmlspecialchars((string) $facilityInfo['address']); ?></textarea>
+										<textarea class="form-control" name="address" id="address" placeholder="<?php echo _translate('Address'); ?>"><?= ((string) $facilityInfo['address']); ?></textarea>
 									</div>
 								</div>
 							</div>
@@ -326,7 +325,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="country" class="col-lg-4 control-label"><?php echo _translate("Country"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="country" name="country" placeholder="<?php echo _translate('Country'); ?>" value="<?= htmlspecialchars((string) $facilityInfo['country']); ?>" />
+										<input type="text" class="form-control" id="country" name="country" placeholder="<?php echo _translate('Country'); ?>" value="<?= ((string) $facilityInfo['country']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -337,7 +336,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="latitude" class="col-lg-4 control-label"><?php echo _translate("Latitude"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="latitude" name="latitude" placeholder="<?php echo _translate('Latitude'); ?>" title="<?php echo _translate('Please enter latitude'); ?>" value="<?= htmlspecialchars((string) $facilityInfo['latitude']); ?>" />
+										<input type="text" class="form-control forceNumeric" id="latitude" name="latitude" placeholder="<?php echo _translate('Latitude'); ?>" title="<?php echo _translate('Please enter latitude'); ?>" value="<?= ((string) $facilityInfo['latitude']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -346,7 +345,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="longitude" class="col-lg-4 control-label"><?php echo _translate("Longitude"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="longitude" name="longitude" placeholder="<?php echo _translate('Longitude'); ?>" title="<?php echo _translate('Please enter longitude'); ?>" value="<?= htmlspecialchars((string) $facilityInfo['longitude']); ?>" />
+										<input type="text" class="form-control forceNumeric" id="longitude" name="longitude" placeholder="<?php echo _translate('Longitude'); ?>" title="<?php echo _translate('Please enter longitude'); ?>" value="<?= ((string) $facilityInfo['longitude']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -511,19 +510,19 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 
 											if (isset($facilityInfo['facility_logo']) && trim((string) $facilityInfo['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) {
 											?>
-												<img src="/uploads/facility-logo/<?= htmlspecialchars((string) $facilityInfo['facility_id']); ?>/<?= htmlspecialchars((string) $facilityInfo['facility_logo']); ?>" alt="Logo image">
+												<img src="/uploads/facility-logo/<?= ((string) $facilityInfo['facility_id']); ?>/<?= ((string) $facilityInfo['facility_logo']); ?>" alt="Logo image">
 											<?php } else { ?>
 
 											<?php } ?>
 										</div>
 										<div>
 											<span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _translate("Select image"); ?></span><span class="fileinput-exists"><?php echo _translate("Change"); ?></span>
-												<input type="file" id="labLogo" name="labLogo" title="<?php echo _translate('Please select logo image'); ?>" onchange="getNewLabImage('<?= htmlspecialchars((string) $facilityInfo['facility_logo']); ?>');">
+												<input type="file" id="labLogo" name="labLogo" title="<?php echo _translate('Please select logo image'); ?>" onchange="getNewLabImage('<?= ((string) $facilityInfo['facility_logo']); ?>');">
 											</span>
 											<?php
 											if (isset($facilityInfo['facility_logo']) && trim((string) $facilityInfo['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) {
 											?>
-												<a id="clearLabImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearLabImage('<?= htmlspecialchars((string) $facilityInfo['facility_logo']); ?>')"><?php echo _translate("Clear"); ?></a>
+												<a id="clearLabImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearLabImage('<?= ((string) $facilityInfo['facility_logo']); ?>')"><?php echo _translate("Clear"); ?></a>
 											<?php } ?>
 											<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _translate("Remove"); ?></a>
 										</div>
@@ -538,7 +537,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							<div class="form-group">
 								<label for="" class="col-lg-4 control-label"><?php echo _translate("Header Text"); ?></label>
 								<div class="col-lg-7">
-									<input type="text" class="form-control " id="headerText" name="headerText" placeholder="<?php echo _translate('Header Text'); ?>" title="<?php echo _translate('Please enter header text'); ?>" value="<?= htmlspecialchars((string) $facilityInfo['header_text']); ?>" />
+									<input type="text" class="form-control " id="headerText" name="headerText" placeholder="<?php echo _translate('Header Text'); ?>" title="<?php echo _translate('Please enter header text'); ?>" value="<?= ((string) $facilityInfo['header_text']); ?>" />
 								</div>
 							</div>
 						</div>
@@ -577,7 +576,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<input <?php echo $show; ?> class="showFile<?php echo ($key + 1); ?>" type="file" name="signature[]" id="signature<?= $key + 1; ?>" placeholder="<?php echo _translate('Signature'); ?>" title="<?php echo _translate('Please enter the Signature'); ?>">
 											</td>
 											<td style="width:14%;">
-												<select class="select2" id="testSignType<?php echo ($key + 1); ?>" name="testSignType[<?= $key + 1; ?>][]" title="<?php echo _translate('Choose one test type'); ?>" multiple>
+												<select class="select2 testSignType" id="testSignType<?php echo ($key + 1); ?>" name="testSignType[<?= $key + 1; ?>][]" title="<?php echo _translate('Choose one test type'); ?>" multiple>
 													<option value="vl" <?php echo (isset($row['test_types']) && in_array("vl", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Viral Load"); ?></option>
 													<option value="eid" <?php echo (isset($row['test_types']) && in_array("eid", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Early Infant Diagnosis"); ?></option>
 													<option value="covid19" <?php echo (isset($row['test_types']) && in_array("covid19", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Covid-19"); ?></option>
@@ -604,7 +603,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 										<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation1" placeholder="<?php echo _translate('Designation'); ?>" title="<?php echo _translate('Please enter the Designation'); ?>"></td>
 										<td style="width:10%;"><input type="file" name="signature[]" id="signature1" placeholder="<?php echo _translate('Signature'); ?>" title="<?php echo _translate('Please enter the Signature'); ?>"></td>
 										<td style="width:14%;">
-											<select class="select2" id="testSignType1" name="testSignType[1][]" title="<?php echo _translate('Choose one test type'); ?>" multiple>
+											<select class="select2 testSignType" id="testSignType1" name="testSignType[1][]" title="<?php echo _translate('Choose one test type'); ?>" multiple>
 												<option value="vl"><?php echo _translate("Viral Load"); ?></option>
 												<option value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
 												<option value="covid19"><?php echo _translate("Covid-19"); ?></option>
@@ -664,28 +663,33 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 
 		$('#facilityType').trigger('change');
 
+		$(".testSignType").select2({
+			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
+			width: '150px'
+		});
+
 		$("#testType").select2({
-			placeholder: '<?php echo _translate("Select Test Type"); ?>',
+			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
 			width: '100%'
 		});
 
 		$("#contactPerson").select2({
-			placeholder: '<?php echo _translate("Select Lab Manager"); ?>',
+			placeholder: '<?php echo _translate("Select Lab Manager", true); ?>',
 			width: '100%'
 		});
 
 		$("#stateId").select2({
-			placeholder: '<?php echo _translate("Select Province"); ?>',
+			placeholder: '<?php echo _translate("Select Province", true); ?>',
 			width: '100%'
 		});
 
 		$("#districtId").select2({
-			placeholder: '<?php echo _translate("Select District"); ?>',
+			placeholder: '<?php echo _translate("Select District", true); ?>',
 			width: '100%'
 		});
 
 		$("#availablePlatforms").multipleSelect({
-			placeholder: '<?php echo _translate("Select Available Platforms"); ?>',
+			placeholder: '<?php echo _translate("Select Available Platforms", true); ?>',
 			width: '100%'
 		});
 
@@ -838,7 +842,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 		if ($("#facilityType").val() == '1' || $("#facilityType").val() == '4') {
 			$.post("/facilities/getFacilityMapUser.php", {
 					fType: $("#facilityType").val(),
-					facilityId: <?= htmlspecialchars($id); ?>,
+					facilityId: <?= ($id); ?>,
 				},
 				function(data) {
 					$("#userDetails").html(data);
@@ -950,7 +954,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 			<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _translate('Designation', true); ?>" title="<?php echo _translate('Please enter the Designation', true); ?>"></td>
 			<td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="<?php echo _translate('Signature', true); ?>" title="<?php echo _translate('Please enter the Signature', true); ?>"></td>
 			<td style="width:14%;">
-				<select class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate('Choose one test type', true); ?>" multiple>
+				<select class="select2 testSignType" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate('Choose one test type', true); ?>" multiple>
 					<option value="vl"><?php echo _translate("Viral Load", true); ?></option>
 					<option value="eid"><?php echo _translate("Early Infant Diagnosis", true); ?></option>
 					<option value="covid19"><?php echo _translate("Covid-19", true); ?></option>
@@ -972,8 +976,8 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 		</tr>`;
 		$("#signDetails").append(rowString);
 
-		$("#testSignType" + testCounter).multipleSelect({
-			placeholder: 'Select Test Type',
+		$("#testSignType" + testCounter).select2({
+			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
 			width: '150px'
 		});
 	}
