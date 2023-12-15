@@ -6,6 +6,7 @@
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
@@ -482,19 +483,7 @@ if (!empty($requestResult)) {
         $html .= '</table>';
 
         if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
-            $ciphering = "AES-128-CTR";
-            $iv_length = openssl_cipher_iv_length($ciphering);
-            $options = 0;
-            $simple_string = $result['tb_id'] . "&&&qr";
-            $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
-            $encryption_key = SYSTEM_CONFIG['tryCrypt'];
-            $Cid = openssl_encrypt(
-                $simple_string,
-                $ciphering,
-                $encryption_key,
-                $options,
-                $encryption_iv
-            );
+            $viewId = CommonService::encryptViewQRCode($result['unique_id']);
             $pdf->writeHTML($html);
             $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
             if (isset($arr['tb_report_qr_code']) && $arr['tb_report_qr_code'] == 'yes') {
@@ -506,7 +495,7 @@ if (!empty($requestResult)) {
                 } else {
                     $h = 148.5;
                 }
-                //$pdf->write2DBarcode($remoteUrl . '/tb/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, [], 'N');
+                //$pdf->write2DBarcode($remoteUrl . '/tb/results/view.php?q=' . $viewId . '', 'QRCODE,H', 170, $h, 20, 20, [], 'N');
             }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

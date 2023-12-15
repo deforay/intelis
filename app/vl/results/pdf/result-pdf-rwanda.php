@@ -406,12 +406,9 @@ if (!empty($requestResult)) {
           if (!empty($result['result'])) {
                $pdf->writeHTML($html);
                if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
-                    $keyFromGlobalConfig = $general->getGlobalConfig('key');
-                    if (!empty($keyFromGlobalConfig)) {
-                         $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode((string) $keyFromGlobalConfig));
-                         $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-                         $pdf->write2DBarcode($remoteUrl . '/vl/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
-                    }
+                    $viewId = CommonService::encryptViewQRCode($result['unique_id']);
+                    $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
+                    $pdf->write2DBarcode($remoteUrl . '/vl/results/view.php?q=' . $viewId, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
                }
                $pdf->lastPage();
                $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

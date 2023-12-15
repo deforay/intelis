@@ -2,6 +2,7 @@
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
@@ -350,23 +351,11 @@ $html .= '</table>';
 $html .= '</td></tr></table>';
 
 if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
-    $ciphering = "AES-128-CTR";
-    $iv_length = openssl_cipher_iv_length($ciphering);
-    $options = 0;
-    $simple_string = $result['covid19_id'] . "&&&qr";
-    $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
-    $encryption_key = SYSTEM_CONFIG['tryCrypt'];
-    $Cid = openssl_encrypt(
-        $simple_string,
-        $ciphering,
-        $encryption_key,
-        $options,
-        $encryption_iv
-    );
+    $viewId = CommonService::encryptViewQRCode($result['unique_id']);
     $pdf->writeHTML($html);
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
         $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid, 'QRCODE,H', 20, 235, 30, 30, [], 'N');
+        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $viewId, 'QRCODE,H', 20, 235, 30, 30, [], 'N');
         $pdf->writeHTML('<span style="font-size:12px;font-weight:normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scan me</span>');
     }
     $pdf->lastPage();

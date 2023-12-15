@@ -1204,4 +1204,43 @@ class CommonService
             return $response;
         });
     }
+
+    public static function encryptViewQRCode($uniqueId)
+    {
+        $ciphering = "AES-128-CTR";
+        $options = 0;
+        $simple_string = $uniqueId . "&&&qr";
+        $encryption_iv = random_bytes(openssl_cipher_iv_length($ciphering));
+        $encryption_key = SYSTEM_CONFIG['tryCrypt'];
+        return openssl_encrypt(
+            $simple_string,
+            $ciphering,
+            $encryption_key,
+            $options,
+            $encryption_iv
+        ) . '#' . bin2hex($encryption_iv);
+    }
+    public static function decryptViewQRCode($viewId)
+    {
+        $ciphering = "AES-128-CTR";
+        $options = 0;
+        if (strpos($viewId, '#') !== false) {
+            list($encryptedData, $ivHex) = explode('#', $viewId, 2);
+            // Convert the hex string back to binary for the IV
+            $decryption_iv = hex2bin($ivHex);
+        } else {
+            // Use the fixed IV from config
+            $encryptedData = $viewId;
+            $decryption_iv = SYSTEM_CONFIG['tryCrypt'];
+        }
+
+        $decryption_key = SYSTEM_CONFIG['tryCrypt'];
+        return openssl_decrypt(
+            $encryptedData,
+            $ciphering,
+            $decryption_key,
+            $options,
+            $decryption_iv
+        );
+    }
 }
