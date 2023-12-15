@@ -8,6 +8,7 @@ use App\Utilities\MiscUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\EIDResultPDFHelper;
 
 
 /** @var EidService $eidService */
@@ -40,7 +41,7 @@ if (!empty($requestResult)) {
             }
         }
         // create new PDF document
-        $pdf = new EIDResultPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new EIDResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
         } else {
@@ -361,11 +362,15 @@ if (!empty($requestResult)) {
             $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">DATE & HEURE</td>';
             $html .= '</tr>';
             foreach ($signResults as $key => $row) {
-                $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+                $lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+                $signature = '';
+                if (MiscUtility::imageExists($lmSign)) {
+                    $signature = '<img src="' . $lmSign . '" style="width:40px;" />';
+                }
                 $html .= '<tr>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid gray;">' . $row['designation'] . '</td>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $row['name_of_signatory'] . '</td>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;"><img src="' . $lmSign . '" style="width:30px;"></td>';
+                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $signature . '</td>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . date('d-M-Y H:i:s a') . '</td>';
                 $html .= '</tr>';
             }

@@ -6,16 +6,10 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\PdfConcatenateHelper;
+use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
 
-class DRC_VL_PDF extends VLResultPDF
+class DRC_VL_PDF extends VLResultPDFHelper
 {
-	public ?string $logo;
-	public ?string $text;
-	public ?string $lab;
-	public ?string $htitle;
-	public $formId = '';
-	public $labFacilityId = '';
-
 	//Page header
 	public function Header()
 	{
@@ -426,11 +420,15 @@ if (!empty($requestResult)) {
 			$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">DATE & HEURE</td>';
 			$html .= '</tr>';
 			foreach ($signResults as $key => $row) {
-				$lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+				$lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+				$signature = '';
+				if (MiscUtility::imageExists($lmSign)) {
+					$signature = '<img src="' . $lmSign . '" style="width:40px;" />';
+				}
 				$html .= '<tr>';
 				$html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid gray;">' . $row['designation'] . '</td>';
 				$html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $row['name_of_signatory'] . '</td>';
-				$html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;"><img src="' . $lmSign . '" style="width:30px;"></td>';
+				$html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $signature . '</td>';
 				$html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . date('d-M-Y H:i:s a') . '</td>';
 				$html .= '</tr>';
 			}

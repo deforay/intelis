@@ -4,8 +4,9 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
-class DRCCovid19PDF2 extends Covid19ResultPDF
+class DRCCovid19PDF2 extends Covid19ResultPDFHelper
 {
     //Page header
     public function Header()

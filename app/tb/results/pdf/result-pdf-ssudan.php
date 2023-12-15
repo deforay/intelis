@@ -9,8 +9,9 @@ use App\Utilities\MiscUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\TBResultPDFHelper;
 
-class SouthSudan_PDF extends TBResultPdf
+class SouthSudanTBResultPDF extends TBResultPDFHelper
 {
     public ?string $logo;
     public ?string $text;
@@ -128,7 +129,7 @@ if (!empty($requestResult)) {
             }
         }
         // create new PDF document
-        $pdf = new SouthSudan_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new SouthSudanTBResultPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = $result['facilityLogo'];
         } else {
@@ -505,7 +506,7 @@ if (!empty($requestResult)) {
                 } else {
                     $h = 148.5;
                 }
-                //$pdf->write2DBarcode($remoteUrl . '/tb/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
+                //$pdf->write2DBarcode($remoteUrl . '/tb/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, [], 'N');
             }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

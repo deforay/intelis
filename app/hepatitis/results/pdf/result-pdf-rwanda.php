@@ -7,6 +7,9 @@ use App\Services\HepatitisService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\HepatitisResultPDFHelper;
+
+use const COUNTRY\RWANDA;
 
 // this file is included in hepatitis/results/generate-result-pdf.php
 
@@ -44,7 +47,7 @@ if (!empty($requestResult)) {
             }
         }
         // create new PDF document
-        $pdf = new HepatitisResultPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new HepatitisResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         $pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'HEPATATIS - VIRAL LOAD PATIENT REPORT');
         // set document information
         $pdf->setCreator('VLSM');
@@ -205,9 +208,8 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $countryName = (isset($country[$arr['vl_form']]) && $country[$arr['vl_form']] != "") ? ($country[$arr['vl_form']]) : "Who";
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['vl_testing_site']) . '</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $countryName . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"> RWANDA </td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         $html .= '</tr>';
@@ -457,7 +459,7 @@ if (!empty($requestResult)) {
                 if (!empty($keyFromGlobalConfig)) {
                     $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode((string) $keyFromGlobalConfig));
                     $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-                    $pdf->write2DBarcode($remoteUrl . '/hepatitis/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 200, 30, 30, $style, 'N');
+                    $pdf->write2DBarcode($remoteUrl . '/hepatitis/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 200, 30, 30, [], 'N');
                 }
             }
             $pdf->lastPage();

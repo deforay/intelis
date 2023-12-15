@@ -5,10 +5,11 @@ use App\Utilities\DateUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
 if (!class_exists('DRCCovid19PDF6')) {
 
-    class DRCCovid19PDF6 extends Covid19ResultPDF
+    class DRCCovid19PDF6 extends Covid19ResultPDFHelper
     {
 
         //Page header

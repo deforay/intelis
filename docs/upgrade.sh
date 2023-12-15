@@ -186,7 +186,7 @@ else
 fi
 
 # Ask the user if they want to backup the VLSM folder
-if ask_yes_no "Do you want to backup the VLSM folder before updating? (yes/no)"; then
+if ask_yes_no "Do you want to backup the VLSM folder before updating? "; then
     # Backup Old VLSM Folder
     echo "Backing up old VLSM folder..."
     timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
@@ -244,7 +244,7 @@ spinner "$pid"
 wait $pid
 
 # Ask User to Run 'run-once' Scripts
-if ask_yes_no "Do you want to run scripts from ${vlsm_path}/run-once/? (yes/no)"; then
+if ask_yes_no "Do you want to run scripts from ${vlsm_path}/run-once/? "; then
     # List the files in run-once directory
     echo "Available scripts to run:"
     files=("${vlsm_path}/run-once/"*.php)

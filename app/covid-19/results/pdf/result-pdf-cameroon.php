@@ -9,8 +9,9 @@ use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
-class CameroonCovid19PDF extends Covid19ResultPDF
+class CameroonCovid19PDF extends Covid19ResultPDFHelper
 {
     //Page header
     public function Header()
@@ -450,15 +451,14 @@ if (!empty($requestResult)) {
             $html .= '</tr>';
             foreach ($signResults as $key => $row) {
                 $lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
-                if (!$pdf->imageExists($lmSign)) {
-                    $lmSign = "";
-                } else {
-                    $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+                $signature = '';
+                if (MiscUtility::imageExists($lmSign)) {
+                    $signature = '<img src="' . $lmSign . '" style="width:40px;" />';
                 }
                 $html .= '<tr>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">' . $row['designation'] . '</td>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . $row['name_of_signatory'] . '</td>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lmSign . '" style="width:40px;"></td>';
+                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . $signature . '</td>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
                 $html .= '</tr>';
             }
