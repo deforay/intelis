@@ -14,7 +14,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 
 
 $showPatientName = false;

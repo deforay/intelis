@@ -14,7 +14,7 @@ if (empty($_POST)) {
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $db->where('facility_id', $_POST['facilityId']);
 $facilityDetails = $db->getOne('facility_details', array('facility_attributes'));

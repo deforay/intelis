@@ -24,7 +24,7 @@ $facilityService = ContainerRegistry::get(FacilitiesService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 try {
 

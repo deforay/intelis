@@ -16,7 +16,7 @@ $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName = "r_vl_test_failure_reasons";
 $result = 0;

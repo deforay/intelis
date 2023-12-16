@@ -20,7 +20,7 @@ $batchService = ContainerRegistry::get(BatchService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $title = "Viral Load";
 $refTable = "form_vl";
 $refPrimaryColumn = "vl_sample_id";

@@ -25,7 +25,7 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 // echo "<pre>";print_r($_POST);die;
 $tableName = "form_generic";
 $testTableName = "generic_test_results";

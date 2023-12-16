@@ -32,7 +32,7 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();

@@ -18,7 +18,7 @@ ini_set('max_execution_time', 300000);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName1 = "activity_log";
 $tableName2 = "form_tb";

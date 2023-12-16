@@ -7,7 +7,7 @@ use App\Utilities\DateUtility;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 if (!is_array($_POST['facility']) || empty($_POST['facility'])) {
   $_POST['facility'] = [];

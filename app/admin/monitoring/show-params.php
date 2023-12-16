@@ -16,8 +16,8 @@ $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
-$_COOKIE = $request->getCookieParams();
+$_GET = _sanitizeInput($request->getQueryParams());
+$_COOKIE = _sanitizeInput($request->getCookieParams());
 
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 

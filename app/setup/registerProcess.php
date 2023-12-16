@@ -14,7 +14,7 @@ use App\Registries\ContainerRegistry;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName = "user_details";
 $userName = $_POST['userName'];

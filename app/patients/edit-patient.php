@@ -17,7 +17,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $state = $geolocationService->getProvinces("yes", true, $_SESSION['facilityMap']);
 
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $patientQuery = "SELECT * FROM patients WHERE patient_id=?";

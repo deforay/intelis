@@ -15,7 +15,7 @@ $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName = "form_vl";
 
@@ -132,4 +132,4 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
    header('location:email-results.php');
 }
 ?>
- <div class=".b."></div>
+<div class=".b."></div>

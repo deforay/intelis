@@ -34,7 +34,7 @@
         "crunzphp/crunz": "^3.4",
         "ramsey/uuid": "^4.2",
         "hackzilla/password-generator": "^1.6",
-        "laminas/laminas-filter": "^2.22",
+        "laminas/laminas-filter": "^2.33",
         "symfony/string": "^5.4",
         "laminas/laminas-config": "^3.7",
         "filp/whoops": "^2.15",

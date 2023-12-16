@@ -18,7 +18,7 @@ try {
     // Sanitized values from $request object
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
-    $_POST = $request->getParsedBody();
+    $_POST = _sanitizeInput($request->getParsedBody());
 
     $id = explode(",", (string) $_POST['id']);
     for ($i = 0; $i < count($id); $i++) {

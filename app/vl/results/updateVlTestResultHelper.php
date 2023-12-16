@@ -21,7 +21,7 @@ $vlService = ContainerRegistry::get(VlService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";

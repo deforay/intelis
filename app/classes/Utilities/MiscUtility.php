@@ -289,4 +289,61 @@ class MiscUtility
     {
         return array_diff_key($fullArray, array_flip($unwantedKeys));
     }
+
+    // Helper function to convert file size string to bytes
+    public static function convertToBytes($sizeString): int
+    {
+        switch (substr($sizeString, -1)) {
+            case 'M':
+            case 'm':
+                return (int)$sizeString * 1048576;
+            case 'K':
+            case 'k':
+                return (int)$sizeString * 1024;
+            case 'G':
+            case 'g':
+                return (int)$sizeString * 1073741824;
+            default:
+                return (int)$sizeString;
+        }
+    }
+
+    public static function getMimeTypeStrings(array $extensions): array
+    {
+        $mimeTypesMap = [
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'txt' => 'text/plain',
+            'csv' => 'text/csv',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'ppt' => 'application/vnd.ms-powerpoint',
+            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'mp3' => 'audio/mpeg',
+            'mp4' => 'video/mp4',
+            'avi' => 'video/x-msvideo',
+            'zip' => 'application/zip',
+            'rar' => 'application/x-rar-compressed',
+            'html' => 'text/html',
+            'xml' => 'application/xml',
+            'json' => 'application/json'
+        ];
+
+        $mappedMimeTypes = [];
+        foreach ($extensions as $ext) {
+            $ext = strtolower($ext);
+            if (isset($mimeTypesMap[$ext])) {
+                $mappedMimeTypes[$ext] = $mimeTypesMap[$ext];
+            } else {
+                // If it's already a MIME type, just use it
+                $mappedMimeTypes[$ext] = $ext;
+            }
+        }
+        return $mappedMimeTypes;
+    }
 }

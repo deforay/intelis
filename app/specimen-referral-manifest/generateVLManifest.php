@@ -22,7 +22,7 @@ $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $id = base64_decode((string) $_POST['id']);
 if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) == 'pk2') {

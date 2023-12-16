@@ -16,7 +16,7 @@ $importMachineTable = "instrument_machines";
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $configId = base64_decode((string) $_POST['configId']);
 $iQuery = "SELECT config_id,machine_name,import_machine_file_name FROM instruments where import_machine_file_name='$configId'";

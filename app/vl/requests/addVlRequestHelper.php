@@ -36,7 +36,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $instanceId = $general->getInstanceId();
 

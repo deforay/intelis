@@ -13,7 +13,7 @@ $title = _translate("Covid-19 | View All Requests");
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 
 $hidesrcofreq = false;
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
