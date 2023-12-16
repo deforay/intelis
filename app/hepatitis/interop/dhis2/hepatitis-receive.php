@@ -26,4 +26,4 @@ $fileArray = array(
 );
 
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);

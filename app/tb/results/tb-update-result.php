@@ -176,17 +176,17 @@ if (!empty($tbInfo['is_encrypted']) && $tbInfo['is_encrypted'] == 'yes') {
     }
 }
 
-$fileArray = array(
-    1 => 'forms/update-southsudan.php',
-    2 => 'forms/update-sierraleone.php',
-    3 => 'forms/update-drc.php',
-    4 => 'forms/update-cameroon.php',
-    5 => 'forms/update-png.php',
-    6 => 'forms/update-who.php',
-    7 => 'forms/update-rwanda.php'
-);
+$fileArray = [
+    COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan.php',
+    COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone.php',
+    COUNTRY\DRC => 'forms/update-drc.php',
+    COUNTRY\CAMEROON => 'forms/update-cameroon.php',
+    COUNTRY\PNG => 'forms/update-png.php',
+    COUNTRY\WHO => 'forms/update-who.php',
+    COUNTRY\RWANDA => 'forms/update-rwanda.php'
+];
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);
 ?>
 
 <script>

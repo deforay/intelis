@@ -22,4 +22,4 @@ $fileArray = array(
     7 => 'forms/init-rwanda.php',
 );
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);

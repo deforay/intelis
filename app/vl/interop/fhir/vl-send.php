@@ -24,8 +24,8 @@ $sarr = $general->getSystemConfig();
 
 
 $fileArray = array(
-    7 => 'forms/rwanda/send-rwanda.php'
+    COUNTRY\RWANDA => 'forms/rwanda/send-rwanda.php'
 );
 
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);

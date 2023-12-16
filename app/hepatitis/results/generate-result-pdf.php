@@ -83,13 +83,13 @@ $_SESSION['aliasPage'] = 1;
 
 
 $fileArray = array(
-	1 => 'pdf/result-pdf-ssudan.php',
-	2 => 'pdf/result-pdf-sierraleone.php',
-	3 => 'pdf/result-pdf-drc.php',
-	4 => 'pdf/result-pdf-cameroon.php',
-	5 => 'pdf/result-pdf-png.php',
-	6 => 'pdf/result-pdf-who.php',
-	7 => 'pdf/result-pdf-rwanda.php'
+	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
+	COUNTRY\SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
+	COUNTRY\DRC => 'pdf/result-pdf-drc.php',
+	COUNTRY\CAMEROON => 'pdf/result-pdf-cameroon.php',
+	COUNTRY\PNG => 'pdf/result-pdf-png.php',
+	COUNTRY\WHO => 'pdf/result-pdf-who.php',
+	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php'
 );
 
-require($fileArray[$formId]);
+require_once($fileArray[$formId]);

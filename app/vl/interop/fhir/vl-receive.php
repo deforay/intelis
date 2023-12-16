@@ -22,7 +22,7 @@ $arr = $general->getGlobalConfig();
 // $instanceId = $instanceResult['vlsm_instance_id'];
 
 $fileArray = array(
-    7 => 'forms/rwanda/receive-rwanda.php'
+    COUNTRY\RWANDA => 'forms/rwanda/receive-rwanda.php'
 );
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);
