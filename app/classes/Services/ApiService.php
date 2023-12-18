@@ -79,7 +79,7 @@ class ApiService
         }
     }
 
-    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = false): string|null
+    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true): string|null
     {
         // Prepare multipart data
         $multipartData = [];
@@ -92,7 +92,6 @@ class ApiService
                     'name' => $fileName,
                     'contents' => gzencode(file_get_contents($jsonFilePath)),
                     'filename' => basename((string) $jsonFilePath) . '.gz', // adding .gz to indicate gzip
-                    'headers' => ['Content-Encoding' => 'gzip']
                 ];
             } else {
                 // Add regular file content to multipart data

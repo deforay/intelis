@@ -6,12 +6,11 @@ if (php_sapi_name() == 'cli') {
 
 
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Date;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -39,35 +38,19 @@ try {
         $db->where('last_modified_datetime', $instanceUpdateOn, ">");
     }
 
-    // $db->orderBy("last_modified_datetime", "ASC");
-
-    // $rResult = $db->get('form_vl', 10000);
-
-    $sql = "SELECT *,
-            CONCAT(COALESCE(NULLIF(sample_code, ''), ''), COALESCE(NULLIF(remote_sample_code, ''), '')) AS concatenated_code
-            FROM form_vl
-            WHERE (sample_code IS NOT NULL AND sample_code != '') OR
-                (remote_sample_code IS NOT NULL AND remote_sample_code != '')
-            ORDER BY last_modified_datetime ASC
-            LIMIT 10000";
-
-    $rResult = $db->rawQuery($sql);
+    $db->orderBy("last_modified_datetime", "ASC");
+    $rResult = $db->get('form_vl', 5000);
 
     if (empty($rResult)) {
-        die('No data found');
+        exit(0);
     }
 
-    $lastUpdate = $rResult[count($rResult) - 1]['last_modified_datetime'];
-
+    $lastUpdate = max(array_column($rResult, 'last_modified_datetime'));
     $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime((string) $instanceUpdateOn) : time();
-    foreach ($rResult as $aRow) {
-        $aRow['sample_code'] = $aRow['concatenated_code'];
-        $output['data'][] = $aRow;
-    }
+    $output['data'] = $rResult;
 
-    $currentDate = DateUtility::getCurrentDateTime();
 
-    $filename = 'export-vl-result-' . $currentDate . '.json';
+    $filename = $general->generateRandomString(12) . time() . '.json';
     $fp = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'w');
     fwrite($fp, json_encode($output));
     fclose($fp);
@@ -95,7 +78,7 @@ try {
         ]
     ];
 
-    $response  = $apiService->postFile($url, 'vlFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
+    $response  = $apiService->postFile($url, 'vlFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params, true);
 
     $deResult = json_decode($response, true);
 
