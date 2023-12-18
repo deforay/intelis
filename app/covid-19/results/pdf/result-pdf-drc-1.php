@@ -16,7 +16,7 @@ if (!class_exists('DRCCovid19PDF1')) {
         public function Header()
         {
             // Logo
-            if ($this->htitle != '') {
+            if (!empty($this->htitle) && trim($this->htitle) != '') {
 
 
                 // Check facility have the logo
@@ -44,7 +44,7 @@ if (!class_exists('DRCCovid19PDF1')) {
                 $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', 'B', 10);
                 $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C');
-                if (trim($this->lab) != '') {
+                if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', 'B', 11);
                     $this->writeHTMLCell(0, 0, 0, 16, ($this->lab), 0, 0, 0, true, 'C');
                 }

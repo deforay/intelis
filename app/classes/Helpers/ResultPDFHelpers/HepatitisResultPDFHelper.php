@@ -7,12 +7,12 @@ use App\Utilities\MiscUtility;
 
 class HepatitisResultPDFHelper extends TCPDF
 {
-    public ?string $logo;
-    public string $text = '';
-    public ?string $lab;
-    public ?string $htitle;
-    public ?string $labFacilityId = '';
-    public string $formId = '';
+    public ?string $logo = null;
+    public ?string $text = null;
+    public ?string $lab = null;
+    public ?string $htitle = null;
+    public ?string $labFacilityId = null;
+    public ?string $formId  = null;
     //Page header
     public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null)
     {
@@ -30,16 +30,16 @@ class HepatitisResultPDFHelper extends TCPDF
     //Page header
     public function Header()
     {
-        if ($this->htitle != '') {
-            if (trim($this->logo) != '') {
+        if (!empty($this->htitle) && trim($this->htitle) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
                 }
             }
             $this->SetFont('helvetica', 'B', 16);
-            $this->writeHTMLCell(0, 0, 10, 18, $this->text, 0, 0, 0, true, 'C');
-            if (trim($this->lab) != '') {
+            $this->writeHTMLCell(0, 0, 10, 18, $this->text ?? '', 0, 0, 0, true, 'C');
+            if (!empty($this->lab) && trim($this->lab) != '') {
                 $this->SetFont('helvetica', '', 10);
                 $this->writeHTMLCell(0, 0, 10, 25, strtoupper($this->lab), 0, 0, 0, true, 'C');
             }
@@ -47,7 +47,7 @@ class HepatitisResultPDFHelper extends TCPDF
             $this->writeHTMLCell(0, 0, 10, 30, 'Hepatitis Viral Load Results Report', 0, 0, 0, true, 'C');
             $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
         } else {
-            if (trim($this->logo) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
                     $this->Image($imageFilePath, 16, 13, 15, '', '', '', 'T');
@@ -63,7 +63,7 @@ class HepatitisResultPDFHelper extends TCPDF
 
             $this->SetFont('helvetica', '', 14);
             $this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C');
-            if ($this->text != '') {
+            if (!empty($this->text) && trim($this->text) != '') {
                 $this->SetFont('helvetica', '', 12);
                 $this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
                 $thirdHeading = '23';
@@ -76,7 +76,7 @@ class HepatitisResultPDFHelper extends TCPDF
                 $hrLine = '30';
                 $marginTop = '9';
             }
-            if (trim($this->lab) != '') {
+            if (!empty($this->lab) && trim($this->lab) != '') {
                 $this->SetFont('helvetica', '', 9);
                 $this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
             }

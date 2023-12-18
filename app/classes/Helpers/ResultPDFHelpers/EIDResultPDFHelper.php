@@ -7,11 +7,11 @@ use App\Utilities\MiscUtility;
 
 class EIDResultPDFHelper extends TCPDF
 {
-    public ?string $logo;
-    public string $text = '';
-    public ?string $lab;
-    public ?string $htitle;
-    public $labFacilityId = null;
+    public ?string $logo = null;
+    public ?string $text = null;
+    public ?string $lab = null;
+    public ?string $htitle = null;
+    public ?string $labFacilityId = null;
     public ?string $formId = null;
 
     //Page header
@@ -33,8 +33,8 @@ class EIDResultPDFHelper extends TCPDF
     //Page header
     public function Header()
     {
-        if ($this->htitle != '') {
-            if (trim($this->logo) != '') {
+        if (!empty($this->htitle) && $this->htitle != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if ($this->imageExists($this->logo)) {
                     $imageFilePath = $this->logo;
                 } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -48,7 +48,7 @@ class EIDResultPDFHelper extends TCPDF
             }
             $this->SetFont('helvetica', 'B', 8);
             $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
-            if (trim($this->lab) != '') {
+            if (!empty($this->lab) && trim($this->lab) != '') {
                 $this->SetFont('helvetica', '', 9);
                 $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
             }
@@ -56,7 +56,7 @@ class EIDResultPDFHelper extends TCPDF
             $this->writeHTMLCell(0, 0, 10, 30, 'EARLY INFANT DIAGNOSIS TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
             $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
         } else {
-            if (trim($this->logo) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if ($this->imageExists($this->logo)) {
                     $imageFilePath = $this->logo;
                 } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -73,7 +73,7 @@ class EIDResultPDFHelper extends TCPDF
             // $this->writeHTMLCell(30,0,16,28,$this->text, 0, 0, 0, true, 'A', true);(this two lines comment out for drc)
             $this->SetFont('helvetica', '', 14);
             $this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C');
-            if ($this->text != '') {
+            if (!empty($this->text) && trim($this->text) != '') {
                 $this->SetFont('helvetica', '', 12);
                 //        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
                 $this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
@@ -87,7 +87,7 @@ class EIDResultPDFHelper extends TCPDF
                 $hrLine = '30';
                 $marginTop = '9';
             }
-            if (trim($this->lab) != '') {
+            if (!empty($this->lab) && trim($this->lab) != '') {
                 $this->SetFont('helvetica', '', 9);
                 $this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
             }

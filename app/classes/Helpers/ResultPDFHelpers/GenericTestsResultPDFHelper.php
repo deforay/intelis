@@ -8,13 +8,13 @@ use App\Utilities\MiscUtility;
 
 class GenericTestsResultPDFHelper extends TCPDF
 {
-    public ?string $logo;
-    public string $text = '';
-    public ?string $lab;
-    public ?string $htitle;
-    public $labFacilityId = null;
-    public ?string $labName = '';
-    public string $testType = '';
+    public ?string $logo = null;
+    public ?string $text = null;
+    public ?string $lab = null;
+    public ?string $htitle = null;
+    public ?string $labFacilityId = null;
+    public ?string $labName = null;
+    public ?string $testType = null;
 
     //Page header
     public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $testType = null)
@@ -34,8 +34,8 @@ class GenericTestsResultPDFHelper extends TCPDF
     //Page header
     public function Header()
     {
-        if ($this->htitle != '') {
-            if (trim($this->logo) != '') {
+        if (!empty($this->htitle) && trim($this->htitle) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 error_log($this->logo);
                 if ($this->imageExists($this->logo)) {
                     $this->Image($this->logo, 95, 5, 15, '', '', '', 'T');
@@ -49,7 +49,7 @@ class GenericTestsResultPDFHelper extends TCPDF
             }
             $this->SetFont('helvetica', 'B', 8);
             $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
-            if (trim($this->lab) != '') {
+            if (!empty($this->lab) && trim($this->lab) != '') {
                 $this->SetFont('helvetica', '', 9);
                 $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
             }
@@ -58,7 +58,7 @@ class GenericTestsResultPDFHelper extends TCPDF
 
             $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
         } else {
-            if (trim($this->logo) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if ($this->imageExists($this->logo)) {
                     $this->Image($this->logo, 20, 13, 15, '', '', '', 'T');
                 } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -70,7 +70,7 @@ class GenericTestsResultPDFHelper extends TCPDF
                 }
             }
 
-            if ($this->text != '') {
+            if (!empty($this->text) && trim($this->text) != '') {
                 $this->SetFont('helvetica', '', 16);
                 $this->writeHTMLCell(0, 0, 10, 12, strtoupper($this->text), 0, 0, 0, true, 'C');
                 $thirdHeading = '21';
@@ -83,7 +83,7 @@ class GenericTestsResultPDFHelper extends TCPDF
                 $hrLine = '30';
                 $marginTop = '9';
             }
-            if (trim($this->lab) != '') {
+            if (!empty($this->lab) && trim($this->lab) != '') {
                 $this->SetFont('helvetica', '', 10);
                 $this->writeHTMLCell(0, 0, 8, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
             }

@@ -7,12 +7,12 @@ use App\Utilities\MiscUtility;
 
 class TBResultPDFHelper extends TCPDF
 {
-    public $logo = '';
-    public $text = '';
-    public ?string $lab;
-    public ?string $htitle;
-    public $labFacilityId = null;
-    public $formId = '';
+    public ?string $logo = null;
+    public ?string $text = null;
+    public ?string $lab = null;
+    public ?string $htitle = null;
+    public ?string $labFacilityId = null;
+    public ?string $formId = null;
     public array $facilityInfo = [];
 
 
@@ -34,8 +34,8 @@ class TBResultPDFHelper extends TCPDF
     //Page header
     public function Header()
     {
-        if ($this->htitle != '') {
-            if (trim($this->logo) != '') {
+        if (!empty($this->htitle) && trim($this->htitle) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     if ($this->formId == 3) {
@@ -48,7 +48,7 @@ class TBResultPDFHelper extends TCPDF
             if ($this->formId == 3) {
                 $this->SetFont('helvetica', 'B', 16);
                 $this->writeHTMLCell(0, 0, 10, 03, $this->text, 0, 0, 0, true, 'C');
-                if (trim($this->lab) != '') {
+                if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', '', 10);
                     $this->writeHTMLCell(0, 0, 10, 10, strtoupper($this->lab), 0, 0, 0, true, 'C');
                 }
@@ -63,8 +63,8 @@ class TBResultPDFHelper extends TCPDF
                 $this->writeHTMLCell(0, 0, 15, 48, '<hr>', 0, 0, 0, true, 'C');
             } else {
                 $this->SetFont('helvetica', 'B', 16);
-                $this->writeHTMLCell(0, 0, 10, 18, $this->text, 0, 0, 0, true, 'C');
-                if (trim($this->lab) != '') {
+                $this->writeHTMLCell(0, 0, 10, 18, $this->text ?? '', 0, 0, 0, true, 'C');
+                if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', '', 10);
                     $this->writeHTMLCell(0, 0, 10, 25, strtoupper($this->lab), 0, 0, 0, true, 'C');
                 }
@@ -73,7 +73,7 @@ class TBResultPDFHelper extends TCPDF
                 $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
             }
         } else {
-            if (trim($this->logo) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
                     $this->Image($imageFilePath, 16, 13, 15, '', '', '', 'T');
@@ -91,7 +91,7 @@ class TBResultPDFHelper extends TCPDF
             // $this->writeHTMLCell(30,0,16,28,$this->text, 0, 0, 0, true, 'A', true);(this two lines comment out for drc)
             $this->SetFont('helvetica', '', 14);
             $this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C');
-            if ($this->text != '') {
+            if (!empty($this->text) && trim($this->text) != '') {
                 $this->SetFont('helvetica', '', 12);
                 //        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
                 $this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
@@ -105,7 +105,7 @@ class TBResultPDFHelper extends TCPDF
                 $hrLine = '30';
                 $marginTop = '9';
             }
-            if (trim($this->lab) != '') {
+            if (!empty($this->lab) && trim($this->lab) != '') {
                 $this->SetFont('helvetica', '', 9);
                 $this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
             }

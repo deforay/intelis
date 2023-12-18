@@ -14,7 +14,7 @@ class DRC_VL_PDF extends VLResultPDFHelper
 	public function Header()
 	{
 		$imageFilePath = null;
-		if (trim($this->logo) != '') {
+		if (!empty($this->logo) && trim($this->logo) != '') {
 			if ($this->imageExists($this->logo)) {
 				$imageFilePath = $this->logo;
 			} elseif ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -33,7 +33,7 @@ class DRC_VL_PDF extends VLResultPDFHelper
 
 		$this->SetFont('helvetica', '', 14);
 		$this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C');
-		if ($this->text != '') {
+		if (!empty($this->text) && trim($this->text) != '') {
 			$this->SetFont('helvetica', '', 12);
 			$this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
 			$thirdHeading = '23';
@@ -44,7 +44,7 @@ class DRC_VL_PDF extends VLResultPDFHelper
 			$fourthHeading = '23';
 			$hrLine = '30';
 		}
-		if (trim($this->lab) != '') {
+		if (!empty($this->lab) && trim($this->lab) != '') {
 			$this->SetFont('helvetica', '', 9);
 			$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
 		}

@@ -16,16 +16,16 @@ if (!class_exists('DRCCovid19PDF5')) {
         public function Header()
         {
             // Logo
-            if ($this->htitle != '') {
+            if (!empty($this->htitle) && trim($this->htitle) != '') {
 
-                if (trim($this->logo) != '') {
+                if (!empty($this->logo) && trim($this->logo) != '') {
 
                     if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . "inrb.png")) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . "inrb.png";
                         $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                     }
                 }
-                if (trim($this->logo) != '') {
+                if (!empty($this->logo) && trim($this->logo) != '') {
                     if (!empty($this->facilityInfo) && !empty($this->facilityInfo['facility_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
                         $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T');
@@ -40,7 +40,7 @@ if (!class_exists('DRCCovid19PDF5')) {
                 $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', 'B', 10);
                 $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C');
-                if (trim($this->lab) != '') {
+                if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', 'B', 11);
                     $this->writeHTMLCell(0, 0, 0, 16, ($this->lab), 0, 0, 0, true, 'C');
                 }

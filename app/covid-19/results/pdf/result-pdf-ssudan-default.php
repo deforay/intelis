@@ -14,9 +14,9 @@ class SouthSudanCovid19DefaultPDF extends Covid19ResultPDFHelper
     {
         // Logo
 
-        if ($this->htitle != '') {
+        if (!empty($this->htitle) && trim($this->htitle) != '') {
 
-            if (trim($this->logo) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
@@ -24,7 +24,7 @@ class SouthSudanCovid19DefaultPDF extends Covid19ResultPDFHelper
             }
             $this->SetFont('helvetica', 'B', 15);
             $this->writeHTMLCell(0, 0, 40, 7, $this->text, 0, 0, 0, true, 'L');
-            if (trim($this->lab) != '') {
+            if (!empty($this->lab) && trim($this->lab) != '') {
                 $this->SetFont('helvetica', 'B', 11);
                 // $this->writeHTMLCell(0, 0, 40, 15, strtoupper($this->lab), 0, 0, 0, true, 'L', true);
                 $this->writeHTMLCell(0, 0, 40, 15, 'Public Health Laboratory', 0, 0, 0, true, 'L');

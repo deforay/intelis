@@ -13,8 +13,8 @@ class DRCCovid19PDF2 extends Covid19ResultPDFHelper
     public function Header()
     {
         // Logo
-        if ($this->htitle != '') {
-            if (trim($this->logo) != '') {
+        if (!empty($this->htitle) && trim($this->htitle) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
@@ -29,7 +29,7 @@ class DRCCovid19PDF2 extends Covid19ResultPDFHelper
         $this->writeHTMLCell(0, 0, 12, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, false, true, 'C');
         $this->SetFont('helvetica', 'B', 10);
         $this->writeHTMLCell(0, 0, 12, 10, $this->text, 0, 0, false, true, 'C');
-        if (trim($this->lab) != '') {
+        if (!empty($this->lab) && trim($this->lab) != '') {
             $this->SetFont('helvetica', 'B', 11);
             $this->writeHTMLCell(0, 0, 12, 15, strtoupper($this->lab), 0, 0, false, true, 'C');
         }

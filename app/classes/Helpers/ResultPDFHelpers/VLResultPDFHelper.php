@@ -7,11 +7,11 @@ use App\Utilities\MiscUtility;
 
 class VLResultPDFHelper extends TCPDF
 {
-    public ?string $logo;
-    public ?string $text;
-    public ?string $lab;
-    public ?string $htitle;
-    public ?string $formId;
+    public ?string $logo = null;
+    public ?string $text = null;
+    public ?string $lab = null;
+    public ?string $htitle = null;
+    public ?string $formId = null;
     public ?string $labFacilityId = null;
     public ?string $trainingTxt = null;
 
@@ -33,8 +33,8 @@ class VLResultPDFHelper extends TCPDF
     //Page header
     public function Header()
     {
-        if ($this->htitle != '') {
-            if (trim($this->logo) != '') {
+        if (!empty($this->htitle) && $this->htitle != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if ($this->imageExists($this->logo)) {
                     $this->Image($this->logo, 10, 5, 15, '', '', '', 'T');
                 } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -47,7 +47,7 @@ class VLResultPDFHelper extends TCPDF
             }
             $this->SetFont('helvetica', 'B', 8);
             $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
-            if (trim($this->lab) != '') {
+            if (!empty($this->lab) && trim($this->lab) != '') {
                 $this->SetFont('helvetica', '', 9);
                 $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
             }
@@ -56,7 +56,7 @@ class VLResultPDFHelper extends TCPDF
 
             $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
         } else {
-            if (trim($this->logo) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if ($this->imageExists($this->logo)) {
                     $this->Image($this->logo, 20, 13, 15, '', '', '', 'T');
                 } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -72,14 +72,14 @@ class VLResultPDFHelper extends TCPDF
                 $this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T');
             }
 
-            if ($this->text != '') {
+            if (!empty($this->text) && trim($this->text) != '') {
                 $this->SetFont('helvetica', '', 16);
                 $this->writeHTMLCell(0, 0, 10, 12, strtoupper($this->text), 0, 0, 0, true, 'C');
                 $thirdHeading = '21';
             } else {
                 $thirdHeading = '14';
             }
-            if (trim($this->lab) != '') {
+            if (!empty($this->lab) && trim($this->lab) != '') {
                 $this->SetFont('helvetica', '', 10);
                 $this->writeHTMLCell(0, 0, 8, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
             }
