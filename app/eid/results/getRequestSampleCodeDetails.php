@@ -39,24 +39,19 @@ $type = $_POST['type'];
 //print_r($_POST);die;
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
-$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code
-        FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+$query = "SELECT vl.sample_code,vl.eid_id,vl.facility_id,f.facility_name,f.facility_code
+        FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         WHERE sample_code is not null ";
 if (!empty($facility)) {
   $query = $query . " AND vl.facility_id = $facility";
 }
 if (trim((string) $sampleType) != '') {
-  $query = $query . " AND vl.sample_type='" . $sampleType . "'";
+  $query = $query . " AND vl.specimen_type='" . $sampleType . "'";
 }
 if (trim((string) $gender) != '') {
-  $query = $query . " AND vl.patient_gender='" . $gender . "'";
+  $query = $query . " AND vl.child_gender='" . $gender . "'";
 }
-if (trim((string) $pregnant) != '') {
-  $query = $query . " AND vl.is_patient_pregnant='" . $pregnant . "'";
-}
-if (trim((string) $urgent) != '') {
-  $query = $query . " AND vl.test_urgency='" . $urgent . "'";
-}
+
 if (trim((string) $state) != '') {
   $query = $query . " AND f.facility_state LIKE '%" . $state . "%' ";
 }
@@ -99,7 +94,7 @@ $result = $db->rawQuery($query);
         foreach ($result as $sample) {
           if (trim((string) $sample['sample_code']) != '') {
         ?>
-            <option value="<?php echo $sample['vl_sample_id']; ?>"><?= ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+            <option value="<?php echo $sample['eid_id']; ?>"><?= ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
         <?php
           }
         }

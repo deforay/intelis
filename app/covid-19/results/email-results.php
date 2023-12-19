@@ -6,7 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
-$title = _translate("Email VL Test Results");
+$title = _translate("Email COVID-19 Test Results");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$healthFacilites = $facilitiesService->getHealthFacilities('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('covid19');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
@@ -29,14 +29,14 @@ $facilityResult = $db->rawQuery($facilityQuery);
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 //main query
-//$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE 1=0 AND is_result_mail_sent ='no' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
+//$query = "SELECT vl.sample_code,vl.covid19_id,vl.facility_id,f.facility_name,f.facility_code FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE 1=0 AND is_result_mail_sent ='no' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
 //$result = $db->rawQuery($query);
-$sTypeQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
+$sTypeQuery = "SELECT * FROM r_covid19_sample_type WHERE `status`='active'";
 $sTypeResult = $db->rawQuery($sTypeQuery);
 
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
-$batchQuery = "SELECT * FROM batch_details WHERE test_type='vl' AND batch_status='completed'";
+$batchQuery = "SELECT * FROM batch_details WHERE test_type='covid19' AND batch_status='completed'";
 $batchResult = $db->rawQuery($batchQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -87,7 +87,7 @@ $batchResult = $db->rawQuery($batchQuery);
 										<?php echo _translate("Subject"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-9">
-										<input type="text" id="subject" name="subject" class="form-control isRequired" placeholder="<?php echo _translate('Subject'); ?>" title="<?php echo _translate('Please enter subject'); ?>" value="Viral Load Test Results" />
+										<input type="text" id="subject" name="subject" class="form-control isRequired" placeholder="<?php echo _translate('Subject'); ?>" title="<?php echo _translate('Please enter subject'); ?>" value="Covid-19 Test Results" />
 									</div>
 								</div>
 							</div>
@@ -513,7 +513,7 @@ $batchResult = $db->rawQuery($batchQuery);
 		$.blockUI();
 		//var sample = $("#sample").val();
 		var id = samplesData.toString();
-		$.post("/vl/results/generate-result-pdf.php", {
+		$.post("/covid-19/results/generate-result-pdf.php", {
 				source: 'print',
 				id: id,
 				resultMail: 'resultMail'
@@ -560,7 +560,7 @@ $batchResult = $db->rawQuery($batchQuery);
 		if ($.trim(pName) != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					pName: pName,
-					testType: 'vl'
+					testType: 'covid19'
 				},
 				function(data) {
 					if ($.trim(data) != "") {
