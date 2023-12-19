@@ -20,8 +20,8 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-vl-art-code-details.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL ART Regimen"); ?></a>
+						<?php if (_isAllowed("/vl/reference/add-vl-art-code-details.php") && $_SESSION['instanceType'] !== 'vluser') { ?>
+							<a href="/vl/reference/add-vl-art-code-details.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL ART Regimen"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -32,14 +32,11 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("ART Code"); ?></th>
 									<th scope="row"><?php echo _translate("Category"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
-										<!-- <th scope="row">Action</th> -->
-									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="4" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
+									<td colspan="3" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 
@@ -80,12 +77,13 @@ require_once APPLICATION_PATH . '/header.php';
 					"sClass": "center"
 				},
 			],
-			"aaSorting": [
+			"order": [
+				[2, "desc"],
 				[0, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-vl-art-code-details-helper.php",
+			"sAjaxSource": "/vl/reference/get-vl-art-code-details-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',
@@ -103,7 +101,7 @@ require_once APPLICATION_PATH . '/header.php';
 		if (obj.value != '') {
 			conf = confirm("<?php echo _translate("Are you sure you want to change the status?"); ?>");
 			if (conf) {
-				$.post("update-vl-art-code-status.php", {
+				$.post("/vl/reference/update-vl-art-code-status.php", {
 						status: obj.value,
 						id: obj.id
 					},

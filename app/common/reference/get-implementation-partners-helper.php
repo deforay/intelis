@@ -131,10 +131,10 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['i_partner_name']);
-    if (_isAllowed("geographical-divisions-details.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("/common/reference/add-implementation-partners.php") && $_SESSION['instanceType'] != 'vluser') {
         $row[] = $status;
     } else {
-        $row[] = ($aRow['i_partner_status']);
+        $row[] = $aRow['i_partner_status'];
     }
     $output['aaData'][] = $row;
 }

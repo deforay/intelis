@@ -72,7 +72,7 @@ require_once APPLICATION_PATH . '/header.php';
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-						<a href="vl-sample-rejection-reasons.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
+						<a href="/vl/reference/vl-sample-rejection-reasons.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

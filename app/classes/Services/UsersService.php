@@ -24,6 +24,12 @@ class UsersService
 
     public function isAllowed($currentRequest, $privileges = null): bool
     {
+        $privileges = $privileges ?? $_SESSION['privileges'] ?? null;
+
+        if (empty($currentRequest) || empty($privileges)) {
+            return false;
+        }
+
         $sessionKey = base64_encode(is_string($currentRequest) ? $currentRequest : $currentRequest->getUri());
 
         // If the result is already stored in the session, return it
@@ -31,7 +37,6 @@ class UsersService
             return $_SESSION['access'][$sessionKey];
         }
 
-        $privileges = $privileges ?? $_SESSION['privileges'] ?? null;
         $isAllowed = false;
         if (!empty($privileges) && !empty($currentRequest)) {
             $requestArray = $this->getRequestArray($currentRequest);

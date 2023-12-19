@@ -4,11 +4,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-
 $tableName = "r_funding_sources";
 $primaryKey = "funding_source_id";
 
@@ -18,7 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$sarr = $general->getSystemConfig();
+
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
@@ -137,10 +132,10 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['funding_source_name']);
-    if (_isAllowed("geographical-divisions-details.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("/common/reference/add-funding-sources.php") && $_SESSION['instanceType'] != 'vluser') {
         $row[] = $status;
     } else {
-        $row[] = ($aRow['funding_source_status']);
+        $row[] = $aRow['funding_source_status'];
     }
     $output['aaData'][] = $row;
 }

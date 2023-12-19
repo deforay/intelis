@@ -21,8 +21,8 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
-              <a href="add-vl-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Sample Rejection Reasons"); ?></a>
+            <?php if (_isAllowed("/vl/reference/vl-art-code-details.php") && $_SESSION['instanceType'] != 'vluser') { ?>
+              <a href="/vl/reference/add-vl-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Sample Rejection Reasons"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
@@ -35,14 +35,11 @@ require_once APPLICATION_PATH . '/header.php';
                   <th scope="row"><?php echo _translate("Rejection Reason Type"); ?></th>
                   <th scope="row"><?php echo _translate("Rejection Reason Code"); ?></th>
                   <th scope="row"><?php echo _translate("Rejection Reason Status"); ?></th>
-                  <?php if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
-                    <!-- <th scope="row">Action</th> -->
-                  <?php } ?>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
+                  <td colspan="4" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                 </tr>
               </tbody>
 
