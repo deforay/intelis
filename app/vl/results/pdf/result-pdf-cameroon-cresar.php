@@ -206,8 +206,10 @@ if (!empty($requestResult)) {
           }
 
           $modified = _translate("No");
+          $modificationDate = "" ;
           if ($result['result_modified'] == "yes") {
                $modified = _translate("Yes");
+               $modificationDate = _translate('Modification date') . " : " . ($result['last_modified_datetime']);
           }
 
           $finalDate = date('d-m-Y', strtotime('+1 day', strtotime((string) $result['sample_tested_datetime'])));
@@ -329,7 +331,7 @@ if (!empty($requestResult)) {
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modified') . " : " . ($modified) . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modification date') . " : " . ($result['last_modified_datetime']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $modificationDate . '</td>';
           $html .= '</tr>';
           $html .= '</table>';
 
