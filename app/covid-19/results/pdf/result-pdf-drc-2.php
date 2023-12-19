@@ -2,17 +2,19 @@
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
-class DRCCovid19PDF2 extends Covid19ResultPDF
+class DRCCovid19PDF2 extends Covid19ResultPDFHelper
 {
     //Page header
     public function Header()
     {
         // Logo
-        if ($this->htitle != '') {
-            if (trim($this->logo) != '') {
+        if (!empty($this->htitle) && trim($this->htitle) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
@@ -27,7 +29,7 @@ class DRCCovid19PDF2 extends Covid19ResultPDF
         $this->writeHTMLCell(0, 0, 12, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, false, true, 'C');
         $this->SetFont('helvetica', 'B', 10);
         $this->writeHTMLCell(0, 0, 12, 10, $this->text, 0, 0, false, true, 'C');
-        if (trim($this->lab) != '') {
+        if (!empty($this->lab) && trim($this->lab) != '') {
             $this->SetFont('helvetica', 'B', 11);
             $this->writeHTMLCell(0, 0, 12, 15, strtoupper($this->lab), 0, 0, false, true, 'C');
         }
@@ -349,23 +351,11 @@ $html .= '</table>';
 $html .= '</td></tr></table>';
 
 if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
-    $ciphering = "AES-128-CTR";
-    $iv_length = openssl_cipher_iv_length($ciphering);
-    $options = 0;
-    $simple_string = $result['covid19_id'] . "&&&qr";
-    $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
-    $encryption_key = SYSTEM_CONFIG['tryCrypt'];
-    $Cid = openssl_encrypt(
-        $simple_string,
-        $ciphering,
-        $encryption_key,
-        $options,
-        $encryption_iv
-    );
+    $viewId = CommonService::encryptViewQRCode($result['unique_id']);
     $pdf->writeHTML($html);
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
         $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid, 'QRCODE,H', 20, 235, 30, 30, [], 'N');
+        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $viewId, 'QRCODE,H', 20, 235, 30, 30, [], 'N');
         $pdf->writeHTML('<span style="font-size:12px;font-weight:normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scan me</span>');
     }
     $pdf->lastPage();

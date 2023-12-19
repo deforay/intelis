@@ -14,7 +14,7 @@ $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
 $genericTestInfo = $db->rawQuery($genericTestQuery, array($_POST['vlSampleId']));

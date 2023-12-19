@@ -22,7 +22,7 @@ require_once(APPLICATION_PATH . '/covid-19/interop/dhis2/covid-19-init.php');
 $instanceId = $general->getInstanceId();
 
 $fileArray = array(
-    1 => 'forms/receive-southsudan.php'
+    COUNTRY\SOUTH_SUDAN => 'forms/receive-southsudan.php'
 );
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);

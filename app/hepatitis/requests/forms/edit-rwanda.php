@@ -12,7 +12,7 @@ use App\Utilities\DateUtility;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);

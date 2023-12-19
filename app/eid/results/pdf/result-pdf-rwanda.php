@@ -7,6 +7,7 @@ use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\EIDResultPDFHelper;
 
 // this file is included in eid/results/generate-result-pdf.php
 
@@ -36,7 +37,7 @@ if (!empty($requestResult)) {
             }
         }
         // create new PDF document
-        $pdf = new EIDResultPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new EIDResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = $result['facilityLogo'];
         } else {
@@ -368,7 +369,7 @@ if (!empty($requestResult)) {
                 if (!empty($keyFromGlobalConfig)) {
                     $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode((string) $keyFromGlobalConfig));
                     $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-                    $pdf->write2DBarcode($remoteUrl . '/eid/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 170, 30, 30, $style, 'N');
+                    $pdf->write2DBarcode($remoteUrl . '/eid/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
                 }
             }
             $pdf->lastPage();

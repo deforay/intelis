@@ -16,6 +16,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
+
+$_FILES = _sanitizeFiles($_FILES, ['png', 'jpg', 'jpeg', 'gif']);
+$_POST = _sanitizeInput($_POST);
 function getMacLinux(): bool|string
 {
 	try {

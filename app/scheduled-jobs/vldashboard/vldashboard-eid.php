@@ -38,32 +38,18 @@ try {
     }
 
     $db->orderBy("last_modified_datetime", "ASC");
-
     $rResult = $db->get('form_eid', 5000);
 
     if (empty($rResult)) {
         exit(0);
     }
 
-    $lastUpdate = $rResult[count($rResult) - 1]['last_modified_datetime'];
+    $lastUpdate = max(array_column($rResult, 'last_modified_datetime'));
     $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime((string) $instanceUpdateOn) : time();
-    foreach ($rResult as $aRow) {
+    $output['data'] = $rResult;
 
 
-        if (!empty($aRow['remote_sample_code'])) {
-            if (!empty($aRow['sample_code'])) {
-                $aRow['sample_code']      = $aRow['remote_sample_code'] . '-' . $aRow['sample_code'];
-            } else {
-                $aRow['sample_code']      = $aRow['remote_sample_code'];
-            }
-        }
-        $output['data'][] = $aRow;
-    }
-
-    $currentDate = date('d-m-y-h-i-s');
-
-
-    $filename = 'export-eid-result-' . $currentDate . '.json';
+    $filename = $general->generateRandomString(12) . time() . '.json';
     $fp = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'w');
     fwrite($fp, json_encode($output));
     fclose($fp);
@@ -88,7 +74,7 @@ try {
         ]
     ];
 
-    $response  = $apiService->postFile($url, 'eidFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
+    $response  = $apiService->postFile($url, 'eidFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params, true);
     $deResult = json_decode($response, true);
 
     if (isset($deResult['status']) && trim((string) $deResult['status']) == 'success') {

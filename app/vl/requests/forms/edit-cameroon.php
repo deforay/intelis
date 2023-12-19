@@ -73,12 +73,12 @@ if (trim((string) $facilityResult[0]['facility_state']) != '') {
 
 //set reason for changes history
 $rch = '';
-if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != '' && $vlQueryInfo['reason_for_vl_result_changes'] != null) {
+if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for_result_changes'] != '' && $vlQueryInfo['reason_for_result_changes'] != null) {
      $rch .= '<h4>Result Changes History</h4>';
      $rch .= '<table style="width:100%;">';
      $rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
      $rch .= '<tbody>';
-     $splitChanges = explode('vlsm', (string) $vlQueryInfo['reason_for_vl_result_changes']);
+     $splitChanges = explode('vlsm', (string) $vlQueryInfo['reason_for_result_changes']);
      for ($c = 0; $c < count($splitChanges); $c++) {
           $getData = explode("##", $splitChanges[$c]);
           $changedDate = explode(" ", $getData[2]);

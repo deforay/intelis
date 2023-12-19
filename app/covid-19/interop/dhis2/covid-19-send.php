@@ -21,7 +21,7 @@ $sarr = $general->getSystemConfig();
 
 
 $fileArray = array(
-    1 => 'forms/send-southsudan.php'
+    COUNTRY\SOUTH_SUDAN => 'forms/send-southsudan.php'
 );
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);

@@ -71,7 +71,7 @@ class ErrorResponseGenerator
                 ]);
             } else {
                 ob_start();
-                require(APPLICATION_PATH . '/error/error.php');
+                require_once(APPLICATION_PATH . '/error/error.php');
                 $responseBody = ob_get_clean();
             }
         }

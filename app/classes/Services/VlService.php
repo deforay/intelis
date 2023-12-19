@@ -93,61 +93,61 @@ class VlService extends AbstractTestService
 
     public function getVLResultCategory($resultStatus, $finalResult): ?string
     {
-
-        $vlResultCategory = null;
-        $orignalResultValue = $finalResult;
-        $find = [
-            'c/ml',
-            'cp/ml',
-            'copies/ml',
-            'cop/ml',
-            'copies',
-            'cpml',
-            'cp',
-            'HIV-1 DETECTED',
-            'HIV1 DETECTED',
-            'HIV-1 NOT DETECTED',
-            'HIV-1 NOTDETECTED',
-            'HIV1 NOTDETECTED',
-
-        ];
-        $finalResult = trim(str_ireplace($find, '', (string) $finalResult));
-
-        if (empty($finalResult)) {
+        return once(function () use ($resultStatus, $finalResult) {
             $vlResultCategory = null;
-        } elseif (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
-            $vlResultCategory = 'failed';
-        } elseif (in_array($resultStatus, [1, 2, 3, 10])) {
-            $vlResultCategory = null;
-        } elseif ($resultStatus == 4) {
-            $vlResultCategory = 'rejected';
-        } elseif ($resultStatus == 5) {
-            $vlResultCategory = 'invalid';
-        } else {
+            $orignalResultValue = $finalResult;
+            $find = [
+                'c/ml',
+                'cp/ml',
+                'copies/ml',
+                'cop/ml',
+                'copies',
+                'cpml',
+                'cp',
+                'HIV-1 DETECTED',
+                'HIV1 DETECTED',
+                'HIV-1 NOT DETECTED',
+                'HIV-1 NOTDETECTED',
+                'HIV1 NOTDETECTED'
+            ];
+            $finalResult = trim(str_ireplace($find, '', (string) $finalResult));
 
-            if (is_numeric($finalResult) || MiscUtility::isScientificNotation($finalResult)) {
-                $finalResult = floatval($finalResult);
-                if ($finalResult < $this->suppressionLimit) {
-                    $vlResultCategory = 'suppressed';
-                } elseif ($finalResult >= $this->suppressionLimit) {
-                    $vlResultCategory = 'not suppressed';
-                }
+            if (empty($finalResult)) {
+                $vlResultCategory = null;
+            } elseif (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
+                $vlResultCategory = 'failed';
+            } elseif (in_array($resultStatus, [1, 2, 3, 10])) {
+                $vlResultCategory = null;
+            } elseif ($resultStatus == 4) {
+                $vlResultCategory = 'rejected';
+            } elseif ($resultStatus == 5) {
+                $vlResultCategory = 'invalid';
             } else {
-                if (in_array(strtolower((string) $orignalResultValue), $this->suppressedArray)) {
-                    $textResult = 10;
-                } else {
-                    $textResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
-                }
 
-                if ($textResult < $this->suppressionLimit) {
-                    $vlResultCategory = 'suppressed';
-                } elseif ($textResult >= $this->suppressionLimit) {
-                    $vlResultCategory = 'not suppressed';
+                if (is_numeric($finalResult) || MiscUtility::isScientificNotation($finalResult)) {
+                    $finalResult = floatval($finalResult);
+                    if ($finalResult < $this->suppressionLimit) {
+                        $vlResultCategory = 'suppressed';
+                    } elseif ($finalResult >= $this->suppressionLimit) {
+                        $vlResultCategory = 'not suppressed';
+                    }
+                } else {
+                    if (in_array(strtolower((string) $orignalResultValue), $this->suppressedArray)) {
+                        $textResult = 10;
+                    } else {
+                        $textResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
+                    }
+
+                    if ($textResult < $this->suppressionLimit) {
+                        $vlResultCategory = 'suppressed';
+                    } elseif ($textResult >= $this->suppressionLimit) {
+                        $vlResultCategory = 'not suppressed';
+                    }
                 }
             }
-        }
 
-        return $vlResultCategory;
+            return $vlResultCategory;
+        });
     }
 
     public function processViralLoadResultFromForm(array $params): array

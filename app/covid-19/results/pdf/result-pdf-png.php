@@ -1,10 +1,11 @@
 <?php
 // this file is included in covid-19/results/generate-result-pdf.php
-use App\Helpers\PdfWatermarkHelper;
-use App\Registries\ContainerRegistry;
-use App\Services\Covid19Service;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\Covid19Service;
+use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
 
 /** @var Covid19Service $covid19Service */
@@ -38,7 +39,7 @@ if (!empty($requestResult)) {
             }
         }
         // create new PDF document
-        $pdf = new Covid19ResultPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new Covid19ResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = $result['facilityLogo'];
         } else {

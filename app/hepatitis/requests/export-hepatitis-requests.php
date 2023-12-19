@@ -119,7 +119,7 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
     }
 
 
-    if (isset($_SESSION['hepatitisRequestSearchResultQueryCount']) && $_SESSION['hepatitisRequestSearchResultQueryCount'] > 75000) {
+    if (isset($_SESSION['hepatitisRequestSearchResultQueryCount']) && $_SESSION['hepatitisRequestSearchResultQueryCount'] > 50000) {
 
         $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Requests-' . date('d-M-Y-H-i-s') . '.csv';
         $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);

@@ -1,8 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -13,30 +13,9 @@ $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 
 $uniqueId = null;
-if (!empty($keyFromGlobalConfig)) {
-
-    $decryptedString = CommonService::decrypt($_GET['q'], base64_decode((string) $keyFromGlobalConfig));
-    $uniqueId = $decryptedString ?? null;
-} else {
-    $ciphering = "AES-128-CTR";
-    $iv_length = openssl_cipher_iv_length($ciphering);
-    $encryption = $_GET['q'];
-    $options = 0;
-    $decryption_iv = SYSTEM_CONFIG['tryCrypt'];
-    $decryption_key = SYSTEM_CONFIG['tryCrypt'];
-    $decryption = openssl_decrypt(
-        $encryption,
-        $ciphering,
-        $decryption_key,
-        $options,
-        $decryption_iv
-    );
-    $data = explode('&&&', urldecode($decryption));
-
-    $invalidRequest = _translate("INVALID REQUEST");
-
-    $uniqueId = $data[0] ?? null;
-}
+$decryption = CommonService::decryptViewQRCode($_GET['q']);
+$data = explode('&&&', urldecode($decryption));
+$uniqueId = $data[0] ?? null;
 
 $invalidRequest = _translate("INVALID REQUEST");
 if (empty($uniqueId)) {

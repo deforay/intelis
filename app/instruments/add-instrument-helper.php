@@ -23,7 +23,7 @@ $importControlTable = "instrument_controls";
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $_POST['configurationName'] = trim((string) $_POST['configurationName']);
 try {

@@ -43,7 +43,7 @@ $testTableName = 'covid19_tests';
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 try {
 	$sarr = $general->getSystemConfig();
@@ -272,13 +272,13 @@ try {
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
 	);
 
-		$db->where('covid19_id', $_POST['covid19SampleId']);
-		$getPrevResult = $db->getOne('form_covid19');
-		if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
-			$covid19Data['result_modified'] = "yes";
-		} else {
-			$covid19Data['result_modified'] = "no";
-		}
+	$db->where('covid19_id', $_POST['covid19SampleId']);
+	$getPrevResult = $db->getOne('form_covid19');
+	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+		$covid19Data['result_modified'] = "yes";
+	} else {
+		$covid19Data['result_modified'] = "no";
+	}
 
 	if (!empty($_POST['labId'])) {
 		$facility = $facilitiesService->getFacilityById($_POST['labId']);

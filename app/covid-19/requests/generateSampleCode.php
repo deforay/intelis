@@ -8,7 +8,7 @@ use App\Registries\ContainerRegistry;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);

@@ -62,11 +62,7 @@ if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
     $sqliteDb = new PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
 }
 
-
 //get the value from interfacing DB
-
-
-
 if ($mysqlConnected) {
 
     if (!empty($lastInterfaceSync)) {
@@ -119,8 +115,8 @@ if (!empty($interfaceData)) {
 
         $tableInfo = [];
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
-            $tableQuery = "SELECT $individualIdColumn FROM $individualTableName WHERE sample_code = ?";
-            $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id']]);
+            $tableQuery = "SELECT $individualIdColumn FROM $individualTableName WHERE sample_code = ? OR remote_sample_code = ?";
+            $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id'], $result['order_id']]);
             if (!empty($tableInfo[$individualIdColumn])) {
                 break;
             }

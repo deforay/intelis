@@ -9,12 +9,12 @@ use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
+
+$_FILES = _sanitizeFiles($_FILES, ['xlsx', 'xls', 'csv']);
+
 $arr = [];
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -26,7 +26,6 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 $tableName = "form_eid";
-// echo "<pre>";print_r($_FILES);die;
 try {
     $lock = $general->getGlobalConfig('lock_approved_eid_samples');
     $arr = $general->getGlobalConfig();

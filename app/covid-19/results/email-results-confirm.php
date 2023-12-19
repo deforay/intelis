@@ -19,7 +19,7 @@ $global = $general->getGlobalConfig();
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName = "form_covid19";
 //get other config values
@@ -60,7 +60,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
             //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
             //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
             // Set font
-            if (trim($this->logo) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                   $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                   $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');

@@ -10,7 +10,7 @@ use App\Services\GenericTestsService;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 
 $title = " Add New Test";
 

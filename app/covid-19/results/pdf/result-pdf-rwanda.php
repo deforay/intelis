@@ -1,11 +1,12 @@
 <?php
 
-use App\Helpers\PdfWatermarkHelper;
-use App\Services\Covid19Service;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Services\Covid19Service;
+use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
 // this file is included in covid-19/results/generate-result-pdf.php
 
@@ -40,7 +41,7 @@ if (!empty($requestResult)) {
             }
         }
         // create new PDF document
-        $pdf = new Covid19ResultPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new Covid19ResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = $result['facilityLogo'];
         } else {
@@ -436,7 +437,7 @@ if (!empty($requestResult)) {
                 if (!empty($keyFromGlobalConfig)) {
                     $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode((string) $keyFromGlobalConfig));
                     $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $encryptedString, 'QRCODE,H', 170, 175, 30, 30, $style, 'N');
+                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $encryptedString, 'QRCODE,H', 170, 175, 30, 30, [], 'N');
                 }
             }
             $pdf->lastPage();

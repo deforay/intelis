@@ -58,7 +58,7 @@ $specimenTypeResult = $db->query($sQuery);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $covid19Query = "SELECT * from form_covid19 where covid19_id=?";
@@ -120,17 +120,17 @@ $disable = "disabled = 'disabled'";
 </style>
 <?php
 $forms = [
-	1 => 'forms/update-southsudan-result.php',
-	2 => 'forms/update-sierraleone-result.php',
-	3 => 'forms/update-drc-result.php',
-	4 => 'forms/update-cameroon-result.php',
-	5 => 'forms/update-png-result.php',
-	6 => 'forms/update-who-result.php',
-	7 => 'forms/update-rwanda-result.php'
+	COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php',
+	COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php',
+	COUNTRY\DRC => 'forms/update-drc-result.php',
+	COUNTRY\CAMEROON => 'forms/update-cameroon-result.php',
+	COUNTRY\PNG => 'forms/update-png-result.php',
+	COUNTRY\WHO => 'forms/update-who-result.php',
+	COUNTRY\RWANDA => 'forms/update-rwanda-result.php'
 ];
 
 if (isset($forms[$arr['vl_form']])) {
-	require($forms[$arr['vl_form']]);
+	require_once($forms[$arr['vl_form']]);
 }
 ?>
 

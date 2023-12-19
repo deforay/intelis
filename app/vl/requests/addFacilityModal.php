@@ -7,8 +7,8 @@
 use App\Registries\AppRegistry;
 
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
-$_GET = $request->getQueryParams();
+$_POST = _sanitizeInput($request->getParsedBody());
+$_GET = _sanitizeInput($request->getQueryParams());
 
 
 $type = $_GET['type'];

@@ -34,6 +34,8 @@ $app = ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 
+$_FILES = _sanitizeFiles($_FILES, ['png', 'jpg', 'jpeg', 'gif']);
+
 try {
     ini_set('memory_limit', -1);
     set_time_limit(0);
@@ -41,9 +43,9 @@ try {
     $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserByToken($authToken);
     if (!empty($origJson)) {
-        $input = $request->getParsedBody();
+        $input = _sanitizeInput($request->getParsedBody());
     } elseif (!empty($_REQUEST)) {
-        $input = $_REQUEST;
+        $input = _sanitizeInput($_REQUEST);
         $input['post'] = json_decode((string) $input['post'], true);
     } else {
         throw new SystemException("2 Invalid request. Please check your request parameters.");

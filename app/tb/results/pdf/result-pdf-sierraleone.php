@@ -6,11 +6,12 @@
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
-use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\TBResultPDFHelper;
 
-class SouthSudan_PDF extends TBResultPdf
+class SierraLeoneTBResultPDF extends TBResultPDFHelper
 {
     public ?string $logo;
     public ?string $text;
@@ -21,10 +22,10 @@ class SouthSudan_PDF extends TBResultPdf
     {
         // Logo
 
-        if ($this->htitle != '') {
+        if (!empty($this->htitle) && trim($this->htitle) != '') {
 
             if (isset($this->formId) && $this->formId == 1) {
-                if (trim($this->logo) != '') {
+                if (!empty($this->logo) && trim($this->logo) != '') {
                     if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                         $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
@@ -32,7 +33,7 @@ class SouthSudan_PDF extends TBResultPdf
                 }
                 $this->SetFont('helvetica', 'B', 15);
                 $this->writeHTMLCell(0, 0, 15, 7, $this->text, 0, 0, 0, true, 'C');
-                if (trim($this->lab) != '') {
+                if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', 'B', 11);
                     // $this->writeHTMLCell(0, 0, 40, 15, strtoupper($this->lab), 0, 0, 0, true, 'L', true);
                     $this->writeHTMLCell(0, 0, 15, 15, 'Public Health Laboratory', 0, 0, 0, true, 'C');
@@ -60,7 +61,7 @@ class SouthSudan_PDF extends TBResultPdf
 
                 // $this->writeHTMLCell(0, 0, 25, 35, '<hr>', 0, 0, 0, true, 'C', true);
             } else {
-                if (trim($this->logo) != '') {
+                if (!empty($this->logo) && trim($this->logo) != '') {
                     if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                         $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
@@ -69,7 +70,7 @@ class SouthSudan_PDF extends TBResultPdf
 
                 $this->SetFont('helvetica', 'B', 8);
                 $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
-                if (trim($this->lab) != '') {
+                if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', '', 9);
                     $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
                 }
@@ -124,7 +125,7 @@ if (!empty($requestResult)) {
             }
         }
         // create new PDF document
-        $pdf = new SouthSudan_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new SierraLeoneTBResultPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = $result['facilityLogo'];
         } else {
@@ -512,19 +513,7 @@ if (!empty($requestResult)) {
         $html .= '</table>';
 
         if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
-            $ciphering = "AES-128-CTR";
-            $iv_length = openssl_cipher_iv_length($ciphering);
-            $options = 0;
-            $simple_string = $result['tb_id'] . "&&&qr";
-            $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
-            $encryption_key = SYSTEM_CONFIG['tryCrypt'];
-            $Cid = openssl_encrypt(
-                $simple_string,
-                $ciphering,
-                $encryption_key,
-                $options,
-                $encryption_iv
-            );
+            $viewId = CommonService::encryptViewQRCode($result['unique_id']);
             $pdf->writeHTML($html);
             $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
             if (isset($arr['tb_report_qr_code']) && $arr['tb_report_qr_code'] == 'yes') {
@@ -536,7 +525,7 @@ if (!empty($requestResult)) {
                 } else {
                     $h = 148.5;
                 }
-                //$pdf->write2DBarcode($remoteUrl . '/tb/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
+                //$pdf->write2DBarcode($remoteUrl . '/tb/results/view.php?q=' . $viewId . '', 'QRCODE,H', 170, $h, 20, 20, [], 'N');
             }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

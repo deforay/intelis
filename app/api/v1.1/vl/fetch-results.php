@@ -148,7 +148,7 @@ try {
         vl.date_test_ordered_by_physician                    as dateOfDemand,
         vl.result_reviewed_by                                as reviewedBy,
         vl.result_reviewed_datetime                          as reviewedOn,
-        vl.reason_for_vl_result_changes                      as reasonForVlResultChanges
+        vl.reason_for_result_changes                      as reasonForVlResultChanges
 
         FROM form_vl as vl
         LEFT JOIN geographical_divisions as g ON vl.province_id=g.geo_id

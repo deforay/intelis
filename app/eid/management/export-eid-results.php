@@ -129,7 +129,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$no++;
 	}
 
-	if (isset($_SESSION['eidExportResultQueryCount']) && $_SESSION['eidExportResultQueryCount'] > 75000) {
+	if (isset($_SESSION['eidExportResultQueryCount']) && $_SESSION['eidExportResultQueryCount'] > 50000) {
 
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);

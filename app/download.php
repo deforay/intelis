@@ -9,7 +9,7 @@ $webRootPath = realpath(WEB_ROOT);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 
 if (!isset($_GET['f']) || !is_file(base64_decode((string) $_GET['f']))) {
     $redirect = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';

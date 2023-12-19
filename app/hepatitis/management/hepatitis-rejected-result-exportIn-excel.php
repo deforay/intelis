@@ -80,7 +80,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $row[] = $aRow['rejection_reason_name'];
           $output[] = $row;
      }
-     if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 75000) {
+     if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 50000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Hepatitis-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore

@@ -81,16 +81,16 @@ $specimenTypeResult = $general->fetchDataFromTable('r_covid19_sample_type', "sta
 
 
 $fileArray = array(
-    1 => 'forms/quick-add-southsudan.php',
-    2 => 'forms/quick-add-sierraleone.php',
-    3 => 'forms/quick-add-drc.php',
-    4 => 'forms/quick-add-cameroon.php',
-    5 => 'forms/quick-add-png.php',
-    6 => 'forms/quick-add-who.php',
-    7 => 'forms/quick-add-rwanda.php',
+    COUNTRY\SOUTH_SUDAN => 'forms/quick-add-southsudan.php',
+    COUNTRY\SIERRA_LEONE => 'forms/quick-add-sierraleone.php',
+    COUNTRY\DRC => 'forms/quick-add-drc.php',
+    COUNTRY\CAMEROON => 'forms/quick-add-cameroon.php',
+    COUNTRY\PNG => 'forms/quick-add-png.php',
+    COUNTRY\WHO => 'forms/quick-add-who.php',
+    COUNTRY\RWANDA => 'forms/quick-add-rwanda.php',
 );
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);
 
 ?>
 

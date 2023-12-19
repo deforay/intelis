@@ -125,7 +125,7 @@ foreach ($resultSet as $aRow) {
     $no++;
 }
 
-if (isset($_SESSION['eidRequestSearchResultQueryCount']) && $_SESSION['eidRequestSearchResultQueryCount'] > 75000) {
+if (isset($_SESSION['eidRequestSearchResultQueryCount']) && $_SESSION['eidRequestSearchResultQueryCount'] > 50000) {
 
     $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-Requests-' . date('d-M-Y-H-i-s') . '.csv';
     $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);

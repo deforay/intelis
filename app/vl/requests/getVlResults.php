@@ -15,7 +15,7 @@ $vlService = ContainerRegistry::get(VlService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 if (isset($_POST['instrumentId'])) {
   $configId = $_POST['instrumentId'];

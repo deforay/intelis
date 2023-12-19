@@ -1,10 +1,12 @@
 <?php
 // this file is included in covid-19/results/generate-result-pdf.php
-use App\Helpers\PdfWatermarkHelper;
-use App\Registries\ContainerRegistry;
-use App\Services\Covid19Service;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Services\Covid19Service;
+use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
 
 /** @var Covid19Service $covid19Service */
@@ -40,8 +42,8 @@ if (!empty($requestResult)) {
             }
         }
         // create new PDF document
-        $pdf = new Covid19ResultPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+        $pdf = new Covid19ResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = $result['facilityLogo'];
         } else {
             $logoPrintInPdf = $arr['logo'];
@@ -388,7 +390,7 @@ if (!empty($requestResult)) {
 
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-            if (!empty($userSignaturePath) && file_exists($userSignaturePath)) {
+            if (!empty($userSignaturePath) && MiscUtility::imageExists($userSignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:70px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -408,11 +410,15 @@ if (!empty($requestResult)) {
             $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">DATE & HEURE</td>';
             $html .= '</tr>';
             foreach ($signResults as $key => $row) {
-                $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+                $lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+                $signature = '';
+                if (MiscUtility::imageExists($lmSign)) {
+                    $signature = '<img src="' . $lmSign . '" style="width:40px;" />';
+                }
                 $html .= '<tr>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid gray;">' . $row['designation'] . '</td>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $row['name_of_signatory'] . '</td>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;"><img src="' . $lmSign . '" style="width:30px;"></td>';
+                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $signature . '</td>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . date('d-M-Y H:i:s a') . '</td>';
                 $html .= '</tr>';
             }
@@ -447,19 +453,7 @@ if (!empty($requestResult)) {
         $html .= '</table>';
 
         if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
-            $ciphering = "AES-128-CTR";
-            $iv_length = openssl_cipher_iv_length($ciphering);
-            $options = 0;
-            $simple_string = $result['covid19_id'] . "&&&qr";
-            $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
-            $encryption_key = SYSTEM_CONFIG['tryCrypt'];
-            $Cid = openssl_encrypt(
-                $simple_string,
-                $ciphering,
-                $encryption_key,
-                $options,
-                $encryption_iv
-            );
+            $viewId = CommonService::encryptViewQRCode($result['unique_id']);
             $pdf->writeHTML($html);
             $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
             if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
@@ -473,7 +467,7 @@ if (!empty($requestResult)) {
                 }
                 if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                     $remoteUrl = rtrim($remoteUrl, "/");
-                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid, 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
+                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $viewId, 'QRCODE,H', 170, $h, 20, 20, [], 'N');
                 }
             }
             $pdf->lastPage();

@@ -22,7 +22,7 @@ if (!empty($tResult['sample_review_by'])) {
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 
 $module = $_GET['t'];
 
@@ -547,7 +547,7 @@ foreach ($rejectionTypeResult as $type) {
 		}
 
 		if (appBy != '' && somethingmissing == false && testBy != "" && reviewedBy != "") {
-			conf = confirm("<?= _translate("Are you sure you want to continue ?"); ?>");
+			conf = confirm("<?= _translate("Are you sure you want to continue?", true); ?>");
 			if (conf) {
 				$.blockUI();
 				$.post("/import-result/processImportedResults.php", {
@@ -580,7 +580,7 @@ foreach ($rejectionTypeResult as $type) {
 				oTable.fnDraw();
 			}
 		} else {
-			alert("<?= _translate("Please ensure you have updated the status and the approved by and reviewed by and tested by field"); ?>");
+			alert("<?= _translate("Please ensure you have updated the status and the approved by and reviewed by and tested by field", true); ?>");
 			return false;
 		}
 	}
@@ -592,7 +592,7 @@ foreach ($rejectionTypeResult as $type) {
 
 	function updateStatus(value, status) {
 		if (status != '') {
-			conf = confirm("<?= _translate("Do you wish to change the status ?"); ?>");
+			conf = confirm("<?= _translate("Do you wish to change the status?", true); ?>");
 			if (conf) {
 				$.blockUI();
 				$.post("/import-result/processImportedResults.php", {
@@ -613,14 +613,14 @@ foreach ($rejectionTypeResult as $type) {
 				oTable.fnDraw();
 			}
 		} else {
-			alert("<?= _translate("Please select result status"); ?>");
+			alert("<?= _translate("Please select result status", true); ?>");
 		}
 	}
 
 	function updateSampleCode(obj, oldSampleCode, tempsampleId) {
 		$(obj).fastConfirm({
 			position: "right",
-			questionText: "<?= _translate("Are you sure you want to rename this Sample?"); ?>",
+			questionText: "<?= _translate("Are you sure you want to rename this Sample?", true); ?>",
 			onProceed: function(trigger) {
 				var pos = oTable.fnGetPosition(obj);
 				$.blockUI();
@@ -630,7 +630,7 @@ foreach ($rejectionTypeResult as $type) {
 					},
 					function(data) {
 						if (data == 0) {
-							alert("<?= _translate("Something went wrong! Please try again"); ?>");
+							alert("<?= _translate("Something went wrong! Please try again", true); ?>");
 							oTable.fnDraw();
 						}
 					});
@@ -655,7 +655,7 @@ foreach ($rejectionTypeResult as $type) {
 					},
 					function(data) {
 						if (data == 0) {
-							alert("<?= _translate("Something went wrong! Please try again"); ?>");
+							alert("<?= _translate("Something went wrong! Please try again", true); ?>");
 							oTable.fnDraw();
 						}
 					});
@@ -670,7 +670,7 @@ foreach ($rejectionTypeResult as $type) {
 	function sampleToControl(obj, oldValue, tempsampleId) {
 		$(obj).fastConfirm({
 			position: "left",
-			questionText: "<?= _translate("Are you sure you want to change this sample?"); ?>",
+			questionText: "<?= _translate("Are you sure you want to change this sample?", true); ?>",
 			onProceed: function(trigger) {
 				var pos = oTable.fnGetPosition(obj);
 				$.blockUI();
@@ -680,7 +680,7 @@ foreach ($rejectionTypeResult as $type) {
 					},
 					function(data) {
 						if (data == 0) {
-							alert("<?= _translate("Something went wrong! Please try again"); ?>");
+							alert("<?= _translate("Something went wrong! Please try again", true); ?>");
 							oTable.fnDraw();
 						}
 					});
@@ -693,7 +693,7 @@ foreach ($rejectionTypeResult as $type) {
 	}
 
 	function sampleToControlAlert(number) {
-		alert("<?= _translate("Maximum number of controls allowed as per the instrument configuration is"); ?> " + number);
+		alert("<?= _translate("Maximum number of controls allowed as per the instrument configuration", true); ?> : " + number);
 		oTable.fnDraw();
 	}
 

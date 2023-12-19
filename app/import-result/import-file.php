@@ -8,7 +8,7 @@ use App\Services\DatabaseService;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 
 $type = $_GET['t'];
 $title = _translate("Import") . " " . strtoupper((string) $type) . " " . _translate("test results from file");

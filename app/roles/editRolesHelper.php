@@ -8,7 +8,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
 
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

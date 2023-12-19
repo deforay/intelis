@@ -19,7 +19,7 @@ $global = $general->getGlobalConfig();
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName = "form_eid";
 //get other config values
@@ -62,8 +62,6 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                      </thead>
                      <tbody>
                         <?php
-                     //   echo '<pre>'; print_r($selectedSamplesArray); die;
-                      //  echo count($selectedSamplesArray); die;
                         $resultOlySamples = [];
                         for ($s = 0; $s < count($selectedSamplesArray); $s++) {
                            $sampleQuery = "SELECT eid_id,sample_code FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.eid_id = '" . $selectedSamplesArray[$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";

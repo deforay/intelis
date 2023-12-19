@@ -20,7 +20,7 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 
 $queryParams = explode(',', (string) $_POST['sampleId']);

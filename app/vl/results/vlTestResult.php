@@ -25,12 +25,12 @@ $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_COOKIE = $request->getCookieParams();
+$_COOKIE = _sanitizeInput($request->getCookieParams());
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_COOKIE = $request->getCookieParams();
+$_COOKIE = _sanitizeInput($request->getCookieParams());
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $testingLabs = $facilitiesService->getTestingLabs('vl');
