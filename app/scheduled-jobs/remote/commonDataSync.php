@@ -66,7 +66,7 @@ $payload = array(
     'partnersLastModified'          => $general->getLastModifiedDateTime('r_implementation_partners'),
     'geoDivisionsLastModified'      => $general->getLastModifiedDateTime('geographical_divisions'),
     'patientsLastModified'          => $general->getLastModifiedDateTime('patients'),
-    "Key"                          => "vlsm-get-remote",
+    "Key"                           => "vlsm-get-remote",
 );
 
 // This array is used to sync data that we will later receive from the API call
@@ -109,7 +109,7 @@ $commonDataToSync = array(
     ),
     'patients'  => array(
         'primaryKey' => 'system_patient_code',
-        'tableName'  =>  'patients'
+        'tableName'  =>  'patients',
     )
 );
 
@@ -341,7 +341,8 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $id = $db->delete('testing_labs');
             }
 
-            $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name= ?";
+            $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name = ? ";
+           
             $columnList = array_map('current', $db->rawQuery($tableColumns, [
                 $systemConfig['database']['db'],
                 $dataToSync[$dataType]['tableName']

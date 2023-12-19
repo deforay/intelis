@@ -487,7 +487,7 @@ $batchResult = $db->rawQuery($batchQuery);
 		var status = $('#sampleStatus').val();
 		var sampleMailSentStatus = $('#sampleMailSentStatus').val();
 		var type = $('#type').val();
-		$.post("/mail/getRequestSampleCodeDetails.php", {
+		$.post("/vl/results/getRequestSampleCodeDetails.php", {
 				facility: facilityName,
 				sType: sTypeName,
 				sampleCollectionDate: $("#sampleCollectionDate").val(),

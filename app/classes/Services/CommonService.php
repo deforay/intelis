@@ -870,7 +870,8 @@ class CommonService
         if (empty($table)) {
             return null;
         }
-        $response = $this->db->rawQueryOne("SHOW KEYS FROM ? WHERE Key_name = 'PRIMARY'", [$table]);
+
+        $response = $this->db->rawQueryOne("SHOW KEYS FROM $table WHERE Key_name = 'PRIMARY'");
         return $response['Column_name'] ?? null;
     }
 

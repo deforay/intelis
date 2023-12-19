@@ -84,7 +84,7 @@ $batchResult = $db->rawQuery($batchQuery);
 										<?php echo _translate("Subject"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-9">
-										<input type="text" id="subject" name="subject" class="form-control isRequired" placeholder="<?php echo _translate('Subject'); ?>" title="<?php echo _translate('Please enter subject'); ?>" value="Viral Load Test Results" />
+										<input type="text" id="subject" name="subject" class="form-control isRequired" placeholder="<?php echo _translate('Subject'); ?>" title="<?php echo _translate('Please enter subject'); ?>" value="Early Infant Diagnosis (EID) Test Results" />
 									</div>
 								</div>
 							</div>
@@ -326,7 +326,7 @@ $batchResult = $db->rawQuery($batchQuery);
 						<input type="hidden" id="toEmail" name="toEmail" />
 						<input type="hidden" id="reportEmail" name="reportEmail" />
 						<input type="hidden" name="pdfFile" id="pdfFile" />
-						<a href="/eid/result-mail/testResultEmailConfig.php" class="btn btn-default">
+						<a href="/vl/result-mail/testResultEmailConfig.php" class="btn btn-default">
 							<?php echo _translate("Cancel"); ?>
 						</a>&nbsp;
 						<a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;">
@@ -484,7 +484,7 @@ $batchResult = $db->rawQuery($batchQuery);
 		var status = $('#sampleStatus').val();
 		var sampleMailSentStatus = $('#sampleMailSentStatus').val();
 		var type = $('#type').val();
-		$.post("/mail/getRequestSampleCodeDetails.php", {
+		$.post("/eid/results/getRequestSampleCodeDetails.php", {
 				facility: facilityName,
 				sType: sTypeName,
 				sampleCollectionDate: $("#sampleCollectionDate").val(),

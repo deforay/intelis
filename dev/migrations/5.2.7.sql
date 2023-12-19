@@ -159,3 +159,9 @@ ALTER TABLE `audit_form_tb` ADD `result_modified` VARCHAR(3) NULL DEFAULT NULL A
 
 ALTER TABLE `form_eid` CHANGE `is_child_symptomatic` `is_child_symptomatic` VARCHAR(3) NULL DEFAULT NULL;
 ALTER TABLE `audit_form_eid` CHANGE `is_child_symptomatic` `is_child_symptomatic` VARCHAR(3) NULL DEFAULT NULL;
+
+ALTER TABLE `form_eid` ADD `is_result_mail_sent` VARCHAR(5) NOT NULL DEFAULT 'no' AFTER `result_dispatched_datetime`;
+ALTER TABLE `audit_form_eid` ADD `is_result_mail_sent` VARCHAR(5) NOT NULL DEFAULT 'no' AFTER `result_dispatched_datetime`;
+
+ALTER TABLE `form_tb` ADD `is_result_mail_sent` VARCHAR(5) NOT NULL DEFAULT 'no' AFTER `result_dispatched_datetime`;
+ALTER TABLE `audit_form_tb` ADD `is_result_mail_sent` VARCHAR(5) NOT NULL DEFAULT 'no' AFTER `result_dispatched_datetime`;

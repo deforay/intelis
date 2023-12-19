@@ -108,12 +108,12 @@ $_SESSION['aliasPage'] = 1;
 //header and footer
 class VLResultPDF extends TCPDF
 {
-	public ?string $logo;
-	public ?string $text;
-	public ?string $lab;
-	public ?string $htitle;
-	public ?string $labFacilityId = null;
-	public ?string $trainingTxt = null;
+	public  $logo;
+	public  $text;
+	public  $lab;
+	public  $htitle;
+	public  $labFacilityId = null;
+	public  $trainingTxt = null;
 
 	//Page header
 	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $trainingTxt = null)

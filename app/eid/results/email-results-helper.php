@@ -17,10 +17,10 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = $request->getParsedBody();
 
-$tableName = "form_vl";
+$tableName = "form_eid";
 
 //get vl result mail sent list
-$resultmailSentQuery = "SELECT result_mail_datetime FROM form_vl where MONTH(result_mail_datetime) = MONTH(CURRENT_DATE())";
+$resultmailSentQuery = "SELECT result_mail_datetime FROM form_eid where MONTH(result_mail_datetime) = MONTH(CURRENT_DATE())";
 $resultmailSentResult = $db->rawQuery($resultmailSentQuery);
 $sourcecode = sprintf("%02d", (count($resultmailSentResult) + 1));
 //get instance facility code
@@ -110,26 +110,24 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
          //update result mail sent flag
          $_POST['sample'] = explode(',', (string) $_POST['sample']);
          for ($s = 0; $s < count($_POST['sample']); $s++) {
-            $sampleQuery = "SELECT vl_sample_id FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.vl_sample_id = '" . $_POST['sample'][$s] . "'";
+            $sampleQuery = "SELECT eid_id FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.eid_id = '" . $_POST['sample'][$s] . "'";
             $sampleResult = $db->rawQuery($sampleQuery);
-            $db->where('vl_sample_id', $sampleResult[0]['vl_sample_id']);
+            $db->where('eid_id', $sampleResult[0]['eid_id']);
             $db->update($tableName, array('is_result_mail_sent' => 'yes', 'result_mail_datetime' => DateUtility::getCurrentDateTime()));
          }
 
          $_SESSION['alertMsg'] = 'Email sent successfully';
-         header('location:vlResultMail.php');
+         header('location:email-results.php');
       } else {
-         echo 'oooops';
-         die;
          $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
          error_log("Mailer Error: " . $mail->ErrorInfo);
-         header('location:vlResultMail.php');
+         header('location:email-results.php');
       }
    } else {
       $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
-      header('location:vlResultMail.php');
+      header('location:email-results.php');
    }
 } else {
    $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
-   header('location:vlResultMail.php');
+   header('location:email-results.php');
 }
