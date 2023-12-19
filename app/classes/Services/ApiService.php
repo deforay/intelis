@@ -157,4 +157,30 @@ class ApiService
             throw new SystemException("Unable to retrieve json : " . $e->getMessage(), 500);
         }
     }
+
+    /**
+     * Download a file from a given URL and save it to a specified path.
+     *
+     * @param string $url The URL of the file to download.
+     * @param string $path The local path where the file should be saved.
+     * @return bool Returns true on successful download, false otherwise.
+     */
+    public function downloadFile(string $url, string $path): bool
+    {
+        try {
+            $response = $this->client->request('GET', $url, [
+                'sink' => $path, // Directly write the response to the file
+                'stream' => true // Enable streaming to handle large files
+            ]);
+
+            if ($response->getStatusCode() === 200) {
+                return true;
+            } else {
+                return false; // Non-200 response status code
+            }
+        } catch (GuzzleException | RequestException | Exception $e) {
+            error_log($e->getMessage());
+            return false; // Handle any exception
+        }
+    }
 }

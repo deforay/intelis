@@ -8,6 +8,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 
@@ -342,7 +343,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
             }
 
             $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name = ? ";
-           
+
             $columnList = array_map('current', $db->rawQuery($tableColumns, [
                 $systemConfig['database']['db'],
                 $dataToSync[$dataType]['tableName']
@@ -372,21 +373,32 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $db->onDuplicate($updateColumns, $lastInsertId);
                 $db->insert($dataToSync[$dataType]['tableName'], $tableData);
 
-                // For updated facilities, we delete logo images (if any) and then we get new images (if any)
-                // this ensures that if the logo was there previously it gets removed
+                // Updating logo and report template
                 if ($dataType === 'facilities') {
-                    $labLogoFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
+
                     if (!empty($tableData['facility_logo'])) {
-                        if (!file_exists($labLogoFolder)) {
-                            mkdir($labLogoFolder, 0777, true);
-                        }
+                        $labLogoFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
+                        MiscUtility::makeDirectory($labLogoFolder);
+
                         $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" . $tableData['facility_logo'];
                         $localFilePath = $labLogoFolder . "/" . "actual-" . $tableData['facility_logo'];
-                        file_put_contents($localFilePath, file_get_contents($remoteFileUrl));
+
+                        $apiService->downloadFile($remoteFileUrl, $localFilePath);
 
                         $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
                         $localFilePath = $labLogoFolder . "/" . $tableData['facility_logo'];
-                        file_put_contents($localFilePath, file_get_contents($remoteFileUrl));
+                        $apiService->downloadFile($remoteFileUrl, $localFilePath);
+                    }
+
+                    $facilityAttributes = !empty($tableData['facility_attributes']) ? json_decode($tableData['facility_attributes'], true) : [];
+
+                    if (!empty($facilityAttributes['report_template'])) {
+                        $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
+                        MiscUtility::makeDirectory($labDataFolder);
+
+                        $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/labs/' . $tableData['facility_id'] . '/' . $facilityAttributes['report_template'];
+                        $localFilePath = $labDataFolder . "/" . $facilityAttributes['report_template'];
+                        $apiService->downloadFile($remoteFileUrl, $localFilePath);
                     }
                 }
             }
@@ -418,7 +430,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                     /* To save file from the url */
                     $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/labs/' . $sign['lab_id'] . '/signatures/' . $sign['signature'];
                     $localFileLocation = $signaturesFolder . DIRECTORY_SEPARATOR . $sign['signature'];
-                    if (file_put_contents($localFileLocation, file_get_contents($remoteFileUrl))) {
+                    if ($apiService->downloadFile($remoteFileUrl, $localFileLocation)) {
                         $db->insert('lab_report_signatories', $sign);
                     }
                 }

@@ -56,7 +56,7 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 				LEFT JOIN r_hepatitis_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
 				LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner
 				LEFT JOIN r_funding_sources as rfs ON rfs.funding_source_id=vl.funding_source
-				LEFT JOIN r_hepatitis_sample_type as rst ON rst.sample_id=vl.specimen_type
+				LEFT JOIN r_hepatitis_sample_type as rst ON rst.hepatitis_id=vl.specimen_type
 				WHERE vl.hepatitis_id IN(" . $_POST['id'] . ")";
 } else {
 	$searchQuery = $allQuery;
@@ -64,20 +64,23 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 // echo($searchQuery);die;
 $requestResult = $db->query($searchQuery);
 
-if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime'])) {
-	$pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
-	$db->where('hepatitis_id', $_POST['id']);
-	$id = $db->update('form_hepatitis', $pData);
-} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime'])) {
-	$pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
-	$db->where('hepatitis_id', $_POST['id']);
-	$id = $db->update('form_hepatitis', $pData);
+$currentDateTime = DateUtility::getCurrentDateTime();
+
+foreach ($requestResult as $requestRow) {
+	if (($_SESSION['instanceType'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
+		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+		$db->where('hepatitis_id', $requestRow['hepatitis_id']);
+		$id = $db->update('form_hepatitis', $pData);
+	} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestRow['result_printed_on_sts_datetime'])) {
+		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+		$db->where('hepatitis_id', $requestRow['hepatitis_id']);
+		$id = $db->update('form_hepatitis', $pData);
+	}
 }
 
 
-/* Test Results */
 
-$_SESSION['nbPages'] = sizeof($requestResult);
+/* Test Results */
 $_SESSION['aliasPage'] = 1;
 //print_r($requestResult);die;
 

@@ -34,14 +34,14 @@ $printDateTime = $expStr[1];
 //set mField Array
 $mFieldArray = [];
 if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
-	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
+    $mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
 }
 
 //set query
 $allQuery = $_SESSION['eidPrintQuery'];
 if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 
-	$searchQuery = "SELECT vl.*,f.*,l.facility_name as labName,
+    $searchQuery = "SELECT vl.*,f.*,l.facility_name as labName,
                   l.facility_logo as facilityLogo,
                   rip.i_partner_name,
                   rst.*,
@@ -68,39 +68,38 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 				  LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
                   WHERE vl.eid_id IN(" . $_POST['id'] . ")";
 } else {
-	$searchQuery = $allQuery;
+    $searchQuery = $allQuery;
 }
 //echo($searchQuery);die;
 $requestResult = $db->query($searchQuery);
 
-if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime'])) {
-	$pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
-	$db->where('eid_id', $_POST['id']);
-	$id = $db->update('form_eid', $pData);
-} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime'])) {
-	$pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
-	$db->where('eid_id', $_POST['id']);
-	$id = $db->update('form_eid', $pData);
+$currentDateTime = DateUtility::getCurrentDateTime();
+
+foreach ($requestResult as $requestRow) {
+    if (($_SESSION['instanceType'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
+        $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+        $db->where('eid_id', $requestRow['eid_id']);
+        $id = $db->update('form_eid', $pData);
+    } elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestRow['result_printed_on_sts_datetime'])) {
+        $pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+        $db->where('eid_id', $requestRow['eid_id']);
+        $id = $db->update('form_eid', $pData);
+    }
 }
 
-$_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
-//print_r($requestResult);die;
-//header and footer
-
-
 
 
 if ($formId == COUNTRY\SOUTH_SUDAN) {
-	include('pdf/result-pdf-ssudan.php');
+    include('pdf/result-pdf-ssudan.php');
 } else if ($formId == COUNTRY\SIERRA_LEONE) {
-	include('pdf/result-pdf-sierraleone.php');
+    include('pdf/result-pdf-sierraleone.php');
 } else if ($formId == COUNTRY\DRC) {
-	include('pdf/result-pdf-drc.php');
+    include('pdf/result-pdf-drc.php');
 } else if ($formId == COUNTRY\CAMEROON) {
-	include('pdf/result-pdf-cameroon.php');
+    include('pdf/result-pdf-cameroon.php');
 } else if ($formId == COUNTRY\PNG) {
-	include('pdf/result-pdf-png.php');
+    include('pdf/result-pdf-png.php');
 } else if ($formId == COUNTRY\RWANDA) {
-	include('pdf/result-pdf-rwanda.php');
+    include('pdf/result-pdf-rwanda.php');
 }

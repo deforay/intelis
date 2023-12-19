@@ -96,9 +96,6 @@ if (!class_exists('DRCCovid19PDF6')) {
             $this->writeHTML($formatter->format(strtotime((string) $this->resultPrintedDate)) . ' ' . $generatedAtTestingLab);
             //$this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . $generatedAtTestingLab);
             $this->writeHTMLCell(0, 0, 10, 280, 'Service de Biologie Médicale', 0, 0, false, true, 'C');
-            // Page number
-            //$this->SetFont('helvetica', '', 8);
-            //$this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');
         }
     }
 }

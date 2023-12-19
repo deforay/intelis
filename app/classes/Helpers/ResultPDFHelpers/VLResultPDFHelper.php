@@ -15,12 +15,17 @@ class VLResultPDFHelper extends Fpdi
     public ?string $labFacilityId = null;
     public ?string $trainingTxt = null;
     private ?string $pdfTemplatePath = null;
+    private bool $templateImported = false;
+    private bool $enableFooter = true; // Default is true to render footer
 
-    public function __construct($orientation = 'P', $unit = 'mm', $format = 'A4', $unicode = true, $encoding = 'UTF-8', $diskcache = false, $pdfTemplatePath = null)
+
+    public function __construct($orientation = 'P', $unit = 'mm', $format = 'A4', $unicode = true, $encoding = 'UTF-8', $diskcache = false, $pdfTemplatePath = null, $enableFooter = true)
     {
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache);
-        $this->pdfTemplatePath = $pdfTemplatePath;
+        $this->pdfTemplatePath = $pdfTemplatePath ?? null;
+        $this->enableFooter = $enableFooter;
     }
+
 
     //Page header
     public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $trainingTxt = null)
@@ -40,10 +45,13 @@ class VLResultPDFHelper extends Fpdi
     //Page header
     public function Header()
     {
-        if ($this->pdfTemplatePath && file_exists($this->pdfTemplatePath)) {
-            // Import and use the template
-            $tplId = $this->importPage(1);
-            $this->useTemplate($tplId, 0, 0);
+        if (!empty($this->pdfTemplatePath) && MiscUtility::fileExists($this->pdfTemplatePath)) {
+            if (!$this->templateImported) {
+                $this->setSourceFile($this->pdfTemplatePath);
+                $this->templateImported = true;
+            }
+            $tplIdx = $this->importPage(1);
+            $this->useTemplate($tplIdx, 0, 0);
         } else {
             if (!empty($this->htitle) && $this->htitle != '') {
                 if (!empty($this->logo) && trim($this->logo) != '') {
@@ -103,12 +111,17 @@ class VLResultPDFHelper extends Fpdi
     // Page footer
     public function Footer()
     {
-        // Position at 15 mm from bottom
+
         $this->SetY(-15);
         // Set font
         $this->SetFont('helvetica', '', 8);
-        // Page number
-        $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . ' of ' . $this->getAliasNbPages(), 0, false, 'C', 0);
-        $this->writeHTML('<span Style="color:red">' . strtoupper((string) $this->trainingTxt) . '</span>', true, false, true, false, 'M');
+        if ($this->enableFooter) {
+            // Position at 15 mm from bottom
+            // Page number
+            $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . ' of ' . $this->getAliasNbPages(), 0, false, 'C', 0);
+        }
+        if (!empty($this->trainingTxt)) {
+            $this->writeHTML('<span Style="color:red">' . strtoupper((string) $this->trainingTxt) . '</span>', true, false, true, false, 'M');
+        }
     }
 }
