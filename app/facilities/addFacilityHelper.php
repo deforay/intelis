@@ -133,8 +133,8 @@ try {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}
 		// Upload Report Template
-		if (!empty($sanitizedReportTemplate['name'])) {
-			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template";
+		if ($lastId > 0 && !empty($sanitizedReportTemplate['name'])) {
+			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template";
 			MiscUtility::makeDirectory($directoryPath, 0777, true);
 			$string = $general->generateRandomString(12) . ".";
 			$extension = strtolower(pathinfo($directoryPath . DIRECTORY_SEPARATOR . $sanitizedReportTemplate['name'], PATHINFO_EXTENSION));
