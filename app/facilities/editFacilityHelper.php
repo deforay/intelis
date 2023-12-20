@@ -47,12 +47,11 @@ try {
 		if (isset($_POST['provinceNew']) && $_POST['provinceNew'] != "" && $_POST['stateId'] == 'other') {
 			$_POST['stateId'] = $geolocation->addGeoLocation($_POST['provinceNew']);
 			$_POST['state'] = $_POST['provinceNew'];
-			// if (trim($_POST['state']) != "") {
-			$strSearch = (isset($_POST['provinceNew']) && trim((string) $_POST['provinceNew']) != '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
-			$facilityQuery = "SELECT geo_name from geographical_divisions where geo_name='" . $strSearch . "'";
-			$facilityInfo = $db->query($facilityQuery);
-			if (isset($facilityInfo[0]['geo_name'])) {
-				$_POST['state'] = $facilityInfo[0]['geo_name'];
+			$provinceName = (isset($_POST['provinceNew']) && trim((string) $_POST['provinceNew']) != '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
+			$facilityQuery = "SELECT geo_name FROM geographical_divisions WHERE geo_name= ?";
+			$facilityInfo = $db->rawQueryOne($facilityQuery, [$provinceName]);
+			if (isset($facilityInfo['geo_name'])) {
+				$_POST['state'] = $facilityInfo['geo_name'];
 			} else {
 				$data = array(
 					'geo_name' => $_POST['provinceNew'],
@@ -195,18 +194,7 @@ try {
 		// 	$delId = $db->delete($testingLabsTable);
 		// }
 		if ($lastId > 0) {
-			if (!empty(!empty($_POST['testData']))) {
-				for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
-					$dataTest = array(
-						'test_type' => $_POST['testData'][$tf],
-						'facility_id' => $lastId,
-						'monthly_target' => $_POST['monTar'][$tf],
-						'suppressed_monthly_target' => $_POST['supMonTar'][$tf],
-						"updated_datetime" => DateUtility::getCurrentDateTime()
-					);
-					$db->insert($testingLabsTable, $dataTest);
-				}
-			}
+
 			if (!empty($_POST['testType'])) {
 
 				if (isset($_POST['facilityType']) && $_POST['facilityType'] == 1) {
@@ -242,6 +230,23 @@ try {
 						}
 						$tid = $db->insert($testingLabsTable, $data);
 					}
+				}
+			}
+
+			if (!empty($_POST['testData'])) {
+				for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
+					$dataTest = array(
+						'test_type' => $_POST['testData'][$tf],
+						'facility_id' => $lastId,
+						'monthly_target' => $_POST['monTar'][$tf],
+						'suppressed_monthly_target' => $_POST['supMonTar'][$tf],
+						"updated_datetime" => DateUtility::getCurrentDateTime()
+					);
+
+					$updateColumns = array_keys($dataTest);
+
+					$db->onDuplicate($updateColumns)
+						->insert($testingLabsTable, $dataTest);
 				}
 			}
 		}

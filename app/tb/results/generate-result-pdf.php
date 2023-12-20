@@ -1,12 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Services\TbService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
@@ -57,6 +57,7 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 				l.facility_district as labCounty,
 				l.facility_logo as facilityLogo,
 				l.report_format as reportFormat,
+                l.facility_attributes,
 				rip.i_partner_name,
 				rsrr.rejection_reason_name ,
 				u_d.user_name as reviewedBy,
@@ -87,15 +88,20 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 $requestResult = $db->query($searchQuery);
 /* Test Results */
 
-if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime'])) {
-    $pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
-    $db->where('tb_id', $_POST['id']);
-    $id = $db->update('form_tb', $pData);
-} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime'])) {
-    $pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
-    $db->where('tb_id', $_POST['id']);
-    $id = $db->update('form_tb', $pData);
+$currentDateTime = DateUtility::getCurrentDateTime();
+
+foreach ($requestResult as $requestRow) {
+    if (($_SESSION['instanceType'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
+        $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+        $db->where('tb_id', $requestRow['tb_id']);
+        $id = $db->update('form_tb', $pData);
+    } elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestRow['result_printed_on_sts_datetime'])) {
+        $pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+        $db->where('tb_id', $requestRow['tb_id']);
+        $id = $db->update('form_tb', $pData);
+    }
 }
+
 
 if (isset($_POST['type']) && $_POST['type'] == "qr") {
     try {
@@ -106,8 +112,8 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
     }
 }
 
-$_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
+$arr = $general->getGlobalConfig();
 
 //set mField Array
 $mFieldArray = [];

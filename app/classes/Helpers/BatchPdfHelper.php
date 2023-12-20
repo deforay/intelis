@@ -2,11 +2,11 @@
 
 namespace App\Helpers;
 
-use TCPDF;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use setasign\Fpdi\Tcpdf\Fpdi;
 
-class BatchPdfHelper extends TCPDF
+class BatchPdfHelper extends Fpdi
 {
     public ?string $logo;
     public ?string $text;

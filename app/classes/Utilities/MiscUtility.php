@@ -18,40 +18,54 @@ class MiscUtility
 
     public static function removeDirectory($dirname): bool
     {
-        // Sanity check
         if (!file_exists($dirname)) {
             return false;
         }
 
-        // Simple delete for a file
         if (is_file($dirname) || is_link($dirname)) {
             return unlink($dirname);
         }
 
-        // Loop through the folder
         $dir = dir($dirname);
         while (false !== ($entry = $dir->read())) {
-            // Skip pointers
             if ($entry == '.' || $entry == '..') {
                 continue;
             }
 
-            // Recurse
-            self::removeDirectory($dirname . DIRECTORY_SEPARATOR . $entry);
+            $fullPath = $dirname . DIRECTORY_SEPARATOR . $entry;
+            if (!self::removeDirectory($fullPath)) {
+                $dir->close(); // Close the directory handle if a recursive delete fails.
+                return false;
+            }
         }
 
-        // Clean up
         $dir->close();
         return rmdir($dirname);
     }
 
+
     //dump the contents of a variable to the error log in a readable format
-    public static function dumpToErrorLog($object = null): void
+    public static function dumpToErrorLog($object = null, $useVarDump = true): void
     {
         ob_start();
-        var_dump($object);
-        error_log(ob_get_clean());
+        if ($useVarDump) {
+            var_dump($object);
+            $output = ob_get_clean();
+            // Remove newline characters
+            $output = str_replace("\n", "", $output);
+        } else {
+            print_r($object);
+            $output = ob_get_clean();
+        }
+
+        // Additional context
+        $timestamp = date('Y-m-d H:i:s');
+        $output = "[{$timestamp}] " . $output;
+
+        error_log($output);
     }
+
+
 
     /**
      * Checks if the array contains any null or empty string values.
@@ -171,7 +185,7 @@ class MiscUtility
 
     public static function fileExists($filePath): bool
     {
-        return !empty($filePath) && is_file($filePath) && (@filesize($filePath) > 0);
+        return !empty($filePath) && is_file($filePath) && !is_dir($filePath) && (@filesize($filePath) > 0);
     }
 
     public static function imageExists($filePath): bool

@@ -14,7 +14,6 @@ use App\Helpers\BatchPdfHelper;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
-use App\Helpers\ResultPdfHelper;
 use App\Services\AppMenuService;
 use App\Services\Covid19Service;
 use App\Utilities\LoggerUtility;
@@ -22,6 +21,7 @@ use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Utilities\CaptchaUtility;
 use App\Services\HepatitisService;
+use App\Services\ResultPdfService;
 use App\Exceptions\SystemException;
 use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
@@ -88,6 +88,7 @@ $builder->addDefinitions([
 // Services
 $builder->addDefinitions([
     SystemService::class  => DI\autowire(),
+    ResultPdfService::class  => DI\autowire(),
     CommonService::class  => DI\autowire(),
     BatchService::class  => DI\autowire(),
     VlService::class => DI\autowire(),

@@ -542,10 +542,15 @@ $batchResult = $db->rawQuery($batchQuery);
 			var toEmailId = $(this).find(':selected').data('email');
 			var reportEmailId = $(this).find(':selected').data('report-email');
 			$('#facilityName').val($(this).find(':selected').data('id')).trigger("change");
-			if ($.trim(toEmailId) == '') {
+			if ($.trim(toEmailId) == '' || $.trim(toEmailId) == "NULL") {
 				$('.emailSection').html("<?php echo _translate("No valid Email id available. Please add valid email for this facility"); ?>..");
+				$("#requestSubmit").attr("disabled", true);
+				$("#requestSubmit").css("pointer-events", "none");
+
 			} else {
 				$('.emailSection').html("<mark><?php echo _translate("This email will be sent to the facility with an email id"); ?> <strong>" + toEmailId + "</strong></mark>");
+				$("#requestSubmit").attr("disabled", false);
+				$("#requestSubmit").css("pointer-events", "auto");
 			}
 			$('#toName').val(toName);
 			$('#toEmail').val(toEmailId);
