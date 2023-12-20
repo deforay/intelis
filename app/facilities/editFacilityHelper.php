@@ -1,18 +1,14 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
-use App\Utilities\MiscUtility;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -28,6 +24,10 @@ $geolocation = ContainerRegistry::get(GeoLocationsService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
+$_FILES['reportTemplate'] = _sanitizeFiles($_FILES['reportTemplate'], ['pdf']);
+$_FILES['labLogo'] =  _sanitizeFiles($_FILES['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
+$_FILES['signature'] = _sanitizeFiles($_FILES['signature'], ['png', 'jpg', 'jpeg', 'gif']);
+
 /* For reference we define the table names */
 $tableName = "facility_details";
 $facilityId = base64_decode((string) $_POST['facilityId']);
@@ -37,9 +37,8 @@ $testingLabsTable = "testing_labs";
 $healthFacilityTable = "health_facilities";
 $signTableName = "lab_report_signatories";
 
-$facilityRow = $db->rawQueryOne('SELECT facility_attributes from facility_details where facility_id= ?', array($facilityId));
+$facilityRow = $db->rawQueryOne('SELECT facility_attributes from facility_details where facility_id= ?', [$facilityId]);
 $facilityAttributes = json_decode((string) $facilityRow['facility_attributes'], true);
-
 
 try {
 	//Province Table
@@ -131,34 +130,14 @@ try {
 		// Upload Report Template
 		if (isset($_FILES['reportTemplate']['name']) && $_FILES['reportTemplate']['name'] != "") {
 
-			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR ."report-template";
-			if (is_dir($directoryPath)) {
-				$dirHandle = opendir($directoryPath);
-				// Loop through the directory
-				while (($file = readdir($dirHandle)) !== false) {
-					if ($file != '.' && $file != '..') {
-						$filePath = $directoryPath . DIRECTORY_SEPARATOR . $file;
-						if (is_file($filePath)) {
-							unlink($filePath);
-						}elseif (is_dir($filePath)) {
-							// If it's a directory, recursively remove it
-							removeDirectory($filePath);
-						}
-					}
-				}
-				closedir($dirHandle);
-			}
-			
-			$allowedExtensions = ['pdf'];
-			$extension = strtolower(pathinfo($_FILES['reportTemplate']['name'], PATHINFO_EXTENSION));
-			if (in_array($extension, $allowedExtensions)) {
-				MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template", 0777, true);
-				$string = $general->generateRandomString(12) . ".";
-				$fileName = "report-template-" . $string . $extension;
-				$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $fileName;
-				if (move_uploaded_file($_FILES["reportTemplate"]["tmp_name"], $filePath)) {
-					$facilityAttributes['report_template'] = $fileName;
-				}
+			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template";
+			MiscUtility::removeDirectory($directoryPath);
+			MiscUtility::makeDirectory($directoryPath, 0777, true);
+			$string = $general->generateRandomString(12) . ".";
+			$fileName = "report-template-" . $string . $extension;
+			$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $fileName;
+			if (move_uploaded_file($_FILES["reportTemplate"]["tmp_name"], $filePath)) {
+				$facilityAttributes['report_template'] = $fileName;
 			}
 		}
 		if (!empty($facilityAttributes)) {

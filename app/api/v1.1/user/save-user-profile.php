@@ -1,16 +1,15 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
-use Crunz\Logger\Logger;
 
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
@@ -34,7 +33,7 @@ $app = ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 
-$_FILES = _sanitizeFiles($_FILES, ['png', 'jpg', 'jpeg', 'gif']);
+$_FILES['sign'] = _sanitizeFiles($_FILES['sign'], ['png', 'jpg', 'jpeg', 'gif']);
 
 try {
     ini_set('memory_limit', -1);

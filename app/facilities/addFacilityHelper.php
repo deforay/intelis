@@ -10,11 +10,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -42,11 +37,12 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$apiData = $apiService->getJsonFromRequest($request, true);
+$_POST = _sanitizeInput($request->getParsedBody());
 
-if (!empty($apiData['result'])) {
-	$_POST = $apiData['result'];
-}
+$_FILES['reportTemplate'] = _sanitizeFiles($_FILES['reportTemplate'], ['pdf']);
+$_FILES['labLogo'] =  _sanitizeFiles($_FILES['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
+$_FILES['signature'] = _sanitizeFiles($_FILES['signature'], ['png', 'jpg', 'jpeg', 'gif']);
+
 try {
 
 	//Province Table
@@ -129,38 +125,6 @@ try {
 			'status' => 'active'
 		);
 
-		if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $_POST['fromAPI'] == "yes") {
-			/* Facility sync to remote */
-			$url = SYSTEM_CONFIG['remoteURL'] . '/facilities/addFacilityHelper.php';
-			$apiData = array(
-				"result" => $_POST,
-				"api-type" => "sync",
-				"Key" => "vlsm-lab-data-",
-			);
-			//open connection
-			$ch = curl_init($url);
-			$json_data = json_encode($apiData);
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt(
-				$ch,
-				CURLOPT_HTTPHEADER,
-				array(
-					'Content-Type: application/json',
-					'Content-Length: ' . strlen((string)$json_data)
-				)
-			);
-			// execute post
-			$curl_response = curl_exec($ch);
-			$facilityId = $curl_response;
-			if (isset($facilityId) && $facilityId > 0) {
-				$data['facility_id'] = $facilityId;
-			}
-			//close connection
-			curl_close($ch);
-		}
-
 		$db->insert($facilityTable, $data);
 		$lastId = $db->getInsertId();
 
@@ -169,17 +133,14 @@ try {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}
 		// Upload Report Template
-		if (isset($_FILES['reportTemplate']['name']) && $_FILES['reportTemplate']['name'] != "") {
-			$allowedExtensions = ['pdf'];
-			$extension = strtolower(pathinfo($_FILES['reportTemplate']['name'], PATHINFO_EXTENSION));
-			if (in_array($extension, $allowedExtensions)) {
-				MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template", 0777, true);
-				$string = $general->generateRandomString(12) . ".";
-				$fileName = "report-template-" . $string . $extension;
-				$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $fileName;
-				if (move_uploaded_file($_FILES["reportTemplate"]["tmp_name"], $filePath)) {
-					$facilityAttributes['report_template'] = $fileName;
-				}
+		if (!empty($_FILES['reportTemplate']['name'])) {
+			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template";
+			MiscUtility::makeDirectory($directoryPath, 0777, true);
+			$string = $general->generateRandomString(12) . ".";
+			$fileName = "report-template-" . $string . $extension;
+			$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
+			if (move_uploaded_file($_FILES["reportTemplate"]["tmp_name"], $filePath)) {
+				$facilityAttributes['report_template'] = $fileName;
 			}
 		}
 
@@ -194,7 +155,7 @@ try {
 			$db->update($facilityTable, $facilityAttributesJson);
 		}
 
-		
+
 		if (!empty($_POST['testType'])) {
 			foreach ($_POST['testType'] as $testType) {
 				// Mapping facility as a Health Facility
