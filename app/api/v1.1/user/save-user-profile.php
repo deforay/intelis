@@ -33,7 +33,7 @@ $app = ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 
-$_FILES['sign'] = _sanitizeFiles($_FILES['sign'], ['png', 'jpg', 'jpeg', 'gif']);
+$sanitizedSignFile = _sanitizeFiles($_FILES['sign'], ['png', 'jpg', 'jpeg', 'gif']);
 
 try {
     ini_set('memory_limit', -1);
@@ -112,14 +112,14 @@ try {
         $data['login_id'] =  $db->escape($post['loginId']);
     }
 
-    if (isset($_FILES['sign']) && $_FILES['sign']['error'] === UPLOAD_ERR_OK && $_FILES['sign']['size'] > 0) {
+    if (isset($sanitizedSignFile) && $sanitizedSignFile['error'] === UPLOAD_ERR_OK && $sanitizedSignFile['size'] > 0) {
 
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 
         MiscUtility::makeDirectory($signatureImagePath);
 
-        $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['sign']['name'])));
+        $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $sanitizedSignFile['name'])));
         $imageName = str_replace(" ", "-", $imageName);
         $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
         $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;

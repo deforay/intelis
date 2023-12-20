@@ -24,9 +24,9 @@ $geolocation = ContainerRegistry::get(GeoLocationsService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$_FILES['reportTemplate'] = _sanitizeFiles($_FILES['reportTemplate'], ['pdf']);
-$_FILES['labLogo'] =  _sanitizeFiles($_FILES['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
-$_FILES['signature'] = _sanitizeFiles($_FILES['signature'], ['png', 'jpg', 'jpeg', 'gif']);
+$sanitizedReportTemplate = _sanitizeFiles($_FILES['reportTemplate'], ['pdf']);
+$sanitizedLabLogo = _sanitizeFiles($_FILES['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
+$sanitizedSignature = _sanitizeFiles($_FILES['signature'], ['png', 'jpg', 'jpeg', 'gif']);
 
 /* For reference we define the table names */
 $tableName = "facility_details";
@@ -128,7 +128,7 @@ try {
 			}
 		}
 		// Upload Report Template
-		if (isset($_FILES['reportTemplate']['name']) && $_FILES['reportTemplate']['name'] != "") {
+		if (isset($sanitizedReportTemplate['name']) && $sanitizedReportTemplate['name'] != "") {
 
 			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template";
 			MiscUtility::removeDirectory($directoryPath);
@@ -238,7 +238,7 @@ try {
 			$db->update($tableName, $data);
 		}
 
-		if (isset($_FILES['labLogo']['name']) && $_FILES['labLogo']['name'] != "") {
+		if (isset($sanitizedLabLogo['name']) && $sanitizedLabLogo['name'] != "") {
 			if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo")) {
 				mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo", 0777, true);
 			}
@@ -247,7 +247,7 @@ try {
 			}
 
 
-			$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['labLogo']['name'], PATHINFO_EXTENSION));
+			$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedLabLogo['name'], PATHINFO_EXTENSION));
 			$string = $general->generateRandomString(12) . ".";
 			$actualImageName = "actual-logo-" . $string . $extension;
 			$imageName = "logo-" . $string . $extension;
@@ -264,7 +264,7 @@ try {
 			}
 		}
 		// Uploading signatories
-		if ($_FILES['signature']['name'] != "" && !empty($_FILES['signature']['name']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
+		if (!empty($sanitizedSignature) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
 			$deletedRow = explode(",", (string) $_POST['deletedRow']);
 			foreach ($deletedRow as $delete) {
 				$db->where('signatory_id', $delete);
@@ -303,7 +303,7 @@ try {
 							mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures', 0777, true);
 						}
 
-						$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['signature']['name'][$key], PATHINFO_EXTENSION));
+						$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedSignature['name'][$key], PATHINFO_EXTENSION));
 						$string = $general->generateRandomString(4) . ".";
 						$imageName = $string . $extension;
 						if (move_uploaded_file($_FILES["signature"]["tmp_name"][$key], $pathname . $imageName)) {

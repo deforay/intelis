@@ -39,9 +39,9 @@ $apiService = ContainerRegistry::get(ApiService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$_FILES['reportTemplate'] = _sanitizeFiles($_FILES['reportTemplate'], ['pdf']);
-$_FILES['labLogo'] =  _sanitizeFiles($_FILES['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
-$_FILES['signature'] = _sanitizeFiles($_FILES['signature'], ['png', 'jpg', 'jpeg', 'gif']);
+$sanitizedReportTemplate = _sanitizeFiles($_FILES['reportTemplate'], ['pdf']);
+$sanitizedLabLogo = _sanitizeFiles($_FILES['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
+$sanitizedSignature = _sanitizeFiles($_FILES['signature'], ['png', 'jpg', 'jpeg', 'gif']);
 
 try {
 
@@ -133,7 +133,7 @@ try {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}
 		// Upload Report Template
-		if (!empty($_FILES['reportTemplate']['name'])) {
+		if (!empty($sanitizedReportTemplate['name'])) {
 			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template";
 			MiscUtility::makeDirectory($directoryPath, 0777, true);
 			$string = $general->generateRandomString(12) . ".";
@@ -207,9 +207,9 @@ try {
 			}
 		}
 
-		if (isset($_FILES['labLogo']['name']) && $_FILES['labLogo']['name'] != "") {
+		if (isset($sanitizedLabLogo['name']) && $sanitizedLabLogo['name'] != "") {
 			MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId, 0777, true);
-			$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['labLogo']['name'], PATHINFO_EXTENSION));
+			$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedLabLogo['name'], PATHINFO_EXTENSION));
 			$string = $general->generateRandomString(12) . ".";
 			$actualImageName = "actual-logo-" . $string . $extension;
 			$imageName = "logo-" . $string . $extension;
@@ -226,7 +226,7 @@ try {
 			}
 		}
 		// Uploading signatories
-		if ($_FILES['signature']['name'] != "" && !empty($_FILES['signature']['name']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
+		if ($sanitizedSignature['name'] != "" && !empty($sanitizedSignature['name']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
 			foreach ($_POST['signName'] as $key => $name) {
 				if (isset($name) && $name != "") {
 					$signData = array(
@@ -252,7 +252,7 @@ try {
 						mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures', 0777, true);
 					}
 					$pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures' . DIRECTORY_SEPARATOR;
-					$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['signature']['name'][$key], PATHINFO_EXTENSION));
+					$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedSignature['name'][$key], PATHINFO_EXTENSION));
 					$string = $general->generateRandomString(4) . ".";
 					$imageName = $string . $extension;
 

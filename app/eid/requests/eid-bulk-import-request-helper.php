@@ -13,7 +13,7 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
-$_FILES['requestFile'] = _sanitizeFiles($_FILES['requestFile'], ['xlsx', 'xls', 'csv']);
+$sanitizedRequestFile = _sanitizeFiles($_FILES['requestFile'], ['xlsx', 'xls', 'csv']);
 
 $arr = [];
 /** @var DatabaseService $db */
@@ -38,7 +38,7 @@ try {
         $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
     }
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', (string) $_FILES['requestFile']['name']);
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', (string) $sanitizedRequestFile['name']);
     $fileName = str_replace(" ", "-", $fileName);
     $ranNumber = $general->generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -46,7 +46,7 @@ try {
 
     MiscUtility::makeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request", 0777, true);
 
-    if (move_uploaded_file($_FILES['requestFile']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)) {
+    if (move_uploaded_file($sanitizedRequestFile['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         $mime_type = $file_info->buffer(file_get_contents(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
