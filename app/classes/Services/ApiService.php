@@ -165,20 +165,11 @@ class ApiService
      * @param string $path The local path where the file should be saved.
      * @return bool Returns true on successful download, false otherwise.
      */
-    public function downloadFile(string $url, string $path): bool
+    public function downloadFile(string $url, string $path): int|bool
     {
         try {
-            $response = $this->client->request('GET', $url, [
-                'sink' => $path, // Directly write the response to the file
-                'stream' => true // Enable streaming to handle large files
-            ]);
-
-            if ($response->getStatusCode() === 200) {
-                return true;
-            } else {
-                return false; // Non-200 response status code
-            }
-        } catch (GuzzleException | RequestException | Exception $e) {
+            return file_put_contents($path, file_get_contents($url));
+        } catch (Exception $e) {
             error_log($e->getMessage());
             return false; // Handle any exception
         }

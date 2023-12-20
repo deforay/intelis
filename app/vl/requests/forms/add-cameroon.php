@@ -902,7 +902,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                provinceName = true;
                facilityName = true;
                $("#province").html("<?php echo $province; ?>");
-               $("#fName").html("<?php echo addslashes((string) $facility); ?>");
+               $("#fName").html("<?php echo addslashes($facility); ?>");
                $("#fName").select2("val", "");
                $("#district").html("<option value=''> -- Select -- </option>");
           }

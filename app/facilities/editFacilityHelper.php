@@ -134,6 +134,7 @@ try {
 			MiscUtility::removeDirectory($directoryPath);
 			MiscUtility::makeDirectory($directoryPath, 0777, true);
 			$string = $general->generateRandomString(12) . ".";
+			$extension = strtolower(pathinfo($directoryPath . DIRECTORY_SEPARATOR . $sanitizedReportTemplate['name'], PATHINFO_EXTENSION));
 			$fileName = "report-template-" . $string . $extension;
 			$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $fileName;
 			if (move_uploaded_file($_FILES["reportTemplate"]["tmp_name"], $filePath)) {
