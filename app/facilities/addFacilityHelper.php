@@ -129,18 +129,6 @@ try {
 			'status' => 'active'
 		);
 
-		$facilityAttributes = [];
-		if (!empty($_POST['allowResultUpload'])) {
-			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
-		}
-		if (!empty($_POST['sampleType'])) {
-			foreach ($_POST['sampleType'] as $testType => $sampleTypes) {
-				$facilityAttributes['sampleType'][$testType] = implode(",", $sampleTypes);
-			}
-		}
-		if (!empty($facilityAttributes)) {
-			$data['facility_attributes'] = json_encode($facilityAttributes, true);
-		}
 		if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $_POST['fromAPI'] == "yes") {
 			/* Facility sync to remote */
 			$url = SYSTEM_CONFIG['remoteURL'] . '/facilities/addFacilityHelper.php';
@@ -176,6 +164,37 @@ try {
 		$db->insert($facilityTable, $data);
 		$lastId = $db->getInsertId();
 
+		$facilityAttributes = [];
+		if (!empty($_POST['allowResultUpload'])) {
+			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
+		}
+		// Upload Report Template
+		if (isset($_FILES['reportTemplate']['name']) && $_FILES['reportTemplate']['name'] != "") {
+			$allowedExtensions = ['pdf'];
+			$extension = strtolower(pathinfo($_FILES['reportTemplate']['name'], PATHINFO_EXTENSION));
+			if (in_array($extension, $allowedExtensions)) {
+				MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template", 0777, true);
+				$string = $general->generateRandomString(12) . ".";
+				$fileName = "report-template-" . $string . $extension;
+				$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $fileName;
+				if (move_uploaded_file($_FILES["reportTemplate"]["tmp_name"], $filePath)) {
+					$facilityAttributes['report_template'] = $fileName;
+				}
+			}
+		}
+
+		if (!empty($_POST['sampleType'])) {
+			foreach ($_POST['sampleType'] as $testType => $sampleTypes) {
+				$facilityAttributes['sampleType'][$testType] = implode(",", $sampleTypes);
+			}
+		}
+		if ($lastId > 0 && !empty($facilityAttributes)) {
+			$facilityAttributesJson = array('facility_attributes' => json_encode($facilityAttributes, true));
+			$db->where('facility_id', $lastId);
+			$db->update($facilityTable, $facilityAttributesJson);
+		}
+
+		
 		if (!empty($_POST['testType'])) {
 			foreach ($_POST['testType'] as $testType) {
 				// Mapping facility as a Health Facility
@@ -213,7 +232,7 @@ try {
 				$db->insert($vlUserFacilityMapTable, $data);
 			}
 		}
-		if ($lastId > 0) {
+		if ($lastId > 0 && !empty($_POST['testData'])) {
 			// Mapping facility as a Testing Lab
 			for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
 				$dataTest = array(

@@ -584,6 +584,18 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 									</div>
 								</div>
 							</div>
+							<div class="row reportTemplate" style="display:none;">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="reportTemplate" class="col-lg-4 control-label">
+											<?php echo _translate("Upload Report Template"); ?>
+										</label>
+										<div class="col-lg-7">
+											<input type="file" class="form-control" id="reportTemplate" name="reportTemplate" placeholder="<?php echo _translate('Upload Report Template'); ?>" accept=".pdf" title="<?php echo _translate('Please Upload Report Template'); ?>" />
+										</div>
+									</div>
+								</div>
+							</div>
 							<div class="row" id="sampleType"></div>
 							<div class="row-item labDiv" style="display:none;">
 								<hr>
@@ -867,8 +879,10 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 		}
 		if ($("#facilityType").val() == '2') {
 			$(".logoImage").show();
+			$(".reportTemplate").show();
 		} else {
 			$(".logoImage").hide();
+			$(".reportTemplate").hide();
 		}
 	}
 
