@@ -63,8 +63,6 @@ function _sanitizeInput(string|array $data, $customFilters = [])
 
 function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = true, $maxSize = null)
 {
-    dump($filesInput);
-
     if ($maxSize === null) {
         $maxSize = MiscUtility::convertToBytes(ini_get('upload_max_filesize'));
     }
@@ -141,5 +139,14 @@ function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = tru
     }
 
     // Return the sanitized files in the same structure as the input
-    return ($isSingleFile || $isMultiFileArray) ? array_values($sanitizedFiles) : $sanitizedFiles;
+    if ($isSingleFile) {
+        // Return single file data directly
+        return reset($sanitizedFiles);
+    } elseif ($isMultiFileArray) {
+        // Return array of files for multi-file input
+        return array_values($sanitizedFiles);
+    } else {
+        // Return array of single-file inputs
+        return $sanitizedFiles;
+    }
 }

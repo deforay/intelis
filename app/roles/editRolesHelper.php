@@ -16,10 +16,10 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $tableName1 = "roles";
 $db->beginTransaction();
 try {
-        $lastId = base64_decode((string) $_POST['roleId']);
+        $roleId = base64_decode((string) $_POST['roleId']);
 
 
-        $db->where('role_id', $lastId);
+        $db->where('role_id', $roleId);
         $db->delete("roles_privileges_map");
 
         if (isset($_POST['roleName']) && trim((string) $_POST['roleName']) != "") {
@@ -30,22 +30,26 @@ try {
                         'access_type' => $_POST['accessType'],
                         'landing_page' => $_POST['landingPage']
                 );
-                $db->where('role_id', $lastId);
+                $db->where('role_id', $roleId);
                 $db->update($tableName1, $data);
         }
         $roleQuery = "SELECT * from roles_privileges_map where role_id=?";
-        $roleInfo = $db->rawQuery($roleQuery, [$lastId]);
+        $roleInfo = $db->rawQuery($roleQuery, [$roleId]);
 
-        if ($lastId != 0 && $lastId != '') {
+        if (!empty($roleId) && $roleId > 0) {
                 foreach ($_POST['resource'] as $key => $priviId) {
                         if ($priviId == 'allow') {
-                                $value = array('role_id' => $lastId, 'privilege_id' => $key);
+                                $value = array(
+                                        'role_id' => $roleId,
+                                        'privilege_id' => $key
+                                );
                                 $db->insert("roles_privileges_map", $value);
                         }
                 }
                 $_SESSION['alertMsg'] = _translate("Role updated successfully");
         }
         $db->commitTransaction();
+
         header("Location:roles.php");
 } catch (Exception $exc) {
         error_log($exc->getMessage());
