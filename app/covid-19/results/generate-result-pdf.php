@@ -1,13 +1,13 @@
 <?php
 
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 
@@ -57,6 +57,7 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 				l.facility_district as labCounty,
 				l.facility_logo as facilityLogo,
 				l.report_format as reportFormat,
+				l.facility_attributes,
 				l.header_text as labHeaderText,
 				rip.i_partner_name,
 				rsrr.rejection_reason_name ,
@@ -85,15 +86,20 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 //echo($searchQuery);die;
 $requestResult = $db->query($searchQuery);
 
-if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime'])) {
-	$pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
-	$db->where('covid19_id', $_POST['id']);
-	$id = $db->update('form_covid19', $pData);
-} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime'])) {
-	$pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
-	$db->where('covid19_id', $_POST['id']);
-	$id = $db->update('form_covid19', $pData);
+$currentDateTime = DateUtility::getCurrentDateTime();
+
+foreach ($requestResult as $requestRow) {
+	if (($_SESSION['instanceType'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
+		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+		$db->where('covid19_id', $requestRow['covid19_id']);
+		$id = $db->update('form_covid19', $pData);
+	} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestRow['result_printed_on_sts_datetime'])) {
+		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+		$db->where('covid19_id', $requestRow['covid19_id']);
+		$id = $db->update('form_covid19', $pData);
+	}
 }
+
 
 /* Test Results */
 if (isset($_POST['type']) && $_POST['type'] == "qr") {
@@ -105,7 +111,6 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
 	}
 }
 
-$_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
 
 //print_r($requestResult);die;
@@ -147,14 +152,16 @@ if (!empty($requestResult)) {
 		$covid19Results = $covid19Service->getCovid19Results();
 		$countryFormId = (int) $general->getGlobalConfig('vl_form');
 
-		$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
+		$covid19TestQuery = "SELECT * FROM covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
 		$covid19TestInfo = $db->rawQuery($covid19TestQuery);
 		// Lab Details
-		$labQuery = "SELECT * from facility_details where facility_id= " . $result['lab_id'] . " LIMIT 1";
-		$labInfo = $db->rawQueryOne($labQuery);
+		$labQuery = "SELECT * FROM facility_details WHERE facility_id= ?";
+		$labInfo = $db->rawQueryOne($labQuery, [$result['lab_id']]);
 
-		$facilityQuery = "SELECT * from form_covid19 as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where covid19_id= " . $result['covid19_id'] . " GROUP BY fd.facility_id LIMIT 1";
-		$facilityInfo = $db->rawQueryOne($facilityQuery);
+		$facilityQuery = "SELECT * FROM form_covid19 as c19
+							INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id
+							WHERE covid19_id= ?";
+		$facilityInfo = $db->rawQueryOne($facilityQuery, [$result['covid19_id']]);
 		// echo "<pre>";print_r($covid19TestInfo);die;
 
 		$patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));

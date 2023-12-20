@@ -64,7 +64,7 @@ $tQuery = "SELECT COUNT(covid19_id) as total,status_id,status_name
 
 //filter
 $sWhere = [];
-if (!empty(trim($whereCondition)))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -90,7 +90,7 @@ $tResult = $db->rawQuery($tQuery);
 
 //HVL and LVL Samples
 $sWhere = [];
-if (!empty(trim($whereCondition)))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 $vlSuppressionQuery = "SELECT   COUNT(covid19_id) as total,
     SUM(CASE
@@ -163,7 +163,7 @@ $tatSampleQuery = "SELECT
     AND DATE(vl.sample_tested_datetime) >= '$start_date'
     AND DATE(vl.sample_tested_datetime) <= '$end_date'";
 $sWhere = [];
-if (!empty(trim($whereCondition)))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -196,7 +196,7 @@ foreach ($tatResult as $sRow) {
 }
 
 $sWhere = [];
-if (!empty(trim($whereCondition)))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 $testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name
                     from form_covid19 as vl

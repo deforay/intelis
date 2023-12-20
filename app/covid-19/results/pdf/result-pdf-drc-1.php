@@ -102,9 +102,6 @@ if (!class_exists('DRCCovid19PDF1')) {
             $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'], IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
             $this->writeHTML($formatter->format(strtotime((string) $this->resultPrintedDate)) . ' ' . $generatedAtTestingLab);
             $this->writeHTMLCell(0, 0, 10, 290, 'Département de Virologie', 0, 0, false, true, 'C');
-            // Page number
-            //$this->SetFont('helvetica', '', 8);
-            //$this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');
         }
     }
 }

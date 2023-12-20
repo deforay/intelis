@@ -123,7 +123,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['geo_name']);
     $row[] = $aRow['geo_code'];
     $row[] = ($aRow['geo_status']);
-    if (_isAllowed("edit-geographical-divisions.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("edit-geographical-divisions.php") && $_SESSION['instanceType'] != 'vluser') {
         $row[] = '<a href="edit-geographical-divisions.php?id=' . base64_encode((string) $aRow['geo_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;

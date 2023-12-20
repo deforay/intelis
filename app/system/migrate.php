@@ -68,10 +68,10 @@ foreach ($versions as $version) {
             } catch (Exception $e) {
 
                 $message = "Exception : " . $e->getMessage() . PHP_EOL;
-                LoggerUtility::log('error', $message);
 
                 $errorOccurred = true;
                 if (!$quietMode) {  // Only show error messages if -q option is not provided
+                    LoggerUtility::log('error', $message);
                     echo $message;
                 }
             }
@@ -79,8 +79,9 @@ foreach ($versions as $version) {
                 $dbMessage = "Error executing query: " . $db->getLastErrno() . ":" . $db->getLastError() . PHP_EOL . $db->getLastQuery() . PHP_EOL;
                 if (!$quietMode) {  // Only show error messages if -q option is not provided
                     echo $dbMessage;
+                    LoggerUtility::log('error', $dbMessage);
                 }
-                LoggerUtility::log('error', $dbMessage);
+
                 if (!$autoContinueOnError) {  // Only prompt user if -y option is not provided
                     echo "Do you want to continue? (y/n): ";
                     $handle = fopen("php://stdin", "r");
