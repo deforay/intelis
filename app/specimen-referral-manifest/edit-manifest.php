@@ -298,6 +298,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							</div>
 						</div>
 					</div>
+					<br>
+					<div class="row" id="sampleDetails">
+
+					</div>
 					<div class="row" id="alertText" style="font-size:18px;"></div>
 			</div>
 			<!-- /.box-body -->
