@@ -18,8 +18,8 @@ class SouthSudanTBResultPDF extends TBResultPDFHelper
     public ?string $text;
     public ?string $lab;
     public ?string $htitle;
-    public $labFacilityId = null;
-    public $formId = '';
+    public ?string $labFacilityId;
+    public ?string $formId;
     public array $facilityInfo = [];
     //Page header
     public function Header()

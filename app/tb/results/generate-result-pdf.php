@@ -108,6 +108,7 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
 
 $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
+$arr = $general->getGlobalConfig();
 
 //set mField Array
 $mFieldArray = [];

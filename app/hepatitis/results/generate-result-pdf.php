@@ -29,6 +29,10 @@ $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
 $printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
+$mFieldArray = [];
+if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
+	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
+}
 //set query
 $allQuery = $_SESSION['hepatitisPrintQuery'];
 if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {

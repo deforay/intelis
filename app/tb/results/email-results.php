@@ -6,7 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
-$title = _translate("Email VL Test Results");
+$title = _translate("Email TB Test Results");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$healthFacilites = $facilitiesService->getHealthFacilities('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('tb');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
@@ -31,12 +31,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 //main query
 //$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE 1=0 AND is_result_mail_sent ='no' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
 //$result = $db->rawQuery($query);
-$sTypeQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
+$sTypeQuery = "SELECT * FROM r_tb_sample_type WHERE `status`='active'";
 $sTypeResult = $db->rawQuery($sTypeQuery);
 
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
-$batchQuery = "SELECT * FROM batch_details WHERE test_type='vl' AND batch_status='completed'";
+$batchQuery = "SELECT * FROM batch_details WHERE test_type='tb' AND batch_status='completed'";
 $batchResult = $db->rawQuery($batchQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -87,7 +87,7 @@ $batchResult = $db->rawQuery($batchQuery);
 										<?php echo _translate("Subject"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-9">
-										<input type="text" id="subject" name="subject" class="form-control isRequired" placeholder="<?php echo _translate('Subject'); ?>" title="<?php echo _translate('Please enter subject'); ?>" value="Viral Load Test Results" />
+										<input type="text" id="subject" name="subject" class="form-control isRequired" placeholder="<?php echo _translate('Subject'); ?>" title="<?php echo _translate('Please enter subject'); ?>" value="Tuberculosis Test Results" />
 									</div>
 								</div>
 							</div>
@@ -487,7 +487,7 @@ $batchResult = $db->rawQuery($batchQuery);
 		var status = $('#sampleStatus').val();
 		var sampleMailSentStatus = $('#sampleMailSentStatus').val();
 		var type = $('#type').val();
-		$.post("/mail/getRequestSampleCodeDetails.php", {
+		$.post("/tb/results/getRequestSampleCodeDetails.php", {
 				facility: facilityName,
 				sType: sTypeName,
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
@@ -513,7 +513,7 @@ $batchResult = $db->rawQuery($batchQuery);
 		$.blockUI();
 		//var sample = $("#sample").val();
 		var id = samplesData.toString();
-		$.post("/vl/results/generate-result-pdf.php", {
+		$.post("/tb/results/generate-result-pdf.php", {
 				source: 'print',
 				id: id,
 				resultMail: 'resultMail'
@@ -542,10 +542,15 @@ $batchResult = $db->rawQuery($batchQuery);
 			var toEmailId = $(this).find(':selected').data('email');
 			var reportEmailId = $(this).find(':selected').data('report-email');
 			$('#facilityName').val($(this).find(':selected').data('id')).trigger("change");
-			if ($.trim(toEmailId) == '') {
+			if ($.trim(toEmailId) == '' || $.trim(toEmailId) == "NULL") {
 				$('.emailSection').html("<?php echo _translate("No valid Email id available. Please add valid email for this facility"); ?>..");
+				$("#requestSubmit").attr("disabled", true);
+				$("#requestSubmit").css("pointer-events", "none");
+
 			} else {
 				$('.emailSection').html("<mark><?php echo _translate("This email will be sent to the facility with an email id"); ?> <strong>" + toEmailId + "</strong></mark>");
+				$("#requestSubmit").attr("disabled", false);
+				$("#requestSubmit").css("pointer-events", "auto");
 			}
 			$('#toName').val(toName);
 			$('#toEmail').val(toEmailId);
@@ -560,7 +565,7 @@ $batchResult = $db->rawQuery($batchQuery);
 		if ($.trim(pName) != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					pName: pName,
-					testType: 'vl'
+					testType: 'tb'
 				},
 				function(data) {
 					if ($.trim(data) != "") {

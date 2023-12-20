@@ -39,8 +39,8 @@ $type = $_POST['type'];
 //print_r($_POST);die;
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
-$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code
-        FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+$query = "SELECT vl.sample_code,vl.hepatitis_id,vl.facility_id,f.facility_name,f.facility_code
+        FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         WHERE sample_code is not null ";
 if (!empty($facility)) {
   $query = $query . " AND vl.facility_id = $facility";
@@ -73,7 +73,7 @@ if (trim((string) $mailSentStatus) != '') {
   if (trim((string) $type) == 'request') {
     $query = $query . " AND vl.is_request_mail_sent='" . $mailSentStatus . "'";
   } elseif (trim((string) $type) == 'result') {
-    $query = $query . " AND vl.is_result_mail_sent='" . $mailSentStatus . "' AND ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
+    $query = $query . " AND vl.is_result_mail_sent='" . $mailSentStatus . "' AND ((vl.result_status = 7 AND vl.hbsag_result is NOT NULL AND vl.hbsag_result !='') OR (vl.result_status = 4 AND (vl.hbsag_result is NULL OR vl.hbsag_result = '')))";
   }
 }
 if (!empty($_POST['sampleCollectionDate'])) {
@@ -99,7 +99,7 @@ $result = $db->rawQuery($query);
         foreach ($result as $sample) {
           if (trim((string) $sample['sample_code']) != '') {
         ?>
-            <option value="<?php echo $sample['vl_sample_id']; ?>"><?= ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+            <option value="<?php echo $sample['hepatitis_id']; ?>"><?= ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
         <?php
           }
         }
