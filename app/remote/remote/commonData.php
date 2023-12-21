@@ -1,11 +1,11 @@
 <?php
 //get data from remote db send to lab db
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\ApiService;
+use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
@@ -26,14 +26,9 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 $payload = [];
 
-
-/** @var ApiService $apiService */
-$apiService = ContainerRegistry::get(ApiService::class);
-
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $data = $apiService->getJsonFromRequest($request, true);
-
 
 $counter = 0;
 
@@ -349,5 +344,4 @@ $sql = 'UPDATE facility_details
             WHERE facility_id = ?';
 $db->rawQuery($sql, array(DateUtility::getCurrentDateTime(), $labId));
 
-
-echo $payload;
+echo $apiService->sendJsonResponse($payload);

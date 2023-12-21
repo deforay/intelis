@@ -248,7 +248,7 @@ if (!empty($requestResult)) {
           $html .= '<td colspan="3">';
           $html .= '<table border="1" cellpadding="8" cellspacing="0">';
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . _translate("Unique Code") . " : " . $result['patient_art_no'] . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . _translate("Patient ART Code") . " : " . $result['patient_art_no'] . '</td>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . _translate("Region") . " : " . $result['facility_state'] . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
@@ -264,8 +264,8 @@ if (!empty($requestResult)) {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Collected By") . " : " . $result['facility_name'] . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' .  _translate("Name of Requestor") . " : " . $result['request_clinician_name'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Contact of Requestor") . " : " . $result['request_clinician_phone_number'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' .  _translate("Name of Requester") . " : " . $result['request_clinician_name'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Contact of Requester") . " : " . $result['request_clinician_phone_number'] . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Treatment center') . " : " . ($result['facility_name']) . '</td>';
@@ -286,7 +286,7 @@ if (!empty($requestResult)) {
           $html .= '<tr>';
           $html .= '<td width="18%" style="line-height:20px;font-size:10px;text-align:left;">' . _translate('Sample Received Date') . ' : </td>';
           $html .= '<td width="30%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $result['sample_received_at_lab_datetime'] . '</td>';
-          $html .= '<td width="20%" style="line-height:20px;font-size:10px;text-align:right;">' . _translate('Viral Load Serial Number') . ' : &nbsp;</td>';
+          $html .= '<td width="20%" style="line-height:20px;font-size:10px;text-align:right;">' . _translate('CV Number') . ' : &nbsp;</td>';
           $html .= '<td width="30%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . ($result['cv_number']) . '</td>';
 
           $html .= '</tr>';

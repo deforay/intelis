@@ -1,11 +1,10 @@
 <?php
 
-
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\MiscUtility;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -58,10 +57,10 @@ $userResponse = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'res
             </div>
             <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade in active" id="request" style="min-height:300px;">
-                    <pre><?= htmlspecialchars(MiscUtility::prettyJson($userRequest)); ?></pre>
+                    <pre><?= MiscUtility::prettyJson($userRequest); ?></pre>
                 </div>
                 <div class="tab-pane fade in" id="response" style="min-height:300px;">
-                    <pre><?= htmlspecialchars(MiscUtility::prettyJson($userResponse)); ?></pre>
+                    <pre><?= MiscUtility::prettyJson($userResponse); ?></pre>
                 </div>
             </div>
     </section>

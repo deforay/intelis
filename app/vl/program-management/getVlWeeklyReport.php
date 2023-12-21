@@ -1,15 +1,10 @@
 <?php
 
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
-
-if (session_status() == PHP_SESSION_NONE) {
-  session_start();
-}
-
 
 
 /** @var DatabaseService $db */
@@ -20,18 +15,13 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
-
-
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$sarr = $general->getSystemConfig();
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
-         * you want to insert a non-database field (for example a counter or static image)
-        */
+
 
 $aColumns = array('f.facility_state', 'f.facility_district', 'f.facility_name', 'f.facility_code', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.lab_tech_comments');
-$orderColumns = array('f.facility_state', 'f.facility_district', 'f.facility_name', 'sample_tested_datetime', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'vl.lab_tech_comments');
+$orderColumns = array('f.facility_state', 'f.facility_district', 'f.facility_name', 'sample_tested_datetime', null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'vl.lab_tech_comments');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;

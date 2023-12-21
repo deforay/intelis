@@ -174,4 +174,12 @@ class ApiService
             return false; // Handle any exception
         }
     }
+
+    public function sendJsonResponse($payload)
+    {
+        $gzipPayload = gzencode($payload);
+        header('Content-Encoding: gzip');
+        header('Content-Length: ' . strlen($gzipPayload));
+        return $gzipPayload;
+    }
 }

@@ -208,7 +208,7 @@ try {
 			}
 		}
 
-		if (isset($sanitizedLabLogo['name']) && $sanitizedLabLogo['name'] != "") {
+		if ($lastId > 0 && isset($sanitizedLabLogo['name']) && $sanitizedLabLogo['name'] != "") {
 			MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId, 0777, true);
 			$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedLabLogo['name'], PATHINFO_EXTENSION));
 			$string = $general->generateRandomString(12) . ".";
@@ -227,13 +227,13 @@ try {
 			}
 		}
 		// Uploading signatories
-		if ($sanitizedSignature['name'] != "" && !empty($sanitizedSignature['name']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
+		if ($_FILES['signature']['name'] != "" && !empty($_FILES['signature']['name']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
 			foreach ($_POST['signName'] as $key => $name) {
 				if (isset($name) && $name != "") {
 					$signData = array(
 						'name_of_signatory'	=> $name,
 						'designation' 		=> $_POST['designation'][$key],
-						'test_types' 		=> implode(",", $_POST['testSignType'][($key + 1)]),
+						'test_types' 		=> implode(",", (array)$_POST['testSignType'][($key + 1)]),
 						'lab_id' 			=> $lastId,
 						'display_order' 	=> $_POST['sortOrder'][$key],
 						'signatory_status' 	=> $_POST['signStatus'][$key],
@@ -253,7 +253,7 @@ try {
 						mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures', 0777, true);
 					}
 					$pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures' . DIRECTORY_SEPARATOR;
-					$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedSignature['name'][$key], PATHINFO_EXTENSION));
+					$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['signature']['name'][$key], PATHINFO_EXTENSION));
 					$string = $general->generateRandomString(4) . ".";
 					$imageName = $string . $extension;
 

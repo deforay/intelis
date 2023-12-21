@@ -265,7 +265,7 @@ try {
 			}
 		}
 		// Uploading signatories
-		if (!empty($sanitizedSignature) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
+		if ($_FILES['signature']['name'] != "" && !empty($_FILES['signature']['name']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
 			$deletedRow = explode(",", (string) $_POST['deletedRow']);
 			foreach ($deletedRow as $delete) {
 				$db->where('signatory_id', $delete);
@@ -304,7 +304,7 @@ try {
 							mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures', 0777, true);
 						}
 
-						$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedSignature['name'][$key], PATHINFO_EXTENSION));
+						$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['signature']['name'][$key], PATHINFO_EXTENSION));
 						$string = $general->generateRandomString(4) . ".";
 						$imageName = $string . $extension;
 						if (move_uploaded_file($_FILES["signature"]["tmp_name"][$key], $pathname . $imageName)) {
