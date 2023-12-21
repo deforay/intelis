@@ -165,3 +165,9 @@ ALTER TABLE `audit_form_eid` ADD `is_result_mail_sent` VARCHAR(5) NULL DEFAULT '
 
 ALTER TABLE `form_tb` ADD `is_result_mail_sent` VARCHAR(5) NULL DEFAULT 'no' AFTER `result_dispatched_datetime`;
 ALTER TABLE `audit_form_tb` ADD `is_result_mail_sent` VARCHAR(5) NULL DEFAULT 'no' AFTER `result_dispatched_datetime`;
+
+-- Amit 20-Dec-2023
+ALTER TABLE `form_eid` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_eid` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_tb` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_tb` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;

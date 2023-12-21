@@ -180,23 +180,10 @@ try {
             $resource = 'user-login';
             $general->activityLog($eventType, $action, $resource);
 
-            //set role and privileges
-            $privilegesQuery = "SELECT p.privilege_name, rp.privilege_id, r.module
-                                FROM roles_privileges_map as rp
-                                INNER JOIN privileges as p ON p.privilege_id=rp.privilege_id
-                                INNER JOIN resources as r ON r.resource_id=p.resource_id
-                                WHERE rp.role_id= ?";
-            $privilegesResult = $db->rawQuery($privilegesQuery, [$userRow['role_id']]);
             $modules = $privileges = [];
-            if (!empty($privilegesResult)) {
-                foreach ($privilegesResult as $id) {
-                    $privileges[] = $id['privilege_name'];
-                    $modules[$id['module']] = $id['module'];
-                }
-            }
 
-            $_SESSION['modules'] = $modules;
-            $_SESSION['privileges'] = $usersService->getAllPrivileges($privileges);
+
+            [$_SESSION['modules'], $_SESSION['privileges']] = $usersService->getAllPrivileges($userRow['role_id']);
             $_SESSION['landingPage'] = $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
 
             if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {

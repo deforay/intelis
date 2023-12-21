@@ -66,7 +66,7 @@ if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
 if ($mysqlConnected) {
 
     if (!empty($lastInterfaceSync)) {
-        $db->connection('interface')->where('added_on', $lastInterfaceSync, ">");
+        $db->connection('interface')->where('added_on', $lastInterfaceSync, ">=");
     }
     $db->connection('interface')->where('result_status', 1);
     //$db->connection('interface')->where('lims_sync_status', 0);
@@ -76,7 +76,7 @@ if ($mysqlConnected) {
     $where = [];
     $where[] = " result_status = 1 ";
     if (!empty($lastInterfaceSync)) {
-        $where[] = " added_on > '$lastInterfaceSync' ";
+        $where[] = " added_on >= '$lastInterfaceSync' ";
     }
     $where = implode(' AND ', $where);
     $interfaceQuery = "SELECT * FROM `orders`
@@ -146,7 +146,7 @@ if (!empty($interfaceData)) {
             $txtVal = null;
             $vlResult = null;
             //set result in result fields
-            if (trim((string) $result['results']) != "") {
+            if (!empty($result['results'])) {
 
                 $vlResult = trim(str_ireplace(['cp/ml', 'copies/ml'], '', (string) $result['results']));
 
@@ -233,7 +233,7 @@ if (!empty($interfaceData)) {
 
                 if ($sqliteConnected) {
                     // Prepare the SQL query
-                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE order_id = :order_id");
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
@@ -293,7 +293,7 @@ if (!empty($interfaceData)) {
                 }
                 if ($sqliteConnected) {
                     // Prepare the SQL query
-                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE order_id = :order_id");
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
@@ -372,7 +372,7 @@ if (!empty($interfaceData)) {
                 }
                 if ($sqliteConnected) {
                     // Prepare the SQL query
-                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE order_id = :order_id");
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
@@ -394,7 +394,7 @@ if (!empty($interfaceData)) {
             }
             if ($sqliteConnected) {
                 // Prepare the SQL query
-                $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE order_id = :order_id");
+                $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
 
                 // Bind the values to the placeholders in the prepared statement
                 $stmt->bindValue(':lims_sync_status', 2, PDO::PARAM_INT);

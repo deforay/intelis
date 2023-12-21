@@ -542,6 +542,32 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</div>
 						</div>
 					</div>
+					<div class="row reportTemplate" style="display:<?php echo $labDiv; ?>;">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="reportTemplate" class="col-lg-4 control-label">
+									<?php echo _translate("Upload Report Template"); ?>
+								</label>
+								<div class="col-lg-7">
+								<?php
+									$showreportTemplate = "style='display:block'";
+									if (isset($facilityAttributes) && isset($facilityAttributes->report_template) && $facilityAttributes->report_template != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $facilityAttributes->report_template)) {
+										$lmSign = "/uploads/labs/" . $facilityInfo['facility_id'] . "/report-template/" . $facilityAttributes->report_template;
+										$showreportTemplate = "style='display:none'";
+									?>
+										<span id="reportTemplateSpan" class="form-control">
+											<a href="javascript:void(0);" onclick="showreportTemplateFile();">
+												<span class="alert-danger" style="padding: 2px;border-radius: 30%;float: right; height: 22px;">X</span>
+											</a>
+											<a href=<?php echo $lmSign; ?> target="_blank"> <?php echo $facilityAttributes->report_template; ?> </a>
+										</span>
+									<?php }
+									?>
+									<input <?php echo $showreportTemplate; ?> class="showreportTemplateFile form-control" type="file" name="reportTemplate" id="reportTemplate" placeholder="' . _translate('Upload Report Template') . '" accept=".pdf" title="' . _translate('Please Upload Report Template') . '">
+								</div>
+							</div>
+						</div>
+					</div>
 					<div class="row" id="sampleType"></div>
 					<div class="row-item labDiv" style="display:<?php echo $labDiv; ?>;">
 						<hr>
@@ -871,8 +897,10 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 	function showSignature(facilityType) {
 		if (facilityType == 2) {
 			$(".labDiv").show();
+			$(".reportTemplate").show();
 		} else {
 			$(".labDiv").hide();
+			$(".reportTemplate").hide();
 		}
 	}
 
@@ -996,6 +1024,11 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 	function showFile(count) {
 		$('#spanClass' + count).hide();
 		$('.showFile' + count).show();
+	}
+
+	function showreportTemplateFile() {
+		$('#reportTemplateSpan').hide();
+		$('.showreportTemplateFile').show();
 	}
 
 	function deletedRow(val) {

@@ -10,7 +10,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
-
+use PhpMyAdmin\SqlParser\Utils\Misc;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -375,7 +375,6 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
                 // Updating logo and report template
                 if ($dataType === 'facilities') {
-
                     if (!empty($tableData['facility_logo'])) {
                         $labLogoFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
                         MiscUtility::makeDirectory($labLogoFolder);
@@ -393,12 +392,15 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                     $facilityAttributes = !empty($tableData['facility_attributes']) ? json_decode($tableData['facility_attributes'], true) : [];
 
                     if (!empty($facilityAttributes['report_template'])) {
-                        $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
+                        $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'] . DIRECTORY_SEPARATOR . "report-template";
                         MiscUtility::makeDirectory($labDataFolder);
 
-                        $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/labs/' . $tableData['facility_id'] . '/' . $facilityAttributes['report_template'];
+                        $remoteFileUrl = $systemConfig['remoteURL'] . "/uploads/labs/{$tableData['facility_id']}/report-template/{$facilityAttributes['report_template']}";
+                        MiscUtility::dumpToErrorLog($remoteFileUrl);
                         $localFilePath = $labDataFolder . "/" . $facilityAttributes['report_template'];
-                        $apiService->downloadFile($remoteFileUrl, $localFilePath);
+                        MiscUtility::dumpToErrorLog($localFilePath);
+                        $x = $apiService->downloadFile($remoteFileUrl, $localFilePath);
+                        MiscUtility::dumpToErrorLog($x);
                     }
                 }
             }

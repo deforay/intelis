@@ -61,14 +61,37 @@ function _sanitizeInput(string|array $data, $customFilters = [])
     return $data;
 }
 
-
-function _sanitizeFiles($files, $allowedTypes = [], $maxSize = null)
+function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = true, $maxSize = null)
 {
-    // Use the max_upload_size from PHP's configuration if not specified
     if ($maxSize === null) {
         $maxSize = MiscUtility::convertToBytes(ini_get('upload_max_filesize'));
     }
+
     $sanitizedFiles = [];
+
+    // Check if the input is a single file, multiple files from one input, or multiple single-file inputs
+    $isSingleFile = isset($filesInput['name']) && is_string($filesInput['name']);
+    $isMultiFileArray = isset($filesInput['name']) && is_array($filesInput['name']);
+
+
+
+    // Normalize input
+    if ($isSingleFile) {
+        $files = ['singleFile' => $filesInput];
+    } elseif ($isMultiFileArray) {
+        $files = [];
+        foreach ($filesInput['name'] as $i => $name) {
+            $files[] = array(
+                'name' => $filesInput['name'][$i],
+                'type' => $filesInput['type'][$i],
+                'tmp_name' => $filesInput['tmp_name'][$i],
+                'error' => $filesInput['error'][$i],
+                'size' => $filesInput['size'][$i]
+            );
+        }
+    } else {
+        $files = $filesInput;
+    }
 
     foreach ($files as $key => $file) {
         try {
@@ -80,7 +103,7 @@ function _sanitizeFiles($files, $allowedTypes = [], $maxSize = null)
                 throw new SystemException(_translate('File size exceeds the maximum allowed size'), 400);
             }
 
-            if (!empty($allowedTypes)) {
+            if (!empty($allowedTypes) && !empty($file['tmp_name'])) {
                 $allowedMimeTypes = MiscUtility::getMimeTypeStrings($allowedTypes);
                 $fileType = strtolower(mime_content_type($file['tmp_name']));
                 $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -90,15 +113,40 @@ function _sanitizeFiles($files, $allowedTypes = [], $maxSize = null)
                 }
             }
 
+            if ($sanitizeFileName) {
+                // Sanitize the filename
+                $sanitizedFilename = preg_replace('/[^A-Za-z0-9._-]/', '_', $file['name']);
+                // Ensure the filename does not start with a dot
+                if ($sanitizedFilename[0] === '.') {
+                    $sanitizedFilename = '_' . ltrim($sanitizedFilename, '.');
+                }
+                // Assign the sanitized filename back to the file array
+                $file['name'] = $sanitizedFilename;
+            }
+
             $sanitizedFiles[$key] = $file;
         } catch (SystemException $e) {
             LoggerUtility::log('error', $e->getMessage());
+            // Set to empty array to indicate failure
+            $sanitizedFiles[$key] = [];
             continue;
         } catch (Exception $e) {
             LoggerUtility::log('error', $e->getMessage());
+            // Set to empty array to indicate failure
+            $sanitizedFiles[$key] = [];
             continue;
         }
     }
 
-    return $sanitizedFiles;
+    // Return the sanitized files in the same structure as the input
+    if ($isSingleFile) {
+        // Return single file data directly
+        return reset($sanitizedFiles);
+    } elseif ($isMultiFileArray) {
+        // Return array of files for multi-file input
+        return array_values($sanitizedFiles);
+    } else {
+        // Return array of single-file inputs
+        return $sanitizedFiles;
+    }
 }

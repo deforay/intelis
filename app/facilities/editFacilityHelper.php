@@ -1,17 +1,14 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -27,6 +24,10 @@ $geolocation = ContainerRegistry::get(GeoLocationsService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
+$sanitizedReportTemplate = _sanitizeFiles($_FILES['reportTemplate'], ['pdf']);
+$sanitizedLabLogo = _sanitizeFiles($_FILES['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
+$sanitizedSignature = _sanitizeFiles($_FILES['signature'], ['png', 'jpg', 'jpeg', 'gif']);
+
 /* For reference we define the table names */
 $tableName = "facility_details";
 $facilityId = base64_decode((string) $_POST['facilityId']);
@@ -36,9 +37,8 @@ $testingLabsTable = "testing_labs";
 $healthFacilityTable = "health_facilities";
 $signTableName = "lab_report_signatories";
 
-$facilityRow = $db->rawQueryOne('SELECT facility_attributes from facility_details where facility_id= ?', array($facilityId));
+$facilityRow = $db->rawQueryOne('SELECT facility_attributes from facility_details where facility_id= ?', [$facilityId]);
 $facilityAttributes = json_decode((string) $facilityRow['facility_attributes'], true);
-
 
 try {
 	//Province Table
@@ -125,6 +125,20 @@ try {
 		if (!empty($_POST['sampleType'])) {
 			foreach ($_POST['sampleType'] as $testType => $sampleTypes) {
 				$facilityAttributes['sampleType'][$testType] = implode(",", $sampleTypes ?? []);
+			}
+		}
+		// Upload Report Template
+		if (isset($sanitizedReportTemplate['name']) && $sanitizedReportTemplate['name'] != "") {
+
+			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template";
+			MiscUtility::removeDirectory($directoryPath);
+			MiscUtility::makeDirectory($directoryPath, 0777, true);
+			$string = $general->generateRandomString(12) . ".";
+			$extension = strtolower(pathinfo($directoryPath . DIRECTORY_SEPARATOR . $sanitizedReportTemplate['name'], PATHINFO_EXTENSION));
+			$fileName = "report-template-" . $string . $extension;
+			$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $fileName;
+			if (move_uploaded_file($_FILES["reportTemplate"]["tmp_name"], $filePath)) {
+				$facilityAttributes['report_template'] = $fileName;
 			}
 		}
 		if (!empty($facilityAttributes)) {
@@ -225,7 +239,7 @@ try {
 			$db->update($tableName, $data);
 		}
 
-		if (isset($_FILES['labLogo']['name']) && $_FILES['labLogo']['name'] != "") {
+		if (isset($sanitizedLabLogo['name']) && $sanitizedLabLogo['name'] != "") {
 			if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo")) {
 				mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo", 0777, true);
 			}
@@ -234,7 +248,7 @@ try {
 			}
 
 
-			$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['labLogo']['name'], PATHINFO_EXTENSION));
+			$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedLabLogo['name'], PATHINFO_EXTENSION));
 			$string = $general->generateRandomString(12) . ".";
 			$actualImageName = "actual-logo-" . $string . $extension;
 			$imageName = "logo-" . $string . $extension;
@@ -251,7 +265,7 @@ try {
 			}
 		}
 		// Uploading signatories
-		if ($_FILES['signature']['name'] != "" && !empty($_FILES['signature']['name']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
+		if (!empty($sanitizedSignature) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
 			$deletedRow = explode(",", (string) $_POST['deletedRow']);
 			foreach ($deletedRow as $delete) {
 				$db->where('signatory_id', $delete);
@@ -290,7 +304,7 @@ try {
 							mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures', 0777, true);
 						}
 
-						$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['signature']['name'][$key], PATHINFO_EXTENSION));
+						$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedSignature['name'][$key], PATHINFO_EXTENSION));
 						$string = $general->generateRandomString(4) . ".";
 						$imageName = $string . $extension;
 						if (move_uploaded_file($_FILES["signature"]["tmp_name"][$key], $pathname . $imageName)) {
