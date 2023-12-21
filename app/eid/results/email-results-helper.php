@@ -5,6 +5,10 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -90,11 +94,12 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
       }
       //Pdf file attach
       $pathFront = realpath(UPLOAD_PATH);
-      $pathFront = realpath(UPLOAD_PATH);
       $file = realpath(urldecode(base64_decode($_POST['pdfFile1'])));
       
       $file_to_attach =  $file;
-      $mail->AddAttachment($file_to_attach);      
+      $mail->AddAttachment($file_to_attach);
+    //  $result_file_to_attach = $pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2'];
+     // $mail->AddAttachment($result_file_to_attach);
       $message = '';
       if (isset($_POST['message']) && trim((string) $_POST['message']) != "") {
          $message = (nl2br((string) $_POST['message']));
@@ -107,8 +112,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
             'verify_peer_name' => false,
             'allow_self_signed' => true
          )
-      );
-      if ($mail->send()) {
+      );      if ($mail->send()) {
          //update result mail sent flag
          $_POST['sample'] = explode(',', (string) $_POST['sample']);
          for ($s = 0; $s < count($_POST['sample']); $s++) {
@@ -117,6 +121,13 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
             $db->where('eid_id', $sampleResult[0]['eid_id']);
             $db->update($tableName, array('is_result_mail_sent' => 'yes', 'result_mail_datetime' => DateUtility::getCurrentDateTime()));
          }
+
+         //Add event log
+			$eventType = 'email-results';
+			$action = $_SESSION['userName'] . ' Sent an test results Email to ' . $_POST['toEmail'];
+			$resource = 'eid-results';
+
+			$general->activityLog($eventType, $action, $resource);
 
          $_SESSION['alertMsg'] = 'Email sent successfully';
          header('location:email-results.php');
