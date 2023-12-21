@@ -42,7 +42,7 @@ foreach ($geResult as $row) {
 if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
    if (isset($mailconf['rs_field']) && trim((string) $mailconf['rs_field']) != '') {
       //Create a new PHPMailer instance
-      $mail = new PHPMailer\PHPMailer\PHPMailer();
+      $mail = new PHPMailer(true);
       //Tell PHPMailer to use SMTP
       $mail->isSMTP();
       //Enable SMTP debugging
@@ -55,16 +55,17 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
       //Set the hostname of the mail server
       $mail->Host = 'smtp.gmail.com';
       //Set the SMTP port number - 587 for authenticated TLS, a.k.a. RFC4409 SMTP submission
-      $mail->Port = 587;
+      $mail->Port = 465;
       //Set the encryption system to use - ssl (deprecated) or tls
-      $mail->SMTPSecure = 'tls';
+      $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
       //Whether to use SMTP authentication
       $mail->SMTPAuth = true;
       $mail->SMTPKeepAlive = true;
       //Username to use for SMTP authentication - use full email address for gmail
-      $mail->Username = $mailconf['rs_email'];
+     // $mail->Username = $mailconf['rs_email'];
+      $mail->Username = SYSTEM_CONFIG['adminEmailUserName'];
       //Password to use for SMTP authentication
-      $mail->Password = $mailconf['rs_password'];
+      $mail->Password = SYSTEM_CONFIG['adminEmailPassword'];
       //Set who the message is to be sent from
       $mail->setFrom($mailconf['rs_email']);
 
@@ -89,10 +90,10 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
       }
       //Pdf file attach
       $pathFront = realpath(UPLOAD_PATH);
-      $file_to_attach = $pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile1'];
-      $mail->AddAttachment($file_to_attach);
-      $result_file_to_attach = $pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2'];
-      $mail->AddAttachment($result_file_to_attach);
+      $file = realpath(urldecode(base64_decode($_POST['pdfFile1'])));
+      
+      $file_to_attach =  $file;
+      $mail->AddAttachment($file_to_attach);      
       $message = '';
       if (isset($_POST['message']) && trim((string) $_POST['message']) != "") {
          $message = (nl2br((string) $_POST['message']));

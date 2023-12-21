@@ -31,9 +31,7 @@ foreach ($geResult as $row) {
    $mailconf[$row['name']] = $row['value'];
 }
 
-$filename = '';
-$downloadFile1 = '';
-$downloadFile2 = '';
+
 $selectedSamplesArray = !empty($_POST['selectedSamples']) ? json_decode((string) $_POST['selectedSamples'], true) : [];
 
 if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty($selectedSamplesArray)) {
@@ -89,7 +87,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                <input type="hidden" id="message" name="message" value="<?php echo htmlspecialchars((string) $_POST['message']); ?>" />
                <input type="hidden" id="sample" name="sample" value="<?php echo implode(',', $resultOlySamples); ?>" />
                <input type="hidden" id="pdfFile1" name="pdfFile1" value="<?php echo htmlspecialchars((string) $_POST['pdfFile']); ?>" />
-               <input type="hidden" id="pdfFile2" name="pdfFile2" value="<?php echo $filename; ?>" />
+               <input type="hidden" id="pdfFile2" name="pdfFile2" value="<?php ?>" />
                <input type="hidden" id="storeFile" name="storeFile" value="no" />
                <div class="col-lg-12" style="text-align:center;padding-left:0;">
                   <a href="../vl/results/email-results.php" class="btn btn-default"> Cancel</a>&nbsp;
