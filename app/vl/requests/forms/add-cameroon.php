@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -43,11 +42,6 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $lResult = $facilitiesService->getTestingLabs('vl', true, true);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _translate("-- Select --"); ?>');
-
-
-$sKey = '';
-$sFormat = '';
-
 
 
 ?>
@@ -715,8 +709,8 @@ $sFormat = '';
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;"><?= _translate('Save'); ?></a>
                                              <input type="hidden" name="saveNext" id="saveNext" />
                                              <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                                                  <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
-                                                  <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
+                                                  <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="" />
+                                                  <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="" />
                                              <?php } ?>
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <input type="hidden" name="provinceId" id="provinceId" />
@@ -901,8 +895,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           } else if (pName == '') {
                provinceName = true;
                facilityName = true;
-               $("#province").html("<?php echo $province; ?>");
-               $("#fName").html("<?php echo addslashes($facility); ?>");
+               $("#province").html("<?= (string) $province; ?>");
+               $("#fName").html("<?= (string) $facility; ?>");
                $("#fName").select2("val", "");
                $("#district").html("<option value=''> -- Select -- </option>");
           }

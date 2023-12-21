@@ -352,12 +352,14 @@ class CommonService
     public function generateSelectOptions($optionList, $selectedOptions = [], $emptySelectText = false)
     {
         return once(function () use ($optionList, $selectedOptions, $emptySelectText) {
+
+            $response = '';
+
             if (empty($optionList)) {
                 return '';
             }
-            $response = '';
             if ($emptySelectText !== false) {
-                $response .= "<option value=''>$emptySelectText</option>";
+                $response .= "<option value=''>" . addslashes($emptySelectText) . "</option>";
             }
 
             foreach ($optionList as $optId => $optName) {
@@ -865,7 +867,7 @@ class CommonService
 
         $table = $this->db->escape($table);
         $response = $this->db->rawQueryOne("SHOW KEYS FROM $table WHERE Key_name = 'PRIMARY'");
-        return $response['Column_name'] ?? null;   
+        return $response['Column_name'] ?? null;
     }
 
     public function getImplementationPartners()
