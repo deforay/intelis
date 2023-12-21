@@ -87,7 +87,7 @@ class UsersService
 
     public function getAllPrivileges(string $role): array
     {
-
+        $modules = $privileges = [];
         $privilegesQuery = "SELECT p.privilege_name, rp.privilege_id, r.module
                             FROM roles_privileges_map as rp
                             INNER JOIN privileges as p ON p.privilege_id=rp.privilege_id
@@ -95,17 +95,16 @@ class UsersService
                             WHERE rp.role_id= ?";
         $privilegesResult = $this->db->rawQuery($privilegesQuery, [$role]);
         if (!empty($privilegesResult)) {
-            $modules = array_column($privilegesResult, 'module');
-            $modules = array_unique($modules);
-            $modules = array_combine($modules, $modules);
-            $privileges = array_column($privilegesResult, 'privilege_name');
+            $modules = array_unique(array_column($privilegesResult, 'module'));
 
+            $privileges = array_column($privilegesResult, 'privilege_name');
             $matchingKeys = array_keys(array_intersect($this->getSharedPrivileges(), $privileges));
-            $privileges = array_flip(array_merge($this->getSkippedPrivileges(), $privileges, $matchingKeys));
-            return [$modules, $privileges];
-        } else {
-            return [[], []];
+            $privileges = array_merge($this->getSkippedPrivileges(), $privileges, $matchingKeys);
+
+            $modules = array_combine($modules, $modules);
+            $privileges = array_combine($privileges, $privileges);
         }
+        return [$modules, $privileges];
     }
 
     public function getSharedPrivileges(): array

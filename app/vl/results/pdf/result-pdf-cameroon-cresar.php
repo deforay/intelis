@@ -322,8 +322,8 @@ if (!empty($requestResult)) {
           $html .= '<tr><td></td></tr>';
 
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Validated by') . ' : ' . $reviewedBy  . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by') . ' : ' . $resultApprovedBy . '</td></tr>';
+          $html .= '<td width="40%" style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Validated by') . ' : ' . $reviewedBy  . '</td>';
+          $html .= '<td width="40%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by') . ' : ' . $resultApprovedBy . '</td></tr>';
 
           if (!empty($reviewedSignaturePath) && $pdf->imageExists($reviewedSignaturePath)) {
                $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:50px;" />';

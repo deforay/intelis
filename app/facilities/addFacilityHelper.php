@@ -137,7 +137,7 @@ try {
 			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template";
 			MiscUtility::makeDirectory($directoryPath, 0777, true);
 			$string = $general->generateRandomString(12) . ".";
-			$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedReportTemplate['name'], PATHINFO_EXTENSION));
+			$extension = strtolower(pathinfo($directoryPath . DIRECTORY_SEPARATOR . $sanitizedReportTemplate['name'], PATHINFO_EXTENSION));
 			$fileName = "report-template-" . $string . $extension;
 			$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
 			if (move_uploaded_file($_FILES["reportTemplate"]["tmp_name"], $filePath)) {
