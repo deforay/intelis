@@ -175,11 +175,28 @@ class ApiService
         }
     }
 
-    public function sendJsonResponse($payload)
+    public function sendJsonResponse(mixed $payload)
     {
-        $gzipPayload = gzencode($payload);
+        // Ensure payload is a JSON string
+        $jsonPayload = is_array($payload) || is_object($payload) ? json_encode($payload) : $payload;
+
+        // Check for json_encode errors
+        if (json_last_error() != JSON_ERROR_NONE) {
+            // Handle the error, maybe log it or set an error message
+            return null;
+        }
+
+        // Gzip compress, assuming $jsonPayload is never null
+        $gzipPayload = gzencode($jsonPayload);
+
+        // Check for gzencode errors
+        if ($gzipPayload === false) {
+            // Handle the error
+            return null;
+        }
+
         header('Content-Encoding: gzip');
-        header('Content-Length: ' . strlen($gzipPayload));
+        header('Content-Length: ' . mb_strlen($gzipPayload, '8bit'));
         return $gzipPayload;
     }
 }
