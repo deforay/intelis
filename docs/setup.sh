@@ -325,10 +325,6 @@ else
     echo "${hostname} entry is already in the hosts file."
 fi
 
-# Ask the user for installation preference
-echo "Do you want to install VLSM alongside other apps?"
-read -r install_alongside
-
 # Define the desired configuration using the variable for VLSM installation path
 vlsm_config_block="DocumentRoot \"${vlsm_path}/public\"
     ServerName ${hostname}
@@ -338,7 +334,8 @@ vlsm_config_block="DocumentRoot \"${vlsm_path}/public\"
         Require all granted
     </Directory>"
 
-if ask_yes_no "Is this computer going to be primarily only for VLSM?"; then
+# Ask the user for installation preference
+if ask_yes_no "Is this computer going to be primarily only for VLSM? (y if ONLY VLSM, n if it is going to be shared with other webapps)"; then
     # Path to the default Apache2 vhost file
     apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
 

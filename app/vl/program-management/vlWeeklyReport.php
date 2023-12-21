@@ -424,7 +424,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
       ],
       "bProcessing": true,
       "bServerSide": true,
-      "sAjaxSource": "getVlWeeklyReport.php",
+      "sAjaxSource": "/vl/program-management/getVlWeeklyReport.php",
       "fnServerData": function(sSource, aoData, fnCallback) {
         aoData.push({
           "name": "sampleTestDate",
