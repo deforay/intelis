@@ -123,6 +123,14 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
             $db->update($tableName, array('is_result_mail_sent' => 'yes', 'result_mail_datetime' => DateUtility::getCurrentDateTime()));
          }
 
+                  //Add event log
+			$eventType = 'email-results';
+			$action = $_SESSION['userName'] . ' Sent an test results Email to ' . $_POST['toEmail'];
+			$resource = 'vl-results';
+
+			$general->activityLog($eventType, $action, $resource);
+
+
          $_SESSION['alertMsg'] = 'Email sent successfully';
          header('location:email-results.php');
       } else {

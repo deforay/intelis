@@ -5,6 +5,10 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
@@ -49,7 +53,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
       // 0 = off (for production use)
       // 1 = client messages
       // 2 = client and server messages
-      $mail->SMTPDebug = 2;
+      $mail->SMTPDebug = 0;
       //Ask for HTML-friendly debug output
       $mail->Debugoutput = 'html';
       //Set the hostname of the mail server
@@ -119,6 +123,13 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
             $db->where('hepatitis_id', $sampleResult[0]['hepatitis_id']);
             $db->update($tableName, array('is_result_mail_sent' => 'yes', 'result_mail_datetime' => DateUtility::getCurrentDateTime()));
          }
+
+                  //Add event log
+			$eventType = 'email-results';
+			$action = $_SESSION['userName'] . ' Sent an test results Email to ' . $_POST['toEmail'];
+			$resource = 'hepatitis-results';
+
+			$general->activityLog($eventType, $action, $resource);
 
          $_SESSION['alertMsg'] = 'Email sent successfully';
          header('location:email-results.php');
