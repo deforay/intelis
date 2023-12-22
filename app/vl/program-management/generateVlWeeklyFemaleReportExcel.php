@@ -1,11 +1,10 @@
 <?php
 
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -25,10 +24,7 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim((string) $_SESSION['vlSt
 
     $colNo = 1;
 
-
-
     $sheet->fromArray($headings, null, 'A1');
-
 
     foreach ($rResult as $aRow) {
 

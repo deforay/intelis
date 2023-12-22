@@ -311,7 +311,7 @@ if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
 	var startDate = "";
 	var endDate = "";
 	$(document).ready(function() {
-		document.getElementById('message').value = "Hi, \n Please find the Other Lab Test results attached. \nThanks";
+		document.getElementById('message').value = "<?php echo _translate("Hello") . ","; ?> \n<?php echo _translate("Please find the test results attached with this email"); ?>. \n\n<?php echo _translate("Thanks"); ?>";
 		$('#facility').select2({
 			placeholder: "Select Facility"
 		});

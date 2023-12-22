@@ -60,7 +60,7 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 				LEFT JOIN r_hepatitis_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
 				LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner
 				LEFT JOIN r_funding_sources as rfs ON rfs.funding_source_id=vl.funding_source
-				LEFT JOIN r_hepatitis_sample_type as rst ON rst.hepatitis_id=vl.specimen_type
+				LEFT JOIN r_hepatitis_sample_type as rst ON rst.sample_id=vl.specimen_type
 				WHERE vl.hepatitis_id IN(" . $_POST['id'] . ")";
 } else {
 	$searchQuery = $allQuery;

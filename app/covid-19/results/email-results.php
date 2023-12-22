@@ -357,7 +357,7 @@ $batchResult = $db->rawQuery($batchQuery);
 	var endDate = "";
 	let samplesData = null;
 	$(document).ready(function() {
-		document.getElementById('message').value = "<?php echo _translate("Hi"); ?>, \n<?php echo _translate("PFA the viral load test results"); ?>. \n\n<?php echo _translate("Thanks"); ?>";
+		document.getElementById('message').value = "<?php echo _translate("Hello") . ","; ?> \n<?php echo _translate("Please find the test results attached with this email"); ?>. \n\n<?php echo _translate("Thanks"); ?>";
 		$('#facility').select2({
 			placeholder: "<?php echo _translate("Select Facility"); ?>"
 		});
