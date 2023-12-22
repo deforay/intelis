@@ -189,7 +189,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						<div class="col-xs-4 col-md-4">
 							<div class="form-group" style="margin-left:30px; margin-top:30px;">
 								<label for="testType">Test Type</label>
-								<select disabled="disabled" class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
+								<select disabled="disabled" class="form-control select2" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
 									<option value=""> -- Select -- </option>
 									<?php foreach ($testTypeResult as $testTypeInfo) { ?>
 										<option value="<?php echo $testTypeInfo['test_type_id'] ?>" <?php echo ($testType['test_type'] == $testTypeInfo['test_type_id']) ? "selected='selected'" : ""; ?>><?php echo $testTypeInfo['test_standard_name'] ?></option>
