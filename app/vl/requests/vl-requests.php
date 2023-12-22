@@ -343,7 +343,7 @@ foreach ($srcResults as $list) {
 								</select>
 							</td>
 							<td><strong>
-									<?php echo _translate("Req. Sample Type"); ?> :
+									<?php echo _translate("Sample Type"); ?> :
 								</strong></td>
 							<td>
 								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _translate('Please select request sample type'); ?>">
@@ -351,10 +351,10 @@ foreach ($srcResults as $list) {
 										<?php echo _translate("All"); ?>
 									</option>
 									<option value="result">
-										<?php echo _translate("Sample With Result"); ?>
+										<?php echo _translate("Samples with result"); ?>
 									</option>
 									<option value="noresult">
-										<?php echo _translate("Sample Without Result"); ?>
+										<?php echo _translate("Samples without result"); ?>
 									</option>
 								</select>
 							</td>
@@ -878,9 +878,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					},
 				<?php } ?>
 			],
-			"aaSorting": [
+			"order": [
 				[<?php echo ($_SESSION['instanceType'] == 'remoteuser' || $_SESSION['instanceType'] == 'vluser') ? 12 : 11 ?>, "desc"],
-				[2, "desc"]
+				[0, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
