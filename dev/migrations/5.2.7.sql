@@ -171,3 +171,32 @@ ALTER TABLE `form_eid` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHA
 ALTER TABLE `audit_form_eid` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_tb` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `audit_form_tb` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+
+-- Amit 25-Dec-2023
+UPDATE `privileges` SET `privilege_name` ='/common/reference/geographical-divisions-details.php' WHERE `privilege_name` LIKE 'geographical-divisions-details.php';
+UPDATE `privileges` SET `privilege_name` ='/common/reference/add-geographical-divisions.php' WHERE `privilege_name` LIKE 'add-geographical-divisions.php';
+UPDATE `privileges` SET `privilege_name` ='/common/reference/edit-geographical-divisions.php' WHERE `privilege_name` LIKE 'edit-geographical-divisions.php';
+UPDATE `privileges` SET `privilege_name` ='/admin/monitoring/sync-status.php' WHERE `privilege_name` LIKE 'sync-status.php';
+UPDATE `privileges` SET `privilege_name` ='/admin/monitoring/sync-history.php' WHERE `privilege_name` LIKE 'sync-history.php';
+UPDATE `privileges` SET `privilege_name` ='/admin/monitoring/activity-log.php' WHERE `privilege_name` LIKE 'activity-log.php';
+UPDATE `privileges` SET `privilege_name` ='/admin/monitoring/audit-trail.php' WHERE `privilege_name` LIKE 'audit-trail.php';
+UPDATE `privileges` SET `privilege_name` ='/facilities/facilities.php' WHERE `privilege_name` LIKE 'facilities.php';
+UPDATE `privileges` SET `privilege_name` ='/facilities/addFacility.php' WHERE `privilege_name` LIKE 'addFacility.php';
+UPDATE `privileges` SET `privilege_name` ='/facilities/editFacility.php' WHERE `privilege_name` LIKE 'editFacility.php';
+UPDATE `privileges` SET `privilege_name` ='/users/users.php' WHERE `privilege_name` LIKE 'users.php';
+UPDATE `privileges` SET `privilege_name` ='/users/addUser.php' WHERE `privilege_name` LIKE 'addUser.php';
+UPDATE `privileges` SET `privilege_name` ='/users/editUser.php' WHERE `privilege_name` LIKE 'editUser.php';
+UPDATE `privileges` SET `privilege_name` ='/roles/roles.php' WHERE `privilege_name` LIKE 'roles.php';
+UPDATE `privileges` SET `privilege_name` ='/roles/addRole.php' WHERE `privilege_name` LIKE 'addRole.php';
+UPDATE `privileges` SET `privilege_name` ='/roles/editRole.php' WHERE `privilege_name` LIKE 'editRole.php';
+UPDATE `privileges` SET `privilege_name` ='/global-config/editGlobalConfig.php' WHERE `privilege_name` LIKE 'editGlobalConfig.php';
+
+DELETE FROM roles_privileges_map where privilege_id in (SELECT privilege_id FROM privileges WHERE privilege_name LIKE 'globalConfig.php');
+DELETE FROM privileges WHERE privilege_name LIKE 'globalConfig.php'
+
+DELETE FROM roles_privileges_map where privilege_id in (SELECT privilege_id FROM privileges WHERE privilege_name LIKE 'upload-facilities.php');
+DELETE FROM privileges WHERE privilege_name LIKE 'upload-facilities.php'
+
+DELETE FROM roles_privileges_map where privilege_id in (SELECT privilege_id FROM privileges WHERE privilege_name LIKE 'facilityMap.php');
+DELETE FROM privileges WHERE privilege_name LIKE 'facilityMap.php'

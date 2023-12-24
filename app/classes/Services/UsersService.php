@@ -100,9 +100,19 @@ class UsersService
             $privileges = array_column($privilegesResult, 'privilege_name');
             $matchingKeys = array_keys(array_intersect($this->getSharedPrivileges(), $privileges));
             $privileges = array_merge($this->getSkippedPrivileges(), $privileges, $matchingKeys);
+            // Create an array with both full paths and basenames
+            $fullPathsAndBasenames = [];
+            foreach ($privileges as $privilege) {
+                $fullPathsAndBasenames[$privilege] = $privilege; // Full path as key and value
+                $basename = basename($privilege);
+                if ($basename == 'index.php') {
+                    continue;
+                }
+                $fullPathsAndBasenames[$basename] = $basename; // Basename as key and value
+            }
 
             $modules = array_combine($modules, $modules);
-            $privileges = array_combine($privileges, $privileges);
+            $privileges = array_combine($fullPathsAndBasenames, $fullPathsAndBasenames);
         }
         return [$modules, $privileges];
     }

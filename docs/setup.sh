@@ -329,7 +329,7 @@ fi
 vlsm_config_block="DocumentRoot \"${vlsm_path}/public\"
     ServerName ${hostname}
     <Directory \"${vlsm_path}/public\">
-        Options Indexes FollowSymLinks
+        Options -Indexes -MultiViews +FollowSymLinks
         AllowOverride All
         Require all granted
     </Directory>"

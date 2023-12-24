@@ -7,16 +7,17 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $testType = (string) $_POST['type'];
 $table = TestsService::getTestTableName($testType);
@@ -25,10 +26,9 @@ $primaryKey = TestsService::getTestPrimaryKeyName($testType);
 $waitingTotal = 0;
 $rejectedTotal = 0;
 $receivedTotal = 0;
-$dFormat = '';
+
 $waitingDate = '';
 $rejectedDate = '';
-$i = 0;
 if ($testType == 'eid') {
     $samplesReceivedChart = "eidSamplesReceivedChart";
     $samplesTestedChart = "eidSamplesTestedChart";
@@ -77,7 +77,6 @@ if ($testType == 'eid') {
 }
 
 try {
-
 
     if ($_SESSION['instanceType'] != 'remoteuser') {
         $whereCondition = " result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "  AND ";
@@ -158,14 +157,15 @@ try {
                                     OR generic.is_sample_rejected like '' )";
     }
 
-    $waitingResult[$i] = $db->rawQuery($waitingQuery); //waiting result
-    if ($waitingResult[$i][0]['total'] != 0) {
-        $waitingTotal = $waitingTotal + $waitingResult[$i][0]['total'];
-        $waitingResult[$i]['date'] = $dFormat;
-        $waitingDate = $dFormat;
+    $waitingResult = $db->rawQueryOne($waitingQuery); //waiting result
+    $waitingTotal = 0;
+    if (!empty($waitingResult['total']) && $waitingResult['total'] > 0) {
+        $waitingTotal = $waitingResult['total'];
     } else {
-        unset($waitingResult[$i]);
+        unset($waitingResult);
     }
+
+
 
 
     $aggregateQuery = "SELECT COUNT(unique_id) as totalCollected,
@@ -185,8 +185,6 @@ try {
     WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
 
     $aggregateResult = $db->rawQueryOne($aggregateQuery);
-
-
 
     // Samples Accession
     if ($table == "form_vl") {
@@ -210,7 +208,8 @@ try {
     if ($table == "form_vl") {
         $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
     }
-    $sampleTestedQuery = "SELECT DATE(vl.sample_tested_datetime) as `test_date`, COUNT(unique_id) as `count`
+    $sampleTestedQuery = "SELECT DATE(vl.sample_tested_datetime) as `test_date`,
+                            COUNT(unique_id) as `count`
                             FROM $table as vl
                             LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
                             LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
@@ -266,9 +265,6 @@ try {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
 }
-
-
-
 
 ?>
 
@@ -478,7 +474,7 @@ try {
         });
     <?php }
     //waiting result
-    if ($waitingTotal > 0) { ?>
+    if (!empty($waitingTotal) && $waitingTotal > 0) { ?>
         $('#<?php echo $samplesWaitingChart; ?>').highcharts({
             chart: {
                 type: 'column',
@@ -494,11 +490,7 @@ try {
                 enabled: false
             },
             xAxis: {
-                categories: [<?php
-                                foreach ($waitingResult as $total) {
-                                    echo "'" . ($total['date']) . "',";
-                                }
-                                ?>],
+                categories: [''],
                 crosshair: true,
                 scrollbar: {
                     enabled: true
@@ -528,11 +520,7 @@ try {
             series: [{
                 showInLegend: false,
                 name: 'Samples',
-                data: [<?php
-                        foreach ($waitingResult as $total) {
-                            echo ($total[0]['total']) . ",";
-                        }
-                        ?>]
+                data: [<?= $waitingTotal; ?>]
 
             }],
             colors: ['#8877a9']

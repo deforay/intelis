@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Services\UsersService;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
@@ -53,8 +53,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
 $global = $general->getGlobalConfig();
 $state = $geolocationService->getProvinces("yes");
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
