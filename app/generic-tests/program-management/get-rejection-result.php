@@ -105,7 +105,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
     <tbody>
         <?php if (isset($tableResult) && count($tableResult) > 0) {
             foreach ($tableResult as $tableRow) { ?>
-                <tr data-lab="<?php echo base64_encode((string) $_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>" data-daterange="<?= htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>" data-type="rejection">
+                <tr data-lab="<?php echo base64_encode((string) $_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'] ?? [])); ?>" data-daterange="<?= htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>" data-type="rejection">
                     <td>
                         <?php echo ($tableRow['labname']); ?>
                     </td>

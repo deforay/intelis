@@ -738,20 +738,26 @@ class CommonService
     {
         try {
             $currentDateTime = DateUtility::getCurrentDateTime();
+            $batchSize = 100;
+
 
             if (!empty($sampleIds)) {
-                $sampleIdsStr = is_array($sampleIds) ? "'" . implode("','", $sampleIds) . "'" : $sampleIds;
-                $formAttributes = [
-                    "remote{$syncType}Sync" => $currentDateTime,
-                    "{$syncType}SyncTransactionId" => $transactionId
-                ];
-                $formAttributes = $this->jsonToSetString(json_encode($formAttributes), 'form_attributes');
-                $data = [
-                    'form_attributes' => $this->db->func($formAttributes),
-                    'data_sync' => 1
-                ];
-                $this->db->where($columnForWhereCondition, [$sampleIdsStr], 'IN');
-                $this->db->update($testTable, $data);
+                $sampleIdsBatches = array_chunk($sampleIds, $batchSize);
+
+                foreach ($sampleIdsBatches as $batch) {
+                    $sampleIdsStr = "'" . implode("','", $batch) . "'";
+                    $formAttributes = [
+                        "remote{$syncType}Sync" => $currentDateTime,
+                        "{$syncType}SyncTransactionId" => $transactionId
+                    ];
+                    $formAttributes = $this->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+                    $data = [
+                        'form_attributes' => $this->db->func($formAttributes),
+                        'data_sync' => 1
+                    ];
+                    $this->db->where($columnForWhereCondition, [$sampleIdsStr], 'IN');
+                    $this->db->update($testTable, $data);
+                }
             }
 
             if (!empty($facilityIds)) {
