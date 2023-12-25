@@ -3,35 +3,39 @@
 
 namespace App\Interop;
 
+use App\Utilities\LoggerUtility;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Exception\GuzzleException;
+
 class Dhis2
 {
-	private readonly string $dhis2url;
-	private string $currentRequestUrl;
-	private readonly string $username;
-	private readonly string $password;
+	private const DEFAULT_USERNAME = 'admin';
+	private const DEFAULT_PASSWORD = 'district';
+	private const DEFAULT_CONTENT_TYPE = 'application/json';
+
+	private readonly Client $httpClient;
+	private bool $authenticated = false;
 	private string $contentType;
-	private bool $authenticated;
+	public string $currentRequestUrl;
 
 
-	public function __construct($dhis2url, $username = "admin", $password = "district", $contentType = 'application/json')
+
+	public function __construct(string $dhis2url, string $username = self::DEFAULT_USERNAME, string $password = self::DEFAULT_PASSWORD, string $contentType = self::DEFAULT_CONTENT_TYPE)
 	{
-		// ensuring there is no trailing slash
-		$this->dhis2url = rtrim((string) $dhis2url, '/');
-		// Dhis2 Credentials
-		$this->username = $username;
-		$this->password = $password;
-
+		$this->currentRequestUrl = $dhis2url;
 		$this->contentType = $contentType;
+		$this->httpClient = new Client([
+			'base_uri' => rtrim($dhis2url, '/'),
+			'auth' => [$username, $password],
+			'headers' => ['Content-Type' => $this->contentType]
+		]);
 
-		// Let us authenticate
-		//$urlParams[] = "authOnly=true";
-		$response = $this->get("/api/33/system/ping");
-		if ($response) {
-			$this->authenticated = true;
-			return $this;
-		} else {
+		try {
+			$response = $this->httpClient->get('/api/33/system/ping');
+			$this->authenticated = $response->getStatusCode() === 200;
+		} catch (GuzzleException $e) {
 			$this->authenticated = false;
-			return false;
 		}
 	}
 
@@ -40,15 +44,12 @@ class Dhis2
 		return $this->authenticated;
 	}
 
-	// Used to specify content type
-	// can be 'application/xml' or 'application/json'
-	public function setContentType($contentType)
+	public function setContentType(string $contentType): void
 	{
 		$this->contentType = $contentType;
 	}
 
-	// Get content type
-	public function getContentType()
+	public function getContentType(): string
 	{
 		return $this->contentType;
 	}
@@ -57,7 +58,7 @@ class Dhis2
 	// Returns all orgs if $orgUnitID is not specified
 	public function getOrgUnits($orgUnitID = null)
 	{
-		if (!$this->authenticated)
+		if (!$this->isAuthenticated())
 			return false;
 
 		$urlParams[] = "paging=false";
@@ -75,7 +76,7 @@ class Dhis2
 	// Returns all programs if programId is not specified
 	public function getPrograms($orgUnitID, $programId = null)
 	{
-		if (!$this->authenticated || empty($orgUnitID))
+		if (!$this->isAuthenticated() || empty($orgUnitID))
 			return false;
 
 		$urlParams[] = "paging=false";
@@ -94,7 +95,7 @@ class Dhis2
 	public function getDataSets($orgUnitID, $dataSetId = "")
 	{
 
-		if (!$this->authenticated || empty($orgUnitID))
+		if (!$this->isAuthenticated() || empty($orgUnitID))
 			return false;
 
 
@@ -114,7 +115,7 @@ class Dhis2
 	public function getDataElements($dataSetID)
 	{
 
-		if (!$this->authenticated || empty($dataSetID))
+		if (!$this->isAuthenticated() || empty($dataSetID))
 			return false;
 
 		$urlParams[] = "paging=false";
@@ -122,11 +123,6 @@ class Dhis2
 		$path = "/api/dataElements";
 
 		return $this->get($path, $urlParams);
-	}
-
-	public function setCurrentRequestUrl($url)
-	{
-		$this->currentRequestUrl = $url;
 	}
 
 	public function getCurrentRequestUrl()
@@ -138,7 +134,7 @@ class Dhis2
 	public function getDataElementsCombo($dataElementID)
 	{
 
-		if (!$this->authenticated || empty($dataElementID)) {
+		if (!$this->isAuthenticated() || empty($dataElementID)) {
 			return false;
 		}
 
@@ -167,7 +163,7 @@ class Dhis2
 
 		$data['dataValues'] = $dataValues;
 
-		return $this->post("/api/dataValueSets", json_encode($data));
+		return $this->post("/api/dataValueSets", $data);
 	}
 
 
@@ -175,8 +171,9 @@ class Dhis2
 	public function getDataValueSets($orgUnitId, $dataSetId, $period = null, $startDate = null, $endDate = null)
 	{
 
-		if (empty($orgUnitId) || empty($dataSetId))
+		if (empty($orgUnitId) || empty($dataSetId)) {
 			return false;
+		}
 
 		$urlParams[] = "dataSet=$dataSetId";
 		$urlParams[] = "orgUnit=$orgUnitId";
@@ -195,125 +192,77 @@ class Dhis2
 	}
 
 	// Send GET request to DHIS2
-	public function get($path, $urlParams = [])
+	public function get(string $path, array $urlParams = []): ?Response
 	{
-
-		if (empty($path)) {
-			return false;
-		}
-
 		if (!empty($urlParams)) {
-			$urlParams = '?' . implode("&", $urlParams);
+			$queryString = '?' . implode('&', $urlParams);
 		} else {
-			$urlParams = "";
+			$queryString = '';
 		}
 
-		$url = $this->dhis2url . $path . $urlParams;
-
-		$this->setCurrentRequestUrl($url);
-
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type:" . $this->getContentType()));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
-		$return = curl_exec($ch);
-		$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		http_response_code($httpStatus);
-		curl_close($ch);
-
-		return $return;
+		try {
+			$response = $this->httpClient->get($path . $queryString);
+			return $response;
+		} catch (GuzzleException $e) {
+			LoggerUtility::log('error', $e->getMessage(), [
+				'url' => $this->currentRequestUrl . $path . $queryString
+			]);
+			return null;
+		}
 	}
 
 	// Send POST request to DHIS2
-	public function post($path, $data, $urlParams = [])
+	public function post(string $path, array $data, array $urlParams = []): ?Response
 	{
-		if (!$this->authenticated || empty($path) || empty($data))
-			return false;
-
-		if (!empty($urlParams)) {
-			$urlParams = '?' . implode("&", $urlParams);
-		} else {
-			$urlParams = "";
+		if (!$this->isAuthenticated()) {
+			return null;
 		}
 
-		$url = $this->dhis2url . $path . $urlParams;
+		if (!empty($urlParams)) {
+			$queryString = '?' . implode('&', $urlParams);
+		} else {
+			$queryString = '';
+		}
 
-		$this->setCurrentRequestUrl($url);
-
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type:" . $this->getContentType()));
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
-		$return = curl_exec($ch);
-		$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		http_response_code($httpStatus);
-		curl_close($ch);
-
-		return $return;
+		try {
+			$response = $this->httpClient->post($path . $queryString, [
+				'json' => $data
+			]);
+			return $response;
+		} catch (GuzzleException $e) {
+			LoggerUtility::log('error', $e->getMessage(), [
+				'url' => $this->currentRequestUrl . $path . $queryString,
+				'data' => $data
+			]);
+			return null;
+		}
 	}
 
 	// Send PUT request to DHIS2
-	public function put($path, $data, $urlParams = [])
+	public function put(string $path, array $data, array $urlParams = []): ?Response
 	{
-
-		if (!$this->authenticated || empty($path) || empty($data)) {
-			return false;
+		if (!$this->isAuthenticated()) {
+			return null;
 		}
 
 		if (!empty($urlParams)) {
-			$urlParams = '?' . implode("&", $urlParams);
+			$queryString = '?' . implode('&', $urlParams);
 		} else {
-			$urlParams = "";
+			$queryString = '';
 		}
 
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . $path . $urlParams);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type:" . $this->getContentType()));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
-		$return = curl_exec($ch);
-
-		$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		http_response_code($httpStatus);
-		curl_close($ch);
-
-		return $return;
-	}
-
-	// Send PATCH request to DHIS2
-	public function patch($path, $data, $urlParams = [])
-	{
-
-		if (!$this->authenticated || empty($path) || empty($data)) {
-			return false;
+		try {
+			$response = $this->httpClient->put($path . $queryString, [
+				'json' => $data
+			]);
+			return $response;
+		} catch (GuzzleException $e) {
+			LoggerUtility::log('error', $e->getMessage(), [
+				'url' => $this->currentRequestUrl . $path . $queryString,
+				'data' => $data
+			]);
+			return null;
 		}
-
-		if (!empty($urlParams)) {
-			$urlParams = '?' . implode("&", $urlParams);
-		} else {
-			$urlParams = "";
-		}
-
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . $path . $urlParams);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: " . $this->getContentType()]);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
-		$return = curl_exec($ch);
-		$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		http_response_code($httpStatus);
-		curl_close($ch);
-
-		return $return;
 	}
 
 	public function addDataValuesToEventPayload($eventPayload, $inputArray)

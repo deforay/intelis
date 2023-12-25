@@ -3,8 +3,8 @@
 // this file is included in /hepatitis/interop/dhis2/hepatitis-send.php
 
 use App\Interop\Dhis2;
-use App\Registries\ContainerRegistry;
 use App\Services\HepatitisService;
+use App\Registries\ContainerRegistry;
 
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
@@ -211,14 +211,14 @@ foreach ($formResults as $row) {
     ];
     if (!empty($dataValues)) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
-      $payload = json_encode($eventPayload);
+      $payload = ($eventPayload);
       $response = $dhis2->post("/api/33/events/", $payload);
     }
   } else {
     foreach ($dhis2Response['events'] as $eventPayload) {
       if (!empty($dataValues)) {
         $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
-        $payload = json_encode($eventPayload);
+        $payload = ($eventPayload);
         $urlParams = [];
         $urlParams[] = "mergeMode=REPLACE";
         $urlParams[] = "strategy=UPDATE";
