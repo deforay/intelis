@@ -105,16 +105,16 @@ $fileArray = array(
 	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
 );
 
-$_SESSION['rVal'] = $general->generateRandomString(6);
+$randomFolderName = time() . '-' . $general->generateRandomString(6);
 
-$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
+$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
 MiscUtility::makeDirectory($pathFront);
 
 $resultFilename = '';
 
 $pages = [];
 $page = 1;
-
+$_SESSION['aliasPage'] = 1;
 foreach ($requestResult as $result) {
 	if (($_SESSION['instanceType'] == 'vluser') && empty($result['result_printed_on_lis_datetime'])) {
 		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
@@ -125,9 +125,6 @@ foreach ($requestResult as $result) {
 		$db->where('vl_sample_id', $result['vl_sample_id']);
 		$id = $db->update('form_vl', $pData);
 	}
-
-
-	$_SESSION['aliasPage'] = 1;
 
 
 	$selectedReportFormats = [];
@@ -152,7 +149,7 @@ if (!empty($pages)) {
 	$resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
 	$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
 	MiscUtility::removeDirectory($pathFront);
-	unset($_SESSION['rVal']);
+	unset($randomFolderName);
 }
 
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);
