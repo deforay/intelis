@@ -193,13 +193,13 @@ UPDATE `privileges` SET `privilege_name` ='/roles/editRole.php' WHERE `privilege
 UPDATE `privileges` SET `privilege_name` ='/global-config/editGlobalConfig.php' WHERE `privilege_name` LIKE 'editGlobalConfig.php';
 
 DELETE FROM roles_privileges_map where privilege_id in (SELECT privilege_id FROM privileges WHERE privilege_name LIKE 'globalConfig.php');
-DELETE FROM privileges WHERE privilege_name LIKE 'globalConfig.php'
+DELETE FROM privileges WHERE privilege_name LIKE 'globalConfig.php';
 
 DELETE FROM roles_privileges_map where privilege_id in (SELECT privilege_id FROM privileges WHERE privilege_name LIKE 'upload-facilities.php');
-DELETE FROM privileges WHERE privilege_name LIKE 'upload-facilities.php'
+DELETE FROM privileges WHERE privilege_name LIKE 'upload-facilities.php';
 
 DELETE FROM roles_privileges_map where privilege_id in (SELECT privilege_id FROM privileges WHERE privilege_name LIKE 'facilityMap.php');
-DELETE FROM privileges WHERE privilege_name LIKE 'facilityMap.php'
+DELETE FROM privileges WHERE privilege_name LIKE 'facilityMap.php';
 
 
 -- Amit 26-Dec-2023
