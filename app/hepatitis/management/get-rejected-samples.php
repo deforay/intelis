@@ -41,7 +41,7 @@ if (!empty($_POST['sampleCollectionDate'])) {
         $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
     //get value by rejection reason id
-    $vlQuery = "select count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`
+    $vlQuery = "SELECT count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`
                 FROM form_hepatitis as vl
                 INNER JOIN r_hepatitis_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id

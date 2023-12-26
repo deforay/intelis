@@ -282,6 +282,25 @@ ALTER TABLE `audit_form_eid` CHANGE `tested_by` `tested_by` VARCHAR(50) CHARACTE
 ALTER TABLE `audit_form_eid` CHANGE `sample_package_code` `sample_package_code` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 
 
+ALTER TABLE `form_vl` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_vl` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_eid` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_eid` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_covid19` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_covid19` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_tb` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_tb` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_generic` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_generic` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_hepatitis` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_hepatitis` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+
 -- END OF VERSION --
 -- END OF VERSION --
 -- END OF VERSION --
