@@ -251,7 +251,7 @@ class HepatitisService extends AbstractTestService
                     'lab_id' => $params['labId'] ?? null,
                     'app_sample_code' => $params['appSampleCode'] ?? null,
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
-                    'province_id' => $provinceId,
+                    'province_id' => !empty($provinceId) ? (int) $provinceId : null,
                     'hepatitis_test_type' => $prefix,
                     'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                     'form_attributes' => $params['formAttributes'] ?? "{}",

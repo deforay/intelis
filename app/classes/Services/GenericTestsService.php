@@ -133,7 +133,7 @@ class GenericTestsService extends AbstractTestService
                     'app_sample_code' => $params['appSampleCode'] ?? null,
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
-                    'province_id' => $provinceId,
+                    'province_id' => !empty($provinceId) ? (int) $provinceId : null,
                     'test_type' => $testType,
                     'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                     'form_attributes' => $params['formAttributes'] ?? "{}",
