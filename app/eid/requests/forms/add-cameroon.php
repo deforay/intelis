@@ -112,9 +112,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose facility" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php //echo $facility;
-                                                foreach ($healthFacilitiesAllColumns as $facility) {
+                                                foreach ($healthFacilitiesAllColumns as $hFacility) {
                                                 ?>
-                                                    <option value="<?php echo $facility['facility_id']; ?>" data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
+                                                    <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>"><?php echo $hFacility['facility_name']; ?></option>
                                                 <?php
                                                 }
                                                 ?>
@@ -709,35 +709,35 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $.unblockUI();
     }
 
-    function getfacilityProvinceDetails(obj) {
-        $.blockUI();
-        //check facility name
-        var cName = $("#facilityId").val();
-        var pName = $("#province").val();
-        if (cName != '' && provinceName && facilityName) {
-            provinceName = false;
-        }
-        if (cName != '' && facilityName) {
-            $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'eid'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#province").html(details[0]);
-                        $("#district").html(details[1]);
-                        $("#clinicianName").val(details[2]);
-                    }
-                });
-        } else if (pName == '' && cName == '') {
-            provinceName = true;
-            facilityName = true;
-            $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo $facility; ?>");
-        }
-        $.unblockUI();
-    }
+    // function getfacilityProvinceDetails(obj) {
+    //     $.blockUI();
+    //     //check facility name
+    //     var cName = $("#facilityId").val();
+    //     var pName = $("#province").val();
+    //     if (cName != '' && provinceName && facilityName) {
+    //         provinceName = false;
+    //     }
+    //     if (cName != '' && facilityName) {
+    //         $.post("/includes/siteInformationDropdownOptions.php", {
+    //                 cName: cName,
+    //                 testType: 'eid'
+    //             },
+    //             function(data) {
+    //                 if (data != "") {
+    //                     details = data.split("###");
+    //                     $("#province").html(details[0]);
+    //                     $("#district").html(details[1]);
+    //                     $("#clinicianName").val(details[2]);
+    //                 }
+    //             });
+    //     } else if (pName == '' && cName == '') {
+    //         provinceName = true;
+    //         facilityName = true;
+    //         $("#province").html("<?php echo $province; ?>");
+    //         $("#facilityId").html("<?php echo $facility; ?>");
+    //     }
+    //     $.unblockUI();
+    // }
 
 
     function validateNow() {

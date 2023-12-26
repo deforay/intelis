@@ -128,9 +128,9 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                             <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php //echo $facility;
-                                                foreach ($healthFacilitiesAllColumns as $facility) {
+                                                foreach ($healthFacilitiesAllColumns as $hFacility) {
                                                 ?>
-                                                    <option value="<?php echo $facility['facility_id']; ?>" <?php echo ($eidInfo['facility_id'] == $facility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
+                                                    <option value="<?php echo $hFacility['facility_id']; ?>" <?php echo ($eidInfo['facility_id'] == $hFacility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $hFacility['facility_code']; ?>"><?php echo $hFacility['facility_name']; ?></option>
                                                 <?php
                                                 }
                                                 ?>
