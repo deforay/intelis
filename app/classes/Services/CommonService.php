@@ -16,19 +16,16 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 
-
 class CommonService
 {
-
     protected ?DatabaseService $db;
-
 
     public function __construct(?DatabaseService $db)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
     }
 
-    public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false): array
+    public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false, bool $unbuffered = false): array
     {
         try {
             $count = 0;
@@ -41,7 +38,7 @@ class CommonService
 
             // Execute the main query.
             if ($returnGenerator === true) {
-                $queryResult = $this->db->rawQueryGenerator($sql . $limitSql, $params);
+                $queryResult = $this->db->rawQueryGenerator($sql . $limitSql, $params, $unbuffered);
             } else {
                 $queryResult = $this->db->rawQuery($sql . $limitSql, $params);
             }
@@ -435,7 +432,6 @@ class CommonService
         }
     }
 
-
     public function getTestingPlatforms($testType = null)
     {
         if (!empty($testType)) {
@@ -508,10 +504,6 @@ class CommonService
 
         return $localeMap;
     }
-
-
-
-
 
     public function activeReportFormats($module): array
     {
@@ -738,27 +730,27 @@ class CommonService
     {
         try {
             $currentDateTime = DateUtility::getCurrentDateTime();
-            $batchSize = 100;
+            // $batchSize = 100;
 
 
-            if (!empty($sampleIds)) {
-                $sampleIdsBatches = array_chunk($sampleIds, $batchSize);
+            // if (!empty($sampleIds)) {
+            //     $sampleIdsBatches = array_chunk($sampleIds, $batchSize);
 
-                foreach ($sampleIdsBatches as $batch) {
-                    $sampleIdsStr = "'" . implode("','", $batch) . "'";
-                    $formAttributes = [
-                        "remote{$syncType}Sync" => $currentDateTime,
-                        "{$syncType}SyncTransactionId" => $transactionId
-                    ];
-                    $formAttributes = $this->jsonToSetString(json_encode($formAttributes), 'form_attributes');
-                    $data = [
-                        'form_attributes' => $this->db->func($formAttributes),
-                        'data_sync' => 1
-                    ];
-                    $this->db->where($columnForWhereCondition, [$sampleIdsStr], 'IN');
-                    $this->db->update($testTable, $data);
-                }
-            }
+            //     foreach ($sampleIdsBatches as $batch) {
+            //         $sampleIdsStr = "'" . implode("','", $batch) . "'";
+            //         $formAttributes = [
+            //             "remote{$syncType}Sync" => $currentDateTime,
+            //             "{$syncType}SyncTransactionId" => $transactionId
+            //         ];
+            //         $formAttributes = $this->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+            //         $data = [
+            //             'form_attributes' => $this->db->func($formAttributes),
+            //             'data_sync' => 1
+            //         ];
+            //         $this->db->where($columnForWhereCondition, [$sampleIdsStr], 'IN');
+            //         $this->db->update($testTable, $data);
+            //     }
+            // }
 
             if (!empty($facilityIds)) {
                 $facilityIdsStr = implode(",", array_unique(array_filter($facilityIds)));

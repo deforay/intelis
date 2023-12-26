@@ -1,7 +1,7 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -17,40 +17,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$table = "form_vl";
-$primaryKey = "vl_sample_id";
 
-$testType = 'vl';
 $sampleReceivedfield = "sample_received_at_lab_datetime";
-if (!empty($_POST['testType'])) {
-    $testType = $_POST['testType'];
-}
-
-if (isset($testType) && $testType == 'vl') {
-    $url = "/vl/requests/vl-requests.php";
-    $table = "form_vl";
-    $testName = 'Viral Load';
-}
-if (isset($testType) && $testType == 'eid') {
-    $url = "/eid/requests/eid-requests.php";
-    $table = "form_eid";
-    $testName = 'EID';
-}
-if (isset($testType) && $testType == 'covid19') {
-    $url = "/covid-19/requests/covid-19-requests.php";
-    $table = "form_covid19";
-    $testName = 'Covid-19';
-}
-if (isset($testType) && $testType == 'hepatitis') {
-    $url = "/hepatitis/requests/hepatitis-requests.php";
-    $table = "form_hepatitis";
-    $testName = 'Hepatitis';
-}
-if (isset($testType) && $testType == 'tb') {
-
-    $table = "form_tb";
-    $testName = 'TB';
-}
 
 $sQuery = "SELECT f.facility_id, f.facility_name, tar.request_type, tar.requested_on, tar.test_type,
                 GREATEST(
@@ -67,9 +35,7 @@ $sQuery = "SELECT f.facility_id, f.facility_name, tar.request_type, tar.requeste
             LEFT JOIN track_api_requests as tar ON tar.facility_id = f.facility_id
             LEFT JOIN testing_labs as lab ON lab.facility_id = f.facility_id";
 
-//if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
-//$sQuery .= " JOIN $table as vl ON f.facility_id = vl.lab_id";
-//}
+
 $sWhere[] = ' f.facility_type = 2 AND f.status = "active" ';
 if (isset($_POST['testType']) && trim((string) $_POST['testType']) != '') {
     $sWhere[] = ' (tar.test_type like "' . $_POST['testType'] . '"  OR tar.test_type is null) ';

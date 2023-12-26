@@ -1,10 +1,10 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\FacilitiesService;
-use App\Services\GeoLocationsService;
 use App\Services\SystemService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 
 $title = _translate("Sources of Requests");
 require_once APPLICATION_PATH . '/header.php';
