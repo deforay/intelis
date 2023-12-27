@@ -44,13 +44,13 @@ if (!empty($result)) {
 
      $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = null;
      if (!empty($testedByRes['user_signature'])) {
-          $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
+          $testUserSignaturePath =  $testedByRes['user_signature'];
      }
      if (!empty($reviewedByRes['user_signature'])) {
-          $reviewedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $reviewedByRes['user_signature'];
+          $reviewedSignaturePath =  $reviewedByRes['user_signature'];
      }
      if (!empty($revisedByRes['user_signature'])) {
-          $revisedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];
+          $revisedSignaturePath =  $revisedByRes['user_signature'];
      }
 
      $resultApprovedBy = '';
@@ -61,7 +61,7 @@ if (!empty($result)) {
                $resultApprovedBy = $resultApprovedByRes['result_approved_by'] ?? null;
           }
           if (!empty($resultApprovedByRes['user_signature'])) {
-               $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $resultApprovedByRes['user_signature'];
+               $userSignaturePath =  $resultApprovedByRes['user_signature'];
           }
      }
 
@@ -74,7 +74,7 @@ if (!empty($result)) {
 
      $userSignaturePath = null;
      if (!empty($userRes['user_signature'])) {
-          $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+          $userSignaturePath =  $userRes['user_signature'];
      }
      $_SESSION['aliasPage'] = $page;
      if (!isset($result['labName'])) {
@@ -403,7 +403,7 @@ if (!empty($result)) {
      $html .= '</tr>';
      if (trim((string) $showMessage) != '') {
           $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:13px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
+          $html .= '<td colspan="3" style="line-height:12px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:16px;"></td>';
@@ -468,7 +468,7 @@ if (!empty($result)) {
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
                if (!empty($testUserSignaturePath) && $pdf->imageExists(($testUserSignaturePath))) {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:40px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
                }
@@ -490,7 +490,7 @@ if (!empty($result)) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
           if (!empty($reviewedSignaturePath) && $pdf->imageExists(($reviewedSignaturePath))) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:50px;" /></td>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:40px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }
@@ -509,7 +509,7 @@ if (!empty($result)) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
           if (!empty($revisedSignaturePath) && $pdf->imageExists($revisedSignaturePath)) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:40px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }
@@ -530,7 +530,7 @@ if (!empty($result)) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
           if (!empty($userSignaturePath) && $pdf->imageExists(($userSignaturePath))) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:40px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }
