@@ -6,9 +6,11 @@ ini_set('max_execution_time', 300000);
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -48,6 +50,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					vl.coinfection_type,
 					vl.reason_for_vl_testing_other,
 					l.facility_name as labName,
+					l.report_format as reportFormat,
 					l.facility_attributes,
 					u_d.user_name as reviewedBy,
 					a_u_d.user_name as approvedBy,
@@ -91,29 +94,62 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 //set print time
 $printDate = DateUtility::humanReadableDateFormat($currentDateTime, true);
 
-foreach ($requestResult as $requestRow) {
-	if (($_SESSION['instanceType'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
+
+$fileArray = array(
+	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
+	COUNTRY\SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
+	COUNTRY\DRC => 'pdf/result-pdf-drc.php',
+	COUNTRY\CAMEROON => 'pdf/result-pdf-cameroon.php',
+	COUNTRY\PNG => 'pdf/result-pdf-png.php',
+	COUNTRY\WHO => 'pdf/result-pdf-who.php',
+	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
+);
+
+$randomFolderName = time() . '-' . $general->generateRandomString(6);
+
+$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
+MiscUtility::makeDirectory($pathFront);
+
+$resultFilename = '';
+
+$pages = [];
+$page = 1;
+$_SESSION['aliasPage'] = 1;
+foreach ($requestResult as $result) {
+	if (($_SESSION['instanceType'] == 'vluser') && empty($result['result_printed_on_lis_datetime'])) {
 		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
-		$db->where('vl_sample_id', $requestRow['vl_sample_id']);
+		$db->where('vl_sample_id', $result['vl_sample_id']);
 		$id = $db->update('form_vl', $pData);
-	} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestRow['result_printed_on_sts_datetime'])) {
+	} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($result['result_printed_on_sts_datetime'])) {
 		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
-		$db->where('vl_sample_id', $requestRow['vl_sample_id']);
+		$db->where('vl_sample_id', $result['vl_sample_id']);
 		$id = $db->update('form_vl', $pData);
 	}
-}
-$_SESSION['aliasPage'] = 1;
 
-if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
-	include('pdf/result-pdf-ssudan.php');
-} elseif ($arr['vl_form'] == COUNTRY\SIERRA_LEONE) {
-	include('pdf/result-pdf-sierraleone.php');
-} elseif ($arr['vl_form'] == COUNTRY\DRC) {
-	include('pdf/result-pdf-drc.php');
-} elseif ($arr['vl_form'] == COUNTRY\CAMEROON) {
-	include('pdf/result-pdf-cameroon-cresar.php');
-} elseif ($arr['vl_form'] == COUNTRY\PNG) {
-	include('pdf/result-pdf-png.php');
-} elseif ($arr['vl_form'] == COUNTRY\RWANDA) {
-	include('pdf/result-pdf-rwanda.php');
+
+	$selectedReportFormats = [];
+	if (!empty($result['reportFormat'])) {
+		$selectedReportFormats = json_decode((string) $result['reportFormat'], true);
+	}
+
+	if (!empty($selectedReportFormats) && !empty($selectedReportFormats['vl'])) {
+		require($selectedReportFormats['vl']);
+	} else {
+		require($fileArray[$arr['vl_form']]);
+	}
 }
+
+
+if (!empty($pages)) {
+	$resultPdf = new PdfConcatenateHelper();
+	$resultPdf->setFiles($pages);
+	$resultPdf->setPrintHeader(false);
+	$resultPdf->setPrintFooter(false);
+	$resultPdf->concat();
+	$resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
+	$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
+	MiscUtility::removeDirectory($pathFront);
+	unset($randomFolderName);
+}
+
+echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);

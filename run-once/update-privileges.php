@@ -9,26 +9,32 @@ require_once(__DIR__ . '/../bootstrap.php');
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+// ON THE LEFT IS THE SHARED (INTERNAL/IMPLICIT) PRIVILEGE THAT IS NOT DIRECTLY ASSIGNED TO A USER
+// ON THE RIGHT IS THE PRIVILEGE TO BE CHECKED
+
 $sharedPrivileges = [
     '/import-result/imported-results.php?t=vl' => '/import-result/import-file.php?t=vl',
     '/import-result/imported-results.php?t=eid' => '/import-result/import-file.php?t=eid',
     '/import-result/imported-results.php?t=covid19' => '/import-result/import-file.php?t=covid19',
     '/import-result/imported-results.php?t=hepatitis' => '/import-result/import-file.php?t=hepatitis',
     '/import-result/imported-results.php?t=tb' => '/import-result/import-file.php?t=tb',
-    '/import-result/imported-results.php?t=generic-tests' => '?t=generic-tests',
+    '/import-result/imported-results.php?t=generic-tests' => '/import-result/import-file.php?t=generic-tests',
     '/import-result/importedStatistics.php?t=vl' => '/import-result/import-file.php?t=vl',
     '/import-result/importedStatistics.php?t=eid' => '/import-result/import-file.php?t=eid',
     '/import-result/importedStatistics.php?t=covid19' => '/import-result/import-file.php?t=covid19',
     '/import-result/importedStatistics.php?t=hepatitis' => '/import-result/import-file.php?t=hepatitis',
     '/import-result/importedStatistics.php?t=tb' => '/import-result/import-file.php?t=tb',
     '/import-result/importedStatistics.php?t=generic-tests' => '/import-result/import-file.php?t=generic-tests',
-    'mapTestType.php' => 'addFacility.php',
-    'implementation-partners.php' => 'geographical-divisions-details.php',
-    'add-implementation-partners.php' => 'geographical-divisions-details.php',
-    'edit-implementation-partners.php' => 'geographical-divisions-details.php',
-    'funding-sources.php' => 'geographical-divisions-details.php',
-    'add-funding-sources.php' => 'geographical-divisions-details.php',
-    'edit-funding-sources.php' => 'geographical-divisions-details.php'
+    '/facilities/mapTestType.php' => '/facilities/addFacility.php',
+    '/facilities/facilityMap.php' => '/facilities/addFacility.php',
+    '/facilities/upload-facilities.php' => '/facilities/addFacility.php',
+    '/admin/monitoring/lab-sync-details.php' => '/admin/monitoring/sync-status.php',
+    '/common/reference/implementation-partners.php' => '/common/reference/geographical-divisions-details.php',
+    '/common/reference/add-implementation-partners.php' => '/common/reference/geographical-divisions-details.php',
+    '/common/reference/edit-implementation-partners.php' => '/common/reference/geographical-divisions-details.php',
+    '/common/reference/funding-sources.php' => '/common/reference/geographical-divisions-details.php',
+    '/common/reference/add-funding-sources.php' => '/common/reference/geographical-divisions-details.php',
+    '/common/reference/edit-funding-sources.php' => '/common/reference/geographical-divisions-details.php'
 ];
 
 //Generic Tests Module Shared Privileges

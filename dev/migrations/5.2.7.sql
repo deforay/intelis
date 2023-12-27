@@ -171,3 +171,145 @@ ALTER TABLE `form_eid` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHA
 ALTER TABLE `audit_form_eid` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_tb` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `audit_form_tb` CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+
+-- Amit 25-Dec-2023
+UPDATE `privileges` SET `privilege_name` ='/common/reference/geographical-divisions-details.php' WHERE `privilege_name` LIKE 'geographical-divisions-details.php';
+UPDATE `privileges` SET `privilege_name` ='/common/reference/add-geographical-divisions.php' WHERE `privilege_name` LIKE 'add-geographical-divisions.php';
+UPDATE `privileges` SET `privilege_name` ='/common/reference/edit-geographical-divisions.php' WHERE `privilege_name` LIKE 'edit-geographical-divisions.php';
+UPDATE `privileges` SET `privilege_name` ='/admin/monitoring/sync-status.php' WHERE `privilege_name` LIKE 'sync-status.php';
+UPDATE `privileges` SET `privilege_name` ='/admin/monitoring/sync-history.php' WHERE `privilege_name` LIKE 'sync-history.php';
+UPDATE `privileges` SET `privilege_name` ='/admin/monitoring/activity-log.php' WHERE `privilege_name` LIKE 'activity-log.php';
+UPDATE `privileges` SET `privilege_name` ='/admin/monitoring/audit-trail.php' WHERE `privilege_name` LIKE 'audit-trail.php';
+UPDATE `privileges` SET `privilege_name` ='/facilities/facilities.php' WHERE `privilege_name` LIKE 'facilities.php';
+UPDATE `privileges` SET `privilege_name` ='/facilities/addFacility.php' WHERE `privilege_name` LIKE 'addFacility.php';
+UPDATE `privileges` SET `privilege_name` ='/facilities/editFacility.php' WHERE `privilege_name` LIKE 'editFacility.php';
+UPDATE `privileges` SET `privilege_name` ='/users/users.php' WHERE `privilege_name` LIKE 'users.php';
+UPDATE `privileges` SET `privilege_name` ='/users/addUser.php' WHERE `privilege_name` LIKE 'addUser.php';
+UPDATE `privileges` SET `privilege_name` ='/users/editUser.php' WHERE `privilege_name` LIKE 'editUser.php';
+UPDATE `privileges` SET `privilege_name` ='/roles/roles.php' WHERE `privilege_name` LIKE 'roles.php';
+UPDATE `privileges` SET `privilege_name` ='/roles/addRole.php' WHERE `privilege_name` LIKE 'addRole.php';
+UPDATE `privileges` SET `privilege_name` ='/roles/editRole.php' WHERE `privilege_name` LIKE 'editRole.php';
+UPDATE `privileges` SET `privilege_name` ='/global-config/editGlobalConfig.php' WHERE `privilege_name` LIKE 'editGlobalConfig.php';
+
+DELETE FROM roles_privileges_map where privilege_id in (SELECT privilege_id FROM privileges WHERE privilege_name LIKE 'globalConfig.php');
+DELETE FROM privileges WHERE privilege_name LIKE 'globalConfig.php';
+
+DELETE FROM roles_privileges_map where privilege_id in (SELECT privilege_id FROM privileges WHERE privilege_name LIKE 'upload-facilities.php');
+DELETE FROM privileges WHERE privilege_name LIKE 'upload-facilities.php';
+
+DELETE FROM roles_privileges_map where privilege_id in (SELECT privilege_id FROM privileges WHERE privilege_name LIKE 'facilityMap.php');
+DELETE FROM privileges WHERE privilege_name LIKE 'facilityMap.php';
+
+
+-- Amit 26-Dec-2023
+ALTER TABLE `form_vl` CHANGE `reason_for_vl_testing` `reason_for_vl_testing` INT NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `reason_for_vl_testing` `reason_for_vl_testing` INT NULL DEFAULT NULL;
+ALTER TABLE `form_vl` ADD INDEX(`reason_for_vl_testing`);
+ALTER TABLE `form_vl` ADD INDEX(`sample_batch_id`);
+ALTER TABLE `form_vl` ADD INDEX(`funding_source`);
+ALTER TABLE `form_vl` ADD INDEX(`implementing_partner`);
+ALTER TABLE `form_vl` ADD INDEX(`reason_for_sample_rejection`);
+
+ALTER TABLE `user_details` CHANGE `user_id` `user_id` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
+ALTER TABLE `form_vl` CHANGE `result_reviewed_by` `result_reviewed_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `result_approved_by` `result_approved_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `revised_by` `revised_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `tested_by` `tested_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `request_created_by` `request_created_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `sample_package_code` `sample_package_code` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `patient_gender` `patient_gender` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `patient_mobile_number` `patient_mobile_number` VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `vl_result_category` `vl_result_category` VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `is_patient_pregnant` `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `is_patient_breastfeeding` `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `patient_has_active_tb` `patient_has_active_tb` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` DROP `is_adherance_poor`;
+ALTER TABLE `form_vl` DROP `number_of_enhanced_sessions`;
+ALTER TABLE `form_vl` DROP `patient_tb`;
+ALTER TABLE `form_vl` DROP `patient_tb_yes`;
+ALTER TABLE `form_vl` DROP `patient_drugs_transmission`;
+ALTER TABLE `form_vl` DROP `patient_receiving_therapy`;
+ALTER TABLE `form_vl` DROP `patient_art_date`;
+ALTER TABLE `form_vl` DROP `consultation`;
+ALTER TABLE `form_vl` DROP `first_viral_load`;
+ALTER TABLE `form_vl` DROP `sample_processed`;
+ALTER TABLE `form_vl` DROP `collection_type`;
+ALTER TABLE `form_vl` DROP `collection_site`;
+ALTER TABLE `form_vl` DROP `requesting_vl_service_sector`;
+ALTER TABLE `form_vl` DROP `requesting_category`;
+ALTER TABLE `form_vl` DROP `requesting_professional_number`;
+
+ALTER TABLE `audit_form_vl` CHANGE `result_reviewed_by` `result_reviewed_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `result_approved_by` `result_approved_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `revised_by` `revised_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `tested_by` `tested_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `request_created_by` `request_created_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `sample_package_code` `sample_package_code` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `patient_gender` `patient_gender` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `is_patient_pregnant` `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `is_patient_breastfeeding` `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `patient_has_active_tb` `patient_has_active_tb` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `patient_mobile_number` `patient_mobile_number` VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `vl_result_category` `vl_result_category` VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` DROP `is_adherance_poor`;
+ALTER TABLE `audit_form_vl` DROP `number_of_enhanced_sessions`;
+ALTER TABLE `audit_form_vl` DROP `patient_tb`;
+ALTER TABLE `audit_form_vl` DROP `patient_tb_yes`;
+ALTER TABLE `audit_form_vl` DROP `patient_drugs_transmission`;
+ALTER TABLE `audit_form_vl` DROP `patient_receiving_therapy`;
+ALTER TABLE `audit_form_vl` DROP `patient_art_date`;
+ALTER TABLE `audit_form_vl` DROP `consultation`;
+ALTER TABLE `audit_form_vl` DROP `first_viral_load`;
+ALTER TABLE `audit_form_vl` DROP `sample_processed`;
+ALTER TABLE `audit_form_vl` DROP `collection_type`;
+ALTER TABLE `audit_form_vl` DROP `collection_site`;
+ALTER TABLE `audit_form_vl` DROP `requesting_vl_service_sector`;
+ALTER TABLE `audit_form_vl` DROP `requesting_category`;
+ALTER TABLE `audit_form_vl` DROP `requesting_professional_number`;
+
+ALTER TABLE `form_eid` CHANGE `result_reviewed_by` `result_reviewed_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `result_approved_by` `result_approved_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `revised_by` `revised_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `tested_by` `tested_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `sample_package_code` `sample_package_code` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+ALTER TABLE `audit_form_eid` CHANGE `result_reviewed_by` `result_reviewed_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_eid` CHANGE `result_approved_by` `result_approved_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_eid` CHANGE `revised_by` `revised_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_eid` CHANGE `tested_by` `tested_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_eid` CHANGE `sample_package_code` `sample_package_code` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+
+ALTER TABLE `form_vl` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_vl` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_eid` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_eid` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_covid19` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_covid19` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_tb` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_tb` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_generic` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_generic` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_hepatitis` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_hepatitis` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

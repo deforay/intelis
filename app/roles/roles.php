@@ -23,7 +23,7 @@ require_once APPLICATION_PATH . '/header.php';
 
         <div class="box">
           <div class="box-header with-border">
-            <?php if (_isAllowed("addRole.php")) { ?>
+            <?php if (_isAllowed("/roles/addRole.php")) { ?>
               <a href="addRole.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Role"); ?></a>
             <?php } ?>
           </div>
@@ -35,7 +35,7 @@ require_once APPLICATION_PATH . '/header.php';
                   <th><?php echo _translate("Role Name"); ?></th>
                   <th><?php echo _translate("Role Code"); ?></th>
                   <th scope="row"><?php echo _translate("Status"); ?></th>
-                  <?php if (_isAllowed("editRole.php")) { ?>
+                  <?php if (_isAllowed("/roles/editRole.php")) { ?>
                     <th><?php echo _translate("Action"); ?></th>
                   <?php } ?>
                 </tr>
@@ -93,7 +93,7 @@ require_once APPLICATION_PATH . '/header.php';
       ],
       "bProcessing": true,
       "bServerSide": true,
-      "sAjaxSource": "getRoleDetails.php",
+      "sAjaxSource": "/roles/getRoleDetails.php",
       "fnServerData": function(sSource, aoData, fnCallback) {
         $.ajax({
           "dataType": 'json',

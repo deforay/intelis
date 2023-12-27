@@ -136,7 +136,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['email'];
     $row[] = ($aRow['role_name']);
     $row[] = ($aRow['status']);
-    if (_isAllowed("editUser.php")) {
+    if (_isAllowed("/users/editUser.php")) {
         $row[] = '<a href="editUser.php?id=' . base64_encode((string) $aRow['user_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;

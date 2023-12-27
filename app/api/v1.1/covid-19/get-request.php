@@ -1,14 +1,14 @@
 <?php
 
-use App\Exceptions\SystemException;
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
+use App\Services\UsersService;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\UsersService;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -34,9 +34,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
-
-
-
 
 
 $transactionId = $general->generateUUID();

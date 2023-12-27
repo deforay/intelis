@@ -1,8 +1,9 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 
@@ -48,48 +49,9 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 
 
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-     $sOrder = "";
-     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-               $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-/*
- * Filtering
- * NOTE this does not match the built-in DataTables filtering which does it
- * word by word on any field. It's possible to do here, but concerned about efficiency
- * on very large tables, and MySQL's regex functionality is very limited
- */
-
-$sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", (string) $_POST['sSearch']);
-     $sWhereSub = "";
-     foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
-               $sWhereSub .= "(";
-          } else {
-               $sWhereSub .= " AND (";
-          }
-          $colSize = count($aColumns);
-
-          for ($i = 0; $i < $colSize; $i++) {
-               if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-               } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-               }
-          }
-          $sWhereSub .= ")";
-     }
-     $sWhere[] = $sWhereSub;
-}
+$sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
 
 
@@ -249,11 +211,12 @@ if (!empty($sWhere)) {
      $_SESSION['hepatitisRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
-//die($sQuery);
+
 if (!empty($sOrder)) {
      $_SESSION['hepatitisRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
+
 $_SESSION['hepatitisRequestSearchResultQuery'] = $sQuery;
 
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
@@ -287,11 +250,6 @@ foreach ($rResult as $aRow) {
      $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
-     //  $patientFname = ($general->crypto('doNothing',$aRow['patient_first_name'],$aRow['patient_art_no']));
-     //  $patientMname = ($general->crypto('doNothing',$aRow['patient_middle_name'],$aRow['patient_art_no']));
-     //  $patientLname = ($general->crypto('doNothing',$aRow['patient_last_name'],$aRow['patient_art_no']));
-
-
      $row = [];
 
      //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow[$primaryKey] . '"  value="' . $aRow[$primaryKey] . '" onclick="toggleTest(this);"  />';
@@ -307,17 +265,16 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
-     $row[] = ($aRow['lab_name']);
-     $row[] = ($aRow['facility_name']);
+     $row[] = $aRow['labName'];
+     $row[] = $aRow['facility_name'];
      $row[] = $aRow['patient_id'];
      $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
-
-     $row[] = ($aRow['facility_state']);
-     $row[] = ($aRow['facility_district']);
-     $row[] = ([$aRow['hcv_vl_count']]);
-     $row[] = ([$aRow['hbv_vl_count']]);
+     $row[] = $aRow['facility_state'];
+     $row[] = $aRow['facility_district'];
+     $row[] = $aRow['hcv_vl_count'];
+     $row[] = $aRow['hbv_vl_count'];
      $row[] = $aRow['last_modified_datetime'];
-     $row[] = ($aRow['status_name']);
+     $row[] = $aRow['status_name'];
 
      if ($editRequest) {
           $edit = '<a href="hepatitis-edit-request.php?id=' . base64_encode((string) $aRow[$primaryKey]) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
@@ -328,12 +285,9 @@ foreach ($rResult as $aRow) {
           }
      }
 
-     if ($syncRequest && $_SESSION['instanceType'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
-          if ($aRow['data_sync'] == 0) {
-               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Sync this sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> ' . _translate("Sync") . '</a>';
-          }
-     } else {
-          $sync = "";
+     $sync = "";
+     if ($syncRequest && $_SESSION['instanceType'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4) && $aRow['data_sync'] == 0) {
+          $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Sync this sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> ' . _translate("Sync") . '</a>';
      }
 
      if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
@@ -350,7 +304,7 @@ foreach ($rResult as $aRow) {
      if (!$_POST['hidesrcofreq']) {
           $row[] = $actions . $barcode;
      }
-     // echo '<pre>';print_r($row);die;
      $output['aaData'][] = $row;
 }
-echo json_encode($output);
+
+echo MiscUtility::convertToUtf8AndEncode($output);

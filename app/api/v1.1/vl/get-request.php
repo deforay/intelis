@@ -1,14 +1,14 @@
 <?php
 // Allow from any origin
 
-use App\Exceptions\SystemException;
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
+use App\Services\UsersService;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\UsersService;
 
 session_unset(); // no need of session in json response
 

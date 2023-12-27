@@ -88,6 +88,9 @@ $requestResult = $db->query($searchQuery);
 
 $currentDateTime = DateUtility::getCurrentDateTime();
 
+$_SESSION['aliasPage'] = 1;
+
+
 foreach ($requestResult as $requestRow) {
 	if (($_SESSION['instanceType'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
 		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
@@ -110,8 +113,6 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
 		error_log($exc->getTraceAsString());
 	}
 }
-
-$_SESSION['aliasPage'] = 1;
 
 //print_r($requestResult);die;
 //header and footer
@@ -167,7 +168,11 @@ if (!empty($requestResult)) {
 		$patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
 		$patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
-		$signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
+		$signQuery = "SELECT * FROM lab_report_signatories
+						WHERE lab_id=? AND
+						test_types LIKE '%covid19%' AND
+						signatory_status LIKE 'active'
+						ORDER BY display_order ASC";
 		$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
 		$currentDateTime = DateUtility::getCurrentDateTime();
 		$_SESSION['aliasPage'] = $page;
@@ -188,9 +193,9 @@ if (!empty($requestResult)) {
 			$selectedReportFormats = json_decode((string) $result['reportFormat'], true);
 		}
 		if (!empty($selectedReportFormats) && !empty($selectedReportFormats['covid19'])) {
-			require_once($selectedReportFormats['covid19']);
+			require($selectedReportFormats['covid19']);
 		} else {
-			require_once($fileArray[$arr['vl_form']]);
+			require($fileArray[$arr['vl_form']]);
 		}
 	}
 	if (!empty($pages)) {

@@ -11,13 +11,24 @@ class DatabaseService extends MysqliDb
     private $isTransactionActive = false;
 
     /**
+     * Destructor.
+     * Automatically commits the transaction if it's still active.
+     */
+    public function __destruct()
+    {
+        $this->commitTransaction();
+    }
+
+    /**
      * Execute a query and return a generator to fetch results row by row.
+     * Optionally execute as an unbuffered query.
      *
      * @param string $query SQL query string
      * @param array|null $bindParams Parameters to bind to the query
+     * @param bool $unbuffered Whether to execute as an unbuffered query
      * @return Generator
      */
-    public function rawQueryGenerator(string $query, $bindParams = null)
+    public function rawQueryGenerator(string $query, $bindParams = null, bool $unbuffered = false)
     {
         $params = ['']; // Create the empty 0 index
         $this->_query = $query;
@@ -26,20 +37,57 @@ class DatabaseService extends MysqliDb
         if (is_array($bindParams)) {
             foreach ($bindParams as $val) {
                 $params[0] .= $this->_determineType($val);
-                $params[] = $val;
+                array_push($params, $val);
             }
             $stmt->bind_param(...$this->refValues($params));
         }
 
         $stmt->execute();
-        $result = $stmt->get_result();
 
-        while ($row = $result->fetch_assoc()) {
+        if (!$unbuffered) {
+            $stmt->store_result();
+        }
+
+        // Initialize $row as an empty array
+        $row = [];
+        $parameters = [];
+
+        $meta = $stmt->result_metadata();
+        while ($field = $meta->fetch_field()) {
+            $parameters[] = &$row[$field->name];
+        }
+
+        call_user_func_array([$stmt, 'bind_result'], $parameters);
+
+        while ($stmt->fetch()) {
             yield $row;
         }
 
         $stmt->close();
         $this->reset();
+    }
+
+
+
+
+    /**
+     * Set the transaction isolation level to READ COMMITTED.
+     */
+    public function setReadOnlyTransaction(): void
+    {
+        $this->rawQuery("SET TRANSACTION ISOLATION LEVEL READ COMMITTED;");
+    }
+
+    /**
+     * Begin a new transaction if not already started, with read-only optimization.
+     */
+    public function beginReadOnlyTransaction(): void
+    {
+        if (!$this->isTransactionActive) {
+            $this->setReadOnlyTransaction();
+            $this->startTransaction();
+            $this->isTransactionActive = true;
+        }
     }
 
     /**

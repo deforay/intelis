@@ -43,7 +43,7 @@ require_once APPLICATION_PATH . '/header.php';
           </span>
           <div class="box-header with-border">
 
-            <?php if (_isAllowed("addUser.php")) { ?>
+            <?php if (_isAllowed("/users/addUser.php")) { ?>
               <a href="addUser.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add User"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
@@ -59,7 +59,7 @@ require_once APPLICATION_PATH . '/header.php';
                   <th><?php echo _translate("Email"); ?></th>
                   <th><?php echo _translate("Role"); ?></th>
                   <th scope="row"><?php echo _translate("Status"); ?></th>
-                  <?php if (_isAllowed("editUser.php")) { ?>
+                  <?php if (_isAllowed("/users/editUser.php")) { ?>
                     <th><?php echo _translate("Action"); ?></th>
                   <?php } ?>
                 </tr>
@@ -115,18 +115,19 @@ require_once APPLICATION_PATH . '/header.php';
         {
           "sClass": "center"
         },
-        <?php if (_isAllowed("editUser.php")) { ?> {
+        <?php if (_isAllowed("/users/editUser.php")) { ?> {
             "sClass": "center",
             "bSortable": false
           },
         <?php } ?>
       ],
       "aaSorting": [
+        [4, "asc"],
         [0, "asc"]
       ],
       "bProcessing": true,
       "bServerSide": true,
-      "sAjaxSource": "getUserDetails.php",
+      "sAjaxSource": "/users/getUserDetails.php",
       "fnServerData": function(sSource, aoData, fnCallback) {
         $.ajax({
           "dataType": 'json',

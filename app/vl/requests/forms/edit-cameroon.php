@@ -1,12 +1,16 @@
 <?php
 
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $_SESSION['dateFormat'] = 'dd-m-yy';
 $_SESSION['jsDateFormatMask'] = '99-99-9999';
@@ -184,9 +188,9 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                        <select class="form-control isRequired" id="fName" name="fName" title="<?= _translate('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="fillFacilityDetails();">
                                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                             <?php //echo $facility;
-                                                            foreach ($healthFacilitiesAllColumns as $facility) {
+                                                            foreach ($healthFacilitiesAllColumns as $hFacility) {
                                                             ?>
-                                                                 <option value="<?php echo $facility['facility_id']; ?>" <?php echo ($vlQueryInfo['facility_id'] == $facility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
+                                                                 <option value="<?php echo $hFacility['facility_id']; ?>" <?php echo ($vlQueryInfo['facility_id'] == $hFacility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $hFacility['facility_code']; ?>"><?php echo $hFacility['facility_name']; ?></option>
                                                             <?php
                                                             }
                                                             ?>
@@ -966,9 +970,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           } else if (pName == '') {
                provinceName = true;
                facilityName = true;
-               $("#province").html("<?php echo $province; ?>");
+               $("#province").html("<?= (string) $province; ?>");
                $("#district").html("<option value=''> <?= _translate('-- Select --'); ?> </option>");
-               $("#fName").html("<?php echo addslashes((string) $facility); ?>");
+               $("#fName").html("<?= (string) $facility; ?>");
                $("#fName").select2("val", "");
           }
           $.unblockUI();
@@ -999,35 +1003,35 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $.unblockUI();
      }
 
-     function getfacilityProvinceDetails(obj) {
-          $.blockUI();
-          //check facility name
-          var cName = $("#fName").val();
-          var pName = $("#province").val();
-          if (cName != '' && provinceName && facilityName) {
-               provinceName = false;
-          }
-          if (cName != '' && facilityName) {
-               $.post("/includes/siteInformationDropdownOptions.php", {
-                         cName: cName,
-                         testType: 'vl'
-                    },
-                    function(data) {
-                         if (data != "") {
-                              details = data.split("###");
-                              $("#province").html(details[0]);
-                              $("#district").html(details[1]);
-                              $("#clinicianName").val(details[2]);
-                         }
-                    });
-          } else if (pName == '' && cName == '') {
-               provinceName = true;
-               facilityName = true;
-               $("#province").html("<?php echo $province; ?>");
-               $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
-          }
-          $.unblockUI();
-     }
+     // function getfacilityProvinceDetails(obj) {
+     //      $.blockUI();
+     //      //check facility name
+     //      var cName = $("#fName").val();
+     //      var pName = $("#province").val();
+     //      if (cName != '' && provinceName && facilityName) {
+     //           provinceName = false;
+     //      }
+     //      if (cName != '' && facilityName) {
+     //           $.post("/includes/siteInformationDropdownOptions.php", {
+     //                     cName: cName,
+     //                     testType: 'vl'
+     //                },
+     //                function(data) {
+     //                     if (data != "") {
+     //                          details = data.split("###");
+     //                          $("#province").html(details[0]);
+     //                          $("#district").html(details[1]);
+     //                          $("#clinicianName").val(details[2]);
+     //                     }
+     //                });
+     //      } else if (pName == '' && cName == '') {
+     //           provinceName = true;
+     //           facilityName = true;
+     //           $("#province").html("<?php echo $province; ?>");
+     //           $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
+     //      }
+     //      $.unblockUI();
+     // }
 
      function fillFacilityDetails(obj) {
           getfacilityProvinceDetails(obj)

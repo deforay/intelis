@@ -66,7 +66,8 @@ if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
 if ($mysqlConnected) {
 
     if (!empty($lastInterfaceSync)) {
-        $db->connection('interface')->where('added_on', $lastInterfaceSync, ">=");
+        $db->connection('interface')
+            ->where("added_on > '$lastInterfaceSync' OR lims_sync_status = 0");
     }
     $db->connection('interface')->where('result_status', 1);
     //$db->connection('interface')->where('lims_sync_status', 0);
@@ -76,7 +77,7 @@ if ($mysqlConnected) {
     $where = [];
     $where[] = " result_status = 1 ";
     if (!empty($lastInterfaceSync)) {
-        $where[] = " added_on >= '$lastInterfaceSync' ";
+        $where[] = " added_on > '$lastInterfaceSync' OR lims_sync_status = 0";
     }
     $where = implode(' AND ', $where);
     $interfaceQuery = "SELECT * FROM `orders`
@@ -199,7 +200,7 @@ if (!empty($interfaceData)) {
                 'result_value_text' => $txtVal,
                 'result' => $vlResult,
                 'vl_test_platform' => $result['machine_used'],
-                'result_status' => 7,
+                'result_status' => SAMPLE_STATUS\ACCEPTED,
                 'manual_result_entry' => 'no',
                 'result_printed_datetime' => null,
                 'result_dispatched_datetime' => null,
@@ -268,7 +269,7 @@ if (!empty($interfaceData)) {
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
                 'result' => $eidResult,
                 'eid_test_platform' => $result['machine_used'],
-                'result_status' => 7,
+                'result_status' => SAMPLE_STATUS\ACCEPTED,
                 'manual_result_entry' => 'no',
                 'result_approved_by' => (isset($approved['eid']) && $approved['eid'] != "") ? $approved['eid'] : null,
                 'result_reviewed_by' => (isset($reviewed['eid']) && $reviewed['eid'] != "") ? $reviewed['eid'] : null,
@@ -347,7 +348,7 @@ if (!empty($interfaceData)) {
                 $resultField => $hepatitisResult ?? null,
                 $otherField => $otherFieldResult ?? null,
                 'hepatitis_test_platform' => $result['machine_used'],
-                'result_status' => 7,
+                'result_status' => SAMPLE_STATUS\ACCEPTED,
                 'manual_result_entry' => 'no',
                 'result_approved_by' => $approved['hepatitis'] ?? null,
                 'result_reviewed_by' => $reviewed['hepatitis'] ?? null,
@@ -406,17 +407,15 @@ if (!empty($interfaceData)) {
             }
         }
 
-
         if (!empty($result['added_on'])) {
 
             $data = [
-                'last_interface_sync' => DateUtility::isoDateFormat($result['added_on']),
+                'last_interface_sync' => $result['added_on']
             ];
 
             $db->connection('default')->update('s_vlsm_instance', $data);
         }
     }
-
 
     if ($numberOfResults > 0) {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';

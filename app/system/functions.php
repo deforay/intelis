@@ -9,6 +9,7 @@ use Laminas\Filter\FilterChain;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 
 function _translate(?string $text, ?bool $escapeForJavaScript = false)
 {
@@ -148,5 +149,36 @@ function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = tru
     } else {
         // Return array of single-file inputs
         return $sanitizedFiles;
+    }
+}
+
+function _castVariable($variable, $expectedType = null)
+{
+    if (!empty($variable)) {
+        switch ($expectedType) {
+            case 'int':
+                return (int) $variable;
+            case 'float':
+                return (float) $variable;
+            case 'string':
+                return (string) $variable;
+            case 'bool':
+                return (bool) $variable;
+            case 'array':
+                return is_array($variable) ? $variable : (array) $variable;
+            case 'json':
+                return is_string($variable) ? json_decode($variable, true) : json_encode($variable);
+            default:
+                return $variable;
+        }
+    } else {
+        switch ($expectedType) {
+            case 'array':
+                return [];
+            case 'json':
+                return '{}';
+            default:
+                return null;
+        }
     }
 }

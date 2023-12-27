@@ -94,7 +94,11 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-$sQuery = "SELECT * FROM form_vl as vl
+$sQuery = "SELECT vl.*,
+               f.facility_name,
+               s.sample_name,
+               b.batch_code
+               FROM form_vl as vl
                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
                LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
@@ -188,10 +192,10 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
      $row[] = $patientFname . " " . $patientMname . " " . $patientLname;
-     $row[] = ($aRow['facility_name']);
-     $row[] = ($aRow['sample_name']);
+     $row[] = $aRow['facility_name'];
+     $row[] = $aRow['sample_name'];
      $row[] = $aRow['result'];
-     $row[] = DateUtility::humanReadableDateFormat($aRow['vl.last_modified_datetime'], true);
+     $row[] = DateUtility::humanReadableDateFormat($aRow['vl.last_modified_datetime'] ?? '', true);
      $row[] = $status;
      //$row[] = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Result</a>';
 
