@@ -111,7 +111,7 @@ if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
 } elseif ($arr['vl_form'] == COUNTRY\DRC) {
 	include('pdf/result-pdf-drc.php');
 } elseif ($arr['vl_form'] == COUNTRY\CAMEROON) {
-	include('pdf/result-pdf-cameroon-cresar.php');
+	include('pdf/result-pdf-cameroon.php');
 } elseif ($arr['vl_form'] == COUNTRY\PNG) {
 	include('pdf/result-pdf-png.php');
 } elseif ($arr['vl_form'] == COUNTRY\RWANDA) {
