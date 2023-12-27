@@ -18,5 +18,5 @@ CREATE TABLE `temp_mail` (
 
 -- Amit 27-Dec-2023
 UPDATE form_vl
-SET patient_art_code = REPLACE(patient_art_code, 'string', '')
-WHERE patient_art_code like '%string';
+SET patient_art_no = REPLACE(patient_art_no, 'string', '')
+WHERE patient_art_no like '%string';
