@@ -149,7 +149,6 @@ if (!empty($pages)) {
 	$resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
 	$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
 	MiscUtility::removeDirectory($pathFront);
-	unset($randomFolderName);
 }
 
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);

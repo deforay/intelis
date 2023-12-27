@@ -8,6 +8,8 @@ use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
 
+use const SAMPLE_STATUS\REJECTED;
+
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
@@ -584,7 +586,7 @@ if (!empty($result)) {
      $html .= '</td>';
      $html .= '</tr>';
      $html .= '</table>';
-     if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+     if ($result['result'] != '' || (empty($result['result']) && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
           $pdf->writeHTML($html);
           $pdf->lastPage();
           $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
