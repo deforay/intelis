@@ -3,6 +3,8 @@
 use Brick\PhoneNumber\PhoneNumber;
 use Brick\PhoneNumber\PhoneNumberParseException;
 
+$_POST = _sanitizeInput($_POST);
+
 $data = ['isValid' => false];
 
 if (isset($_POST['phoneNumber'])) {
