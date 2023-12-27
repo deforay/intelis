@@ -848,6 +848,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			width: '100%',
 			placeholder: "Select Approved By"
 		});
+		$('#testingPlatform').select2({
+			placeholder: "Select Testing Platform"
+		});
 		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
