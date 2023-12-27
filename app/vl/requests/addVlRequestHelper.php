@@ -206,7 +206,7 @@ try {
         'pregnancy_trimester' => $_POST['trimester'] ?? null,
         'patient_has_active_tb' => $_POST['activeTB'] ?? null,
         'patient_active_tb_phase' => $_POST['tbPhase'] ?? null,
-        'patient_art_no' => _castVariable($_POST['artNo'] . 'string'),
+        'patient_art_no' => _castVariable($_POST['artNo'], 'string'),
         'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
         'is_patient_new' => $_POST['isPatientNew'] ?? null,
         'treatment_duration' => $_POST['treatmentDuration'] ?? null,

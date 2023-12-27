@@ -16,3 +16,7 @@ CREATE TABLE `temp_mail` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Amit 27-Dec-2023
+UPDATE form_vl
+SET patient_art_code = REPLACE(patient_art_code, 'string', '')
+WHERE patient_art_code like '%string';
