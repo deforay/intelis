@@ -293,13 +293,18 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 		$('.phone-number').on('input', function() {
 			clearTimeout(phoneNumberDebounceTimeout);
 			let inputElement = $(this);
+			let phoneNumber = inputElement.val().trim();
+
 			phoneNumberDebounceTimeout = setTimeout(function() {
-				let phoneNumber = inputElement.val().trim();
+				phoneNumber = inputElement.val().trim();
 
 				if (phoneNumber === countryCode || phoneNumber === "") {
 					inputElement.val("");
 					return;
 				}
+
+				phoneNumber = phoneNumber.replace(/[^0-9+]/g, ''); // Remove non-numeric and non-plus characters
+				inputElement.val(phoneNumber);
 
 				$.ajax({
 					type: 'POST',
@@ -326,11 +331,18 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 		});
 
 		$('.phone-number').on('focus', function() {
-			if ($(this).val().trim() === "") {
-				$(this).val(countryCode || null);
+			let phoneNumber = $(this).val().trim();
+			if (phoneNumber === "") {
+				$(this).val(countryCode);
 			}
 		});
 
+		$('.phone-number').on('blur', function() {
+			let phoneNumber = $(this).val().trim();
+			if (phoneNumber === countryCode || phoneNumber === "") {
+				$(this).val("");
+			}
+		});
 
 		$('.patientId').on('change', function() {
 			var patientId = $(this).val();
