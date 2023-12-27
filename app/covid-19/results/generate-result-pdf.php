@@ -119,6 +119,7 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
 
 
 
+$countryFormId = (int) $general->getGlobalConfig('vl_form');
 
 $fileArray = array(
 	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
@@ -130,10 +131,11 @@ $fileArray = array(
 	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
 );
 
+
 $resultFilename = '';
 if (!empty($requestResult)) {
-	$_SESSION['rVal'] = $general->generateRandomString(6);
-	$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
+	$randomFolderName = $general->generateRandomString(6);
+	$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
 	MiscUtility::makeDirectory($pathFront);
 	$pages = [];
 	$page = 1;
@@ -151,10 +153,9 @@ if (!empty($requestResult)) {
 		/** @var Covid19Service $covid19Service */
 		$covid19Service = ContainerRegistry::get(Covid19Service::class);
 		$covid19Results = $covid19Service->getCovid19Results();
-		$countryFormId = (int) $general->getGlobalConfig('vl_form');
 
-		$covid19TestQuery = "SELECT * FROM covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
-		$covid19TestInfo = $db->rawQuery($covid19TestQuery);
+		$covid19TestQuery = "SELECT * FROM covid19_tests where covid19_id= ? ORDER BY test_id ASC";
+		$covid19TestInfo = $db->rawQuery($covid19TestQuery, [$result['covid19_id']]);
 		// Lab Details
 		$labQuery = "SELECT * FROM facility_details WHERE facility_id= ?";
 		$labInfo = $db->rawQueryOne($labQuery, [$result['lab_id']]);
@@ -165,8 +166,8 @@ if (!empty($requestResult)) {
 		$facilityInfo = $db->rawQueryOne($facilityQuery, [$result['covid19_id']]);
 		// echo "<pre>";print_r($covid19TestInfo);die;
 
-		$patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
-		$patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
+		$patientFname = $result['patient_name'] ?? null;
+		$patientLname =  $result['patient_surname'] ?? null;
 
 		$signQuery = "SELECT * FROM lab_report_signatories
 						WHERE lab_id=? AND
@@ -195,7 +196,7 @@ if (!empty($requestResult)) {
 		if (!empty($selectedReportFormats) && !empty($selectedReportFormats['covid19'])) {
 			require($selectedReportFormats['covid19']);
 		} else {
-			require($fileArray[$arr['vl_form']]);
+			require($fileArray[$countryFormId]);
 		}
 	}
 	if (!empty($pages)) {
@@ -207,7 +208,6 @@ if (!empty($requestResult)) {
 		$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
 		$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
 		MiscUtility::removeDirectory($pathFront);
-		unset($_SESSION['rVal']);
 	}
 }
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);

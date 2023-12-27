@@ -21,6 +21,7 @@ ini_set('max_execution_time', 300000);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_eid";
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -137,7 +138,6 @@ if (!empty($pages)) {
     $resultFilename = 'VLSM-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
     $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
     MiscUtility::removeDirectory($pathFront);
-    unset($randomFolderName);
 }
 
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);

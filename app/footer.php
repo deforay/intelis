@@ -292,11 +292,12 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 
 		$('.phone-number').on('input', function() {
 			clearTimeout(phoneNumberDebounceTimeout);
+			let inputElement = $(this);
 			phoneNumberDebounceTimeout = setTimeout(function() {
-				let phoneNumber = $('.phone-number').val().trim();
+				let phoneNumber = inputElement.val().trim();
 
 				if (phoneNumber === countryCode || phoneNumber === "") {
-					$('.phone-number').val("");
+					inputElement.val("");
 					return;
 				}
 
@@ -321,7 +322,7 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 						console.error("An error occurred while validating the phone number.");
 					}
 				});
-			}, 1000); // Increased delay to 1000 milliseconds (1 second)
+			}, 700);
 		});
 
 		$('.phone-number').on('focus', function() {
