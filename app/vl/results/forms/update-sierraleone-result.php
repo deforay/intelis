@@ -925,6 +925,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			width: '100%',
 			placeholder: "Select Tested By"
 		});
+		$('#testingPlatform').select2({
+			placeholder: "Select Testing Platform"
+		});
 
 		$('#approvedBy').select2({
 			width: '100%',

@@ -786,6 +786,9 @@ $disable = "disabled = 'disabled'";
 		$('#approvedBy').select2({
 			placeholder: "Select Approved By"
 		});
+		$('#testingPlatform').select2({
+			placeholder: "Select Testing Platform"
+		});
 
 		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({
 			changeMonth: true,

@@ -608,6 +608,18 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 			// $("#vlResult").addClass('isRequired');
 		}
 		checkreasonForVLTesting();
+		$('#labId').select2({
+			placeholder: "Select Nom du laboratoire"
+		});
+		$('#testingPlatform').select2({
+			placeholder: "Select Technique utilisée"
+		});
+		$('#reviewedBy').select2({
+			placeholder: "Select Revu par"
+		});
+		$('#approvedBy').select2({
+			placeholder: "Select Approuvé par"
+		});
 	});
 
 	function checkreasonForVLTesting() {
