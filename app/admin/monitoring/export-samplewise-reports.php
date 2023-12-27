@@ -31,7 +31,7 @@ $calcQuery = $_SESSION['samplewiseReportsCalc'];
 $calcResult = $db->rawQuery($calcQuery);
 
 $totalCalculationHeadings = array('No. of Samples Requested', 'No. of Samples Acknowledged', 'No. of Samples Received at Testing Lab', 'No. of Samples Tested', 'No. of Results Returned');
-$headings = array('Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample ID", "Request Acknowledged Date Time", "Samples Received At Lab", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time", "Result Return Date and Time", "Last Modified On");
+$headings = array('LIS Sample ID','Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample ID", "Request Acknowledged Date Time", "Samples Received At Lab", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time", "Result Return Date and Time", "Last Modified On");
 
 $outputCalc = [];
 $output = [];
@@ -99,6 +99,7 @@ $sheet->getStyle('I5:I5')->applyFromArray($styleArray);
 $sheet->getStyle('J5:J5')->applyFromArray($styleArray);
 $sheet->getStyle('K5:K5')->applyFromArray($styleArray);
 $sheet->getStyle('L5:L5')->applyFromArray($styleArray);
+$sheet->getStyle('M5:M5')->applyFromArray($styleArray);
 
 
 foreach ($calcResult as $cRow) {
@@ -115,6 +116,7 @@ foreach ($calcResult as $cRow) {
 $no = 1;
 foreach ($rResult as $aRow) {
     $row = [];
+    $row[] = $aRow['sample_code'];
     $row[] = $aRow['labname'];
     $row[] = $aRow['external_sample_code'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);

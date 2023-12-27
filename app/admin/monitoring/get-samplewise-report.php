@@ -117,6 +117,7 @@ $sQuery = '';
 $sQuery = "SELECT
                 f.facility_name,
                 l.facility_name as 'labname',
+                vl.sample_code,
                 vl.external_sample_code,
                 vl.app_sample_code,
                 vl.sample_tested_datetime,
@@ -221,6 +222,7 @@ foreach ($rResult as $key => $aRow) {
 
     $row = [];
     //$row[] = $aRow['f.facility_name'];
+    $row[] = $aRow['sample_code'];
     $row[] = $aRow['labname'];
     $row[] = $aRow['external_sample_code'] ?? $aRow['app_sample_code'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);

@@ -205,6 +205,9 @@ foreach ($sources as $list) {
                             <thead>
                                 <tr>
                                     <th>
+                                        <?php echo _translate("LIS Sample ID"); ?>
+                                    </th>
+                                    <th>
                                         <?php echo _translate("Name of the Clinic"); ?>
                                     </th>
                                     <th>
@@ -244,7 +247,7 @@ foreach ($sources as $list) {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="9" class="dataTables_empty">
+                                    <td colspan="10" class="dataTables_empty">
                                         <?php echo _translate("Please select the date range and test type to see the source of requests"); ?>
                                     </td>
                                 </tr>
@@ -355,6 +358,9 @@ foreach ($sources as $list) {
                     "sClass": "center",
                 },
                 {
+                    "sClass": "center",
+                },
+                {
                     "sClass": "center"
                 }, {
                     "sClass": "center"
@@ -368,7 +374,7 @@ foreach ($sources as $list) {
                     "sClass": "center"
                 }
             ],
-            "aaSorting": [11, "desc"],
+            "aaSorting": [12, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-samplewise-report.php",
