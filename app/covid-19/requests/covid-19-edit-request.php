@@ -66,7 +66,7 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 //$id = ($_GET['id']);
@@ -139,16 +139,16 @@ if (isset($arr['covid19_min_patient_id_length']) && $arr['covid19_min_patient_id
 }
 
 $fileArray = array(
-    1 => 'forms/edit-southsudan.php',
-    2 => 'forms/edit-sierraleone.php',
-    3 => 'forms/edit-drc.php',
-    4 => 'forms/edit-cameroon.php',
-    5 => 'forms/edit-png.php',
-    6 => 'forms/edit-who.php',
-    7 => 'forms/edit-rwanda.php',
+    COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
+    COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
+    COUNTRY\DRC => 'forms/edit-drc.php',
+    COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
+    COUNTRY\PNG => 'forms/edit-png.php',
+    COUNTRY\WHO => 'forms/edit-who.php',
+    COUNTRY\RWANDA => 'forms/edit-rwanda.php',
 );
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);
 
 ?>
 

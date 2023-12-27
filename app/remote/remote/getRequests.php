@@ -132,4 +132,4 @@ try {
   throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
 
-echo $payload;
+echo $apiService->sendJsonResponse($payload);

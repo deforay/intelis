@@ -1,11 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 
 /** @var DatabaseService $db */
@@ -17,26 +17,13 @@ $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
-$whereCondition = '';
-$configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
-$configFormResult = $db->rawQuery($configFormQuery);
-
-$systemType = $general->getSystemConfig('sc_user_type');
-
-$whereCondition = '';
+$whereCondition = null;
 
 if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
     $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
-
-$tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
-$tsResult = $db->rawQuery($tsQuery);
-// $sampleStatusArray = [];
-// foreach($tsResult as $tsRow){
-//     $sampleStatusArray = $tsRow['status_name'];
-// }
 
 $sampleStatusColors = [];
 
@@ -64,19 +51,19 @@ $tQuery = "SELECT COUNT(covid19_id) as total,status_id,status_name
 
 //filter
 $sWhere = [];
-if (!empty(trim($whereCondition)))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND  '$end_date' ";
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-    $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND  '$labEndDate' ";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND  '$testedEndDate' ";
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
@@ -90,7 +77,7 @@ $tResult = $db->rawQuery($tQuery);
 
 //HVL and LVL Samples
 $sWhere = [];
-if (!empty(trim($whereCondition)))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 $vlSuppressionQuery = "SELECT   COUNT(covid19_id) as total,
     SUM(CASE
@@ -143,27 +130,27 @@ if ($start_date == '' && $end_date == '') {
     $end_date = date('Y-m-d');
 }
 $tatSampleQuery = "SELECT
-   'vl.result_status', count(*) as 'totalSamples',
-    DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
-    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
-    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
-    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
-    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
-    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted,
-    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_dispatched_datetime,vl.sample_received_at_lab_datetime))) AS DECIMAL (10,2)) as AvgDispatchResult
+                    'vl.result_status', count(*) as 'totalSamples',
+                    DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
+                    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
+                    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
+                    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
+                    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
+                    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted,
+                    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_dispatched_datetime,vl.sample_received_at_lab_datetime))) AS DECIMAL (10,2)) as AvgDispatchResult
 
-    FROM form_covid19 as vl
-    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-    JOIN facility_details as f ON vl.lab_id=f.facility_id
-    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+                    FROM form_covid19 as vl
+                    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                    JOIN facility_details as f ON vl.lab_id=f.facility_id
+                    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
 
-    WHERE
-    vl.result is not null
-    AND vl.result != ''
-    AND DATE(vl.sample_tested_datetime) >= '$start_date'
-    AND DATE(vl.sample_tested_datetime) <= '$end_date'";
+                    WHERE
+                    vl.result is not null
+                    AND vl.result != ''
+                    AND vl.result IS NOT NULL
+                    AND DATE(vl.sample_tested_datetime) BETWEEN '$start_date' AND '$end_date'";
 $sWhere = [];
-if (!empty(trim($whereCondition)))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -180,7 +167,7 @@ $tatSampleQuery .= " ORDER BY sample_tested_datetime";
 $tatResult = $db->rawQuery($tatSampleQuery);
 $j = 0;
 foreach ($tatResult as $sRow) {
-    if ($sRow["monthDate"] == null) {
+    if (empty($sRow["monthDate"])) {
         continue;
     }
 
@@ -196,7 +183,7 @@ foreach ($tatResult as $sRow) {
 }
 
 $sWhere = [];
-if (!empty(trim($whereCondition)))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 $testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name
                     from form_covid19 as vl
@@ -209,13 +196,13 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND  '$end_date' ";
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-    $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND  '$labEndDate' ";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND  '$testedEndDate' ";
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];

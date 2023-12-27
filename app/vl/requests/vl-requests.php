@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Services\UsersService;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
@@ -15,7 +15,7 @@ $dateRange = $labName = $srcOfReq = $srcStatus = null;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 
 if (!empty($_GET['id'])) {
 	$params = explode("##", base64_decode((string) $_GET['id']));
@@ -53,8 +53,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
 $global = $general->getGlobalConfig();
 $state = $geolocationService->getProvinces("yes");
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
@@ -343,7 +341,7 @@ foreach ($srcResults as $list) {
 								</select>
 							</td>
 							<td><strong>
-									<?php echo _translate("Req. Sample Type"); ?> :
+									<?php echo _translate("Sample Type"); ?> :
 								</strong></td>
 							<td>
 								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _translate('Please select request sample type'); ?>">
@@ -351,10 +349,10 @@ foreach ($srcResults as $list) {
 										<?php echo _translate("All"); ?>
 									</option>
 									<option value="result">
-										<?php echo _translate("Sample With Result"); ?>
+										<?php echo _translate("Samples with result"); ?>
 									</option>
 									<option value="noresult">
-										<?php echo _translate("Sample Without Result"); ?>
+										<?php echo _translate("Samples without result"); ?>
 									</option>
 								</select>
 							</td>
@@ -878,9 +876,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					},
 				<?php } ?>
 			],
-			"aaSorting": [
+			"order": [
 				[<?php echo ($_SESSION['instanceType'] == 'remoteuser' || $_SESSION['instanceType'] == 'vluser') ? 12 : 11 ?>, "desc"],
-				[2, "desc"]
+				[0, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");

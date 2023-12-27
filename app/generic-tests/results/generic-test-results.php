@@ -25,7 +25,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_COOKIE = $request->getCookieParams();
+$_COOKIE = _sanitizeInput($request->getCookieParams());
 
 $healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 

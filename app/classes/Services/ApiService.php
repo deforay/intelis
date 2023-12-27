@@ -8,8 +8,10 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
 use App\Exceptions\SystemException;
+use App\Utilities\LoggerUtility;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ApiService
 {
@@ -79,7 +81,7 @@ class ApiService
         }
     }
 
-    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = false): string|null
+    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true): string|null
     {
         // Prepare multipart data
         $multipartData = [];
@@ -92,7 +94,6 @@ class ApiService
                     'name' => $fileName,
                     'contents' => gzencode(file_get_contents($jsonFilePath)),
                     'filename' => basename((string) $jsonFilePath) . '.gz', // adding .gz to indicate gzip
-                    'headers' => ['Content-Encoding' => 'gzip']
                 ];
             } else {
                 // Add regular file content to multipart data
@@ -123,39 +124,80 @@ class ApiService
         }
     }
 
-    public function getJsonFromRequest($request, $decode = false)
+    public function getJsonFromRequest(ServerRequestInterface $request, bool $decode = false)
     {
         try {
-            // Get the content encoding header to check for gzip
             $contentEncoding = $request->getHeaderLine('Content-Encoding');
+            $jsonData = (string) $request->getBody();
 
-            // Read the JSON response from the input
-            $jsonData = $request->getBody()->getContents();
-
-            // Check if the data might already be decompressed
-            if ($contentEncoding !== 'gzip') {
-                $response = $jsonData; // Return raw JSON data
-            } else {
-                // Attempt gzip decompression
-                $decompressedData = gzdecode($jsonData);
-                if ($decompressedData === false) {
-                    // Handle decompression failure
-                    $response = "[]";
-                } else {
-                    // Check if the data is valid UTF-8, convert if not
-                    if (!mb_check_encoding($decompressedData, 'UTF-8')) {
-                        $decompressedData = mb_convert_encoding($decompressedData, 'UTF-8', 'auto');
-                    }
-                    // Return decompressed JSON data
-                    $response = $decompressedData;
-                }
+            if ($contentEncoding === 'gzip') {
+                $jsonData = gzdecode($jsonData) ?: throw new SystemException("Decompression failed");
             }
+
+            // if (!mb_check_encoding($jsonData, 'UTF-8')) {
+            //     $jsonData = mb_convert_encoding($jsonData, 'UTF-8', 'auto');
+            // }
+
             if ($decode) {
-                $response = json_decode((string) $response, true);
+                $decodedJson = json_decode($jsonData, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new SystemException("JSON decoding error: " . json_last_error_msg());
+                }
+                return $decodedJson;
             }
-            return $response;
+
+            return $jsonData;
         } catch (GuzzleException | SystemException | Exception $e) {
-            throw new SystemException("Unable to retrieve json : " . $e->getMessage(), 500);
+            LoggerUtility::log('error', "Unable to retrieve json: " . $e->getMessage(), [
+                'exception' => $e,
+                'file' => $e->getFile(), // File where the error occurred
+                'line' => $e->getLine(), // Line number of the error
+                'stacktrace' => $e->getTraceAsString()
+            ]);
+            return null;
         }
+    }
+
+
+    /**
+     * Download a file from a given URL and save it to a specified path.
+     *
+     * @param string $url The URL of the file to download.
+     * @param string $path The local path where the file should be saved.
+     * @return bool Returns true on successful download, false otherwise.
+     */
+    public function downloadFile(string $url, string $path): int|bool
+    {
+        try {
+            return file_put_contents($path, file_get_contents($url));
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return false; // Handle any exception
+        }
+    }
+
+    public function sendJsonResponse(mixed $payload)
+    {
+        // Ensure payload is a JSON string
+        $jsonPayload = is_array($payload) || is_object($payload) ? json_encode($payload) : $payload;
+
+        // Check for json_encode errors
+        if (json_last_error() != JSON_ERROR_NONE) {
+            // Handle the error, maybe log it or set an error message
+            return null;
+        }
+
+        // Gzip compress, assuming $jsonPayload is never null
+        $gzipPayload = gzencode($jsonPayload);
+
+        // Check for gzencode errors
+        if ($gzipPayload === false) {
+            // Handle the error
+            return null;
+        }
+
+        header('Content-Encoding: gzip');
+        header('Content-Length: ' . mb_strlen($gzipPayload, '8bit'));
+        return $gzipPayload;
     }
 }

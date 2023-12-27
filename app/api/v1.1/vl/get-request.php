@@ -1,14 +1,14 @@
 <?php
 // Allow from any origin
 
-use App\Exceptions\SystemException;
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
+use App\Services\UsersService;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\UsersService;
 
 session_unset(); // no need of session in json response
 
@@ -151,7 +151,7 @@ try {
             vl.date_test_ordered_by_physician                    as dateOfDemand,
             vl.result_reviewed_by                                as reviewedBy,
             vl.result_reviewed_datetime                          as reviewedOn,
-            vl.reason_for_vl_result_changes                      as reasonForVlResultChanges
+            vl.reason_for_result_changes                      as reasonForVlResultChanges
 
             FROM form_vl as vl
             LEFT JOIN geographical_divisions as g ON vl.province_id=g.geo_id

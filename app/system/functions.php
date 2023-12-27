@@ -1,37 +1,184 @@
 <?php
 
+use Laminas\Filter\StripTags;
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
+use Laminas\Filter\StringTrim;
 use App\Services\SystemService;
+use Laminas\Filter\FilterChain;
+use App\Utilities\LoggerUtility;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-
+use App\Utilities\DateUtility;
 
 function _translate(?string $text, ?bool $escapeForJavaScript = false)
 {
-    if (empty(trim($text)) || !is_string($text)) {
+    if (empty($text) || !is_string($text)) {
         return $text;
     }
-    return once(function () use ($text, $escapeForJavaScript) {
-        $translatedString = SystemService::translate($text);
 
-        if ($escapeForJavaScript) {
-            // Use htmlspecialchars to convert special characters to HTML entities,
-            // and then use json_encode to ensure it's safe for JavaScript.
-            $escapedString = json_encode(htmlspecialchars((string) $translatedString, ENT_QUOTES, 'UTF-8'));
-            // json_encode will add double quotes around the string, remove them.
-            return trim($escapedString, '"');
-        }
+    $translatedString = SystemService::translate($text);
 
-        return $translatedString;
-    });
+    if ($escapeForJavaScript) {
+        // Use htmlspecialchars to convert special characters to HTML entities,
+        // and then use json_encode to ensure it's safe for JavaScript.
+        $escapedString = json_encode(htmlspecialchars((string) $translatedString, ENT_QUOTES, 'UTF-8'));
+        // json_encode will add double quotes around the string, remove them.
+        return trim($escapedString, '"');
+    }
+
+    return $translatedString;
 }
 
 function _isAllowed($currentRequest, $privileges = null)
 {
-    if (empty($currentRequest)) {
-        return false;
+    return ContainerRegistry::get(UsersService::class)
+        ->isAllowed($currentRequest, $privileges);
+}
+
+function _sanitizeInput(string|array $data, $customFilters = [])
+{
+    // Default Laminas filter chain with StripTags and StringTrim
+    $defaultFilterChain = new FilterChain();
+    $defaultFilterChain->attach(new StripTags())
+        ->attach(new StringTrim());
+
+    // Convert single string to array for uniform processing
+    $data = is_array($data) ? $data : [$data];
+
+    // Apply filters
+    foreach ($data as $key => &$value) {
+        if (is_array($value)) {
+            // Recursive call for nested arrays
+            $value = _sanitizeInput($value, $customFilters[$key] ?? []);
+        } else {
+            // Use custom filter if defined, otherwise default filter
+            $filterChain = $customFilters[$key] ?? $defaultFilterChain;
+            $value = $filterChain->filter($value);
+        }
     }
-    return once(function () use ($currentRequest, $privileges) {
-        return ContainerRegistry::get(UsersService::class)
-            ->isAllowed($currentRequest, $privileges);
-    });
+    unset($value); // Break reference link
+
+    return $data;
+}
+
+function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = true, $maxSize = null)
+{
+    if ($maxSize === null) {
+        $maxSize = MiscUtility::convertToBytes(ini_get('upload_max_filesize'));
+    }
+
+    $sanitizedFiles = [];
+
+    // Check if the input is a single file, multiple files from one input, or multiple single-file inputs
+    $isSingleFile = isset($filesInput['name']) && is_string($filesInput['name']);
+    $isMultiFileArray = isset($filesInput['name']) && is_array($filesInput['name']);
+
+
+
+    // Normalize input
+    if ($isSingleFile) {
+        $files = ['singleFile' => $filesInput];
+    } elseif ($isMultiFileArray) {
+        $files = [];
+        foreach ($filesInput['name'] as $i => $name) {
+            $files[] = array(
+                'name' => $filesInput['name'][$i],
+                'type' => $filesInput['type'][$i],
+                'tmp_name' => $filesInput['tmp_name'][$i],
+                'error' => $filesInput['error'][$i],
+                'size' => $filesInput['size'][$i]
+            );
+        }
+    } else {
+        $files = $filesInput;
+    }
+
+    foreach ($files as $key => $file) {
+        try {
+            if ($file['error'] != UPLOAD_ERR_OK) {
+                throw new SystemException(_translate('File upload error'), 500);
+            }
+
+            if ($file['size'] > $maxSize) {
+                throw new SystemException(_translate('File size exceeds the maximum allowed size'), 400);
+            }
+
+            if (!empty($allowedTypes) && !empty($file['tmp_name'])) {
+                $allowedMimeTypes = MiscUtility::getMimeTypeStrings($allowedTypes);
+                $fileType = strtolower(mime_content_type($file['tmp_name']));
+                $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+                if (!in_array($fileType, $allowedMimeTypes) && !isset($allowedMimeTypes[$fileExtension])) {
+                    throw new SystemException(_translate('File type is not allowed'), 400);
+                }
+            }
+
+            if ($sanitizeFileName) {
+                // Sanitize the filename
+                $sanitizedFilename = preg_replace('/[^A-Za-z0-9._-]/', '_', $file['name']);
+                // Ensure the filename does not start with a dot
+                if ($sanitizedFilename[0] === '.') {
+                    $sanitizedFilename = '_' . ltrim($sanitizedFilename, '.');
+                }
+                // Assign the sanitized filename back to the file array
+                $file['name'] = $sanitizedFilename;
+            }
+
+            $sanitizedFiles[$key] = $file;
+        } catch (SystemException $e) {
+            LoggerUtility::log('error', $e->getMessage());
+            // Set to empty array to indicate failure
+            $sanitizedFiles[$key] = [];
+            continue;
+        } catch (Exception $e) {
+            LoggerUtility::log('error', $e->getMessage());
+            // Set to empty array to indicate failure
+            $sanitizedFiles[$key] = [];
+            continue;
+        }
+    }
+
+    // Return the sanitized files in the same structure as the input
+    if ($isSingleFile) {
+        // Return single file data directly
+        return reset($sanitizedFiles);
+    } elseif ($isMultiFileArray) {
+        // Return array of files for multi-file input
+        return array_values($sanitizedFiles);
+    } else {
+        // Return array of single-file inputs
+        return $sanitizedFiles;
+    }
+}
+
+function _castVariable($variable, $expectedType = null)
+{
+    if (!empty($variable)) {
+        switch ($expectedType) {
+            case 'int':
+                return (int) $variable;
+            case 'float':
+                return (float) $variable;
+            case 'string':
+                return (string) $variable;
+            case 'bool':
+                return (bool) $variable;
+            case 'array':
+                return is_array($variable) ? $variable : (array) $variable;
+            case 'json':
+                return is_string($variable) ? json_decode($variable, true) : json_encode($variable);
+            default:
+                return $variable;
+        }
+    } else {
+        switch ($expectedType) {
+            case 'array':
+                return [];
+            case 'json':
+                return '{}';
+            default:
+                return null;
+        }
+    }
 }

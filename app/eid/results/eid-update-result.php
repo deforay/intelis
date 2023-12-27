@@ -16,7 +16,7 @@ require_once APPLICATION_PATH . '/header.php';
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
@@ -65,7 +65,7 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $eidQuery = "SELECT * from form_eid where eid_id=?";
@@ -182,16 +182,16 @@ if (!empty($eidInfo['is_encrypted']) && $eidInfo['is_encrypted'] == 'yes') {
 <?php
 
 $fileArray = array(
-	1 => 'forms/update-southsudan-result.php',
-	2 => 'forms/update-sierraleone-result.php',
-	3 => 'forms/update-drc-result.php',
-	4 => 'forms/update-cameroon-result.php',
-	5 => 'forms/update-png-result.php',
-	6 => 'forms/update-who-result.php',
-	7 => 'forms/update-rwanda-result.php'
+	COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php',
+	COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php',
+	COUNTRY\DRC => 'forms/update-drc-result.php',
+	COUNTRY\CAMEROON => 'forms/update-cameroon-result.php',
+	COUNTRY\PNG => 'forms/update-png-result.php',
+	COUNTRY\WHO => 'forms/update-who-result.php',
+	COUNTRY\RWANDA => 'forms/update-rwanda-result.php'
 );
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);
 
 
 ?>

@@ -40,7 +40,7 @@ foreach ($users as $u) {
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $id = isset($_GET['id']) ? base64_decode((string) $_GET['id']) : null;
 $m = $module = $_GET['t'] ?? 'vl';
 
@@ -189,7 +189,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						<div class="col-xs-4 col-md-4">
 							<div class="form-group" style="margin-left:30px; margin-top:30px;">
 								<label for="testType">Test Type</label>
-								<select disabled="disabled" class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
+								<select disabled="disabled" class="form-control select2" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
 									<option value=""> -- Select -- </option>
 									<?php foreach ($testTypeResult as $testTypeInfo) { ?>
 										<option value="<?php echo $testTypeInfo['test_type_id'] ?>" <?php echo ($testType['test_type'] == $testTypeInfo['test_type_id']) ? "selected='selected'" : ""; ?>><?php echo $testTypeInfo['test_standard_name'] ?></option>
@@ -297,6 +297,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								</div>
 							</div>
 						</div>
+					</div>
+					<br>
+					<div class="row" id="sampleDetails">
+
 					</div>
 					<div class="row" id="alertText" style="font-size:18px;"></div>
 			</div>

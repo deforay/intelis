@@ -42,7 +42,7 @@ try {
         $currentDateTime = new DateTime();
         $lastSync = new DateTime($lastSyncDateTime);
         $interval = $currentDateTime->diff($lastSync);
-        $diffInHours = $interval->h + $interval->d * 24;
+        $diffInHours = $interval->days * 24 + $interval->h;
         $durationToSync = ($diffInHours + 2) . 'h';
     } else {
         $durationToSync = '6h';
@@ -339,21 +339,31 @@ try {
         'errors' => $processingErrors
     ]);
 
-    $general->addApiTracking(
-        $transactionId,
-        'vlsm-system',
-        $processedCounter,
-        $syncType,
-        'hepatitis',
-        $dhis2->getCurrentRequestUrl(),
-        $jsonResponse,
-        $responsePayload,
-        'json'
-    );
 
-    echo $responsePayload;
     $db->commitTransaction();
 } catch (Exception | SystemException $exception) {
+    $responsePayload = json_encode([
+        'transactionId' => $transactionId,
+        'received' => $receivedCounter,
+        'processed' => $processedCounter,
+        'errors' => $processingErrors
+    ]);
     $db->rollbackTransaction();
     error_log("Error while receiving DHIS2 data : " . $exception->getMessage());
 }
+
+
+echo $responsePayload;
+
+
+$general->addApiTracking(
+    $transactionId,
+    'vlsm-system',
+    $processedCounter,
+    $syncType,
+    'hepatitis',
+    $dhis2->getCurrentRequestUrl(),
+    $jsonResponse,
+    $responsePayload,
+    'json'
+);

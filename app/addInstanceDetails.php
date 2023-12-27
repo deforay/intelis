@@ -3,8 +3,9 @@
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
-/** @var CommonService $commonService */
+/** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
 $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 2', array('facility_id', 'facility_name', 'facility_code'));
 ?>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />

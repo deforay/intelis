@@ -16,6 +16,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
+
+$sanitizedLogoFile = _sanitizeFiles($_FILES['logo'], ['png', 'jpg', 'jpeg', 'gif']);
+
+$_POST = _sanitizeInput($_POST);
 function getMacLinux(): bool|string
 {
 	try {
@@ -86,11 +90,11 @@ try {
 		$id = $db->update($tableName, $data);
 		if ($id === true) {
 			$_SESSION['instanceFacilityName'] = $_POST['fName'];
-			if (isset($_FILES['logo']['name']) && $_FILES['logo']['name'] != "") {
+			if (isset($sanitizedLogoFile['name']) && $sanitizedLogoFile['name'] != "") {
 
 				MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo");
 
-				$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['logo']['name'], PATHINFO_EXTENSION));
+				$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedLogoFile['name'], PATHINFO_EXTENSION));
 				$string = $general->generateRandomString(6) . ".";
 				$imageName = "logo" . $string . $extension;
 				if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName)) {

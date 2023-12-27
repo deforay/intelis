@@ -584,6 +584,18 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 									</div>
 								</div>
 							</div>
+							<div class="row reportTemplate" style="display:none;">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="reportTemplate" class="col-lg-4 control-label">
+											<?php echo _translate("Upload Report Template"); ?>
+										</label>
+										<div class="col-lg-7">
+											<input type="file" class="form-control" id="reportTemplate" name="reportTemplate" placeholder="<?php echo _translate('Upload Report Template'); ?>" accept=".pdf" title="<?php echo _translate('Please Upload Report Template'); ?>" />
+										</div>
+									</div>
+								</div>
+							</div>
 							<div class="row" id="sampleType"></div>
 							<div class="row-item labDiv" style="display:none;">
 								<hr>
@@ -622,7 +634,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 											<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation1" placeholder="<?php echo _translate('Designation'); ?>" title="<?php echo _translate('Please enter the Designation'); ?>"></td>
 											<td style="width:10%;"><input type="file" name="signature[]" id="signature1" placeholder="<?php echo _translate('Signature'); ?>" title="<?php echo _translate('Please enter the Signature'); ?>"></td>
 											<td style="width:14%;">
-												<select class="select2" id="testSignType1" name="testSignType[1][]" title="<?php echo _translate('Choose one test type'); ?>" multiple>
+												<select class="select2 .testSignType" id="testSignType1" name="testSignType[1][]" title="<?php echo _translate('Choose one test type'); ?>" multiple>
 													<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 														<option value="vl">
 															<?php echo _translate("Viral Load"); ?>
@@ -705,28 +717,32 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("#testType").multipleSelect({
-			placeholder: '<?php echo _translate("Select Test Type"); ?>',
+		$("#testType").select2({
+			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
+			width: '100%'
+		});
+		$(".testSignType").select2({
+			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
 			width: '100%'
 		});
 		$("#contactPerson").select2({
-			placeholder: '<?php echo _translate("Select Lab Manager"); ?>',
+			placeholder: '<?php echo _translate("Select Lab Manager", true); ?>',
 			width: '100%'
 		});
 
 		$("#stateId").select2({
-			placeholder: '<?php echo _translate("Select Province"); ?>',
+			placeholder: '<?php echo _translate("Select Province", true); ?>',
 			width: '100%'
 		});
 
 		$("#districtId").select2({
-			placeholder: '<?php echo _translate("Select District"); ?>',
+			placeholder: '<?php echo _translate("Select District", true); ?>',
 			width: '100%'
 		});
 
 
 		$("#availablePlatforms").multipleSelect({
-			placeholder: '<?php echo _translate("Select Available Platforms"); ?>',
+			placeholder: '<?php echo _translate("Select Available Platforms", true); ?>',
 			width: '100%'
 		});
 
@@ -792,6 +808,10 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 	function showSignature(facilityType) {
 		if (facilityType == 2) {
 			$(".labDiv").show();
+			$("#testSignType1").select2({
+				placeholder: '<?php echo _translate("Select Test Type", true); ?>',
+				width: '100%'
+			});
 		} else {
 			$(".labDiv").hide();
 		}
@@ -859,8 +879,10 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 		}
 		if ($("#facilityType").val() == '2') {
 			$(".logoImage").show();
+			$(".reportTemplate").show();
 		} else {
 			$(".logoImage").hide();
+			$(".reportTemplate").hide();
 		}
 	}
 
@@ -933,7 +955,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 			<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _translate("Designation", true); ?>" title="<?php echo _translate("Please enter the Designation", true); ?>"></td>
 			<td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="Signature" title="<?php echo _translate("Please enter the Signature", true); ?>"></td>
 			<td style="width:14%;">
-				<select class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate("Choose one test type", true); ?>" multiple>
+				<select class="select2 testSignType" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate("Choose one test type", true); ?>" multiple>
 					<option value="vl"><?php echo _translate("Viral Load", true); ?></option>
 					<option value="eid"><?php echo _translate("Early Infant Diagnosis", true); ?></option>
 					<option value="covid19"><?php echo _translate("Covid-19", true); ?></option>
@@ -954,8 +976,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 		</tr>`;
 		$("#signDetails").append(rowString);
 
-		$("#testSignType" + testCounter).multipleSelect({
-			placeholder: 'Select Test Type',
+		$("#testSignType" + testCounter).select2({
+			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
 			width: '150px'
 		});
 	}

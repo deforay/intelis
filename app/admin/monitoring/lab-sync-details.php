@@ -1,10 +1,10 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\FacilitiesService;
-use App\Services\GeoLocationsService;
 use App\Services\SystemService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 
 $title = _translate("Sources of Requests");
 require_once APPLICATION_PATH . '/header.php';
@@ -18,7 +18,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 
 $facilityId = base64_decode((string) $_GET['labId']);
 

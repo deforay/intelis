@@ -126,7 +126,7 @@ foreach ($rResult as $aRow) {
     $no++;
 }
 
-if (isset($_SESSION['tbRequestSearchResultQueryCount']) && $_SESSION['tbRequestSearchResultQueryCount'] > 75000) {
+if (isset($_SESSION['tbRequestSearchResultQueryCount']) && $_SESSION['tbRequestSearchResultQueryCount'] > 50000) {
 
     $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Requests-' . date('d-M-Y-H-i-s') . '.csv';
     $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);

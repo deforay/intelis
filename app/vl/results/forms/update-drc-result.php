@@ -43,8 +43,8 @@ if (isset($vlQueryInfo['sample_type']) && $vlQueryInfo['sample_type'] != 2) {
 
 $disable = "disabled = 'disabled'";
 $reasonChange = "";
-if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != "") {
-	$result = explode("##", (string) $vlQueryInfo['reason_for_vl_result_changes']);
+if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for_result_changes'] != "") {
+	$result = explode("##", (string) $vlQueryInfo['reason_for_result_changes']);
 	$reasonChange = $result[1];
 }
 ?>
@@ -551,7 +551,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 						<input type="hidden" name="revised" id="revised" value="no" />
 						<input type="hidden" id="rSrc" name="rSrc" value="er" />
 						<input type="hidden" id="dubPatientArtNo" name="dubPatientArtNo" value="<?= htmlspecialchars((string) $vlQueryInfo['patient_art_no']); ?>" />
-						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_vl_result_changes']); ?>" />
+						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_result_changes']); ?>" />
 						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?= htmlspecialchars((string) $vlQueryInfo['vl_sample_id']); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
@@ -608,6 +608,18 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			// $("#vlResult").addClass('isRequired');
 		}
 		checkreasonForVLTesting();
+		$('#labId').select2({
+			placeholder: "Select Nom du laboratoire"
+		});
+		$('#testingPlatform').select2({
+			placeholder: "Select Technique utilisée"
+		});
+		$('#reviewedBy').select2({
+			placeholder: "Select Revu par"
+		});
+		$('#approvedBy').select2({
+			placeholder: "Select Approuvé par"
+		});
 	});
 
 	function checkreasonForVLTesting() {

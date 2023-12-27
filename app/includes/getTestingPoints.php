@@ -18,7 +18,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $labId = !empty($_POST['labId']) ? $_POST['labId'] : null;
 $selectedTestingPoint = !empty($_POST['selectedTestingPoint']) ? $_POST['selectedTestingPoint'] : null;

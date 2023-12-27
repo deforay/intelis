@@ -59,12 +59,12 @@ if (trim((string) $stateName) != '') {
 
 //set reason for changes history
 $rch = '';
-if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != '' && $vlQueryInfo['reason_for_vl_result_changes'] != null) {
+if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for_result_changes'] != '' && $vlQueryInfo['reason_for_result_changes'] != null) {
 	$rch .= '<h4>Result Changes History</h4>';
 	$rch .= '<table style="width:100%;">';
 	$rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
 	$rch .= '<tbody>';
-	$splitChanges = explode('vlsm', (string) $vlQueryInfo['reason_for_vl_result_changes']);
+	$splitChanges = explode('vlsm', (string) $vlQueryInfo['reason_for_result_changes']);
 	for ($c = 0; $c < count($splitChanges); $c++) {
 		$getData = explode("##", $splitChanges[$c]);
 		$expStr = explode(" ", $getData[2]);
@@ -759,7 +759,7 @@ $disable = "disabled = 'disabled'";
 							<div class="box-footer">
 								<input type="hidden" name="revised" id="revised" value="no" />
 								<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
-								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />
+								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_result_changes']; ?>" />
 								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 								<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
 							</div>
@@ -785,6 +785,9 @@ $disable = "disabled = 'disabled'";
 		});
 		$('#approvedBy').select2({
 			placeholder: "Select Approved By"
+		});
+		$('#testingPlatform').select2({
+			placeholder: "Select Testing Platform"
 		});
 
 		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({

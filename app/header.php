@@ -1,29 +1,17 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
-use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\AppMenuService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
-use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\GenericTestsService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
-
-/** @var GenericTestsService $genericTestsService */
-$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
-
-/** @var FacilitiesService $facilitiesService */
-$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var AppMenuService $appMenuService */
 $appMenuService = ContainerRegistry::get(AppMenuService::class);
@@ -63,9 +51,10 @@ if (!_isAllowed($request)) {
 	http_response_code(401);
 	throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page.'), 401);
 }
-$countryCode = $arr['default_phone_prefix'] ?? '';
-$minNumberOfDigits = !empty($arr['min_phone_length']) ? (int) $arr['min_phone_length'] : 15;
-$maxNumberOfDigits = !empty($arr['max_phone_length']) ? (int) $arr['max_phone_length'] : 15;
+
+$countryCode = _castVariable($arr['default_phone_prefix'], 'string') ?? '';
+$minNumberOfDigits = _castVariable($arr['min_phone_length'], 'int') ?? 15;
+$maxNumberOfDigits = _castVariable($arr['max_phone_length'], 'int') ?? 15;
 
 $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 

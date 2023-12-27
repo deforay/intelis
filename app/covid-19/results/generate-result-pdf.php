@@ -1,13 +1,13 @@
 <?php
 
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 
@@ -32,7 +32,7 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();
@@ -57,6 +57,7 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 				l.facility_district as labCounty,
 				l.facility_logo as facilityLogo,
 				l.report_format as reportFormat,
+				l.facility_attributes,
 				l.header_text as labHeaderText,
 				rip.i_partner_name,
 				rsrr.rejection_reason_name ,
@@ -85,15 +86,23 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 //echo($searchQuery);die;
 $requestResult = $db->query($searchQuery);
 
-if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime'])) {
-	$pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
-	$db->where('covid19_id', $_POST['id']);
-	$id = $db->update('form_covid19', $pData);
-} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime'])) {
-	$pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
-	$db->where('covid19_id', $_POST['id']);
-	$id = $db->update('form_covid19', $pData);
+$currentDateTime = DateUtility::getCurrentDateTime();
+
+$_SESSION['aliasPage'] = 1;
+
+
+foreach ($requestResult as $requestRow) {
+	if (($_SESSION['instanceType'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
+		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+		$db->where('covid19_id', $requestRow['covid19_id']);
+		$id = $db->update('form_covid19', $pData);
+	} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestRow['result_printed_on_sts_datetime'])) {
+		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+		$db->where('covid19_id', $requestRow['covid19_id']);
+		$id = $db->update('form_covid19', $pData);
+	}
 }
+
 
 /* Test Results */
 if (isset($_POST['type']) && $_POST['type'] == "qr") {
@@ -105,162 +114,28 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
 	}
 }
 
-$_SESSION['nbPages'] = sizeof($requestResult);
-$_SESSION['aliasPage'] = 1;
-
 //print_r($requestResult);die;
 //header and footer
-class Covid19ResultPDF extends TCPDF
-{
-	public ?string $logo;
-	public ?string $text = '';
-	public ?string $lab;
-	public ?string $htitle;
-	public $labFacilityId = null;
-	public $formId = null;
-	public ?array $facilityInfo = [];
-	public ?string $resultPrintedDate;
-	public ?array $systemConfig = [];
-	public $dataSync;
 
 
-	//Page header
-	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = [], $resultPrintedDate = null, $dataSync = null, $systemConfig = null)
-	{
-		$this->logo = $logo;
-		$this->text = $text;
-		$this->lab = $lab;
-		$this->htitle = $title;
-		$this->labFacilityId = $labFacilityId;
-		$this->formId = $formId;
-		$this->facilityInfo = $facilityInfo;
-		$this->resultPrintedDate = $resultPrintedDate;
-		$this->systemConfig = $systemConfig;
-		$this->dataSync = $dataSync;
-	}
-	public function imageExists($filePath): bool
-	{
-		return MiscUtility::imageExists($filePath);
-	}
-	//Page header
-	public function Header()
-	{
-		// Logo
 
-		if ($this->htitle != '') {
-			if (trim($this->logo) != '') {
-				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-					if ($this->formId == 3) {
-						$this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
-					} else {
-						$this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
-					}
-				}
-			}
-			if ($this->formId == 3) {
-				$this->SetFont('helvetica', 'B', 16);
-				$this->writeHTMLCell(0, 0, 10, 03, $this->text, 0, 0, 0, true, 'C');
-				if (trim($this->lab) != '') {
-					$this->SetFont('helvetica', '', 10);
-					$this->writeHTMLCell(0, 0, 10, 10, strtoupper($this->lab), 0, 0, 0, true, 'C');
-				}
-				$this->SetFont('helvetica', 'b', 10);
-				$this->writeHTMLCell(0, 0, 10, 18, 'Département de Virologie', 0, 0, 0, true, 'C');
-				$this->SetFont('helvetica', 'u', 10);
-				$this->writeHTMLCell(0, 0, 10, 25, 'Laboratoire National de Reference pour la Grippe et les Virus Respiratoires', 0, 0, 0, true, 'C');
-				$this->SetFont('helvetica', 'b', 12);
-				$this->writeHTMLCell(0, 0, 10, 33, 'RESULTATS DE LABORATOIRE DES ECHANTIONS RESPIRATOIRES', 0, 0, 0, true, 'C');
-				$this->SetFont('helvetica', 'u', 10);
-				$this->writeHTMLCell(0, 0, 10, 40, 'TESTES AU COVID-19 PAR RT-PCR en temps réel N°', 0, 0, 0, true, 'C');
-				$this->writeHTMLCell(0, 0, 15, 48, '<hr>', 0, 0, 0, true, 'C');
-			} else {
-				$this->SetFont('helvetica', 'B', 16);
-				$this->writeHTMLCell(0, 0, 10, 18, $this->text, 0, 0, 0, true, 'C');
-				if (trim($this->lab) != '') {
-					$this->SetFont('helvetica', '', 10);
-					$this->writeHTMLCell(0, 0, 10, 25, strtoupper($this->lab), 0, 0, 0, true, 'C');
-				}
-				$this->SetFont('helvetica', '', 12);
-				$this->writeHTMLCell(0, 0, 10, 30, 'COVID-19 TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
-				$this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
-			}
-		} else {
-			if (trim($this->logo) != '') {
-				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
-					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-					$this->Image($imageFilePath, 16, 13, 15, '', '', '', 'T');
-				} else if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-					$this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
-				}
-			}
-			if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
-				$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
-				$this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T');
-			}
-
-			// $this->SetFont('helvetica', 'B', 7);
-			// $this->writeHTMLCell(30,0,16,28,$this->text, 0, 0, 0, true, 'A', true);(this two lines comment out for drc)
-			$this->SetFont('helvetica', '', 14);
-			$this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C');
-			if ($this->text != '') {
-				$this->SetFont('helvetica', '', 12);
-				//        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
-				$this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
-				$thirdHeading = '23';
-				$fourthHeading = '28';
-				$hrLine = '36';
-				$marginTop = '14';
-			} else {
-				$thirdHeading = '17';
-				$fourthHeading = '23';
-				$hrLine = '30';
-				$marginTop = '9';
-			}
-			if (trim($this->lab) != '') {
-				$this->SetFont('helvetica', '', 9);
-				$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
-			}
-			$this->SetFont('helvetica', '', 12);
-			$this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C');
-			$this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
-		}
-	}
-
-	// Page footer
-	public function Footer()
-	{
-		// Position at 15 mm from bottom
-		$this->SetY(-15);
-		// Set font
-		$this->SetFont('helvetica', '', 8);
-		if ($this->systemConfig['sc_user_type'] == 'vluser' && $this->dataSync == 0 && ($this->formId == 1 || $this->formId == 3)) {
-			$generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
-		} else {
-			$generatedAtTestingLab = "";
-		}
-		// Page number
-		$this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . ' of ' . $this->getAliasNbPages(), 0, false, 'C', 0);
-	}
-}
-
-
+$countryFormId = (int) $general->getGlobalConfig('vl_form');
 
 $fileArray = array(
-	1 => 'pdf/result-pdf-ssudan.php',
-	2 => 'pdf/result-pdf-sierraleone.php',
-	3 => 'pdf/result-pdf-drc.php',
-	4 => 'pdf/result-pdf-cameroon.php',
-	5 => 'pdf/result-pdf-png.php',
-	6 => 'pdf/result-pdf-who.php',
-	7 => 'pdf/result-pdf-rwanda.php',
+	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
+	COUNTRY\SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
+	COUNTRY\DRC => 'pdf/result-pdf-drc.php',
+	COUNTRY\CAMEROON => 'pdf/result-pdf-cameroon.php',
+	COUNTRY\PNG => 'pdf/result-pdf-png.php',
+	COUNTRY\WHO => 'pdf/result-pdf-who.php',
+	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
 );
+
 
 $resultFilename = '';
 if (!empty($requestResult)) {
-	$_SESSION['rVal'] = $general->generateRandomString(6);
-	$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
+	$randomFolderName = $general->generateRandomString(6);
+	$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
 	MiscUtility::makeDirectory($pathFront);
 	$pages = [];
 	$page = 1;
@@ -278,22 +153,27 @@ if (!empty($requestResult)) {
 		/** @var Covid19Service $covid19Service */
 		$covid19Service = ContainerRegistry::get(Covid19Service::class);
 		$covid19Results = $covid19Service->getCovid19Results();
-		$countryFormId = (int) $general->getGlobalConfig('vl_form');
 
-		$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
-		$covid19TestInfo = $db->rawQuery($covid19TestQuery);
+		$covid19TestQuery = "SELECT * FROM covid19_tests where covid19_id= ? ORDER BY test_id ASC";
+		$covid19TestInfo = $db->rawQuery($covid19TestQuery, [$result['covid19_id']]);
 		// Lab Details
-		$labQuery = "SELECT * from facility_details where facility_id= " . $result['lab_id'] . " LIMIT 1";
-		$labInfo = $db->rawQueryOne($labQuery);
+		$labQuery = "SELECT * FROM facility_details WHERE facility_id= ?";
+		$labInfo = $db->rawQueryOne($labQuery, [$result['lab_id']]);
 
-		$facilityQuery = "SELECT * from form_covid19 as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where covid19_id= " . $result['covid19_id'] . " GROUP BY fd.facility_id LIMIT 1";
-		$facilityInfo = $db->rawQueryOne($facilityQuery);
+		$facilityQuery = "SELECT * FROM form_covid19 as c19
+							INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id
+							WHERE covid19_id= ?";
+		$facilityInfo = $db->rawQueryOne($facilityQuery, [$result['covid19_id']]);
 		// echo "<pre>";print_r($covid19TestInfo);die;
 
-		$patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
-		$patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
+		$patientFname = $result['patient_name'] ?? null;
+		$patientLname =  $result['patient_surname'] ?? null;
 
-		$signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
+		$signQuery = "SELECT * FROM lab_report_signatories
+						WHERE lab_id=? AND
+						test_types LIKE '%covid19%' AND
+						signatory_status LIKE 'active'
+						ORDER BY display_order ASC";
 		$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
 		$currentDateTime = DateUtility::getCurrentDateTime();
 		$_SESSION['aliasPage'] = $page;
@@ -316,7 +196,7 @@ if (!empty($requestResult)) {
 		if (!empty($selectedReportFormats) && !empty($selectedReportFormats['covid19'])) {
 			require($selectedReportFormats['covid19']);
 		} else {
-			require($fileArray[$arr['vl_form']]);
+			require($fileArray[$countryFormId]);
 		}
 	}
 	if (!empty($pages)) {
@@ -328,7 +208,6 @@ if (!empty($requestResult)) {
 		$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
 		$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
 		MiscUtility::removeDirectory($pathFront);
-		unset($_SESSION['rVal']);
 	}
 }
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);

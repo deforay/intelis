@@ -36,7 +36,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $instanceId = $general->getInstanceId();
 
@@ -186,20 +186,19 @@ try {
 
     $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'] ?? '', $_POST['gender'] ?? '', DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
-    $vlData = array(
+    $vlData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $formId,
-        'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
-        'external_sample_code' => $_POST['serialNo'] ?? null,
-        'facility_id' => $_POST['fName'] ?? null,
+        'sample_reordered' => _castVariable($_POST['sampleReordered'], 'string') ?? 'no',
+        'external_sample_code' => _castVariable($_POST['serialNo'], 'string'),
+        'facility_id' => _castVariable($_POST['fName'], 'int'),
         'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),
         'sample_dispatched_datetime' => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
-        'patient_gender' => $_POST['gender'] ?? null,
+        'patient_gender' => _castVariable($_POST['gender'], 'string'),
         'system_patient_code' => $systemGeneratedCode,
         'patient_dob' => DateUtility::isoDateFormat($_POST['dob'] ?? ''),
-        'patient_last_name' => $_POST['patientLastName'] ?? null,
-        'patient_age_in_years' => $_POST['ageInYears'] ?? null,
-        'patient_age_in_months' => $_POST['ageInMonths'] ?? null,
+        'patient_age_in_years' => _castVariable($_POST['ageInYears'], 'int'),
+        'patient_age_in_months' => _castVariable($_POST['ageInMonths'], 'int'),
         'is_patient_pregnant' => $_POST['patientPregnant'] ?? null,
         'no_of_pregnancy_weeks' => $_POST['noOfPregnancyWeeks'] ?? null,
         'is_patient_breastfeeding' => $_POST['breastfeeding'] ?? null,
@@ -207,7 +206,7 @@ try {
         'pregnancy_trimester' => $_POST['trimester'] ?? null,
         'patient_has_active_tb' => $_POST['activeTB'] ?? null,
         'patient_active_tb_phase' => $_POST['tbPhase'] ?? null,
-        'patient_art_no' => $_POST['artNo'] ?? null,
+        'patient_art_no' => _castVariable($_POST['artNo'], 'string'),
         'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
         'is_patient_new' => $_POST['isPatientNew'] ?? null,
         'treatment_duration' => $_POST['treatmentDuration'] ?? null,
@@ -265,7 +264,7 @@ try {
         'result_value_text' => $txtVal ?? null,
         'result' => $finalResult ?? null,
         'result_value_log' => $logVal ?? null,
-        'result_reviewed_by' => $_POST['reviewedBy'] ?? null,
+        'result_reviewed_by' => _castVariable($_POST['reviewedBy'], 'string'),
         'result_reviewed_datetime' => DateUtility::isoDateFormat($_POST['reviewedOn'] ?? ''),
         'tested_by' => $_POST['testedBy'] ?? null,
         'result_approved_by' => $_POST['approvedBy'] ?? null,
@@ -280,7 +279,7 @@ try {
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'result_modified'  => 'no',
         'manual_result_entry' => 'yes',
-    );
+    ];
 
 
 

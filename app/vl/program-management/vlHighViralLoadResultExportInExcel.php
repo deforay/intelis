@@ -103,7 +103,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
                $db->rawQuery("UPDATE form_vl SET contact_complete_status = 'yes' WHERE vl_sample_id IN (" . $vlId . ")");
      }
 
-     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 75000) {
+     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 50000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore

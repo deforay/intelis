@@ -504,7 +504,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="labels"><label for="testingPlatform">Testing Platform <span class="mandatory">*</span></label></td>
 										<td>
-											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlvlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');" class="form-control isRequired" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlvlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');" class="testingPlatformSelect form-control isRequired" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -542,7 +542,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="labels"><label for="vlResult">Batch</label></td>
 										<td>
-											<select name="batchNo" id="batchNo" class="form-control" title="Please choose batch number" style="width:100%;">
+											<select name="batchNo" id="batchNo" class="batchSelect2 form-control" title="Please choose batch number" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($bResult as $bName) { ?>
 													<option value="<?php echo $bName['batch_id']; ?>" <?php echo ($vlQueryInfo['sample_batch_id'] == $bName['batch_id']) ? "selected='selected'" : "" ?>><?php echo $bName['batch_code']; ?></option>
@@ -562,7 +562,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="labels"><label for="testingTech">Testing Platform</label></td>
 										<td>
-											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults', 'failedvlResult');" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults', 'failedvlResult');" class="testingPlatformSelect form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['failed_test_tech'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -598,7 +598,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="labels"><label for="vlResult">Batch</label></td>
 										<td>
-											<select name="failedbatchNo" id="failedbatchNo" class="form-control" title="Please choose batch number" style="width:100%;">
+											<select name="failedbatchNo" id="failedbatchNo" class="batchSelect2 form-control" title="Please choose batch number" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($bResult as $bName) { ?>
 													<option value="<?php echo $bName['batch_id']; ?>" <?php echo ($vlQueryInfo['failed_batch_id'] == $bName['batch_id']) ? "selected='selected'" : "" ?>><?php echo $bName['batch_code']; ?></option>
@@ -746,6 +746,21 @@ $disable = "disabled = 'disabled'";
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').hide();
+		});
+		$('#labId').select2({
+			placeholder: "Select Laboratory Name"
+		});
+		$('#sampleType').select2({
+			placeholder: "Select Sample Type"
+		});
+		$('.testingPlatformSelect').select2({
+			placeholder: "Select Testing Platform"
+		});
+		$('.batchSelect2').select2({
+			placeholder: "Select Batch"
+		});
+		$('#reviewedBy').select2({
+			placeholder: "Select Reviewed By"
 		});
 	});
 

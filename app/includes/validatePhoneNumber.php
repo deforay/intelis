@@ -3,23 +3,25 @@
 use Brick\PhoneNumber\PhoneNumber;
 use Brick\PhoneNumber\PhoneNumberParseException;
 
-$data = [
-    'isValid' => false
-];
+$_POST = _sanitizeInput($_POST);
+
+$data = ['isValid' => false];
 
 if (isset($_POST['phoneNumber'])) {
     $phoneNumberInput = $_POST['phoneNumber'];
+    $strictCheck = isset($_POST['strictCheck']) && $_POST['strictCheck'] === 'yes';
 
     try {
         $phoneNumber = PhoneNumber::parse($phoneNumberInput);
 
-        // This ensures the number is both possible and valid according to the library's data
-        if ($phoneNumber->isValidNumber()) {
-            $data['isValid'] = true;
+        if ($strictCheck) {
+            $data['isValid'] = $phoneNumber->isValidNumber();
+        } else {
+            // a more lenient and faster check than `isValidNumber()`
+            $data['isValid'] = $phoneNumber->isPossibleNumber();
         }
-
     } catch (PhoneNumberParseException $e) {
-        // Invalid number format, you can log this error if needed
+        $data['isValid'] = false;
     }
 }
 

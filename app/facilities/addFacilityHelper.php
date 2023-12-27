@@ -10,15 +10,10 @@ use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -42,11 +37,12 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$apiData = $apiService->getJsonFromRequest($request, true);
+$_POST = _sanitizeInput($request->getParsedBody());
 
-if (!empty($apiData['result'])) {
-	$_POST = $apiData['result'];
-}
+$sanitizedReportTemplate = _sanitizeFiles($_FILES['reportTemplate'], ['pdf']);
+$sanitizedLabLogo = _sanitizeFiles($_FILES['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
+$sanitizedSignature = _sanitizeFiles($_FILES['signature'], ['png', 'jpg', 'jpeg', 'gif']);
+
 try {
 
 	//Province Table
@@ -129,52 +125,37 @@ try {
 			'status' => 'active'
 		);
 
+		$db->insert($facilityTable, $data);
+		$lastId = $db->getInsertId();
+
 		$facilityAttributes = [];
 		if (!empty($_POST['allowResultUpload'])) {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}
+		// Upload Report Template
+		if ($lastId > 0 && !empty($sanitizedReportTemplate['name'])) {
+			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template";
+			MiscUtility::makeDirectory($directoryPath, 0777, true);
+			$string = $general->generateRandomString(12) . ".";
+			$extension = strtolower(pathinfo($directoryPath . DIRECTORY_SEPARATOR . $sanitizedReportTemplate['name'], PATHINFO_EXTENSION));
+			$fileName = "report-template-" . $string . $extension;
+			$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
+			if (move_uploaded_file($_FILES["reportTemplate"]["tmp_name"], $filePath)) {
+				$facilityAttributes['report_template'] = $fileName;
+			}
+		}
+
 		if (!empty($_POST['sampleType'])) {
 			foreach ($_POST['sampleType'] as $testType => $sampleTypes) {
 				$facilityAttributes['sampleType'][$testType] = implode(",", $sampleTypes);
 			}
 		}
-		if (!empty($facilityAttributes)) {
-			$data['facility_attributes'] = json_encode($facilityAttributes, true);
-		}
-		if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $_POST['fromAPI'] == "yes") {
-			/* Facility sync to remote */
-			$url = SYSTEM_CONFIG['remoteURL'] . '/facilities/addFacilityHelper.php';
-			$apiData = array(
-				"result" => $_POST,
-				"api-type" => "sync",
-				"Key" => "vlsm-lab-data-",
-			);
-			//open connection
-			$ch = curl_init($url);
-			$json_data = json_encode($apiData);
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt(
-				$ch,
-				CURLOPT_HTTPHEADER,
-				array(
-					'Content-Type: application/json',
-					'Content-Length: ' . strlen((string)$json_data)
-				)
-			);
-			// execute post
-			$curl_response = curl_exec($ch);
-			$facilityId = $curl_response;
-			if (isset($facilityId) && $facilityId > 0) {
-				$data['facility_id'] = $facilityId;
-			}
-			//close connection
-			curl_close($ch);
+		if ($lastId > 0 && !empty($facilityAttributes)) {
+			$facilityAttributesJson = array('facility_attributes' => json_encode($facilityAttributes, true));
+			$db->where('facility_id', $lastId);
+			$db->update($facilityTable, $facilityAttributesJson);
 		}
 
-		$db->insert($facilityTable, $data);
-		$lastId = $db->getInsertId();
 
 		if (!empty($_POST['testType'])) {
 			foreach ($_POST['testType'] as $testType) {
@@ -213,7 +194,7 @@ try {
 				$db->insert($vlUserFacilityMapTable, $data);
 			}
 		}
-		if ($lastId > 0) {
+		if ($lastId > 0 && !empty($_POST['testData'])) {
 			// Mapping facility as a Testing Lab
 			for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
 				$dataTest = array(
@@ -227,9 +208,9 @@ try {
 			}
 		}
 
-		if (isset($_FILES['labLogo']['name']) && $_FILES['labLogo']['name'] != "") {
+		if ($lastId > 0 && isset($sanitizedLabLogo['name']) && $sanitizedLabLogo['name'] != "") {
 			MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId, 0777, true);
-			$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['labLogo']['name'], PATHINFO_EXTENSION));
+			$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedLabLogo['name'], PATHINFO_EXTENSION));
 			$string = $general->generateRandomString(12) . ".";
 			$actualImageName = "actual-logo-" . $string . $extension;
 			$imageName = "logo-" . $string . $extension;
@@ -252,7 +233,7 @@ try {
 					$signData = array(
 						'name_of_signatory'	=> $name,
 						'designation' 		=> $_POST['designation'][$key],
-						'test_types' 		=> implode(",", $_POST['testSignType'][($key + 1)]),
+						'test_types' 		=> implode(",", (array)$_POST['testSignType'][($key + 1)]),
 						'lab_id' 			=> $lastId,
 						'display_order' 	=> $_POST['sortOrder'][$key],
 						'signatory_status' 	=> $_POST['signStatus'][$key],

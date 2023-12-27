@@ -10,7 +10,7 @@ use App\Utilities\DateUtility;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
@@ -44,7 +44,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'vl') {
 }
 
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$sampleReceivedStartDate, $sampleReceivedEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedAtLab'] ?? '');

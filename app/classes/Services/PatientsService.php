@@ -75,21 +75,21 @@ class PatientsService
             $data = [];
 
             if ($testTable == "form_vl" || $testTable == "form_generic") {
-                $data['patient_code'] =  $params['artNo'];
-                $params['patientGender'] = $params['gender'];
+                $data['patient_code'] =  $params['artNo'] ?? null;
+                $params['patientGender'] = $params['gender'] ?? null;
             } elseif ($testTable == "form_eid") {
-                $data['patient_code'] =  $params['childId'];
-                $params['patientFirstName'] = $params['childName'];
-                $params['dob'] = $params['childDob'];
-                $params['patientGender'] = $params['childGender'];
-                $params['patientPhoneNumber'] = $params['caretakerPhoneNumber'];
-                $params['patientAddress'] = $params['caretakerAddress'];
-                $params['ageInMonths'] = $params['childAge'];
+                $data['patient_code'] =  $params['childId'] ?? null;
+                $params['patientFirstName'] = $params['childName'] ?? null;
+                $params['dob'] = $params['childDob'] ?? null;
+                $params['patientGender'] = $params['childGender'] ?? null;
+                $params['patientPhoneNumber'] = $params['caretakerPhoneNumber'] ?? null;
+                $params['patientAddress'] = $params['caretakerAddress'] ?? null;
+                $params['ageInMonths'] = $params['childAge'] ?? null;
             } else {
-                $params['patientFirstName'] = $params['firstName'];
-                $params['patientLastName'] = $params['lastName'];
-                $params['dob'] = $params['patientDob'];
-                $data['patient_code'] = $params['patientId'];
+                $params['patientFirstName'] = $params['firstName'] ?? null;
+                $params['patientLastName'] = $params['lastName'] ?? null;
+                $params['dob'] = $params['patientDob'] ?? null;
+                $data['patient_code'] = $params['patientId'] ?? null;
             }
 
             $systemPatientCode = $this->getSystemPatientId($data['patient_code'], $params['patientGender'], DateUtility::isoDateFormat($params['dob'] ?? ''));
@@ -100,9 +100,9 @@ class PatientsService
                 $data['system_patient_code'] = $this->commonService->generateUUID();
             }
 
-            $data['patient_first_name'] = $params['patientFirstName'] ?? '';
-            $data['patient_middle_name'] = $params['patientMiddleName'] ?? '';
-            $data['patient_last_name'] = $params['patientLastName'] ?? '';
+            $data['patient_first_name'] = $params['patientFirstName'] ?? null;
+            $data['patient_middle_name'] = $params['patientMiddleName'] ?? null;
+            $data['patient_last_name'] = $params['patientLastName'] ?? null;
 
             $data['is_encrypted'] = 'no';
             if (isset($params['encryptPII']) && $params['encryptPII'] == 'yes') {

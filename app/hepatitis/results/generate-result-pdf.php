@@ -2,7 +2,6 @@
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -30,6 +29,10 @@ $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
 $printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
+$mFieldArray = [];
+if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
+	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
+}
 //set query
 $allQuery = $_SESSION['hepatitisPrintQuery'];
 if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
@@ -65,136 +68,35 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 // echo($searchQuery);die;
 $requestResult = $db->query($searchQuery);
 
-if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime'])) {
-	$pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
-	$db->where('hepatitis_id', $_POST['id']);
-	$id = $db->update('form_hepatitis', $pData);
-} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime'])) {
-	$pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
-	$db->where('hepatitis_id', $_POST['id']);
-	$id = $db->update('form_hepatitis', $pData);
+$currentDateTime = DateUtility::getCurrentDateTime();
+
+foreach ($requestResult as $requestRow) {
+	if (($_SESSION['instanceType'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
+		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+		$db->where('hepatitis_id', $requestRow['hepatitis_id']);
+		$id = $db->update('form_hepatitis', $pData);
+	} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestRow['result_printed_on_sts_datetime'])) {
+		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+		$db->where('hepatitis_id', $requestRow['hepatitis_id']);
+		$id = $db->update('form_hepatitis', $pData);
+	}
 }
+
 
 
 /* Test Results */
-
-$_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
 //print_r($requestResult);die;
-//header and footer
-class HepatitisResultPdf extends TCPDF
-{
-	public ?string $logo;
-	public string $text = '';
-	public ?string $lab;
-	public ?string $htitle;
-	public ?string $labFacilityId = '';
-	public string $formId = '';
-	//Page header
-	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null)
-	{
-		$this->logo = $logo;
-		$this->text = $text;
-		$this->lab = $lab;
-		$this->htitle = $title;
-		$this->labFacilityId = $labFacilityId;
-		$this->formId = $formId;
-	}
-	public function imageExists($filePath): bool
-	{
-		return MiscUtility::imageExists($filePath);
-	}
-	//Page header
-	public function Header()
-	{
-		if ($this->htitle != '') {
-			if (trim($this->logo) != '') {
-				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-					$this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
-				}
-			}
-			$this->SetFont('helvetica', 'B', 16);
-			$this->writeHTMLCell(0, 0, 10, 18, $this->text, 0, 0, 0, true, 'C');
-			if (trim($this->lab) != '') {
-				$this->SetFont('helvetica', '', 10);
-				$this->writeHTMLCell(0, 0, 10, 25, strtoupper($this->lab), 0, 0, 0, true, 'C');
-			}
-			$this->SetFont('helvetica', '', 12);
-			$this->writeHTMLCell(0, 0, 10, 30, 'Hepatitis Viral Load Results Report', 0, 0, 0, true, 'C');
-			$this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
-		} else {
-			if (trim($this->logo) != '') {
-				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
-					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-					$this->Image($imageFilePath, 16, 13, 15, '', '', '', 'T');
-				} elseif (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-					$this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
-				}
-			}
-			if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
-				$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
-				$this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T');
-			}
-
-			$this->SetFont('helvetica', '', 14);
-			$this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C');
-			if ($this->text != '') {
-				$this->SetFont('helvetica', '', 12);
-				$this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
-				$thirdHeading = '23';
-				$fourthHeading = '28';
-				$hrLine = '36';
-				$marginTop = '14';
-			} else {
-				$thirdHeading = '17';
-				$fourthHeading = '23';
-				$hrLine = '30';
-				$marginTop = '9';
-			}
-			if (trim($this->lab) != '') {
-				$this->SetFont('helvetica', '', 9);
-				$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
-			}
-			$this->SetFont('helvetica', '', 12);
-			$this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C');
-			$this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
-		}
-	}
-
-	// Page footer
-	public function Footer()
-	{
-		// Position at 15 mm from bottom
-		$this->SetY(-15);
-		// Set font
-		$this->SetFont('helvetica', '', 8);
-		// Page number
-		$this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . ' of ' . $this->getAliasNbPages(), 0, false, 'C', 0);
-	}
-}
-
 
 
 $fileArray = array(
-	1 => 'pdf/result-pdf-ssudan.php',
-	2 => 'pdf/result-pdf-sierraleone.php',
-	3 => 'pdf/result-pdf-drc.php',
-	4 => 'pdf/result-pdf-cameroon.php',
-	5 => 'pdf/result-pdf-png.php',
-	6 => 'pdf/result-pdf-who.php',
-	7 => 'pdf/result-pdf-rwanda.php'
+	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
+	COUNTRY\SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
+	COUNTRY\DRC => 'pdf/result-pdf-drc.php',
+	COUNTRY\CAMEROON => 'pdf/result-pdf-cameroon.php',
+	COUNTRY\PNG => 'pdf/result-pdf-png.php',
+	COUNTRY\WHO => 'pdf/result-pdf-who.php',
+	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php'
 );
 
-$country = array(
-	1 => 'South sudan',
-	2 => 'Sierra Leone',
-	3 => 'Democratic Republic of the Congo',
-	4 => 'Cameroon',
-	5 => 'Papua New Guinea',
-	6 => 'WHO',
-	7 => 'Rwanda'
-);
-
-require($fileArray[$formId]);
+require_once($fileArray[$formId]);

@@ -102,7 +102,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $output[] = $row;
     }
 
-    if (isset($_SESSION['resultNotAvailableCount']) && $_SESSION['resultNotAvailableCount'] > 75000) {
+    if (isset($_SESSION['resultNotAvailableCount']) && $_SESSION['resultNotAvailableCount'] > 50000) {
         $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.csv';
         $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
         // we dont need the $output variable anymore

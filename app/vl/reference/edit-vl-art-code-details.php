@@ -16,7 +16,7 @@ $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $artId = base64_decode((string) $_GET['id']);
 
 $artQ = "SELECT * FROM `r_vl_art_regimen` WHERE art_id = ?";

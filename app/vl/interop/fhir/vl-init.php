@@ -26,5 +26,5 @@ $fileArray = array(
     7 => 'forms/rwanda/init-rwanda.php'
 );
 
-//require($fileArray[$arr['vl_form']]);
-require('forms/rwanda/init-rwanda.php');
+//require_once($fileArray[$arr['vl_form']]);
+require_once('forms/rwanda/init-rwanda.php');

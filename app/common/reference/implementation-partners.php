@@ -21,8 +21,8 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("geographical-divisions-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-implementation-partners.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Implementation Partners"); ?></a>
+						<?php if (_isAllowed("/common/reference/add-implementation-partners.php") && $_SESSION['instanceType'] != 'vluser') { ?>
+							<a href="/common/reference/add-implementation-partners.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Implementation Partners"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -32,9 +32,6 @@ require_once APPLICATION_PATH . '/header.php';
 								<tr>
 									<th scope="row"><?php echo _translate("Partner Name"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (_isAllowed("geographical-divisions-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
-										<!-- <th scope="row">Action</th> -->
-									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
@@ -82,7 +79,7 @@ require_once APPLICATION_PATH . '/header.php';
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-implementation-partners-helper.php",
+			"sAjaxSource": "/common/reference/get-implementation-partners-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',

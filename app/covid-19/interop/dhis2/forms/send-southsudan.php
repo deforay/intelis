@@ -238,7 +238,6 @@ foreach ($formResults as $row) {
 
 
   $finalPayload['events'] = ($payload);
-  $finalPayload = json_encode($finalPayload);
   // echo "<br><br><pre>";
   // var_dump($finalPayload);
   // echo "</pre>";

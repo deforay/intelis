@@ -1,25 +1,23 @@
 <?php
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
+/** @var CommonService $commonService */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $tableName = "r_vl_art_regimen";
 $primaryKey = "art_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
+
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
 
-$aColumns = array('art_code', 'parent_art', 'headings', 'art_status');
+$aColumns = array('art_code', 'headings', 'art_status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -97,31 +95,16 @@ if (!empty($sOrder)) {
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
 
-if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-//die($sQuery);
-// echo $sQuery;
-$rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName $sWhere order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length */
-$aResultTotal = $db->rawQuery("select COUNT($primaryKey) as total FROM $tableName");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = $aResultTotal[0]['total'];
 
 /*
  * Output
  */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
 );
 
@@ -129,14 +112,14 @@ foreach ($rResult as $aRow) {
     $status = '<select class="form-control" name="status[]" id="' . $aRow['art_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['art_status'] . '\')">
                <option value="active" ' . ($aRow['art_status'] == "active" ? "selected=selected" : "") . '>' . _translate("Active") . '</option>
                <option value="inactive" ' . ($aRow['art_status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
-               </select><br><br>';
+               </select>';
     $row = [];
     $row[] = $aRow['art_code'];
     $row[] = ($aRow['headings']);
-    if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("/vl/reference/add-vl-art-code-details.php") && $_SESSION['instanceType'] !== 'vluser') {
         $row[] = $status;
     } else {
-        $row[] = ($aRow['art_status']);
+        $row[] = $aRow['art_status'];
     }
     $output['aaData'][] = $row;
 }

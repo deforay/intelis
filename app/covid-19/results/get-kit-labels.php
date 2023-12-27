@@ -17,7 +17,7 @@ $covid19Results = $covid19Service->getCovid19Results();
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $testKitInfo = $db->rawQueryOne("SELECT * from r_covid19_qc_testkits where testkit_id = ?", [base64_decode((string) $_POST['kitId'])]);
 $result = "";

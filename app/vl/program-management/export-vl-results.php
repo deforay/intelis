@@ -211,7 +211,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 		});
 	}
 
-	if (isset($_SESSION['vlResultQueryCount']) && $_SESSION['vlResultQueryCount'] > 100000) {
+	if (isset($_SESSION['vlResultQueryCount']) && $_SESSION['vlResultQueryCount'] > 50000) {
 
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);

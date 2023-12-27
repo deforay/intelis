@@ -34,7 +34,7 @@
         "crunzphp/crunz": "^3.4",
         "ramsey/uuid": "^4.2",
         "hackzilla/password-generator": "^1.6",
-        "laminas/laminas-filter": "^2.22",
+        "laminas/laminas-filter": "^2.33",
         "symfony/string": "^5.4",
         "laminas/laminas-config": "^3.7",
         "filp/whoops": "^2.15",
@@ -71,6 +71,7 @@
     "scripts": {
         "cleanup": "php app/scheduled-jobs/cleanup.php 60",
         "db-backup": "php app/scheduled-jobs/db-backups.php",
+        "interface": "php app/scheduled-jobs/interface.php",
         "fix-privileges": "php run-once/update-privileges.php",
         "fix-audit-tables": "php run-once/fix-audit-tables.php",
         "migrate": "php app/system/migrate.php -yq",

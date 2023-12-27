@@ -1,9 +1,9 @@
 <?php
 
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 
 $title = _translate("Manage Result Status");
 
@@ -36,7 +36,7 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 $rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active'";
 $rejectionResult = $db->rawQuery($rejectionQuery);
 
-$rejectionReason = '<option value="">-- Select sample rejection reason --</option>';
+$rejectionReason = '<option value="">-- ' . _translate("Select Sample Rejection Reason") . ' --</option>';
 foreach ($rejectionTypeResult as $type) {
   $rejectionReason .= '<optgroup label="' . strtoupper((string) $type['rejection_type']) . '">';
   foreach ($rejectionResult as $reject) {

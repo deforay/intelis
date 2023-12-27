@@ -160,6 +160,7 @@ try {
 		'sample_registered_at_lab' => DateUtility::getCurrentDateTime(),
 		'last_modified_by' => $_SESSION['userId'],
 		'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+		'result_modified'  => 'no',
 		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId']
 	);
 

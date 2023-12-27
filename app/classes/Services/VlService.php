@@ -93,61 +93,61 @@ class VlService extends AbstractTestService
 
     public function getVLResultCategory($resultStatus, $finalResult): ?string
     {
-
-        $vlResultCategory = null;
-        $orignalResultValue = $finalResult;
-        $find = [
-            'c/ml',
-            'cp/ml',
-            'copies/ml',
-            'cop/ml',
-            'copies',
-            'cpml',
-            'cp',
-            'HIV-1 DETECTED',
-            'HIV1 DETECTED',
-            'HIV-1 NOT DETECTED',
-            'HIV-1 NOTDETECTED',
-            'HIV1 NOTDETECTED',
-
-        ];
-        $finalResult = trim(str_ireplace($find, '', (string) $finalResult));
-
-        if (empty($finalResult)) {
+        return once(function () use ($resultStatus, $finalResult) {
             $vlResultCategory = null;
-        } elseif (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
-            $vlResultCategory = 'failed';
-        } elseif (in_array($resultStatus, [1, 2, 3, 10])) {
-            $vlResultCategory = null;
-        } elseif ($resultStatus == 4) {
-            $vlResultCategory = 'rejected';
-        } elseif ($resultStatus == 5) {
-            $vlResultCategory = 'invalid';
-        } else {
+            $orignalResultValue = $finalResult;
+            $find = [
+                'c/ml',
+                'cp/ml',
+                'copies/ml',
+                'cop/ml',
+                'copies',
+                'cpml',
+                'cp',
+                'HIV-1 DETECTED',
+                'HIV1 DETECTED',
+                'HIV-1 NOT DETECTED',
+                'HIV-1 NOTDETECTED',
+                'HIV1 NOTDETECTED'
+            ];
+            $finalResult = trim(str_ireplace($find, '', (string) $finalResult));
 
-            if (is_numeric($finalResult) || MiscUtility::isScientificNotation($finalResult)) {
-                $finalResult = floatval($finalResult);
-                if ($finalResult < $this->suppressionLimit) {
-                    $vlResultCategory = 'suppressed';
-                } elseif ($finalResult >= $this->suppressionLimit) {
-                    $vlResultCategory = 'not suppressed';
-                }
+            if (empty($finalResult)) {
+                $vlResultCategory = null;
+            } elseif (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
+                $vlResultCategory = 'failed';
+            } elseif (in_array($resultStatus, [1, 2, 3, 10])) {
+                $vlResultCategory = null;
+            } elseif ($resultStatus == 4) {
+                $vlResultCategory = 'rejected';
+            } elseif ($resultStatus == 5) {
+                $vlResultCategory = 'invalid';
             } else {
-                if (in_array(strtolower((string) $orignalResultValue), $this->suppressedArray)) {
-                    $textResult = 10;
-                } else {
-                    $textResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
-                }
 
-                if ($textResult < $this->suppressionLimit) {
-                    $vlResultCategory = 'suppressed';
-                } elseif ($textResult >= $this->suppressionLimit) {
-                    $vlResultCategory = 'not suppressed';
+                if (is_numeric($finalResult) || MiscUtility::isScientificNotation($finalResult)) {
+                    $finalResult = floatval($finalResult);
+                    if ($finalResult < $this->suppressionLimit) {
+                        $vlResultCategory = 'suppressed';
+                    } elseif ($finalResult >= $this->suppressionLimit) {
+                        $vlResultCategory = 'not suppressed';
+                    }
+                } else {
+                    if (in_array(strtolower((string) $orignalResultValue), $this->suppressedArray)) {
+                        $textResult = 10;
+                    } else {
+                        $textResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
+                    }
+
+                    if ($textResult < $this->suppressionLimit) {
+                        $vlResultCategory = 'suppressed';
+                    } elseif ($textResult >= $this->suppressionLimit) {
+                        $vlResultCategory = 'not suppressed';
+                    }
                 }
             }
-        }
 
-        return $vlResultCategory;
+            return $vlResultCategory;
+        });
     }
 
     public function processViralLoadResultFromForm(array $params): array
@@ -469,16 +469,16 @@ class VlService extends AbstractTestService
                 $tesRequestData = [
                     'vlsm_country_id' => $formId,
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
-                    'facility_id' => $params['facilityId'] ?? null,
-                    'lab_id' => $params['labId'] ?? null,
-                    'app_sample_code' => $params['appSampleCode'] ?? null,
+                    'facility_id' => _castVariable($params['facilityId'], 'int'),
+                    'lab_id' => _castVariable($params['labId'], 'int'),
+                    'app_sample_code' => _castVariable($params['appSampleCode'], 'string'),
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
-                    'province_id' => $provinceId,
-                    'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                    'province_id' => _castVariable($provinceId, 'int'),
+                    'request_created_by' => _castVariable($_SESSION['userId'], 'string') ?? _castVariable($params['userId'], 'string') ?? null,
                     'form_attributes' => $params['formAttributes'] ?? "{}",
                     'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                    'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                    'last_modified_by' => _castVariable($_SESSION['userId'], 'string') ?? _castVariable($params['userId'], 'string') ?? null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime()
                 ];
 

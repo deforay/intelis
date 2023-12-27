@@ -98,16 +98,16 @@ $condition = "status ='active' AND test_type='eid'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 $fileArray = array(
-    1 => 'forms/add-southsudan.php',
-    2 => 'forms/add-sierraleone.php',
-    3 => 'forms/add-drc.php',
-    4 => 'forms/add-cameroon.php',
-    5 => 'forms/add-png.php',
-    6 => 'forms/add-who.php',
-    7 => 'forms/add-rwanda.php'
+    COUNTRY\SOUTH_SUDAN => 'forms/add-southsudan.php',
+    COUNTRY\SIERRA_LEONE => 'forms/add-sierraleone.php',
+    COUNTRY\DRC => 'forms/add-drc.php',
+    COUNTRY\CAMEROON => 'forms/add-cameroon.php',
+    COUNTRY\PNG => 'forms/add-png.php',
+    COUNTRY\WHO => 'forms/add-who.php',
+    COUNTRY\RWANDA => 'forms/add-rwanda.php'
 );
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);
 
 ?>
 

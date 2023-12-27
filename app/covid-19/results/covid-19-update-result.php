@@ -44,7 +44,7 @@ foreach ($userResult as $user) {
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
@@ -73,7 +73,7 @@ $specimenTypeResult = $db->query($sQuery);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $covid19Query = "SELECT * FROM form_covid19 where covid19_id=?";
@@ -149,22 +149,22 @@ if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes
 		width: 100%;
 	}
 </style>
+
 <?php
-if ($formId == COUNTRY\SOUTH_SUDAN) {
-	require('forms/update-southsudan-result.php');
-} else if ($formId == COUNTRY\SIERRA_LEONE) {
-	require('forms/update-sierraleone-result.php');
-} else if ($formId == COUNTRY\DRC) {
-	require('forms/update-drc-result.php');
-} else if ($formId == COUNTRY\CAMEROON) {
-	require('forms/update-cameroon-result.php');
-} else if ($formId == COUNTRY\PNG) {
-	require('forms/update-png-result.php');
-} else if ($formId == COUNTRY\WHO) {
-	require('forms/update-who-result.php');
-} else if ($formId == COUNTRY\RWANDA) {
-	require('forms/update-rwanda-result.php');
-}
+
+
+
+$fileArray = array(
+	COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php',
+	COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php',
+	COUNTRY\DRC => 'forms/update-drc-result.php',
+	COUNTRY\CAMEROON => 'forms/update-cameroon-result.php',
+	COUNTRY\PNG => 'forms/update-png-result.php',
+	COUNTRY\WHO => 'forms/update-who-result.php',
+	COUNTRY\RWANDA => 'forms/update-rwanda-result.php'
+);
+
+require_once($fileArray[$formId]);
 
 ?>
 

@@ -273,6 +273,7 @@ try {
 		'last_modified_datetime' => DateUtility::getCurrentDateTime(),
 		'request_created_by' => $_SESSION['userId'],
 		'last_modified_by' => $_SESSION['userId'],
+		'result_modified'  => 'no',
 		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId']
 	);
 	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {

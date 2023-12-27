@@ -1,19 +1,22 @@
 <?php
 
 
-use App\Helpers\PdfWatermarkHelper;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Helpers\PdfWatermarkHelper;
+use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
-class SouthSudanCovid19DefaultPDF extends Covid19ResultPDF
+class SouthSudanCovid19DefaultPDF extends Covid19ResultPDFHelper
 {
     //Page header
     public function Header()
     {
         // Logo
 
-        if ($this->htitle != '') {
+        if (!empty($this->htitle) && trim($this->htitle) != '') {
 
-            if (trim($this->logo) != '') {
+            if (!empty($this->logo) && trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
@@ -21,7 +24,7 @@ class SouthSudanCovid19DefaultPDF extends Covid19ResultPDF
             }
             $this->SetFont('helvetica', 'B', 15);
             $this->writeHTMLCell(0, 0, 40, 7, $this->text, 0, 0, 0, true, 'L');
-            if (trim($this->lab) != '') {
+            if (!empty($this->lab) && trim($this->lab) != '') {
                 $this->SetFont('helvetica', 'B', 11);
                 // $this->writeHTMLCell(0, 0, 40, 15, strtoupper($this->lab), 0, 0, 0, true, 'L', true);
                 $this->writeHTMLCell(0, 0, 40, 15, 'Public Health Laboratory', 0, 0, 0, true, 'L');
@@ -378,11 +381,15 @@ if (!empty($signResults)) {
     $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">DATE & TIME</td>';
     $html .= '</tr>';
     foreach ($signResults as $key => $row) {
-        $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+        $lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+        $signature = '';
+        if (MiscUtility::imageExists($lmSign)) {
+            $signature = '<img src="' . $lmSign . '" style="width:40px;" />';
+        }
         $html .= '<tr>';
         $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">' . $row['designation'] . '</td>';
         $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . $row['name_of_signatory'] . '</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lmSign . '" style="width:30px;"></td>';
+        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . $signature . '</td>';
         $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
         $html .= '</tr>';
     }
@@ -433,23 +440,11 @@ $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td
 $html .= '</tr>';
 $html .= '</table>';
 if (($result['result'] != '') || ($result['result'] == '' && $result['result_status'] == '4')) {
-    $ciphering = "AES-128-CTR";
-    $iv_length = openssl_cipher_iv_length($ciphering);
-    $options = 0;
-    $simple_string = $result['covid19_id'] . "&&&qr";
-    $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
-    $encryption_key = SYSTEM_CONFIG['tryCrypt'];
-    $Cid = openssl_encrypt(
-        $simple_string,
-        $ciphering,
-        $encryption_key,
-        $options,
-        $encryption_iv
-    );
+    $viewId = CommonService::encryptViewQRCode($result['unique_id']);
     $pdf->writeHTML($html);
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
         $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid, 'QRCODE,H', 170, 175, 20, 20, [], 'N');
+        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $viewId, 'QRCODE,H', 170, 175, 20, 20, [], 'N');
     }
     $pdf->lastPage();
     $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

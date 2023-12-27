@@ -190,6 +190,15 @@ try {
 		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
 	);
 
+	 //$db->select('result');
+     $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
+     $getPrevResult = $db->getOne('form_hepatitis');
+     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+          $hepatitisData['result_modified'] = "yes";
+     } else {
+          $hepatitisData['result_modified'] = "no";
+     }
+
 	// For Save Comorbidity
 	if (isset($_POST['hepatitisSampleId']) && $_POST['hepatitisSampleId'] != 0) {
 

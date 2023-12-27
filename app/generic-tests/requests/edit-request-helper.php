@@ -31,7 +31,7 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 $tableName = "form_generic";
 $testTableName = "generic_test_results";
 $vlTestReasonTable = "r_generic_test_reasons";

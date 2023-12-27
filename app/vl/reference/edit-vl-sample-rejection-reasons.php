@@ -9,7 +9,7 @@ $rejReaons = $general->getRejectionReasons('vl');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $rsnQuery = "SELECT * from r_vl_sample_rejection_reasons where rejection_reason_id = $id";
@@ -86,7 +86,7 @@ $rsnInfo = $db->query($rsnQuery);
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-						<a href="vl-sample-rejection-reasons.php" class="btn btn-default"> Cancel</a>
+						<a href="/vl/reference/vl-sample-rejection-reasons.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

@@ -1,16 +1,15 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
-use Crunz\Logger\Logger;
 
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
@@ -34,6 +33,8 @@ $app = ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 
+$sanitizedSignFile = _sanitizeFiles($_FILES['sign'], ['png', 'jpg', 'jpeg', 'gif']);
+
 try {
     ini_set('memory_limit', -1);
     set_time_limit(0);
@@ -41,9 +42,9 @@ try {
     $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserByToken($authToken);
     if (!empty($origJson)) {
-        $input = $request->getParsedBody();
+        $input = _sanitizeInput($request->getParsedBody());
     } elseif (!empty($_REQUEST)) {
-        $input = $_REQUEST;
+        $input = _sanitizeInput($_REQUEST);
         $input['post'] = json_decode((string) $input['post'], true);
     } else {
         throw new SystemException("2 Invalid request. Please check your request parameters.");
@@ -111,14 +112,14 @@ try {
         $data['login_id'] =  $db->escape($post['loginId']);
     }
 
-    if (isset($_FILES['sign']) && $_FILES['sign']['error'] === UPLOAD_ERR_OK && $_FILES['sign']['size'] > 0) {
+    if (isset($sanitizedSignFile) && $sanitizedSignFile['error'] === UPLOAD_ERR_OK && $sanitizedSignFile['size'] > 0) {
 
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 
         MiscUtility::makeDirectory($signatureImagePath);
 
-        $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['sign']['name'])));
+        $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $sanitizedSignFile['name'])));
         $imageName = str_replace(" ", "-", $imageName);
         $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
         $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;

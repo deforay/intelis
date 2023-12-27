@@ -29,7 +29,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $module = $_GET['t'];
 $testingLabs = $facilitiesService->getTestingLabs($module);
 
@@ -135,7 +135,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							<div class="col-xs-4 col-md-4">
 								<div class="form-group" style="margin-left:30px; margin-top:30px;">
 									<label for="testType">Test Type</label>
-									<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
+									<select class="form-control select2" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
 										<option value=""> -- Select -- </option>
 										<?php foreach ($testTypeResult as $testType) { ?>
 											<option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
@@ -271,10 +271,6 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	}
 
 	$(document).ready(function() {
-		$("#testType").select2({
-			width: '100%',
-			placeholder: "<?php echo _translate("Select Test Type"); ?>"
-		});
 		$('#daterange').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
@@ -305,10 +301,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		/*$(".select2").select2();
+		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
-		});*/
+		});
 
 		$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",

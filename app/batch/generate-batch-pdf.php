@@ -22,7 +22,7 @@ $batchService = ContainerRegistry::get(BatchService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
+$_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
@@ -101,7 +101,7 @@ if (!empty($id)) {
                     LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine
                     LEFT JOIN user_details as u ON u.user_id=b_d.created_by
                     WHERE batch_id=?";
-    $bResult = $db->rawQuery($bQuery, [$id]);
+    $bResult = $db->rawQueryOne($bQuery, [$id]);
 
     if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
         $dateQuery = "SELECT ct.*,
@@ -134,7 +134,7 @@ if (!empty($id)) {
         // create new PDF document
         $pdf = new BatchPdfHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf->setHeading($logo, $headerText, $bResult[0]['batch_code'], $resulted, $reviewed, $bResult[0]['user_name'], $worksheetName);
+        $pdf->setHeading($logo, $headerText, $bResult['batch_code'], $resulted, $reviewed, $bResult['user_name'], $worksheetName);
 
         // set document information
         $pdf->SetCreator(_translate('VLSM'));
@@ -216,10 +216,10 @@ if (!empty($id)) {
                     </tr>
                 </table><hr>';
         }
-        if (isset($bResult[0]['label_order']) && trim((string) $bResult[0]['label_order']) != '') {
-            $jsonToArray = json_decode((string) $bResult[0]['label_order'], true);
+        if (isset($bResult['label_order']) && trim((string) $bResult['label_order']) != '') {
+            $jsonToArray = json_decode((string) $bResult['label_order'], true);
             $sampleCounter = 1;
-            if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
+            if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
                 foreach ($batchService->excelColumnRange('A', 'H') as $value) {
                     foreach (range(1, 12) as $no) {
                         $alphaNumeric[] = $value . $no;
@@ -228,7 +228,7 @@ if (!empty($id)) {
                 $sampleCounter = $alphaNumeric[0];
             }
             for ($j = 0; $j < count($jsonToArray); $j++) {
-                if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
+                if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
                     $xplodJsonToArray = explode("_", (string) $jsonToArray[$alphaNumeric[$j]]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
@@ -398,9 +398,9 @@ if (!empty($id)) {
             }
         } else {
             $noOfInHouseControls = 0;
-            if (isset($bResult[0]['number_of_in_house_controls']) && $bResult[0]['number_of_in_house_controls'] != '' && $bResult[0]['number_of_in_house_controls'] != null) {
-                $noOfInHouseControls = $bResult[0]['number_of_in_house_controls'];
-                for ($i = 1; $i <= $bResult[0]['number_of_in_house_controls']; $i++) {
+            if (isset($bResult['number_of_in_house_controls']) && $bResult['number_of_in_house_controls'] != '' && $bResult['number_of_in_house_controls'] != null) {
+                $noOfInHouseControls = $bResult['number_of_in_house_controls'];
+                for ($i = 1; $i <= $bResult['number_of_in_house_controls']; $i++) {
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                     $tbl .= '<tr nobr="true" style="width:100%;">
                             <td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333">' . $i . '.</td>
@@ -414,9 +414,9 @@ if (!empty($id)) {
                 }
             }
             $noOfManufacturerControls = 0;
-            if (isset($bResult[0]['number_of_manufacturer_controls']) && $bResult[0]['number_of_manufacturer_controls'] != '' && $bResult[0]['number_of_manufacturer_controls'] != null) {
-                $noOfManufacturerControls = $bResult[0]['number_of_manufacturer_controls'];
-                for ($i = 1; $i <= $bResult[0]['number_of_manufacturer_controls']; $i++) {
+            if (isset($bResult['number_of_manufacturer_controls']) && $bResult['number_of_manufacturer_controls'] != '' && $bResult['number_of_manufacturer_controls'] != null) {
+                $noOfManufacturerControls = $bResult['number_of_manufacturer_controls'];
+                for ($i = 1; $i <= $bResult['number_of_manufacturer_controls']; $i++) {
                     $sNo = $noOfInHouseControls + $i;
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                     $tbl .= '<tr nobr="true" style="width:100%;">
@@ -431,9 +431,9 @@ if (!empty($id)) {
                 }
             }
             $noOfCalibrators = 0;
-            if (isset($bResult[0]['number_of_calibrators']) && $bResult[0]['number_of_calibrators'] != '' && $bResult[0]['number_of_calibrators'] != null) {
-                $noOfCalibrators = $bResult[0]['number_of_calibrators'];
-                for ($i = 1; $i <= $bResult[0]['number_of_calibrators']; $i++) {
+            if (isset($bResult['number_of_calibrators']) && $bResult['number_of_calibrators'] != '' && $bResult['number_of_calibrators'] != null) {
+                $noOfCalibrators = $bResult['number_of_calibrators'];
+                for ($i = 1; $i <= $bResult['number_of_calibrators']; $i++) {
                     $sNo = $noOfInHouseControls + $noOfManufacturerControls + $i;
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                     $tbl .= '<tr nobr="true" style="width:100%;">
@@ -461,7 +461,7 @@ if (!empty($id)) {
                             WHERE sample_batch_id=$id";
             $result = $db->query($sQuery);
             $sampleCounter = 1;
-            if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
+            if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
                 foreach ($batchService->excelColumnRange('A', 'H') as $value) {
                     foreach (range(1, 12) as $no) {
                         $alphaNumeric[] = $value . $no;
@@ -508,7 +508,7 @@ if (!empty($id)) {
                 }
                 $tbl .= '</tr>';
                 $tbl .= '</table>';
-                if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
+                if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
                     $sampleCounter = $alphaNumeric[($j + 1)];
                     $J++;
                 } else {
@@ -518,7 +518,7 @@ if (!empty($id)) {
         }
 
         $pdf->writeHTML($tbl);
-        $filename = "VLSM-" . trim((string) $bResult[0]['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . $general->generateRandomString(12) . '.pdf';
+        $filename = "VLSM-" . trim((string) $bResult['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . $general->generateRandomString(12) . '.pdf';
         $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'batches' . DIRECTORY_SEPARATOR . $filename);
         exit;
     }

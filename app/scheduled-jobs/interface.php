@@ -62,15 +62,12 @@ if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
     $sqliteDb = new PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
 }
 
-
 //get the value from interfacing DB
-
-
-
 if ($mysqlConnected) {
 
     if (!empty($lastInterfaceSync)) {
-        $db->connection('interface')->where('added_on', $lastInterfaceSync, ">");
+        $db->connection('interface')
+            ->where("added_on > '$lastInterfaceSync' OR lims_sync_status = 0");
     }
     $db->connection('interface')->where('result_status', 1);
     //$db->connection('interface')->where('lims_sync_status', 0);
@@ -80,7 +77,7 @@ if ($mysqlConnected) {
     $where = [];
     $where[] = " result_status = 1 ";
     if (!empty($lastInterfaceSync)) {
-        $where[] = " added_on > '$lastInterfaceSync' ";
+        $where[] = " added_on > '$lastInterfaceSync' OR lims_sync_status = 0";
     }
     $where = implode(' AND ', $where);
     $interfaceQuery = "SELECT * FROM `orders`
@@ -119,8 +116,8 @@ if (!empty($interfaceData)) {
 
         $tableInfo = [];
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
-            $tableQuery = "SELECT $individualIdColumn FROM $individualTableName WHERE sample_code = ?";
-            $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id']]);
+            $tableQuery = "SELECT $individualIdColumn FROM $individualTableName WHERE sample_code = ? OR remote_sample_code = ?";
+            $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id'], $result['order_id']]);
             if (!empty($tableInfo[$individualIdColumn])) {
                 break;
             }
@@ -150,7 +147,7 @@ if (!empty($interfaceData)) {
             $txtVal = null;
             $vlResult = null;
             //set result in result fields
-            if (trim((string) $result['results']) != "") {
+            if (!empty($result['results'])) {
 
                 $vlResult = trim(str_ireplace(['cp/ml', 'copies/ml'], '', (string) $result['results']));
 
@@ -203,7 +200,7 @@ if (!empty($interfaceData)) {
                 'result_value_text' => $txtVal,
                 'result' => $vlResult,
                 'vl_test_platform' => $result['machine_used'],
-                'result_status' => 7,
+                'result_status' => SAMPLE_STATUS\ACCEPTED,
                 'manual_result_entry' => 'no',
                 'result_printed_datetime' => null,
                 'result_dispatched_datetime' => null,
@@ -237,7 +234,7 @@ if (!empty($interfaceData)) {
 
                 if ($sqliteConnected) {
                     // Prepare the SQL query
-                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE order_id = :order_id");
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
@@ -272,7 +269,7 @@ if (!empty($interfaceData)) {
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
                 'result' => $eidResult,
                 'eid_test_platform' => $result['machine_used'],
-                'result_status' => 7,
+                'result_status' => SAMPLE_STATUS\ACCEPTED,
                 'manual_result_entry' => 'no',
                 'result_approved_by' => (isset($approved['eid']) && $approved['eid'] != "") ? $approved['eid'] : null,
                 'result_reviewed_by' => (isset($reviewed['eid']) && $reviewed['eid'] != "") ? $reviewed['eid'] : null,
@@ -297,7 +294,7 @@ if (!empty($interfaceData)) {
                 }
                 if ($sqliteConnected) {
                     // Prepare the SQL query
-                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE order_id = :order_id");
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
@@ -351,7 +348,7 @@ if (!empty($interfaceData)) {
                 $resultField => $hepatitisResult ?? null,
                 $otherField => $otherFieldResult ?? null,
                 'hepatitis_test_platform' => $result['machine_used'],
-                'result_status' => 7,
+                'result_status' => SAMPLE_STATUS\ACCEPTED,
                 'manual_result_entry' => 'no',
                 'result_approved_by' => $approved['hepatitis'] ?? null,
                 'result_reviewed_by' => $reviewed['hepatitis'] ?? null,
@@ -376,7 +373,7 @@ if (!empty($interfaceData)) {
                 }
                 if ($sqliteConnected) {
                     // Prepare the SQL query
-                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE order_id = :order_id");
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
@@ -398,7 +395,7 @@ if (!empty($interfaceData)) {
             }
             if ($sqliteConnected) {
                 // Prepare the SQL query
-                $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE order_id = :order_id");
+                $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
 
                 // Bind the values to the placeholders in the prepared statement
                 $stmt->bindValue(':lims_sync_status', 2, PDO::PARAM_INT);
@@ -410,17 +407,15 @@ if (!empty($interfaceData)) {
             }
         }
 
-
         if (!empty($result['added_on'])) {
 
             $data = [
-                'last_interface_sync' => DateUtility::isoDateFormat($result['added_on']),
+                'last_interface_sync' => $result['added_on']
             ];
 
             $db->connection('default')->update('s_vlsm_instance', $data);
         }
     }
-
 
     if ($numberOfResults > 0) {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';

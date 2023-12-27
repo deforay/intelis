@@ -11,7 +11,7 @@ use App\Utilities\DateUtility;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 use App\Interop\Fhir;
 
-$interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
+$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

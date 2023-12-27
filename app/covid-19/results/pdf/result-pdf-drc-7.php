@@ -3,19 +3,21 @@
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
 if (!class_exists('DRCCovid19PDF7')) {
 
-    class DRCCovid19PDF7 extends Covid19ResultPDF
+    class DRCCovid19PDF7 extends Covid19ResultPDFHelper
     {
         //Page header
         public function Header()
         {
             // Logo
-            if ($this->htitle != '') {
+            if (!empty($this->htitle) && trim($this->htitle) != '') {
 
 
                 $inrbImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "inrb.png";
@@ -43,7 +45,7 @@ if (!class_exists('DRCCovid19PDF7')) {
                 $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C');
                 $this->writeHTMLCell(0, 0, 0, 16, "DIVISION PROVINCIALE DE LA SANTÉ", 0, 0, 0, true, 'C');
                 $this->writeHTMLCell(0, 0, 0, 22, "PROVINCE DU HAUT KATANGA", 0, 0, 0, true, 'C');
-                if (trim($this->lab) != '') {
+                if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', 'B', 11);
                     $this->writeHTMLCell(0, 0, 0, 27, ($this->lab), 0, 0, 0, true, 'C');
                 }
@@ -96,9 +98,6 @@ if (!class_exists('DRCCovid19PDF7')) {
             $this->writeHTML($formatter->format(strtotime((string) $this->resultPrintedDate)) . ' ' . $generatedAtTestingLab);
             //$this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . $generatedAtTestingLab);
             $this->writeHTMLCell(0, 0, 10, 280, 'Service de Biologie Moléculaire', 0, 0, false, true, 'C');
-            // Page number
-            //$this->SetFont('helvetica', '', 8);
-            //$this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');
         }
     }
 }
@@ -388,24 +387,12 @@ $html .= '</table>';
 $html .= '</td></tr></table>';
 
 if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
-    $ciphering = "AES-128-CTR";
-    $iv_length = openssl_cipher_iv_length($ciphering);
-    $options = 0;
-    $simple_string = $result['unique_id'] . "&&&qr";
-    $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
-    $encryption_key = SYSTEM_CONFIG['tryCrypt'];
-    $Cid = openssl_encrypt(
-        $simple_string,
-        $ciphering,
-        $encryption_key,
-        $options,
-        $encryption_iv
-    );
+    $viewId = CommonService::encryptViewQRCode($result['unique_id']);
     $pdf->writeHTML($html);
 
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
         $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . urlencode($Cid), 'QRCODE,H', 170, 60, 100, 100, [], 'N');
+        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . urlencode($viewId), 'QRCODE,H', 170, 60, 100, 100, [], 'N');
     }
     $pdf->lastPage();
     $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

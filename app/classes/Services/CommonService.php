@@ -16,19 +16,16 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 
-
 class CommonService
 {
-
     protected ?DatabaseService $db;
-
 
     public function __construct(?DatabaseService $db)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
     }
 
-    public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false): array
+    public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false, bool $unbuffered = false): array
     {
         try {
             $count = 0;
@@ -41,13 +38,13 @@ class CommonService
 
             // Execute the main query.
             if ($returnGenerator === true) {
-                $queryResult = $this->db->rawQueryGenerator($sql . $limitSql, $params);
+                $queryResult = $this->db->rawQueryGenerator($sql . $limitSql, $params, $unbuffered);
             } else {
                 $queryResult = $this->db->rawQuery($sql . $limitSql, $params);
             }
 
             // If limit and offset are set, execute the count query.
-            if ($limitOffsetSet) {
+            if ($limitOffsetSet || $returnGenerator) {
                 if (stripos($sql, 'GROUP BY') !== false) {
                     // If the query contains GROUP BY
                     $countSql = "SELECT COUNT(*) as totalCount FROM ($sql) as subquery";
@@ -58,7 +55,7 @@ class CommonService
                 $count = (int)$this->db->rawQueryOne($countSql)['totalCount'];
             } else {
                 // if limit not set then count full resultset
-                $count = is_array($queryResult) ? count($queryResult) : \iter\count($queryResult);
+                $count = count($queryResult);
             }
 
             return [$queryResult, $count];
@@ -106,25 +103,23 @@ class CommonService
 
     public function getClientIpAddress()
     {
-        return once(function () {
-            $ipAddress = null;
+        $ipAddress = null;
 
-            if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-                $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-                $ipAddress = $_SERVER['HTTP_X_FORWARDED'];
-            } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-                $ipAddress = $_SERVER['HTTP_FORWARDED_FOR'];
-            } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-                $ipAddress = $_SERVER['HTTP_FORWARDED'];
-            } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-                $ipAddress = $_SERVER['REMOTE_ADDR'];
-            }
+        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+            $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
+            $ipAddress = $_SERVER['HTTP_X_FORWARDED'];
+        } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+            $ipAddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
+            $ipAddress = $_SERVER['HTTP_FORWARDED'];
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            $ipAddress = $_SERVER['REMOTE_ADDR'];
+        }
 
-            return $ipAddress;
-        });
+        return $ipAddress;
     }
 
     // get data from the system_config table from database
@@ -354,12 +349,14 @@ class CommonService
     public function generateSelectOptions($optionList, $selectedOptions = [], $emptySelectText = false)
     {
         return once(function () use ($optionList, $selectedOptions, $emptySelectText) {
+
+            $response = '';
+
             if (empty($optionList)) {
                 return '';
             }
-            $response = '';
             if ($emptySelectText !== false) {
-                $response .= "<option value=''>$emptySelectText</option>";
+                $response .= "<option value=''>" . addslashes($emptySelectText) . "</option>";
             }
 
             foreach ($optionList as $optId => $optName) {
@@ -435,7 +432,6 @@ class CommonService
         }
     }
 
-
     public function getTestingPlatforms($testType = null)
     {
         if (!empty($testType)) {
@@ -509,10 +505,6 @@ class CommonService
         return $localeMap;
     }
 
-
-
-
-
     public function activeReportFormats($module): array
     {
         $countryShortCode = $this->getCountryShortCode();
@@ -563,87 +555,84 @@ class CommonService
     public function getOperatingSystem($userAgent = null): string
     {
 
-        return once(function () use ($userAgent) {
-            if ($userAgent === null) {
-                return "Unknown OS";
+        if ($userAgent === null) {
+            return "Unknown OS";
+        }
+
+        $osArray = [
+            '/windows nt 10/i' => 'Windows 10',
+            '/windows nt 6.3/i' => 'Windows 8.1',
+            '/windows nt 6.2/i' => 'Windows 8',
+            '/windows nt 6.1/i' => 'Windows 7',
+            '/windows nt 6.0/i' => 'Windows Vista',
+            '/windows nt 5.2/i' => 'Windows Server 2003/XP x64',
+            '/windows nt 5.1/i' => 'Windows XP',
+            '/windows xp/i' => 'Windows XP',
+            '/windows nt 5.0/i' => 'Windows 2000',
+            '/windows me/i' => 'Windows ME',
+            '/win98/i' => 'Windows 98',
+            '/win95/i' => 'Windows 95',
+            '/win16/i' => 'Windows 3.11',
+            '/macintosh|mac os x/i' => 'Mac OS X',
+            '/mac_powerpc/i' => 'Mac OS 9',
+            '/linux/i' => 'Linux',
+            '/ubuntu/i' => 'Ubuntu',
+            '/iphone/i' => 'iPhone',
+            '/ipod/i' => 'iPod',
+            '/ipad/i' => 'iPad',
+            '/android/i' => 'Android',
+            '/blackberry/i' => 'BlackBerry',
+            '/webos/i' => 'Mobile',
+            '/fedora/i' => 'Fedora',
+            '/debian/i' => 'Debian',
+            '/freebsd/i' => 'FreeBSD',
+            '/openbsd/i' => 'OpenBSD',
+            '/netbsd/i' => 'NetBSD',
+            '/sunos/i' => 'SunOS',
+            '/solaris/i' => 'Solaris',
+            '/aix/i' => 'AIX'
+        ];
+
+        foreach ($osArray as $regex => $value) {
+            if (preg_match($regex, (string) $userAgent)) {
+                return $value;
             }
+        }
 
-            $osArray = [
-                '/windows nt 10/i' => 'Windows 10',
-                '/windows nt 6.3/i' => 'Windows 8.1',
-                '/windows nt 6.2/i' => 'Windows 8',
-                '/windows nt 6.1/i' => 'Windows 7',
-                '/windows nt 6.0/i' => 'Windows Vista',
-                '/windows nt 5.2/i' => 'Windows Server 2003/XP x64',
-                '/windows nt 5.1/i' => 'Windows XP',
-                '/windows xp/i' => 'Windows XP',
-                '/windows nt 5.0/i' => 'Windows 2000',
-                '/windows me/i' => 'Windows ME',
-                '/win98/i' => 'Windows 98',
-                '/win95/i' => 'Windows 95',
-                '/win16/i' => 'Windows 3.11',
-                '/macintosh|mac os x/i' => 'Mac OS X',
-                '/mac_powerpc/i' => 'Mac OS 9',
-                '/linux/i' => 'Linux',
-                '/ubuntu/i' => 'Ubuntu',
-                '/iphone/i' => 'iPhone',
-                '/ipod/i' => 'iPod',
-                '/ipad/i' => 'iPad',
-                '/android/i' => 'Android',
-                '/blackberry/i' => 'BlackBerry',
-                '/webos/i' => 'Mobile',
-                '/fedora/i' => 'Fedora',
-                '/debian/i' => 'Debian',
-                '/freebsd/i' => 'FreeBSD',
-                '/openbsd/i' => 'OpenBSD',
-                '/netbsd/i' => 'NetBSD',
-                '/sunos/i' => 'SunOS',
-                '/solaris/i' => 'Solaris',
-                '/aix/i' => 'AIX'
-            ];
-
-            foreach ($osArray as $regex => $value) {
-                if (preg_match($regex, (string) $userAgent)) {
-                    return $value;
-                }
-            }
-
-            return "Unknown OS - " . $userAgent;
-        });
+        return "Unknown OS - " . $userAgent;
     }
 
 
     public function getBrowser($userAgent = null): string
     {
-        return once(function () use ($userAgent) {
-            if ($userAgent === null) {
-                return "Unknown Browser";
+
+        if ($userAgent === null) {
+            return "Unknown Browser";
+        }
+
+        $browserArray = [
+            '/msie/i' => 'Internet Explorer',
+            '/trident/i' => 'Internet Explorer',
+            '/firefox/i' => 'Firefox',
+            '/safari/i' => 'Safari',
+            '/chrome/i' => 'Chrome',
+            '/edge/i' => 'Edge',
+            '/opera/i' => 'Opera',
+            '/netscape/i' => 'Netscape',
+            '/maxthon/i' => 'Maxthon',
+            '/konqueror/i' => 'Konqueror',
+            '/mobile/i' => 'Mobile Browser',
+            '/applewebkit/i' => 'Webkit Browser',
+            '/brave/i' => 'Brave'
+        ];
+
+        foreach ($browserArray as $regex => $value) {
+            if (preg_match($regex, (string) $userAgent)) {
+                return $value;
             }
+        }
 
-            $browserArray = [
-                '/msie/i' => 'Internet Explorer',
-                '/trident/i' => 'Internet Explorer',
-                '/firefox/i' => 'Firefox',
-                '/safari/i' => 'Safari',
-                '/chrome/i' => 'Chrome',
-                '/edge/i' => 'Edge',
-                '/opera/i' => 'Opera',
-                '/netscape/i' => 'Netscape',
-                '/maxthon/i' => 'Maxthon',
-                '/konqueror/i' => 'Konqueror',
-                '/mobile/i' => 'Mobile Browser',
-                '/applewebkit/i' => 'Webkit Browser',
-                '/brave/i' => 'Brave'
-            ];
-
-            foreach ($browserArray as $regex => $value) {
-                if (preg_match($regex, (string) $userAgent)) {
-                    return $value;
-                }
-            }
-
-            return "Unknown Browser - " . $userAgent;
-        });
+        return "Unknown Browser - " . $userAgent;
     }
 
 
@@ -657,9 +646,7 @@ class CommonService
 
     public function isRemoteUser(): bool
     {
-        return once(function () {
-            return isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser';
-        });
+        return isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser';
     }
     public function getLastRemoteSyncDateTime()
     {
@@ -703,7 +690,6 @@ class CommonService
     public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
     {
         try {
-
             $requestData = MiscUtility::toJSON($requestData);
             $responseData = MiscUtility::toJSON($responseData);
 
@@ -744,21 +730,27 @@ class CommonService
     {
         try {
             $currentDateTime = DateUtility::getCurrentDateTime();
+            // $batchSize = 100;
 
-            if (!empty($sampleIds)) {
-                $sampleIdsStr = is_array($sampleIds) ? "'" . implode("','", $sampleIds) . "'" : $sampleIds;
-                $formAttributes = [
-                    "remote{$syncType}Sync" => $currentDateTime,
-                    "{$syncType}SyncTransactionId" => $transactionId
-                ];
-                $formAttributes = $this->jsonToSetString(json_encode($formAttributes), 'form_attributes');
-                $data = [
-                    'form_attributes' => $this->db->func($formAttributes),
-                    'data_sync' => 1
-                ];
-                $this->db->where($columnForWhereCondition, [$sampleIdsStr], 'IN');
-                $this->db->update($testTable, $data);
-            }
+
+            // if (!empty($sampleIds)) {
+            //     $sampleIdsBatches = array_chunk($sampleIds, $batchSize);
+
+            //     foreach ($sampleIdsBatches as $batch) {
+            //         $sampleIdsStr = "'" . implode("','", $batch) . "'";
+            //         $formAttributes = [
+            //             "remote{$syncType}Sync" => $currentDateTime,
+            //             "{$syncType}SyncTransactionId" => $transactionId
+            //         ];
+            //         $formAttributes = $this->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+            //         $data = [
+            //             'form_attributes' => $this->db->func($formAttributes),
+            //             'data_sync' => 1
+            //         ];
+            //         $this->db->where($columnForWhereCondition, [$sampleIdsStr], 'IN');
+            //         $this->db->update($testTable, $data);
+            //     }
+            // }
 
             if (!empty($facilityIds)) {
                 $facilityIdsStr = implode(",", array_unique(array_filter($facilityIds)));
@@ -870,7 +862,9 @@ class CommonService
         if (empty($table)) {
             return null;
         }
-        $response = $this->db->rawQueryOne("SHOW KEYS FROM ? WHERE Key_name = 'PRIMARY'", [$table]);
+
+        $table = $this->db->escape($table);
+        $response = $this->db->rawQueryOne("SHOW KEYS FROM $table WHERE Key_name = 'PRIMARY'");
         return $response['Column_name'] ?? null;
     }
 
@@ -903,55 +897,51 @@ class CommonService
         $this->db->orderBy('status_name', "ASC");
         $result =  $this->db->get('r_sample_status');
         $response = [];
-        if($api){
-            foreach($result as $row){
+        if ($api) {
+            foreach ($result as $row) {
                 $response[$row['status_id']] = $row['status_name'];
             }
-        }else{
+        } else {
             $response = $result;
         }
         return $response;
     }
     public function multipleColumnSearch($searchText, $allColumns)
     {
-        return once(function () use ($searchText, $allColumns) {
-            $sWhere = [];
+        $sWhere = [];
 
-            if (!empty($searchText)) {
-                // Split the search query into separate words
-                $searchArray = explode(" ", (string) $searchText);
-                $colSize = count($allColumns);
+        if (!empty($searchText)) {
+            // Split the search query into separate words
+            $searchArray = explode(" ", (string) $searchText);
+            $colSize = count($allColumns);
 
-                foreach ($searchArray as $search) {
-                    $sWhereSub = [];
+            foreach ($searchArray as $search) {
+                $sWhereSub = [];
 
-                    for ($i = 0; $i < $colSize; $i++) {
-                        $sWhereSub[] = "$allColumns[$i] LIKE '%$search%'";
-                    }
-
-                    $sWhere[] = " (" . implode(' OR ', array_filter($sWhereSub)) . ") ";
+                for ($i = 0; $i < $colSize; $i++) {
+                    $sWhereSub[] = "$allColumns[$i] LIKE '%$search%'";
                 }
-            }
 
-            return $sWhere;
-        });
+                $sWhere[] = " (" . implode(' OR ', array_filter($sWhereSub)) . ") ";
+            }
+        }
+
+        return $sWhere;
     }
 
     public function generateDataTablesSorting($postData, $orderColumns)
     {
-        return once(function () use ($postData, $orderColumns) {
-            $sOrder = "";
-            if (isset($postData['iSortCol_0'])) {
-                for ($i = 0; $i < (int) $postData['iSortingCols']; $i++) {
-                    if ($postData['bSortable_' . (int) $postData['iSortCol_' . $i]] == "true") {
-                        $sOrder .= $orderColumns[(int) $postData['iSortCol_' . $i]] . " " . ($postData['sSortDir_' . $i]) . ", ";
-                    }
+        $sOrder = "";
+        if (isset($postData['iSortCol_0'])) {
+            for ($i = 0; $i < (int) $postData['iSortingCols']; $i++) {
+                if ($postData['bSortable_' . (int) $postData['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $postData['iSortCol_' . $i]] . " " . ($postData['sSortDir_' . $i]) . ", ";
                 }
-                $sOrder = substr_replace($sOrder, "", -2);
             }
+            $sOrder = substr_replace($sOrder, "", -2);
+        }
 
-            return $sOrder;
-        });
+        return $sOrder;
     }
 
     public function generateSelectOptionsAPI($options): array
@@ -1215,5 +1205,44 @@ class CommonService
             }
             return $response;
         });
+    }
+
+    public static function encryptViewQRCode($uniqueId)
+    {
+        $ciphering = "AES-128-CTR";
+        $options = 0;
+        $simple_string = $uniqueId . "&&&qr";
+        $encryption_iv = random_bytes(openssl_cipher_iv_length($ciphering));
+        $encryption_key = SYSTEM_CONFIG['tryCrypt'];
+        return openssl_encrypt(
+            $simple_string,
+            $ciphering,
+            $encryption_key,
+            $options,
+            $encryption_iv
+        ) . '#' . bin2hex($encryption_iv);
+    }
+    public static function decryptViewQRCode($viewId)
+    {
+        $ciphering = "AES-128-CTR";
+        $options = 0;
+        if (strpos($viewId, '#') !== false) {
+            list($encryptedData, $ivHex) = explode('#', $viewId, 2);
+            // Convert the hex string back to binary for the IV
+            $decryption_iv = hex2bin($ivHex);
+        } else {
+            // Use the fixed IV from config
+            $encryptedData = $viewId;
+            $decryption_iv = SYSTEM_CONFIG['tryCrypt'];
+        }
+
+        $decryption_key = SYSTEM_CONFIG['tryCrypt'];
+        return openssl_decrypt(
+            $encryptedData,
+            $ciphering,
+            $decryption_key,
+            $options,
+            $decryption_iv
+        );
     }
 }

@@ -12,7 +12,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName = "r_generic_test_reasons";
 $primaryKey = "test_reason_id";

@@ -14,7 +14,7 @@ $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $sampleData = [];
 $sampleQuery = 'SELECT sample_id FROM form_generic WHERE sample_code IS NULL AND (sample_package_code LIKE ? OR remote_sample_code LIKE ?)';

@@ -24,7 +24,7 @@ $facilityService = ContainerRegistry::get(FacilitiesService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 try {
 
@@ -58,11 +58,25 @@ try {
         $sheetData   = $sheetData->toArray(null, true, true, true);
         $returnArray = [];
         $resultArray = array_slice($sheetData, 1);
-        $total = count($resultArray);
+        $filteredArray = array_filter($resultArray, function ($row) {
+            return array_filter($row); // Remove empty rows
+        });
+        $total = count($filteredArray);
         $facilityNotAdded = [];
 
-        foreach ($resultArray as $rowIndex => $rowData) {
+        if($total == 0){
+            $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
+            header("Location:/facilities/upload-facilities.php");
+            die;
+        }
 
+        foreach ($filteredArray as $rowIndex => $rowData) {
+
+            foreach ($rowData as $field => $value) {
+                if (!isset($value) || empty($value)) {
+                    $value = "";
+                }
+            }
             if (empty($rowData['A']) || empty($rowData['D']) || empty($rowData['E']) || empty($rowData['F'])) {
                 $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
                 header("Location:/facilities/upload-facilities.php");

@@ -9,25 +9,26 @@ use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
+use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
-class CameroonCovid19PDF extends Covid19ResultPDF
+class CameroonCovid19PDF extends Covid19ResultPDFHelper
 {
     //Page header
     public function Header()
     {
         // Logo
 
-        if ($this->htitle != '') {
+        if (!empty($this->htitle) && trim($this->htitle) != '') {
 
             if (isset($this->formId) && $this->formId == 1) {
-                if (trim($this->logo) != '') {
+                if (!empty($this->logo) && trim($this->logo) != '') {
                     if ($this->imageExists($this->logo)) {
                         $this->Image($this->logo, 10, 5, 25, '', '', '', 'T');
                     }
                 }
                 $this->SetFont('helvetica', 'B', 15);
                 $this->writeHTMLCell(0, 0, 40, 7, $this->text, 0, 0, 0, true, 'L');
-                if (trim($this->lab) != '') {
+                if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', 'B', 11);
                     // $this->writeHTMLCell(0, 0, 40, 15, strtoupper($this->lab), 0, 0, 0, true, 'L', true);
                     $this->writeHTMLCell(0, 0, 40, 15, 'Public Health Laboratory', 0, 0, 0, true, 'L');
@@ -55,7 +56,7 @@ class CameroonCovid19PDF extends Covid19ResultPDF
 
                 // $this->writeHTMLCell(0, 0, 25, 35, '<hr>', 0, 0, 0, true, 'C', true);
             } else {
-                if (trim($this->logo) != '') {
+                if (!empty($this->logo) && trim($this->logo) != '') {
                     if ($this->imageExists($this->logo)) {
                         $this->Image($this->logo, 10, 5, 25, '', '', '', 'T');
                     }
@@ -63,7 +64,7 @@ class CameroonCovid19PDF extends Covid19ResultPDF
 
                 $this->SetFont('helvetica', 'B', 8);
                 $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
-                if (trim($this->lab) != '') {
+                if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', '', 9);
                     $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
                 }
@@ -450,15 +451,14 @@ if (!empty($requestResult)) {
             $html .= '</tr>';
             foreach ($signResults as $key => $row) {
                 $lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
-                if (!$pdf->imageExists($lmSign)) {
-                    $lmSign = "";
-                } else {
-                    $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+                $signature = '';
+                if (MiscUtility::imageExists($lmSign)) {
+                    $signature = '<img src="' . $lmSign . '" style="width:40px;" />';
                 }
                 $html .= '<tr>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">' . $row['designation'] . '</td>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . $row['name_of_signatory'] . '</td>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lmSign . '" style="width:40px;"></td>';
+                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . $signature . '</td>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
                 $html .= '</tr>';
             }
@@ -515,19 +515,7 @@ if (!empty($requestResult)) {
             $showQR = true;
         }
         if (($showQR || !empty($result['result'])) || ($result['result'] == '' && $result['result_status'] == '4')) {
-            $ciphering = "AES-128-CTR";
-            $iv_length = openssl_cipher_iv_length($ciphering);
-            $options = 0;
-            $simple_string = $result['unique_id'] . "&&&qr";
-            $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
-            $encryption_key = SYSTEM_CONFIG['tryCrypt'];
-            $Cid = openssl_encrypt(
-                $simple_string,
-                $ciphering,
-                $encryption_key,
-                $options,
-                $encryption_iv
-            );
+            $viewId = CommonService::encryptViewQRCode($result['unique_id']);
             $pdf->writeHTML($html);
             $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
             if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
@@ -541,7 +529,7 @@ if (!empty($requestResult)) {
                 }
                 if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                     $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
-                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid, 'QRCODE,H', 170, $h, 20, 20, [], 'N');
+                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $viewId, 'QRCODE,H', 170, $h, 20, 20, [], 'N');
                 }
             }
             $pdf->lastPage();

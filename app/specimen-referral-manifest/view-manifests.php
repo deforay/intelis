@@ -17,8 +17,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_GET = $request->getQueryParams();
-$_COOKIE = $request->getCookieParams();
+$_GET = _sanitizeInput($request->getQueryParams());
+$_COOKIE = _sanitizeInput($request->getCookieParams());
 
 ?>
 <style>

@@ -7,7 +7,7 @@
 use App\Registries\AppRegistry;
 
 $request = AppRegistry::get('request');
-$_POST = $request->getParsedBody();
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName = "global_config";
 

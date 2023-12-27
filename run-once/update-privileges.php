@@ -9,26 +9,32 @@ require_once(__DIR__ . '/../bootstrap.php');
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+// ON THE LEFT IS THE SHARED (INTERNAL/IMPLICIT) PRIVILEGE THAT IS NOT DIRECTLY ASSIGNED TO A USER
+// ON THE RIGHT IS THE PRIVILEGE TO BE CHECKED
+
 $sharedPrivileges = [
     '/import-result/imported-results.php?t=vl' => '/import-result/import-file.php?t=vl',
     '/import-result/imported-results.php?t=eid' => '/import-result/import-file.php?t=eid',
     '/import-result/imported-results.php?t=covid19' => '/import-result/import-file.php?t=covid19',
     '/import-result/imported-results.php?t=hepatitis' => '/import-result/import-file.php?t=hepatitis',
     '/import-result/imported-results.php?t=tb' => '/import-result/import-file.php?t=tb',
-    '/import-result/imported-results.php?t=generic-tests' => '?t=generic-tests',
+    '/import-result/imported-results.php?t=generic-tests' => '/import-result/import-file.php?t=generic-tests',
     '/import-result/importedStatistics.php?t=vl' => '/import-result/import-file.php?t=vl',
     '/import-result/importedStatistics.php?t=eid' => '/import-result/import-file.php?t=eid',
     '/import-result/importedStatistics.php?t=covid19' => '/import-result/import-file.php?t=covid19',
     '/import-result/importedStatistics.php?t=hepatitis' => '/import-result/import-file.php?t=hepatitis',
     '/import-result/importedStatistics.php?t=tb' => '/import-result/import-file.php?t=tb',
     '/import-result/importedStatistics.php?t=generic-tests' => '/import-result/import-file.php?t=generic-tests',
-    'mapTestType.php' => 'addFacility.php',
-    'implementation-partners.php' => 'geographical-divisions-details.php',
-    'add-implementation-partners.php' => 'geographical-divisions-details.php',
-    'edit-implementation-partners.php' => 'geographical-divisions-details.php',
-    'funding-sources.php' => 'geographical-divisions-details.php',
-    'add-funding-sources.php' => 'geographical-divisions-details.php',
-    'edit-funding-sources.php' => 'geographical-divisions-details.php'
+    '/facilities/mapTestType.php' => '/facilities/addFacility.php',
+    '/facilities/facilityMap.php' => '/facilities/addFacility.php',
+    '/facilities/upload-facilities.php' => '/facilities/addFacility.php',
+    '/admin/monitoring/lab-sync-details.php' => '/admin/monitoring/sync-status.php',
+    '/common/reference/implementation-partners.php' => '/common/reference/geographical-divisions-details.php',
+    '/common/reference/add-implementation-partners.php' => '/common/reference/geographical-divisions-details.php',
+    '/common/reference/edit-implementation-partners.php' => '/common/reference/geographical-divisions-details.php',
+    '/common/reference/funding-sources.php' => '/common/reference/geographical-divisions-details.php',
+    '/common/reference/add-funding-sources.php' => '/common/reference/geographical-divisions-details.php',
+    '/common/reference/edit-funding-sources.php' => '/common/reference/geographical-divisions-details.php'
 ];
 
 //Generic Tests Module Shared Privileges
@@ -70,7 +76,7 @@ $sharedVLPrivileges = [
     '/vl/results/updateVlTestResult.php' => '/vl/results/vlTestResult.php',
     '/vl/results/vl-failed-results.php' => '/vl/results/vlTestResult.php',
     '/vl/results/email-results.php' => '/vl/results/email-results.php',
-    '/vl/results/vlResultMailConfirm.php' => '/vl/results/email-results.php',
+    '/vl/results/email-results-confirm.php' => '/vl/results/email-results.php',
     '/vl/reference/add-vl-art-code-details.php' => '/vl/reference/vl-art-code-details.php',
     '/vl/reference/edit-vl-art-code-details.php' => '/vl/reference/vl-art-code-details.php',
     '/vl/reference/add-vl-results.php' => '/vl/reference/vl-art-code-details.php',
@@ -102,7 +108,7 @@ $sharedEIDPrivileges = [
     '/eid/results/eid-update-result.php' => '/eid/results/eid-manual-results.php',
     '/eid/results/eid-failed-results.php' => '/eid/results/eid-manual-results.php',
     '/eid/results/email-results.php' => '/eid/results/email-results.php',
-    '/eid/results/eidResultMailConfirm.php' => '/eid/results/email-results.php',
+    '/eid/results/email-results-confirm.php' => '/eid/results/email-results.php',
     '/eid/requests/eid-bulk-import-request.php' => '/eid/requests/eid-add-request.php',
     '/eid/reference/eid-sample-rejection-reasons.php' => '/eid/reference/eid-sample-type.php',
     '/eid/reference/add-eid-sample-rejection-reasons.php' => '/eid/reference/eid-sample-type.php',
@@ -131,7 +137,7 @@ $sharedCovid19Privileges = [
     '/covid-19/results/covid-19-update-result.php' => '/covid-19/results/covid-19-manual-results.php',
     '/covid-19/results/covid-19-failed-results.php' => '/covid-19/results/covid-19-manual-results.php',
     '/covid-19/results/email-results.php' => '/covid-19/results/email-results.php',
-    '/covid-19/results/covid19ResultMailConfirm.php' => '/covid-19/results/email-results.php',
+    '/covid-19/results/email-results-confirm.php' => '/covid-19/results/email-results.php',
     '/covid-19/requests/covid-19-bulk-import-request.php' => '/covid-19/requests/covid-19-add-request.php',
     '/covid-19/requests/covid-19-quick-add.php' => '/covid-19/requests/covid-19-add-request.php',
     '/covid-19/reference/covid19-sample-rejection-reasons.php' => '/covid-19/reference/covid19-sample-type.php',
@@ -166,7 +172,7 @@ $sharedHepPrivileges = [
     '/hepatitis/results/hepatitis-update-result.php' => '/hepatitis/results/hepatitis-manual-results.php',
     '/hepatitis/results/hepatitis-failed-results.php' => '/hepatitis/results/hepatitis-manual-results.php',
     '/hepatitis/results/email-results.php' => '/hepatitis/results/email-results.php',
-    '/hepatitis/results/hepatitisResultMailConfirm.php' => '/hepatitis/results/email-results.php',
+    '/hepatitis/results/email-results-confirm.php' => '/hepatitis/results/email-results.php',
     '/hepatitis/reference/hepatitis-sample-rejection-reasons.php' => '/hepatitis/reference/hepatitis-sample-type.php',
     '/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php' => '/hepatitis/reference/hepatitis-sample-type.php',
     '/hepatitis/reference/hepatitis-comorbidities.php' => '/hepatitis/reference/hepatitis-sample-type.php',
@@ -193,7 +199,7 @@ $sharedTbPrivileges = [
     '/tb/results/tb-update-result.php' => '/tb/results/tb-manual-results.php',
     '/tb/results/tb-failed-results.php' => '/tb/results/tb-manual-results.php',
     '/tb/results/email-results.php' => '/tb/results/email-results.php',
-    '/tb/results/tbResultMailConfirm.php' => '/tb/results/email-results.php',
+    '/tb/results/email-results-confirm.php' => '/tb/results/email-results.php',
     '/tb/reference/add-tb-sample-type.php' => 'tb-sample-type.php',
     '/tb/reference/tb-sample-rejection-reasons.php' => 'tb-sample-type.php',
     '/tb/reference/add-tb-sample-rejection-reason.php' => 'tb-sample-type.php',

@@ -68,10 +68,10 @@ foreach ($versions as $version) {
             } catch (Exception $e) {
 
                 $message = "Exception : " . $e->getMessage() . PHP_EOL;
-                LoggerUtility::log('error', $message);
 
                 $errorOccurred = true;
                 if (!$quietMode) {  // Only show error messages if -q option is not provided
+                    LoggerUtility::log('error', $message);
                     echo $message;
                 }
             }
@@ -79,8 +79,9 @@ foreach ($versions as $version) {
                 $dbMessage = "Error executing query: " . $db->getLastErrno() . ":" . $db->getLastError() . PHP_EOL . $db->getLastQuery() . PHP_EOL;
                 if (!$quietMode) {  // Only show error messages if -q option is not provided
                     echo $dbMessage;
+                    LoggerUtility::log('error', $dbMessage);
                 }
-                LoggerUtility::log('error', $dbMessage);
+
                 if (!$autoContinueOnError) {  // Only prompt user if -y option is not provided
                     echo "Do you want to continue? (y/n): ";
                     $handle = fopen("php://stdin", "r");
@@ -93,6 +94,7 @@ foreach ($versions as $version) {
                 }
             }
         }
+        unset($sql_contents, $parser);
 
         //if (!$quietMode) { // Only output messages if -q option is not provided
         echo "Migration to version $version completed." . PHP_EOL;
@@ -102,4 +104,6 @@ foreach ($versions as $version) {
         $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Re-enable foreign key checks
         $db->commitTransaction();  // Commit the transaction if no error occurred
     }
+
+    gc_collect_cycles();
 }

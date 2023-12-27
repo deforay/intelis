@@ -9,12 +9,12 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
-use App\Services\DatabaseService;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
@@ -331,7 +331,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                     'result_approved_by',
                     'result_approved_datetime',
                     'lab_tech_comments',
-                    'reason_for_vl_result_changes',
+                    'reason_for_result_changes',
                     'revised_by',
                     'revised_on',
                     'last_modified_by',

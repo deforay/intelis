@@ -18,40 +18,54 @@ class MiscUtility
 
     public static function removeDirectory($dirname): bool
     {
-        // Sanity check
         if (!file_exists($dirname)) {
             return false;
         }
 
-        // Simple delete for a file
         if (is_file($dirname) || is_link($dirname)) {
             return unlink($dirname);
         }
 
-        // Loop through the folder
         $dir = dir($dirname);
         while (false !== ($entry = $dir->read())) {
-            // Skip pointers
             if ($entry == '.' || $entry == '..') {
                 continue;
             }
 
-            // Recurse
-            self::removeDirectory($dirname . DIRECTORY_SEPARATOR . $entry);
+            $fullPath = $dirname . DIRECTORY_SEPARATOR . $entry;
+            if (!self::removeDirectory($fullPath)) {
+                $dir->close(); // Close the directory handle if a recursive delete fails.
+                return false;
+            }
         }
 
-        // Clean up
         $dir->close();
         return rmdir($dirname);
     }
 
+
     //dump the contents of a variable to the error log in a readable format
-    public static function dumpToErrorLog($object = null): void
+    public static function dumpToErrorLog($object = null, $useVarDump = true): void
     {
         ob_start();
-        var_dump($object);
-        error_log(ob_get_clean());
+        if ($useVarDump) {
+            var_dump($object);
+            $output = ob_get_clean();
+            // Remove newline characters
+            $output = str_replace("\n", "", $output);
+        } else {
+            print_r($object);
+            $output = ob_get_clean();
+        }
+
+        // Additional context
+        $timestamp = date('Y-m-d H:i:s');
+        $output = "[{$timestamp}] " . $output;
+
+        error_log($output);
     }
+
+
 
     /**
      * Checks if the array contains any null or empty string values.
@@ -171,7 +185,7 @@ class MiscUtility
 
     public static function fileExists($filePath): bool
     {
-        return !empty($filePath) && is_file($filePath) && (@filesize($filePath) > 0);
+        return !empty($filePath) && is_file($filePath) && !is_dir($filePath) && (@filesize($filePath) > 0);
     }
 
     public static function imageExists($filePath): bool
@@ -231,6 +245,31 @@ class MiscUtility
         fclose($handle);
         return $filename;
     }
+
+    public static function generateCsvRow($handle, $row, $delimiter = ',', $enclosure = '"')
+    {
+        if ($handle) {
+            fputcsv($handle, $row, $delimiter, $enclosure);
+        }
+    }
+
+    public static function initializeCsv($filename, $headings, $delimiter = ',', $enclosure = '"')
+    {
+        $handle = fopen($filename, 'w'); // Open file for writing
+
+        // Write the headings
+        if (!empty($headings)) {
+            self::generateCsvRow($handle, $headings, $delimiter, $enclosure);
+        }
+
+        return $handle;
+    }
+
+    public static function finalizeCsv($handle)
+    {
+        fclose($handle);
+    }
+
     public static function convertToUtf8($input)
     {
         if (is_array($input)) {
@@ -263,5 +302,62 @@ class MiscUtility
     public static function removeFromAssociativeArray($fullArray, $unwantedKeys)
     {
         return array_diff_key($fullArray, array_flip($unwantedKeys));
+    }
+
+    // Helper function to convert file size string to bytes
+    public static function convertToBytes($sizeString): int
+    {
+        switch (substr($sizeString, -1)) {
+            case 'M':
+            case 'm':
+                return (int)$sizeString * 1048576;
+            case 'K':
+            case 'k':
+                return (int)$sizeString * 1024;
+            case 'G':
+            case 'g':
+                return (int)$sizeString * 1073741824;
+            default:
+                return (int)$sizeString;
+        }
+    }
+
+    public static function getMimeTypeStrings(array $extensions): array
+    {
+        $mimeTypesMap = [
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'txt' => 'text/plain',
+            'csv' => 'text/csv',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'ppt' => 'application/vnd.ms-powerpoint',
+            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'mp3' => 'audio/mpeg',
+            'mp4' => 'video/mp4',
+            'avi' => 'video/x-msvideo',
+            'zip' => 'application/zip',
+            'rar' => 'application/x-rar-compressed',
+            'html' => 'text/html',
+            'xml' => 'application/xml',
+            'json' => 'application/json'
+        ];
+
+        $mappedMimeTypes = [];
+        foreach ($extensions as $ext) {
+            $ext = strtolower($ext);
+            if (isset($mimeTypesMap[$ext])) {
+                $mappedMimeTypes[$ext] = $mimeTypesMap[$ext];
+            } else {
+                // If it's already a MIME type, just use it
+                $mappedMimeTypes[$ext] = $ext;
+            }
+        }
+        return $mappedMimeTypes;
     }
 }

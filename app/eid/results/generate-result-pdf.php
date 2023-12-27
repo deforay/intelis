@@ -1,11 +1,19 @@
 <?php
 
+use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -13,6 +21,7 @@ ini_set('max_execution_time', 300000);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_eid";
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -21,6 +30,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var EidService $eidService */
+$eidService = ContainerRegistry::get(EidService::class);
+$eidResults = $eidService->getEidResults();
 
 $formId = (int) $general->getGlobalConfig('vl_form');
 $arr = $general->getGlobalConfig();
@@ -34,179 +47,97 @@ $printDateTime = $expStr[1];
 //set mField Array
 $mFieldArray = [];
 if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
-	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
+    $mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
 }
 
 //set query
 $allQuery = $_SESSION['eidPrintQuery'];
 if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 
-	$searchQuery = "SELECT vl.*,f.*,l.facility_name as labName,
-                  l.facility_logo as facilityLogo,
-                  rip.i_partner_name,
-                  rst.*,
-                  rsrr.rejection_reason_name ,
-				  r_c_a.recommended_corrective_action_name,
-                  u_d.user_name as reviewedBy,
-                  u_d.user_id as reviewedByUserId,
-                  u_d.user_signature as reviewedBySignature,
-                  a_u_d.user_name as approvedBy,
-                  a_u_d.user_id as approvedByUserId,
-                  a_u_d.user_signature as approvedBySignature,
-                  r_r_b.user_name as revised,
-                  tp.config_machine_name as testingPlatform
-                  FROM form_eid as vl
-                  LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-                  LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
-                  LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
-                  LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
-                  LEFT JOIN user_details as r_r_b ON r_r_b.user_id=vl.revised_by
-                  LEFT JOIN r_eid_sample_type as rst ON rst.sample_id=vl.specimen_type
-                  LEFT JOIN r_eid_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
-                  LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner
-                  LEFT JOIN instrument_machines as tp ON tp.config_machine_id=vl.import_machine_name
-				  LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
-                  WHERE vl.eid_id IN(" . $_POST['id'] . ")";
+    $searchQuery = "SELECT vl.*,f.*,
+                    l.facility_name as labName,
+                    l.report_format as reportFormat,
+                    l.facility_logo as facilityLogo,
+                    rip.i_partner_name,
+                    rst.*,
+                    rsrr.rejection_reason_name ,
+                    r_c_a.recommended_corrective_action_name,
+                    u_d.user_name as reviewedBy,
+                    u_d.user_id as reviewedByUserId,
+                    u_d.user_signature as reviewedBySignature,
+                    a_u_d.user_name as approvedBy,
+                    a_u_d.user_id as approvedByUserId,
+                    a_u_d.user_signature as approvedBySignature,
+                    r_r_b.user_name as revised,
+                    tp.config_machine_name as testingPlatform
+                    FROM form_eid as vl
+                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                    LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
+                    LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
+                    LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
+                    LEFT JOIN user_details as r_r_b ON r_r_b.user_id=vl.revised_by
+                    LEFT JOIN r_eid_sample_type as rst ON rst.sample_id=vl.specimen_type
+                    LEFT JOIN r_eid_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
+                    LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner
+                    LEFT JOIN instrument_machines as tp ON tp.config_machine_id=vl.import_machine_name
+                    LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
+                    WHERE vl.eid_id IN(" . $_POST['id'] . ")";
 } else {
-	$searchQuery = $allQuery;
+    $searchQuery = $allQuery;
 }
 //echo($searchQuery);die;
 $requestResult = $db->query($searchQuery);
 
-if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime'])) {
-	$pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
-	$db->where('eid_id', $_POST['id']);
-	$id = $db->update('form_eid', $pData);
-} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime'])) {
-	$pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
-	$db->where('eid_id', $_POST['id']);
-	$id = $db->update('form_eid', $pData);
-}
+$currentDateTime = DateUtility::getCurrentDateTime();
 
-$_SESSION['nbPages'] = sizeof($requestResult);
+$fileArray = array(
+    COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
+    COUNTRY\SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
+    COUNTRY\DRC => 'pdf/result-pdf-drc.php',
+    COUNTRY\CAMEROON => 'pdf/result-pdf-cameroon.php',
+    COUNTRY\PNG => 'pdf/result-pdf-png.php',
+    COUNTRY\WHO => 'pdf/result-pdf-who.php',
+    COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
+);
+
+$randomFolderName = time() . '-' . $general->generateRandomString(6);
+
+$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
+MiscUtility::makeDirectory($pathFront);
+
 $_SESSION['aliasPage'] = 1;
-//print_r($requestResult);die;
-//header and footer
-class EIDResultPdf extends TCPDF
-{
-	public ?string $logo;
-	public string $text = '';
-	public ?string $lab;
-	public ?string $htitle;
-	public $labFacilityId = null;
-	public $formId = null;
 
-	//Page header
-	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null)
-	{
-		$this->logo = $logo;
-		$this->text = $text;
-		$this->lab = $lab;
-		$this->htitle = $title;
-		$this->labFacilityId = $labFacilityId;
-		$this->formId  = $formId;
-	}
+foreach ($requestResult as $result) {
+    if (($_SESSION['instanceType'] == 'vluser') && empty($result['result_printed_on_lis_datetime'])) {
+        $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+        $db->where('eid_id', $result['eid_id']);
+        $id = $db->update('form_eid', $pData);
+    } elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($result['result_printed_on_sts_datetime'])) {
+        $pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+        $db->where('eid_id', $result['eid_id']);
+        $id = $db->update('form_eid', $pData);
+    }
 
-	public function imageExists($filePath): bool
-	{
-		return MiscUtility::imageExists($filePath);
-	}
+    $selectedReportFormats = [];
+    if (!empty($result['reportFormat'])) {
+        $selectedReportFormats = json_decode((string) $result['reportFormat'], true);
+    }
 
-	//Page header
-	public function Header()
-	{
-		if ($this->htitle != '') {
-			if (trim($this->logo) != '') {
-				if ($this->imageExists($this->logo)) {
-					$imageFilePath = $this->logo;
-				} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
-					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-				} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-				}
-				if (!empty($imageFilePath)) {
-					$this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
-				}
-			}
-			$this->SetFont('helvetica', 'B', 8);
-			$this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
-			if (trim($this->lab) != '') {
-				$this->SetFont('helvetica', '', 9);
-				$this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
-			}
-			$this->SetFont('helvetica', '', 14);
-			$this->writeHTMLCell(0, 0, 10, 30, 'EARLY INFANT DIAGNOSIS TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
-			$this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
-		} else {
-			if (trim($this->logo) != '') {
-				if ($this->imageExists($this->logo)) {
-					$imageFilePath = $this->logo;
-				} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
-					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-				} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-				}
-				if (!empty($imageFilePath)) {
-					$this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
-				}
-			}
-
-			// $this->SetFont('helvetica', 'B', 7);
-			// $this->writeHTMLCell(30,0,16,28,$this->text, 0, 0, 0, true, 'A', true);(this two lines comment out for drc)
-			$this->SetFont('helvetica', '', 14);
-			$this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C');
-			if ($this->text != '') {
-				$this->SetFont('helvetica', '', 12);
-				//        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
-				$this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
-				$thirdHeading = '23';
-				$fourthHeading = '28';
-				$hrLine = '36';
-				$marginTop = '14';
-			} else {
-				$thirdHeading = '17';
-				$fourthHeading = '23';
-				$hrLine = '30';
-				$marginTop = '9';
-			}
-			if (trim($this->lab) != '') {
-				$this->SetFont('helvetica', '', 9);
-				$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
-			}
-			$this->SetFont('helvetica', '', 12);
-			if ($this->formId == 3) {
-				$this->writeHTMLCell(0, 0, 10, $fourthHeading, 'DIAGNOSTIC PRÉCOCE DU NOURRISSON', 0, 0, 0, true, 'C');
-			} else {
-				$this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C');
-			}
-			$this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
-		}
-	}
-
-	// Page footer
-	public function Footer()
-	{
-		// Position at 15 mm from bottom
-		$this->SetY(-15);
-		// Set font
-		$this->SetFont('helvetica', '', 8);
-		// Page number
-		$this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . ' of ' . $this->getAliasNbPages(), 0, false, 'C', 0);
-	}
+    if (!empty($selectedReportFormats) && !empty($selectedReportFormats['eid'])) {
+        require($selectedReportFormats['vl']);
+    } else {
+        require($fileArray[$arr['vl_form']]);
+    }
+}
+if (!empty($pages)) {
+    $resultPdf = new PdfConcatenateHelper();
+    $resultPdf->setFiles($pages);
+    $resultPdf->setPrintHeader(false);
+    $resultPdf->setPrintFooter(false);
+    $resultPdf->concat();
+    $resultFilename = 'VLSM-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
+    $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
+    MiscUtility::removeDirectory($pathFront);
 }
 
-
-
-if ($formId == COUNTRY\SOUTH_SUDAN) {
-	include('pdf/result-pdf-ssudan.php');
-} else if ($formId == COUNTRY\SIERRA_LEONE) {
-	include('pdf/result-pdf-sierraleone.php');
-} else if ($formId == COUNTRY\DRC) {
-	include('pdf/result-pdf-drc.php');
-} else if ($formId == COUNTRY\CAMEROON) {
-	include('pdf/result-pdf-cameroon.php');
-} else if ($formId == COUNTRY\PNG) {
-	include('pdf/result-pdf-png.php');
-} else if ($formId == COUNTRY\RWANDA) {
-	include('pdf/result-pdf-rwanda.php');
-}
+echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);

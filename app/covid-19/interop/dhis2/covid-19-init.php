@@ -6,7 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 
-$interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
+$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 
 $dhis2 = new Dhis2(
     $interopConfig['DHIS2']['url'],
@@ -28,8 +28,8 @@ $sarr = $general->getSystemConfig();
 
 
 $fileArray = array(
-    1 => 'forms/init-southsudan.php'
+    COUNTRY\SOUTH_SUDAN => 'forms/init-southsudan.php'
 );
 
 
-require($fileArray[$arr['vl_form']]);
+require_once($fileArray[$arr['vl_form']]);
