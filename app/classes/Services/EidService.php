@@ -120,16 +120,16 @@ class EidService extends AbstractTestService
                 $tesRequestData = [
                     'vlsm_country_id' => $formId,
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
-                    'facility_id' => $params['facilityId'] ?? null,
-                    'lab_id' => $params['labId'] ?? null,
-                    'app_sample_code' => $params['appSampleCode'] ?? null,
+                    'facility_id' => _castVariable($params['facilityId'], 'int'),
+                    'lab_id' => _castVariable($params['labId'], 'int'),
+                    'app_sample_code' => _castVariable($params['appSampleCode'], 'string'),
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
-                    'province_id' => $provinceId,
-                    'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                    'province_id' => _castVariable($provinceId, 'int'),
+                    'request_created_by' => _castVariable($_SESSION['userId'], 'string') ?? _castVariable($params['userId'], 'string') ?? null,
                     'form_attributes' => $params['formAttributes'] ?? "{}",
                     'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                    'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                    'last_modified_by' => _castVariable($_SESSION['userId'], 'string') ?? _castVariable($params['userId'], 'string') ?? null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime()
                 ];
 

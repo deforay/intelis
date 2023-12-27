@@ -217,13 +217,14 @@
                         details = data.split("###");
                         $("#province").html(details[0]);
                         $("#district").html(details[1]);
+                        $("#clinicianName").val(details[2])
                     }
                 });
         } else if (pName == '' && cName == '') {
             provinceName = true;
             facilityName = true;
             $("#province").html("<?php echo $province ?? ""; ?>");
-            $("#fName").html("<?php echo addslashes((string) $facility) ?? ""; ?>");
+            $("#fName").html("<?= (string) $facility ?? ""; ?>");
         }
         $.unblockUI();
     }

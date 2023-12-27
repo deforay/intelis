@@ -137,9 +137,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                        <select class="form-control isRequired" id="fName" name="fName" title="<?= _translate('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                             <?php //echo $facility;
-                                                            foreach ($healthFacilitiesAllColumns as $facility) {
+                                                            foreach ($healthFacilitiesAllColumns as $hFacility) {
                                                             ?>
-                                                                 <option value="<?php echo $facility['facility_id']; ?>" data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
+                                                                 <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>"><?php echo $hFacility['facility_name']; ?></option>
                                                             <?php
                                                             }
                                                             ?>
@@ -896,7 +896,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                provinceName = true;
                facilityName = true;
                $("#province").html("<?= (string) $province; ?>");
-               $("#fName").html("<?= (string) $facility; ?>");
+               $("#fName").html("<?= (string) addslashes($facility); ?>");
                $("#fName").select2("val", "");
                $("#district").html("<option value=''> -- Select -- </option>");
           }
