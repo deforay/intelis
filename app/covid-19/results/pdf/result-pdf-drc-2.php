@@ -7,6 +7,8 @@ use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
+if (!class_exists('DRCCovid19PDF2')) {
+
 class DRCCovid19PDF2 extends Covid19ResultPDFHelper
 {
     //Page header
@@ -87,7 +89,7 @@ class DRCCovid19PDF2 extends Covid19ResultPDFHelper
         $this->writeHTMLCell(0, 0, 10, 290, 'inrbgoma.com', 0, 0, false, true, 'C');
     }
 }
-
+}
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // create new PDF document

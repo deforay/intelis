@@ -437,8 +437,9 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['eid'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo (!empty($formats) && $formats['eid'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
-											<?php } ?>
+												<?php foreach ($value as $k => $v) { ?>
+												<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['eid'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
+											<?php } } ?>
 										</select>
 									</div>
 								</div>
@@ -454,9 +455,10 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											<?php if (($count > 1)) { ?>
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
-											<?php foreach ($reportFormats['covid19'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo (!empty($formats) && $formats['covid19'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
-											<?php } ?>
+											<?php foreach ($reportFormats['covid19'] as $key => $value) { 
+												foreach ($value as $k => $v) { ?> 
+												<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['covid19'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
+											<?php } } ?>
 										</select>
 									</div>
 								</div>
