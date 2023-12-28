@@ -234,9 +234,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                     <tr>
 
-                                        <th scope="row"><label for="patientDob"><?= _translate('Date of Birth'); ?> </label></th>
+                                        <th scope="row"><label for="dob"><?= _translate('Date of Birth'); ?> </label></th>
                                         <td>
-                                            <input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="<?= _translate('Date of Birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInYears();" />
+                                            <input type="text" class="form-control" id="dob" name="dob" placeholder="<?= _translate('Date of Birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInYears();" />
                                         </td>
                                         <th scope="row"><?= _translate("Age (years)"); ?></th>
                                         <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="<?= _translate('Case Age (in years)'); ?>" title="<?= _translate('Case Age'); ?>" style="width:100%;" onchange="" /></td>

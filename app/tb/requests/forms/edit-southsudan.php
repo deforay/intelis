@@ -224,9 +224,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										<td>
 											<input type="text" value="<?php echo $tbInfo['patient_surname']; ?>" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
 										</td>
-										<th scope="row"><label for="patientDob">Date of Birth </label></th>
+										<th scope="row"><label for="dob">Date of Birth </label></th>
 										<td>
-											<input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
+											<input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control" id="dob" name="dob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
 										</td>
 									</tr>
 									<tr>
@@ -642,7 +642,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		$("#lastName").val(patientArray['lastname']);
 		$("#patientGender").val(patientArray['gender']);
 		$("#patientAge").val(patientArray['age']);
-		$("#patientDob").val(patientArray['dob']);
+		$("#dob").val(patientArray['dob']);
 		$("#patientId").val(patientArray['patient_id']);
 	}
 

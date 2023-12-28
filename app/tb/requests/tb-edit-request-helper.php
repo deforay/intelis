@@ -124,8 +124,8 @@ try {
         $status = SAMPLE_STATUS\REJECTED;
         $resultSentToSource = 'pending';
     }
-    if (!empty($_POST['patientDob'])) {
-        $_POST['patientDob'] = DateUtility::isoDateFormat($_POST['patientDob']);
+    if (!empty($_POST['dob'])) {
+        $_POST['dob'] = DateUtility::isoDateFormat($_POST['dob']);
     }
 
     if (!empty($_POST['firstSputumSamplesCollectionDate'])) {
@@ -179,7 +179,7 @@ try {
     //Update patient Information in Patients Table
     $patientsService->updatePatient($_POST, 'form_tb');
 
-    $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['patientDob'] ?? ''));
+    $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
     $tbData = array(
         'vlsm_instance_id' => $instanceId,
@@ -198,7 +198,7 @@ try {
         'patient_type' => !empty($_POST['typeOfPatient']) ? json_encode($_POST['typeOfPatient']) : null,
         'patient_name' => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
         'patient_surname' => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
-        'patient_dob' => !empty($_POST['patientDob']) ? $_POST['patientDob'] : null,
+        'patient_dob' => !empty($_POST['dob']) ? $_POST['dob'] : null,
         'patient_gender' => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
         'patient_age' => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
         'patient_phone' => !empty($_POST['patientPhoneNumber']) ? $_POST['patientPhoneNumber'] : null,

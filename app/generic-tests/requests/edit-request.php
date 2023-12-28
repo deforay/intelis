@@ -1348,19 +1348,6 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		}
 	}
 
-	function getAge() {
-		let dob = $("#dob").val();
-		if ($.trim(dob) != '') {
-			let age = Utilities.getAgeFromDob(dob);
-			$("#ageInYears").val("");
-			$("#ageInMonths").val("");
-			if (age && age.years && age.years >= 1) {
-				$("#ageInYears").val(age.years);
-			} else {
-				$("#ageInMonths").val(age.months);
-			}
-		}
-	}
 
 	function clearDOB(val) {
 		if ($.trim(val) != "") {

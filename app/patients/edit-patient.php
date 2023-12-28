@@ -162,9 +162,9 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="patientDob" class="col-lg-4 control-label"><?php echo _translate("Patient DOB"); ?><span class="mandatory">*</span></label>
+                                        <label for="dob" class="col-lg-4 control-label"><?php echo _translate("Patient DOB"); ?><span class="mandatory">*</span></label>
                                         <div class="col-lg-7">
-                                            <input type="text" value="<?= $patientQueryInfo['patient_dob']; ?>" name="patientDob" id="patientDob" class="form-control date isRequired" placeholder="Enter Patient DOB" title="Enter Patient DOB" onchange="getAge();" />
+                                            <input type="text" value="<?= $patientQueryInfo['patient_dob']; ?>" name="dob" id="dob" class="form-control date isRequired" placeholder="Enter Patient DOB" title="Enter Patient DOB" onchange="getAge();" />
                                         </div>
                                     </div>
                                 </div>
@@ -359,20 +359,6 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
             $("#district").html("<option value=''> -- Select -- </option>");
         }
         $.unblockUI();
-    }
-
-    function getAge() {
-        let dob = $("#patientDob").val();
-        if ($.trim(dob) != '') {
-            let age = Utilities.getAgeFromDob(dob);
-            $("#ageInYears").val("");
-            $("#ageInMonths").val("");
-            if (age && age.years && age.years >= 1) {
-                $("#ageInYears").val(age.years);
-            } else {
-                $("#ageInMonths").val(age.months);
-            }
-        }
     }
 
     function getByProvince(provinceId) {

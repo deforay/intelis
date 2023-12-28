@@ -6,7 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
-$title = _translate("Email VL Test Results");
+$title = _translate("Email Generic Test Results");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$healthFacilites = $facilitiesService->getHealthFacilities('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
@@ -31,7 +31,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 //main query
 //$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE 1=0 AND is_result_mail_sent ='no' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
 //$result = $db->rawQuery($query);
-$sTypeQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
+$sTypeQuery = "SELECT * FROM r_generic_sample_types WHERE `status`='active'";
 $sTypeResult = $db->rawQuery($sTypeQuery);
 
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
@@ -487,7 +487,7 @@ $batchResult = $db->rawQuery($batchQuery);
 		var status = $('#sampleStatus').val();
 		var sampleMailSentStatus = $('#sampleMailSentStatus').val();
 		var type = $('#type').val();
-		$.post("/vl/results/getRequestSampleCodeDetails.php", {
+		$.post("/generic-tests/results/getRequestSampleCodeDetails.php", {
 				facility: facilityName,
 				sType: sTypeName,
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
@@ -513,7 +513,7 @@ $batchResult = $db->rawQuery($batchQuery);
 		$.blockUI();
 		//var sample = $("#sample").val();
 		var id = samplesData.toString();
-		$.post("/vl/results/generate-result-pdf.php", {
+		$.post("/generic-tests/results/generate-result-pdf.php", {
 				source: 'print',
 				id: id,
 				resultMail: 'resultMail'
