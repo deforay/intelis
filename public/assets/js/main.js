@@ -124,14 +124,13 @@ class Utilities {
 
 }
 
-
 function getAge() {
-    let dob = $("#dob").val();
-    if ($.trim(dob) != '') {
-        let age = Utilities.getAgeFromDob(dob);
-        $("#ageInYears").val("");
-        $("#ageInMonths").val("");
-        if (age.years >= 1) {
+    const dob = $.trim($("#dob").val());
+    // Clear the fields initially
+    $("#ageInYears, #ageInMonths").val("");
+    if (dob) {
+        const age = Utilities.getAgeFromDob(dob);
+        if (age.years && age.years >= 1) {
             $("#ageInYears").val(age.years);
         } else {
             $("#ageInMonths").val(age.months);

@@ -12,6 +12,21 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Function to get Ubuntu version
+get_ubuntu_version() {
+    local version=$(lsb_release -rs)
+    echo "$version"
+}
+
+# Check if Ubuntu version is 18.04 or newer
+min_version="18.04"
+current_version=$(get_ubuntu_version)
+
+if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
+    echo "This script is not compatible with Ubuntu versions older than 18.04."
+    exit 1
+fi
+
 # Ask user for VLSM installation path
 read -p "Enter the VLSM installation path [/var/www/vlsm]: " vlsm_path
 vlsm_path="${vlsm_path:-/var/www/vlsm}"

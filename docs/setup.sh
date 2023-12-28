@@ -15,6 +15,21 @@ fi
 # Error trap
 trap 'echo "An error occurred. Exiting..."; exit 1' ERR
 
+# Function to get Ubuntu version
+get_ubuntu_version() {
+    local version=$(lsb_release -rs)
+    echo "$version"
+}
+
+# Check if Ubuntu version is 18.04 or newer
+min_version="18.04"
+current_version=$(get_ubuntu_version)
+
+if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
+    echo "This script is not compatible with Ubuntu versions older than 18.04."
+    exit 1
+fi
+
 # Check for dependencies
 for cmd in "apt"; do
     if ! command -v $cmd &>/dev/null; then
