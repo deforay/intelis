@@ -53,7 +53,6 @@ if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']
 	$reportFormats['generic-tests'] = $general->activeReportFormats('generic-tests');
 }
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
-
 ?>
 <style>
 	.ms-choice {

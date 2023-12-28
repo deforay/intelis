@@ -7,6 +7,8 @@ use App\Utilities\MiscUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
 
+if (!class_exists('DRC_VL_PDF')) {
+
 class DRC_VL_PDF extends VLResultPDFHelper
 {
 	//Page header
@@ -53,7 +55,7 @@ class DRC_VL_PDF extends VLResultPDFHelper
 	}
 }
 
-
+}
 if (!empty($result)) {
 
 	$signQuery = "SELECT * FROM lab_report_signatories

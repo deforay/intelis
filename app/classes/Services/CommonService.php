@@ -508,6 +508,7 @@ class CommonService
     public function activeReportFormats($module): array
     {
         $countryShortCode = $this->getCountryShortCode();
+       
         $pdfFormatPaths = glob(APPLICATION_PATH . "/$module/results/pdf/result-pdf-$countryShortCode*.{php}", GLOB_BRACE);
 
         if (empty($pdfFormatPaths)) {
@@ -522,7 +523,7 @@ class CommonService
                 return ["pdf/$baseName" => "Default"];
             }
 
-            return ["pdf/$baseName" => strtoupper($formatName)];
+            return ["pdf/$baseName" => $countryShortCode.strtoupper($formatName)];
         }, $pdfFormatPaths);
     }
 
