@@ -21,12 +21,12 @@ get_ubuntu_version() {
     echo "$version"
 }
 
-# Check if Ubuntu version is 18.04 or newer
-min_version="18.04"
+# Check if Ubuntu version is 20.04 or newer
+min_version="20.04"
 current_version=$(get_ubuntu_version)
 
 if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
-    echo "This script is not compatible with Ubuntu versions older than 18.04."
+    echo "This script is not compatible with Ubuntu versions older than ${min_version}."
     exit 1
 fi
 
