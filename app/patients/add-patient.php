@@ -145,9 +145,9 @@ $state = $geolocationService->getProvinces("yes", true, $_SESSION['facilityMap']
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="patientDob" class="col-lg-4 control-label"><?php echo _translate("Patient DOB"); ?><span class="mandatory">*</span></label>
+                                        <label for="dob" class="col-lg-4 control-label"><?php echo _translate("Patient DOB"); ?><span class="mandatory">*</span></label>
                                         <div class="col-lg-7">
-                                            <input type="text" name="patientDob" id="patientDob" class="form-control date isRequired" placeholder="Enter Patient DOB" title="Enter Patient DOB" onchange="getAge();" />
+                                            <input type="text" name="dob" id="dob" class="form-control date isRequired" placeholder="Enter Patient DOB" title="Enter Patient DOB" onchange="getAge();" />
                                         </div>
                                     </div>
                                 </div>
@@ -341,20 +341,6 @@ $state = $geolocationService->getProvinces("yes", true, $_SESSION['facilityMap']
             $("#district").html("<option value=''> -- Select -- </option>");
         }
         $.unblockUI();
-    }
-
-    function getAge() {
-        let dob = $("#patientDob").val();
-        if ($.trim(dob) != '') {
-            let age = Utilities.getAgeFromDob(dob);
-            $("#ageInYears").val("");
-            $("#ageInMonths").val("");
-            if (age.years >= 1) {
-                $("#ageInYears").val(age.years);
-            } else {
-                $("#ageInMonths").val(age.months);
-            }
-        }
     }
 
     function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {

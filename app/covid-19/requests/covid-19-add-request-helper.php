@@ -136,8 +136,8 @@ try {
 		$status = SAMPLE_STATUS\REJECTED;
 		$resultSentToSource = 'pending';
 	}
-	if (!empty($_POST['patientDob'])) {
-		$_POST['patientDob'] = DateUtility::isoDateFormat($_POST['patientDob']);
+	if (!empty($_POST['dob'])) {
+		$_POST['dob'] = DateUtility::isoDateFormat($_POST['dob']);
 	}
 
 	if (!empty($_POST['result'])) {
@@ -168,7 +168,7 @@ try {
 	//Update patient Information in Patients Table
 	$patientsService->savePatient($_POST, 'form_covid19');
 
-	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['patientDob'] ?? ''));
+	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
 	$covid19Data = array(
 		'vlsm_instance_id' => $instanceId,
@@ -193,7 +193,7 @@ try {
 		'patient_id' => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
 		'patient_name' => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
 		'patient_surname' => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
-		'patient_dob' => !empty($_POST['patientDob']) ? $_POST['patientDob'] : null,
+		'patient_dob' => !empty($_POST['dob']) ? $_POST['dob'] : null,
 		'patient_gender' => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
 		'is_patient_pregnant' => !empty($_POST['isPatientPregnant']) ? $_POST['isPatientPregnant'] : null,
 		'patient_age' => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,

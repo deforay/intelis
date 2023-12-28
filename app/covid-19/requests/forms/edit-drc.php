@@ -239,9 +239,9 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control patientId" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" <?= ($generateAutomatedPatientCode) ? "readonly='readonly'" : "" ?> />
                                         </td>
-                                        <th scope="row"><label for="patientDob">Date de naissance</label></th>
+                                        <th scope="row"><label for="dob">Date de naissance</label></th>
                                         <td>
-                                            <input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
+                                            <input type="text" class="form-control" id="dob" name="dob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -1253,7 +1253,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
         $("#patientPhoneNumber").val(patientArray['patient_phone_number']);
         $("#patientGender").val(patientArray['gender']);
         $("#patientAge").val(patientArray['age']);
-        $("#patientDob").val(patientArray['dob']);
+        $("#dob").val(patientArray['dob']);
         $("#patientId").val(patientArray['patient_id']);
         $("#patientAddress").text(patientArray['patient_address']);
         $("#patientNationality").val(patientArray['patient_nationality']).trigger('change');
@@ -1338,7 +1338,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
     }
 
     function validateNow() {
-        if ($("#patientDob").val() == "" && $("#patientAge").val() == "") {
+        if ($("#dob").val() == "" && $("#patientAge").val() == "") {
             alert("Please select or enter patient DOB or Age");
             return false;
         }

@@ -203,9 +203,9 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control patientId" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" <?= ($generateAutomatedPatientCode) ? "readonly='readonly'" : "" ?> />
                                         </td>
-                                        <th scope="row"><label for="patientDob">Date de naissance</label></th>
+                                        <th scope="row"><label for="dob">Date de naissance</label></th>
                                         <td>
-                                            <input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" />
+                                            <input type="text" class="form-control" id="dob" name="dob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" />
                                         </td>
                                     </tr>
                                     <tr>
