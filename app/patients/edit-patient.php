@@ -367,7 +367,7 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
             let age = Utilities.getAgeFromDob(dob);
             $("#ageInYears").val("");
             $("#ageInMonths").val("");
-            if (age.years >= 1) {
+            if (age && age.years && age.years >= 1) {
                 $("#ageInYears").val(age.years);
             } else {
                 $("#ageInMonths").val(age.months);

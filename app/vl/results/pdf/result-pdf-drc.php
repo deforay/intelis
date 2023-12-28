@@ -303,7 +303,7 @@ if (!empty($result)) {
 
 		if (!empty($userSignaturePath) && $pdf->imageExists($userSignaturePath) && !empty($resultApprovedBy)) {
 			$html .= '<tr>';
-			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:70px;margin-top:-20px;" /><br></td>';
+			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:100px;margin-top:-20px;" /><br></td>';
 			$html .= '</tr>';
 		}
 		$html .= '<tr>';

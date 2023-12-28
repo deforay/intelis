@@ -1335,7 +1335,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			let age = Utilities.getAgeFromDob(dob);
 			$("#ageInYears").val("");
 			$("#ageInMonths").val("");
-			if (age.years >= 1) {
+			if (age && age.years && age.years >= 1) {
 				$("#ageInYears").val(age.years);
 			} else {
 				$("#ageInMonths").val(age.months);

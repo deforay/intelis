@@ -6,13 +6,6 @@ use App\Helpers\ResultPDFHelpers\TBResultPDFHelper;
 
 class SouthSudanTBResultPDFHelper extends TBResultPDFHelper
 {
-    public ?string $logo;
-    public ?string $text;
-    public ?string $lab;
-    public ?string $htitle;
-    public ?string $labFacilityId;
-    public ?string $formId;
-    public array $facilityInfo = [];
     //Page header
     public function Header()
     {

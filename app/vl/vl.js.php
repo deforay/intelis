@@ -57,11 +57,20 @@
     }
 
     function getAge() {
-        let dob = $("#dob").val();
-        if ($.trim(dob) != '') {
-            let age = Utilities.getAgeFromDob(dob);
-            $("#ageInYears").val("");
-            $("#ageInMonths").val("");
+        const dob = $.trim($("#dob").val());
+        if (dob) {
+            const age = Utilities.getAgeFromDob(dob);
+
+            // Clear the fields initially
+            $("#ageInYears, #ageInMonths").val("");
+
+            // Error handling if age is not calculated properly
+            if (!age || (typeof age.years !== 'number' && typeof age.months !== 'number')) {
+                console.error("Invalid age object returned from Utilities.getAgeFromDob");
+                return;
+            }
+
+            // Populate fields based on age
             if (age.years >= 1) {
                 $("#ageInYears").val(age.years);
             } else {
