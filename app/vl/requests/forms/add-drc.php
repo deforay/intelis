@@ -932,6 +932,13 @@ $sFormat = '';
 		$('#approvedBy').select2({
 			placeholder: "Select Approuvé par"
 		});
+		$('#artRegimen').select2({
+			placeholder: "Select régime ARV en cours"
+		});
+		$('#reasonForVLTesting').select2({
+			placeholder: "Select motif de la demande"
+		});
+		
 	});
 
 	function getVlResults(platformInfo) {
