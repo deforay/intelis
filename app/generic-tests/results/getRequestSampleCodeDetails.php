@@ -39,8 +39,8 @@ $type = $_POST['type'];
 //print_r($_POST);die;
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
-$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code
-        FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+$query = "SELECT vl.sample_code,vl.sample_id,vl.facility_id,f.facility_name,f.facility_code
+        FROM form_generic as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         WHERE sample_code is not null ";
 if (!empty($facility)) {
   $query = $query . " AND vl.facility_id = $facility";
@@ -99,7 +99,7 @@ $result = $db->rawQuery($query);
         foreach ($result as $sample) {
           if (trim((string) $sample['sample_code']) != '') {
         ?>
-            <option value="<?php echo $sample['vl_sample_id']; ?>"><?= ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+            <option value="<?php echo $sample['sample_id']; ?>"><?= ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
         <?php
           }
         }

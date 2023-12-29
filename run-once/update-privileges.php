@@ -44,6 +44,8 @@ $sharedGenericPrivileges = [
     '/batch/add-batch-position.php?type=generic-tests' => '/batch/add-batch.php?type=generic-tests',
     '/batch/edit-batch-position.php?type=generic-tests' => '/batch/edit-batch.php?type=generic-tests',
     '/generic-tests/results/update-generic-test-result.php' => '/generic-tests/results/generic-test-results.php',
+    '/generic-tests/results/email-results.php' => '/generic-tests/results/email-results.php',
+    '/generic-tests/results/email-results-confirm.php' => '/generic-tests/results/email-results.php',
     '/generic-tests/configuration/add-test-type.php' => '/generic-tests/configuration/test-type.php',
     '/generic-tests/configuration/edit-test-type.php' => '/generic-tests/configuration/test-type.php',
     '/generic-tests/configuration/clone-test-type.php' => '/generic-tests/configuration/test-type.php',

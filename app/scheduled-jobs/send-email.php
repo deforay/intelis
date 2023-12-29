@@ -135,6 +135,10 @@ try {
                $testTable = "form_tb";
                $columnName = "tb_id";
             }
+            elseif($data['test_type']=="generic-tests"){
+               $testTable = "form_generic";
+               $columnName = "sample_id";
+            }
 
             if ($mail->send()) {
 

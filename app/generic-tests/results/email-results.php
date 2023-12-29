@@ -31,12 +31,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 //main query
 //$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE 1=0 AND is_result_mail_sent ='no' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
 //$result = $db->rawQuery($query);
-$sTypeQuery = "SELECT * FROM r_generic_sample_types WHERE `status`='active'";
+$sTypeQuery = "SELECT * FROM r_generic_sample_types WHERE `sample_type_status`='active'";
 $sTypeResult = $db->rawQuery($sTypeQuery);
 
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
-$batchQuery = "SELECT * FROM batch_details WHERE test_type='vl' AND batch_status='completed'";
+$batchQuery = "SELECT * FROM batch_details WHERE test_type='generic-tests' AND batch_status='completed'";
 $batchResult = $db->rawQuery($batchQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -87,7 +87,7 @@ $batchResult = $db->rawQuery($batchQuery);
 										<?php echo _translate("Subject"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-9">
-										<input type="text" id="subject" name="subject" class="form-control isRequired" placeholder="<?php echo _translate('Subject'); ?>" title="<?php echo _translate('Please enter subject'); ?>" value="Viral Load Test Results" />
+										<input type="text" id="subject" name="subject" class="form-control isRequired" placeholder="<?php echo _translate('Subject'); ?>" title="<?php echo _translate('Please enter subject'); ?>" value="Other Lab Test Results" />
 									</div>
 								</div>
 							</div>
@@ -565,7 +565,7 @@ $batchResult = $db->rawQuery($batchQuery);
 		if ($.trim(pName) != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					pName: pName,
-					testType: 'vl'
+					testType: 'generic-tests'
 				},
 				function(data) {
 					if ($.trim(data) != "") {
