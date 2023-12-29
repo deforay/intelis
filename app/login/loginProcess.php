@@ -117,7 +117,21 @@ try {
             throw new SystemException(_translate("You have exhausted the maximum number of login attempts. Please retry login after some time."));
         }
 
-        if (!password_verify((string) $_POST['password'], (string) $userRow['password'])) {
+        if ($userRow['hash_algorithm'] == 'sha1') {
+            if (sha1($password . SYSTEM_CONFIG['passwordSalt']) == $userRow['password']) {
+                $newPassword = $usersService->passwordHash($_POST['password']);
+                $db->where('user_id', $userRow['user_id']);
+                $db->update(
+                    'user_details',
+                    [
+                        'hash_algorithm' => 'phb',
+                        'password' => $newPassword
+                    ]
+                );
+            } else {
+                throw new SystemException(_translate("Please check your login credentials"));
+            }
+        } elseif (!password_verify((string) $_POST['password'], (string) $userRow['password'])) {
             $usersService->userHistoryLog($userName, 'failed', $userRow['user_id']);
             throw new SystemException(_translate("Please check your login credentials"));
         }
@@ -134,7 +148,7 @@ try {
                 $_SESSION['instanceFacilityName'] = $instanceResult['instance_facility_name'];
             } else {
                 $id = $general->generateRandomString();
-                $db->insert('s_vlsm_instance', array('vlsm_instance_id' => $id));
+                $db->insert('s_vlsm_instance', ['vlsm_instance_id' => $id]);
                 $_SESSION['instanceId'] = $id;
                 $_SESSION['instanceFacilityName'] = null;
             }
@@ -169,7 +183,6 @@ try {
             $general->activityLog($eventType, $action, $resource);
 
             $modules = $privileges = [];
-
 
             [$_SESSION['modules'], $_SESSION['privileges']] = $usersService->getAllPrivileges($userRow['role_id']);
             $_SESSION['landingPage'] = $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
