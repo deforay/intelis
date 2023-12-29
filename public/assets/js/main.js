@@ -71,17 +71,28 @@ class Utilities {
     }
 
     /**
-     * Calculates age in years and months from a given date of birth (dob).
-     * @param {string} dob - Date of birth in a format that dayjs can parse.
+     * Calculates age in years and months from a given date of birth (dob) and an optional format.
+     * @param {string} dob - Date of birth.
+     * @param {string} [format='DD-MMM-YYYY'] - Optional format of the dob.
      * @returns {Object} An object containing the age in years and months.
      */
-    static getAgeFromDob(dob) {
-        if (!dob || !dayjs(dob).isValid()) {
+    static getAgeFromDob(dob, format = 'DD-MMM-YYYY') {
+
+        // Ensure dayjs and its plugin are available
+        if (typeof dayjs === 'undefined' || !dayjs.extend) {
+            console.error("Day.js or its customParseFormat plugin is not loaded");
+            return { years: 0, months: 0 };
+        }
+
+        // Extend dayjs with the customParseFormat plugin
+        dayjs.extend(dayjs_plugin_customParseFormat);
+
+        if (!dob || !dayjs(dob, format).isValid()) {
             console.error("Invalid or missing date of birth");
             return { years: 0, months: 0 };
         }
 
-        const dobDate = dayjs(dob);
+        const dobDate = dayjs(dob, format);
         const currentDate = dayjs();
         if (dobDate.isAfter(currentDate)) {
             console.error("Date of birth is in the future");
@@ -90,11 +101,6 @@ class Utilities {
 
         const ageInYears = currentDate.diff(dobDate, 'year');
         const ageInMonths = currentDate.diff(dobDate, 'month') % 12;
-
-        if (typeof ageInYears !== "number" || typeof ageInMonths !== "number" || ageInYears < 0 || ageInMonths < 0) {
-            console.error("Invalid age calculation");
-            return { years: 0, months: 0 };
-        }
 
         return {
             years: ageInYears,
@@ -129,7 +135,7 @@ function getAge() {
     // Clear the fields initially
     $("#ageInYears, #ageInMonths").val("");
     if (dob) {
-        const age = Utilities.getAgeFromDob(dob);
+        const age = Utilities.getAgeFromDob(dob, globalDayjsDateFormat);
         if (age.years && age.years >= 1) {
             $("#ageInYears").val(age.years);
         } else {

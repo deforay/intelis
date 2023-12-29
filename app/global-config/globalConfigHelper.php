@@ -1,19 +1,17 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -151,10 +149,12 @@ try {
 
     if ($dateFormat == 'd-m-Y') {
         $_SESSION['jsDateFieldFormat'] = 'dd-mm-yy';
+        $_SESSION['dayjsDateFieldFormat'] = 'DD-MM-YYYY';
         $_SESSION['jsDateRangeFormat'] = 'DD-MM-YYYY';
         $_SESSION['jsDateFormatMask'] = '99-99-9999';
     } else {
         $_SESSION['jsDateFieldFormat'] = 'dd-M-yy';
+        $_SESSION['dayjsDateFieldFormat'] = 'DD-MMM-YYYY';
         $_SESSION['jsDateRangeFormat'] = 'DD-MMM-YYYY';
         $_SESSION['jsDateFormatMask'] = '99-aaa-9999';
     }
