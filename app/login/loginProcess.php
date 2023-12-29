@@ -1,11 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -14,17 +14,20 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
+if (!empty($request->getQueryParams())) {
+    $_GET = _sanitizeInput($request->getQueryParams());
+}
+
 
 $tableName = "user_details";
-$userName = ($_POST['username']);
-$password = ($_POST['password']);
-
+$userName = $_POST['username'];
+$password = $_POST['password'];
+$redirect = "/";
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -38,14 +41,15 @@ $_SESSION['phpDateFormat'] = $dateFormat;
 
 if ($dateFormat == 'd-m-Y') {
     $_SESSION['jsDateFieldFormat'] = 'dd-mm-yy';
+    $_SESSION['dayjsDateFieldFormat'] = 'DD-MM-YYYY';
     $_SESSION['jsDateRangeFormat'] = 'DD-MM-YYYY';
     $_SESSION['jsDateFormatMask'] = '99-99-9999';
 } else {
     $_SESSION['jsDateFieldFormat'] = 'dd-M-yy';
+    $_SESSION['dayjsDateFieldFormat'] = 'DD-MMM-YYYY';
     $_SESSION['jsDateRangeFormat'] = 'DD-MMM-YYYY';
     $_SESSION['jsDateFormatMask'] = '99-aaa-9999';
 }
-
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -76,9 +80,7 @@ try {
         unset($_SESSION['csrf_token']);
         throw new SystemException(_translate("Request expired. Please try to login again."));
     }
-
     /* Crosss Login Block End */
-
 
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
 
@@ -99,10 +101,11 @@ try {
             FROM
                 user_login_history ulh
             WHERE
-                ulh.login_status = 'failed'
-                AND ulh.login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 minute)",
+                ulh.login_status = 'failed' AND
+                ulh.login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 minute)",
             [$userName, $ipaddress, DateUtility::getCurrentDateTime()]
         );
+
         $maxLoginAttempts = 3;
 
         if (($loginAttemptCount['LoginIdCount'] >= $maxLoginAttempts
@@ -111,25 +114,10 @@ try {
             (empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode'])
         ) {
             $usersService->userHistoryLog($userName, 'failed');
-            $_SESSION['alertMsg'] = _translate("You have exhausted the maximum number of login attempts. Please retry login after some time.");
-            header("Location:/login/login.php");
+            throw new SystemException(_translate("You have exhausted the maximum number of login attempts. Please retry login after some time."));
         }
 
-        if ($userRow['hash_algorithm'] == 'sha1') {
-            if (sha1($password . SYSTEM_CONFIG['passwordSalt']) == $userRow['password']) {
-                $newPassword = $usersService->passwordHash($_POST['password']);
-                $db->where('user_id', $userRow['user_id']);
-                $db->update(
-                    'user_details',
-                    array(
-                        'hash_algorithm' => 'phb',
-                        'password' => $newPassword
-                    )
-                );
-            } else {
-                throw new SystemException(_translate("Please check your login credentials"));
-            }
-        } elseif ($userRow['hash_algorithm'] == 'phb' && !password_verify((string) $_POST['password'], (string) $userRow['password'])) {
+        if (!password_verify((string) $_POST['password'], (string) $userRow['password'])) {
             $usersService->userHistoryLog($userName, 'failed', $userRow['user_id']);
             throw new SystemException(_translate("Please check your login credentials"));
         }
@@ -190,8 +178,6 @@ try {
                 $redirect = "/users/editProfile.php";
                 $_SESSION['alertMsg'] = _translate("Please change your password to proceed.");
             }
-
-            header("Location:" . $redirect);
         } else {
             $usersService->userHistoryLog($userName, 'failed');
             throw new SystemException(_translate("Please check your login credentials"));
@@ -207,5 +193,7 @@ try {
         'line' => $exception->getLine(), // Line number of the error
         //'stacktrace' => $exception->getTraceAsString()
     ]);
-    header("Location:/login/login.php");
+    $redirect = "/login/login.php";
 }
+
+header("Location:" . $redirect);
