@@ -22,7 +22,7 @@ $global = $general->getGlobalConfig();
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$tableName = "form_vl";
+$tableName = "form_generic";
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE `type` = 'result'";
 $geResult = $db->rawQuery($geQuery);
@@ -64,10 +64,10 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                         <?php
                         $resultOlySamples = [];
                         for ($s = 0; $s < count($selectedSamplesArray); $s++) {
-                           $sampleQuery = "SELECT vl_sample_id,sample_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
+                           $sampleQuery = "SELECT sample_id,sample_code FROM form_generic as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.sample_id = '" . $selectedSamplesArray[$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
                            $sampleResult = $db->rawQuery($sampleQuery);
                            if (isset($sampleResult[0]['sample_code'])) {
-                              $resultOlySamples[] = $sampleResult[0]['vl_sample_id'];
+                              $resultOlySamples[] = $sampleResult[0]['sample_id'];
                         ?>
                               <tr>
                                  <td style="text-align:left;"><?php echo $sampleResult[0]['sample_code']; ?></td>
@@ -90,7 +90,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                <input type="hidden" id="pdfFile2" name="pdfFile2" value="<?php ?>" />
                <input type="hidden" id="storeFile" name="storeFile" value="no" />
                <div class="col-lg-12" style="text-align:center;padding-left:0;">
-                  <a href="../vl/results/email-results.php" class="btn btn-default"> Cancel</a>&nbsp;
+                  <a href="/generic-tests/results/email-results.php" class="btn btn-default"> Cancel</a>&nbsp;
                   <a class="btn btn-primary" href="javascript:void(0);" onclick="confirmResultMail();"><em class="fa-solid fa-paper-plane"></em> Send</a>
                   <p style="margin-top:10px;"><a class="send-mail" href="#" onclick="downloadPDF('<?php echo $sampleIds; ?>','printData')" style="text-decoration:none;">Click here to download the result only pdf</a></p>
                </div>
@@ -110,7 +110,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
 		$.blockUI();
 		<?php
 		$path = '';
-		$path = '/vl/results/generate-result-pdf.php';
+		$path = '/generic-tests/results/generate-result-pdf.php';
 		?>
 		$.post("<?php echo $path; ?>", {
 				source: 'print',
