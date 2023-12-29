@@ -2,10 +2,10 @@
 
 namespace App\Helpers\ResultPDFHelpers;
 
-use TCPDF;
 use App\Utilities\MiscUtility;
+use setasign\Fpdi\Tcpdf\Fpdi;
 
-class TBResultPDFHelper extends TCPDF
+class TBResultPDFHelper extends Fpdi
 {
     public ?string $logo = null;
     public ?string $text = null;

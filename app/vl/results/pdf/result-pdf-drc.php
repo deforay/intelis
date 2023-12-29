@@ -5,54 +5,7 @@
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Helpers\PdfWatermarkHelper;
-use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
-
-class DRC_VL_PDF extends VLResultPDFHelper
-{
-	//Page header
-	public function Header()
-	{
-		$imageFilePath = null;
-		if (!empty($this->logo) && trim($this->logo) != '') {
-			if ($this->imageExists($this->logo)) {
-				$imageFilePath = $this->logo;
-			} elseif ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
-				$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-			} elseif ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-				$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-			}
-			if (!empty($imageFilePath)) {
-				$this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
-			}
-		}
-		if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
-			$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
-			$this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T');
-		}
-
-		$this->SetFont('helvetica', '', 14);
-		$this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C');
-		if (!empty($this->text) && trim($this->text) != '') {
-			$this->SetFont('helvetica', '', 12);
-			$this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
-			$thirdHeading = '23';
-			$fourthHeading = '28';
-			$hrLine = '36';
-		} else {
-			$thirdHeading = '17';
-			$fourthHeading = '23';
-			$hrLine = '30';
-		}
-		if (!empty($this->lab) && trim($this->lab) != '') {
-			$this->SetFont('helvetica', '', 9);
-			$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
-		}
-		$this->SetFont('helvetica', '', 12);
-		$this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C');
-		$this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
-	}
-}
-
+use App\Helpers\ResultPDFHelpers\CountrySpecificHelpers\DrcVlPDFHelper;
 
 if (!empty($result)) {
 
@@ -73,7 +26,7 @@ if (!empty($result)) {
 	// 	}
 	// }
 	// create new PDF document
-	$pdf = new DRC_VL_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+	$pdf = new DrcVlPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 	if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
 		$logoPrintInPdf = $result['facilityLogo'];
 	} else {
@@ -350,7 +303,7 @@ if (!empty($result)) {
 
 		if (!empty($userSignaturePath) && $pdf->imageExists($userSignaturePath) && !empty($resultApprovedBy)) {
 			$html .= '<tr>';
-			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:70px;margin-top:-20px;" /><br></td>';
+			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:100px;margin-top:-20px;" /><br></td>';
 			$html .= '</tr>';
 		}
 		$html .= '<tr>';

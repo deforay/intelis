@@ -123,7 +123,7 @@ foreach ($requestResult as $result) {
         $selectedReportFormats = json_decode((string) $result['reportFormat'], true);
     }
 
-    if (!empty($selectedReportFormats) && !empty($selectedReportFormats['eid'])) {
+    if (!empty($selectedReportFormats) && !empty($selectedReportFormats['eid']) && file_exists($selectedReportFormats['eid'])) {
         require($selectedReportFormats['vl']);
     } else {
         require($fileArray[$arr['vl_form']]);

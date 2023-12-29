@@ -99,7 +99,7 @@ try {
         ];
         $cantBeFutureDates = [
             'sampleCollectionDate',
-            'patientDob',
+            'dob',
             'sampleTestedDateTime',
             'sampleDispatchedOn',
             'sampleReceivedDate',
@@ -337,7 +337,7 @@ try {
             'patient_id' => !empty($data['patientId']) ? $data['patientId'] : null,
             'patient_name' => !empty($data['firstName']) ? trim((string) $data['firstName']) : null,
             'patient_surname' => !empty($data['lastName']) ? $data['lastName'] : null,
-            'patient_dob' => !empty($data['patientDob']) ? DateUtility::isoDateFormat($data['patientDob']) : null,
+            'patient_dob' => !empty($data['dob']) ? DateUtility::isoDateFormat($data['dob']) : null,
             'patient_gender' => !empty($data['patientGender']) ? $data['patientGender'] : null,
             'is_patient_pregnant' => !empty($data['isPatientPregnant']) ? $data['isPatientPregnant'] : null,
             'patient_age' => !empty($data['patientAge']) ? $data['patientAge'] : null,

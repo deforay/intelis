@@ -192,9 +192,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										<td>
 											<input type="text" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
 										</td>
-										<th scope="row"><label for="patientDob">Date of Birth </label></th>
+										<th scope="row"><label for="dob">Date of Birth </label></th>
 										<td>
-											<input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
+											<input type="text" class="form-control" id="dob" name="dob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
 										</td>
 									</tr>
 									<tr>
@@ -588,7 +588,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 		$("#lastName").val(patientArray['lastname']);
 		$("#patientGender").val(patientArray['gender']);
 		$("#patientAge").val(patientArray['age']);
-		$("#patientDob").val(patientArray['dob']);
+		$("#dob").val(patientArray['dob']);
 		$("#patientId").val(patientArray['patient_id']);
 	}
 

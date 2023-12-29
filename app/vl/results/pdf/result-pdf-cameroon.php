@@ -8,7 +8,6 @@ use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
 
-use const SAMPLE_STATUS\REJECTED;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -17,6 +16,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 if (!empty($result)) {
 
      $currentTime = DateUtility::getCurrentDateTime();
+
+     $reportTemplatePath = $resultPdfService->getReportTemplate($result['lab_id']);
 
      $testedBy = '';
      if (!empty($result['tested_by'])) {
@@ -44,13 +45,13 @@ if (!empty($result)) {
 
      $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = null;
      if (!empty($testedByRes['user_signature'])) {
-          $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
+          $testUserSignaturePath =  $testedByRes['user_signature'];
      }
      if (!empty($reviewedByRes['user_signature'])) {
-          $reviewedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $reviewedByRes['user_signature'];
+          $reviewedSignaturePath =  $reviewedByRes['user_signature'];
      }
      if (!empty($revisedByRes['user_signature'])) {
-          $revisedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];
+          $revisedSignaturePath =  $revisedByRes['user_signature'];
      }
 
      $resultApprovedBy = '';
@@ -61,7 +62,7 @@ if (!empty($result)) {
                $resultApprovedBy = $resultApprovedByRes['result_approved_by'] ?? null;
           }
           if (!empty($resultApprovedByRes['user_signature'])) {
-               $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $resultApprovedByRes['user_signature'];
+               $userSignaturePath =  $resultApprovedByRes['user_signature'];
           }
      }
 
@@ -74,7 +75,7 @@ if (!empty($result)) {
 
      $userSignaturePath = null;
      if (!empty($userRes['user_signature'])) {
-          $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+          $userSignaturePath =  $userRes['user_signature'];
      }
      $_SESSION['aliasPage'] = $page;
      if (!isset($result['labName'])) {
@@ -91,20 +92,23 @@ if (!empty($result)) {
           }
      }
      // create new PDF document
-     $pdf = new VLResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-     if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
-          $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
-     } else {
-          $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
-     }
-     $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT');
+     $pdf = new VLResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, $reportTemplatePath);
 
+     if (empty($reportTemplatePath)) {
+          if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+               $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
+          } else {
+               $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
+          }
+          // set default header data
+          $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+          $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT');
+     }
      // set document information
      $pdf->SetCreator('VLSM');
      $pdf->SetTitle('HIV Viral Load Patient Report');
 
-     // set default header data
-     $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
 
      // set header and footer fonts
      $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -403,7 +407,7 @@ if (!empty($result)) {
      $html .= '</tr>';
      if (trim((string) $showMessage) != '') {
           $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:13px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
+          $html .= '<td colspan="3" style="line-height:12px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:16px;"></td>';
@@ -468,7 +472,7 @@ if (!empty($result)) {
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
                if (!empty($testUserSignaturePath) && $pdf->imageExists(($testUserSignaturePath))) {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:40px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
                }
@@ -490,7 +494,7 @@ if (!empty($result)) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
           if (!empty($reviewedSignaturePath) && $pdf->imageExists(($reviewedSignaturePath))) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:50px;" /></td>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:40px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }
@@ -509,7 +513,7 @@ if (!empty($result)) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
           if (!empty($revisedSignaturePath) && $pdf->imageExists($revisedSignaturePath)) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:40px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }
@@ -530,7 +534,7 @@ if (!empty($result)) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
           if (!empty($userSignaturePath) && $pdf->imageExists(($userSignaturePath))) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:40px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }

@@ -174,9 +174,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="text" class="form-control isRequired patientId" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
                                             <span class="artNoGroup"></span>
                                         </td>
-                                        <th scope="row"><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="dob">Date of Birth <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
+                                            <input type="text" class="form-control isRequired" id="dob" name="dob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
                                         </td>
                                     </tr>
                                     <tr>

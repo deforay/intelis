@@ -70,17 +70,36 @@ class Utilities {
         return succeed;
     }
 
+    /**
+     * Calculates age in years and months from a given date of birth (dob).
+     * @param {string} dob - Date of birth in a format that dayjs can parse.
+     * @returns {Object} An object containing the age in years and months.
+     */
     static getAgeFromDob(dob) {
-        let dobDate = dayjs(dob);
-        if (dob != '' && dobDate.isValid()) {
-            let currentDate = dayjs();
-            let ageInYears = currentDate.diff(dobDate, 'year');
-            let ageInMonths = currentDate.diff(dobDate, 'month') % 12;
-            return {
-                years: ageInYears,
-                months: ageInMonths
-            }
+        if (!dob || !dayjs(dob).isValid()) {
+            console.error("Invalid or missing date of birth");
+            return { years: 0, months: 0 };
         }
+
+        const dobDate = dayjs(dob);
+        const currentDate = dayjs();
+        if (dobDate.isAfter(currentDate)) {
+            console.error("Date of birth is in the future");
+            return { years: 0, months: 0 };
+        }
+
+        const ageInYears = currentDate.diff(dobDate, 'year');
+        const ageInMonths = currentDate.diff(dobDate, 'month') % 12;
+
+        if (typeof ageInYears !== "number" || typeof ageInMonths !== "number" || ageInYears < 0 || ageInMonths < 0) {
+            console.error("Invalid age calculation");
+            return { years: 0, months: 0 };
+        }
+
+        return {
+            years: ageInYears,
+            months: ageInMonths
+        };
     }
 
     static splitPath(path) {
@@ -97,12 +116,26 @@ class Utilities {
 
     static autoSelectSingleOption(selectId) {
         let nonEmptyOptions = $('#' + selectId).find("option[value!='']");
-      //  alert(nonEmptyOptions.length);
+        //  alert(nonEmptyOptions.length);
         if (nonEmptyOptions.length === 1) {
             $('#' + selectId).val(nonEmptyOptions.val()).trigger('change');
         }
     }
 
+}
+
+function getAge() {
+    const dob = $.trim($("#dob").val());
+    // Clear the fields initially
+    $("#ageInYears, #ageInMonths").val("");
+    if (dob) {
+        const age = Utilities.getAgeFromDob(dob);
+        if (age.years && age.years >= 1) {
+            $("#ageInYears").val(age.years);
+        } else {
+            $("#ageInMonths").val(age.months);
+        }
+    }
 }
 
 function showModal(url, w, h) {

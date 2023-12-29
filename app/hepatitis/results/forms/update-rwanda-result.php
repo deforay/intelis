@@ -167,9 +167,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                 <th scope="row"><label for="patientPhoneNumber">Phone number</label></th>
                                 <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient Phone Number" title="Patient Phone Number" style="width:100%;" value="<?php echo $hepatitisInfo['patient_phone_number']; ?>" /></td>
 
-                                <th scope="row"><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
+                                <th scope="row"><label for="dob">Date of Birth <span class="mandatory">*</span> </label></th>
                                 <td>
-                                    <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['patient_dob']); ?>" />
+                                    <input type="text" class="form-control isRequired" id="dob" name="dob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['patient_dob']); ?>" />
                                 </td>
                             </tr>
                             <tr>

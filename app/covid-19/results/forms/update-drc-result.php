@@ -213,9 +213,9 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                     <td style="width:35% !important">
                                         <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="N&deg; EPID" title="Code Patient" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" />
                                     </td>
-                                    <th scope="row"><label for="patientDob">Date de naissance <span class="mandatory">*</span> </label></th>
+                                    <th scope="row"><label for="dob">Date de naissance <span class="mandatory">*</span> </label></th>
                                     <td>
-                                        <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
+                                        <input type="text" class="form-control isRequired" id="dob" name="dob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
                                     </td>
                                 </tr>
                                 <tr>

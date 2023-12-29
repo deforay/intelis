@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;

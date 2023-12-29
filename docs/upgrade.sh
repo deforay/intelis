@@ -12,6 +12,21 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Function to get Ubuntu version
+get_ubuntu_version() {
+    local version=$(lsb_release -rs)
+    echo "$version"
+}
+
+# Check if Ubuntu version is 20.04 or newer
+min_version="20.04"
+current_version=$(get_ubuntu_version)
+
+if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
+    echo "This script is not compatible with Ubuntu versions older than ${min_version}."
+    exit 1
+fi
+
 # Ask user for VLSM installation path
 read -p "Enter the VLSM installation path [/var/www/vlsm]: " vlsm_path
 vlsm_path="${vlsm_path:-/var/www/vlsm}"
@@ -39,21 +54,36 @@ if ! command -v php &>/dev/null; then
     echo "PHP is not installed. Please first run the setup script."
     exit 1
 fi
-
 ask_yes_no() {
     local timeout=15
-    local default=${2:-"no"} # fallback to "no" if no default is provided
-    echo -n "$1 (yes/no): "
-    read -t $timeout answer
-    if [ $? -ne 0 ]; then
-        answer=$default
-    fi
-    answer=$(echo "$answer" | awk '{print tolower($0)}')
-    if [[ "$answer" == "yes" || "$answer" == "y" ]]; then
-        return 0
-    else
-        return 1
-    fi
+    local default=${2:-"no"} # set default value from the argument, fallback to "no" if not provided
+    local answer=""
+
+    while true; do
+        echo -n "$1 (y/n): "
+        read -t $timeout answer
+        if [ $? -ne 0 ]; then
+            answer=$default
+        fi
+
+        answer=$(echo "$answer" | awk '{print tolower($0)}')
+        case "$answer" in
+        "yes" | "y") return 0 ;;
+        "no" | "n") return 1 ;;
+        *)
+            if [ -z "$answer" ]; then
+                # If no input is given and it times out, apply the default value
+                if [ "$default" == "yes" ] || [ "$default" == "y" ]; then
+                    return 0
+                else
+                    return 1
+                fi
+            else
+                echo "Invalid response. Please answer 'yes/y' or 'no/n'."
+            fi
+            ;;
+        esac
+    done
 }
 
 # Check for PHP version 8.2.x
@@ -244,6 +274,13 @@ sudo -u www-data composer update --no-dev &&
 # Run the database migrations
 echo "Running database migrations..."
 sudo -u www-data composer migrate &
+pid=$!
+spinner "$pid"
+wait $pid
+
+# Updating privileges
+echo "Updating privileges..."
+sudo -u www-data composer fix-privileges &
 pid=$!
 spinner "$pid"
 wait $pid

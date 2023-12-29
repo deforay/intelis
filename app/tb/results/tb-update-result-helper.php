@@ -107,8 +107,8 @@ try {
         $status = SAMPLE_STATUS\REJECTED;
         $resultSentToSource = 'pending';
     }
-    if (!empty($_POST['patientDob'])) {
-        $_POST['patientDob'] = DateUtility::isoDateFormat($_POST['patientDob']);
+    if (!empty($_POST['dob'])) {
+        $_POST['dob'] = DateUtility::isoDateFormat($_POST['dob']);
     }
 
     if (!empty($_POST['result'])) {

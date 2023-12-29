@@ -88,7 +88,7 @@ class PatientsService
             } else {
                 $params['patientFirstName'] = $params['firstName'] ?? null;
                 $params['patientLastName'] = $params['lastName'] ?? null;
-                $params['dob'] = $params['patientDob'] ?? null;
+                $params['dob'] = $params['dob'] ?? null;
                 $data['patient_code'] = $params['patientId'] ?? null;
             }
 
@@ -169,7 +169,7 @@ class PatientsService
         } else {
             $params['patientFirstName'] = $params['firstName'];
             $params['patientLastName'] = $params['lastName'];
-            $params['dob'] = $params['patientDob'];
+            $params['dob'] = $params['dob'];
             $patientId = $params['patientId'];
         }
         $data['patient_code'] = $patientId;

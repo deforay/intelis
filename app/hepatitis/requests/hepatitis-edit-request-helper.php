@@ -125,7 +125,7 @@ try {
 	//Update patient Information in Patients Table
 	$patientsService->updatePatient($_POST, 'form_hepatitis');
 
-	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['patientDob'] ?? ''));
+	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
 	$hepatitisData = array(
 		'external_sample_code' => $_POST['externalSampleCode'] ?? null,
@@ -141,7 +141,7 @@ try {
 		'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
 		'patient_name' => $_POST['firstName'] ?? null,
 		'patient_surname' => $_POST['lastName'] ?? null,
-		'patient_dob' => isset($_POST['patientDob']) ? DateUtility::isoDateFormat($_POST['patientDob']) : null,
+		'patient_dob' => isset($_POST['dob']) ? DateUtility::isoDateFormat($_POST['dob']) : null,
 		'patient_gender' => $_POST['patientGender'] ?? null,
 		'patient_age' => $_POST['patientAge'] ?? null,
 		'patient_marital_status' => $_POST['maritalStatus'] ?? null,

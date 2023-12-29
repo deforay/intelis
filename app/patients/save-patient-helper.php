@@ -38,7 +38,7 @@ try {
         'patient_code_prefix' => $_POST['patientCodePrefix'] ?? null,
         'patient_code_key' => $_POST['patientCodeKey'] ?? null,
         'patient_gender' => $_POST['gender'] ?? null,
-        'patient_dob' => DateUtility::isoDateFormat($_POST['patientDob'] ?? ''),
+        'patient_dob' => DateUtility::isoDateFormat($_POST['dob'] ?? ''),
         'patient_first_name' => $_POST['patientFirstName'] ?? null,
         'patient_middle_name' => $_POST['patientMiddleName'] ?? null,
         'patient_last_name' => $_POST['patientLastName'] ?? null,
