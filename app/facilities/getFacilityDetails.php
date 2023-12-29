@@ -103,6 +103,9 @@ if (isset($_POST['testType']) && trim((string) $_POST['testType']) != '') {
         }
     }
 }
+if (isset($_POST['activeFacility']) && trim((string) $_POST['activeFacility']) != '') {
+    $sWhere[] = " f_d.status = '" . $_POST['activeFacility'] . "' ";
+}
 /*
          * SQL queries
          * Get data to display

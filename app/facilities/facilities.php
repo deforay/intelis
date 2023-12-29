@@ -105,6 +105,14 @@ $state = $geolocationService->getProvinces("yes");
               </tr>
               <tr>
 
+              <td>&nbsp;<strong>Show Only Active &nbsp;:</strong></td>
+                <td>
+                  <select class="form-control select2-element" id="activeFacility" name="activeFacility" title="<?php echo _translate('Please select Active Facility'); ?>">
+                      <option value=""> <?php echo _translate("-- Select --"); ?> </option>
+                      <option value="active"><?php echo _translate("Yes"); ?></option>
+                      <option value="inactive"><?php echo _translate("No"); ?></option>
+                    </select>
+                </td>
                 <td></td>
                 <td></td>
               </tr>
@@ -251,6 +259,10 @@ $state = $geolocationService->getProvinces("yes");
         aoData.push({
           "name": "testType",
           "value": $("#testType").val()
+        });
+        aoData.push({
+          "name": "activeFacility",
+          "value": $("#activeFacility").val()
         });
         $.ajax({
           "dataType": 'json',
