@@ -57,13 +57,12 @@ $systemConfig['modules']['tb'] = false;
 
    ServerName vlsm.example.org
 
-   <Directory "/var/www/vlsm/public">
-       AddDefaultCharset UTF-8
-       Options -Indexes -MultiViews +FollowSymLinks
-       AllowOverride All
-       Order allow,deny
-       Allow from all
-   </Directory>
+    <Directory "/var/www/vlsm/public">
+        AddDefaultCharset UTF-8
+        Options -Indexes -MultiViews +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
 </VirtualHost>
 ```
 

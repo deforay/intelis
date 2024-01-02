@@ -363,4 +363,11 @@ class MiscUtility
         }
         return $mappedMimeTypes;
     }
+
+    public static function arrayToGenerator(array $array)
+    {
+        foreach ($array as $item) {
+            yield $item;
+        }
+    }
 }
