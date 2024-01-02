@@ -155,4 +155,75 @@ class DateUtility
     {
         return Carbon::now()->subMonths($months)->format('Y-m-d');
     }
+
+
+    /**
+     * Filters and returns only valid dates from an array of date strings.
+     *
+     * @param array $dates An array of date strings.
+     * @return array An array containing only valid date strings.
+     */
+    private static function filterValidDates(array $dates): array
+    {
+        return array_filter($dates, function ($date) {
+            return self::isDateValid($date);
+        });
+    }
+
+    /**
+     * Returns the earliest date among a variable number of given dates.
+     *
+     * @param string ...$dates A variable number of date strings.
+     * @return string|null The earliest date in 'Y-m-d H:i:s' format, or null if all dates are invalid or no dates are provided.
+     */
+    public static function getLowestDate(...$dates)
+    {
+        // Filter out invalid dates
+        $validDates = self::filterValidDates($dates);
+
+        // If there are no valid dates, return null
+        if (empty($validDates)) {
+            return null;
+        }
+
+        $earliestDate = null;
+
+        foreach ($validDates as $date) {
+            $carbonDate = Carbon::parse($date);
+
+            if (is_null($earliestDate) || $carbonDate->lt($earliestDate)) {
+                $earliestDate = $carbonDate;
+            }
+        }
+
+        return $earliestDate->format('Y-m-d H:i:s');
+    }
+    /**
+     * Returns the latest date among a variable number of given dates.
+     *
+     * @param string ...$dates A variable number of date strings.
+     * @return string|null The latest date in 'Y-m-d H:i:s' format, or null if all dates are invalid or no dates are provided.
+     */
+    public static function getHighestDate(...$dates)
+    {
+        // Filter out invalid dates
+        $validDates = self::filterValidDates($dates);
+
+        // If there are no valid dates, return null
+        if (empty($validDates)) {
+            return null;
+        }
+
+        $latestDate = null;
+
+        foreach ($validDates as $date) {
+            $carbonDate = Carbon::parse($date);
+
+            if (is_null($latestDate) || $carbonDate->gt($latestDate)) {
+                $latestDate = $carbonDate;
+            }
+        }
+
+        return $latestDate->format('Y-m-d H:i:s');
+    }
 }

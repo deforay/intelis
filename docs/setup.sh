@@ -410,6 +410,7 @@ fi
 vlsm_config_block="DocumentRoot \"${vlsm_path}/public\"
     ServerName ${hostname}
     <Directory \"${vlsm_path}/public\">
+        AddDefaultCharset UTF-8
         Options -Indexes -MultiViews +FollowSymLinks
         AllowOverride All
         Require all granted

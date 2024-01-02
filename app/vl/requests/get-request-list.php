@@ -1,6 +1,5 @@
 <?php
 
-use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -22,18 +21,13 @@ try {
      /** @var FacilitiesService $facilitiesService */
      $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-     /** @var UsersService $usersService */
-     $usersService = ContainerRegistry::get(UsersService::class);
-
-     $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
+     $barCodePrinting = (string) $general->getGlobalConfig('bar_code_printing');
+     $key = (string) $general->getGlobalConfig('key');
 
 
      $tableName = "form_vl";
      $primaryKey = "vl_sample_id";
 
-     /* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
      $sampleCode = 'sample_code';
      $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'testingLab.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'testingLab.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
@@ -48,9 +42,7 @@ try {
      $sIndexColumn = $primaryKey;
 
      $sTable = $tableName;
-     /*
- * Paging
- */
+
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
@@ -337,12 +329,11 @@ try {
           }
           $row[] = $aRow['sample_collection_date'];
           $row[] = $aRow['batch_code'];
-          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes' && !empty($general->getGlobalConfig('key'))) {
-               $key = (string) $general->getGlobalConfig('key');
-               $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
-               $patientFname = $general->crypto('decrypt', $patientFname, $key);
-               $patientMname = $general->crypto('decrypt', $patientMname, $key);
-               $patientLname = $general->crypto('decrypt', $patientLname, $key);
+          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes' && !empty($key)) {
+               $aRow['patient_art_no'] = CommonService::crypto('decrypt', $aRow['patient_art_no'], $key);
+               $patientFname = CommonService::crypto('decrypt', $patientFname, $key);
+               $patientMname = CommonService::crypto('decrypt', $patientMname, $key);
+               $patientLname = CommonService::crypto('decrypt', $patientLname, $key);
           }
           $row[] = $aRow['patient_art_no'];
           $row[] = trim(implode(" ", array($patientFname, $patientMname, $patientLname)));
