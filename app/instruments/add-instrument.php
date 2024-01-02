@@ -441,7 +441,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 											<input type="text" name="dateFormat[]" id="dateFormat1" class="form-control" placeholder='<?php echo _translate("Date Format"); ?>' title='<?php echo _translate("Please enter date format"); ?>' value='d/m/Y H:i' />
 										</td>
 										<td>
-											<input type="text" name="fileName[]" id="fileName1" class="form-control" placeholder='<?php echo _translate("File Name"); ?>' title='<?php echo _translate("Please enter file name"); ?>' onblur="checkDublicateName(this, 'fileName');" />
+											<input type="text" name="fileName[]" id="fileName1" class="form-control" placeholder='<?php echo _translate("File Name"); ?>' title='<?php echo _translate("Please enter file name"); ?>' />
 										</td>
 										<td>
 											<div class="col-md-3">
@@ -591,8 +591,8 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 		f.setAttribute("align", "center");
 		f.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDublicateName(this, \'"configMachineName"\');"/ >';
-		c.innerHTML = '<input type="text" value="d/m/Y H:i" name="dateFormat[]" id="dateFormat' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("Date Format"); ?>" title="<?php echo _translate("Please enter date format"); ?>"  onblur="checkDublicateName(this, \'"dateFormat"\');"/>';
+		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDublicateName(this, \'configMachineName\');"/ >';
+		c.innerHTML = '<input type="text" value="d/m/Y H:i" name="dateFormat[]" id="dateFormat' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("Date Format"); ?>" title="<?php echo _translate("Please enter date format"); ?>" />';
 		d.innerHTML = '<input type="text" name="fileName[]" id="fileName' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("File Name"); ?>" title="<?php echo _translate("Please enter file name"); ?>"/>';
 		e.innerHTML = '<div class="col-md-3" >\
 						<input type="checkbox" id="pocdevice' + tableRowId + '" name="pocdevice[]" value="" onclick="getLatiLongi(' + tableRowId + ');">\
