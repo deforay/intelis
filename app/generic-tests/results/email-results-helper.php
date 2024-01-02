@@ -21,10 +21,10 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$tableName = "form_vl";
+$tableName = "form_generic";
 
 //get vl result mail sent list
-$resultmailSentQuery = "SELECT result_mail_datetime FROM form_vl where MONTH(result_mail_datetime) = MONTH(CURRENT_DATE())";
+$resultmailSentQuery = "SELECT result_mail_datetime FROM form_generic where MONTH(result_mail_datetime) = MONTH(CURRENT_DATE())";
 $resultmailSentResult = $db->rawQuery($resultmailSentQuery);
 $sourcecode = sprintf("%02d", (count($resultmailSentResult) + 1));
 //get instance facility code
@@ -51,7 +51,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
          "subject" => $_POST['subject'],
          "text_message" => $_POST['message'],
          "report_email" => $_POST['reportEmail'],
-         "test_type" => 'vl',
+         "test_type" => 'generic-tests',
          "attachment" => $_POST['pdfFile1'],
          "samples" => $_POST['sample'], 
          "status" => "pending",

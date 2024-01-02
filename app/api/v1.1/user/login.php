@@ -1,12 +1,12 @@
 <?php
 
-use App\Exceptions\SystemException;
+use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
-use App\Services\ApiService;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Services\UsersService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 
 
 /** @var Slim\Psr7\Request $request */
@@ -21,41 +21,32 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var ApiService $app */
-$app = ContainerRegistry::get(ApiService::class);
-
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
 $transactionId = $general->generateUUID();
 try {
-    if (
-        !empty($input['userName']) && !empty($input['password'])
-    ) {
-
-        $queryParams = array($input['userName']);
-        $userResult = $db->rawQueryOne(
-            "SELECT ud.user_id,
-                    ud.user_name,
-                    ud.email,
-                    ud.phone_number,
-                    ud.login_id,
-                    ud.status,
-                    ud.password,
-                    ud.api_token,
-                    r.role_id,
-                    r.role_name,
-                    r.role_code,
-                    r.access_type,
-                    r.landing_page,
-                    (CASE WHEN (r.access_type = 'testing-lab') THEN 'yes' ELSE 'no' END) as testing_user
-                    FROM user_details as ud
-                    INNER JOIN roles as r ON ud.role_id=r.role_id
-                    WHERE IFNULL(ud.app_access, 'no') = 'yes'
-                    AND ud.status = 'active'
-                    AND ud.login_id = ?",
-            $queryParams
-        );
+    if (!empty($input['userName']) && !empty($input['password'])) {
+        $userQuery = "SELECT ud.user_id,
+                        ud.user_name,
+                        ud.email,
+                        ud.phone_number,
+                        ud.login_id,
+                        ud.status,
+                        ud.password,
+                        ud.api_token,
+                        r.role_id,
+                        r.role_name,
+                        r.role_code,
+                        r.access_type,
+                        r.landing_page,
+                        (CASE WHEN (r.access_type = 'testing-lab') THEN 'yes' ELSE 'no' END) as testing_user
+                        FROM user_details as ud
+                        INNER JOIN roles as r ON ud.role_id=r.role_id
+                        WHERE IFNULL(ud.app_access, 'no') = 'yes'
+                        AND ud.status = 'active'
+                        AND ud.login_id = ?";
+        $userResult = $db->rawQueryOne($userQuery, [$input['userName']]);
 
         if (empty($userResult) || !password_verify((string) $input['password'], (string) $userResult['password'])) {
             throw new SystemException('Login failed. Please contact system administrator.');
@@ -80,28 +71,30 @@ try {
             $data['appMenuName'] = $general->getGlobalConfig('app_menu_name');
             $data['access'] = $usersService->getUserRolePrivileges($userResult['user_id']);
 
-            $payload = array(
+            $payload = [
                 'status' => 1,
                 'message' => 'Login Success',
                 'timestamp' => time(),
                 'transactionId' => $transactionId,
-                'data' => $data,
-            );
+                'data' => $data
+            ];
         }
     } else {
         throw new SystemException('Login failed. Please contact system administrator.');
     }
 } catch (SystemException $exc) {
     http_response_code(500);
-    $payload = array(
+    $payload = [
         'status' => 2,
         'message' => 'Login failed. Please contact system administrator.',
         'timestamp' => time(),
-        'transactionId' => $transactionId,
-    );
+        'transactionId' => $transactionId
+    ];
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
 $payload = json_encode($payload);
+
 $trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], count($userResult), 'login', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
+
 echo $payload;

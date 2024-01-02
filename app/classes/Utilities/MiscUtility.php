@@ -278,7 +278,10 @@ class MiscUtility
             }, $input);
         }
         if (is_string($input)) {
-            return mb_convert_encoding($input, 'UTF-8', 'UTF-8');
+            $encoding = mb_detect_encoding($input, mb_detect_order(), true) ?? 'UTF-8';
+            if ($encoding) {
+                return mb_convert_encoding($input, 'UTF-8', $encoding);
+            }
         }
         return $input;
     }
