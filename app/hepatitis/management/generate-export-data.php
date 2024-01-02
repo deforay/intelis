@@ -28,7 +28,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatitisResultQuery']) != "") {
 
-	$headings = array("S.No.", "Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
+	$headings = array("S.No.", "Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
 	$output = [];
 
 	$no = 1;
@@ -71,6 +71,8 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 
 		$row[] = $no;
 		$row[] = $aRow[$sampleCode];
+		$row[] = ($aRow['labName']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
 		$row[] = ($aRow['facility_name']);
 		$row[] = $aRow['facility_code'];
 		$row[] = ($aRow['facility_district']);
@@ -86,7 +88,6 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 		$row[] = $aRow['rejection_reason'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 		$row[] = $hepatitisResults[$aRow['result']] ?? $aRow['result'];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 		$row[] = $aRow['status_name'];
 		$row[] = ($aRow['lab_tech_comments']);

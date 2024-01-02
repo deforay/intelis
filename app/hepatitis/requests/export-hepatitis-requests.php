@@ -34,9 +34,9 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
 
     $output = [];
     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-        $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
+        $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
     } else {
-        $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
+        $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
     }
     if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search('Remote Sample ID', $headings)) !== false) {
         unset($headings[$key]);
@@ -85,6 +85,8 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
             $row[] = $aRow["sample_code"];
             $row[] = $aRow["remote_sample_code"];
         }
+        $row[] = ($aRow['labName']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
         $row[] = ($aRow['facility_name']);
         $row[] = $aRow['facility_code'];
         $row[] = ($aRow['facility_district']);
@@ -108,7 +110,6 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
         $row[] = ($aRow['hcv_vl_result']);
         $row[] = ($aRow['hbv_vl_result']);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
         $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
         $row[] = $aRow['status_name'];
         $row[] = ($aRow['lab_tech_comments']);
