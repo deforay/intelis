@@ -486,7 +486,7 @@ $sFormat = '';
 											<td class="vlResult" style="width: 25%;"><label for="vlResult">Résultat </label>
 											</td>
 											<td class="resultInputContainer">
-												<input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this);" disabled>
+												<input list="possibleVlResults" autocomplete="off" class="form-control labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this);">
 												<datalist id="possibleVlResults">
 												</datalist>
 											</td>
@@ -946,6 +946,9 @@ $sFormat = '';
 			$("#vlResult").attr("disabled", true);
 			return;
 		}
+		else{
+			$("#vlResult").attr("disabled", false);
+
 		var str1 = platformInfo.split("##");
 		//Get VL results by platform id
 		var platformId = str1[3];
@@ -956,8 +959,8 @@ $sFormat = '';
 			function(data) {
 				if (data != "") {
 					$("#possibleVlResults").html(data);
-					$("#vlResult").attr("disabled", false);
 				}
 			});
+		}
 	}
 </script>

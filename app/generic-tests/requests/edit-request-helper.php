@@ -210,6 +210,14 @@ try {
      //      $interpretationResult = $_POST['resultInterpretation'];
      // }
 
+     if(isset($_POST['subTestResult']) && is_array($_POST['subTestResult']))
+    {
+        $_POST['subTestResult'] = implode("##", $_POST['subTestResult']);
+    }
+    else{
+        $_POST['subTestResult'] = '';
+    }
+
 
      $genericData = array(
           'vlsm_instance_id' => $instanceId,
@@ -265,7 +273,7 @@ try {
           'last_modified_datetime' => DateUtility::getCurrentDateTime(),
           'manual_result_entry' => 'yes',
           'test_type' => $_POST['testType'],
-          'sub_tests' => implode("##", $_POST['subTestResult']),
+          'sub_tests' => $_POST['subTestResult'],
           'test_type_form' => json_encode($_POST['dynamicFields']),
           'data_sync' => 0
      );
