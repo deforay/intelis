@@ -121,7 +121,7 @@ if ($chkUserFcMapResult) {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-     $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
+     $province .= "<option data-province-id='".$provinceName['geo_id']."' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 
@@ -1490,9 +1490,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     sampleCodeFormat: $("#" + sampleCodeFormat).val(),
                     countryId: countryId,
                     sampleCollectionDate: $("#" + sampleCollectionDate).val(),
-                    provinceCode: $("#province").find(":selected").attr("data-code"),
                     provinceId: $("#province").find(":selected").attr("data-province-id"),
-                    testType: $('#testType').find(':selected').data('short')
+                    testType: $('#testType').find(':selected').val()
                },
                function(data) {
                     //alert(data);

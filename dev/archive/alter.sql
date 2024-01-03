@@ -3083,3 +3083,4 @@ ALTER TABLE `form_vl` ADD INDEX(`result_approved_by`);
 ALTER TABLE `form_vl` CHANGE `result_reviewed_by` `result_reviewed_by` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_vl` ADD INDEX(`result_reviewed_by`);
 
+ALTER TABLE `form_generic` ADD `is_encrypted` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no' AFTER `patient_id`;
