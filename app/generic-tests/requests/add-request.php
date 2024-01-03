@@ -1019,13 +1019,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var testType = $("#testType").val();
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
-          var provinceCode = $("#province").find(":selected").attr("data-code");
 
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           if (pName != '' && sDate != '' && testType != '') {
                $.post("/generic-tests/requests/generateSampleCode.php", {
                          sampleCollectionDate: sDate,
-                         provinceCode: provinceCode,
+                         pName : pName,
                          testType: $('#testType').find(':selected').data('short')
                     },
                     function(data) {
