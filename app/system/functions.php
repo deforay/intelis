@@ -9,7 +9,6 @@ use Laminas\Filter\FilterChain;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\DateUtility;
 
 function _translate(?string $text, ?bool $escapeForJavaScript = false)
 {
@@ -65,7 +64,7 @@ function _sanitizeInput(string|array $data, $customFilters = [])
 function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = true, $maxSize = null)
 {
     if ($maxSize === null) {
-        $maxSize = MiscUtility::convertToBytes(ini_get('upload_max_filesize'));
+        $maxSize = MiscUtility::convertToBytes(ini_get('upload_max_filesize') ?? '500M');
     }
 
     $sanitizedFiles = [];
@@ -73,8 +72,6 @@ function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = tru
     // Check if the input is a single file, multiple files from one input, or multiple single-file inputs
     $isSingleFile = isset($filesInput['name']) && is_string($filesInput['name']);
     $isMultiFileArray = isset($filesInput['name']) && is_array($filesInput['name']);
-
-
 
     // Normalize input
     if ($isSingleFile) {

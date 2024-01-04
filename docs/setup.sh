@@ -151,31 +151,6 @@ while :; do # Infinite loop to keep asking until a correct password is provided
         mysql -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
         mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${mysql_root_password}'; FLUSH PRIVILEGES;"
 
-        echo "Configuring MySQL..."
-        desired_sql_mode="sql_mode ="
-        desired_innodb_strict_mode="innodb_strict_mode = 0"
-        config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
-
-        awk -v dsm="${desired_sql_mode}" -v dism="${desired_innodb_strict_mode}" \
-            'BEGIN { sql_mode_added=0; innodb_strict_mode_added=0; }
-            /sql_mode[[:space:]]*=/ {
-                if ($0 ~ dsm) {sql_mode_added=1;}
-                else {print ";" $0;}
-                next;
-            }
-            /innodb_strict_mode[[:space:]]*=/ {
-                if ($0 ~ dism) {innodb_strict_mode_added=1;}
-                else {print ";" $0;}
-                next;
-            }
-            /skip-external-locking|mysqlx-bind-address/ {
-                print;
-                if (sql_mode_added == 0) {print dsm; sql_mode_added=1;}
-                if (innodb_strict_mode_added == 0) {print dism; innodb_strict_mode_added=1;}
-                next;
-            }
-            { print; }' ${config_file} >tmpfile && mv tmpfile ${config_file}
-
         service mysql restart || {
             echo "Failed to restart MySQL. Exiting..."
             exit 1
@@ -183,6 +158,51 @@ while :; do # Infinite loop to keep asking until a correct password is provided
         break # Exit the loop after installing MySQL and setting the password
     fi
 done
+
+echo "Configuring MySQL..."
+desired_sql_mode="sql_mode ="
+desired_innodb_strict_mode="innodb_strict_mode = 0"
+desired_charset="character-set-server=utf8mb4"
+desired_collation="collation-server=utf8mb4_general_ci"
+config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
+
+awk -v dsm="${desired_sql_mode}" -v dism="${desired_innodb_strict_mode}" \
+    -v dcharset="${desired_charset}" -v dcollation="${desired_collation}" \
+    'BEGIN { sql_mode_added=0; innodb_strict_mode_added=0; charset_added=0; collation_added=0; }
+                /sql_mode[[:space:]]*=/ {
+                    if ($0 ~ dsm) {sql_mode_added=1;}
+                    else {print ";" $0;}
+                    next;
+                }
+                /innodb_strict_mode[[:space:]]*=/ {
+                    if ($0 ~ dism) {innodb_strict_mode_added=1;}
+                    else {print ";" $0;}
+                    next;
+                }
+                /character-set-server[[:space:]]*=/ {
+                    if ($0 ~ dcharset) {charset_added=1;}
+                    else {print ";" $0;}
+                    next;
+                }
+                /collation-server[[:space:]]*=/ {
+                    if ($0 ~ dcollation) {collation_added=1;}
+                    else {print ";" $0;}
+                    next;
+                }
+                /skip-external-locking|mysqlx-bind-address/ {
+                    print;
+                    if (sql_mode_added == 0) {print dsm; sql_mode_added=1;}
+                    if (innodb_strict_mode_added == 0) {print dism; innodb_strict_mode_added=1;}
+                    if (charset_added == 0) {print dcharset; charset_added=1;}
+                    if (collation_added == 0) {print dcollation; collation_added=1;}
+                    next;
+                }
+                { print; }' ${config_file} >tmpfile && mv tmpfile ${config_file}
+
+service mysql restart || {
+    echo "Failed to restart MySQL. Exiting..."
+    exit 1
+}
 
 # PHP Setup
 echo "Installing PHP 8.2..."
