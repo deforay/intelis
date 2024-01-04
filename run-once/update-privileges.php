@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 require_once(__DIR__ . '/../bootstrap.php');
 

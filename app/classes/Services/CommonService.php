@@ -13,16 +13,18 @@ use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
+use App\Services\FacilitiesService;
 
 
 class CommonService
 {
-    protected ?DatabaseService $db;
+    protected DatabaseService $db;
+    protected FacilitiesService $facilitiesService;
 
-    public function __construct(?DatabaseService $db)
+    public function __construct(DatabaseService $db, FacilitiesService $facilitiesService)
     {
-        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
+        $this->db = $db;
+        $this->facilitiesService = $facilitiesService;
     }
 
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false, bool $unbuffered = false): array
@@ -813,44 +815,61 @@ class CommonService
     /**
      * Convert a JSON string to a string that can be used with JSON_SET()
      *
-     * @param string $json The JSON string to convert
+     * @param string|null $json The JSON string to convert
      * @param string $column The name of the JSON column
      * @param array|string $newData An optional array or JSON string of new key-value pairs to add to the JSON
      * @return string|null The string that can be used with JSON_SET()
      */
-    public function jsonToSetString(?string $json, string $column, array|string $newData = []): ?string
+    public function jsonToSetString(?string $json, string $column, $newData = []): ?string
     {
-        $data = [];
-        if (MiscUtility::isJSON($json)) {
-            $data = json_decode($json, true);
-        }
-        $setString = '';
+        // Decode JSON string to array
+        $jsonData = $json && MiscUtility::isJSON($json) ? json_decode($json, true) : [];
 
+        // Decode newData if it's a string
         if (is_string($newData)) {
             $newData = json_decode($newData, true);
         }
 
-        foreach (array_merge($data, $newData) as $key => $value) {
-            $setString .= ', "$.' . $key . '", ';
-            if (is_null($value)) {
-                $setString .= 'null';
-            } elseif (is_bool($value)) {
-                $setString .= $value ? 'true' : 'false';
-            } elseif (is_numeric($value)) {
-                $setString .= $value;
-            } elseif (is_array($value)) {
-                $setString .= "'" . addslashes(json_encode($value)) . "'";
-            } else {
-                $setString .= "'" . addslashes((string) $value) . "'";
-            }
+        // Combine original data and new data
+        $data = array_merge($jsonData, $newData);
+
+        // Return null if there's nothing to set
+        if (empty($data)) {
+            return null;
         }
 
-        if (empty($setString)) {
-            return null;
+        // Build the set string
+        $setString = '';
+        foreach ($data as $key => $value) {
+            $setString .= ', "$.' . $key . '", JSON_UNQUOTE(' . $this->jsonValueToString($value) . ')';
+        }
+
+        // Construct and return the JSON_SET query
+        return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
+    }
+
+    /**
+     * Convert a value to a JSON-compatible string representation
+     *
+     * @param mixed $value The value to convert
+     * @return string The JSON-compatible string representation
+     */
+    private function jsonValueToString($value): string
+    {
+        if (is_null($value)) {
+            return 'null';
+        } elseif (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        } elseif (is_numeric($value)) {
+            return (string) $value;
+        } elseif (is_array($value)) {
+            return "'" . addslashes(json_encode($value)) . "'";
         } else {
-            return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
+            return "'" . addslashes((string) $value) . "'";
         }
     }
+
+
 
     public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false)
     {
@@ -920,6 +939,9 @@ class CommonService
                 $sWhereSub = [];
 
                 for ($i = 0; $i < $colSize; $i++) {
+                    if (empty($allColumns[$i])) {
+                        continue;
+                    }
                     $sWhereSub[] = "$allColumns[$i] LIKE '%$search%'";
                 }
 
@@ -960,8 +982,6 @@ class CommonService
 
     public function getTestingLabsAPI($testType = null, $user = null, $onlyActive = false, $module = false, $activeModule = null, $updatedDateTime = null): array
     {
-        /** @var FacilitiesService $facilitiesService */
-        $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
         $query = "SELECT tl.test_type, f.facility_id, f.facility_name, f.facility_code, f.other_id, f.facility_state_id, f.facility_state, f.facility_district_id, f.facility_district, f.testing_points, f.status, gd.geo_id, gd.geo_name
                     from testing_labs AS tl
@@ -969,7 +989,7 @@ class CommonService
                     LEFT JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
         $where = [];
         if (!empty($user)) {
-            $facilityMap = $facilitiesService->getUserFacilityMap($user);
+            $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
@@ -1019,8 +1039,6 @@ class CommonService
     public function getDistrictDetailsApi($user = null, $onlyActive = false, $updatedDateTime = null)
     {
         return once(function () use ($user, $onlyActive, $updatedDateTime) {
-            /** @var FacilitiesService $facilitiesService */
-            $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
             $query = "SELECT f.facility_id, f.facility_name,
                     f.facility_code,
@@ -1031,7 +1049,7 @@ class CommonService
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
             $where = [];
             if (!empty($user)) {
-                $facilityMap = $facilitiesService->getUserFacilityMap($user);
+                $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
                 if (!empty($facilityMap)) {
                     $where[] = " f.facility_id IN (" . $facilityMap . ")";
                 }
@@ -1068,8 +1086,6 @@ class CommonService
     public function getProvinceDetailsApi($user = null, $onlyActive = false, $updatedDateTime = null)
     {
         return once(function () use ($user, $onlyActive, $updatedDateTime) {
-            /** @var FacilitiesService $facilitiesService */
-            $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
             $query = "SELECT f.facility_id,
                             f.facility_name,
@@ -1082,7 +1098,7 @@ class CommonService
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
             $where = [];
             if (!empty($user)) {
-                $facilityMap = $facilitiesService->getUserFacilityMap($user);
+                $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
                 if (!empty($facilityMap)) {
                     $where[] = " f.facility_id IN (" . $facilityMap . ")";
                 }
@@ -1114,8 +1130,6 @@ class CommonService
 
     public function getAppHealthFacilitiesAPI($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null, $updatedDateTime = null): array
     {
-        /** @var FacilitiesService $facilitiesService */
-        $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
         $query = "SELECT hf.test_type,
                         f.facility_id,
@@ -1135,7 +1149,7 @@ class CommonService
                     INNER JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
         $where = [];
         if (!empty($user)) {
-            $facilityMap = $facilitiesService->getUserFacilityMap($user);
+            $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
