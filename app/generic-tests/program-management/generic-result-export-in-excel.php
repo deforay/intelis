@@ -48,9 +48,9 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 	$output = [];
 
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = array("No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Patient ID.",  "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+		$headings = array("No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Patient ID.",  "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 	} else {
-		$headings = array("No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+		$headings = array("No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 	}
 	if ($_SESSION['instanceType'] == 'standalone') {
 		if (($key = array_search("Remote Sample ID", $headings)) !== false) {
@@ -151,6 +151,7 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		}
 		$row[] = $aRow['facility_name'];
 		$row[] = $aRow['lab_name'];
+		$row[] = $sampleReceivedOn;
 		$row[] = $aRow['facility_code'];
 		$row[] = ($aRow['facility_district']);
 		$row[] = ($aRow['facility_state']);
@@ -174,7 +175,6 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		$row[] = $aRow['rejection_reason_name'];
 		$row[] = $sampleTestedOn;
 		$row[] = $aRow['result'];
-		$row[] = $sampleReceivedOn;
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim((string) $aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
@@ -233,7 +233,7 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		);
 		$sheet->setTitle('Generic Results');
 		$sheet->mergeCells('A1:AH1');
-		$sheet->getStyle('A3:' . $lastColumn . '3')->applyFromArray($styleArray);
+		$sheet->getStyle('A3:' . 'AH3')->applyFromArray($styleArray);
 		$sheet->fromArray($headings, null, 'A3');
 		foreach ($output as $rowNo => $rowData) {
 			$rRowCount = $rowNo + 4;

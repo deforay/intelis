@@ -75,7 +75,6 @@ $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
     $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
-    $provinceSelect .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $pdResult = $db->query($pdQuery);
 $provinceInfo = [];
@@ -195,18 +194,18 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($eidInfo['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($covid19Info['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
                                         <td><label for="fundingSource">Funding Partner</label></td>
                                         <td>
-                                            < <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+                                            <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($eidInfo['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($covid19Info['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                                 </select>
                                         </td>
@@ -249,7 +248,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                         <th scope="row"><label for="dob">Patient date of birth<span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['patient_dob']); ?>" id="dob" name="dob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
+                                            <input type="text" class="form-control isRequired date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['patient_dob']); ?>" id="dob" name="dob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
                                         </td>
                                     </tr>
                                     <tr>

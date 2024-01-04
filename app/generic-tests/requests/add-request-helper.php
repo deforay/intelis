@@ -206,6 +206,13 @@ try {
         $interpretationResult = $_POST['resultInterpretation'];
     } */
 
+    if(isset($_POST['subTestResult']) && is_array($_POST['subTestResult']))
+    {
+        $_POST['subTestResult'] = implode("##", $_POST['subTestResult']);
+    }
+    else{
+        $_POST['subTestResult'] = '';
+    }
 
     $genericData = array(
         'vlsm_instance_id' => $instanceId,
@@ -264,7 +271,7 @@ try {
         'manual_result_entry' => 'yes',
         //'vl_result_category'                    => $vl_result_category
         'test_type' => $_POST['testType'],
-        'sub_tests' => implode("##", $_POST['subTestResult']),
+        'sub_tests' =>  $_POST['subTestResult'],
         'test_type_form' => json_encode($_POST['dynamicFields']),
         // 'reason_for_failure'                    => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
     );

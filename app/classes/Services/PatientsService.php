@@ -206,7 +206,7 @@ class PatientsService
         $data['patient_address'] = (!empty($params['patientAddress']) ? $params['patientAddress'] : null);
         $data['updated_datetime'] = DateUtility::getCurrentDateTime();
         $data['patient_registered_on'] = DateUtility::getCurrentDateTime();
-        $data['patient_registered_by'] = $params['registeredBy'];
+        $data['patient_registered_by'] = $params['registeredBy'] ?? null;
 
         $this->db->where("patient_code", $oldPatientCode);
         return $this->db->update($this->table, $data);

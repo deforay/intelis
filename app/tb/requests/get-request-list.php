@@ -8,11 +8,17 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+try {
+
+     $db->beginReadOnlyTransaction();
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 // Gelobal config
 $gconfig = $general->getGlobalConfig();
+$key = (string) $general->getGlobalConfig('key');
+
 //system config
 $sarr = $general->getSystemConfig();
 $tableName = "form_tb";
@@ -261,7 +267,6 @@ foreach ($rResult as $aRow) {
           $row[] = $aRow['remote_sample_code'];
      }
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = (string) $general->getGlobalConfig('key');
           $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
           $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
           $aRow['patient_surname'] = $general->crypto('decrypt', $aRow['patient_surname'], $key);
@@ -314,4 +319,9 @@ foreach ($rResult as $aRow) {
 
      $output['aaData'][] = $row;
 }
-echo json_encode($output);
+     echo json_encode($output);
+
+     $db->commitTransaction();
+     } catch (Exception $exc) {
+          LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+     }
