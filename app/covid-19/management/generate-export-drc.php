@@ -26,6 +26,8 @@ $covid19Results = $covid19Service->getCovid19Results();
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
+$key = (string) $general->getGlobalConfig('key');
+
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
@@ -181,7 +183,6 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
             $sourceOfArtPOE = $aRow['source_of_alert_other'];
         }
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $key = (string) $general->getGlobalConfig('key');
             $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $patientLname = $general->crypto('decrypt', $patientLname, $key);

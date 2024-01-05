@@ -35,6 +35,9 @@ $covid19Results = $covid19Service->getCovid19Results();
 $tableName = "form_tb";
 $primaryKey = "tb_id";
 
+$key = (string) $general->getGlobalConfig('key');
+
+
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
@@ -159,7 +162,6 @@ foreach ($rResult as $aRow) {
      $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = (string) $general->getGlobalConfig('key');
           $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
           $patientFname = $general->crypto('decrypt', $patientFname, $key);
           $patientLname = $general->crypto('decrypt', $patientLname, $key);

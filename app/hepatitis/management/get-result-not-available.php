@@ -4,6 +4,8 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -13,11 +15,16 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+try {
+
+    $db->beginReadOnlyTransaction();
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
+$key = (string) $general->getGlobalConfig('key');
+
 //config  query
 $configQuery = "SELECT * from global_config";
 $configResult = $db->query($configQuery);
@@ -219,7 +226,6 @@ foreach ($rResult as $aRow) {
         $row[] = $aRow['remote_sample_code'];
     }
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-        $key = (string) $general->getGlobalConfig('key');
         $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
         $patientName = $general->crypto('decrypt', $patientName, $key);
     }
@@ -231,4 +237,9 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['status_name']);
     $output['aaData'][] = $row;
 }
-echo json_encode($output);
+echo MiscUtility::convertToUtf8AndEncode($output);
+
+$db->commitTransaction();
+} catch (Exception $exc) {
+     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+}

@@ -6,6 +6,15 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
+
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+try {
+
+    $db->beginReadOnlyTransaction();
 
 
 // Sanitized values from $request object
@@ -13,11 +22,10 @@ use App\Registries\ContainerRegistry;
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$key = (string) $general->getGlobalConfig('key');
 
 
 /** @var FacilitiesService $facilitiesService */
@@ -234,7 +242,6 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['batch_code'];
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = (string) $general->getGlobalConfig('key');
           $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
           $patientFname = $general->crypto('decrypt', $patientFname, $key);
           $patientMname = $general->crypto('decrypt', $patientMname, $key);
@@ -258,4 +265,9 @@ foreach ($rResult as $aRow) {
      $output['aaData'][] = $row;
 }
 
-echo json_encode($output);
+echo MiscUtility::convertToUtf8AndEncode($output);
+
+$db->commitTransaction();
+} catch (Exception $exc) {
+     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+}

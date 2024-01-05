@@ -2,6 +2,7 @@
 
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\HepatitisService;
@@ -10,11 +11,15 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+try {
+
+     $db->beginReadOnlyTransaction();
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
+$key = (string) $general->getGlobalConfig('key');
 
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
@@ -258,7 +263,6 @@ foreach ($rResult as $aRow) {
           $row[] = $aRow['remote_sample_code'];
      }
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = (string) $general->getGlobalConfig('key');
           $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
           $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
           $aRow['patient_surname'] = $general->crypto('decrypt', $aRow['patient_surname'], $key);
@@ -308,3 +312,8 @@ foreach ($rResult as $aRow) {
 }
 
 echo MiscUtility::convertToUtf8AndEncode($output);
+
+     $db->commitTransaction();
+     } catch (Exception $exc) {
+          LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+     }

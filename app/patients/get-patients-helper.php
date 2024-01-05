@@ -19,6 +19,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $sarr = $general->getSystemConfig();
+$key = (string) $general->getGlobalConfig('key');
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
@@ -134,8 +135,7 @@ foreach ($rResult as $aRow) {
     $edit = '<a href="edit-patient.php?id=' . base64_encode((string) $aRow['patient_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
 
     $row = [];
-    if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes' && !empty($general->getGlobalConfig('key'))) {
-        $key = (string) $general->getGlobalConfig('key');
+    if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes' && !empty($key)) {
         $aRow['patient_code'] = $general->crypto('decrypt', $aRow['patient_code'], $key);
         $aRow['patient_first_name'] = $general->crypto('decrypt', $aRow['patient_first_name'], $key);
         $aRow['patient_middle_name'] = $general->crypto('decrypt', $aRow['patient_middle_name'], $key);

@@ -33,6 +33,8 @@ $covid19Results = $covid19Service->getCovid19Results();
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
+$key = (string) $general->getGlobalConfig('key');
+
 // echo "<pre>";print_r($arr);die;
 if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19ResultQuery']) != "") {
 
@@ -183,7 +185,6 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 		$row[] = ($aRow['facility_name']);
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 			if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-				$key = (string) $general->getGlobalConfig('key');
 				$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
 				$patientFname = $general->crypto('decrypt', $patientFname, $key);
 				$patientLname = $general->crypto('decrypt', $patientLname, $key);

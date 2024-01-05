@@ -22,6 +22,7 @@ $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 $hepatitisResults = $hepatitisService->getHepatitisResults();
 
 $arr = $general->getGlobalConfig();
+$key = (string) $general->getGlobalConfig('key');
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
@@ -63,7 +64,6 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 		}
 
 		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-			$key = (string) $general->getGlobalConfig('key');
 			$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
 			$patientFname = $general->crypto('decrypt', $patientFname, $key);
 			$patientLname = $general->crypto('decrypt', $patientLname, $key);

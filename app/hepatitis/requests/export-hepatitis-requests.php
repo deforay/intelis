@@ -24,6 +24,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
+$key = (string) $general->getGlobalConfig('key');
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
@@ -93,7 +94,6 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
         $row[] = ($aRow['facility_state']);
         if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
             if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-                $key = (string) $general->getGlobalConfig('key');
                 $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
                 $patientFname = $general->crypto('decrypt', $patientFname, $key);
                 $patientLname = $general->crypto('decrypt', $patientLname, $key);

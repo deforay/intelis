@@ -5,10 +5,15 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+try {
 
+     $db->beginReadOnlyTransaction();
+ 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
@@ -187,4 +192,9 @@ foreach ($rResult as $aRow) {
 
      $output['aaData'][] = $row;
 }
-echo json_encode($output);
+echo MiscUtility::convertToUtf8AndEncode($output);
+
+$db->commitTransaction();
+} catch (Exception $exc) {
+     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+}

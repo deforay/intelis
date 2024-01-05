@@ -2,16 +2,25 @@
 
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
-$gconfig = $general->getGlobalConfig();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+try {
+
+     $db->beginReadOnlyTransaction();
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+$gconfig = $general->getGlobalConfig();
+
+$key = $general->getGlobalConfig('key');
 
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";
@@ -287,7 +296,6 @@ foreach ($rResult as $aRow) {
      }
 
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = $general->getGlobalConfig('key');
           $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
           $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
           $aRow['patient_surname'] = $general->crypto('decrypt', $aRow['patient_surname'], $key);
@@ -339,4 +347,9 @@ foreach ($rResult as $aRow) {
      }
      $output['aaData'][] = $row;
 }
-echo json_encode($output);
+     echo MiscUtility::convertToUtf8AndEncode($output);
+
+     $db->commitTransaction();
+     } catch (Exception $exc) {
+          LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+     }
