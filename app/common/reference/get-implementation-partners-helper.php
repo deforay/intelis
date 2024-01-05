@@ -6,17 +6,6 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $tableName = "r_implementation_partners";
 $primaryKey = "i_partner_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
 
 $aColumns = array('i_partner_name', 'i_partner_status');
 

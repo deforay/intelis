@@ -201,7 +201,7 @@ class Dhis2
 		}
 
 		try {
-			$response = $this->httpClient->get($path . $queryString);
+			$response = $this->httpClient->get($this->currentRequestUrl . $path . $queryString);
 			return $response;
 		} catch (GuzzleException $e) {
 			LoggerUtility::log('error', $e->getMessage(), [
@@ -225,7 +225,7 @@ class Dhis2
 		}
 
 		try {
-			$response = $this->httpClient->post($path . $queryString, [
+			$response = $this->httpClient->post($this->currentRequestUrl . $path . $queryString, [
 				'json' => $data
 			]);
 			return $response;

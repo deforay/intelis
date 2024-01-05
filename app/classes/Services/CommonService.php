@@ -127,48 +127,82 @@ class CommonService
     // get data from the system_config table from database
     public function getSystemConfig($name = null)
     {
-
-        return once(function () use ($name) {
-            if (!empty($name)) {
-                $this->db->where('name', $name);
+        // Handling a specific configuration request
+        if (!empty($name)) {
+            // Check if the specific configuration is already in the session
+            if (isset($_SESSION['system_config'][$name])) {
+                return $_SESSION['system_config'][$name];
             }
 
+            // Fetch from database if not in session
+            $this->db->where('name', $name);
             $systemConfigResult = $this->db->get('system_config');
 
-            $sarr = [];
-            // now we create an associative array so that we can easily create view variables
-            for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-                $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
+            if (!empty($systemConfigResult)) {
+                $value = $systemConfigResult[0]['value'] ?? null;
+                $_SESSION['system_config'][$name] = $value;
+                return $value;
             }
 
-            if (empty($name)) {
-                return $sarr;
-            } else {
-                return $sarr[$name] ?? null;
+            return null;
+        } else {
+            // Handling request for all configurations
+            // Check if all configurations are already in the session
+            if (isset($_SESSION['system_config']) && is_array($_SESSION['system_config'])) {
+                return $_SESSION['system_config'];
             }
-        });
+
+            // Fetch all configurations from database
+            $sarr = [];
+            $systemConfigResult = $this->db->get('system_config');
+            foreach ($systemConfigResult as $config) {
+                $sarr[$config['name']] = $config['value'];
+            }
+
+            // Store all configurations in session and return
+            $_SESSION['system_config'] = $sarr;
+            return $sarr;
+        }
     }
+
 
     // get data from the global_config table from database
     public function getGlobalConfig($name = null)
     {
-        return once(function () use ($name) {
-
-            if (!empty($name)) {
-                $this->db->where('name', $name);
-                return $this->db->getValue("global_config", "value") ?? null;
-            } else {
-                $garr = [];
-                $globalConfigResult = $this->db->get('global_config');
-                // now we create an associative array so that we can easily create view variables
-                for ($i = 0; $i < sizeof($globalConfigResult); $i++) {
-                    $garr[$globalConfigResult[$i]['name']] = $globalConfigResult[$i]['value'];
-                }
-
-                return $garr;
+        // Handling a specific configuration request
+        if (!empty($name)) {
+            // Check if the specific configuration is already in the session
+            if (isset($_SESSION['global_config'][$name])) {
+                return $_SESSION['global_config'][$name];
             }
-        });
+
+            // Fetch from database if not in session
+            $this->db->where('name', $name);
+            $value = $this->db->getValue("global_config", "value") ?? null;
+
+            // Store in session and return
+            $_SESSION['global_config'][$name] = $value;
+            return $value;
+        } else {
+            // Handling request for all configurations
+            // Check if all configurations are already in the session
+            if (isset($_SESSION['global_config']) && is_array($_SESSION['global_config'])) {
+                return $_SESSION['global_config'];
+            }
+
+            // Fetch all configurations from database
+            $garr = [];
+            $globalConfigResult = $this->db->get('global_config');
+            foreach ($globalConfigResult as $config) {
+                $garr[$config['name']] = $config['value'];
+            }
+
+            // Store all configurations in session and return
+            $_SESSION['global_config'] = $garr;
+            return $garr;
+        }
     }
+
 
     public function getDataByTableAndFields($table, $fields, $option = true, $condition = null, $group = null)
     {

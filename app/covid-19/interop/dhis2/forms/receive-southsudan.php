@@ -88,6 +88,7 @@ try {
     $url = "/api/trackedEntityInstances.json";
 
     $jsonResponse = $dhis2->get($url, $data);
+    $jsonResponse = (string) $jsonResponse->getBody();
 
     if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) {
         die('No Response from API');

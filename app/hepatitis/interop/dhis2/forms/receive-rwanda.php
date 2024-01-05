@@ -64,6 +64,7 @@ try {
     $url = "/api/trackedEntityInstances.json";
 
     $jsonResponse = $dhis2->get($url, $data);
+    $jsonResponse = (string) $jsonResponse->getBody();
 
     if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) {
         die('No Response from API');
@@ -232,7 +233,7 @@ try {
 
             if (!empty($formData['lab_id'])) {
                 $db->where("facility_type=2");
-                $db->where("facility_name like ?", $formData['lab_id'] . "%");
+                $db->where("facility_name like '" . $formData['lab_id'] . "%'");
                 $db->orWhere("other_id", $formData['lab_id']);
                 $lab = $db->getOne("facility_details");
                 if (!empty($lab)) {

@@ -22,6 +22,10 @@ $instanceTableName = "s_vlsm_instance";
 
 $currentDateTime = DateUtility::getCurrentDateTime();
 
+// unset global config session so that it can be reloaded with new values
+// this is set in CommonService::getGlobalConfig()
+unset($_SESSION['global_config']);
+
 try {
 
     //remove instance table data

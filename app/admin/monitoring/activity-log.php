@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 $userNameList = $usersService->getAllUsers(null, null, 'drop-down');
 
-$actions = $db->rawQuery("SELECT DISTINCT event_type FROM activity_log");
+$actions = $db->rawQueryGenerator("SELECT DISTINCT event_type FROM activity_log");
 
 $actionList = [];
 foreach ($actions as $list) {

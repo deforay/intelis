@@ -1,13 +1,13 @@
 -- MySQL dump 10.13  Distrib 5.7.39, for osx11.0 (x86_64)
 --
--- Host: localhost    Database: vlsm
+-- Host: localhost    Database: vlsm-init
 -- ------------------------------------------------------
 -- Server version	5.7.39
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -31,7 +31,7 @@ CREATE TABLE `activity_log` (
   `date_time` datetime DEFAULT NULL,
   `ip_address` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,6 +160,7 @@ CREATE TABLE `audit_form_covid19` (
   `locked` varchar(256) DEFAULT 'no',
   `is_sample_rejected` varchar(255) DEFAULT NULL,
   `reason_for_sample_rejection` int(11) DEFAULT NULL,
+  `recommended_corrective_action` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `result` text,
   `if_have_other_diseases` varchar(50) DEFAULT NULL,
@@ -263,6 +264,7 @@ CREATE TABLE `audit_form_eid` (
   `test_2_ct_qs` int(11) DEFAULT NULL,
   `test_2_result` text,
   `reason_for_sample_rejection` varchar(500) DEFAULT NULL,
+  `recommended_corrective_action` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `facility_id` int(11) DEFAULT NULL,
   `province_id` int(11) DEFAULT NULL,
@@ -791,6 +793,7 @@ CREATE TABLE `audit_form_tb` (
   `lab_reception_person` mediumtext,
   `is_sample_rejected` varchar(1000) NOT NULL DEFAULT 'no',
   `reason_for_sample_rejection` mediumtext,
+  `recommended_corrective_action` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `tb_test_platform` mediumtext,
   `result_status` int(11) DEFAULT NULL,
@@ -1120,7 +1123,7 @@ CREATE TABLE `batch_details` (
   `last_modified_by` datetime DEFAULT CURRENT_TIMESTAMP,
   `last_modified_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`batch_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1164,7 +1167,7 @@ CREATE TABLE `covid19_imported_controls` (
   `imported_date_time` datetime DEFAULT NULL,
   `import_machine_file_name` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`control_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1188,7 +1191,7 @@ CREATE TABLE `covid19_patient_comorbidities` (
   `comorbidity_id` int(11) NOT NULL,
   `comorbidity_detected` varchar(255) NOT NULL,
   PRIMARY KEY (`covid19_id`,`comorbidity_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1213,7 +1216,7 @@ CREATE TABLE `covid19_patient_symptoms` (
   `symptom_detected` varchar(255) NOT NULL,
   `symptom_details` mediumtext,
   PRIMARY KEY (`covid19_id`,`symptom_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1240,7 +1243,7 @@ CREATE TABLE `covid19_positive_confirmation_manifest` (
   `module` varchar(255) DEFAULT NULL,
   `request_created_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`manifest_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1265,7 +1268,7 @@ CREATE TABLE `covid19_reasons_for_testing` (
   `reasons_detected` varchar(50) DEFAULT NULL,
   `reason_details` text,
   PRIMARY KEY (`covid19_id`,`reasons_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1299,7 +1302,7 @@ CREATE TABLE `covid19_tests` (
   PRIMARY KEY (`test_id`),
   KEY `covid19_id` (`covid19_id`),
   CONSTRAINT `covid19_tests_ibfk_1` FOREIGN KEY (`covid19_id`) REFERENCES `form_covid19` (`covid19_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1343,7 +1346,7 @@ CREATE TABLE `eid_imported_controls` (
   `imported_date_time` datetime DEFAULT NULL,
   `import_machine_file_name` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`control_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1397,7 +1400,7 @@ CREATE TABLE `facility_details` (
   UNIQUE KEY `facility_name_2` (`facility_name`),
   UNIQUE KEY `other_id_2` (`other_id`),
   UNIQUE KEY `facility_code` (`facility_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1454,7 +1457,7 @@ CREATE TABLE `failed_result_retest_tracker` (
   `updated_datetime` datetime DEFAULT NULL,
   `updated_by` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`frrt_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1580,6 +1583,7 @@ CREATE TABLE `form_covid19` (
   `locked` varchar(256) DEFAULT 'no',
   `is_sample_rejected` varchar(255) DEFAULT NULL,
   `reason_for_sample_rejection` int(11) DEFAULT NULL,
+  `recommended_corrective_action` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `result` text,
   `if_have_other_diseases` varchar(50) DEFAULT NULL,
@@ -1633,7 +1637,7 @@ CREATE TABLE `form_covid19` (
   KEY `sample_code_key` (`sample_code_key`),
   KEY `remote_sample_code_key` (`remote_sample_code_key`),
   KEY `sample_package_id` (`sample_package_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1649,7 +1653,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -1666,7 +1670,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -1683,7 +1687,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -1739,6 +1743,7 @@ CREATE TABLE `form_eid` (
   `test_2_ct_qs` int(11) DEFAULT NULL,
   `test_2_result` text,
   `reason_for_sample_rejection` varchar(500) DEFAULT NULL,
+  `recommended_corrective_action` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `facility_id` int(11) DEFAULT NULL,
   `province_id` int(11) DEFAULT NULL,
@@ -1883,7 +1888,7 @@ CREATE TABLE `form_eid` (
   KEY `sample_code_key` (`sample_code_key`),
   KEY `remote_sample_code_key` (`remote_sample_code_key`),
   KEY `sample_package_id` (`sample_package_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1899,7 +1904,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -1916,7 +1921,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -1933,7 +1938,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2107,7 +2112,7 @@ CREATE TABLE `form_generic` (
   `result_status` int(11) NOT NULL,
   PRIMARY KEY (`sample_id`),
   UNIQUE KEY `lab_id` (`lab_id`,`app_sample_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2140,7 +2145,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2174,7 +2179,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2191,7 +2196,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2336,7 +2341,7 @@ CREATE TABLE `form_hepatitis` (
   KEY `sample_code_key` (`sample_code_key`),
   KEY `remote_sample_code_key` (`remote_sample_code_key`),
   KEY `sample_package_id` (`sample_package_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2352,7 +2357,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2369,7 +2374,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2386,7 +2391,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2461,6 +2466,7 @@ CREATE TABLE `form_tb` (
   `lab_reception_person` mediumtext,
   `is_sample_rejected` varchar(1000) NOT NULL DEFAULT 'no',
   `reason_for_sample_rejection` mediumtext,
+  `recommended_corrective_action` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `tb_test_platform` mediumtext,
   `result_status` int(11) DEFAULT NULL,
@@ -2514,7 +2520,7 @@ CREATE TABLE `form_tb` (
   KEY `sample_code_key` (`sample_code_key`),
   KEY `remote_sample_code_key` (`remote_sample_code_key`),
   KEY `sample_package_id` (`sample_package_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2530,7 +2536,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2547,7 +2553,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2564,7 +2570,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2842,7 +2848,7 @@ CREATE TABLE `form_vl` (
   KEY `implementing_partner` (`implementing_partner`),
   KEY `reason_for_sample_rejection` (`reason_for_sample_rejection`),
   CONSTRAINT `form_vl_ibfk_5` FOREIGN KEY (`result_status`) REFERENCES `r_sample_status` (`status_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2858,7 +2864,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2875,7 +2881,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2892,7 +2898,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
@@ -2918,7 +2924,7 @@ CREATE TABLE `generic_sample_rejection_reason_map` (
   `test_type_id` int(11) NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`map_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2945,7 +2951,7 @@ CREATE TABLE `generic_test_failure_reason_map` (
   PRIMARY KEY (`map_id`),
   KEY `test_type_id` (`test_type_id`),
   KEY `test_reason_id` (`test_failure_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2972,7 +2978,7 @@ CREATE TABLE `generic_test_methods_map` (
   PRIMARY KEY (`map_id`),
   KEY `test_type_id` (`test_type_id`),
   KEY `test_method_id` (`test_method_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3001,7 +3007,7 @@ CREATE TABLE `generic_test_reason_map` (
   KEY `test_reason_id` (`test_reason_id`),
   CONSTRAINT `generic_test_reason_map_ibfk_1` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`),
   CONSTRAINT `generic_test_reason_map_ibfk_2` FOREIGN KEY (`test_reason_id`) REFERENCES `r_generic_test_reasons` (`test_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3032,7 +3038,7 @@ CREATE TABLE `generic_test_result_units_map` (
   CONSTRAINT `generic_test_result_units_map_ibfk_2` FOREIGN KEY (`unit_id`) REFERENCES `r_generic_test_result_units` (`unit_id`),
   CONSTRAINT `generic_test_result_units_map_ibfk_3` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `generic_test_result_units_map_ibfk_4` FOREIGN KEY (`unit_id`) REFERENCES `r_generic_test_result_units` (`unit_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3071,7 +3077,7 @@ CREATE TABLE `generic_test_results` (
   PRIMARY KEY (`test_id`),
   KEY `generic_id` (`generic_id`),
   CONSTRAINT `generic_test_results_ibfk_1` FOREIGN KEY (`generic_id`) REFERENCES `form_generic` (`sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3100,7 +3106,7 @@ CREATE TABLE `generic_test_sample_type_map` (
   KEY `test_type_id` (`test_type_id`),
   CONSTRAINT `generic_test_sample_type_map_ibfk_1` FOREIGN KEY (`sample_type_id`) REFERENCES `r_generic_sample_types` (`sample_type_id`),
   CONSTRAINT `generic_test_sample_type_map_ibfk_2` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3129,7 +3135,7 @@ CREATE TABLE `generic_test_symptoms_map` (
   KEY `test_type_id` (`test_type_id`),
   CONSTRAINT `generic_test_symptoms_map_ibfk_1` FOREIGN KEY (`symptom_id`) REFERENCES `r_generic_symptoms` (`symptom_id`),
   CONSTRAINT `generic_test_symptoms_map_ibfk_2` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3160,7 +3166,7 @@ CREATE TABLE `geographical_divisions` (
   `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`geo_id`),
   UNIQUE KEY `geo_name` (`geo_name`,`geo_parent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3189,7 +3195,7 @@ CREATE TABLE `global_config` (
   `updated_by` mediumtext,
   `status` varchar(255) NOT NULL DEFAULT 'active',
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3214,7 +3220,7 @@ CREATE TABLE `health_facilities` (
   `facility_id` int(11) NOT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`test_type`,`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3238,7 +3244,7 @@ CREATE TABLE `hepatitis_patient_comorbidities` (
   `comorbidity_id` int(11) NOT NULL,
   `comorbidity_detected` varchar(255) NOT NULL,
   PRIMARY KEY (`hepatitis_id`,`comorbidity_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3262,7 +3268,7 @@ CREATE TABLE `hepatitis_risk_factors` (
   `riskfactors_id` int(11) NOT NULL,
   `riskfactors_detected` varchar(255) NOT NULL,
   PRIMARY KEY (`hepatitis_id`,`riskfactors_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3314,7 +3320,7 @@ CREATE TABLE `hold_sample_import` (
   `import_machine_file_name` varchar(255) DEFAULT NULL,
   `manual_result_entry` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`hold_sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3340,7 +3346,7 @@ CREATE TABLE `instrument_controls` (
   `number_of_manufacturer_controls` int(11) DEFAULT NULL,
   `number_of_calibrators` int(11) DEFAULT NULL,
   PRIMARY KEY (`test_type`,`config_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3443,7 +3449,7 @@ CREATE TABLE `lab_report_signatories` (
   PRIMARY KEY (`signatory_id`),
   KEY `lab_id` (`lab_id`),
   CONSTRAINT `lab_report_signatories_ibfk_1` FOREIGN KEY (`lab_id`) REFERENCES `facility_details` (`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3471,7 +3477,7 @@ CREATE TABLE `log_result_updates` (
   `file_name` varchar(256) DEFAULT NULL,
   `updated_on` datetime DEFAULT NULL,
   PRIMARY KEY (`result_log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3501,7 +3507,7 @@ CREATE TABLE `move_samples` (
   `move_approved_by` varchar(255) DEFAULT NULL,
   `list_request_created_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`move_sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3527,7 +3533,7 @@ CREATE TABLE `move_samples_map` (
   `test_type` varchar(256) DEFAULT NULL,
   `move_sync_status` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`sample_map_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3552,7 +3558,7 @@ CREATE TABLE `other_config` (
   `name` varchar(255) NOT NULL,
   `value` mediumtext,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3583,7 +3589,7 @@ CREATE TABLE `package_details` (
   `request_created_datetime` datetime DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`package_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3629,7 +3635,7 @@ CREATE TABLE `patients` (
   PRIMARY KEY (`system_patient_code`),
   UNIQUE KEY `patient_code_prefix` (`patient_code_prefix`,`patient_code_key`),
   UNIQUE KEY `single_patient` (`patient_code`,`patient_gender`,`patient_dob`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3639,6 +3645,51 @@ CREATE TABLE `patients` (
 LOCK TABLES `patients` WRITE;
 /*!40000 ALTER TABLE `patients` DISABLE KEYS */;
 /*!40000 ALTER TABLE `patients` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `patients_old`
+--
+
+DROP TABLE IF EXISTS `patients_old`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `patients_old` (
+  `system_patient_code` varchar(43) NOT NULL,
+  `is_encrypted` varchar(10) DEFAULT NULL,
+  `patient_code_prefix` varchar(256) DEFAULT NULL,
+  `patient_code_key` int(11) DEFAULT NULL,
+  `patient_code` varchar(256) DEFAULT NULL,
+  `patient_first_name` text,
+  `patient_middle_name` text,
+  `patient_last_name` text,
+  `patient_gender` varchar(256) DEFAULT NULL,
+  `patient_phone_number` varchar(50) DEFAULT NULL,
+  `patient_age_in_years` int(11) DEFAULT NULL,
+  `patient_age_in_months` int(11) DEFAULT NULL,
+  `patient_dob` date DEFAULT NULL,
+  `patient_address` text,
+  `is_patient_pregnant` varchar(10) DEFAULT NULL,
+  `is_patient_breastfeeding` varchar(10) DEFAULT NULL,
+  `patient_province` int(11) DEFAULT NULL,
+  `patient_district` int(11) DEFAULT NULL,
+  `status` varchar(11) DEFAULT NULL,
+  `patient_registered_on` datetime DEFAULT NULL,
+  `patient_registered_by` text,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`system_patient_code`),
+  UNIQUE KEY `patient_code_prefix` (`patient_code_prefix`,`patient_code_key`),
+  UNIQUE KEY `single_patient` (`patient_code`,`patient_gender`,`patient_dob`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `patients_old`
+--
+
+LOCK TABLES `patients_old` WRITE;
+/*!40000 ALTER TABLE `patients_old` DISABLE KEYS */;
+/*!40000 ALTER TABLE `patients_old` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -3658,7 +3709,7 @@ CREATE TABLE `privileges` (
   `show_mode` varchar(32) DEFAULT 'always',
   PRIMARY KEY (`privilege_id`),
   UNIQUE KEY `resource` (`resource_id`,`privilege_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=424 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=425 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3667,7 +3718,7 @@ CREATE TABLE `privileges` (
 
 LOCK TABLES `privileges` WRITE;
 /*!40000 ALTER TABLE `privileges` DISABLE KEYS */;
-INSERT INTO `privileges` VALUES (1,'users','/users/users.php',NULL,'Access',NULL,'always'),(2,'users','/users/addUser.php',NULL,'Add',NULL,'always'),(3,'users','/users/editUser.php',NULL,'Edit',NULL,'always'),(4,'facilities','/facilities/facilities.php',NULL,'Access',NULL,'always'),(5,'facilities','/facilities/addFacility.php','[\"mapTestType.php\"]','Add',NULL,'always'),(6,'facilities','/facilities/editFacility.php',NULL,'Edit',NULL,'always'),(8,'global-config','/global-config/editGlobalConfig.php',NULL,'Edit',NULL,'always'),(9,'instruments','/instruments/instruments.php',NULL,'Access',1,'always'),(10,'instruments','/instruments/add-instrument.php',NULL,'Add',2,'always'),(11,'instruments','/instruments/edit-instrument.php',NULL,'Edit',3,'always'),(12,'vl-requests','/vl/requests/vl-requests.php',NULL,'View',1,'always'),(13,'vl-requests','/vl/requests/addVlRequest.php',NULL,'Add',2,'always'),(14,'vl-requests','/vl/requests/editVlRequest.php',NULL,'Edit',3,'always'),(16,'vl-batch','/batch/batches.php?type=vl','[\"/batch/generate-batch-pdf.php?type=vl\"]','Access',1,'always'),(17,'vl-batch','/batch/add-batch.php?type=vl','[\"/batch/add-batch-position.php?type=vl\"]','Add',2,'always'),(18,'vl-batch','/batch/edit-batch.php?type=vl','[\"/batch/delete-batch.php?type=vl\", \"/batch/edit-batch-position.php?type=vl\"]','Edit',3,'always'),(20,'vl-results','/vl/results/vlPrintResult.php',NULL,'Print Result PDF',NULL,'always'),(21,'vl-results','/vl/results/vlTestResult.php','[\"/vl/results/updateVlTestResult.php\", \"/vl/results/vl-failed-results.php\"]','Enter Result Manually',NULL,'always'),(22,'vl-reports','/vl/program-management/vl-sample-status.php',NULL,'Sample Status Report',NULL,'always'),(23,'vl-reports','/vl/program-management/vl-export-data.php',NULL,'Export VL Data',NULL,'always'),(24,'home','index.php',NULL,'Access',NULL,'always'),(25,'roles','/roles/roles.php',NULL,'Access',NULL,'always'),(26,'roles','/roles/editRole.php',NULL,'Edit',NULL,'always'),(28,'test-request-email-config','testRequestEmailConfig.php',NULL,'Access',NULL,'always'),(31,'vl-results','/vl/results/vlResultApproval.php',NULL,'Manage VL Result Status (Approve/Reject)',NULL,'always'),(33,'vl-reports','/vl/program-management/highViralLoad.php',NULL,'High VL Report',NULL,'always'),(34,'vl-reports','/vl/program-management/addContactNotes.php',NULL,'Contact Notes (High VL Reports)',NULL,'always'),(39,'roles','/roles/addRole.php',NULL,'Add',NULL,'always'),(40,'vl-reports','/vl/program-management/vlTestResultStatus.php',NULL,'Dashboard',NULL,'always'),(43,'test-request-email-config','editTestRequestEmailConfig.php',NULL,'Edit',NULL,'always'),(48,'test-result-email-config','testResultEmailConfig.php',NULL,'Access',NULL,'always'),(49,'test-result-email-config','editTestResultEmailConfig.php',NULL,'Edit',NULL,'always'),(56,'vl-reports','/vl/program-management/vlWeeklyReport.php',NULL,'VL Weekly Report',NULL,'always'),(57,'vl-reports','/vl/program-management/sampleRejectionReport.php',NULL,'Sample Rejection Report',NULL,'always'),(59,'vl-reports','/vl/program-management/vlMonitoringReport.php',NULL,'Sample Monitoring Report',NULL,'always'),(63,'vl-reports','/vl/program-management/vlControlReport.php',NULL,'Controls Report',NULL,'always'),(64,'facilities','addVlFacilityMap.php',NULL,'Add Facility Map',NULL,'always'),(66,'facilities','editVlFacilityMap.php',NULL,'Edit Facility Map',NULL,'always'),(70,'vl-reports','/vl/program-management/vlResultAllFieldExportInExcel.php',NULL,'Export VL Data in Excel',NULL,'always'),(74,'eid-requests','/eid/requests/eid-add-request.php','[\"/eid/requests/eid-bulk-import-request.php\"]','Add',2,'always'),(75,'eid-requests','/eid/requests/eid-edit-request.php',NULL,'Edit',3,'always'),(76,'eid-requests','/eid/requests/eid-requests.php',NULL,'View',1,'always'),(77,'eid-batches','/batch/batches.php?type=eid','[\"/batch/generate-batch-pdf.php?type=eid\"]','View Batches',1,'always'),(78,'eid-batches','/batch/add-batch.php?type=eid','[\"/batch/add-batch-position.php?type=eid\"]','Add Batch',2,'always'),(79,'eid-batches','/batch/edit-batch.php?type=eid','[\"/batch/delete-batch.php?type=eid\", \"/batch/edit-batch-position.php?type=eid\"]','Edit Batch',3,'always'),(80,'eid-results','/eid/results/eid-manual-results.php','[\"/eid/results/eid-update-result.php\", \"/eid/results/eid-failed-results.php\"]','Enter Result Manually',NULL,'always'),(84,'eid-results','/eid/results/eid-result-status.php',NULL,'Manage Result Status',NULL,'always'),(85,'eid-results','/eid/results/eid-print-results.php',NULL,'Print Results',NULL,'always'),(86,'eid-management','/eid/management/eid-export-data.php',NULL,'Export Data',NULL,'always'),(87,'eid-management','/eid/management/eid-sample-rejection-report.php',NULL,'Sample Rejection Report',NULL,'always'),(88,'eid-management','/eid/management/eid-sample-status.php',NULL,'Sample Status Report',NULL,'always'),(89,'vl-requests','/vl/requests/addSamplesFromManifest.php',NULL,'Add Samples from Manifest',6,'lis'),(91,'eid-requests','/eid/requests/addSamplesFromManifest.php',NULL,'Add Samples from Manifest',6,'lis'),(95,'covid-19-requests','/covid-19/requests/covid-19-add-request.php','[\"/covid-19/requests/covid-19-bulk-import-request.php\", \"/covid-19/requests/covid-19-quick-add.php\"]','Add',2,'always'),(96,'covid-19-requests','/covid-19/requests/covid-19-edit-request.php',NULL,'Edit',3,'always'),(97,'covid-19-requests','/covid-19/requests/covid-19-requests.php',NULL,'View',1,'always'),(98,'covid-19-results','/covid-19/results/covid-19-result-status.php',NULL,'Manage Result Status',NULL,'always'),(99,'covid-19-results','/covid-19/results/covid-19-print-results.php','[\"/covid-19/mail/mail-covid-19-results.php\", \"/covid-19/mail/covid-19-result-mail-confirm.php\"]','Print Results',NULL,'always'),(100,'covid-19-batches','/batch/batches.php?type=covid19','[\"/batch/generate-batch-pdf.php?type=covid19\"]','View Batches',1,'always'),(101,'covid-19-batches','/batch/add-batch.php?type=covid19','[\"/batch/add-batch-position.php?type=covid19\"]','Add Batch',2,'always'),(102,'covid-19-batches','/batch/edit-batch.php?type=covid19','[\"/batch/delete-batch.php?type=covid19\", \"/batch/edit-batch-position.php?type=covid19\"]','Edit Batch',3,'always'),(103,'covid-19-results','/covid-19/results/covid-19-manual-results.php','[\"/covid-19/results/covid-19-update-result.php\", \"/covid-19/results/covid-19-failed-results.php\"]','Enter Result Manually',NULL,'always'),(105,'covid-19-management','/covid-19/management/covid-19-export-data.php',NULL,'Export Data',NULL,'always'),(106,'covid-19-management','/covid-19/management/covid-19-sample-rejection-report.php',NULL,'Sample Rejection Report',NULL,'always'),(107,'covid-19-management','/covid-19/management/covid-19-sample-status.php',NULL,'Sample Status Report',NULL,'always'),(108,'covid-19-requests','/covid-19/requests/record-final-result.php',NULL,'Record Final Result',NULL,'always'),(109,'covid-19-requests','/covid-19/requests/can-record-confirmatory-tests.php',NULL,'Can Record Confirmatory Tests',NULL,'always'),(110,'covid-19-requests','/covid-19/requests/update-record-confirmatory-tests.php',NULL,'Update Record Confirmatory Tests',NULL,'always'),(111,'covid-19-batches','covid-19-confirmation-manifest.php',NULL,'Covid-19 Confirmation Manifest',NULL,'always'),(112,'covid-19-batches','covid-19-add-confirmation-manifest.php',NULL,'Add New Confirmation Manifest',NULL,'always'),(113,'covid-19-batches','generate-confirmation-manifest.php',NULL,'Generate Positive Confirmation Manifest',NULL,'always'),(114,'covid-19-batches','covid-19-edit-confirmation-manifest.php',NULL,'Edit Positive Confirmation Manifest',NULL,'always'),(121,'eid-management','/eid/management/eid-clinic-report.php',NULL,'EID Clinic Reports',NULL,'always'),(122,'covid-19-management','/covid-19/management/covid-19-clinic-report.php',NULL,'Covid-19 Clinic Reports',NULL,'always'),(123,'covid-19-reference','/covid-19/reference/covid19-sample-type.php','[\"/covid-19/reference/covid19-sample-rejection-reasons.php\", \"/covid-19/reference/add-covid19-sample-rejection-reason.php\", \"/covid-19/reference/covid19-comorbidities.php\", \"/covid-19/reference/add-covid19-comorbidities.php\", \"/covid-19/reference/covid19-symptoms.php\", \"/covid-19/reference/add-covid19-sample-type.php\", \"/covid-19/reference/covid19-test-symptoms.php\", \"/covid-19/reference/add-covid19-symptoms.php\", \"/covid-19/reference/covid19-test-reasons.php\", \"/covid-19/reference/add-covid19-test-reasons.php\", \"/covid-19/reference/covid19-results.php\", \"/covid-19/reference/add-covid19-results.php\", \"/covid-19/reference/covid19-qc-test-kits.php\", \"/covid-19/reference/add-covid19-qc-test-kit.php\", \"/covid-19/reference/edit-covid19-qc-test-kit.php\"]','Manage Reference',NULL,'always'),(124,'covid-19-reference','/covid-19/reference/covid19-comorbidities.php',NULL,'Manage Comorbidities',NULL,'always'),(125,'covid-19-reference','/covid-19/reference/addCovid19Comorbidities.php',NULL,'Add Comorbidities',NULL,'always'),(126,'covid-19-reference','/covid-19/reference/editCovid19Comorbidities.php',NULL,'Edit Comorbidities',NULL,'always'),(127,'covid-19-reference','/covid-19/reference/covid19-sample-rejection-reasons.php',NULL,'Manage Sample Rejection Reasons',NULL,'always'),(128,'covid-19-reference','/covid-19/reference/addCovid19SampleRejectionReason.php',NULL,'Add Sample Rejection Reason',NULL,'always'),(129,'covid-19-reference','/covid-19/reference/editCovid19SampleRejectionReason.php',NULL,'Edit Sample Rejection Reason',NULL,'always'),(130,'vl-reference','/vl/reference/vl-art-code-details.php','[\"/vl/reference/add-vl-art-code-details.php\", \"/vl/reference/edit-vl-art-code-details.php\", \"/vl/reference/add-vl-results.php\", \"/vl/reference/edit-vl-results.php\", \"/vl/reference/vl-sample-rejection-reasons.php\", \"/vl/reference/add-vl-sample-rejection-reasons.php\", \"/vl/reference/edit-vl-sample-rejection-reasons.php\", \"/vl/reference/vl-sample-type.php\", \"/vl/reference/edit-vl-sample-type.php\", \"/vl/reference/add-vl-sample-type.php\", \"/vl/reference/vl-test-reasons.php\", \"/vl/reference/add-vl-test-reasons.php\", \"/vl/reference/edit-vl-test-reasons.php\", \"/vl/reference/vl-test-failure-reasons.php\", \"/vl/referencea/dd-vl-test-failure-reason.php\", \"/vl/reference/edit-vl-test-failure-reason.php\"]','Manage VL Reference Tables',NULL,'always'),(131,'eid-reference','/eid/reference/eid-sample-type.php','[\"/eid/reference/eid-sample-rejection-reasons.php\", \"/eid/reference/add-eid-sample-rejection-reasons.php\", \"edit-eid-sample-rejection-reasons.php\", \"/eid/reference/add-eid-sample-type.php\", \"/eid/reference/edit-eid-sample-type.php\", \"/eid/reference/eid-test-reasons.php\", \"/eid/reference/add-eid-test-reasons.php\", \"/eid/reference/edit-eid-test-reasons.php\", \"/eid/reference/eid-results.php\", \"/eid/reference/add-eid-results.php\", \"/eid/reference/edit-eid-results.php\"]','Manage EID Reference Tables',NULL,'always'),(140,'vl-requests','/vl/requests/edit-locked-vl-samples',NULL,'Edit Locked VL Samples',5,'always'),(141,'eid-requests','/eid/requests/edit-locked-eid-samples',NULL,'Edit Locked EID Samples',5,'always'),(142,'covid-19-requests','/covid-19/requests/edit-locked-covid19-samples',NULL,'Edit Locked Covid-19 Samples',5,'always'),(143,'vl-reports','/vl/program-management/vlMonthlyThresholdReport.php','[\"/vl/program-management/vlTestingTargetReport.php\", \"/vl/program-management/vlSuppressedTargetReport.php\"]','Monthly Threshold Report',NULL,'always'),(144,'eid-management','/eid/management/eidMonthlyThresholdReport.php','[\"/eid/management/eidTestingTargetReport.php\", \"/eid/management/eidSuppressedTargetReport.php\"]','Monthly Threshold Report',NULL,'always'),(145,'covid-19-management','/covid-19/management/covid19MonthlyThresholdReport.php','[\"/covid-19/management/covid19TestingTargetReport.php\", \"/covid-19/management/covid19SuppressedTargetReport.php\"]','Monthly Threshold Report',NULL,'always'),(152,'hepatitis-requests','/hepatitis/requests/hepatitis-requests.php',NULL,'View',1,'always'),(153,'hepatitis-requests','/hepatitis/requests/hepatitis-add-request.php',NULL,'Add',2,'always'),(154,'hepatitis-requests','/hepatitis/requests/hepatitis-edit-request.php',NULL,'Edit',3,'always'),(164,'hepatitis-results','/hepatitis/results/hepatitis-manual-results.php','[\"/hepatitis/results/hepatitis-update-result.php\", \"/hepatitis/results/hepatitis-failed-results.php\"]','Enter Result Manually',NULL,'always'),(165,'hepatitis-results','/hepatitis/results/hepatitis-print-results.php','[\"/hepatitis/mail/mail-hepatitis-results.php\", \"hepatitis-result-mail-confirm.php\"]','Print Results',NULL,'always'),(166,'hepatitis-results','/hepatitis/results/hepatitis-result-status.php',NULL,'Manage Result Status',NULL,'always'),(167,'hepatitis-reference','/hepatitis/reference/hepatitis-sample-type.php','[\"/hepatitis/reference/hepatitis-sample-rejection-reasons.php\", \"/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php\", \"/hepatitis/reference/hepatitis-comorbidities.php\", \"/hepatitis/reference/add-hepatitis-comorbidities.php\", \"/hepatitis/reference/add-hepatitis-sample-type.php\", \"/hepatitis/reference/hepatitis-results.php\", \"/hepatitis/reference/add-hepatitis-results.php\", \"/hepatitis/reference/hepatitis-risk-factors.php\", \"/hepatitis/reference/add-hepatitis-risk-factors.php\", \"/hepatitis/reference/hepatitis-test-reasons.php\", \"/hepatitis/reference/add-hepatitis-test-reasons.php\"]','Manage Hepatitis Reference',NULL,'always'),(168,'vl-reports','/vl/program-management/vlSuppressedTargetReport.php',NULL,'Suppressed Target report',NULL,'always'),(169,'hepatitis-batches','/batch/batches.php?type=hepatitis','[\"/batch/generate-batch-pdf.php?type=hepatitis\"]','View Batches',1,'always'),(170,'hepatitis-batches','/batch/add-batch.php?type=hepatitis','[\"/batch/add-batch-position.php?type=hepatitis\"]','Add Batch',2,'always'),(171,'hepatitis-batches','/batch/edit-batch.php?type=hepatitis','[\"/batch/delete-batch.php?type=hepatitis\", \"/batch/edit-batch-position.php?type=hepatitis\"]','Edit Batch',3,'always'),(174,'hepatitis-requests','/hepatitis/requests/add-samples-from-manifest.php',NULL,'Add Samples from Manifest',6,'lis'),(176,'hepatitis-management','/hepatitis/management/hepatitis-clinic-report.php',NULL,'Hepatitis Clinic Reports',NULL,'always'),(177,'hepatitis-management','/hepatitis/management/hepatitis-testing-target-report.php',NULL,'Hepatitis Testing Target Reports',NULL,'always'),(178,'hepatitis-management','/hepatitis/management/hepatitis-sample-rejection-report.php',NULL,'Hepatitis Sample Rejection Reports',NULL,'always'),(179,'hepatitis-management','/hepatitis/management/hepatitis-sample-status.php',NULL,'Hepatitis Sample Status Reports',NULL,'always'),(180,'covid-19-requests','/covid-19/requests/addSamplesFromManifest.php',NULL,'Add Samples from Manifest',6,'lis'),(181,'covid-19-requests','/covid-19/requests/covid-19-dhis2.php','[\"/covid-19/interop/dhis2/covid-19-init.php\", \"/covid-19/interop/dhis2/covid-19-send.php\", \"/covid-19/interop/dhis2/covid-19-receive.php\"]','DHIS2',NULL,'always'),(182,'covid-19-requests','/covid-19/requests/covid-19-sync-request.php',NULL,'Covid-19 Sync Request',NULL,'always'),(183,'common-reference','/common/reference/geographical-divisions-details.php','[\"implementation-partners.php\", \"add-implementation-partners.php\", \"edit-implementation-partners.php\", \"funding-sources.php\", \"add-funding-sources.php\", \"edit-funding-sources.php\"]','Manage Geographical Divisions',NULL,'always'),(184,'common-reference','/common/reference/add-geographical-divisions.php',NULL,'Add Geographical Divisions',NULL,'always'),(185,'common-reference','/common/reference/edit-geographical-divisions.php',NULL,'Edit Geographical Divisions',NULL,'always'),(186,'hepatitis-requests','/hepatitis/requests/hepatitis-dhis2.php','[\"/hepatitis/interop/dhis2/hepatitis-init.php\", \"/hepatitis/interop/dhis2/hepatitis-send.php\", \"/hepatitis/interop/dhis2/hepatitis-receive.php\"]','DHIS2',NULL,'always'),(187,'common-reference','/admin/monitoring/sync-history.php',NULL,'Sync History',NULL,'always'),(188,'hepatitis-management','/hepatitis/management/hepatitis-export-data.php',NULL,'Hepatitis Export',NULL,'always'),(189,'tb-requests','/tb/requests/tb-requests.php',NULL,'View',1,'always'),(190,'tb-requests','/tb/requests/tb-add-request.php',NULL,'Add',2,'always'),(191,'move-samples','move-samples.php',NULL,'Access',NULL,'always'),(192,'move-samples','select-samples-to-move.php',NULL,'Add Move Samples',NULL,'always'),(193,'tb-requests','/tb/requests/tb-edit-request.php',NULL,'Edit',3,'always'),(194,'tb-results','/tb/results/tb-manual-results.php','[\"/tb/results/tb-update-result.php\", \"/tb/results/tb-failed-results.php\"]','Enter Result Manually',NULL,'always'),(195,'tb-results','/tb/results/tb-print-results.php',NULL,'Print Results',NULL,'always'),(196,'tb-results','/tb/results/tb-result-status.php',NULL,'Manage Result Status',NULL,'always'),(197,'tb-management','/tb/management/tb-sample-type.php',NULL,'Manage Reference',NULL,'always'),(198,'tb-management','/tb/management/tb-export-data.php',NULL,'Export Data',NULL,'always'),(199,'tb-management','/tb/management//batch/batches.php?type=tb',NULL,'View Batches',NULL,'always'),(200,'tb-management','/tb/management//batch/add-batch.php?type=tb',NULL,'Add Batch',NULL,'always'),(201,'tb-management','/tb/management//batch/edit-batch.php?type=tb',NULL,'Edit Batch',NULL,'always'),(204,'tb-requests','/tb/requests/addSamplesFromManifest.php',NULL,'Add Samples from Manifest',6,'lis'),(205,'tb-management','/tb/management/tb-sample-status.php',NULL,'Sample Status Report',NULL,'always'),(206,'tb-management','/tb/management/tb-sample-rejection-report.php',NULL,'Sample Rejection Report',NULL,'always'),(207,'tb-management','/tb/management/tb-clinic-report.php',NULL,'TB Clinic Report',NULL,'always'),(208,'common-reference','/admin/monitoring/activity-log.php',NULL,'User Activity Log',NULL,'always'),(209,'vl-requests','/vl/requests/export-vl-requests.php',NULL,'Export VL Requests',4,'always'),(210,'eid-requests','/eid/requests/export-eid-requests.php',NULL,'Export EID Requests',4,'always'),(211,'covid-19-requests','/covid-19/requests/export-covid19-requests.php',NULL,'Export Covid-19 Requests ',4,'always'),(212,'hepatitis-requests','/hepatitis/requests/export-hepatitis-requests.php',NULL,'Export Hepatitis Requests',4,'always'),(213,'tb-requests','/tb/requests/export-tb-requests.php',NULL,'Export TB Requests',4,'always'),(219,'common-reference','api-sync-history.php',NULL,'API Sync History',NULL,'always'),(220,'common-reference','sources-of-requests.php',NULL,'Sources of Requests Report',NULL,'always'),(221,'covid-19-results','/covid-19/results/covid-19-qc-data.php',NULL,'Covid-19 QC Data',NULL,'always'),(222,'covid-19-results','/covid-19/results/add-covid-19-qc-data.php',NULL,'Add Covid-19 QC Data',NULL,'always'),(223,'covid-19-results','/covid-19/results/edit-covid-19-qc-data.php',NULL,'Edit Covid-19 QC Data',NULL,'always'),(224,'common-reference','/admin/monitoring/audit-trail.php',NULL,'Audit Trail',NULL,'always'),(225,'vl-reference','/vl/reference/vl-results.php',NULL,'Manage VL Results',NULL,'always'),(226,'common-reference','/admin/monitoring/sync-status.php',NULL,'Sync Status',NULL,'always'),(230,'test-type','testType.php',NULL,'Access',NULL,'always'),(231,'test-type','add-test-type.php',NULL,'Add',NULL,'always'),(232,'test-type','edit-test-type.php',NULL,'Edit Test Type',NULL,'always'),(236,'common-sample-type','addSampleType.php',NULL,'Add',NULL,'always'),(237,'common-sample-type','sampleType.php',NULL,'Access',NULL,'always'),(238,'common-sample-type','editSampleType.php',NULL,'Edit',NULL,'always'),(239,'common-testing-reason','testingReason.php',NULL,'Access',NULL,'always'),(240,'common-testing-reason','editTestingReason.php',NULL,'Edit',NULL,'always'),(241,'common-testing-reason','addTestingReason.php',NULL,'Add',NULL,'always'),(242,'common-symptoms','symptoms.php',NULL,'Access',NULL,'always'),(243,'common-symptoms','addSymptoms.php',NULL,'Add',NULL,'always'),(244,'common-symptoms','editSymptoms.php',NULL,'Edit',NULL,'always'),(245,'generic-requests','/generic-tests/requests/view-requests.php',NULL,'View Generic Tests',1,'always'),(246,'generic-requests','/generic-tests/requests/add-request.php',NULL,'Add Generic Tests',2,'always'),(247,'generic-requests','/generic-tests/requests/add-samples-from-manifest.php',NULL,'Add Samples From Manifest',6,'lis'),(252,'generic-requests','/generic-tests/requests/edit-request.php',NULL,'Edit Generic Tests',3,'always'),(277,'generic-results','/generic-tests/results/generic-test-results.php','[\"/generic-tests/results/update-generic-test-result.php\"]','Manage Test Results',NULL,'always'),(278,'generic-results','/generic-tests/results/generic-failed-results.php',NULL,'Manage Failed Results',NULL,'always'),(279,'generic-results','/generic-tests/results/generic-result-approval.php',NULL,'Approve Test Results',NULL,'always'),(280,'generic-management','/generic-tests/program-management/generic-sample-status.php',NULL,'Sample Status Report',NULL,'always'),(281,'generic-management','/generic-tests/program-management/generic-export-data.php',NULL,'Export Report in Excel',NULL,'always'),(282,'generic-management','/generic-tests/results/generic-print-result.php',NULL,'Export Report in PDF',NULL,'always'),(283,'generic-management','/generic-tests/program-management/sample-rejection-report.php',NULL,'Sample Rejection Report',NULL,'always'),(284,'generic-management','/generic-tests/program-management/generic-monthly-threshold-report.php',NULL,'Monthly Threshold Report',NULL,'always'),(300,'vl-reference','/vl/reference/add-vl-results.php',NULL,'Add VL Result Types',NULL,'always'),(301,'vl-reference','/vl/reference/edit-vl-results.php',NULL,'Edit VL Result Types',NULL,'always'),(317,'vl-results','/import-result/import-file.php?t=vl','[\"/import-result/imported-results.php?t=vl\", \"/import-result/importedStatistics.php?t=vl\"]','Import Result from Files',NULL,'always'),(318,'eid-results','/import-result/import-file.php?t=eid','[\"/import-result/imported-results.php?t=eid\", \"/import-result/importedStatistics.php?t=eid\"]','Import Result from Files',NULL,'always'),(319,'covid-19-results','/covid-19/results//import-result/import-file.php?t=covid19',NULL,'Import Result from Files',NULL,'always'),(320,'hepatitis-results','/import-result/import-file.php?t=hepatitis','[\"/import-result/imported-results.php?t=hepatitis\", \"/import-result/importedStatistics.php?t=hepatitis\"]','Import Result from Files',NULL,'always'),(321,'tb-results','/import-result/import-file.php?t=tb','[\"/import-result/imported-results.php?t=tb\", \"/import-result/importedStatistics.php?t=tb\"]','Import Result from Files',NULL,'always'),(322,'generic-results','/import-result/import-file.php?t=generic-tests','[\"/import-result/importedStatistics.php?t=generic-tests\"]','Import Result from Files',NULL,'always'),(323,'vl-requests','/specimen-referral-manifest/view-manifests.php?t=vl',NULL,'View VL Manifests',7,'sts'),(324,'eid-requests','/specimen-referral-manifest/view-manifests.php?t=eid',NULL,'View EID Manifests',7,'sts'),(325,'covid-19-requests','/specimen-referral-manifest/view-manifests.php?t=covid19',NULL,'View COVID-19 Manifests',7,'sts'),(326,'hepatitis-requests','/specimen-referral-manifest/view-manifests.php?t=hepatitis',NULL,'View Hepatitis Manifests',7,'sts'),(327,'tb-requests','/specimen-referral-manifest/view-manifests.php?t=tb',NULL,'View TB Manifests',7,'sts'),(328,'generic-requests','/specimen-referral-manifest/view-manifests.php?t=generic-tests',NULL,'View Lab Tests Manifests',7,'sts'),(329,'vl-requests','/specimen-referral-manifest/add-manifest.php?t=vl',NULL,'Add VL Manifests',8,'sts'),(330,'eid-requests','/specimen-referral-manifest/add-manifest.php?t=eid',NULL,'Add EID Manifests',8,'sts'),(331,'covid-19-requests','/specimen-referral-manifest/add-manifest.php?t=covid19',NULL,'Add COVID-19 Manifests',8,'sts'),(332,'hepatitis-requests','/specimen-referral-manifest/add-manifest.php?t=hepatitis',NULL,'Add Hepatitis Manifests',8,'sts'),(333,'tb-requests','/specimen-referral-manifest/add-manifest.php?t=tb',NULL,'Add TB Manifests',8,'sts'),(334,'generic-requests','/specimen-referral-manifest/add-manifest.php?t=generic-tests',NULL,'Add Lab Tests Manifests',8,'sts'),(335,'vl-requests','/specimen-referral-manifest/edit-manifest.php?t=vl',NULL,'Edit VL Manifests',9,'sts'),(336,'eid-requests','/specimen-referral-manifest/edit-manifest.php?t=eid',NULL,'Edit EID Manifests',9,'sts'),(337,'covid-19-requests','/specimen-referral-manifest/edit-manifest.php?t=covid19',NULL,'Edit COVID-19 Manifests',9,'sts'),(338,'hepatitis-requests','/specimen-referral-manifest/edit-manifest.php?t=hepatitis',NULL,'Edit Hepatitis Manifests',9,'sts'),(339,'tb-requests','/specimen-referral-manifest/edit-manifest.php?t=tb',NULL,'Edit TB Manifests',9,'sts'),(340,'generic-requests','/specimen-referral-manifest/edit-manifest.php?t=generic-tests',NULL,'Edit Lab Tests Manifests',9,'sts'),(347,'generic-tests-config','/generic-tests/configuration/test-type.php','[\"/generic-tests/configuration/add-test-type.php\", \"/generic-tests/configuration/edit-test-type.php\", \"/generic-tests/configuration/clone-test-type.php\"]','Add/Edit Test Types',NULL,'always'),(348,'generic-tests-config','/generic-tests/configuration/sample-types/generic-sample-type.php','[\"/generic-tests/configuration/sample-types/generic-add-sample-type.php\", \"/generic-tests/configuration/sample-types/generic-edit-sample-type.php\"]','Manage Sample Types',NULL,'always'),(349,'generic-tests-config','/generic-tests/configuration/testing-reasons/generic-testing-reason.php','[\"/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php\", \"/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php\"]','Manage Testing Reasons',NULL,'always'),(350,'generic-tests-config','/generic-tests/configuration/symptoms/generic-symptoms.php','[\"/generic-tests/configuration/symptoms/generic-add-symptoms.php\", \"/generic-tests/configuration/symptoms/generic-edit-symptoms.php\"]','Manage Symptoms',NULL,'always'),(351,'generic-tests-config','/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php','[\"/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php\", \"/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php\"]','Manage Sample Rejection Reasons',NULL,'always'),(352,'generic-tests-config','/generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php','[\"/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php\", \"/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php\"]','Manage Test Failure Reasons',NULL,'always'),(353,'generic-tests-config','/generic-tests/configuration/test-result-units/generic-test-result-units.php','[\"/generic-tests/configuration/test-result-units/generic-add-test-result-units.php\", \"/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php\"]','Manage Test Result Units',NULL,'always'),(354,'generic-tests-config','/generic-tests/configuration/test-methods/generic-test-methods.php','[\"/generic-tests/configuration/test-methods/generic-add-test-methods.php\", \"/generic-tests/configuration/test-methods/generic-edit-test-methods.php\"]','Manage Test Methods',NULL,'always'),(355,'generic-tests-config','/generic-tests/configuration/test-categories/generic-test-categories.php','[\"/generic-tests/configuration/test-categories/generic-add-test-categories.php\", \"/generic-tests/configuration/test-categories/generic-edit-test-categories.php\"]','Manage Test Categories',NULL,'always'),(356,'generic-tests-batches','/batch/batches.php?type=generic-tests','[\"/batch/generate-batch-pdf.php?type=generic-tests\"]','Manage Batch',1,'always'),(357,'generic-tests-batches','/batch/add-batch.php?type=generic-tests','[\"/batch/add-batch-position.php?type=generic-tests\"]','Add New Batch',2,'always'),(358,'generic-tests-batches','/batch/edit-batch.php?type=generic-tests','[\"/batch/delete-batch.php?type=generic-tests\", \"/batch/edit-batch-position.php?type=generic-tests\"]','Edit Batch',3,'always'),(411,'hepatitis-requests','/hepatitis/requests/edit-locked-hepatitis-samples',NULL,'Edit Locked Samples',5,'always'),(412,'tb-requests','/tb/requests/edit-locked-tb-samples',NULL,'Edit Locked Samples',5,'always'),(413,'generic-tests-requests','/generic-tests/requests/edit-locked-generic-tests-samples',NULL,'Edit Locked Samples',5,'always'),(414,'generic-tests-requests','/generic-tests/requests/export-generic-tests-requests.php',NULL,'Export Requests',4,'always'),(416,'generic-requests','/generic-tests/requests/clone-request.php',NULL,'Clone Generic Tests',7,'always'),(417,'patients','view-patients.php',NULL,'Manage Patients',NULL,'always'),(418,'patients','add-patient.php',NULL,'Add Patient',NULL,'always'),(419,'patients','edit-patient.php',NULL,'Edit Patient',NULL,'always'),(420,'generic-requests','/generic-tests/requests/edit-locked-generic-tests-samples',NULL,'Edit Locked Generic Tests Samples',6,'always'),(421,'eid-results','/eid/results/email-results.php','[\"/eid/results/email-results.php\", \"/eid/results/email-results-confirmation.php\"]','Email Test Result',NULL,'always'),(422,'hepatitis-results','/hepatitis/results/email-results.php','[\"/hepatitis/results/email-results.php\", \"/hepatitis/results/email-results-confirmation.php\"]','Email Test Result',NULL,'always'),(423,'tb-results','/tb/results/email-results.php','[\"/tb/results/email-results.php\", \"/tb/results/email-results-confirmation.php\"]','Email Test Result',NULL,'always');
+INSERT INTO `privileges` VALUES (1,'users','/users/users.php',NULL,'Access',NULL,'always'),(2,'users','/users/addUser.php',NULL,'Add',NULL,'always'),(3,'users','/users/editUser.php',NULL,'Edit',NULL,'always'),(4,'facilities','/facilities/facilities.php',NULL,'Access',NULL,'always'),(5,'facilities','/facilities/addFacility.php','[\"mapTestType.php\"]','Add',NULL,'always'),(6,'facilities','/facilities/editFacility.php',NULL,'Edit',NULL,'always'),(8,'global-config','/global-config/editGlobalConfig.php',NULL,'Edit',NULL,'always'),(9,'instruments','/instruments/instruments.php',NULL,'Access',1,'always'),(10,'instruments','/instruments/add-instrument.php',NULL,'Add',2,'always'),(11,'instruments','/instruments/edit-instrument.php',NULL,'Edit',3,'always'),(12,'vl-requests','/vl/requests/vl-requests.php',NULL,'View',1,'always'),(13,'vl-requests','/vl/requests/addVlRequest.php',NULL,'Add',2,'always'),(14,'vl-requests','/vl/requests/editVlRequest.php',NULL,'Edit',3,'always'),(16,'vl-batch','/batch/batches.php?type=vl','[\"/batch/generate-batch-pdf.php?type=vl\"]','Access',1,'always'),(17,'vl-batch','/batch/add-batch.php?type=vl','[\"/batch/add-batch-position.php?type=vl\"]','Add',2,'always'),(18,'vl-batch','/batch/edit-batch.php?type=vl','[\"/batch/delete-batch.php?type=vl\", \"/batch/edit-batch-position.php?type=vl\"]','Edit',3,'always'),(20,'vl-results','/vl/results/vlPrintResult.php',NULL,'Print Result PDF',NULL,'always'),(21,'vl-results','/vl/results/vlTestResult.php','[\"/vl/results/updateVlTestResult.php\", \"/vl/results/vl-failed-results.php\"]','Enter Result Manually',NULL,'always'),(22,'vl-reports','/vl/program-management/vl-sample-status.php',NULL,'Sample Status Report',NULL,'always'),(23,'vl-reports','/vl/program-management/vl-export-data.php',NULL,'Export VL Data',NULL,'always'),(24,'home','index.php',NULL,'Access',NULL,'always'),(25,'roles','/roles/roles.php',NULL,'Access',NULL,'always'),(26,'roles','/roles/editRole.php',NULL,'Edit',NULL,'always'),(28,'test-request-email-config','testRequestEmailConfig.php',NULL,'Access',NULL,'always'),(31,'vl-results','/vl/results/vlResultApproval.php',NULL,'Manage VL Result Status (Approve/Reject)',NULL,'always'),(33,'vl-reports','/vl/program-management/highViralLoad.php',NULL,'High VL Report',NULL,'always'),(34,'vl-reports','/vl/program-management/addContactNotes.php',NULL,'Contact Notes (High VL Reports)',NULL,'always'),(39,'roles','/roles/addRole.php',NULL,'Add',NULL,'always'),(40,'vl-reports','/vl/program-management/vlTestResultStatus.php',NULL,'Dashboard',NULL,'always'),(43,'test-request-email-config','editTestRequestEmailConfig.php',NULL,'Edit',NULL,'always'),(48,'test-result-email-config','testResultEmailConfig.php',NULL,'Access',NULL,'always'),(49,'test-result-email-config','editTestResultEmailConfig.php',NULL,'Edit',NULL,'always'),(56,'vl-reports','/vl/program-management/vlWeeklyReport.php',NULL,'VL Weekly Report',NULL,'always'),(57,'vl-reports','/vl/program-management/sampleRejectionReport.php',NULL,'Sample Rejection Report',NULL,'always'),(59,'vl-reports','/vl/program-management/vlMonitoringReport.php',NULL,'Sample Monitoring Report',NULL,'always'),(63,'vl-reports','/vl/program-management/vlControlReport.php',NULL,'Controls Report',NULL,'always'),(64,'facilities','addVlFacilityMap.php',NULL,'Add Facility Map',NULL,'always'),(66,'facilities','editVlFacilityMap.php',NULL,'Edit Facility Map',NULL,'always'),(70,'vl-reports','/vl/program-management/vlResultAllFieldExportInExcel.php',NULL,'Export VL Data in Excel',NULL,'always'),(74,'eid-requests','/eid/requests/eid-add-request.php','[\"/eid/requests/eid-bulk-import-request.php\"]','Add',2,'always'),(75,'eid-requests','/eid/requests/eid-edit-request.php',NULL,'Edit',3,'always'),(76,'eid-requests','/eid/requests/eid-requests.php',NULL,'View',1,'always'),(77,'eid-batches','/batch/batches.php?type=eid','[\"/batch/generate-batch-pdf.php?type=eid\"]','View Batches',1,'always'),(78,'eid-batches','/batch/add-batch.php?type=eid','[\"/batch/add-batch-position.php?type=eid\"]','Add Batch',2,'always'),(79,'eid-batches','/batch/edit-batch.php?type=eid','[\"/batch/delete-batch.php?type=eid\", \"/batch/edit-batch-position.php?type=eid\"]','Edit Batch',3,'always'),(80,'eid-results','/eid/results/eid-manual-results.php','[\"/eid/results/eid-update-result.php\", \"/eid/results/eid-failed-results.php\"]','Enter Result Manually',NULL,'always'),(84,'eid-results','/eid/results/eid-result-status.php',NULL,'Manage Result Status',NULL,'always'),(85,'eid-results','/eid/results/eid-print-results.php',NULL,'Print Results',NULL,'always'),(86,'eid-management','/eid/management/eid-export-data.php',NULL,'Export Data',NULL,'always'),(87,'eid-management','/eid/management/eid-sample-rejection-report.php',NULL,'Sample Rejection Report',NULL,'always'),(88,'eid-management','/eid/management/eid-sample-status.php',NULL,'Sample Status Report',NULL,'always'),(89,'vl-requests','/vl/requests/addSamplesFromManifest.php',NULL,'Add Samples from Manifest',6,'lis'),(91,'eid-requests','/eid/requests/addSamplesFromManifest.php',NULL,'Add Samples from Manifest',6,'lis'),(95,'covid-19-requests','/covid-19/requests/covid-19-add-request.php','[\"/covid-19/requests/covid-19-bulk-import-request.php\", \"/covid-19/requests/covid-19-quick-add.php\"]','Add',2,'always'),(96,'covid-19-requests','/covid-19/requests/covid-19-edit-request.php',NULL,'Edit',3,'always'),(97,'covid-19-requests','/covid-19/requests/covid-19-requests.php',NULL,'View',1,'always'),(98,'covid-19-results','/covid-19/results/covid-19-result-status.php',NULL,'Manage Result Status',NULL,'always'),(99,'covid-19-results','/covid-19/results/covid-19-print-results.php','[\"/covid-19/mail/mail-covid-19-results.php\", \"/covid-19/mail/covid-19-result-mail-confirm.php\"]','Print Results',NULL,'always'),(100,'covid-19-batches','/batch/batches.php?type=covid19','[\"/batch/generate-batch-pdf.php?type=covid19\"]','View Batches',1,'always'),(101,'covid-19-batches','/batch/add-batch.php?type=covid19','[\"/batch/add-batch-position.php?type=covid19\"]','Add Batch',2,'always'),(102,'covid-19-batches','/batch/edit-batch.php?type=covid19','[\"/batch/delete-batch.php?type=covid19\", \"/batch/edit-batch-position.php?type=covid19\"]','Edit Batch',3,'always'),(103,'covid-19-results','/covid-19/results/covid-19-manual-results.php','[\"/covid-19/results/covid-19-update-result.php\", \"/covid-19/results/covid-19-failed-results.php\"]','Enter Result Manually',NULL,'always'),(105,'covid-19-management','/covid-19/management/covid-19-export-data.php',NULL,'Export Data',NULL,'always'),(106,'covid-19-management','/covid-19/management/covid-19-sample-rejection-report.php',NULL,'Sample Rejection Report',NULL,'always'),(107,'covid-19-management','/covid-19/management/covid-19-sample-status.php',NULL,'Sample Status Report',NULL,'always'),(108,'covid-19-requests','/covid-19/requests/record-final-result.php',NULL,'Record Final Result',NULL,'always'),(109,'covid-19-requests','/covid-19/requests/can-record-confirmatory-tests.php',NULL,'Can Record Confirmatory Tests',NULL,'always'),(110,'covid-19-requests','/covid-19/requests/update-record-confirmatory-tests.php',NULL,'Update Record Confirmatory Tests',NULL,'always'),(111,'covid-19-batches','covid-19-confirmation-manifest.php',NULL,'Covid-19 Confirmation Manifest',NULL,'always'),(112,'covid-19-batches','covid-19-add-confirmation-manifest.php',NULL,'Add New Confirmation Manifest',NULL,'always'),(113,'covid-19-batches','generate-confirmation-manifest.php',NULL,'Generate Positive Confirmation Manifest',NULL,'always'),(114,'covid-19-batches','covid-19-edit-confirmation-manifest.php',NULL,'Edit Positive Confirmation Manifest',NULL,'always'),(121,'eid-management','/eid/management/eid-clinic-report.php',NULL,'EID Clinic Reports',NULL,'always'),(122,'covid-19-management','/covid-19/management/covid-19-clinic-report.php',NULL,'Covid-19 Clinic Reports',NULL,'always'),(123,'covid-19-reference','/covid-19/reference/covid19-sample-type.php','[\"/covid-19/reference/covid19-sample-rejection-reasons.php\", \"/covid-19/reference/add-covid19-sample-rejection-reason.php\", \"/covid-19/reference/covid19-comorbidities.php\", \"/covid-19/reference/add-covid19-comorbidities.php\", \"/covid-19/reference/covid19-symptoms.php\", \"/covid-19/reference/add-covid19-sample-type.php\", \"/covid-19/reference/covid19-test-symptoms.php\", \"/covid-19/reference/add-covid19-symptoms.php\", \"/covid-19/reference/covid19-test-reasons.php\", \"/covid-19/reference/add-covid19-test-reasons.php\", \"/covid-19/reference/covid19-results.php\", \"/covid-19/reference/add-covid19-results.php\", \"/covid-19/reference/covid19-qc-test-kits.php\", \"/covid-19/reference/add-covid19-qc-test-kit.php\", \"/covid-19/reference/edit-covid19-qc-test-kit.php\"]','Manage Reference',NULL,'always'),(124,'covid-19-reference','/covid-19/reference/covid19-comorbidities.php',NULL,'Manage Comorbidities',NULL,'always'),(125,'covid-19-reference','/covid-19/reference/addCovid19Comorbidities.php',NULL,'Add Comorbidities',NULL,'always'),(126,'covid-19-reference','/covid-19/reference/editCovid19Comorbidities.php',NULL,'Edit Comorbidities',NULL,'always'),(127,'covid-19-reference','/covid-19/reference/covid19-sample-rejection-reasons.php',NULL,'Manage Sample Rejection Reasons',NULL,'always'),(128,'covid-19-reference','/covid-19/reference/addCovid19SampleRejectionReason.php',NULL,'Add Sample Rejection Reason',NULL,'always'),(129,'covid-19-reference','/covid-19/reference/editCovid19SampleRejectionReason.php',NULL,'Edit Sample Rejection Reason',NULL,'always'),(130,'vl-reference','/vl/reference/vl-art-code-details.php','[\"/vl/reference/add-vl-art-code-details.php\", \"/vl/reference/edit-vl-art-code-details.php\", \"/vl/reference/add-vl-results.php\", \"/vl/reference/edit-vl-results.php\", \"/vl/reference/vl-sample-rejection-reasons.php\", \"/vl/reference/add-vl-sample-rejection-reasons.php\", \"/vl/reference/edit-vl-sample-rejection-reasons.php\", \"/vl/reference/vl-sample-type.php\", \"/vl/reference/edit-vl-sample-type.php\", \"/vl/reference/add-vl-sample-type.php\", \"/vl/reference/vl-test-reasons.php\", \"/vl/reference/add-vl-test-reasons.php\", \"/vl/reference/edit-vl-test-reasons.php\", \"/vl/reference/vl-test-failure-reasons.php\", \"/vl/referencea/dd-vl-test-failure-reason.php\", \"/vl/reference/edit-vl-test-failure-reason.php\"]','Manage VL Reference Tables',NULL,'always'),(131,'eid-reference','/eid/reference/eid-sample-type.php','[\"/eid/reference/eid-sample-rejection-reasons.php\", \"/eid/reference/add-eid-sample-rejection-reasons.php\", \"edit-eid-sample-rejection-reasons.php\", \"/eid/reference/add-eid-sample-type.php\", \"/eid/reference/edit-eid-sample-type.php\", \"/eid/reference/eid-test-reasons.php\", \"/eid/reference/add-eid-test-reasons.php\", \"/eid/reference/edit-eid-test-reasons.php\", \"/eid/reference/eid-results.php\", \"/eid/reference/add-eid-results.php\", \"/eid/reference/edit-eid-results.php\"]','Manage EID Reference Tables',NULL,'always'),(140,'vl-requests','/vl/requests/edit-locked-vl-samples',NULL,'Edit Locked VL Samples',5,'always'),(141,'eid-requests','/eid/requests/edit-locked-eid-samples',NULL,'Edit Locked EID Samples',5,'always'),(142,'covid-19-requests','/covid-19/requests/edit-locked-covid19-samples',NULL,'Edit Locked Covid-19 Samples',5,'always'),(143,'vl-reports','/vl/program-management/vlMonthlyThresholdReport.php','[\"/vl/program-management/vlTestingTargetReport.php\", \"/vl/program-management/vlSuppressedTargetReport.php\"]','Monthly Threshold Report',NULL,'always'),(144,'eid-management','/eid/management/eidMonthlyThresholdReport.php','[\"/eid/management/eidTestingTargetReport.php\", \"/eid/management/eidSuppressedTargetReport.php\"]','Monthly Threshold Report',NULL,'always'),(145,'covid-19-management','/covid-19/management/covid19MonthlyThresholdReport.php','[\"/covid-19/management/covid19TestingTargetReport.php\", \"/covid-19/management/covid19SuppressedTargetReport.php\"]','Monthly Threshold Report',NULL,'always'),(152,'hepatitis-requests','/hepatitis/requests/hepatitis-requests.php',NULL,'View',1,'always'),(153,'hepatitis-requests','/hepatitis/requests/hepatitis-add-request.php',NULL,'Add',2,'always'),(154,'hepatitis-requests','/hepatitis/requests/hepatitis-edit-request.php',NULL,'Edit',3,'always'),(164,'hepatitis-results','/hepatitis/results/hepatitis-manual-results.php','[\"/hepatitis/results/hepatitis-update-result.php\", \"/hepatitis/results/hepatitis-failed-results.php\"]','Enter Result Manually',NULL,'always'),(165,'hepatitis-results','/hepatitis/results/hepatitis-print-results.php','[\"/hepatitis/mail/mail-hepatitis-results.php\", \"hepatitis-result-mail-confirm.php\"]','Print Results',NULL,'always'),(166,'hepatitis-results','/hepatitis/results/hepatitis-result-status.php',NULL,'Manage Result Status',NULL,'always'),(167,'hepatitis-reference','/hepatitis/reference/hepatitis-sample-type.php','[\"/hepatitis/reference/hepatitis-sample-rejection-reasons.php\", \"/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php\", \"/hepatitis/reference/hepatitis-comorbidities.php\", \"/hepatitis/reference/add-hepatitis-comorbidities.php\", \"/hepatitis/reference/add-hepatitis-sample-type.php\", \"/hepatitis/reference/hepatitis-results.php\", \"/hepatitis/reference/add-hepatitis-results.php\", \"/hepatitis/reference/hepatitis-risk-factors.php\", \"/hepatitis/reference/add-hepatitis-risk-factors.php\", \"/hepatitis/reference/hepatitis-test-reasons.php\", \"/hepatitis/reference/add-hepatitis-test-reasons.php\"]','Manage Hepatitis Reference',NULL,'always'),(168,'vl-reports','/vl/program-management/vlSuppressedTargetReport.php',NULL,'Suppressed Target report',NULL,'always'),(169,'hepatitis-batches','/batch/batches.php?type=hepatitis','[\"/batch/generate-batch-pdf.php?type=hepatitis\"]','View Batches',1,'always'),(170,'hepatitis-batches','/batch/add-batch.php?type=hepatitis','[\"/batch/add-batch-position.php?type=hepatitis\"]','Add Batch',2,'always'),(171,'hepatitis-batches','/batch/edit-batch.php?type=hepatitis','[\"/batch/delete-batch.php?type=hepatitis\", \"/batch/edit-batch-position.php?type=hepatitis\"]','Edit Batch',3,'always'),(174,'hepatitis-requests','/hepatitis/requests/add-samples-from-manifest.php',NULL,'Add Samples from Manifest',6,'lis'),(176,'hepatitis-management','/hepatitis/management/hepatitis-clinic-report.php',NULL,'Hepatitis Clinic Reports',NULL,'always'),(177,'hepatitis-management','/hepatitis/management/hepatitis-testing-target-report.php',NULL,'Hepatitis Testing Target Reports',NULL,'always'),(178,'hepatitis-management','/hepatitis/management/hepatitis-sample-rejection-report.php',NULL,'Hepatitis Sample Rejection Reports',NULL,'always'),(179,'hepatitis-management','/hepatitis/management/hepatitis-sample-status.php',NULL,'Hepatitis Sample Status Reports',NULL,'always'),(180,'covid-19-requests','/covid-19/requests/addSamplesFromManifest.php',NULL,'Add Samples from Manifest',6,'lis'),(181,'covid-19-requests','/covid-19/requests/covid-19-dhis2.php','[\"/covid-19/interop/dhis2/covid-19-init.php\", \"/covid-19/interop/dhis2/covid-19-send.php\", \"/covid-19/interop/dhis2/covid-19-receive.php\"]','DHIS2',NULL,'always'),(182,'covid-19-requests','/covid-19/requests/covid-19-sync-request.php',NULL,'Covid-19 Sync Request',NULL,'always'),(183,'common-reference','/common/reference/geographical-divisions-details.php','[\"implementation-partners.php\", \"add-implementation-partners.php\", \"edit-implementation-partners.php\", \"funding-sources.php\", \"add-funding-sources.php\", \"edit-funding-sources.php\"]','Manage Geographical Divisions',NULL,'always'),(184,'common-reference','/common/reference/add-geographical-divisions.php',NULL,'Add Geographical Divisions',NULL,'always'),(185,'common-reference','/common/reference/edit-geographical-divisions.php',NULL,'Edit Geographical Divisions',NULL,'always'),(186,'hepatitis-requests','/hepatitis/requests/hepatitis-dhis2.php','[\"/hepatitis/interop/dhis2/hepatitis-init.php\", \"/hepatitis/interop/dhis2/hepatitis-send.php\", \"/hepatitis/interop/dhis2/hepatitis-receive.php\"]','DHIS2',NULL,'always'),(187,'common-reference','/admin/monitoring/sync-history.php',NULL,'Sync History',NULL,'always'),(188,'hepatitis-management','/hepatitis/management/hepatitis-export-data.php',NULL,'Hepatitis Export',NULL,'always'),(189,'tb-requests','/tb/requests/tb-requests.php',NULL,'View',1,'always'),(190,'tb-requests','/tb/requests/tb-add-request.php',NULL,'Add',2,'always'),(191,'move-samples','move-samples.php',NULL,'Access',NULL,'always'),(192,'move-samples','select-samples-to-move.php',NULL,'Add Move Samples',NULL,'always'),(193,'tb-requests','/tb/requests/tb-edit-request.php',NULL,'Edit',3,'always'),(194,'tb-results','/tb/results/tb-manual-results.php','[\"/tb/results/tb-update-result.php\", \"/tb/results/tb-failed-results.php\"]','Enter Result Manually',NULL,'always'),(195,'tb-results','/tb/results/tb-print-results.php',NULL,'Print Results',NULL,'always'),(196,'tb-results','/tb/results/tb-result-status.php',NULL,'Manage Result Status',NULL,'always'),(197,'tb-management','/tb/management/tb-sample-type.php',NULL,'Manage Reference',NULL,'always'),(198,'tb-management','/tb/management/tb-export-data.php',NULL,'Export Data',NULL,'always'),(199,'tb-management','/tb/management//batch/batches.php?type=tb',NULL,'View Batches',NULL,'always'),(200,'tb-management','/tb/management//batch/add-batch.php?type=tb',NULL,'Add Batch',NULL,'always'),(201,'tb-management','/tb/management//batch/edit-batch.php?type=tb',NULL,'Edit Batch',NULL,'always'),(204,'tb-requests','/tb/requests/addSamplesFromManifest.php',NULL,'Add Samples from Manifest',6,'lis'),(205,'tb-management','/tb/management/tb-sample-status.php',NULL,'Sample Status Report',NULL,'always'),(206,'tb-management','/tb/management/tb-sample-rejection-report.php',NULL,'Sample Rejection Report',NULL,'always'),(207,'tb-management','/tb/management/tb-clinic-report.php',NULL,'TB Clinic Report',NULL,'always'),(208,'common-reference','/admin/monitoring/activity-log.php',NULL,'User Activity Log',NULL,'always'),(209,'vl-requests','/vl/requests/export-vl-requests.php',NULL,'Export VL Requests',4,'always'),(210,'eid-requests','/eid/requests/export-eid-requests.php',NULL,'Export EID Requests',4,'always'),(211,'covid-19-requests','/covid-19/requests/export-covid19-requests.php',NULL,'Export Covid-19 Requests ',4,'always'),(212,'hepatitis-requests','/hepatitis/requests/export-hepatitis-requests.php',NULL,'Export Hepatitis Requests',4,'always'),(213,'tb-requests','/tb/requests/export-tb-requests.php',NULL,'Export TB Requests',4,'always'),(219,'common-reference','api-sync-history.php',NULL,'API Sync History',NULL,'always'),(220,'common-reference','sources-of-requests.php',NULL,'Sources of Requests Report',NULL,'always'),(221,'covid-19-results','/covid-19/results/covid-19-qc-data.php',NULL,'Covid-19 QC Data',NULL,'always'),(222,'covid-19-results','/covid-19/results/add-covid-19-qc-data.php',NULL,'Add Covid-19 QC Data',NULL,'always'),(223,'covid-19-results','/covid-19/results/edit-covid-19-qc-data.php',NULL,'Edit Covid-19 QC Data',NULL,'always'),(224,'common-reference','/admin/monitoring/audit-trail.php',NULL,'Audit Trail',NULL,'always'),(225,'vl-reference','/vl/reference/vl-results.php',NULL,'Manage VL Results',NULL,'always'),(226,'common-reference','/admin/monitoring/sync-status.php',NULL,'Sync Status',NULL,'always'),(230,'test-type','testType.php',NULL,'Access',NULL,'always'),(231,'test-type','add-test-type.php',NULL,'Add',NULL,'always'),(232,'test-type','edit-test-type.php',NULL,'Edit Test Type',NULL,'always'),(236,'common-sample-type','addSampleType.php',NULL,'Add',NULL,'always'),(237,'common-sample-type','sampleType.php',NULL,'Access',NULL,'always'),(238,'common-sample-type','editSampleType.php',NULL,'Edit',NULL,'always'),(239,'common-testing-reason','testingReason.php',NULL,'Access',NULL,'always'),(240,'common-testing-reason','editTestingReason.php',NULL,'Edit',NULL,'always'),(241,'common-testing-reason','addTestingReason.php',NULL,'Add',NULL,'always'),(242,'common-symptoms','symptoms.php',NULL,'Access',NULL,'always'),(243,'common-symptoms','addSymptoms.php',NULL,'Add',NULL,'always'),(244,'common-symptoms','editSymptoms.php',NULL,'Edit',NULL,'always'),(245,'generic-requests','/generic-tests/requests/view-requests.php',NULL,'View Generic Tests',1,'always'),(246,'generic-requests','/generic-tests/requests/add-request.php',NULL,'Add Generic Tests',2,'always'),(247,'generic-requests','/generic-tests/requests/add-samples-from-manifest.php',NULL,'Add Samples From Manifest',6,'lis'),(252,'generic-requests','/generic-tests/requests/edit-request.php',NULL,'Edit Generic Tests',3,'always'),(277,'generic-results','/generic-tests/results/generic-test-results.php','[\"/generic-tests/results/update-generic-test-result.php\"]','Manage Test Results',NULL,'always'),(278,'generic-results','/generic-tests/results/generic-failed-results.php',NULL,'Manage Failed Results',NULL,'always'),(279,'generic-results','/generic-tests/results/generic-result-approval.php',NULL,'Approve Test Results',NULL,'always'),(280,'generic-management','/generic-tests/program-management/generic-sample-status.php',NULL,'Sample Status Report',NULL,'always'),(281,'generic-management','/generic-tests/program-management/generic-export-data.php',NULL,'Export Report in Excel',NULL,'always'),(282,'generic-management','/generic-tests/results/generic-print-result.php',NULL,'Export Report in PDF',NULL,'always'),(283,'generic-management','/generic-tests/program-management/sample-rejection-report.php',NULL,'Sample Rejection Report',NULL,'always'),(284,'generic-management','/generic-tests/program-management/generic-monthly-threshold-report.php',NULL,'Monthly Threshold Report',NULL,'always'),(300,'vl-reference','/vl/reference/add-vl-results.php',NULL,'Add VL Result Types',NULL,'always'),(301,'vl-reference','/vl/reference/edit-vl-results.php',NULL,'Edit VL Result Types',NULL,'always'),(317,'vl-results','/import-result/import-file.php?t=vl','[\"/import-result/imported-results.php?t=vl\", \"/import-result/importedStatistics.php?t=vl\"]','Import Result from Files',NULL,'always'),(318,'eid-results','/import-result/import-file.php?t=eid','[\"/import-result/imported-results.php?t=eid\", \"/import-result/importedStatistics.php?t=eid\"]','Import Result from Files',NULL,'always'),(319,'covid-19-results','/covid-19/results//import-result/import-file.php?t=covid19',NULL,'Import Result from Files',NULL,'always'),(320,'hepatitis-results','/import-result/import-file.php?t=hepatitis','[\"/import-result/imported-results.php?t=hepatitis\", \"/import-result/importedStatistics.php?t=hepatitis\"]','Import Result from Files',NULL,'always'),(321,'tb-results','/import-result/import-file.php?t=tb','[\"/import-result/imported-results.php?t=tb\", \"/import-result/importedStatistics.php?t=tb\"]','Import Result from Files',NULL,'always'),(322,'generic-results','/import-result/import-file.php?t=generic-tests','[\"/import-result/importedStatistics.php?t=generic-tests\"]','Import Result from Files',NULL,'always'),(323,'vl-requests','/specimen-referral-manifest/view-manifests.php?t=vl',NULL,'View VL Manifests',7,'sts'),(324,'eid-requests','/specimen-referral-manifest/view-manifests.php?t=eid',NULL,'View EID Manifests',7,'sts'),(325,'covid-19-requests','/specimen-referral-manifest/view-manifests.php?t=covid19',NULL,'View COVID-19 Manifests',7,'sts'),(326,'hepatitis-requests','/specimen-referral-manifest/view-manifests.php?t=hepatitis',NULL,'View Hepatitis Manifests',7,'sts'),(327,'tb-requests','/specimen-referral-manifest/view-manifests.php?t=tb',NULL,'View TB Manifests',7,'sts'),(328,'generic-requests','/specimen-referral-manifest/view-manifests.php?t=generic-tests',NULL,'View Lab Tests Manifests',7,'sts'),(329,'vl-requests','/specimen-referral-manifest/add-manifest.php?t=vl',NULL,'Add VL Manifests',8,'sts'),(330,'eid-requests','/specimen-referral-manifest/add-manifest.php?t=eid',NULL,'Add EID Manifests',8,'sts'),(331,'covid-19-requests','/specimen-referral-manifest/add-manifest.php?t=covid19',NULL,'Add COVID-19 Manifests',8,'sts'),(332,'hepatitis-requests','/specimen-referral-manifest/add-manifest.php?t=hepatitis',NULL,'Add Hepatitis Manifests',8,'sts'),(333,'tb-requests','/specimen-referral-manifest/add-manifest.php?t=tb',NULL,'Add TB Manifests',8,'sts'),(334,'generic-requests','/specimen-referral-manifest/add-manifest.php?t=generic-tests',NULL,'Add Lab Tests Manifests',8,'sts'),(335,'vl-requests','/specimen-referral-manifest/edit-manifest.php?t=vl',NULL,'Edit VL Manifests',9,'sts'),(336,'eid-requests','/specimen-referral-manifest/edit-manifest.php?t=eid',NULL,'Edit EID Manifests',9,'sts'),(337,'covid-19-requests','/specimen-referral-manifest/edit-manifest.php?t=covid19',NULL,'Edit COVID-19 Manifests',9,'sts'),(338,'hepatitis-requests','/specimen-referral-manifest/edit-manifest.php?t=hepatitis',NULL,'Edit Hepatitis Manifests',9,'sts'),(339,'tb-requests','/specimen-referral-manifest/edit-manifest.php?t=tb',NULL,'Edit TB Manifests',9,'sts'),(340,'generic-requests','/specimen-referral-manifest/edit-manifest.php?t=generic-tests',NULL,'Edit Lab Tests Manifests',9,'sts'),(347,'generic-tests-config','/generic-tests/configuration/test-type.php','[\"/generic-tests/configuration/add-test-type.php\", \"/generic-tests/configuration/edit-test-type.php\", \"/generic-tests/configuration/clone-test-type.php\"]','Add/Edit Test Types',NULL,'always'),(348,'generic-tests-config','/generic-tests/configuration/sample-types/generic-sample-type.php','[\"/generic-tests/configuration/sample-types/generic-add-sample-type.php\", \"/generic-tests/configuration/sample-types/generic-edit-sample-type.php\"]','Manage Sample Types',NULL,'always'),(349,'generic-tests-config','/generic-tests/configuration/testing-reasons/generic-testing-reason.php','[\"/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php\", \"/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php\"]','Manage Testing Reasons',NULL,'always'),(350,'generic-tests-config','/generic-tests/configuration/symptoms/generic-symptoms.php','[\"/generic-tests/configuration/symptoms/generic-add-symptoms.php\", \"/generic-tests/configuration/symptoms/generic-edit-symptoms.php\"]','Manage Symptoms',NULL,'always'),(351,'generic-tests-config','/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php','[\"/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php\", \"/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php\"]','Manage Sample Rejection Reasons',NULL,'always'),(352,'generic-tests-config','/generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php','[\"/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php\", \"/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php\"]','Manage Test Failure Reasons',NULL,'always'),(353,'generic-tests-config','/generic-tests/configuration/test-result-units/generic-test-result-units.php','[\"/generic-tests/configuration/test-result-units/generic-add-test-result-units.php\", \"/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php\"]','Manage Test Result Units',NULL,'always'),(354,'generic-tests-config','/generic-tests/configuration/test-methods/generic-test-methods.php','[\"/generic-tests/configuration/test-methods/generic-add-test-methods.php\", \"/generic-tests/configuration/test-methods/generic-edit-test-methods.php\"]','Manage Test Methods',NULL,'always'),(355,'generic-tests-config','/generic-tests/configuration/test-categories/generic-test-categories.php','[\"/generic-tests/configuration/test-categories/generic-add-test-categories.php\", \"/generic-tests/configuration/test-categories/generic-edit-test-categories.php\"]','Manage Test Categories',NULL,'always'),(356,'generic-tests-batches','/batch/batches.php?type=generic-tests','[\"/batch/generate-batch-pdf.php?type=generic-tests\"]','Manage Batch',1,'always'),(357,'generic-tests-batches','/batch/add-batch.php?type=generic-tests','[\"/batch/add-batch-position.php?type=generic-tests\"]','Add New Batch',2,'always'),(358,'generic-tests-batches','/batch/edit-batch.php?type=generic-tests','[\"/batch/delete-batch.php?type=generic-tests\", \"/batch/edit-batch-position.php?type=generic-tests\"]','Edit Batch',3,'always'),(411,'hepatitis-requests','/hepatitis/requests/edit-locked-hepatitis-samples',NULL,'Edit Locked Samples',5,'always'),(412,'tb-requests','/tb/requests/edit-locked-tb-samples',NULL,'Edit Locked Samples',5,'always'),(413,'generic-tests-requests','/generic-tests/requests/edit-locked-generic-tests-samples',NULL,'Edit Locked Samples',5,'always'),(414,'generic-tests-requests','/generic-tests/requests/export-generic-tests-requests.php',NULL,'Export Requests',4,'always'),(416,'generic-requests','/generic-tests/requests/clone-request.php',NULL,'Clone Generic Tests',7,'always'),(417,'patients','view-patients.php',NULL,'Manage Patients',NULL,'always'),(418,'patients','add-patient.php',NULL,'Add Patient',NULL,'always'),(419,'patients','edit-patient.php',NULL,'Edit Patient',NULL,'always'),(420,'generic-requests','/generic-tests/requests/edit-locked-generic-tests-samples',NULL,'Edit Locked Generic Tests Samples',6,'always'),(421,'eid-results','/eid/results/email-results.php','[\"/eid/results/email-results.php\", \"/eid/results/email-results-confirmation.php\"]','Email Test Result',NULL,'always'),(422,'hepatitis-results','/hepatitis/results/email-results.php','[\"/hepatitis/results/email-results.php\", \"/hepatitis/results/email-results-confirmation.php\"]','Email Test Result',NULL,'always'),(423,'tb-results','/tb/results/email-results.php','[\"/tb/results/email-results.php\", \"/tb/results/email-results-confirmation.php\"]','Email Test Result',NULL,'always'),(424,'generic-results','/generic-tests/results/email-results.php','[\"/vl/results/email-results.php\", \"/vl/results/email-results-confirm.php\"]','Email Test Result',NULL,'always');
 /*!40000 ALTER TABLE `privileges` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3687,7 +3738,7 @@ CREATE TABLE `province_details` (
   PRIMARY KEY (`province_id`),
   UNIQUE KEY `province_name` (`province_name`),
   UNIQUE KEY `province_name_2` (`province_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3724,7 +3775,7 @@ CREATE TABLE `qc_covid19` (
   PRIMARY KEY (`qc_id`),
   UNIQUE KEY `qc_code` (`qc_code`),
   UNIQUE KEY `unique_id` (`unique_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3749,7 +3800,7 @@ CREATE TABLE `qc_covid19_tests` (
   `test_label` varchar(256) NOT NULL,
   `test_result` varchar(256) NOT NULL,
   PRIMARY KEY (`qc_test_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3831,7 +3882,7 @@ CREATE TABLE `r_covid19_qc_testkits` (
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`testkit_id`),
   UNIQUE KEY `testkit_name` (`testkit_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3857,7 +3908,7 @@ CREATE TABLE `r_covid19_results` (
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3994,7 +4045,7 @@ CREATE TABLE `r_eid_results` (
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4078,7 +4129,7 @@ CREATE TABLE `r_eid_test_reasons` (
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int(11) DEFAULT '0',
   PRIMARY KEY (`test_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4133,7 +4184,7 @@ CREATE TABLE `r_generic_sample_rejection_reasons` (
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`rejection_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4161,7 +4212,7 @@ CREATE TABLE `r_generic_sample_types` (
   PRIMARY KEY (`sample_type_id`),
   UNIQUE KEY `sample_type_code` (`sample_type_code`),
   UNIQUE KEY `sample_type_name` (`sample_type_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4189,7 +4240,7 @@ CREATE TABLE `r_generic_symptoms` (
   PRIMARY KEY (`symptom_id`),
   UNIQUE KEY `symptom_code` (`symptom_code`),
   UNIQUE KEY `symptom_name` (`symptom_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4215,7 +4266,7 @@ CREATE TABLE `r_generic_test_categories` (
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_category_id`),
   UNIQUE KEY `test_category_name` (`test_category_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4242,7 +4293,7 @@ CREATE TABLE `r_generic_test_failure_reasons` (
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   `data_sync` int(11) DEFAULT NULL,
   PRIMARY KEY (`test_failure_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4268,7 +4319,7 @@ CREATE TABLE `r_generic_test_methods` (
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_method_id`),
   UNIQUE KEY `test_method_name` (`test_method_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4296,7 +4347,7 @@ CREATE TABLE `r_generic_test_reasons` (
   PRIMARY KEY (`test_reason_id`),
   UNIQUE KEY `test_reason_code` (`test_reason_code`),
   UNIQUE KEY `test_reason` (`test_reason`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4321,7 +4372,7 @@ CREATE TABLE `r_generic_test_result_units` (
   `unit_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`unit_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4373,7 +4424,7 @@ CREATE TABLE `r_hepatitis_results` (
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4537,7 +4588,7 @@ CREATE TABLE `r_recommended_corrective_actions` (
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`recommended_corrective_action_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4613,7 +4664,7 @@ CREATE TABLE `r_tb_results` (
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4728,7 +4779,7 @@ CREATE TABLE `r_test_types` (
   `test_status` varchar(100) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4786,7 +4837,7 @@ CREATE TABLE `r_vl_results` (
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4868,7 +4919,7 @@ CREATE TABLE `r_vl_test_failure_reasons` (
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   `data_sync` int(11) DEFAULT NULL,
   PRIMARY KEY (`failure_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4926,7 +4977,7 @@ CREATE TABLE `report_to_mail` (
   PRIMARY KEY (`report_mail_id`),
   KEY `batch_id` (`batch_id`),
   CONSTRAINT `report_to_mail_ibfk_1` FOREIGN KEY (`batch_id`) REFERENCES `batch_details` (`batch_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4950,7 +5001,7 @@ CREATE TABLE `resources` (
   `module` varchar(255) NOT NULL,
   `display_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`resource_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4977,7 +5028,7 @@ CREATE TABLE `result_import_stats` (
   `imported_by` varchar(1000) DEFAULT NULL,
   `import_mode` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5071,7 +5122,7 @@ CREATE TABLE `s_app_menu` (
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `link` (`link`,`parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=186 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=187 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5080,7 +5131,7 @@ CREATE TABLE `s_app_menu` (
 
 LOCK TABLES `s_app_menu` WRITE;
 /*!40000 ALTER TABLE `s_app_menu` DISABLE KEYS */;
-INSERT INTO `s_app_menu` VALUES (1,'dashboard',NULL,'no','DASHBOARD','/dashboard/index.php',NULL,'always','fa-solid fa-chart-pie','no','allMenu dashboardMenu',0,1,'active',NULL),(2,'admin',NULL,'no','ADMIN',NULL,NULL,'always','fa-solid fa-shield','yes',NULL,0,2,'active',NULL),(3,'admin',NULL,'no','Access Control','',NULL,'always','fa-solid fa-user','yes','treeview access-control-menu',2,3,'active',NULL),(4,'admin',NULL,'no','Roles','/roles/roles.php','/roles/addRole.php,/roles/editRole.php','always','fa-solid fa-caret-right','no','allMenu roleMenu',3,4,'active',NULL),(5,'admin',NULL,'no','Users','/users/users.php','/users/addUser.php,/users/editUser.php','always','fa-solid fa-caret-right','no','allMenu userMenu',3,5,'active',NULL),(6,'admin',NULL,'no','Facilities','/facilities/facilities.php','/facilities/addFacility.php,/facilities/editFacility.php,/facilities/mapTestType.php','always','fa-solid fa-hospital','no','treeview facility-config-menu',2,6,'active',NULL),(7,'admin',NULL,'no','Monitoring',NULL,NULL,'always','fa-solid fa-bullseye','yes','treeview monitoring-menu',2,7,'active',NULL),(8,'admin',NULL,'no','System Configuration',NULL,NULL,'always','fa-solid fa-gears','yes','treeview system-config-menu',2,8,'active',NULL),(9,'admin','generic-tests','no','Other Lab Tests Config',NULL,NULL,'always','fa-solid fa-vial-circle-check','yes','treeview generic-reference-manage',2,9,'active',NULL),(10,'admin','vl','no','VL Config',NULL,NULL,'always','fa-solid fa-flask-vial','yes','treeview vl-reference-manage',2,10,'active',NULL),(11,'admin','eid','no','EID Config',NULL,NULL,'always','fa-solid fa-vial-circle-check','yes','treeview generic-reference-manage',2,11,'active',NULL),(12,'admin','covid19','no','Covid-19 Config',NULL,NULL,'always','fa-solid fa-virus-covid','yes','treeview covid19-reference-manage',2,12,'active',NULL),(13,'admin','hepatitis','no','Hepatitis Config',NULL,NULL,'always','fa-solid fa-square-h','yes','treeview hepatitis-reference-manage',2,13,'active',NULL),(14,'admin','tb','no','TB Config',NULL,NULL,'always','fa-solid fa-heart-pulse','yes','treeview tb-reference-manage',2,14,'active',NULL),(15,'admin',NULL,'no','User Activity Log','/admin/monitoring/activity-log.php',NULL,'always','fa-solid fa-file-lines','no','allMenu treeview activity-log-menu',7,15,'active',NULL),(16,'admin',NULL,'no','Audit Trail','/admin/monitoring/audit-trail.php',NULL,'always','fa-solid fa-clock-rotate-left','no','allMenu treeview audit-trail-menu',7,16,'active',NULL),(17,'admin',NULL,'no','API History','/admin/monitoring/api-sync-history.php',NULL,'always','fa-solid fa-circle-nodes','no','allMenu treeview api-sync-history-menu',7,17,'active',NULL),(18,'admin',NULL,'no','Source of Requests','/admin/monitoring/sources-of-requests.php',NULL,'always','fa-solid fa-circle-notch','no','allMenu treeview sources-of-requests-report-menu',7,18,'active',NULL),(19,'admin',NULL,'no','General Configuration','/global-config/editGlobalConfig.php','/global-config/editGlobalConfig.php','always','fa-solid fa-caret-right','no','allMenu globalConfigMenu',8,19,'active',NULL),(20,'admin',NULL,'no','Instruments','/instruments/instruments.php','/instruments/add-instrument.php,/instruments/edit-instrument.php','always','fa-solid fa-caret-right','no','allMenu importConfigMenu',8,20,'active',NULL),(21,'admin',NULL,'no','Geographical Divisions','/common/reference/geographical-divisions-details.php','/common/reference/add-geographical-divisions.php,/common/reference/edit-geographical-divisions.php','always','fa-solid fa-caret-right','no','allMenu geographicalMenu',8,21,'active',NULL),(22,'admin',NULL,'no','Implementation Partners','/common/reference/implementation-partners.php','/common/reference/add-implementation-partners.php','always','fa-solid fa-caret-right','no','allMenu common-reference-implementation-partners',8,22,'active',NULL),(23,'admin',NULL,'no','Funding Sources','/common/reference/funding-sources.php','/common/reference/add-funding-sources.php','always','fa-solid fa-caret-right','no','allMenu common-reference-funding-sources',8,23,'active',NULL),(24,'admin',NULL,'no','Sample Types','/generic-tests/configuration/sample-types/generic-sample-type.php','/generic-tests/configuration/sample-types/generic-add-sample-type.php,/generic-tests/configuration/sample-types/generic-edit-sample-type.php','always','fa-solid fa-caret-right','no','allMenu genericSampleTypeMenu',9,24,'active',NULL),(25,'admin',NULL,'no','Testing Reasons','/generic-tests/configuration/testing-reasons/generic-testing-reason.php','/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php,/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php','always','fa-solid fa-caret-right','no','allMenu genericTestingReasonMenu',9,25,'active',NULL),(26,'admin',NULL,'no','Test Failure Reasons','/generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php','/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php,/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php','always','fa-solid fa-caret-right','no','allMenu genericTestFailureReasonMenu',9,26,'active',NULL),(27,'admin',NULL,'no','Symptoms','/generic-tests/configuration/symptoms/generic-symptoms.php','/generic-tests/configuration/symptoms/generic-add-symptoms.php,/generic-tests/configuration/symptoms/generic-edit-symptoms.php','always','fa-solid fa-caret-right','no','allMenu genericSymptomsMenu',9,27,'active',NULL),(28,'admin',NULL,'no','Sample Rejection Reasons','/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php','/generic-tests/configuration/sample-types/generic-add-sample-type.php,/generic-tests/configuration/sample-rejection-reasons/generic-edit-rejection-reasons.php,/generic-tests/configuration/sample-rejection-reasons/generic-add-rejection-reasons.php','always','fa-solid fa-caret-right','no','allMenu genericSampleRejectionReasonsMenu',9,28,'active',NULL),(29,'admin',NULL,'no','Test Result Units','/generic-tests/configuration/test-result-units/generic-test-result-units.php','/generic-tests/configuration/test-result-units/generic-add-test-result-units.php,/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php','always','fa-solid fa-caret-right','no','allMenu genericTestResultUnitsMenu',9,29,'active',NULL),(30,'admin',NULL,'no','Test Methods','/generic-tests/configuration/test-methods/generic-test-methods.php','/generic-tests/configuration/test-methods/generic-add-test-methods.php,/generic-tests/configuration/test-methods/generic-edit-test-methods.php','always','fa-solid fa-caret-right','no','allMenu genericTestMethodsMenu',9,30,'active',NULL),(31,'admin',NULL,'no','Test Categories','/generic-tests/configuration/test-categories/generic-test-categories.php','/generic-tests/configuration/test-categories/generic-add-test-categories.php,/generic-tests/configuration/test-categories/generic-edit-test-categories.php','always','fa-solid fa-caret-right','no','allMenu genericTestCategoriesMenu',9,31,'active',NULL),(32,'admin',NULL,'no','Test Type Configuration','/generic-tests/configuration/test-type.php','/generic-tests/configuration/add-test-type.php,/generic-tests/configuration/edit-test-type.php,/generic-tests/configuration/clone-test-type.php','always','fa-solid fa-caret-right','no','allMenu testTypeConfigurationMenu',9,31,'active',NULL),(33,'admin',NULL,'no','ART Regimen','/vl/reference/vl-art-code-details.php','/vl/reference/add-vl-art-code-details.php,/vl/reference/edit-vl-art-code-details.php','always','fa-solid fa-caret-right','no','allMenu vl-art-code-details',10,26,'active',NULL),(34,'admin',NULL,'no','Rejection Reasons','/vl/reference/vl-sample-rejection-reasons.php','/vl/reference/add-vl-sample-rejection-reasons.php,/vl/reference/edit-vl-sample-rejection-reasons.php','always','fa-solid fa-caret-right','no','allMenu vl-sample-rejection-reasons',10,27,'active',NULL),(35,'admin',NULL,'no','Sample Type','/vl/reference/vl-sample-type.php','/vl/reference/add-vl-sample-type.php,/vl/reference/edit-vl-sample-type.php','always','fa-solid fa-caret-right','no','allMenu vl-sample-type',10,28,'active',NULL),(36,'admin',NULL,'no','Results','/vl/reference/vl-results.php','/vl/reference/add-vl-results.php,/vl/reference/edit-vl-results.php','always','fa-solid fa-caret-right','no','allMenu vl-results',10,29,'active',NULL),(37,'admin',NULL,'no','Test Reasons','/vl/reference/vl-test-reasons.php','/vl/reference/add-vl-test-reasons.php,/vl/reference/edit-vl-test-reasons.php','always','fa-solid fa-caret-right','no','allMenu vl-test-reasons',10,30,'active',NULL),(38,'admin',NULL,'no','Test Failure Reasons','/vl/reference/vl-test-failure-reasons.php','/vl/reference/add-vl-test-failure-reason.php,/vl/reference/edit-vl-test-failure-reason.php','always','fa-solid fa-caret-right','no','allMenu vl-test-failure-reasons',10,38,'active',NULL),(39,'admin',NULL,'no','Rejection Reasons','/eid/reference/eid-sample-rejection-reasons.php','/eid/reference/add-eid-sample-rejection-reasons.php,/eid/reference/edit-eid-sample-rejection-reasons.php','always','fa-solid fa-caret-right','no','allMenu eid-sample-rejection-reasons',11,38,'active',NULL),(40,'admin',NULL,'no','Sample Type','/eid/reference/eid-sample-type.php','/eid/reference/add-eid-sample-type.php,/eid/reference/edit-eid-sample-type.php','always','fa-solid fa-caret-right','no','allMenu eid-sample-type',11,39,'active',NULL),(41,'admin',NULL,'no','Test Reasons','/eid/reference/eid-test-reasons.php','/eid/reference/add-eid-test-reasons.php,/eid/reference/edit-eid-test-reasons.php','always','fa-solid fa-caret-right','no','allMenu eid-test-reasons',11,40,'active',NULL),(42,'admin',NULL,'no','Results','/eid/reference/eid-results.php','/eid/reference/add-eid-results.php,/eid/reference/edit-eid-results.php','always','fa-solid fa-caret-right','no','allMenu eid-results',11,41,'active',NULL),(43,'admin',NULL,'no','Co-morbidities','/covid-19/reference/covid19-comorbidities.php','/covid-19/reference/add-covid19-comorbidities.php,/covid-19/reference/edit-covid19-comorbidities.php','always','fa-solid fa-caret-right','no','allMenu covid19-comorbidities',12,42,'active',NULL),(44,'admin',NULL,'no','Rejection Reasons','/covid-19/reference/eid-sample-rejection-reasons.php','/covid-19/reference/add-covid-19-sample-rejection-reasons.php,/covid-19/reference/edit-covid-19-sample-rejection-reasons.php','always','fa-solid fa-caret-right','no','allMenu covid19-sample-rejection-reasons',12,43,'active',NULL),(45,'admin',NULL,'no','Sample Type','/covid-19/reference/eid-sample-type.php','/covid-19/reference/add-covid-19-sample-type.php,/covid-19/reference/edit-covid-19-sample-type.php','always','fa-solid fa-caret-right','no','allMenu covid19-sample-type',12,44,'active',NULL),(46,'admin',NULL,'no','Symptoms','/covid-19/reference/covid19-symptoms.php','/covid-19/reference/add-covid19-symptoms.php,/covid-19/reference/edit-covid19-symptoms.php','always','fa-solid fa-caret-right','no','allMenu covid19-symptoms',12,45,'active',NULL),(47,'admin',NULL,'no','Test Reasons','/covid-19/reference/covid-19-test-reasons.php','/covid-19/reference/add-covid-19-test-reasons.php,/covid-19/reference/edit-covid-19-test-reasons.php','always','fa-solid fa-caret-right','no','allMenu covid-19-test-reasons',12,46,'active',NULL),(48,'admin',NULL,'no','Results','/covid-19/reference/covid-19-results.php','/covid-19/reference/add-covid-19-results.php,/covid-19/reference/edit-covid-19-results.php','always','fa-solid fa-caret-right','no','allMenu covid19-results',12,47,'active',NULL),(49,'admin',NULL,'no','QC Test Kits','/covid-19/reference/covid19-qc-test-kits.php','/covid-19/reference/add-covid19-qc-test-kit.php,/covid-19/reference/edit-covid19-qc-test-kit.php','always','fa-solid fa-caret-right','no','allMenu covid19-qc-test-kits',12,48,'active',NULL),(50,'admin',NULL,'no','Co-morbidities','/hepatitis/reference/hepatitis-comorbidities.php','/hepatitis/reference/add-hepatitis-comorbidities.php,/hepatitis/reference/edit-hepatitis-comorbidities.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-comorbidities',13,50,'active',NULL),(51,'admin',NULL,'no','Risk Factors','/hepatitis/reference/hepatitis-risk-factors.php','/hepatitis/reference/add-hepatitis-risk-factors.php,/hepatitis/reference/edit-hepatitis-risk-factors.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-risk-factors',13,51,'active',NULL),(52,'admin',NULL,'no','Rejection Reasons','/hepatitis/reference/hepatitis-sample-rejection-reasons.php','/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php,/hepatitis/reference/edit-hepatitis-sample-rejection-reasons.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-sample-rejection-reasons',13,52,'active',NULL),(53,'admin',NULL,'no','Sample Type','/hepatitis/reference/hepatitis-sample-type.php','/hepatitis/reference/add-hepatitis-sample-type.php,/hepatitis/reference/edit-hepatitis-sample-type.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-sample-type',13,53,'active',NULL),(54,'admin',NULL,'no','Results','/hepatitis/reference/hepatitis-results.php','/hepatitis/reference/add-hepatitis-results.php,/hepatitis/reference/edit-hepatitis-results.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-results',13,54,'active',NULL),(55,'admin',NULL,'no','Test Reasons','/hepatitis/reference/hepatitis-test-reasons.php','/hepatitis/reference/add-hepatitis-test-reasons.php,/hepatitis/reference/edit-hepatitis-test-reasons.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-test-reasons',13,55,'active',NULL),(56,'admin',NULL,'no','Rejection Reasons','/tb/reference/tb-sample-rejection-reasons.php','/tb/reference/add-tb-sample-rejection-reason.php','always','fa-solid fa-caret-right','no','allMenu tb-sample-rejection-reasons',14,56,'active',NULL),(57,'admin',NULL,'no','Sample Type','/tb/reference/tb-sample-type.php','/tb/reference/add-tb-sample-type.php,/tb/reference/edit-tb-sample-type.php','always','fa-solid fa-caret-right','no','allMenu tb-sample-type',14,57,'active',NULL),(58,'admin',NULL,'no','Test Reasons','/tb/reference/tb-test-reasons.php','/tb/reference/add-tb-test-reasons.php,/tb/reference/edit-tb-test-reasons.php','always','fa-solid fa-caret-right','no','allMenu tb-test-reasons',14,58,'active',NULL),(59,'admin',NULL,'no','Results','/tb/reference/tb-results.php','/tb/reference/add-tb-results.php','always','fa-solid fa-caret-right','no','allMenu tb-results',14,59,'active',NULL),(60,'generic-tests',NULL,'yes','OTHER LAB TESTS',NULL,NULL,'always',NULL,'yes','header',0,8,'active',NULL),(61,'generic-tests',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview allMenu generic-test-request-menu',60,61,'active',NULL),(62,'generic-tests',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview allMenu generic-test-results-menu',60,62,'active',NULL),(63,'generic-tests',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview allMenu generic-test-request-menu',60,63,'active',NULL),(64,'vl',NULL,'yes','HIV VIRAL LOAD',NULL,NULL,'always',NULL,'yes','header',0,3,'active',NULL),(65,'eid',NULL,'yes','EARLY INFANT DIAGNOSIS (EID)',NULL,NULL,'always',NULL,'yes','header',0,4,'active',NULL),(66,'covid19',NULL,'yes','COVID-19',NULL,NULL,'always',NULL,'yes','header',0,5,'active',NULL),(67,'hepatitis',NULL,'yes','HEPATITIS',NULL,NULL,'always',NULL,'yes','header',0,6,'active',NULL),(68,'tb',NULL,'yes','TUBERCULOSIS',NULL,NULL,'always',NULL,'yes','header',0,7,'active',NULL),(69,'vl',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview request',64,69,'active',NULL),(70,'vl',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview test',64,70,'active',NULL),(71,'vl',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview program',64,71,'active',NULL),(72,'covid19',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview covid19Request',66,72,'active',NULL),(73,'covid19',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview covid19Results',66,73,'active',NULL),(74,'covid19',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview covid19ProgramMenu',66,74,'active',NULL),(75,'eid',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview eidRequest',65,75,'active',NULL),(76,'eid',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview eidResults',65,76,'active',NULL),(77,'eid',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview eidProgramMenu',65,77,'active',NULL),(78,'hepatitis',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview hepatitisRequest',67,78,'active',NULL),(79,'hepatitis',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview hepatitisResults',67,79,'active',NULL),(80,'hepatitis',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview hepatitisProgramMenu',67,80,'active',NULL),(81,'tb',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview tbRequest',68,81,'active',NULL),(82,'tb',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview tbResults',68,82,'active',NULL),(83,'tb',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview tbProgramMenu',68,83,'active',NULL),(84,'generic-tests',NULL,'no','View Test Requests','/generic-tests/requests/view-requests.php','/generic-tests/requests/edit-request.php','always','fa-solid fa-caret-right','no','allMenu genericRequestMenu',61,84,'active',NULL),(85,'generic-tests',NULL,'no','Add New Request','/generic-tests/requests/add-request.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addGenericRequestMenu',61,85,'active',NULL),(86,'generic-tests',NULL,'no','Add Samples from Manifest','/generic-tests/requests/add-samples-from-manifest.php','/generic-tests/requests/edit-request.php','lis','fa-solid fa-caret-right','no','allMenu addGenericSamplesFromManifestMenu',61,86,'active',NULL),(87,'generic-tests',NULL,'no','Manage Batch','/batch/batches.php?type=generic-tests','/batch/add-batch.php?type=generic-tests,/batch/edit-batch.php?type=generic-tests,/batch/add-batch-position.php?type=generic-tests,/batch/edit-batch-position.php?type=generic-tests','always','fa-solid fa-caret-right','no','allMenu batchGenericCodeMenu',61,87,'active',NULL),(88,'generic-tests',NULL,'no','Lab Test Manifest','/specimen-referral-manifest/view-manifests.php?t=generic-tests','/specimen-referral-manifest/add-manifest.php?t=generic-tests,/specimen-referral-manifest/edit-manifest.php?t=generic-tests,/specimen-referral-manifest/move-manifest.php?t=generic-tests','sts','fa-solid fa-caret-right','no','allMenu specimenGenericReferralManifestListMenu',61,88,'active',NULL),(89,'generic-tests',NULL,'no','Enter Result Manually','/generic-tests/results/generic-test-results.php','/generic-tests/results/update-generic-test-result.php','always','fa-solid fa-caret-right','no','allMenu genericTestResultMenu',62,88,'active',NULL),(90,'generic-tests',NULL,'no','Failed/Hold Samples','/generic-tests/results/generic-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericFailedResultMenu',62,88,'active',NULL),(91,'generic-tests',NULL,'no','Manage Results Status','/generic-tests/results/generic-result-approval.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericResultApprovalMenu',62,88,'active',NULL),(92,'generic-tests',NULL,'no','Sample Status Report','/generic-tests/program-management/generic-sample-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericStatusReportMenu',63,88,'active',NULL),(93,'generic-tests',NULL,'no','Export Results','/generic-tests/program-management/generic-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericExportMenu',63,89,'active',NULL),(94,'generic-tests',NULL,'no','Print Result','/generic-tests/results/generic-print-result.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericPrintResultMenu',63,90,'active',NULL),(95,'generic-tests',NULL,'no','Sample Rejection Report','/generic-tests/program-management/sample-rejection-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericSampleRejectionReport',63,91,'active',NULL),(96,'vl',NULL,'no','View Test Requests','/vl/requests/vl-requests.php','/vl/requests/editVlRequest.php','always','fa-solid fa-caret-right','no','allMenu vlRequestMenu',69,92,'active',NULL),(97,'vl',NULL,'no','Add New Request','/vl/requests/addVlRequest.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addVlRequestMenu',69,93,'active',NULL),(98,'vl',NULL,'no','Add Samples from Manifest','/vl/requests/addSamplesFromManifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu addSamplesFromManifestMenu',69,94,'active',NULL),(99,'vl',NULL,'no','Manage Batch','/batch/batches.php?type=vl','/batch/add-batch.php?type=vl,/batch/edit-batch.php?type=vl,/batch/edit-batch-position.php?type=vl','always','fa-solid fa-caret-right','no','allMenu batchCodeMenu',69,95,'active',NULL),(100,'vl',NULL,'no','VL Manifest','/specimen-referral-manifest/view-manifests.php?t=vl','/specimen-referral-manifest/add-manifest.php?t=vl,/specimen-referral-manifest/edit-manifest.php?t=vl,/specimen-referral-manifest/move-manifest.php?t=vl','sts','fa-solid fa-caret-right','no','allMenu specimenReferralManifestListVLMenu',69,96,'active',NULL),(101,'vl',NULL,'no','Import Result From File','/import-result/import-file.php?t=vl','/import-result/imported-results.php?t=vl,/import-result/importedStatistics.php?t=vl','always','fa-solid fa-caret-right','no','allMenu importResultMenu',70,97,'active',NULL),(102,'vl',NULL,'no','Enter Result Manually','/vl/results/vlTestResult.php','/vl/results/updateVlTestResult.php','always','fa-solid fa-caret-right','no','allMenu vlTestResultMenu',70,98,'active',NULL),(103,'vl',NULL,'no','Failed/Hold Samples','/vl/results/vl-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlFailedResultMenu',70,99,'active',NULL),(104,'vl',NULL,'no','Manage Results Status','/vl/results/vlResultApproval.php',NULL,'always','fa-solid fa-caret-right','no','allMenu batchCodeMenu',70,100,'active',NULL),(105,'vl',NULL,'no','Sample Status Report','/vl/program-management/vl-sample-status.php','/vl/requests/editVlRequest.php','always','fa-solid fa-caret-right','no','allMenu missingResultMenu',71,100,'active',NULL),(106,'vl',NULL,'no','Control Report','/vl/program-management/vlControlReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMenu',71,101,'active',NULL),(107,'vl',NULL,'no','Export Results','/vl/program-management/vl-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMenu',71,102,'active',NULL),(108,'vl',NULL,'no','Print Result','/vl/results/vlPrintResult.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlPrintResultMenu',71,103,'active',NULL),(109,'vl',NULL,'no','Clinic Reports','/vl/program-management/highViralLoad.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlHighMenu',71,104,'active',NULL),(110,'vl',NULL,'no','VL Lab Weekly Report','/vl/program-management/vlWeeklyReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlWeeklyReport',71,105,'active',NULL),(111,'vl',NULL,'no','Sample Rejection Report','/vl/program-management/sampleRejectionReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu sampleRejectionReport',71,106,'active',NULL),(112,'vl',NULL,'no','Sample Monitoring Report','/vl/program-management/vlMonitoringReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlMonitoringReport',71,107,'active',NULL),(113,'vl',NULL,'no','VL Testing Target Report','/vl/program-management/vlTestingTargetReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlMonthlyThresholdReport',71,108,'active',NULL),(114,'eid',NULL,'no','View Test Requests','/eid/requests/eid-requests.php','/eid/requests/eid-edit-request.php','always','fa-solid fa-caret-right','no','allMenu eidRequestMenu',75,109,'active',NULL),(115,'eid',NULL,'no','Add New Request','/eid/requests/eid-add-request.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addEidRequestMenu',75,110,'active',NULL),(116,'eid',NULL,'no','Add Samples from Manifest','/eid/requests/addSamplesFromManifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu addSamplesFromManifestEidMenu',75,111,'active',NULL),(117,'eid',NULL,'no','Manage Batch','/batch/batches.php?type=eid','/batch/add-batch.php?type=eid,/batch/edit-batch.php?type=eid,/batch/add-batch-position.php?type=eid,/batch/edit-batch-position.php?type=eid','always','fa-solid fa-caret-right','no','allMenu eidBatchCodeMenu',75,112,'active',NULL),(118,'eid',NULL,'no','EID Manifest','/specimen-referral-manifest/view-manifests.php?t=eid','/specimen-referral-manifest/add-manifest.php?t=eid,/specimen-referral-manifest/edit-manifest.php?t=eid,/specimen-referral-manifest/move-manifest.php?t=eid','sts','fa-solid fa-caret-right','no','allMenu specimenReferralManifestListEIDMenu',75,113,'active',NULL),(119,'eid',NULL,'no','Import Result From File','/import-result/import-file.php?t=eid','/import-result/imported-results.php?t=eid,/import-result/importedStatistics.php?t=eid','always','fa-solid fa-caret-right','no','allMenu eidImportResultMenu',76,114,'active',NULL),(120,'eid',NULL,'no','Enter Result Manually','/eid/results/eid-manual-results.php','/eid/results/eid-update-result.php','always','fa-solid fa-caret-right','no','allMenu eidResultsMenu',76,115,'active',NULL),(121,'eid',NULL,'no','Failed/Hold Samples','/eid/results/eid-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidFailedResultsMenu',76,116,'active',NULL),(122,'eid',NULL,'no','Manage Results Status','/eid/results/eid-result-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidResultStatus',76,117,'active',NULL),(123,'eid',NULL,'no','Sample Status Report','/eid/management/eid-sample-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidSampleStatus',77,118,'active',NULL),(124,'eid',NULL,'no','Export Results','/eid/management/eid-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidExportResult',77,119,'active',NULL),(125,'eid',NULL,'no','Print Result','/eid/results/eid-print-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidPrintResults',77,120,'active',NULL),(126,'eid',NULL,'no','Sample Rejection Report','/eid/management/eid-sample-rejection-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidSampleRejectionReport',77,121,'active',NULL),(127,'eid',NULL,'no','Clinic Report','/eid/management/eid-clinic-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidClinicReport',77,122,'active',NULL),(128,'eid',NULL,'no','EID Testing Target Report','/eid/management/eidTestingTargetReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidMonthlyThresholdReport',77,123,'active',NULL),(129,'covid19',NULL,'no','View Test Requests','/covid-19/requests/covid-19-requests.php','/covid-19/requests/covid-19-edit-request.php,/covid-19/requests/covid-19-bulk-import-request.php,/covid-19/requests/covid-19-quick-add.php','always','fa-solid fa-caret-right','no','allMenu covid19RequestMenu',72,124,'active',NULL),(130,'covid19',NULL,'no','Add New Request','/covid-19/requests/covid-19-add-request.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addCovid19RequestMenu',72,125,'active',NULL),(131,'covid19',NULL,'no','Add Samples from Manifest','/covid-19/requests/addSamplesFromManifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu addSamplesFromManifestCovid19Menu',72,126,'active',NULL),(132,'covid19',NULL,'no','Manage Batch','/batch/batches.php?type=covid19','/batch/add-batch.php?type=covid19,/batch/edit-batch.php?type=covid19,/batch/add-batch-position.php?type=covid19,/batch/edit-batch-position.php?type=covid19','always','fa-solid fa-caret-right','no','allMenu covid19BatchCodeMenu',72,127,'active',NULL),(133,'covid19',NULL,'no','Covid-19 Manifest','/specimen-referral-manifest/view-manifests.php?t=covid19','/specimen-referral-manifest/add-manifest.php?t=covid19,/specimen-referral-manifest/edit-manifest.php?t=covid19,/specimen-referral-manifest/move-manifest.php?t=covid19','sts','fa-solid fa-caret-right','no','allMenu specimenReferralManifestListC19Menu',72,128,'active',NULL),(134,'covid19',NULL,'no','Import Result From File','/import-result/import-file.php?t=covid19','/import-result/imported-results.php?t=covid19,/import-result/importedStatistics.php?t=covid19','always','fa-solid fa-caret-right','no','allMenu covid19ImportResultMenu',73,129,'active',NULL),(135,'covid19',NULL,'no','Enter Result Manually','/covid-19/results/covid-19-manual-results.php','/covid-19/batch/covid-19-update-result.php','always','fa-solid fa-caret-right','no','allMenu covid19ResultsMenu',73,130,'active',NULL),(136,'covid19',NULL,'no','Failed/Hold Samples','/covid-19/results/covid-19-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19FailedResultsMenu',73,131,'active',NULL),(137,'covid19',NULL,'no','Confirmation Manifest','/covid-19/results/covid-19-confirmation-manifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu covid19ResultsConfirmationMenu',73,132,'active',NULL),(138,'covid19',NULL,'no','Record Confirmatory Tests','/covid-19/results/can-record-confirmatory-tests.php',NULL,'always','fa-solid fa-caret-right','no','allMenu canRecordConfirmatoryTestsCovid19Menu',73,133,'active',NULL),(139,'covid19',NULL,'no','Manage Results Status','/covid-19/results/covid-19-result-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19ResultStatus',73,134,'active',NULL),(140,'covid19',NULL,'no','Covid-19 QC Data','/covid-19/results/covid-19-qc-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19QcDataMenu',73,135,'active',NULL),(141,'covid19',NULL,'no','Sample Status Report','/covid-19/management/covid-19-sample-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19SampleStatus',74,136,'active',NULL),(142,'covid19',NULL,'no','Export Results','/covid-19/management/covid-19-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19ExportResult',74,137,'active',NULL),(143,'covid19',NULL,'no','Print Result','/covid-19/results/covid-19-print-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19PrintResults',74,138,'active',NULL),(144,'covid19',NULL,'no','Sample Rejection Report','/covid-19/management/covid-19-sample-rejection-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19SampleRejectionReport',74,139,'active',NULL),(145,'covid19',NULL,'no','Clinic Reports','/covid-19/management/covid-19-clinic-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19ClinicReportMenu',74,140,'active',NULL),(146,'covid19',NULL,'no','COVID-19 Testing Target Report','/covid-19/management/covid19TestingTargetReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19MonthlyThresholdReport',74,141,'active',NULL),(147,'hepatitis',NULL,'no','View Test Requests','/hepatitis/requests/hepatitis-requests.php','/hepatitis/requests/hepatitis-edit-request.php','always','fa-solid fa-caret-right','no','allMenu hepatitisRequestMenu',78,142,'active',NULL),(148,'hepatitis',NULL,'no','Add New Request','/hepatitis/requests/hepatitis-add-request.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addHepatitisRequestMenu',78,143,'active',NULL),(149,'hepatitis',NULL,'no','Add Samples from Manifest','/hepatitis/requests/add-samples-from-manifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu addSamplesFromManifestHepatitisMenu',78,144,'active',NULL),(150,'hepatitis',NULL,'no','Manage Batch','/batch/batches.php?type=hepatitis','/batch/add-batch.php?type=hepatitis,/batch/edit-batch.php?type=hepatitis,/batch/add-batch-position.php?type=hepatitis,/batch/edit-batch-position.php?type=hepatitis','always','fa-solid fa-caret-right','no','allMenu hepatitisBatchCodeMenu',78,145,'active',NULL),(151,'hepatitis',NULL,'no','Hepatitis Manifest','/specimen-referral-manifest/view-manifests.php?t=hepatitis','/specimen-referral-manifest/add-manifest.php?t=hepatitis,/specimen-referral-manifest/edit-manifest.php?t=hepatitis,/specimen-referral-manifest/move-manifest.php?t=hepatitis','sts','fa-solid fa-caret-right','no','allMenu specimenReferralManifestListHepMenu',78,146,'active',NULL),(152,'hepatitis',NULL,'no','Import Result From File','/import-result/import-file.php?t=hepatitis','/import-result/imported-results.php?t=hepatitis,/import-result/importedStatistics.php?t=hepatitis','always','fa-solid fa-caret-right','no','allMenu hepatitisImportResultMenu',79,146,'active',NULL),(153,'hepatitis',NULL,'no','Enter Result Manually','/hepatitis/results/hepatitis-manual-results.php','/hepatitis/results/hepatitis-update-result.php','always','fa-solid fa-caret-right','no','allMenu hepatitisResultsMenu',79,147,'active',NULL),(154,'hepatitis',NULL,'no','Failed/Hold Samples','/hepatitis/results/hepatitis-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisFailedResultsMenu',79,148,'active',NULL),(155,'hepatitis',NULL,'no','Manage Results Status','/hepatitis/results/hepatitis-result-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisResultStatus',79,149,'active',NULL),(156,'hepatitis',NULL,'no','Sample Status Report','/hepatitis/management/hepatitis-sample-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisSampleStatus',80,150,'active',NULL),(157,'hepatitis',NULL,'no','Export Results','/hepatitis/management/hepatitis-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisExportResult',80,151,'active',NULL),(158,'hepatitis',NULL,'no','Print Result','/hepatitis/results/hepatitis-print-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisPrintResults',80,152,'active',NULL),(159,'hepatitis',NULL,'no','Sample Rejection Report','/hepatitis/management/hepatitis-sample-rejection-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisSampleRejectionReport',80,153,'active',NULL),(160,'hepatitis',NULL,'no','Clinic Reports','/hepatitis/management/hepatitis-clinic-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisClinicReportMenu',80,154,'active',NULL),(161,'hepatitis',NULL,'no','Hepatitis Testing Target Report','/hepatitis/management/hepatitis-testing-target-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisMonthlyThresholdReport',80,155,'active',NULL),(162,'tb',NULL,'no','View Test Requests','/tb/requests/tb-requests.php','/tb/requests/tb-edit-request.php','always','fa-solid fa-caret-right','no','allMenu tbRequestMenu',81,156,'active',NULL),(163,'tb',NULL,'no','Add New Request','/tb/requests/tb-add-request.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addTbRequestMenu',81,157,'active',NULL),(164,'tb',NULL,'no','Add Samples from Manifest','/tb/requests/addSamplesFromManifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu addSamplesFromManifestTbMenu',81,158,'active',NULL),(165,'tb',NULL,'no','Manage Batch','/batch/batches.php?type=tb','/batch/add-batch.php?type=tb,/batch/edit-batch.php?type=tb,/batch/add-batch-position.php?type=tb,/batch/edit-batch-position.php?type=tb','always','fa-solid fa-caret-right','no','allMenu tbBatchCodeMenu',81,159,'active',NULL),(166,'tb',NULL,'no','TB Manifest','/specimen-referral-manifest/view-manifests.php?t=tb','/specimen-referral-manifest/add-manifest.php?t=tb,/specimen-referral-manifest/edit-manifest.php?t=tb,/specimen-referral-manifest/move-manifest.php?t=tb','sts','fa-solid fa-caret-right','no','allMenu specimenReferralManifestListTbMenu',81,160,'active',NULL),(167,'tb',NULL,'no','Import Result From File','/import-result/import-file.php?t=tb','/import-result/imported-results.php?t=tb,/import-result/importedStatistics.php?t=tb','always','fa-solid fa-caret-right','no','allMenu tbImportResultMenu',82,161,'active',NULL),(168,'tb',NULL,'no','Enter Result Manually','/tb/results/tb-manual-results.php','/tb/results/tb-update-result.php','always','fa-solid fa-caret-right','no','allMenu tbResultsMenu',82,162,'active',NULL),(169,'tb',NULL,'no','Failed/Hold Samples','/tb/results/tb-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbFailedResultsMenu',82,163,'active',NULL),(170,'tb',NULL,'no','Manage Results Status','/tb/results/tb-result-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbResultStatus',82,164,'active',NULL),(171,'tb',NULL,'no','Sample Status Report','/tb/management/tb-sample-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbSampleStatus',83,165,'active',NULL),(172,'tb',NULL,'no','Print Result','/tb/results/tb-print-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbPrintResults',83,166,'active',NULL),(173,'tb',NULL,'no','Export Results','/tb/management/tb-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbExportResult',83,167,'active',NULL),(174,'tb',NULL,'no','Sample Rejection Report','/tb/management/tb-sample-rejection-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbSampleRejectionReport',83,168,'active',NULL),(175,'tb',NULL,'no','Clinic Reports','/tb/management/tb-clinic-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbClinicReport',83,169,'active',NULL),(176,'admin',NULL,'no','Lab Sync Status','/admin/monitoring/sync-status.php',NULL,'always','fa-solid fa-traffic-light','no','allMenu treeview api-sync-status-menu',7,18,'active',NULL),(177,'admin',NULL,'no','Recommended Corrective Actions','/vl/reference/vl-recommended-corrective-actions.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vl-recommended-corrective-actions',10,39,'active','2023-08-02 14:27:09'),(178,'admin',NULL,'no','Recommended Corrective Actions','/common/reference/recommended-corrective-actions.php?testType=eid',NULL,'always','fa-solid fa-caret-right','no','allMenu common-recommended-corrective-actions\r\n',11,40,'active','2023-08-26 01:03:01'),(179,'admin',NULL,'no','Recommended Corrective Actions','/common/reference/recommended-corrective-actions.php?testType=eid',NULL,'always','fa-solid fa-caret-right','no','allMenu common-recommended-corrective-actions\r\n',12,41,'active','2023-08-26 01:03:01'),(180,'generic-tests',NULL,'no','Send Result Mail','/generic-tests/mail/mail-generic-tests-results.php','/generic-tests/mail/generic-tests-result-mail-confirm.php','always','fa-solid fa-caret-right','no','allMenu genericTestResultMenu',62,88,'active','2023-10-16 17:03:43'),(181,'vl',NULL,'no','E-mail Test Result','/vl/results/email-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMailMenu',70,101,'active','2023-11-07 12:38:20'),(182,'eid',NULL,'no','E-mail Test Result','/eid/results/email-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMailMenu',76,172,'active','2023-12-26 07:36:01'),(183,'covid19',NULL,'no','E-mail Test Result','/covid-19/results/email-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMailMenu',73,173,'active','2023-12-26 07:36:01'),(184,'hepatitis',NULL,'no','E-mail Test Result','/hepatitis/results/email-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMailMenu',79,175,'active','2023-12-26 07:36:01'),(185,'tb',NULL,'no','E-mail Test Result','/tb/results/email-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMailMenu',82,176,'active','2023-12-26 07:36:01');
+INSERT INTO `s_app_menu` VALUES (1,'dashboard',NULL,'no','DASHBOARD','/dashboard/index.php',NULL,'always','fa-solid fa-chart-pie','no','allMenu dashboardMenu',0,1,'active',NULL),(2,'admin',NULL,'no','ADMIN',NULL,NULL,'always','fa-solid fa-shield','yes',NULL,0,2,'active',NULL),(3,'admin',NULL,'no','Access Control','',NULL,'always','fa-solid fa-user','yes','treeview access-control-menu',2,3,'active',NULL),(4,'admin',NULL,'no','Roles','/roles/roles.php','/roles/addRole.php,/roles/editRole.php','always','fa-solid fa-caret-right','no','allMenu roleMenu',3,4,'active',NULL),(5,'admin',NULL,'no','Users','/users/users.php','/users/addUser.php,/users/editUser.php','always','fa-solid fa-caret-right','no','allMenu userMenu',3,5,'active',NULL),(6,'admin',NULL,'no','Facilities','/facilities/facilities.php','/facilities/addFacility.php,/facilities/editFacility.php,/facilities/mapTestType.php','always','fa-solid fa-hospital','no','treeview facility-config-menu',2,6,'active',NULL),(7,'admin',NULL,'no','Monitoring',NULL,NULL,'always','fa-solid fa-bullseye','yes','treeview monitoring-menu',2,7,'active',NULL),(8,'admin',NULL,'no','System Configuration',NULL,NULL,'always','fa-solid fa-gears','yes','treeview system-config-menu',2,8,'active',NULL),(9,'admin','generic-tests','no','Other Lab Tests Config',NULL,NULL,'always','fa-solid fa-vial-circle-check','yes','treeview generic-reference-manage',2,9,'active',NULL),(10,'admin','vl','no','VL Config',NULL,NULL,'always','fa-solid fa-flask-vial','yes','treeview vl-reference-manage',2,10,'active',NULL),(11,'admin','eid','no','EID Config',NULL,NULL,'always','fa-solid fa-vial-circle-check','yes','treeview generic-reference-manage',2,11,'active',NULL),(12,'admin','covid19','no','Covid-19 Config',NULL,NULL,'always','fa-solid fa-virus-covid','yes','treeview covid19-reference-manage',2,12,'active',NULL),(13,'admin','hepatitis','no','Hepatitis Config',NULL,NULL,'always','fa-solid fa-square-h','yes','treeview hepatitis-reference-manage',2,13,'active',NULL),(14,'admin','tb','no','TB Config',NULL,NULL,'always','fa-solid fa-heart-pulse','yes','treeview tb-reference-manage',2,14,'active',NULL),(15,'admin',NULL,'no','User Activity Log','/admin/monitoring/activity-log.php',NULL,'always','fa-solid fa-file-lines','no','allMenu treeview activity-log-menu',7,15,'active',NULL),(16,'admin',NULL,'no','Audit Trail','/admin/monitoring/audit-trail.php',NULL,'always','fa-solid fa-clock-rotate-left','no','allMenu treeview audit-trail-menu',7,16,'active',NULL),(17,'admin',NULL,'no','API History','/admin/monitoring/api-sync-history.php',NULL,'always','fa-solid fa-circle-nodes','no','allMenu treeview api-sync-history-menu',7,17,'active',NULL),(18,'admin',NULL,'no','Source of Requests','/admin/monitoring/sources-of-requests.php',NULL,'always','fa-solid fa-circle-notch','no','allMenu treeview sources-of-requests-report-menu',7,18,'active',NULL),(19,'admin',NULL,'no','General Configuration','/global-config/editGlobalConfig.php','/global-config/editGlobalConfig.php','always','fa-solid fa-caret-right','no','allMenu globalConfigMenu',8,19,'active',NULL),(20,'admin',NULL,'no','Instruments','/instruments/instruments.php','/instruments/add-instrument.php,/instruments/edit-instrument.php','always','fa-solid fa-caret-right','no','allMenu importConfigMenu',8,20,'active',NULL),(21,'admin',NULL,'no','Geographical Divisions','/common/reference/geographical-divisions-details.php','/common/reference/add-geographical-divisions.php,/common/reference/edit-geographical-divisions.php','always','fa-solid fa-caret-right','no','allMenu geographicalMenu',8,21,'active',NULL),(22,'admin',NULL,'no','Implementation Partners','/common/reference/implementation-partners.php','/common/reference/add-implementation-partners.php','always','fa-solid fa-caret-right','no','allMenu common-reference-implementation-partners',8,22,'active',NULL),(23,'admin',NULL,'no','Funding Sources','/common/reference/funding-sources.php','/common/reference/add-funding-sources.php','always','fa-solid fa-caret-right','no','allMenu common-reference-funding-sources',8,23,'active',NULL),(24,'admin',NULL,'no','Sample Types','/generic-tests/configuration/sample-types/generic-sample-type.php','/generic-tests/configuration/sample-types/generic-add-sample-type.php,/generic-tests/configuration/sample-types/generic-edit-sample-type.php','always','fa-solid fa-caret-right','no','allMenu genericSampleTypeMenu',9,24,'active',NULL),(25,'admin',NULL,'no','Testing Reasons','/generic-tests/configuration/testing-reasons/generic-testing-reason.php','/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php,/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php','always','fa-solid fa-caret-right','no','allMenu genericTestingReasonMenu',9,25,'active',NULL),(26,'admin',NULL,'no','Test Failure Reasons','/generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php','/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php,/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php','always','fa-solid fa-caret-right','no','allMenu genericTestFailureReasonMenu',9,26,'active',NULL),(27,'admin',NULL,'no','Symptoms','/generic-tests/configuration/symptoms/generic-symptoms.php','/generic-tests/configuration/symptoms/generic-add-symptoms.php,/generic-tests/configuration/symptoms/generic-edit-symptoms.php','always','fa-solid fa-caret-right','no','allMenu genericSymptomsMenu',9,27,'active',NULL),(28,'admin',NULL,'no','Sample Rejection Reasons','/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php','/generic-tests/configuration/sample-types/generic-add-sample-type.php,/generic-tests/configuration/sample-rejection-reasons/generic-edit-rejection-reasons.php,/generic-tests/configuration/sample-rejection-reasons/generic-add-rejection-reasons.php','always','fa-solid fa-caret-right','no','allMenu genericSampleRejectionReasonsMenu',9,28,'active',NULL),(29,'admin',NULL,'no','Test Result Units','/generic-tests/configuration/test-result-units/generic-test-result-units.php','/generic-tests/configuration/test-result-units/generic-add-test-result-units.php,/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php','always','fa-solid fa-caret-right','no','allMenu genericTestResultUnitsMenu',9,29,'active',NULL),(30,'admin',NULL,'no','Test Methods','/generic-tests/configuration/test-methods/generic-test-methods.php','/generic-tests/configuration/test-methods/generic-add-test-methods.php,/generic-tests/configuration/test-methods/generic-edit-test-methods.php','always','fa-solid fa-caret-right','no','allMenu genericTestMethodsMenu',9,30,'active',NULL),(31,'admin',NULL,'no','Test Categories','/generic-tests/configuration/test-categories/generic-test-categories.php','/generic-tests/configuration/test-categories/generic-add-test-categories.php,/generic-tests/configuration/test-categories/generic-edit-test-categories.php','always','fa-solid fa-caret-right','no','allMenu genericTestCategoriesMenu',9,31,'active',NULL),(32,'admin',NULL,'no','Test Type Configuration','/generic-tests/configuration/test-type.php','/generic-tests/configuration/add-test-type.php,/generic-tests/configuration/edit-test-type.php,/generic-tests/configuration/clone-test-type.php','always','fa-solid fa-caret-right','no','allMenu testTypeConfigurationMenu',9,31,'active',NULL),(33,'admin',NULL,'no','ART Regimen','/vl/reference/vl-art-code-details.php','/vl/reference/add-vl-art-code-details.php,/vl/reference/edit-vl-art-code-details.php','always','fa-solid fa-caret-right','no','allMenu vl-art-code-details',10,26,'active',NULL),(34,'admin',NULL,'no','Rejection Reasons','/vl/reference/vl-sample-rejection-reasons.php','/vl/reference/add-vl-sample-rejection-reasons.php,/vl/reference/edit-vl-sample-rejection-reasons.php','always','fa-solid fa-caret-right','no','allMenu vl-sample-rejection-reasons',10,27,'active',NULL),(35,'admin',NULL,'no','Sample Type','/vl/reference/vl-sample-type.php','/vl/reference/add-vl-sample-type.php,/vl/reference/edit-vl-sample-type.php','always','fa-solid fa-caret-right','no','allMenu vl-sample-type',10,28,'active',NULL),(36,'admin',NULL,'no','Results','/vl/reference/vl-results.php','/vl/reference/add-vl-results.php,/vl/reference/edit-vl-results.php','always','fa-solid fa-caret-right','no','allMenu vl-results',10,29,'active',NULL),(37,'admin',NULL,'no','Test Reasons','/vl/reference/vl-test-reasons.php','/vl/reference/add-vl-test-reasons.php,/vl/reference/edit-vl-test-reasons.php','always','fa-solid fa-caret-right','no','allMenu vl-test-reasons',10,30,'active',NULL),(38,'admin',NULL,'no','Test Failure Reasons','/vl/reference/vl-test-failure-reasons.php','/vl/reference/add-vl-test-failure-reason.php,/vl/reference/edit-vl-test-failure-reason.php','always','fa-solid fa-caret-right','no','allMenu vl-test-failure-reasons',10,38,'active',NULL),(39,'admin',NULL,'no','Rejection Reasons','/eid/reference/eid-sample-rejection-reasons.php','/eid/reference/add-eid-sample-rejection-reasons.php,/eid/reference/edit-eid-sample-rejection-reasons.php','always','fa-solid fa-caret-right','no','allMenu eid-sample-rejection-reasons',11,38,'active',NULL),(40,'admin',NULL,'no','Sample Type','/eid/reference/eid-sample-type.php','/eid/reference/add-eid-sample-type.php,/eid/reference/edit-eid-sample-type.php','always','fa-solid fa-caret-right','no','allMenu eid-sample-type',11,39,'active',NULL),(41,'admin',NULL,'no','Test Reasons','/eid/reference/eid-test-reasons.php','/eid/reference/add-eid-test-reasons.php,/eid/reference/edit-eid-test-reasons.php','always','fa-solid fa-caret-right','no','allMenu eid-test-reasons',11,40,'active',NULL),(42,'admin',NULL,'no','Results','/eid/reference/eid-results.php','/eid/reference/add-eid-results.php,/eid/reference/edit-eid-results.php','always','fa-solid fa-caret-right','no','allMenu eid-results',11,41,'active',NULL),(43,'admin',NULL,'no','Co-morbidities','/covid-19/reference/covid19-comorbidities.php','/covid-19/reference/add-covid19-comorbidities.php,/covid-19/reference/edit-covid19-comorbidities.php','always','fa-solid fa-caret-right','no','allMenu covid19-comorbidities',12,42,'active',NULL),(44,'admin',NULL,'no','Rejection Reasons','/covid-19/reference/eid-sample-rejection-reasons.php','/covid-19/reference/add-covid-19-sample-rejection-reasons.php,/covid-19/reference/edit-covid-19-sample-rejection-reasons.php','always','fa-solid fa-caret-right','no','allMenu covid19-sample-rejection-reasons',12,43,'active',NULL),(45,'admin',NULL,'no','Sample Type','/covid-19/reference/eid-sample-type.php','/covid-19/reference/add-covid-19-sample-type.php,/covid-19/reference/edit-covid-19-sample-type.php','always','fa-solid fa-caret-right','no','allMenu covid19-sample-type',12,44,'active',NULL),(46,'admin',NULL,'no','Symptoms','/covid-19/reference/covid19-symptoms.php','/covid-19/reference/add-covid19-symptoms.php,/covid-19/reference/edit-covid19-symptoms.php','always','fa-solid fa-caret-right','no','allMenu covid19-symptoms',12,45,'active',NULL),(47,'admin',NULL,'no','Test Reasons','/covid-19/reference/covid-19-test-reasons.php','/covid-19/reference/add-covid-19-test-reasons.php,/covid-19/reference/edit-covid-19-test-reasons.php','always','fa-solid fa-caret-right','no','allMenu covid-19-test-reasons',12,46,'active',NULL),(48,'admin',NULL,'no','Results','/covid-19/reference/covid-19-results.php','/covid-19/reference/add-covid-19-results.php,/covid-19/reference/edit-covid-19-results.php','always','fa-solid fa-caret-right','no','allMenu covid19-results',12,47,'active',NULL),(49,'admin',NULL,'no','QC Test Kits','/covid-19/reference/covid19-qc-test-kits.php','/covid-19/reference/add-covid19-qc-test-kit.php,/covid-19/reference/edit-covid19-qc-test-kit.php','always','fa-solid fa-caret-right','no','allMenu covid19-qc-test-kits',12,48,'active',NULL),(50,'admin',NULL,'no','Co-morbidities','/hepatitis/reference/hepatitis-comorbidities.php','/hepatitis/reference/add-hepatitis-comorbidities.php,/hepatitis/reference/edit-hepatitis-comorbidities.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-comorbidities',13,50,'active',NULL),(51,'admin',NULL,'no','Risk Factors','/hepatitis/reference/hepatitis-risk-factors.php','/hepatitis/reference/add-hepatitis-risk-factors.php,/hepatitis/reference/edit-hepatitis-risk-factors.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-risk-factors',13,51,'active',NULL),(52,'admin',NULL,'no','Rejection Reasons','/hepatitis/reference/hepatitis-sample-rejection-reasons.php','/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php,/hepatitis/reference/edit-hepatitis-sample-rejection-reasons.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-sample-rejection-reasons',13,52,'active',NULL),(53,'admin',NULL,'no','Sample Type','/hepatitis/reference/hepatitis-sample-type.php','/hepatitis/reference/add-hepatitis-sample-type.php,/hepatitis/reference/edit-hepatitis-sample-type.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-sample-type',13,53,'active',NULL),(54,'admin',NULL,'no','Results','/hepatitis/reference/hepatitis-results.php','/hepatitis/reference/add-hepatitis-results.php,/hepatitis/reference/edit-hepatitis-results.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-results',13,54,'active',NULL),(55,'admin',NULL,'no','Test Reasons','/hepatitis/reference/hepatitis-test-reasons.php','/hepatitis/reference/add-hepatitis-test-reasons.php,/hepatitis/reference/edit-hepatitis-test-reasons.php','always','fa-solid fa-caret-right','no','allMenu hepatitis-test-reasons',13,55,'active',NULL),(56,'admin',NULL,'no','Rejection Reasons','/tb/reference/tb-sample-rejection-reasons.php','/tb/reference/add-tb-sample-rejection-reason.php','always','fa-solid fa-caret-right','no','allMenu tb-sample-rejection-reasons',14,56,'active',NULL),(57,'admin',NULL,'no','Sample Type','/tb/reference/tb-sample-type.php','/tb/reference/add-tb-sample-type.php,/tb/reference/edit-tb-sample-type.php','always','fa-solid fa-caret-right','no','allMenu tb-sample-type',14,57,'active',NULL),(58,'admin',NULL,'no','Test Reasons','/tb/reference/tb-test-reasons.php','/tb/reference/add-tb-test-reasons.php,/tb/reference/edit-tb-test-reasons.php','always','fa-solid fa-caret-right','no','allMenu tb-test-reasons',14,58,'active',NULL),(59,'admin',NULL,'no','Results','/tb/reference/tb-results.php','/tb/reference/add-tb-results.php','always','fa-solid fa-caret-right','no','allMenu tb-results',14,59,'active',NULL),(60,'generic-tests',NULL,'yes','OTHER LAB TESTS',NULL,NULL,'always',NULL,'yes','header',0,8,'active',NULL),(61,'generic-tests',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview allMenu generic-test-request-menu',60,61,'active',NULL),(62,'generic-tests',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview allMenu generic-test-results-menu',60,62,'active',NULL),(63,'generic-tests',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview allMenu generic-test-request-menu',60,63,'active',NULL),(64,'vl',NULL,'yes','HIV VIRAL LOAD',NULL,NULL,'always',NULL,'yes','header',0,3,'active',NULL),(65,'eid',NULL,'yes','EARLY INFANT DIAGNOSIS (EID)',NULL,NULL,'always',NULL,'yes','header',0,4,'active',NULL),(66,'covid19',NULL,'yes','COVID-19',NULL,NULL,'always',NULL,'yes','header',0,5,'active',NULL),(67,'hepatitis',NULL,'yes','HEPATITIS',NULL,NULL,'always',NULL,'yes','header',0,6,'active',NULL),(68,'tb',NULL,'yes','TUBERCULOSIS',NULL,NULL,'always',NULL,'yes','header',0,7,'active',NULL),(69,'vl',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview request',64,69,'active',NULL),(70,'vl',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview test',64,70,'active',NULL),(71,'vl',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview program',64,71,'active',NULL),(72,'covid19',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview covid19Request',66,72,'active',NULL),(73,'covid19',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview covid19Results',66,73,'active',NULL),(74,'covid19',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview covid19ProgramMenu',66,74,'active',NULL),(75,'eid',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview eidRequest',65,75,'active',NULL),(76,'eid',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview eidResults',65,76,'active',NULL),(77,'eid',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview eidProgramMenu',65,77,'active',NULL),(78,'hepatitis',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview hepatitisRequest',67,78,'active',NULL),(79,'hepatitis',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview hepatitisResults',67,79,'active',NULL),(80,'hepatitis',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview hepatitisProgramMenu',67,80,'active',NULL),(81,'tb',NULL,'no','Request Management',NULL,NULL,'always','fa-solid fa-pen-to-square','yes','treeview tbRequest',68,81,'active',NULL),(82,'tb',NULL,'no','Test Result Management',NULL,NULL,'always','fa-solid fa-list-check','yes','treeview tbResults',68,82,'active',NULL),(83,'tb',NULL,'no','Management',NULL,NULL,'always','fa-solid fa-book','yes','treeview tbProgramMenu',68,83,'active',NULL),(84,'generic-tests',NULL,'no','View Test Requests','/generic-tests/requests/view-requests.php','/generic-tests/requests/edit-request.php','always','fa-solid fa-caret-right','no','allMenu genericRequestMenu',61,84,'active',NULL),(85,'generic-tests',NULL,'no','Add New Request','/generic-tests/requests/add-request.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addGenericRequestMenu',61,85,'active',NULL),(86,'generic-tests',NULL,'no','Add Samples from Manifest','/generic-tests/requests/add-samples-from-manifest.php','/generic-tests/requests/edit-request.php','lis','fa-solid fa-caret-right','no','allMenu addGenericSamplesFromManifestMenu',61,86,'active',NULL),(87,'generic-tests',NULL,'no','Manage Batch','/batch/batches.php?type=generic-tests','/batch/add-batch.php?type=generic-tests,/batch/edit-batch.php?type=generic-tests,/batch/add-batch-position.php?type=generic-tests,/batch/edit-batch-position.php?type=generic-tests','always','fa-solid fa-caret-right','no','allMenu batchGenericCodeMenu',61,87,'active',NULL),(88,'generic-tests',NULL,'no','Lab Test Manifest','/specimen-referral-manifest/view-manifests.php?t=generic-tests','/specimen-referral-manifest/add-manifest.php?t=generic-tests,/specimen-referral-manifest/edit-manifest.php?t=generic-tests,/specimen-referral-manifest/move-manifest.php?t=generic-tests','sts','fa-solid fa-caret-right','no','allMenu specimenGenericReferralManifestListMenu',61,88,'active',NULL),(89,'generic-tests',NULL,'no','Enter Result Manually','/generic-tests/results/generic-test-results.php','/generic-tests/results/update-generic-test-result.php','always','fa-solid fa-caret-right','no','allMenu genericTestResultMenu',62,88,'active',NULL),(90,'generic-tests',NULL,'no','Failed/Hold Samples','/generic-tests/results/generic-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericFailedResultMenu',62,88,'active',NULL),(91,'generic-tests',NULL,'no','Manage Results Status','/generic-tests/results/generic-result-approval.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericResultApprovalMenu',62,88,'active',NULL),(92,'generic-tests',NULL,'no','Sample Status Report','/generic-tests/program-management/generic-sample-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericStatusReportMenu',63,88,'active',NULL),(93,'generic-tests',NULL,'no','Export Results','/generic-tests/program-management/generic-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericExportMenu',63,89,'active',NULL),(94,'generic-tests',NULL,'no','Print Result','/generic-tests/results/generic-print-result.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericPrintResultMenu',63,90,'active',NULL),(95,'generic-tests',NULL,'no','Sample Rejection Report','/generic-tests/program-management/sample-rejection-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu genericSampleRejectionReport',63,91,'active',NULL),(96,'vl',NULL,'no','View Test Requests','/vl/requests/vl-requests.php','/vl/requests/editVlRequest.php','always','fa-solid fa-caret-right','no','allMenu vlRequestMenu',69,92,'active',NULL),(97,'vl',NULL,'no','Add New Request','/vl/requests/addVlRequest.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addVlRequestMenu',69,93,'active',NULL),(98,'vl',NULL,'no','Add Samples from Manifest','/vl/requests/addSamplesFromManifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu addSamplesFromManifestMenu',69,94,'active',NULL),(99,'vl',NULL,'no','Manage Batch','/batch/batches.php?type=vl','/batch/add-batch.php?type=vl,/batch/edit-batch.php?type=vl,/batch/edit-batch-position.php?type=vl','always','fa-solid fa-caret-right','no','allMenu batchCodeMenu',69,95,'active',NULL),(100,'vl',NULL,'no','VL Manifest','/specimen-referral-manifest/view-manifests.php?t=vl','/specimen-referral-manifest/add-manifest.php?t=vl,/specimen-referral-manifest/edit-manifest.php?t=vl,/specimen-referral-manifest/move-manifest.php?t=vl','sts','fa-solid fa-caret-right','no','allMenu specimenReferralManifestListVLMenu',69,96,'active',NULL),(101,'vl',NULL,'no','Import Result From File','/import-result/import-file.php?t=vl','/import-result/imported-results.php?t=vl,/import-result/importedStatistics.php?t=vl','always','fa-solid fa-caret-right','no','allMenu importResultMenu',70,97,'active',NULL),(102,'vl',NULL,'no','Enter Result Manually','/vl/results/vlTestResult.php','/vl/results/updateVlTestResult.php','always','fa-solid fa-caret-right','no','allMenu vlTestResultMenu',70,98,'active',NULL),(103,'vl',NULL,'no','Failed/Hold Samples','/vl/results/vl-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlFailedResultMenu',70,99,'active',NULL),(104,'vl',NULL,'no','Manage Results Status','/vl/results/vlResultApproval.php',NULL,'always','fa-solid fa-caret-right','no','allMenu batchCodeMenu',70,100,'active',NULL),(105,'vl',NULL,'no','Sample Status Report','/vl/program-management/vl-sample-status.php','/vl/requests/editVlRequest.php','always','fa-solid fa-caret-right','no','allMenu missingResultMenu',71,100,'active',NULL),(106,'vl',NULL,'no','Control Report','/vl/program-management/vlControlReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMenu',71,101,'active',NULL),(107,'vl',NULL,'no','Export Results','/vl/program-management/vl-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMenu',71,102,'active',NULL),(108,'vl',NULL,'no','Print Result','/vl/results/vlPrintResult.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlPrintResultMenu',71,103,'active',NULL),(109,'vl',NULL,'no','Clinic Reports','/vl/program-management/highViralLoad.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlHighMenu',71,104,'active',NULL),(110,'vl',NULL,'no','VL Lab Weekly Report','/vl/program-management/vlWeeklyReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlWeeklyReport',71,105,'active',NULL),(111,'vl',NULL,'no','Sample Rejection Report','/vl/program-management/sampleRejectionReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu sampleRejectionReport',71,106,'active',NULL),(112,'vl',NULL,'no','Sample Monitoring Report','/vl/program-management/vlMonitoringReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlMonitoringReport',71,107,'active',NULL),(113,'vl',NULL,'no','VL Testing Target Report','/vl/program-management/vlTestingTargetReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlMonthlyThresholdReport',71,108,'active',NULL),(114,'eid',NULL,'no','View Test Requests','/eid/requests/eid-requests.php','/eid/requests/eid-edit-request.php','always','fa-solid fa-caret-right','no','allMenu eidRequestMenu',75,109,'active',NULL),(115,'eid',NULL,'no','Add New Request','/eid/requests/eid-add-request.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addEidRequestMenu',75,110,'active',NULL),(116,'eid',NULL,'no','Add Samples from Manifest','/eid/requests/addSamplesFromManifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu addSamplesFromManifestEidMenu',75,111,'active',NULL),(117,'eid',NULL,'no','Manage Batch','/batch/batches.php?type=eid','/batch/add-batch.php?type=eid,/batch/edit-batch.php?type=eid,/batch/add-batch-position.php?type=eid,/batch/edit-batch-position.php?type=eid','always','fa-solid fa-caret-right','no','allMenu eidBatchCodeMenu',75,112,'active',NULL),(118,'eid',NULL,'no','EID Manifest','/specimen-referral-manifest/view-manifests.php?t=eid','/specimen-referral-manifest/add-manifest.php?t=eid,/specimen-referral-manifest/edit-manifest.php?t=eid,/specimen-referral-manifest/move-manifest.php?t=eid','sts','fa-solid fa-caret-right','no','allMenu specimenReferralManifestListEIDMenu',75,113,'active',NULL),(119,'eid',NULL,'no','Import Result From File','/import-result/import-file.php?t=eid','/import-result/imported-results.php?t=eid,/import-result/importedStatistics.php?t=eid','always','fa-solid fa-caret-right','no','allMenu eidImportResultMenu',76,114,'active',NULL),(120,'eid',NULL,'no','Enter Result Manually','/eid/results/eid-manual-results.php','/eid/results/eid-update-result.php','always','fa-solid fa-caret-right','no','allMenu eidResultsMenu',76,115,'active',NULL),(121,'eid',NULL,'no','Failed/Hold Samples','/eid/results/eid-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidFailedResultsMenu',76,116,'active',NULL),(122,'eid',NULL,'no','Manage Results Status','/eid/results/eid-result-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidResultStatus',76,117,'active',NULL),(123,'eid',NULL,'no','Sample Status Report','/eid/management/eid-sample-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidSampleStatus',77,118,'active',NULL),(124,'eid',NULL,'no','Export Results','/eid/management/eid-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidExportResult',77,119,'active',NULL),(125,'eid',NULL,'no','Print Result','/eid/results/eid-print-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidPrintResults',77,120,'active',NULL),(126,'eid',NULL,'no','Sample Rejection Report','/eid/management/eid-sample-rejection-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidSampleRejectionReport',77,121,'active',NULL),(127,'eid',NULL,'no','Clinic Report','/eid/management/eid-clinic-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidClinicReport',77,122,'active',NULL),(128,'eid',NULL,'no','EID Testing Target Report','/eid/management/eidTestingTargetReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu eidMonthlyThresholdReport',77,123,'active',NULL),(129,'covid19',NULL,'no','View Test Requests','/covid-19/requests/covid-19-requests.php','/covid-19/requests/covid-19-edit-request.php,/covid-19/requests/covid-19-bulk-import-request.php,/covid-19/requests/covid-19-quick-add.php','always','fa-solid fa-caret-right','no','allMenu covid19RequestMenu',72,124,'active',NULL),(130,'covid19',NULL,'no','Add New Request','/covid-19/requests/covid-19-add-request.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addCovid19RequestMenu',72,125,'active',NULL),(131,'covid19',NULL,'no','Add Samples from Manifest','/covid-19/requests/addSamplesFromManifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu addSamplesFromManifestCovid19Menu',72,126,'active',NULL),(132,'covid19',NULL,'no','Manage Batch','/batch/batches.php?type=covid19','/batch/add-batch.php?type=covid19,/batch/edit-batch.php?type=covid19,/batch/add-batch-position.php?type=covid19,/batch/edit-batch-position.php?type=covid19','always','fa-solid fa-caret-right','no','allMenu covid19BatchCodeMenu',72,127,'active',NULL),(133,'covid19',NULL,'no','Covid-19 Manifest','/specimen-referral-manifest/view-manifests.php?t=covid19','/specimen-referral-manifest/add-manifest.php?t=covid19,/specimen-referral-manifest/edit-manifest.php?t=covid19,/specimen-referral-manifest/move-manifest.php?t=covid19','sts','fa-solid fa-caret-right','no','allMenu specimenReferralManifestListC19Menu',72,128,'active',NULL),(134,'covid19',NULL,'no','Import Result From File','/import-result/import-file.php?t=covid19','/import-result/imported-results.php?t=covid19,/import-result/importedStatistics.php?t=covid19','always','fa-solid fa-caret-right','no','allMenu covid19ImportResultMenu',73,129,'active',NULL),(135,'covid19',NULL,'no','Enter Result Manually','/covid-19/results/covid-19-manual-results.php','/covid-19/batch/covid-19-update-result.php','always','fa-solid fa-caret-right','no','allMenu covid19ResultsMenu',73,130,'active',NULL),(136,'covid19',NULL,'no','Failed/Hold Samples','/covid-19/results/covid-19-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19FailedResultsMenu',73,131,'active',NULL),(137,'covid19',NULL,'no','Confirmation Manifest','/covid-19/results/covid-19-confirmation-manifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu covid19ResultsConfirmationMenu',73,132,'active',NULL),(138,'covid19',NULL,'no','Record Confirmatory Tests','/covid-19/results/can-record-confirmatory-tests.php',NULL,'always','fa-solid fa-caret-right','no','allMenu canRecordConfirmatoryTestsCovid19Menu',73,133,'active',NULL),(139,'covid19',NULL,'no','Manage Results Status','/covid-19/results/covid-19-result-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19ResultStatus',73,134,'active',NULL),(140,'covid19',NULL,'no','Covid-19 QC Data','/covid-19/results/covid-19-qc-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19QcDataMenu',73,135,'active',NULL),(141,'covid19',NULL,'no','Sample Status Report','/covid-19/management/covid-19-sample-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19SampleStatus',74,136,'active',NULL),(142,'covid19',NULL,'no','Export Results','/covid-19/management/covid-19-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19ExportResult',74,137,'active',NULL),(143,'covid19',NULL,'no','Print Result','/covid-19/results/covid-19-print-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19PrintResults',74,138,'active',NULL),(144,'covid19',NULL,'no','Sample Rejection Report','/covid-19/management/covid-19-sample-rejection-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19SampleRejectionReport',74,139,'active',NULL),(145,'covid19',NULL,'no','Clinic Reports','/covid-19/management/covid-19-clinic-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19ClinicReportMenu',74,140,'active',NULL),(146,'covid19',NULL,'no','COVID-19 Testing Target Report','/covid-19/management/covid19TestingTargetReport.php',NULL,'always','fa-solid fa-caret-right','no','allMenu covid19MonthlyThresholdReport',74,141,'active',NULL),(147,'hepatitis',NULL,'no','View Test Requests','/hepatitis/requests/hepatitis-requests.php','/hepatitis/requests/hepatitis-edit-request.php','always','fa-solid fa-caret-right','no','allMenu hepatitisRequestMenu',78,142,'active',NULL),(148,'hepatitis',NULL,'no','Add New Request','/hepatitis/requests/hepatitis-add-request.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addHepatitisRequestMenu',78,143,'active',NULL),(149,'hepatitis',NULL,'no','Add Samples from Manifest','/hepatitis/requests/add-samples-from-manifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu addSamplesFromManifestHepatitisMenu',78,144,'active',NULL),(150,'hepatitis',NULL,'no','Manage Batch','/batch/batches.php?type=hepatitis','/batch/add-batch.php?type=hepatitis,/batch/edit-batch.php?type=hepatitis,/batch/add-batch-position.php?type=hepatitis,/batch/edit-batch-position.php?type=hepatitis','always','fa-solid fa-caret-right','no','allMenu hepatitisBatchCodeMenu',78,145,'active',NULL),(151,'hepatitis',NULL,'no','Hepatitis Manifest','/specimen-referral-manifest/view-manifests.php?t=hepatitis','/specimen-referral-manifest/add-manifest.php?t=hepatitis,/specimen-referral-manifest/edit-manifest.php?t=hepatitis,/specimen-referral-manifest/move-manifest.php?t=hepatitis','sts','fa-solid fa-caret-right','no','allMenu specimenReferralManifestListHepMenu',78,146,'active',NULL),(152,'hepatitis',NULL,'no','Import Result From File','/import-result/import-file.php?t=hepatitis','/import-result/imported-results.php?t=hepatitis,/import-result/importedStatistics.php?t=hepatitis','always','fa-solid fa-caret-right','no','allMenu hepatitisImportResultMenu',79,146,'active',NULL),(153,'hepatitis',NULL,'no','Enter Result Manually','/hepatitis/results/hepatitis-manual-results.php','/hepatitis/results/hepatitis-update-result.php','always','fa-solid fa-caret-right','no','allMenu hepatitisResultsMenu',79,147,'active',NULL),(154,'hepatitis',NULL,'no','Failed/Hold Samples','/hepatitis/results/hepatitis-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisFailedResultsMenu',79,148,'active',NULL),(155,'hepatitis',NULL,'no','Manage Results Status','/hepatitis/results/hepatitis-result-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisResultStatus',79,149,'active',NULL),(156,'hepatitis',NULL,'no','Sample Status Report','/hepatitis/management/hepatitis-sample-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisSampleStatus',80,150,'active',NULL),(157,'hepatitis',NULL,'no','Export Results','/hepatitis/management/hepatitis-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisExportResult',80,151,'active',NULL),(158,'hepatitis',NULL,'no','Print Result','/hepatitis/results/hepatitis-print-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisPrintResults',80,152,'active',NULL),(159,'hepatitis',NULL,'no','Sample Rejection Report','/hepatitis/management/hepatitis-sample-rejection-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisSampleRejectionReport',80,153,'active',NULL),(160,'hepatitis',NULL,'no','Clinic Reports','/hepatitis/management/hepatitis-clinic-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisClinicReportMenu',80,154,'active',NULL),(161,'hepatitis',NULL,'no','Hepatitis Testing Target Report','/hepatitis/management/hepatitis-testing-target-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu hepatitisMonthlyThresholdReport',80,155,'active',NULL),(162,'tb',NULL,'no','View Test Requests','/tb/requests/tb-requests.php','/tb/requests/tb-edit-request.php','always','fa-solid fa-caret-right','no','allMenu tbRequestMenu',81,156,'active',NULL),(163,'tb',NULL,'no','Add New Request','/tb/requests/tb-add-request.php',NULL,'always','fa-solid fa-caret-right','no','allMenu addTbRequestMenu',81,157,'active',NULL),(164,'tb',NULL,'no','Add Samples from Manifest','/tb/requests/addSamplesFromManifest.php',NULL,'lis','fa-solid fa-caret-right','no','allMenu addSamplesFromManifestTbMenu',81,158,'active',NULL),(165,'tb',NULL,'no','Manage Batch','/batch/batches.php?type=tb','/batch/add-batch.php?type=tb,/batch/edit-batch.php?type=tb,/batch/add-batch-position.php?type=tb,/batch/edit-batch-position.php?type=tb','always','fa-solid fa-caret-right','no','allMenu tbBatchCodeMenu',81,159,'active',NULL),(166,'tb',NULL,'no','TB Manifest','/specimen-referral-manifest/view-manifests.php?t=tb','/specimen-referral-manifest/add-manifest.php?t=tb,/specimen-referral-manifest/edit-manifest.php?t=tb,/specimen-referral-manifest/move-manifest.php?t=tb','sts','fa-solid fa-caret-right','no','allMenu specimenReferralManifestListTbMenu',81,160,'active',NULL),(167,'tb',NULL,'no','Import Result From File','/import-result/import-file.php?t=tb','/import-result/imported-results.php?t=tb,/import-result/importedStatistics.php?t=tb','always','fa-solid fa-caret-right','no','allMenu tbImportResultMenu',82,161,'active',NULL),(168,'tb',NULL,'no','Enter Result Manually','/tb/results/tb-manual-results.php','/tb/results/tb-update-result.php','always','fa-solid fa-caret-right','no','allMenu tbResultsMenu',82,162,'active',NULL),(169,'tb',NULL,'no','Failed/Hold Samples','/tb/results/tb-failed-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbFailedResultsMenu',82,163,'active',NULL),(170,'tb',NULL,'no','Manage Results Status','/tb/results/tb-result-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbResultStatus',82,164,'active',NULL),(171,'tb',NULL,'no','Sample Status Report','/tb/management/tb-sample-status.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbSampleStatus',83,165,'active',NULL),(172,'tb',NULL,'no','Print Result','/tb/results/tb-print-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbPrintResults',83,166,'active',NULL),(173,'tb',NULL,'no','Export Results','/tb/management/tb-export-data.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbExportResult',83,167,'active',NULL),(174,'tb',NULL,'no','Sample Rejection Report','/tb/management/tb-sample-rejection-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbSampleRejectionReport',83,168,'active',NULL),(175,'tb',NULL,'no','Clinic Reports','/tb/management/tb-clinic-report.php',NULL,'always','fa-solid fa-caret-right','no','allMenu tbClinicReport',83,169,'active',NULL),(176,'admin',NULL,'no','Lab Sync Status','/admin/monitoring/sync-status.php',NULL,'always','fa-solid fa-traffic-light','no','allMenu treeview api-sync-status-menu',7,18,'active',NULL),(177,'admin',NULL,'no','Recommended Corrective Actions','/vl/reference/vl-recommended-corrective-actions.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vl-recommended-corrective-actions',10,39,'active','2023-08-02 14:27:09'),(178,'admin',NULL,'no','Recommended Corrective Actions','/common/reference/recommended-corrective-actions.php?testType=eid',NULL,'always','fa-solid fa-caret-right','no','allMenu common-recommended-corrective-actions\r\n',11,40,'active','2023-08-26 01:03:01'),(179,'admin',NULL,'no','Recommended Corrective Actions','/common/reference/recommended-corrective-actions.php?testType=eid',NULL,'always','fa-solid fa-caret-right','no','allMenu common-recommended-corrective-actions\r\n',12,41,'active','2023-08-26 01:03:01'),(180,'generic-tests',NULL,'no','Send Result Mail','/generic-tests/mail/mail-generic-tests-results.php','/generic-tests/mail/generic-tests-result-mail-confirm.php','always','fa-solid fa-caret-right','no','allMenu genericTestResultMenu',62,88,'active','2023-10-16 17:03:43'),(181,'vl',NULL,'no','E-mail Test Result','/vl/results/email-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMailMenu',70,101,'active','2023-11-07 12:38:20'),(182,'eid',NULL,'no','E-mail Test Result','/eid/results/email-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMailMenu',76,172,'active','2023-12-26 07:36:01'),(183,'covid19',NULL,'no','E-mail Test Result','/covid-19/results/email-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMailMenu',73,173,'active','2023-12-26 07:36:01'),(184,'hepatitis',NULL,'no','E-mail Test Result','/hepatitis/results/email-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMailMenu',79,175,'active','2023-12-26 07:36:01'),(185,'tb',NULL,'no','E-mail Test Result','/tb/results/email-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMailMenu',82,176,'active','2023-12-26 07:36:01'),(186,'generic-tests',NULL,'no','E-mail Test Result','/generic-tests/results/email-results.php',NULL,'always','fa-solid fa-caret-right','no','allMenu vlResultMailMenu',62,177,'active','2024-01-04 16:42:52');
 /*!40000 ALTER TABLE `s_app_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -5135,7 +5186,7 @@ CREATE TABLE `s_vlsm_instance` (
   `last_interface_sync` datetime DEFAULT NULL,
   PRIMARY KEY (`vlsm_instance_id`),
   UNIQUE KEY `vl_instance_id` (`vlsm_instance_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5164,7 +5215,7 @@ CREATE TABLE `scheduled_jobs` (
   `completed_on` datetime DEFAULT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'pending',
   PRIMARY KEY (`job_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5189,7 +5240,7 @@ CREATE TABLE `sequence_counter` (
   `code_type` varchar(32) NOT NULL COMMENT 'sample_code or remote_sample_code',
   `max_sequence_number` int(11) DEFAULT NULL,
   PRIMARY KEY (`test_type`,`year`,`code_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5217,7 +5268,7 @@ CREATE TABLE `support` (
   `screenshot_file_name` varchar(255) DEFAULT NULL,
   `status` varchar(100) DEFAULT 'active',
   PRIMARY KEY (`support_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5244,7 +5295,7 @@ CREATE TABLE `system_admin` (
   `system_admin_password` mediumtext,
   PRIMARY KEY (`system_admin_id`),
   UNIQUE KEY `user_admin_id` (`system_admin_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5268,7 +5319,7 @@ CREATE TABLE `system_config` (
   `name` varchar(255) NOT NULL,
   `value` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5298,7 +5349,7 @@ CREATE TABLE `tb_tests` (
   PRIMARY KEY (`tb_test_id`),
   KEY `tb_id` (`tb_id`),
   CONSTRAINT `tb_tests_ibfk_1` FOREIGN KEY (`tb_id`) REFERENCES `form_tb` (`tb_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5308,6 +5359,37 @@ CREATE TABLE `tb_tests` (
 LOCK TABLES `tb_tests` WRITE;
 /*!40000 ALTER TABLE `tb_tests` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tb_tests` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `temp_mail`
+--
+
+DROP TABLE IF EXISTS `temp_mail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `temp_mail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_type` varchar(25) DEFAULT NULL,
+  `samples` varchar(256) DEFAULT NULL,
+  `to_mail` varchar(255) DEFAULT NULL,
+  `report_email` varchar(256) DEFAULT NULL,
+  `subject` varchar(200) DEFAULT NULL,
+  `text_message` varchar(255) DEFAULT NULL,
+  `attachment` varchar(255) DEFAULT NULL,
+  `status` varchar(11) DEFAULT NULL,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `temp_mail`
+--
+
+LOCK TABLES `temp_mail` WRITE;
+/*!40000 ALTER TABLE `temp_mail` DISABLE KEYS */;
+/*!40000 ALTER TABLE `temp_mail` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -5359,7 +5441,7 @@ CREATE TABLE `temp_sample_import` (
   `sample_review_by` varchar(255) DEFAULT NULL,
   `imported_by` varchar(255) NOT NULL,
   PRIMARY KEY (`temp_sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5387,7 +5469,7 @@ CREATE TABLE `testing_lab_health_facilities_map` (
   KEY `facility_id` (`facility_id`),
   CONSTRAINT `testing_lab_health_facilities_map_ibfk_1` FOREIGN KEY (`vl_lab_id`) REFERENCES `facility_details` (`facility_id`),
   CONSTRAINT `testing_lab_health_facilities_map_ibfk_2` FOREIGN KEY (`facility_id`) REFERENCES `facility_details` (`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5414,7 +5496,7 @@ CREATE TABLE `testing_labs` (
   `monthly_target` varchar(255) DEFAULT NULL,
   `suppressed_monthly_target` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`test_type`,`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5449,7 +5531,7 @@ CREATE TABLE `track_api_requests` (
   `data_format` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`api_track_id`),
   KEY `requested_on` (`requested_on`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5478,7 +5560,7 @@ CREATE TABLE `track_qr_code_page` (
   `operating_system` varchar(256) DEFAULT NULL,
   `date_time` datetime DEFAULT NULL,
   PRIMARY KEY (`tqcp_d`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5520,7 +5602,7 @@ CREATE TABLE `user_details` (
   PRIMARY KEY (`user_id`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `user_details_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5546,7 +5628,7 @@ CREATE TABLE `user_facility_map` (
   PRIMARY KEY (`user_facility_map_id`),
   KEY `user_id` (`user_id`),
   KEY `facility_id` (`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5576,7 +5658,7 @@ CREATE TABLE `user_login_history` (
   `operating_system` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`history_id`),
   KEY `login_status_attempted_datetime_idx` (`login_status`,`login_attempted_datetime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5604,7 +5686,7 @@ CREATE TABLE `vl_contact_notes` (
   PRIMARY KEY (`contact_notes_id`),
   KEY `treament_contact_id` (`treament_contact_id`),
   CONSTRAINT `vl_contact_notes_ibfk_1` FOREIGN KEY (`treament_contact_id`) REFERENCES `form_vl` (`vl_sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5652,7 +5734,7 @@ CREATE TABLE `vl_imported_controls` (
   `imported_date_time` datetime DEFAULT NULL,
   `import_machine_file_name` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`control_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5673,4 +5755,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-26  7:36:29
+-- Dump completed on 2024-01-05 21:37:32

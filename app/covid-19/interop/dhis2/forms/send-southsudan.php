@@ -3,13 +3,14 @@
 // this file is included in /covid-19/interop/dhis2/covid-19-send.php
 
 use App\Interop\Dhis2;
-use App\Registries\ContainerRegistry;
+use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
 
 $usersService = ContainerRegistry::get(UsersService::class);
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -85,9 +86,9 @@ $query = "SELECT
             FROM form_covid19
             WHERE source_of_request LIKE 'dhis2'
             AND result_status = 7
-            AND result_sent_to_source NOT LIKE 'sent'";
+            AND result_sent_to_source NOT LIKE 'sent' LIMIT 100";;
 
-$formResults = $db->rawQuery($query);
+$formResults = $db->rawQueryGenerator($query);
 $counter = 0;
 
 foreach ($formResults as $row) {
@@ -242,6 +243,7 @@ foreach ($formResults as $row) {
   // var_dump($finalPayload);
   // echo "</pre>";
   $response = $dhis2->post("/api/33/events/", $finalPayload);
+  $response = !empty($response) ? (string) $response->getBody() : null;
   // echo "<br><br><pre>";
   // var_dump($response);
   // echo "</pre>";

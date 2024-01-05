@@ -3,6 +3,7 @@
 // this file is included in /hepatitis/interop/dhis2/hepatitis-send.php
 
 use App\Interop\Dhis2;
+use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 
@@ -12,13 +13,17 @@ $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+
 $syncType = 'DHIS2-Hepatitis-Send';
 
 $query = "SELECT * FROM form_hepatitis
           WHERE (source_of_request LIKE 'dhis2' OR unique_id like 'dhis2%')
           AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')
-          AND result_status = " . SAMPLE_STATUS\ACCEPTED;
-$formResults = $db->rawQuery($query);
+          AND result_status = " . SAMPLE_STATUS\ACCEPTED . " LIMIT 100";
+$formResults = $db->rawQueryGenerator($query);
 $counter = 0;
 
 $transactionId = $general->generateUUID();
@@ -27,9 +32,9 @@ $url = "/api/events";
 $processingErrors = [];
 
 $urlData = [];
-
+$receivedCounter = 0;
 foreach ($formResults as $row) {
-
+  $receivedCounter++;
   $uniqueIdArray = explode("::", (string) $row['unique_id']);
   $trackedEntityInstance = $uniqueIdArray[1];
 
@@ -57,8 +62,9 @@ foreach ($formResults as $row) {
   $urlData[] = "paging=false";
 
   $dhis2Response = $dhis2->get($url, $urlData);
+  $dhis2Response = (string) $dhis2Response->getBody();
 
-  $dhis2Response = json_decode((string) $dhis2Response, true);
+  $dhis2Response = json_decode($dhis2Response, true);
 
 
   $strategy = null;
@@ -194,8 +200,9 @@ foreach ($formResults as $row) {
     $dataValues[$programStagesVariables['2LsampleTestedDate']] = $row['sample_tested_datetime'];
   }
 
-  if (count($dhis2Response['events']) == 0) {
+  if (empty($dhis2Response['events']) || count($dhis2Response['events']) == 0) {
     $idGeneratorApi = $dhis2->get("/api/system/id?limit=1");
+    $idGeneratorApi = !empty($idGeneratorApi) ? (string) $idGeneratorApi->getBody() : "";
     $idResponse = (json_decode((string) $idGeneratorApi, true));
     $eventId = $idResponse['codes'][0];
 
@@ -213,6 +220,7 @@ foreach ($formResults as $row) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
       $payload = ($eventPayload);
       $response = $dhis2->post("/api/33/events/", $payload);
+      $response = !empty($response) ? (string) $response->getBody() : null;
     }
   } else {
     foreach ($dhis2Response['events'] as $eventPayload) {
@@ -224,6 +232,7 @@ foreach ($formResults as $row) {
         $urlParams[] = "strategy=UPDATE";
         $urlParams[] = "importStrategy=CREATE_AND_UPDATE";
         $response = $dhis2->post("/api/33/events/", $payload, $urlParams);
+        $response = !empty($response) ? (string) $response->getBody() : null;
       }
     }
   }
@@ -242,7 +251,7 @@ foreach ($formResults as $row) {
 $general->addApiTracking(
   $transactionId,
   'vlsm-system',
-  $processedCounter,
+  $counter,
   $syncType,
   'hepatitis',
   $dhis2->getCurrentRequestUrl(),
@@ -253,7 +262,7 @@ $general->addApiTracking(
 
 echo json_encode([
   'transactionId' => $transactionId,
-  'received' => $receivedCounter,
-  'processed' => $processedCounter,
+  'tried' => $receivedCounter,
+  'processed' => $counter,
   'errors' => $processingErrors
 ]);
