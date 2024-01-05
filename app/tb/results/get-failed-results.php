@@ -4,10 +4,22 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+try {
+
+    $db->beginReadOnlyTransaction();
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 
 $formConfigQuery = "SELECT * FROM global_config";
@@ -26,11 +38,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
+$key = (string) $general->getGlobalConfig('key');
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_tb";
 $primaryKey = "tb_id";
 
@@ -212,7 +221,6 @@ foreach ($rResult as $aRow) {
         $row[] = $aRow['remote_sample_code'];
     }
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-        $key = (string) $general->getGlobalConfig('key');
         $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
         $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
     }
@@ -232,4 +240,9 @@ foreach ($rResult as $aRow) {
     }
     $output['aaData'][] = $row;
 }
-echo json_encode($output);
+echo MiscUtility::convertToUtf8AndEncode($output);
+
+$db->commitTransaction();
+} catch (Exception $exc) {
+     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+}

@@ -192,7 +192,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<select disabled="disabled" class="form-control select2" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
 									<option value=""> -- Select -- </option>
 									<?php foreach ($testTypeResult as $testTypeInfo) { ?>
-										<option value="<?php echo $testTypeInfo['test_type_id'] ?>" <?php echo ($testType['test_type'] == $testTypeInfo['test_type_id']) ? "selected='selected'" : ""; ?>><?php echo $testTypeInfo['test_standard_name'] ?></option>
+										<option value="<?php echo $testTypeInfo['test_type_id'] ?>" data-short="<?php echo $testTypeInfo['test_short_code']; ?>" <?php echo ($testType['test_type'] == $testTypeInfo['test_type_id']) ? "selected='selected'" : ""; ?>><?php echo $testTypeInfo['test_standard_name'] ?></option>
 									<?php } ?>
 								</select>
 							</div>

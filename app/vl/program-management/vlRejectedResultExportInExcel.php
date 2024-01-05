@@ -16,6 +16,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $sarr = $general->getSystemConfig();
 
 $arr = $general->getGlobalConfig();
+$key = (string) $general->getGlobalConfig('key');
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
@@ -67,7 +68,6 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-               $key = (string) $general->getGlobalConfig('key');
                $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
                $patientFname = $general->crypto('decrypt', $patientFname, $key);
                $patientMname = $general->crypto('decrypt', $patientMname, $key);

@@ -84,6 +84,7 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$key = (string) $general->getGlobalConfig('key');
 
 $covid19Results = $covid19Service->getCovid19Results();
 
@@ -108,7 +109,6 @@ if (!empty($requestResult)) {
         $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
         if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-            $key = (string) $general->getGlobalConfig('key');
             $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $patientLname = $general->crypto('decrypt', $patientLname, $key);

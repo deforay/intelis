@@ -33,6 +33,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 $arr = $general->getGlobalConfig();
+$key = (string) $general->getGlobalConfig('key');
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
@@ -70,7 +71,6 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
             $row[] = $aRow['remote_sample_code'];
         }
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $key = (string) $general->getGlobalConfig('key');
             $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
             $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
         }

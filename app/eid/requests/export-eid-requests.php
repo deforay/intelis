@@ -27,6 +27,8 @@ $eidResults = $eidService->getEidResults();
 
 
 $arr = $general->getGlobalConfig();
+$key = (string) $general->getGlobalConfig('key');
+
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
@@ -96,7 +98,6 @@ foreach ($resultSet as $aRow) {
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $key = (string) $general->getGlobalConfig('key');
             $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
             $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
             $aRow['mother_id'] = $general->crypto('decrypt', $aRow['mother_id'], $key);

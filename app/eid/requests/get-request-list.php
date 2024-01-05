@@ -3,21 +3,30 @@
 use App\Services\DatabaseService;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+
+
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+try {
+
+     $db->beginReadOnlyTransaction();
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
 $barCodeEnabled = $general->getGlobalConfig('bar_code_printing');
+$key = (string) $general->getGlobalConfig('key');
 
 
 $tableName = "form_eid";
@@ -300,7 +309,6 @@ foreach ($rResult as $aRow) {
           $row[] = $aRow['remote_sample_code'];
      }
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = (string) $general->getGlobalConfig('key');
           $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
           $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
           $aRow['mother_id'] = $general->crypto('decrypt', $aRow['mother_id'], $key);
@@ -356,4 +364,9 @@ foreach ($rResult as $aRow) {
      }
      $output['aaData'][] = $row;
 }
-echo json_encode($output);
+     echo MiscUtility::convertToUtf8AndEncode($output);
+
+     $db->commitTransaction();
+     } catch (Exception $exc) {
+          LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+     }

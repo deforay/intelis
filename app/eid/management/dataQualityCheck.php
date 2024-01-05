@@ -18,6 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
+$key = (string) $general->getGlobalConfig('key');
 
 $tableName = "form_eid";
 $primaryKey = "eid_id";
@@ -186,7 +187,6 @@ foreach ($rResult as $aRow) {
           $row[] = $aRow['remote_sample_code'];
      }
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = (string) $general->getGlobalConfig('key');
           $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
           $childName = $general->crypto('decrypt', $childName, $key);
      }

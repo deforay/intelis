@@ -3,6 +3,7 @@
 // This file is included in /vl/results/generate-result-pdf.php
 
 use App\Services\UsersService;
+use App\Services\ResultPdfService;
 use App\Utilities\DateUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
@@ -12,6 +13,8 @@ use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
+/** @var ResultPdfService $resultPdfService */
+$resultPdfService = ContainerRegistry::get(ResultPdfService::class);
 
 if (!empty($result)) {
 

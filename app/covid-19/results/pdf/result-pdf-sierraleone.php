@@ -84,6 +84,7 @@ $covid19Results = $covid19Service->getCovid19Results();
 
 $countryFormId = (int) $general->getGlobalConfig('vl_form');
 $resultFilename = '';
+$key = (string) $general->getGlobalConfig('key');
 
 if (!empty($requestResult)) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
@@ -103,7 +104,6 @@ if (!empty($requestResult)) {
         $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
         if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-            $key = (string) $general->getGlobalConfig('key');
             $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $patientLname = $general->crypto('decrypt', $patientLname, $key);

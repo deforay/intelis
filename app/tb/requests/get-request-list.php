@@ -2,6 +2,8 @@
 
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
@@ -319,7 +321,7 @@ foreach ($rResult as $aRow) {
 
      $output['aaData'][] = $row;
 }
-     echo json_encode($output);
+     echo MiscUtility::convertToUtf8AndEncode($output);
 
      $db->commitTransaction();
      } catch (Exception $exc) {

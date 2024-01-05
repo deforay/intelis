@@ -86,6 +86,7 @@ if (isset($_GET['type'])) {
 }
 
 $globalConfig = $general->getGlobalConfig();
+$key = (string) $general->getGlobalConfig('key');
 
 
 $barcodeFormat = $globalConfig['barcode_format'] ?? 'C39';
@@ -269,7 +270,6 @@ if (!empty($id)) {
                         }
 
                         if (!empty($sampleResult[0]['is_encrypted']) && $sampleResult[0]['is_encrypted'] == 'yes') {
-                            $key = (string) $general->getGlobalConfig('key');
                             $sampleResult[0][$patientIdColumn] = $general->crypto('decrypt', $sampleResult[0][$patientIdColumn], $key);
                         }
 
@@ -352,7 +352,6 @@ if (!empty($id)) {
                             $lotExpirationDate .= DateUtility::humanReadableDateFormat($sampleResult[0]['lot_expiration_date'] ?? '');
                         }
                         if (!empty($sampleResult[0]['is_encrypted']) && $sampleResult[0]['is_encrypted'] == 'yes') {
-                            $key = (string) $general->getGlobalConfig('key');
                             $sampleResult[0][$patientIdColumn] = $general->crypto('decrypt', $sampleResult[0][$patientIdColumn], $key);
                         }
 

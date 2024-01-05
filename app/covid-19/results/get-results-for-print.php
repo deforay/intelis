@@ -5,6 +5,9 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
+
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -13,8 +16,13 @@ if (session_status() == PHP_SESSION_NONE) {
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+try {
+
+    $db->beginReadOnlyTransaction();
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$key = (string) $general->getGlobalConfig('key');
 
 
 /** @var Covid19Service $covid19Service */
@@ -271,7 +279,6 @@ foreach ($rResult as $aRow) {
     $patientLname = $general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']);
 
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-        $key = (string) $general->getGlobalConfig('key');
         $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
         $patientFname = $general->crypto('decrypt', $patientFname, $key);
         $patientLname = $general->crypto('decrypt', $patientLname, $key);
@@ -296,4 +303,9 @@ foreach ($rResult as $aRow) {
     $output['aaData'][] = $row;
 }
 
-echo json_encode($output);
+echo MiscUtility::convertToUtf8AndEncode($output);
+
+$db->commitTransaction();
+} catch (Exception $exc) {
+     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+}

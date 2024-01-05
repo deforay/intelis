@@ -138,7 +138,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									<select class="form-control select2" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
 										<option value=""> -- Select -- </option>
 										<?php foreach ($testTypeResult as $testType) { ?>
-											<option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
+											<option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] ?></option>
 										<?php } ?>
 									</select>
 								</div>
@@ -437,7 +437,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 	function getManifestCodeForm(value) {
 		if (value != "") {
-			var code = value.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $general->generateRandomString(6)); ?>';
+			shortCode = $("#testType").find(":selected").attr("data-short");
+			var code = shortCode.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $general->generateRandomString(6)); ?>';
 			$('#packageCode').val(code);
 			$("#addSpecimenReferralManifestForm").removeClass("hide");
 		}

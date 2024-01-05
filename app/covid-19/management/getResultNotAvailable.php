@@ -18,6 +18,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";
+$key = (string) $general->getGlobalConfig('key');
+
 //config  query
 $configQuery = "SELECT * from global_config";
 $configResult = $db->query($configQuery);
@@ -206,7 +208,6 @@ foreach ($rResult as $aRow) {
     }
 
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-        $key = (string) $general->getGlobalConfig('key');
         $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
         $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
     }

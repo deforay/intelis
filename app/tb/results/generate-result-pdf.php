@@ -38,6 +38,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $tbService = ContainerRegistry::get(TbService::class);
 
 $formId = (int) $general->getGlobalConfig('vl_form');
+$key = (string) $general->getGlobalConfig('key');
 
 //set print time
 $printedTime = date('Y-m-d H:i:s');
@@ -162,7 +163,6 @@ if (!empty($requestResult)) {
         $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
         if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-            $key = (string) $general->getGlobalConfig('key');
             $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $patientLname = $general->crypto('decrypt', $patientLname, $key);

@@ -17,6 +17,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_tb";
 $primaryKey = "tb_id";
+$key = (string) $general->getGlobalConfig('key');
+
 //config  query
 $configQuery = "SELECT * from global_config";
 $configResult = $db->query($configQuery);
@@ -204,7 +206,6 @@ foreach ($rResult as $aRow) {
         $row[] = $aRow['remote_sample_code'];
     }
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-        $key = (string) $general->getGlobalConfig('key');
         $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
         $patientFname = $general->crypto('decrypt', $patientFname, $key);
         $patientMname = $general->crypto('decrypt', $patientMname, $key);

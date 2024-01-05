@@ -110,6 +110,7 @@ if (!empty($where)) {
 $query .= " ORDER BY vl.request_created_datetime ASC";
 // die($query);
 $result = $db->rawQuery($query);
+$key = (string) $general->getGlobalConfig('key');
 
 ?>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
@@ -118,7 +119,6 @@ $result = $db->rawQuery($query);
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) {
 			if ($sample['is_encrypted'] == 'yes') {
-				$key = (string) $general->getGlobalConfig('key');
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
 			if (!empty($sample[$sampleCode])) {
@@ -142,7 +142,6 @@ $result = $db->rawQuery($query);
 	<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) {
 			if ($sample['is_encrypted'] == 'yes') {
-				$key = (string) $general->getGlobalConfig('key');
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
 			if (!empty($sample[$sampleCode])) {

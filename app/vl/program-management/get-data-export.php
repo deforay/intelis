@@ -3,12 +3,17 @@
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+try{
+     $db->beginReadOnlyTransaction();
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -18,6 +23,8 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
+$key = (string) $general->getGlobalConfig('key');
+
 
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
@@ -274,6 +281,7 @@ if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
+
 $_SESSION['vlResultQuery'] = $sQuery;
 
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
@@ -299,7 +307,6 @@ foreach ($rResult as $aRow) {
           $row[] = $aRow['remote_sample_code'];
      }
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = (string) $general->getGlobalConfig('key');
           $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
           $patientFname = $general->crypto('decrypt', $patientFname, $key);
           $patientMname = $general->crypto('decrypt', $patientMname, $key);
@@ -324,4 +331,9 @@ foreach ($rResult as $aRow) {
      $output['aaData'][] = $row;
 }
 
-echo json_encode($output);
+     echo MiscUtility::convertToUtf8AndEncode($output);
+
+     $db->commitTransaction();
+     } catch (Exception $exc) {
+          LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+     }
