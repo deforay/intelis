@@ -49,7 +49,7 @@ try {
     ];
     if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
         $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
-        header("Location:addVlRequest.php");
+        header("Location:/vl/requests/addVlRequest.php");
         die;
     }
 

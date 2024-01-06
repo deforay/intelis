@@ -24,23 +24,26 @@ $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['fac
 
 //Get selected state
 $stateQuery = "SELECT * FROM facility_details WHERE facility_id=?";
-$stateResult = $db->rawQuery($stateQuery, [$vlQueryInfo['facility_id']]);
-if (!isset($stateResult[0]['facility_state']) || $stateResult[0]['facility_state'] == '') {
-	$stateResult[0]['facility_state'] = "";
-}
+$stateResult = $db->rawQueryOne($stateQuery, [$vlQueryInfo['facility_id']]);
+
+$stateResult['facility_state'] = $stateResult['facility_state'] ?? "";
+$stateResult['facility_district'] = $stateResult['facility_district'] ?? "";
+
 //district details
 $districtQuery = "SELECT DISTINCT facility_district FROM facility_details WHERE facility_state= ?";
-$districtResult = $db->rawQuery($districtQuery, [$stateResult[0]['facility_state']]);
-$provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id= ?";
-$provinceResult = $db->rawQuery($provinceQuery, [$stateResult[0]['facility_state_id']]);
-if (!isset($provinceResult[0]['geo_code']) || $provinceResult[0]['geo_code'] == '') {
-	$provinceResult[0]['geo_code'] = "";
-}
+$districtResult = $db->rawQuery($districtQuery, [$stateResult['facility_state']]);
+$provinceQuery = "SELECT geo_code FROM geographical_divisions WHERE geo_id= ?";
+$provinceResult = $db->rawQueryOne($provinceQuery, [$stateResult['facility_state_id']]);
+
+$provinceResult['geo_code'] = $provinceResult['geo_code'] ?? '';
+
 //get ART list
 $aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
 $aResult = $db->query($aQuery);
 
 
+$duVisibility = (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((string) $vlQueryInfo['is_patient_new']) == "no") ? 'hidden' : 'visible';
+$femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'none' : 'block';
 ?>
 
 <style>
@@ -50,15 +53,11 @@ $aResult = $db->query($aQuery);
 	}
 
 	.du {
-		<?php
-		if (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((string) $vlQueryInfo['is_patient_new']) == "no") { ?>visibility: hidden;
-		<?php } ?>
+		visibility: <?php echo $duVisibility; ?>;
 	}
 
 	#femaleElements {
-		<?php
-		if (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") { ?>display: none;
-		<?php } ?>
+		display: <?php echo $femaleElementsDisplay; ?>;
 	}
 </style>
 <!-- Content Wrapper. Contains page content -->
@@ -129,7 +128,7 @@ $aResult = $db->query($aQuery);
 											<select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($pdResult as $provinceName) { ?>
-													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower((string) $stateResult[0]['facility_state']) . "##" . strtolower((string) $provinceResult[0]['geo_code']) == strtolower((string) $provinceName['geo_name']) . "##" . strtolower((string) $provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>
+													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower((string) $stateResult['facility_state']) . "##" . strtolower((string) $provinceResult['geo_code']) == strtolower((string) $provinceName['geo_name']) . "##" . strtolower((string) $provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -139,7 +138,7 @@ $aResult = $db->query($aQuery);
 											<select class="form-control isRequired" name="district" id="district" title="Veuillez choisir le quartier" style="width:100%;" onchange="getfacilityDistrictwise(this);">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($districtResult as $districtName) { ?>
-													<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($stateResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ($districtName['facility_district']); ?></option>
+													<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($stateResult['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ($districtName['facility_district']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -410,7 +409,8 @@ $aResult = $db->query($aQuery);
 										<td style="width:25%;"></td>
 										<td style="width:25%;"></td>
 									</tr>
-									<?php if (isset($arr['sample_type']) && trim((string) $arr['sample_type']) == "enabled") { ?>
+									<?php if (isset($arr['sample_type']) && trim((string) $arr['sample_type']) == "enabled") {
+									?>
 										<tr>
 											<td><label for="specimenType">Type d'échantillon <span class="mandatory">*</span></label></td>
 											<td>
@@ -424,7 +424,8 @@ $aResult = $db->query($aQuery);
 											<td></td>
 											<td></td>
 										</tr>
-									<?php } ?>
+									<?php }
+									?>
 									<tr class="plasmaElement" style="display:<?php echo ($vlQueryInfo['sample_type'] == 2) ? '' : 'none'; ?>;">
 										<td><label for="conservationTemperature">Si
 												plasma,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Température de conservation

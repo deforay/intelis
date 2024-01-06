@@ -2,13 +2,11 @@
 
 // imported in addVlRequest.php based on country in global config
 
-use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
-
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
-
 
 //check remote user
 $rKey = '';
@@ -938,29 +936,28 @@ $sFormat = '';
 		$('#reasonForVLTesting').select2({
 			placeholder: "Select motif de la demande"
 		});
-		
+
 	});
 
 	function getVlResults(platformInfo) {
 		if (!platformInfo) {
 			$("#vlResult").attr("disabled", true);
 			return;
-		}
-		else{
+		} else {
 			$("#vlResult").attr("disabled", false);
 
-		var str1 = platformInfo.split("##");
-		//Get VL results by platform id
-		var platformId = str1[3];
-		$("#possibleVlResults").html('');
-		$.post("/vl/requests/getVlResults.php", {
-				instrumentId: platformId,
-			},
-			function(data) {
-				if (data != "") {
-					$("#possibleVlResults").html(data);
-				}
-			});
+			var str1 = platformInfo.split("##");
+			//Get VL results by platform id
+			var platformId = str1[3];
+			$("#possibleVlResults").html('');
+			$.post("/vl/requests/getVlResults.php", {
+					instrumentId: platformId,
+				},
+				function(data) {
+					if (data != "") {
+						$("#possibleVlResults").html(data);
+					}
+				});
 		}
 	}
 </script>

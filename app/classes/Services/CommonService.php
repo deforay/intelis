@@ -125,7 +125,7 @@ class CommonService
     }
 
     // get data from the system_config table from database
-    public function getSystemConfig($name = null)
+    public function getSystemConfig(?string $name = null)
     {
         // Handling a specific configuration request
         if (!empty($name)) {
@@ -148,8 +148,8 @@ class CommonService
         } else {
             // Handling request for all configurations
             // Check if all configurations are already in the session
-            if (isset($_SESSION['system_config']) && is_array($_SESSION['system_config'])) {
-                return $_SESSION['system_config'];
+            if (isset($_SESSION['system_config']['all']) && is_array($_SESSION['system_config']['all'])) {
+                return $_SESSION['system_config']['all'];
             }
 
             // Fetch all configurations from database
@@ -167,7 +167,7 @@ class CommonService
 
 
     // get data from the global_config table from database
-    public function getGlobalConfig($name = null)
+    public function getGlobalConfig(?string $name = null)
     {
         // Handling a specific configuration request
         if (!empty($name)) {
@@ -186,8 +186,8 @@ class CommonService
         } else {
             // Handling request for all configurations
             // Check if all configurations are already in the session
-            if (isset($_SESSION['global_config']) && is_array($_SESSION['global_config'])) {
-                return $_SESSION['global_config'];
+            if (isset($_SESSION['global_config']['all']) && is_array($_SESSION['global_config']['all'])) {
+                return $_SESSION['global_config']['all'];
             }
 
             // Fetch all configurations from database
@@ -198,7 +198,7 @@ class CommonService
             }
 
             // Store all configurations in session and return
-            $_SESSION['global_config'] = $garr;
+            $_SESSION['global_config']['all'] = $garr;
             return $garr;
         }
     }
@@ -753,11 +753,11 @@ class CommonService
             ];
             return $this->db->insert("track_api_requests", $data);
         } catch (Exception | SystemException $exc) {
-            if ($this->db->getLastErrno() > 0) {
-                error_log($this->db->getLastErrno());
-                error_log($this->db->getLastError());
-                error_log($this->db->getLastQuery());
-            }
+            //if ($this->db->getLastErrno() > 0) {
+            error_log('Error in track_api_requests : ' . $this->db->getLastErrno());
+            error_log('Error in track_api_requests : ' . $this->db->getLastError());
+            error_log('Error in track_api_requests : ' . $this->db->getLastQuery());
+            //}
             LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
             return 0;
         }

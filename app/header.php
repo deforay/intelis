@@ -17,7 +17,6 @@ $general = ContainerRegistry::get(CommonService::class);
 $appMenuService = ContainerRegistry::get(AppMenuService::class);
 
 $_SESSION['modules'] = $_SESSION['modules'] ?? [];
-
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 

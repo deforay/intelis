@@ -1,8 +1,8 @@
 <?php
 
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 
 /** @var DatabaseService $db */
@@ -12,25 +12,24 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], _translate("-- Select --"));
 //Get selected state
 $stateQuery = "SELECT * FROM facility_details WHERE facility_id= ?";
-$stateResult = $db->rawQuery($stateQuery, [$vlQueryInfo['facility_id']]);
-if (!isset($stateResult[0]['facility_state'])) {
-	$stateResult[0]['facility_state'] = '';
-}
+$stateResult = $db->rawQueryOne($stateQuery, [$vlQueryInfo['facility_id']]);
+$stateResult['facility_state'] = $stateResult['facility_state'] ?? "";
+$stateResult['facility_district'] = $stateResult['facility_district'] ?? "";
+
 //district details
 $districtQuery = "SELECT DISTINCT facility_district FROM facility_details WHERE facility_state=?";
-$districtResult = $db->rawQuery($districtQuery, [$stateResult[0]['facility_state']]);
+$districtResult = $db->rawQuery($districtQuery, [$stateResult['facility_state']]);
 
-$provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_name=?";
-$provinceResult = $db->rawQuery($provinceQuery, [$stateResult[0]['facility_state']]);
-if (!isset($provinceResult[0]['geo_code'])) {
-	$provinceResult[0]['geo_code'] = '';
-}
+$provinceQuery = "SELECT geo_code FROM geographical_divisions WHERE geo_name=?";
+$provinceResult = $db->rawQueryOne($provinceQuery, [$stateResult['facility_state']]);
+
+$provinceResult['geo_code'] = $provinceResult['geo_code'] ?? '';
+
 
 //get ART list
 $aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
@@ -47,7 +46,12 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 	$result = explode("##", (string) $vlQueryInfo['reason_for_result_changes']);
 	$reasonChange = $result[1];
 }
+
+
+$duVisibility = (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((string) $vlQueryInfo['is_patient_new']) == "no") ? 'hidden' : 'visible';
+$femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'none' : 'block';
 ?>
+
 <style>
 	.translate-content {
 		color: #0000FF;
@@ -55,15 +59,11 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 	}
 
 	.du {
-		<?php
-		if (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((string) $vlQueryInfo['is_patient_new']) == "no") { ?>visibility: hidden;
-		<?php } ?>
+		visibility: <?php echo $duVisibility; ?>;
 	}
 
 	#femaleElements {
-		<?php
-		if (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") { ?>display: none;
-		<?php } ?>
+		display: <?php echo $femaleElementsDisplay; ?>;
 	}
 </style>
 <!-- Content Wrapper. Contains page content -->
@@ -116,7 +116,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($pdResult as $provinceName) { ?>
-													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower((string) $stateResult[0]['facility_state']) . "##" . strtolower((string) $provinceResult[0]['geo_code']) == strtolower((string) $provinceName['geo_name']) . "##" . strtolower((string) $provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>
+													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower((string) $stateResult['facility_state']) . "##" . strtolower((string) $provinceResult['geo_code']) == strtolower((string) $provinceName['geo_name']) . "##" . strtolower((string) $provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -127,7 +127,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 												<?php
 												foreach ($districtResult as $districtName) {
 												?>
-													<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($stateResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ($districtName['facility_district']); ?></option>
+													<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($stateResult['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ($districtName['facility_district']); ?></option>
 												<?php
 												}
 												?>
@@ -381,7 +381,8 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 											<td></td>
 											<td></td>
 										</tr>
-									<?php } ?>
+									<?php }
+									?>
 									<tr class="plasmaElement" style="display:<?php echo ($vlQueryInfo['sample_type'] == 2) ? '' : 'none'; ?>;">
 										<td><label for="conservationTemperature">Si
 												plasma,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Température de conservation
