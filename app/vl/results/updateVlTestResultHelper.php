@@ -200,5 +200,5 @@ try {
 
     header("Location:vlTestResult.php");
 } catch (Exception $exc) {
-    throw new SystemException($exc->getMessage(), 500);
+    throw new SystemException($exc->getMessage(), 500, $exc);
 }

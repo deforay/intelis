@@ -150,17 +150,13 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
 <script>
     function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
         $.blockUI();
-        $.post("/vl/requests/insert-sample.php", {
-                sampleCode: $("#" + sampleCode).val(),
-                sampleCodeKey: $("#" + sampleCodeKey).val(),
-                sampleCodeFormat: $("#" + sampleCodeFormat).val(),
-                countryId: countryId,
-                sampleCollectionDate: $("#" + sampleCollectionDate).val(),
-                provinceCode: provinceCode,
-                provinceId: provinceId
-            },
+        let formData = $("#" + formId).serialize();
+        formData += "&provinceCode=" + encodeURIComponent(provinceCode);
+        formData += "&provinceId=" + encodeURIComponent(provinceId);
+        formData += "&countryId=" + encodeURIComponent(countryId);
+
+        $.post("/vl/requests/insert-sample.php", formData,
             function(data) {
-                //console.log(data);
                 if (data > 0) {
                     $.unblockUI();
                     document.getElementById("vlSampleId").value = data;

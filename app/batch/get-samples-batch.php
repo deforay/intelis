@@ -61,8 +61,8 @@ if (isset($_POST['batchId'])) {
     $where[] = " (sample_batch_id IS NULL OR sample_batch_id='')";
 }
 
-if (!empty($_POST['fName']) && is_array($_POST['fName'])) {
-    $swhere[] = " vl.facility_id IN (" . implode(',', $_POST['fName']) . ")";
+if (!empty($_POST['facilityId']) && is_array($_POST['facilityId'])) {
+    $swhere[] = " vl.facility_id IN (" . implode(',', $_POST['facilityId']) . ")";
 }
 
 if (trim((string) $sample) != '') {

@@ -149,9 +149,12 @@ function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = tru
     }
 }
 
-function _castVariable($variable, $expectedType = null)
+function _castVariable($variable, $expectedType = null, $isNullable = true)
 {
-    if (!empty($variable)) {
+
+    if ($isNullable && empty($variable)) {
+        return null;
+    } elseif (!empty($variable)) {
         switch ($expectedType) {
             case 'int':
                 return (int) $variable;
@@ -174,6 +177,8 @@ function _castVariable($variable, $expectedType = null)
                 return [];
             case 'json':
                 return '{}';
+            case 'string':
+                return '';
             default:
                 return null;
         }

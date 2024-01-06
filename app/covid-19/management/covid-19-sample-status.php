@@ -1,13 +1,11 @@
 <?php
 
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+
 $title = _translate("Covid-19 | Sample Status Report");
 
 require_once APPLICATION_PATH . '/header.php';

@@ -142,10 +142,10 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 												<?php } ?>
 											</select>
 										</td>
-										<td><label for="fName">POINT DE COLLECT </label><span class="mandatory">*</span>
+										<td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span>
 										</td>
 										<td>
-											<select class="form-control isRequired" name="fName" id="fName" title="Veuillez choisir le POINT DE COLLECT" onchange="getfacilityProvinceDetails(this);" style="width:100%;">
+											<select class="form-control isRequired" name="facilityId" id="facilityId" title="Veuillez choisir le POINT DE COLLECT" onchange="getfacilityProvinceDetails(this);" style="width:100%;">
 												<?= $facility; ?>
 											</select>
 										</td>
@@ -637,7 +637,7 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 			$(".vlResult, .vlLog").show();
 		}
 
-		$('#fName').select2({
+		$('#facilityId').select2({
 			placeholder: "Select Clinic/Health Center"
 		});
 		$('#district').select2({
@@ -718,7 +718,7 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#fName").html(details[0]);
+						$("#facilityId").html(details[0]);
 						$("#district").html(details[1]);
 					}
 				});
@@ -731,7 +731,7 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 	function getfacilityDistrictwise(obj) {
 		$.blockUI();
 		var dName = $("#district").val();
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					dName: dName,
@@ -741,11 +741,11 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#fName").html(details[0]);
+						$("#facilityId").html(details[0]);
 					}
 				});
 		} else {
-			$("#fName").html("<option value=''> -- Sélectionner -- </option>");
+			$("#facilityId").html("<option value=''> -- Sélectionner -- </option>");
 		}
 		$.unblockUI();
 	}

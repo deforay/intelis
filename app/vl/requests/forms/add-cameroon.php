@@ -133,8 +133,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
-                                                       <label for="fName"><?= _translate('Clinic/Health Center'); ?> <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired" id="fName" name="fName" title="<?= _translate('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
+                                                       <label for="facilityId"><?= _translate('Clinic/Health Center'); ?> <span class="mandatory">*</span></label>
+                                                       <select class="form-control isRequired" id="facilityId" name="facilityId" title="<?= _translate('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                             <?php //echo $facility;
                                                             foreach ($healthFacilitiesAllColumns as $hFacility) {
@@ -148,8 +148,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
-                                                       <label for="fCode"><?= _translate('Clinic/Health Center Code'); ?> </label>
-                                                       <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>">
+                                                       <label for="facilityCode"><?= _translate('Clinic/Health Center Code'); ?> </label>
+                                                       <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>">
                                                   </div>
                                              </div>
                                         </div>
@@ -749,7 +749,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      facilityName = true;
 
      $(document).ready(function() {
-          //Utilities.autoSelectSingleOption('fName');
+          //Utilities.autoSelectSingleOption('facilityId');
           Utilities.autoSelectSingleOption('specimenType');
 
           $("#artNo").on('input', function() {
@@ -796,7 +796,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           });
 
-          $('#fName').select2({
+          $('#facilityId').select2({
                placeholder: "<?= _translate('Select Clinic/Health Center'); ?>"
           });
           $('#labId').select2({
@@ -871,7 +871,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function getfacilityDetails(obj) {
 
           $.blockUI();
-          var cName = $("#fName").val();
+          var cName = $("#facilityId").val();
           var pName = $("#province").val();
           if (pName != '' && provinceName && facilityName) {
                facilityName = false;
@@ -885,7 +885,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     function(data) {
                          if (data != "") {
                               details = data.split("###");
-                              $("#fName").html(details[0]);
+                              $("#facilityId").html(details[0]);
                               $("#district").html(details[1]);
                               //$("#clinicianName").val(details[2]);
                          }
@@ -896,8 +896,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                provinceName = true;
                facilityName = true;
                $("#province").html("<?= (string) $province; ?>");
-               $("#fName").html("<?= (string) addslashes($facility); ?>");
-               $("#fName").select2("val", "");
+               $("#facilityId").html("<?= (string) addslashes($facility); ?>");
+               $("#facilityId").select2("val", "");
                $("#district").html("<option value=''> -- Select -- </option>");
           }
           $.unblockUI();
@@ -907,7 +907,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function getfacilityDistrictwise(obj) {
           $.blockUI();
           var dName = $("#district").val();
-          var cName = $("#fName").val();
+          var cName = $("#facilityId").val();
           if (dName != '') {
                $.post("/includes/siteInformationDropdownOptions.php", {
                          dName: dName,
@@ -917,11 +917,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     function(data) {
                          if (data != "") {
                               details = data.split("###");
-                              $("#fName").html(details[0]);
+                              $("#facilityId").html(details[0]);
                          }
                     });
           } else {
-               $("#fName").html("<option value=''> -- Select -- </option>");
+               $("#facilityId").html("<option value=''> -- Select -- </option>");
           }
           $.unblockUI();
      }
@@ -953,7 +953,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function fillFacilityDetails() {
           $.blockUI();
           //check facility name
-          var cName = $("#fName").val();
+          var cName = $("#facilityId").val();
           var pName = $("#province").val();
           if (cName != '' && provinceName && facilityName) {
                provinceName = false;
@@ -975,13 +975,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                provinceName = true;
                facilityName = true;
                $("#province").html("<?php echo $province; ?>");
-               $("#fName").html("<?php echo addslashes((string) $facility); ?>");
+               $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
           }
           $.unblockUI();
-          $("#fCode").val($('#fName').find(':selected').data('code'));
-          var femails = $('#fName').find(':selected').data('emails');
-          var fmobilenos = $('#fName').find(':selected').data('mobile-nos');
-          var fContactPerson = $('#fName').find(':selected').data('contact-person');
+          $("#facilityCode").val($('#facilityId').find(':selected').data('code'));
+          var femails = $('#facilityId').find(':selected').data('emails');
+          var fmobilenos = $('#facilityId').find(':selected').data('mobile-nos');
+          var fContactPerson = $('#facilityId').find(':selected').data('contact-person');
           if ($.trim(femails) != '' || $.trim(fmobilenos) != '' || fContactPerson != '') {
                $(".facilityDetails").show();
           } else {

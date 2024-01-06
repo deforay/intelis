@@ -93,10 +93,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											</select>
 										</td>
 										<td style="width:10%" class="labels">
-											<label for="fName">Clinic/Ward <span class="mandatory">*</span></label>
+											<label for="facilityId">Clinic/Ward <span class="mandatory">*</span></label>
 										</td>
 										<td style="width:20%">
-											<select class="form-control isRequired" id="fName" name="fName" title="Please select clinic/ward" style="width:100%;" onchange="getfacilityProvinceDetails(this)">
+											<select class="form-control isRequired" id="facilityId" name="facilityId" title="Please select clinic/ward" style="width:100%;" onchange="getfacilityProvinceDetails(this)">
 												<?php echo $facility; ?>
 											</select>
 										</td>
@@ -752,7 +752,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		$('#labId').select2({
 			placeholder: "Select Testing Lab Name"
 		});
-		$('#fName').select2({
+		$('#facilityId').select2({
 			placeholder: "Select Clinic/Health Center"
 		});
 		$('#district').select2({
@@ -826,7 +826,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 	function getfacilityDetails(obj) {
 		$.blockUI();
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		var pName = $("#province").val();
 		$('#reqClinicianPhoneNumber').val('');
 		if (pName != '' && provinceName && facilityName) {
@@ -841,7 +841,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 					function(data) {
 						if (data != "") {
 							details = data.split("###");
-							$("#fName").html(details[0]);
+							$("#facilityId").html(details[0]);
 							$("#district").html(details[1]);
 							$("#clinicianName").val(details[2]);
 						}
@@ -851,7 +851,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 			provinceName = true;
 			facilityName = true;
 			$("#province").html("<?php echo $province; ?>");
-			$("#fName").html("<?php echo $facility; ?>");
+			$("#facilityId").html("<?php echo $facility; ?>");
 		}
 		$.unblockUI();
 	}
@@ -859,7 +859,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 	function getfacilityDistrictwise(obj) {
 		$.blockUI();
 		var dName = $("#district").val();
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		$('#reqClinicianPhoneNumber').val('');
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
@@ -870,7 +870,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#fName").html(details[0]);
+						$("#facilityId").html(details[0]);
 					}
 				});
 		}
@@ -879,7 +879,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 	function getfacilityProvinceDetails(obj) {
 		$.blockUI();
-		$('#reqClinicianPhoneNumber').val($("#fName").find(":selected").attr("data-mobile-nos"));
+		$('#reqClinicianPhoneNumber').val($("#facilityId").find(":selected").attr("data-mobile-nos"));
 		$.unblockUI();
 	}
 

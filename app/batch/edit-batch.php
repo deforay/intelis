@@ -415,7 +415,7 @@ $fundingSourceList = $general->getFundingSources();
 
 	function getSampleCodeDetails() {
 		$.blockUI();
-		var fName = $("#facilityName").val();
+		var facilityId = $("#facilityName").val();
 
 		$.post("get-samples-batch.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
@@ -423,7 +423,7 @@ $fundingSourceList = $general->getFundingSources();
 				type: '<?php echo $testType; ?>',
 				batchId: $("#batchId").val(),
 				genericTestType: '<?php echo $genericTestType; ?>',
-				fName: fName,
+				facilityId: facilityId,
 				sName: $("#sampleType").val(),
 				fundingSource: $("#fundingSource").val(),
 			},

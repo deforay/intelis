@@ -121,8 +121,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </select>
                                         </td>
                                         <td style="width:25%">
-                                            <label for="fCode"><?= _translate('Clinic/Health Center Code'); ?> </label><br>
-                                            <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>">
+                                            <label for="facilityCode"><?= _translate('Clinic/Health Center Code'); ?> </label><br>
+                                            <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>">
                                         </td>
                                     </tr>
 
@@ -788,7 +788,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         //check facility name
 
         $.unblockUI();
-        $("#fCode").val($('#facilityId').find(':selected').data('code'));
+        $("#facilityCode").val($('#facilityId').find(':selected').data('code'));
 
     }
 

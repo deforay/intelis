@@ -290,15 +290,11 @@ require_once($fileArray[$arr['vl_form']]);
 
     function insertSampleCode(formId, tbSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
         $.blockUI();
-        $.post("/tb/requests/insert-sample.php", {
-                sampleCode: $("#" + sampleCode).val(),
-                sampleCodeKey: $("#" + sampleCodeKey).val(),
-                sampleCodeFormat: $("#" + sampleCodeFormat).val(),
-                countryId: countryId,
-                sampleCollectionDate: $("#" + sampleCollectionDate).val(),
-                provinceCode: provinceCode,
-                provinceId: provinceId
-            },
+        let formData = $("#" + formId).serialize();
+        formData += "&provinceCode=" + encodeURIComponent(provinceCode);
+        formData += "&provinceId=" + encodeURIComponent(provinceId);
+        formData += "&countryId=" + encodeURIComponent(countryId);
+        $.post("/tb/requests/insert-sample.php", formData,
             function(data) {
 
                 if (data > 0) {

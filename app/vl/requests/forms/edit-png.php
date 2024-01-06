@@ -250,10 +250,10 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 											</select>
 										</td>
 										<td style="width:14%" class="labels">
-											<label for="fName">Clinic/Ward <span class="mandatory">*</span></label>
+											<label for="facilityId">Clinic/Ward <span class="mandatory">*</span></label>
 										</td>
 										<td style="width:20%">
-											<select class="form-control isRequired" id="fName" name="fName" title="Please select clinic/ward" style="width:100%;" onchange="getfacilityProvinceDetails(this)">
+											<select class="form-control isRequired" id="facilityId" name="facilityId" title="Please select clinic/ward" style="width:100%;" onchange="getfacilityProvinceDetails(this)">
 												<?= $facility; ?>
 											</select>
 										</td>
@@ -836,7 +836,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 			}
 		});
 
-		//getfacilityProvinceDetails($("#fName").val());
+		//getfacilityProvinceDetails($("#facilityId").val());
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -897,7 +897,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 		$('#labId').select2({
 			placeholder: "Select Testing Lab Name"
 		});
-		$('#fName').select2({
+		$('#facilityId').select2({
 			placeholder: "Select Clinic/Health Center"
 		});
 		$('#district').select2({
@@ -925,7 +925,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 
 	function getfacilityDetails(obj) {
 		$.blockUI();
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		var pName = $("#province").val();
 		$('#reqClinicianPhoneNumber').val('');
 		if (pName != '' && provinceName && facilityName) {
@@ -940,7 +940,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 					function(data) {
 						if (data != "") {
 							details = data.split("###");
-							$("#fName").html(details[0]);
+							$("#facilityId").html(details[0]);
 							$("#district").html(details[1]);
 							$("#clinicianName").val(details[2]);
 						}
@@ -950,7 +950,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 			provinceName = true;
 			facilityName = true;
 			$("#province").html("<?php echo $province; ?>");
-			$("#fName").html("<?php echo $facility; ?>");
+			$("#facilityId").html("<?php echo $facility; ?>");
 		}
 		$.unblockUI();
 	}
@@ -958,7 +958,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 	function getfacilityDistrictwise(obj) {
 		$.blockUI();
 		var dName = $("#district").val();
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		$('#reqClinicianPhoneNumber').val('');
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
@@ -969,7 +969,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#fName").html(details[0]);
+						$("#facilityId").html(details[0]);
 					}
 				});
 		}
@@ -978,10 +978,10 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 
 	function getfacilityProvinceDetails(obj) {
 		$.blockUI();
-		//$('#reqClinicianPhoneNumber').val($("#fName").find(":selected").attr("data-mobile-nos"));
+		//$('#reqClinicianPhoneNumber').val($("#facilityId").find(":selected").attr("data-mobile-nos"));
 		$.unblockUI();
 		//   check facility name
-		//    var cName = $("#fName").val();
+		//    var cName = $("#facilityId").val();
 		//    var pName = $("#province").val();
 		//    if(cName!='' && provinceName && facilityName){
 		//      provinceName = false;
@@ -1000,7 +1000,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 		//      provinceName = true;
 		//      facilityName = true;
 		//      $("#province").html("< ?php echo $province;?>");
-		//      $("#fName").html("< ?php echo $facility;?>");
+		//      $("#facilityId").html("< ?php echo $facility;?>");
 		//    }
 	}
 

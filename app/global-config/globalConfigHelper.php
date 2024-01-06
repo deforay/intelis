@@ -24,7 +24,7 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 
 // unset global config session so that it can be reloaded with new values
 // this is set in CommonService::getGlobalConfig()
-unset($_SESSION['global_config']);
+unset($_SESSION['app']['global_config']);
 
 try {
 
@@ -68,8 +68,8 @@ try {
         }
     }
     $instanceData = [
-        'instance_facility_name' => $_POST['fName'],
-        'instance_facility_code' => $_POST['fCode'],
+        'instance_facility_name' => $_POST['facilityId'],
+        'instance_facility_code' => $_POST['facilityCode'],
         'instance_facility_type' => $_POST['instance_type'],
         'instance_update_on' => $currentDateTime,
     ];

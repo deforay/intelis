@@ -91,9 +91,9 @@ try {
 
 
     //update facility code
-    if (isset($_POST['fCode']) && trim((string) $_POST['fCode']) != '') {
-        $fData = array('facility_code' => $_POST['fCode']);
-        $db->where('facility_id', $_POST['fName']);
+    if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
+        $fData = array('facility_code' => $_POST['facilityCode']);
+        $db->where('facility_id', $_POST['facilityId']);
         $id = $db->update($fDetails, $fData);
     }
     if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {
@@ -189,16 +189,16 @@ try {
     $vlData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $formId,
-        'sample_reordered' => _castVariable($_POST['sampleReordered'], 'string') ?? 'no',
-        'external_sample_code' => _castVariable($_POST['serialNo'], 'string'),
-        'facility_id' => _castVariable($_POST['fName'], 'int'),
+        'sample_reordered' => _castVariable($_POST['sampleReordered'] ?? null, 'string') ?? 'no',
+        'external_sample_code' => $_POST['serialNo'] ?? null,
+        'facility_id' => $_POST['facilityId'] ?? null,
         'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),
         'sample_dispatched_datetime' => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
-        'patient_gender' => _castVariable($_POST['gender'], 'string'),
+        'patient_gender' => $_POST['gender'] ?? null,
         'system_patient_code' => $systemGeneratedCode,
         'patient_dob' => DateUtility::isoDateFormat($_POST['dob'] ?? ''),
-        'patient_age_in_years' => _castVariable($_POST['ageInYears'], 'int'),
-        'patient_age_in_months' => _castVariable($_POST['ageInMonths'], 'int'),
+        'patient_age_in_years' => _castVariable($_POST['ageInYears'] ?? null, 'int'),
+        'patient_age_in_months' => _castVariable($_POST['ageInMonths'] ?? null, 'int'),
         'is_patient_pregnant' => $_POST['patientPregnant'] ?? null,
         'no_of_pregnancy_weeks' => $_POST['noOfPregnancyWeeks'] ?? null,
         'is_patient_breastfeeding' => $_POST['breastfeeding'] ?? null,
@@ -206,7 +206,7 @@ try {
         'pregnancy_trimester' => $_POST['trimester'] ?? null,
         'patient_has_active_tb' => $_POST['activeTB'] ?? null,
         'patient_active_tb_phase' => $_POST['tbPhase'] ?? null,
-        'patient_art_no' => _castVariable($_POST['artNo'], 'string'),
+        'patient_art_no' => $_POST['artNo'] ?? null,
         'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
         'is_patient_new' => $_POST['isPatientNew'] ?? null,
         'treatment_duration' => $_POST['treatmentDuration'] ?? null,
@@ -264,7 +264,7 @@ try {
         'result_value_text' => $txtVal ?? null,
         'result' => $finalResult ?? null,
         'result_value_log' => $logVal ?? null,
-        'result_reviewed_by' => _castVariable($_POST['reviewedBy'], 'string'),
+        'result_reviewed_by' => _castVariable($_POST['reviewedBy'] ?? null, 'string'),
         'result_reviewed_datetime' => DateUtility::isoDateFormat($_POST['reviewedOn'] ?? ''),
         'tested_by' => $_POST['testedBy'] ?? null,
         'result_approved_by' => $_POST['approvedBy'] ?? null,
@@ -376,7 +376,7 @@ try {
         if (!empty($_POST['printBarCode']) && $_POST['printBarCode'] == 'on') {
             $s = $_POST['sampleCode'];
             $facQuery = "SELECT facility_name FROM facility_details where facility_id= ?";
-            $facResult = $db->rawQueryOne($facQuery, [$_POST['fName']]);
+            $facResult = $db->rawQueryOne($facQuery, [$_POST['facilityId']]);
             $f = ($facResult['facility_name']) . " | " . $_POST['sampleCollectionDate'];
             $barcode = "?barcode=true&s=$s&f=$f";
         }
@@ -397,6 +397,6 @@ try {
         $_SESSION['alertMsg'] = _translate("Please try again later");
         header("Location:/vl/requests/vl-requests.php");
     }
-} catch (Exception $exc) {
-    throw new SystemException($exc->getMessage(), 500);
+} catch (Exception $e) {
+    throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), 500, $e);
 }

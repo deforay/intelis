@@ -238,8 +238,8 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 									</div>
 									<div class="col-xs-4 col-md-4">
 										<div class="form-group">
-											<label for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
-											<select class="form-control isRequired" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="fillFacilityDetails(this);">
+											<label for="facilityId">Clinic/Health Center <span class="mandatory">*</span></label>
+											<select class="form-control isRequired" id="facilityId" name="facilityId" title="Please select clinic/health center name" style="width:100%;" onchange="fillFacilityDetails(this);">
 
 												<?= $facility; ?>
 											</select>
@@ -247,8 +247,8 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 									</div>
 									<div class="col-xs-3 col-md-3" style="display:none;">
 										<div class="form-group">
-											<label for="fCode">Clinic/Health Center Code </label>
-											<input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="Clinic/Health Center Code" title="Please enter clinic/health center code" value="<?php echo $facilityResult[0]['facility_code']; ?>">
+											<label for="facilityCode">Clinic/Health Center Code </label>
+											<input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Clinic/Health Center Code" title="Please enter clinic/health center code" value="<?php echo $facilityResult[0]['facility_code']; ?>">
 										</div>
 									</div>
 								</div>
@@ -1067,12 +1067,12 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 
 
 		$('#activeTB').trigger('change');
-		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
+		$("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
 
-			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
+			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
 				$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
 			}
-			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
+			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
 				$('#sampleReceivedDate').val($('#sampleCollectionDate').val());
 				$('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
 			}
@@ -1158,7 +1158,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 
 
 		autoFillFocalDetails();
-		$('#fName').select2({
+		$('#facilityId').select2({
 			width: '100%',
 			placeholder: "Select Clinic/Health Center"
 		});
@@ -1193,7 +1193,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 		});
 		//getAge();
 
-		getfacilityProvinceDetails($("#fName").val());
+		getfacilityProvinceDetails($("#facilityId").val());
 
 
 
@@ -1202,7 +1202,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 			$("#vlResult").trigger('change');
 			$("#hivDetection, #isSampleRejected").trigger('change');
 			// just triggering sample collection date is enough,
-			// it will automatically do everything that labId and fName changes will do
+			// it will automatically do everything that labId and facilityId changes will do
 			$("#sampleCollectionDate").trigger('change');
 			__clone = $(".labSectionBody").clone();
 			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
@@ -1365,7 +1365,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 
 	function getProvinceDistricts(obj) {
 		$.blockUI();
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		var pName = $("#province").val();
 		if (pName != '' && provinceName && facilityName) {
 			facilityName = false;
@@ -1379,9 +1379,9 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#fName").html(details[0]);
+						$("#facilityId").html(details[0]);
 						$("#district").html(details[1]);
-						$("#fCode").val('');
+						$("#facilityCode").val('');
 						$(".facilityDetails").hide();
 						$(".facilityEmails").html('');
 						$(".facilityMobileNumbers").html('');
@@ -1393,7 +1393,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 			provinceName = true;
 			facilityName = true;
 			$("#province").html("<?php echo $province; ?>");
-			$("#fName").html("<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>");
+			$("#facilityId").html("<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>");
 		}
 		$.unblockUI();
 	}
@@ -1401,7 +1401,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 	function getFacilities(obj) {
 		$.blockUI();
 		var dName = $("#district").val();
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					dName: dName,
@@ -1411,7 +1411,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#fName").html(details[0]);
+						$("#facilityId").html(details[0]);
 						//$("#labId").html(details[1]);
 						$(".facilityDetails").hide();
 						$(".facilityEmails").html('');
@@ -1426,7 +1426,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 	function getfacilityProvinceDetails(obj) {
 		$.blockUI();
 		//check facility name
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		var pName = $("#province").val();
 		if (cName != '' && provinceName && facilityName) {
 			provinceName = false;
@@ -1455,10 +1455,10 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 
 	function fillFacilityDetails(obj) {
 		getfacilityProvinceDetails(obj)
-		$("#fCode").val($('#fName').find(':selected').data('code'));
-		var femails = $('#fName').find(':selected').data('emails');
-		var fmobilenos = $('#fName').find(':selected').data('mobile-nos');
-		var fContactPerson = $('#fName').find(':selected').data('contact-person');
+		$("#facilityCode").val($('#facilityId').find(':selected').data('code'));
+		var femails = $('#facilityId').find(':selected').data('emails');
+		var fmobilenos = $('#facilityId').find(':selected').data('mobile-nos');
+		var fContactPerson = $('#facilityId').find(':selected').data('contact-person');
 		if ($.trim(femails) != '' || $.trim(fmobilenos) != '' || fContactPerson != '') {
 			$(".facilityDetails").show();
 		} else {

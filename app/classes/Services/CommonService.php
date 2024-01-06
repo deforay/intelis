@@ -62,7 +62,7 @@ class CommonService
 
             return [$queryResult, $count];
         } catch (Exception $e) {
-            throw new SystemException($e->getMessage());
+            throw new SystemException($e->getMessage(), 500, $e);
         }
     }
 
@@ -125,84 +125,47 @@ class CommonService
     }
 
     // get data from the system_config table from database
-    public function getSystemConfig(?string $name = null)
+    public function getSystemConfig(?string $name = null): string|array|null
     {
-        // Handling a specific configuration request
-        if (!empty($name)) {
-            // Check if the specific configuration is already in the session
-            if (isset($_SESSION['system_config'][$name])) {
-                return $_SESSION['system_config'][$name];
-            }
-
-            // Fetch from database if not in session
-            $this->db->where('name', $name);
-            $systemConfigResult = $this->db->get('system_config');
-
-            if (!empty($systemConfigResult)) {
-                $value = $systemConfigResult[0]['value'] ?? null;
-                $_SESSION['system_config'][$name] = $value;
-                return $value;
-            }
-
-            return null;
-        } else {
-            // Handling request for all configurations
-            // Check if all configurations are already in the session
-            if (isset($_SESSION['system_config']['all']) && is_array($_SESSION['system_config']['all'])) {
-                return $_SESSION['system_config']['all'];
-            }
-
-            // Fetch all configurations from database
-            $sarr = [];
+        if (empty($_SESSION['app']['system_config']) || (!empty($name) && empty($_SESSION['app']['system_config'][$name]))) {
+            $returnConfig = [];
             $systemConfigResult = $this->db->get('system_config');
             foreach ($systemConfigResult as $config) {
-                $sarr[$config['name']] = $config['value'];
+                $returnConfig[$config['name']] = $config['value'];
             }
 
-            // Store all configurations in session and return
-            $_SESSION['system_config'] = $sarr;
-            return $sarr;
+            // Store all configurations in session
+            $_SESSION['app']['system_config'] = $returnConfig;
+        }
+
+        if (!empty($name)) {
+            return $_SESSION['app']['system_config'][$name] ?? null;
+        } else {
+            return $_SESSION['app']['system_config'] ?? null;
         }
     }
 
 
     // get data from the global_config table from database
-    public function getGlobalConfig(?string $name = null)
+    public function getGlobalConfig(?string $name = null): string|array|null
     {
-        // Handling a specific configuration request
+        if (empty($_SESSION['app']['global_config']) || (!empty($name) && empty($_SESSION['app']['global_config'][$name]))) {
+            $returnConfig = [];
+            $configResult = $this->db->get('global_config');
+            foreach ($configResult as $config) {
+                $returnConfig[$config['name']] = $config['value'];
+            }
+
+            // Store all configurations in session
+            $_SESSION['app']['global_config'] = $returnConfig;
+        }
+
         if (!empty($name)) {
-            // Check if the specific configuration is already in the session
-            if (isset($_SESSION['global_config'][$name])) {
-                return $_SESSION['global_config'][$name];
-            }
-
-            // Fetch from database if not in session
-            $this->db->where('name', $name);
-            $value = $this->db->getValue("global_config", "value") ?? null;
-
-            // Store in session and return
-            $_SESSION['global_config'][$name] = $value;
-            return $value;
+            return $_SESSION['app']['global_config'][$name] ?? null;
         } else {
-            // Handling request for all configurations
-            // Check if all configurations are already in the session
-            if (isset($_SESSION['global_config']['all']) && is_array($_SESSION['global_config']['all'])) {
-                return $_SESSION['global_config']['all'];
-            }
-
-            // Fetch all configurations from database
-            $garr = [];
-            $globalConfigResult = $this->db->get('global_config');
-            foreach ($globalConfigResult as $config) {
-                $garr[$config['name']] = $config['value'];
-            }
-
-            // Store all configurations in session and return
-            $_SESSION['global_config']['all'] = $garr;
-            return $garr;
+            return $_SESSION['app']['global_config'] ?? null;
         }
     }
-
 
     public function getDataByTableAndFields($table, $fields, $option = true, $condition = null, $group = null)
     {
@@ -815,12 +778,12 @@ class CommonService
                 $this->db->where('facility_id', $labId);
                 $this->db->update('facility_details', $data);
             }
-        } catch (Exception | SystemException $exception) {
+        } catch (Exception | SystemException $exc) {
             if ($this->db->getLastErrno() > 0) {
                 error_log($this->db->getLastError());
                 error_log($this->db->getLastQuery());
             }
-            error_log("Error while updating timestamps : " . $exception->getMessage());
+            LoggerUtility::log('error', "Error while updating timestamps : " . $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
         }
     }
 

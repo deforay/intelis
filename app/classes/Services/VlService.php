@@ -52,7 +52,7 @@ class VlService extends AbstractTestService
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (SystemException $e) {
-                LoggerUtility::log('error', 'Generate Sample Code : ' . $e->getMessage(), [
+                LoggerUtility::log('error', 'Generate Sample Code : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error
@@ -426,7 +426,6 @@ class VlService extends AbstractTestService
     public function insertSample($params, $returnSampleData = false)
     {
         try {
-
             // Start a new transaction (this starts a new transaction if not already started)
             // see the beginTransaction() function implementation to understand how this works
             $this->db->beginTransaction();
@@ -469,16 +468,16 @@ class VlService extends AbstractTestService
                 $tesRequestData = [
                     'vlsm_country_id' => $formId,
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
-                    'facility_id' => _castVariable($params['facilityId'], 'int'),
-                    'lab_id' => _castVariable($params['labId'], 'int'),
-                    'app_sample_code' => _castVariable($params['appSampleCode'], 'string'),
+                    'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
+                    'lab_id' => $params['labId'] ?? null,
+                    'app_sample_code' => $params['appSampleCode'] ?? null,
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                     'province_id' => _castVariable($provinceId, 'int'),
-                    'request_created_by' => _castVariable($_SESSION['userId'], 'string') ?? _castVariable($params['userId'], 'string') ?? null,
+                    'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                     'form_attributes' => $params['formAttributes'] ?? "{}",
                     'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                    'last_modified_by' => _castVariable($_SESSION['userId'], 'string') ?? _castVariable($params['userId'], 'string') ?? null,
+                    'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime()
                 ];
 
@@ -507,8 +506,11 @@ class VlService extends AbstractTestService
                     'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address' => $this->commonService->getClientIpAddress()
                 ];
-                $tesRequestData['form_attributes'] = json_encode($formAttributes);
+
+                $formAttributes = $this->commonService->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+                $tesRequestData['form_attributes'] = $this->db->func($formAttributes);
                 $this->db->insert("form_vl", $tesRequestData);
+
                 $id = $this->db->getInsertId();
                 if ($this->db->getLastErrno() > 0) {
                     throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
@@ -539,13 +541,13 @@ class VlService extends AbstractTestService
             // Rollback the current transaction to release locks and undo changes
             $this->db->rollbackTransaction();
 
-            if ($this->db->getLastErrno() > 0) {
-                error_log($this->db->getLastErrno());
-                error_log($this->db->getLastError());
-                error_log($this->db->getLastQuery());
-            }
+            //if ($this->db->getLastErrno() > 0) {
+            error_log($this->db->getLastErrno());
+            error_log($this->db->getLastError());
+            error_log($this->db->getLastQuery());
+            //}
 
-            LoggerUtility::log('error', 'Insert VL Sample : ' . $e->getMessage(), [
+            LoggerUtility::log('error', 'Insert VL Sample : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(), // File where the error occurred
                 'line' => $e->getLine(), // Line number of the error

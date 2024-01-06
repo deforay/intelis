@@ -90,17 +90,17 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="fName" class="col-lg-4 control-label"><?php echo _translate("Instance/Facility Name"); ?> <span class="mandatory">*</span></label>
+											<label for="facilityId" class="col-lg-4 control-label"><?php echo _translate("Instance/Facility Name"); ?> <span class="mandatory">*</span></label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control isRequired readPage" name="fName" id="fName" title="<?php echo _translate('Please enter instance name'); ?>" placeholder="<?php echo _translate('Facility/Instance Name'); ?>" value="<?php echo $instanceResult[0]['instance_facility_name']; ?>" />
+												<input type="text" class="form-control isRequired readPage" name="facilityId" id="facilityId" title="<?php echo _translate('Please enter instance name'); ?>" placeholder="<?php echo _translate('Facility/Instance Name'); ?>" value="<?php echo $instanceResult[0]['instance_facility_name']; ?>" />
 											</div>
 										</div>
 									</div>
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="fCode" class="col-lg-4 control-label"><?php echo _translate("Instance/Facility Code"); ?> </label>
+											<label for="facilityCode" class="col-lg-4 control-label"><?php echo _translate("Instance/Facility Code"); ?> </label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control readPage" id="fCode" name="fCode" placeholder="<?php echo _translate('Facility Code'); ?>" title="<?php echo _translate('Please enter instance/facility code'); ?>" value="<?php echo $instanceResult[0]['instance_facility_code']; ?>" />
+												<input type="text" class="form-control readPage" id="facilityCode" name="facilityCode" placeholder="<?php echo _translate('Facility Code'); ?>" title="<?php echo _translate('Please enter instance/facility code'); ?>" value="<?php echo $instanceResult[0]['instance_facility_code']; ?>" />
 											</div>
 										</div>
 									</div>

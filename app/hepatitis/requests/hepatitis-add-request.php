@@ -278,16 +278,12 @@ require_once($fileArray[$arr['vl_form']]);
 
     function insertSampleCode(formId, hepatitisTestType, hepatitisSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
         $.blockUI();
-        $.post("/hepatitis/requests/insert-sample.php", {
-                sampleCode: $("#" + sampleCode).val(),
-                sampleCodeKey: $("#" + sampleCodeKey).val(),
-                sampleCodeFormat: $("#" + sampleCodeFormat).val(),
-                countryId: countryId,
-                sampleCollectionDate: $("#" + sampleCollectionDate).val(),
-                provinceCode: provinceCode,
-                prefix: $("#" + hepatitisTestType).val(),
-                provinceId: provinceId
-            },
+        let formData = $("#" + formId).serialize();
+        formData += "&provinceCode=" + encodeURIComponent(provinceCode);
+        formData += "&provinceId=" + encodeURIComponent(provinceId);
+        formData += "&countryId=" + encodeURIComponent(countryId);
+        formData += "&prefix=" + encodeURIComponent($("#" + hepatitisTestType).val());
+        $.post("/hepatitis/requests/insert-sample.php", formData,
             function(data) {
                 if (data > 0) {
                     $.unblockUI();

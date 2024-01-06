@@ -186,7 +186,7 @@
     function getfacilityProvinceDetails(obj) {
         $.blockUI();
         //check facility name`
-        var cName = $("#fName").val();
+        var cName = $("#facilityId").val();
         var pName = $("#province").val();
         if (cName != '' && provinceName && facilityName) {
             provinceName = false;
@@ -208,7 +208,7 @@
             provinceName = true;
             facilityName = true;
             $("#province").html("<?php echo $province ?? ""; ?>");
-            $("#fName").html("<?= (string) $facility ?? ""; ?>");
+            $("#facilityId").html("<?= (string) $facility ?? ""; ?>");
         }
         $.unblockUI();
     }

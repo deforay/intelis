@@ -90,9 +90,9 @@ try {
 
 
      //update facility code
-     if (trim((string) $_POST['fCode']) != '') {
-          $fData = array('facility_code' => $_POST['fCode']);
-          $db->where('facility_id', $_POST['fName']);
+     if (trim((string) $_POST['facilityCode']) != '') {
+          $fData = array('facility_code' => $_POST['facilityCode']);
+          $db->where('facility_id', $_POST['facilityId']);
           $id = $db->update($fDetails, $fData);
      }
 
@@ -189,7 +189,7 @@ try {
           'vlsm_country_id' => $formId,
           'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
           'external_sample_code' => $_POST['serialNo'] ?? null,
-          'facility_id' => $_POST['fName'] ?? null,
+          'facility_id' => $_POST['facilityId'] ?? null,
           'system_patient_code' => $systemGeneratedCode,
           'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),
           'sample_dispatched_datetime' => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
@@ -379,5 +379,5 @@ try {
      }
      header("Location:/vl/requests/vl-requests.php");
 } catch (Exception $exc) {
-     throw new SystemException($exc->getMessage(), 500);
+     throw new SystemException($exc->getMessage(), 500, $exc);
 }

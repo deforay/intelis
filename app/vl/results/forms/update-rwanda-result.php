@@ -156,15 +156,15 @@ $disable = "disabled = 'disabled'";
 									</select>
 								</div>
 								<div class="col-xs-3 col-md-3">
-									<label for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
-									<select class="form-control isRequired" id="fName" name="fName" title="Please select clinic/health center name" <?php echo $disable; ?> style="width:100%;" onchange="autoFillFacilityCode();">
+									<label for="facilityId">Clinic/Health Center <span class="mandatory">*</span></label>
+									<select class="form-control isRequired" id="facilityId" name="facilityId" title="Please select clinic/health center name" <?php echo $disable; ?> style="width:100%;" onchange="autoFillFacilityCode();">
 										<?= $facility; ?>
 									</select>
 								</div>
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
-										<label for="fCode">Clinic/Health Center Code </label>
-										<input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="Clinic/Health Center Code" title="Please enter clinic/health center code" value="<?php echo $facilityResult[0]['facility_code']; ?>" <?php echo $disable; ?>>
+										<label for="facilityCode">Clinic/Health Center Code </label>
+										<input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Clinic/Health Center Code" title="Please enter clinic/health center code" value="<?php echo $facilityResult[0]['facility_code']; ?>" <?php echo $disable; ?>>
 									</div>
 								</div>
 							</div>

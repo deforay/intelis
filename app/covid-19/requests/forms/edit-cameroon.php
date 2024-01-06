@@ -2,13 +2,9 @@
 
 // imported in covid-19-edit-request.php based on country in global config
 
-use App\Registries\ContainerRegistry;
-use App\Services\Covid19Service;
 use App\Utilities\DateUtility;
-
-
-
-
+use App\Services\Covid19Service;
+use App\Registries\ContainerRegistry;
 
 /* To get testing platform names */
 

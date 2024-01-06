@@ -22,7 +22,7 @@ $lName = $_POST['lName'];
 $testType = $_POST['testType'];
 $pName = $_POST['pName'];
 $dName = $_POST['dName'];
-$fName = $_POST['fName'];
+$facilityId = $_POST['facilityId'];
 $scDate = $_POST['scDate'];
 
 $tableName = "form_vl";
@@ -48,8 +48,8 @@ $query = "SELECT vl.remote_sample_code,vl.$primaryKey,vl.facility_id FROM $table
 if (trim((string) $lName) != '') {
 	$query = $query . " AND vl.lab_id='" . $lName . "'";
 }
-if ($_POST['fName'] != '') {
-	$query = $query . " AND vl.facility_id='" . $fName . "'";
+if ($_POST['facilityId'] != '') {
+	$query = $query . " AND vl.facility_id='" . $facilityId . "'";
 }
 if (isset($scDate) && trim((string) $scDate) != '') {
 	$s_c_date = explode("to", (string) $scDate);

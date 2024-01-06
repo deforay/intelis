@@ -12,6 +12,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
+$_POST = _sanitizeInput($_POST);
+
 try {
     // Start transaction
     $db->beginTransaction();

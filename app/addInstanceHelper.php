@@ -51,12 +51,12 @@ function getMacWindows(): string
 	return substr($mycom, ($pmac + 36), 17);
 }
 try {
-	if ((isset($_POST['fName']) && trim((string) $_POST['fName']) != "") || isset($_POST['labId']) && trim((string) $_POST['labId']) != "") {
+	if ((isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) != "") || isset($_POST['labId']) && trim((string) $_POST['labId']) != "") {
 		if (isset($_POST['labId']) && trim((string) $_POST['labId']) != "") {
 			$labResults = $general->fetchDataFromTable('facility_details', 'facility_id = ' . $_POST['labId'], array('facility_type', 'facility_name', 'facility_code'));
 			if (isset($labResults[0]['facility_name']) && trim((string) $labResults[0]['facility_name']) != "") {
-				$_POST['fName'] = $labResults[0]['facility_name'];
-				$_POST['fCode'] = $labResults[0]['facility_code'];
+				$_POST['facilityId'] = $labResults[0]['facility_name'];
+				$_POST['facilityCode'] = $labResults[0]['facility_code'];
 				$_POST['fType'] = $labResults[0]['facility_type'];
 			}
 		}
@@ -73,8 +73,8 @@ try {
 		$db->where('name', 'instance_type');
 		$db->update($globalTable, array('value' => $_POST['fType']));
 		$data = [
-			'instance_facility_name' => $_POST['fName'],
-			'instance_facility_code' => $_POST['fCode'],
+			'instance_facility_name' => $_POST['facilityId'],
+			'instance_facility_code' => $_POST['facilityCode'],
 			'instance_facility_type' => $_POST['fType'],
 			'instance_added_on' => DateUtility::getCurrentDateTime(),
 			'instance_update_on' => DateUtility::getCurrentDateTime()
@@ -89,7 +89,7 @@ try {
 		$db->where('vlsm_instance_id', $instanceId);
 		$id = $db->update($tableName, $data);
 		if ($id === true) {
-			$_SESSION['instanceFacilityName'] = $_POST['fName'];
+			$_SESSION['instanceFacilityName'] = $_POST['facilityId'];
 			if (isset($sanitizedLogoFile['name']) && $sanitizedLogoFile['name'] != "") {
 
 				MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo");
@@ -122,5 +122,5 @@ try {
 	}
 	header("Location:addInstanceDetails.php");
 } catch (Exception $exc) {
-	throw new SystemException($exc->getMessage(), 500);
+	throw new SystemException($exc->getMessage(), 500, $exc);
 }

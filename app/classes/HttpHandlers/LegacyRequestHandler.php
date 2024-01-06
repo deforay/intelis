@@ -86,10 +86,10 @@ class LegacyRequestHandler implements RequestHandlerInterface
             }
         } catch (SystemException | Exception $e) {
             ob_end_clean(); // Clean the buffer in case of an error
-            throw new SystemException("An error occurred while processing the request in $fileToInclude: " . $e->getMessage(), 500, $e);
+            throw new SystemException("Error in $fileToInclude: " . $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), 500, $e);
         } catch (Throwable $e) {
             ob_end_clean(); // Clean the buffer in case of an error
-            throw new SystemException("An error occurred while processing the request in $fileToInclude : " . $e->getMessage(), 500);
+            throw new SystemException("Error in $fileToInclude : " . $e->getFile() . ":" .  $e->getLine() . ":" . $e->getMessage(), 500);
         }
     }
 }

@@ -87,11 +87,11 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 										</td>
 										<td class="sts hide"><strong>Lab Name&nbsp;<span class="mandatory">*</span></strong> <br>
 										<td class="sts hide">
-											<input type="text" class="form-control sts-input isRequired" name="fName" id="fName" title="Please enter instance name" placeholder="Instance/Facility Name" />
+											<input type="text" class="form-control sts-input isRequired" name="facilityId" id="facilityId" title="Please enter instance name" placeholder="Instance/Facility Name" />
 										</td>
 										<td class="sts hide">&nbsp;<strong>Lab ID&nbsp;</strong></td>
 										<td class="sts hide">
-											<input type="text" class="form-control" id="fCode" name="fCode" placeholder="Instance/Facility Code" title="Please enter facility code" />
+											<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="Instance/Facility Code" title="Please enter facility code" />
 										</td>
 									</tr>
 									<tr style="display:none;">

@@ -343,7 +343,7 @@ foreach ($fResult as $fDetails) {
 		var testType = $("#testType").val();
 		var pName = $("#provinceName").val();
 		var dName = $("#districtName").val();
-		var fName = $("#facilityName").val();
+		var facilityId = $("#facilityName").val();
 		var scDate = $("#sampleCollectionDate").val();
 		if (lName != "" && testType != "") {
 			$.post("/move-samples/get-move-samples-codes.php", {
@@ -351,7 +351,7 @@ foreach ($fResult as $fDetails) {
 					testType: testType,
 					pName: pName,
 					dName: dName,
-					fName: fName,
+					facilityId: facilityId,
 					scDate: scDate
 				},
 				function(data) {

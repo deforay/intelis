@@ -315,21 +315,11 @@ require_once($fileArray[$arr['vl_form']]);
 
     function insertSampleCode(formId, covid19SampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
         $.blockUI();
-        $.post("/covid-19/requests/insert-sample.php", {
-                sampleCode: $("#" + sampleCode).val(),
-                sampleCodeKey: $("#" + sampleCodeKey).val(),
-                sampleCodeFormat: $("#" + sampleCodeFormat).val(),
-                countryId: countryId,
-                sampleCollectionDate: $("#" + sampleCollectionDate).val(),
-                provinceCode: provinceCode,
-                provinceId: provinceId,
-                patientId: $("#patientId").val(),
-                patientCodePrefix: $("#patientCodePrefix").val(),
-                patientCodeKey: $("#patientCodeKey").val(),
-                firstName: $("#firstName").val(),
-                lastName: $("#lastName").val(),
-                patientGender: $("#patientGender").val(),
-            },
+        let formData = $("#" + formId).serialize();
+        formData += "&provinceCode=" + encodeURIComponent(provinceCode);
+        formData += "&provinceId=" + encodeURIComponent(provinceId);
+        formData += "&countryId=" + encodeURIComponent(countryId);
+        $.post("/covid-19/requests/insert-sample.php", formData,
             function(data) {
                 //console.log(data);
                 if (data > 0) {

@@ -79,7 +79,7 @@ $type = $_GET['type'];
                     ?>
                   </select>
                 <?php } else { ?>
-                  <input type="text" id="fName" name="fName" class="form-control" readonly="readonly" value="Lab" style="background:#fff;" />
+                  <input type="text" id="facilityId" name="facilityId" class="form-control" readonly="readonly" value="Lab" style="background:#fff;" />
                   <input type="hidden" id="facilityTypeName" name="facilityTypeName" value="2" />
                 <?php } ?>
               </td>

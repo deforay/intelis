@@ -12,6 +12,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\LoggerUtility;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use JsonMachine\Exception\PathNotFoundException;
 
@@ -60,8 +61,8 @@ try {
         if (empty($input)) {
             throw new PathNotFoundException();
         }
-    } catch (PathNotFoundException $ex) {
-        throw new SystemException("Invalid request");
+    } catch (PathNotFoundException $e) {
+        throw new SystemException("Invalid request", 400, $e);
     }
 
     $transactionId = $general->generateUUID();
@@ -445,6 +446,7 @@ try {
     error_log($db->getLastError());
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
+    LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }
 
 

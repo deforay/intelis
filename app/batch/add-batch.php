@@ -394,7 +394,7 @@ $fundingSourceList = $general->getFundingSources();
             alert("<?= _translate("You have to choose a testing platform to proceed", true); ?>");
             return false;
         }
-        var fName = $("#facilityName").val();
+        var facilityId = $("#facilityName").val();
 
         $.blockUI();
         $.post("get-samples-batch.php", {
@@ -402,7 +402,7 @@ $fundingSourceList = $general->getFundingSources();
                 sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
                 type: '<?= $_GET['type']; ?>',
                 testType: $('#testType').val(),
-                fName: fName,
+                facilityId: facilityId,
                 sName: $("#sampleType").val(),
                 fundingSource: $("#fundingSource").val(),
             },

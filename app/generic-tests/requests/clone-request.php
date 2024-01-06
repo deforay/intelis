@@ -454,18 +454,18 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 								</div>
 								<div class="row">
 									<div class="col-md-6">
-										<label class="col-lg-5" for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
+										<label class="col-lg-5" for="facilityId">Clinic/Health Center <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<select class="form-control isRequired" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="fillFacilityDetails(this);">
+											<select class="form-control isRequired" id="facilityId" name="facilityId" title="Please select clinic/health center name" style="width:100%;" onchange="fillFacilityDetails(this);">
 
 												<?= $facility; ?>
 											</select>
 										</div>
 									</div>
 									<div class="col-md-6" style="display:none;">
-										<label class="col-lg-5" for="fCode">Clinic/Health Center Code </label>
+										<label class="col-lg-5" for="facilityCode">Clinic/Health Center Code </label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="Clinic/Health Center Code" title="Please enter clinic/health center code" value="<?php echo $facilityResult[0]['facility_code']; ?>">
+											<input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Clinic/Health Center Code" title="Please enter clinic/health center code" value="<?php echo $facilityResult[0]['facility_code']; ?>">
 										</div>
 									</div>
 									<div class="col-md-6">
@@ -1131,13 +1131,13 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			}
 		});
 
-		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
+		$("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
 
-			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $(
+			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $(
 					"#sampleDispatchedDate").val() == "") {
 				$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
 			}
-			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $(
+			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $(
 					"#sampleReceivedDate").val() == "") {
 				$('#sampleReceivedDate').val($('#sampleCollectionDate').val());
 				$('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
@@ -1189,7 +1189,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			width: '100%',
 			placeholder: "<?php echo _translate("Select Specimen Type"); ?>"
 		});
-		$('#fName').select2({
+		$('#facilityId').select2({
 			width: '100%',
 			placeholder: "Select Clinic/Health Center"
 		});
@@ -1237,13 +1237,13 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		//getAge();
 		getTestTypeForm();
 
-		getfacilityProvinceDetails($("#fName").val());
+		getfacilityProvinceDetails($("#facilityId").val());
 
 		setTimeout(function() {
 			$("#vlResult").trigger('change');
 			$("#isSampleRejected").trigger('change');
 			// just triggering sample collection date is enough,
-			// it will automatically do everything that labId and fName changes will do
+			// it will automatically do everything that labId and facilityId changes will do
 			$("#sampleCollectionDate").trigger('change');
 			__clone = $(".labSectionBody").clone();
 			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
@@ -1490,7 +1490,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	function getfacilityProvinceDetails(obj) {
 		$.blockUI();
 		//check facility name`
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		var pName = $("#province").val();
 		if (cName != '' && provinceName && facilityName) {
 			provinceName = false;
@@ -1511,14 +1511,14 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			provinceName = true;
 			facilityName = true;
 			$("#province").html("<?php echo $province; ?>");
-			$("#fName").html("<?php echo $facility; ?>");
+			$("#facilityId").html("<?php echo $facility; ?>");
 		}
 		$.unblockUI();
 	}
 
 	function getProvinceDistricts(obj) {
 		$.blockUI();
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		var pName = $("#province").val();
 		if (pName != '' && provinceName && facilityName) {
 			facilityName = false;
@@ -1532,9 +1532,9 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#fName").html(details[0]);
+						$("#facilityId").html(details[0]);
 						$("#district").html(details[1]);
-						$("#fCode").val('');
+						$("#facilityCode").val('');
 						$(".facilityDetails").hide();
 						$(".facilityEmails").html('');
 						$(".facilityMobileNumbers").html('');
@@ -1547,7 +1547,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			provinceName = true;
 			facilityName = true;
 			$("#province").html("<?php echo $province; ?>");
-			$("#fName").html(
+			$("#facilityId").html(
 				"<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>"
 			);
 		}
@@ -1577,16 +1577,12 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 
 	function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
 		$.blockUI();
-		$.post("/generic-tests/requests/insert-sample.php", {
-				sampleCode: $("#" + sampleCode).val(),
-				sampleCodeKey: $("#" + sampleCodeKey).val(),
-				sampleCodeFormat: $("#" + sampleCodeFormat).val(),
-				countryId: countryId,
-				sampleCollectionDate: $("#" + sampleCollectionDate).val(),
-				provinceCode: $("#province").find(":selected").attr("data-code"),
-				provinceId: $("#province").find(":selected").attr("data-province-id"),
-				testType: $('#testType').find(':selected').data('short')
-			},
+		let formData = $("#" + formId).serialize();
+		formData += "&provinceCode=" + encodeURIComponent(provinceCode);
+		formData += "&provinceId=" + encodeURIComponent(provinceId);
+		formData += "&countryId=" + encodeURIComponent(countryId);
+		formData += "&testType=" + encodeURIComponent($('#testType').find(':selected').data('short'));
+		$.post("/generic-tests/requests/insert-sample.php", formData,
 			function(data) {
 				//alert(data);
 				if (data > 0) {
@@ -1606,7 +1602,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		//alert(obj);
 		$.blockUI();
 		var dName = $("#district").val();
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					dName: dName,
@@ -1617,7 +1613,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#fName").html(details[0]);
+						$("#facilityId").html(details[0]);
 						//$("#labId").html(details[1]);
 						$(".facilityDetails").hide();
 						$(".facilityEmails").html('');
@@ -1632,7 +1628,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	function getfacilityProvinceDetails(obj) {
 		$.blockUI();
 		//check facility name
-		var cName = $("#fName").val();
+		var cName = $("#facilityId").val();
 		var pName = $("#province").val();
 		if (cName != '' && provinceName && facilityName) {
 			provinceName = false;
@@ -1661,10 +1657,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 
 	function fillFacilityDetails(obj) {
 		getfacilityProvinceDetails(obj)
-		$("#fCode").val($('#fName').find(':selected').data('code'));
-		var femails = $('#fName').find(':selected').data('emails');
-		var fmobilenos = $('#fName').find(':selected').data('mobile-nos');
-		var fContactPerson = $('#fName').find(':selected').data('contact-person');
+		$("#facilityCode").val($('#facilityId').find(':selected').data('code'));
+		var femails = $('#facilityId').find(':selected').data('emails');
+		var fmobilenos = $('#facilityId').find(':selected').data('mobile-nos');
+		var fContactPerson = $('#facilityId').find(':selected').data('contact-person');
 		if ($.trim(femails) != '' || $.trim(fmobilenos) != '' || fContactPerson != '') {
 			$(".facilityDetails").show();
 		} else {
@@ -1775,7 +1771,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	}
 
 	function setSampleDispatchDate() {
-		if ($("#labId").val() != "" && $("#labId").val() == $("#fName").val() && $('#sampleDispatchedDate').val() == "") {
+		if ($("#labId").val() != "" && $("#labId").val() == $("#facilityId").val() && $('#sampleDispatchedDate').val() == "") {
 			$('#sampleDispatchedDate').val($("sampleCollectionDate").val());
 		}
 	}

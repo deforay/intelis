@@ -51,9 +51,9 @@ if (!_isAllowed($request)) {
 	throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page.'), 401);
 }
 
-$countryCode = _castVariable($arr['default_phone_prefix'], 'string') ?? '';
-$minNumberOfDigits = _castVariable($arr['min_phone_length'], 'int') ?? 15;
-$maxNumberOfDigits = _castVariable($arr['max_phone_length'], 'int') ?? 15;
+$countryCode = $arr['default_phone_prefix'] ?? '';
+$minNumberOfDigits = _castVariable($arr['min_phone_length'] ?? null, 'int') ?? 15;
+$maxNumberOfDigits = _castVariable($arr['max_phone_length'] ?? null, 'int') ?? 15;
 
 $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 

@@ -92,15 +92,15 @@ try {
     }
 
     //update facility code
-    if (isset($_POST['fCode']) && trim((string) $_POST['fCode']) != '') {
-        $fData = array('facility_code' => $_POST['fCode']);
-        $db->where('facility_id', $_POST['fName']);
+    if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
+        $fData = array('facility_code' => $_POST['facilityCode']);
+        $db->where('facility_id', $_POST['facilityId']);
         $id = $db->update($fDetails, $fData);
     }
     //update facility emails
     //if(trim($_POST['emailHf'])!=''){
     //   $fData = array('facility_emails'=>$_POST['emailHf']);
-    //   $db=$db->where('facility_id',$_POST['fName']);
+    //   $db=$db->where('facility_id',$_POST['facilityId']);
     //   $id=$db->update($fDetails,$fData);
     //}
     if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {
@@ -206,11 +206,9 @@ try {
         $interpretationResult = $_POST['resultInterpretation'];
     } */
 
-    if(isset($_POST['subTestResult']) && is_array($_POST['subTestResult']))
-    {
+    if (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) {
         $_POST['subTestResult'] = implode("##", $_POST['subTestResult']);
-    }
-    else{
+    } else {
         $_POST['subTestResult'] = '';
     }
 
@@ -220,7 +218,7 @@ try {
         'sample_reordered' => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] : 'no',
         'sample_code_format' => (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] : null,
         'external_sample_code' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] : null),
-        'facility_id' => (isset($_POST['fName']) && $_POST['fName'] != '') ? $_POST['fName'] : null,
+        'facility_id' => (isset($_POST['facilityId']) && $_POST['facilityId'] != '') ? $_POST['facilityId'] : null,
         'sample_collection_date' => $_POST['sampleCollectionDate'],
         'sample_dispatched_datetime' => $_POST['sampleDispatchedDate'],
         'patient_gender' => (isset($_POST['gender']) && $_POST['gender'] != '') ? $_POST['gender'] : null,
@@ -399,7 +397,7 @@ try {
         $barcode = "";
         if (isset($_POST['printBarCode']) && $_POST['printBarCode'] == 'on') {
             $s = $_POST['sampleCode'];
-            $facQuery = "SELECT * FROM facility_details where facility_id=" . $_POST['fName'];
+            $facQuery = "SELECT * FROM facility_details where facility_id=" . $_POST['facilityId'];
             $facResult = $db->rawQuery($facQuery);
             $f = ($facResult[0]['facility_name']) . " | " . $_POST['sampleCollectionDate'];
             $barcode = "?barcode=true&s=$s&f=$f";
