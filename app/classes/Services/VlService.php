@@ -467,9 +467,12 @@ class VlService extends AbstractTestService
 
                 $tesRequestData = [
                     'vlsm_country_id' => $formId,
+                    'sample_reordered' => _castVariable($params['sampleReordered'] ?? null, 'string') ?? 'no',
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
                     'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,
+                    'patient_art_no' => $params['artNo'] ?? null,
+                    'sample_type' => $params['specimenType'] ?? null,
                     'app_sample_code' => $params['appSampleCode'] ?? null,
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
@@ -478,7 +481,9 @@ class VlService extends AbstractTestService
                     'form_attributes' => $params['formAttributes'] ?? "{}",
                     'request_created_datetime' => DateUtility::getCurrentDateTime(),
                     'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                    'last_modified_datetime' => DateUtility::getCurrentDateTime()
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                    'result_modified'  => 'no',
+                    'manual_result_entry' => 'yes'
                 ];
 
                 $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
