@@ -264,7 +264,7 @@ try {
         'result_value_text' => $txtVal ?? null,
         'result' => $finalResult ?? null,
         'result_value_log' => $logVal ?? null,
-        'result_reviewed_by' => _castVariable($_POST['reviewedBy'] ?? null, 'string'),
+        'result_reviewed_by' => $_POST['reviewedBy'] ?? null,
         'result_reviewed_datetime' => DateUtility::isoDateFormat($_POST['reviewedOn'] ?? ''),
         'tested_by' => $_POST['testedBy'] ?? null,
         'result_approved_by' => $_POST['approvedBy'] ?? null,
