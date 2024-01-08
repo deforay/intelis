@@ -259,8 +259,7 @@ CHANGE `patient_mobile_number` `patient_mobile_number` VARCHAR(20) CHARACTER SET
 CHANGE `vl_result_category` `vl_result_category` VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
 CHANGE `is_patient_pregnant` `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
 CHANGE `is_patient_breastfeeding` `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-CHANGE `patient_has_active_tb` `patient_has_active_tb` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-ALGORITHM=INPLACE, LOCK=NONE;
+CHANGE `patient_has_active_tb` `patient_has_active_tb` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 
 ALTER TABLE `audit_form_vl`
 DROP `is_adherance_poor`,
@@ -277,8 +276,7 @@ DROP `collection_type`,
 DROP `collection_site`,
 DROP `requesting_vl_service_sector`,
 DROP `requesting_category`,
-DROP `requesting_professional_number`,
-ALGORITHM=INPLACE, LOCK=NONE;
+DROP `requesting_professional_number`;
 
 ALTER TABLE `form_eid`
 CHANGE `result_reviewed_by` `result_reviewed_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
