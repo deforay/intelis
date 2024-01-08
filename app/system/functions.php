@@ -31,12 +31,21 @@ function _translate(?string $text, ?bool $escapeForJavaScript = false)
 
 function _isAllowed($currentRequest, $privileges = null)
 {
-    return ContainerRegistry::get(UsersService::class)
+    return (ContainerRegistry::get(UsersService::class))
         ->isAllowed($currentRequest, $privileges);
 }
 
-function _sanitizeInput(string|array $data, $customFilters = [])
+function _sanitizeInput(string|array|null $data, $customFilters = [])
 {
+    // Check for null, empty array, or empty string and return appropriately
+    if ($data === null) {
+        return null;
+    } elseif (is_array($data) && empty($data)) {
+        return [];
+    } elseif (is_string($data) && $data === '') {
+        return '';
+    }
+
     // Default Laminas filter chain with StripTags and StringTrim
     $defaultFilterChain = new FilterChain();
     $defaultFilterChain->attach(new StripTags())
@@ -47,6 +56,11 @@ function _sanitizeInput(string|array $data, $customFilters = [])
 
     // Apply filters
     foreach ($data as $key => &$value) {
+        // Skip processing for null values
+        if ($value === null) {
+            continue;
+        }
+
         if (is_array($value)) {
             // Recursive call for nested arrays
             $value = _sanitizeInput($value, $customFilters[$key] ?? []);
@@ -60,6 +74,7 @@ function _sanitizeInput(string|array $data, $customFilters = [])
 
     return $data;
 }
+
 
 function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = true, $maxSize = null)
 {
@@ -128,7 +143,7 @@ function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = tru
             // Set to empty array to indicate failure
             $sanitizedFiles[$key] = [];
             continue;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             LoggerUtility::log('error', $e->getMessage());
             // Set to empty array to indicate failure
             $sanitizedFiles[$key] = [];
@@ -149,12 +164,25 @@ function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = tru
     }
 }
 
-function _castVariable($variable, $expectedType = null, $isNullable = true)
+function _castVariable(mixed $variable, ?string $expectedType = null, ?bool $isNullable = true)
 {
 
-    if ($isNullable && empty($variable)) {
-        return null;
-    } elseif (!empty($variable)) {
+    if (empty(trim($variable))) {
+        if ($isNullable) {
+            return null;
+        } else {
+            switch ($expectedType) {
+                case 'array':
+                    return [];
+                case 'json':
+                    return '{}';
+                case 'string':
+                    return '';
+                default:
+                    return null;
+            }
+        }
+    } else {
         switch ($expectedType) {
             case 'int':
                 return (int) $variable;
@@ -170,17 +198,6 @@ function _castVariable($variable, $expectedType = null, $isNullable = true)
                 return is_string($variable) ? json_decode($variable, true) : json_encode($variable);
             default:
                 return $variable;
-        }
-    } else {
-        switch ($expectedType) {
-            case 'array':
-                return [];
-            case 'json':
-                return '{}';
-            case 'string':
-                return '';
-            default:
-                return null;
         }
     }
 }

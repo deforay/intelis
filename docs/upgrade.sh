@@ -43,6 +43,51 @@ if ! command -v mysql &>/dev/null; then
     exit 1
 fi
 
+echo "Configuring MySQL..."
+desired_sql_mode="sql_mode ="
+desired_innodb_strict_mode="innodb_strict_mode = 0"
+desired_charset="character-set-server=utf8mb4"
+desired_collation="collation-server=utf8mb4_general_ci"
+config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
+
+awk -v dsm="${desired_sql_mode}" -v dism="${desired_innodb_strict_mode}" \
+    -v dcharset="${desired_charset}" -v dcollation="${desired_collation}" \
+    'BEGIN { sql_mode_added=0; innodb_strict_mode_added=0; charset_added=0; collation_added=0; }
+                /sql_mode[[:space:]]*=/ {
+                    if ($0 ~ dsm) {sql_mode_added=1;}
+                    else {print ";" $0;}
+                    next;
+                }
+                /innodb_strict_mode[[:space:]]*=/ {
+                    if ($0 ~ dism) {innodb_strict_mode_added=1;}
+                    else {print ";" $0;}
+                    next;
+                }
+                /character-set-server[[:space:]]*=/ {
+                    if ($0 ~ dcharset) {charset_added=1;}
+                    else {print ";" $0;}
+                    next;
+                }
+                /collation-server[[:space:]]*=/ {
+                    if ($0 ~ dcollation) {collation_added=1;}
+                    else {print ";" $0;}
+                    next;
+                }
+                /skip-external-locking|mysqlx-bind-address/ {
+                    print;
+                    if (sql_mode_added == 0) {print dsm; sql_mode_added=1;}
+                    if (innodb_strict_mode_added == 0) {print dism; innodb_strict_mode_added=1;}
+                    if (charset_added == 0) {print dcharset; charset_added=1;}
+                    if (collation_added == 0) {print dcollation; collation_added=1;}
+                    next;
+                }
+                { print; }' ${config_file} >tmpfile && mv tmpfile ${config_file}
+
+service mysql restart || {
+    echo "Failed to restart MySQL. Exiting..."
+    exit 1
+}
+
 # Check for Apache
 if ! command -v apache2ctl &>/dev/null; then
     echo "Apache is not installed. Please first run the setup script."
@@ -107,6 +152,24 @@ if [[ "${php_version}" != "${desired_php_version}" ]]; then
 else
     echo "PHP version is already ${desired_php_version}."
 fi
+
+# Modify php.ini as needed
+echo "Modifying PHP configurations..."
+
+desired_error_reporting="error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE & ~E_WARNING"
+desired_post_max_size="post_max_size = 1G"
+desired_upload_max_filesize="upload_max_filesize = 1G"
+
+for phpini in /etc/php/8.2/apache2/php.ini /etc/php/8.2/cli/php.ini; do
+    awk -v er="$desired_error_reporting" -v pms="$desired_post_max_size" \
+        -v umf="$desired_upload_max_filesize" \
+        '{
+        if ($0 ~ /^error_reporting[[:space:]]*=/) {print ";" $0 "\n" er; next}
+        if ($0 ~ /^post_max_size[[:space:]]*=/) {print ";" $0 "\n" pms; next}
+        if ($0 ~ /^upload_max_filesize[[:space:]]*=/) {print ";" $0 "\n" umf; next}
+        print $0
+    }' $phpini >temp.ini && mv temp.ini $phpini
+done
 
 # Check for Composer
 if ! command -v composer &>/dev/null; then
@@ -285,6 +348,13 @@ pid=$!
 spinner "$pid"
 wait $pid
 
+# Cleaning Up
+echo "Cleaning up old files..."
+sudo -u www-data composer cleanup &
+pid=$!
+spinner "$pid"
+wait $pid
+
 # Ask User to Run 'run-once' Scripts
 if ask_yes_no "Do you want to run scripts from ${vlsm_path}/run-once/?" "no"; then
     # List the files in run-once directory
@@ -326,12 +396,9 @@ fi
 
 # Run the PHP script for remote data sync
 echo "Running remote data sync script. Please wait..."
-php "${vlsm_path}/app/scheduled-jobs/remote/commonDataSync.php" &
-# Get the PID of the commonDataSync.php script
+sudo -u www-data composer metadata-sync &
 pid=$!
-# Use the spinner function for visual feedback
 spinner "$pid"
-# Wait for the remote data sync script to complete
 wait $pid
 echo "Remote data sync completed."
 

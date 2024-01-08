@@ -1,15 +1,17 @@
 <?php
 
-use App\Exceptions\SystemException;
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Services\VlService;
-use App\Services\PatientsService;
 use App\Utilities\DateUtility;
+use Laminas\Filter\StringTrim;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use Laminas\Filter\FilterChain;
 use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Services\PatientsService;
+use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -36,7 +38,20 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
+
+// Define custom filters, with only StringTrim for viral load results
+$onlyStringTrim = (new FilterChain())->attach(new StringTrim());
+$customFilters = [
+    'vlResult' => $onlyStringTrim,
+    'cphlVlResult' => $onlyStringTrim,
+    'last_vl_result_failure' => $onlyStringTrim,
+    'last_vl_result_failure_ac' => $onlyStringTrim,
+    'last_vl_result_routine' => $onlyStringTrim,
+    'last_viral_load_result' => $onlyStringTrim
+];
+
+// Sanitize input
+$_POST = _sanitizeInput($_POST, $customFilters);
 
 $instanceId = $general->getInstanceId();
 
@@ -264,7 +279,7 @@ try {
         'result_value_text' => $txtVal ?? null,
         'result' => $finalResult ?? null,
         'result_value_log' => $logVal ?? null,
-        'result_reviewed_by' => _castVariable($_POST['reviewedBy'] ?? null, 'string'),
+        'result_reviewed_by' => $_POST['reviewedBy'] ?? null,
         'result_reviewed_datetime' => DateUtility::isoDateFormat($_POST['reviewedOn'] ?? ''),
         'tested_by' => $_POST['testedBy'] ?? null,
         'result_approved_by' => $_POST['approvedBy'] ?? null,

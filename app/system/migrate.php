@@ -40,6 +40,8 @@ usort($versions, 'version_compare');
 
 $options = getopt("yq");  // Parse command line options for -y and -q
 $autoContinueOnError = isset($options['y']);  // Set a flag if -y option is provided
+
+// Only output messages if -q option is not provided
 $quietMode = isset($options['q']);  // Set a flag if -q option is provided
 
 if ($quietMode) {
@@ -50,9 +52,9 @@ foreach ($versions as $version) {
     $file = APPLICATION_PATH . '/../dev/migrations/' . $version . '.sql';
 
     if (version_compare($version, $currentVersion, '>=')) {
-        if (!$quietMode) { // Only output messages if -q option is not provided
-            echo "Migrating to version $version...\n";
-        }
+        //if (!$quietMode) {
+        echo "Migrating to version $version...\n";
+        //}
 
         $sql_contents = file_get_contents($file);
         $parser = new Parser($sql_contents);
@@ -70,14 +72,14 @@ foreach ($versions as $version) {
                 $message = "Exception : " . $e->getMessage() . PHP_EOL;
 
                 $errorOccurred = true;
-                if (!$quietMode) {  // Only show error messages if -q option is not provided
+                if (!$quietMode) {
                     LoggerUtility::log('error', $message);
                     echo $message;
                 }
             }
             if ($db->getLastErrno() > 0 || $errorOccurred) {
                 $dbMessage = "Error executing query: " . $db->getLastErrno() . ":" . $db->getLastError() . PHP_EOL . $db->getLastQuery() . PHP_EOL;
-                if (!$quietMode) {  // Only show error messages if -q option is not provided
+                if (!$quietMode) {
                     echo $dbMessage;
                     LoggerUtility::log('error', $dbMessage);
                 }

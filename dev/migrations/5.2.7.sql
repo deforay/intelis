@@ -259,26 +259,23 @@ CHANGE `patient_mobile_number` `patient_mobile_number` VARCHAR(20) CHARACTER SET
 CHANGE `vl_result_category` `vl_result_category` VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
 CHANGE `is_patient_pregnant` `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
 CHANGE `is_patient_breastfeeding` `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-CHANGE `patient_has_active_tb` `patient_has_active_tb` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-ALGORITHM=INPLACE, LOCK=NONE;
+CHANGE `patient_has_active_tb` `patient_has_active_tb` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 
-ALTER TABLE `audit_form_vl`
-DROP `is_adherance_poor`,
-DROP `number_of_enhanced_sessions`,
-DROP `patient_tb`,
-DROP `patient_tb_yes`,
-DROP `patient_drugs_transmission`,
-DROP `patient_receiving_therapy`,
-DROP `patient_art_date`,
-DROP `consultation`,
-DROP `first_viral_load`,
-DROP `sample_processed`,
-DROP `collection_type`,
-DROP `collection_site`,
-DROP `requesting_vl_service_sector`,
-DROP `requesting_category`,
-DROP `requesting_professional_number`,
-ALGORITHM=INPLACE, LOCK=NONE;
+ALTER TABLE `audit_form_vl` DROP `is_adherance_poor`;
+ALTER TABLE `audit_form_vl` DROP `number_of_enhanced_sessions`;
+ALTER TABLE `audit_form_vl` DROP `patient_tb`;
+ALTER TABLE `audit_form_vl` DROP `patient_tb_yes`;
+ALTER TABLE `audit_form_vl` DROP `patient_drugs_transmission`;
+ALTER TABLE `audit_form_vl` DROP `patient_receiving_therapy`;
+ALTER TABLE `audit_form_vl` DROP `patient_art_date`;
+ALTER TABLE `audit_form_vl` DROP `consultation`;
+ALTER TABLE `audit_form_vl` DROP `first_viral_load`;
+ALTER TABLE `audit_form_vl` DROP `sample_processed`;
+ALTER TABLE `audit_form_vl` DROP `collection_type`;
+ALTER TABLE `audit_form_vl` DROP `collection_site`;
+ALTER TABLE `audit_form_vl` DROP `requesting_vl_service_sector`;
+ALTER TABLE `audit_form_vl` DROP `requesting_category`;
+ALTER TABLE `audit_form_vl` DROP `requesting_professional_number`;
 
 ALTER TABLE `form_eid`
 CHANGE `result_reviewed_by` `result_reviewed_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
