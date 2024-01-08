@@ -1,10 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use Laminas\Filter\StringTrim;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use Laminas\Filter\FilterChain;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -21,7 +23,20 @@ $vlService = ContainerRegistry::get(VlService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
+
+// Define custom filters, with only StringTrim for viral load results
+$onlyStringTrim = (new FilterChain())->attach(new StringTrim());
+$customFilters = [
+    'vlResult' => $onlyStringTrim,
+    'cphlVlResult' => $onlyStringTrim,
+    'last_vl_result_failure' => $onlyStringTrim,
+    'last_vl_result_failure_ac' => $onlyStringTrim,
+    'last_vl_result_routine' => $onlyStringTrim,
+    'last_viral_load_result' => $onlyStringTrim
+];
+
+// Sanitize input
+$_POST = _sanitizeInput($_POST, $customFilters);
 
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";
@@ -198,7 +213,7 @@ try {
         $_SESSION['alertMsg'] = _translate("Please try again later");
     }
 
-    header("Location:vlTestResult.php");
+    header("Location:/vl/results/vlTestResult.php");
 } catch (Exception $exc) {
     throw new SystemException($exc->getMessage(), 500, $exc);
 }

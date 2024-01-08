@@ -1,9 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use Laminas\Filter\StringTrim;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use Laminas\Filter\FilterChain;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
@@ -28,7 +30,20 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
+
+// Define custom filters, with only StringTrim for viral load results
+$onlyStringTrim = (new FilterChain())->attach(new StringTrim());
+$customFilters = [
+     'vlResult' => $onlyStringTrim,
+     'cphlVlResult' => $onlyStringTrim,
+     'last_vl_result_failure' => $onlyStringTrim,
+     'last_vl_result_failure_ac' => $onlyStringTrim,
+     'last_vl_result_routine' => $onlyStringTrim,
+     'last_viral_load_result' => $onlyStringTrim
+];
+
+// Sanitize input
+$_POST = _sanitizeInput($_POST, $customFilters);
 
 $tableName = "form_vl";
 $tableName1 = "activity_log";

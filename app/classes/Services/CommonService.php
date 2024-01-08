@@ -58,8 +58,7 @@ class CommonService
                 if (isset($_SESSION['queryCounters'][$countQuerySessionKey])) {
                     $count = $_SESSION['queryCounters'][$countQuerySessionKey];
                 } else {
-                    $count = (int)$this->db->rawQueryOne($countSql)['totalCount'];
-                    $_SESSION['queryCounters'][$countQuerySessionKey] = $count;
+                    $count = $_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->db->rawQueryOne($countSql)['totalCount'];
                 }
             } else {
                 $count = count($queryResult);

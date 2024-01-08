@@ -35,8 +35,17 @@ function _isAllowed($currentRequest, $privileges = null)
         ->isAllowed($currentRequest, $privileges);
 }
 
-function _sanitizeInput(string|array $data, $customFilters = [])
+function _sanitizeInput(string|array|null $data, $customFilters = [])
 {
+    // Check for null, empty array, or empty string and return appropriately
+    if ($data === null) {
+        return null;
+    } elseif (is_array($data) && empty($data)) {
+        return [];
+    } elseif (is_string($data) && $data === '') {
+        return '';
+    }
+
     // Default Laminas filter chain with StripTags and StringTrim
     $defaultFilterChain = new FilterChain();
     $defaultFilterChain->attach(new StripTags())
@@ -47,6 +56,11 @@ function _sanitizeInput(string|array $data, $customFilters = [])
 
     // Apply filters
     foreach ($data as $key => &$value) {
+        // Skip processing for null values
+        if ($value === null) {
+            continue;
+        }
+
         if (is_array($value)) {
             // Recursive call for nested arrays
             $value = _sanitizeInput($value, $customFilters[$key] ?? []);
@@ -60,6 +74,7 @@ function _sanitizeInput(string|array $data, $customFilters = [])
 
     return $data;
 }
+
 
 function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = true, $maxSize = null)
 {

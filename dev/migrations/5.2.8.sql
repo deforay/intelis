@@ -14,7 +14,7 @@ CREATE TABLE `temp_mail` (
   `status` varchar(11) DEFAULT NULL,
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Amit 27-Dec-2023
 UPDATE form_vl
