@@ -2,7 +2,6 @@
 
 namespace App\HttpHandlers;
 
-use Exception;
 use Throwable;
 use App\Services\CommonService;
 use App\Registries\AppRegistry;
@@ -42,14 +41,16 @@ class LegacyRequestHandler implements RequestHandlerInterface
             // Get the output buffer content and clean the buffer
             $output = ob_get_clean();
             return $this->createResponse($output);
-        } catch (SystemException | Exception $e) {
-            ob_end_clean(); // Clean the buffer in case of an error
-            LoggerUtility::log('error', "Error in $fileToInclude : " . $e->getFile() . ":" .  $e->getLine() . ":" . $e->getMessage());
-            throw new SystemException("Could not process the request", 500, $e);
         } catch (Throwable $e) {
             ob_end_clean(); // Clean the buffer in case of an error
-            LoggerUtility::log('error', "Error in $fileToInclude : " . $e->getFile() . ":" .  $e->getLine() . ":" . $e->getMessage());
-            throw new SystemException("Could not process the request", 500);
+            LoggerUtility::log('error', "Error in $fileToInclude : " . $e->getFile() . ":" .  $e->getLine() . ":" . $e->getMessage(), [
+                'request' => $request->getUri()->getPath(),
+                'trace' => $e->getTraceAsString(),
+                'code' => $e->getCode(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ]);
+            throw new SystemException($e->getMessage(), $e->getCode() ?? 500, $e);
         }
     }
 
@@ -69,8 +70,8 @@ class LegacyRequestHandler implements RequestHandlerInterface
         // Resolve the absolute path and ensure it's within the APPLICATION_PATH
         $resolvedPath = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri);
         if (!$resolvedPath || strpos($resolvedPath, realpath(APPLICATION_PATH)) !== 0) {
-            LoggerUtility::log('error', 'Invalid file path: ' . $resolvedPath);
-            throw new SystemException('Invalid file path', 403);
+            LoggerUtility::log('error', 'Invalid file : ' . $resolvedPath);
+            throw new SystemException(_translate('Sorry! We could not find this page or resource'), 404);
         }
 
         if (is_dir($resolvedPath)) {

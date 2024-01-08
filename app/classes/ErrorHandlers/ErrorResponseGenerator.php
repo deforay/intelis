@@ -31,52 +31,78 @@ class ErrorResponseGenerator
         $response = new Response();
 
         if ($this->isDebug) {
-            $whoops = new Run();
-            $whoops->allowQuit(false);
-            $whoops->writeToOutput(false);
-            $whoops->pushHandler(new PrettyPageHandler());
-            $responseBody = $whoops->handleException($exception);
-        } else {
-
-            $httpCode = (http_response_code() == 200) ? 500 : http_response_code();
-
-            $errorMessage = $exception->getMessage() ??
-                _translate('Sorry, something went wrong. Please try again later.');
-
-            $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error') . ' - ';
-
-            // Log the error with Monolog, including the file, line, and stack trace
-            LoggerUtility::log('error', $errorReason . ' E: ' . $exception->getMessage(), [
-                'exception' => $httpCode . " : " . $exception,
-                'file' => $exception->getFile(), // File where the error occurred
-                'line' => $exception->getLine(), // Line number of the error
-                'stacktrace' => $exception->getTraceAsString()
-            ]);
-
-            if (APPLICATION_ENV == 'production') {
-                $errorMessage = _translate('Sorry, something went wrong. Please try again later.');
-            }
-
-            if (
-                str_starts_with($request->getUri()->getPath(), '/api/') ||
-                str_starts_with($request->getUri()->getPath(), '/remote/remote/')
-            ) {
-                $response = $response->withHeader('Content-Type', 'application/json');
-                $responseBody = json_encode([
-                    'error' => [
-                        'code' => $httpCode,
-                        'timestamp' => time(),
-                        'message' => $errorReason . " " . $errorMessage,
-                    ],
-                ]);
-            } else {
-                ob_start();
-                require_once(APPLICATION_PATH . '/error/error.php');
-                $responseBody = ob_get_clean();
-            }
+            return $this->handleDebugMode($exception, $response);
         }
 
+        $httpCode = $this->determineHttpCode($exception);
+        $this->logError($exception, $request, $httpCode);
+
+        if (
+            str_starts_with($request->getUri()->getPath(), '/api/') ||
+            str_starts_with($request->getUri()->getPath(), '/remote/remote/')
+        ) {
+            return $this->handleApiErrorResponse($exception, $response, $httpCode);
+        }
+
+        return $this->handleGenericErrorResponse($response, $httpCode, $exception);
+    }
+
+    private function determineHttpCode(Throwable $exception): int
+    {
+        return $exception->getCode() ?: 500;
+    }
+
+    private function handleDebugMode(Throwable $exception, ResponseInterface $response): ResponseInterface
+    {
+        $whoops = new Run();
+        $whoops->allowQuit(false);
+        $whoops->writeToOutput(false);
+        $whoops->pushHandler(new PrettyPageHandler());
+        $responseBody = $whoops->handleException($exception);
         $response->getBody()->write($responseBody);
-        return $response->withStatus(500);
+        return $response->withStatus($this->determineHttpCode($exception));
+    }
+
+    private function logError(Throwable $exception, ServerRequestInterface $request, int $httpCode): void
+    {
+        $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error');
+        LoggerUtility::log('error', $errorReason . ' : ' . $request->getUri() . ': ' . $exception->getMessage(), [
+            'exception' => $exception,
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+            'stacktrace' => $exception->getTraceAsString()
+        ]);
+    }
+
+    private function handleApiErrorResponse(Throwable $exception, ResponseInterface $response, int $httpCode): ResponseInterface
+    {
+        $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error');
+        $errorMessage = APPLICATION_ENV === 'production'
+            ? _translate('Sorry, something went wrong. Please try again later.')
+            : $exception->getMessage();
+
+        $responseBody = json_encode([
+            'error' => [
+                'code' => $httpCode,
+                'timestamp' => time(),
+                'message' => $errorReason . " " . $errorMessage,
+            ],
+        ]);
+
+        $response->getBody()->write($responseBody);
+        return $response->withHeader('Content-Type', 'application/json')->withStatus($httpCode);
+    }
+
+    private function handleGenericErrorResponse(ResponseInterface $response, int $httpCode, $exception): ResponseInterface
+    {
+        ob_start();
+        $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error');
+        $errorMessage = $exception->getMessage() ??
+            _translate('Sorry, something went wrong. Please try again later.');
+        require_once(APPLICATION_PATH . '/error/error.php');
+        $responseBody = ob_get_clean();
+
+        $response->getBody()->write($responseBody);
+        return $response->withStatus($httpCode);
     }
 }

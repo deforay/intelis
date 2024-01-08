@@ -406,6 +406,7 @@ if has_vlsm_tables; then
         mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
         echo "Importing init.sql into the new vlsm database..."
         mysql -u root -p"${mysql_root_password}" vlsm <"${vlsm_path}/sql/init.sql"
+        mysql -u root -p"${mysql_root_password}" vlsm <"${vlsm_path}/sql/audit-triggers.sql"
     else
         echo "Skipping import. Keeping existing data."
     fi
@@ -567,11 +568,8 @@ if [ ! -z "$remote_sts_url" ]; then
     # Run the PHP script for remote data sync
     echo "Running remote data sync script. Please wait..."
     sudo -u www-data composer metadata-sync &
-    # Get the PID of the commonDataSync.php script
     pid=$!
-    # Use the spinner function for visual feedback
     spinner "$pid"
-    # Wait for the remote data sync script to complete
     wait $pid
     echo "Remote data sync completed."
 fi

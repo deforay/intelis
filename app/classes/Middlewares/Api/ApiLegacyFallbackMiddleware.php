@@ -13,45 +13,42 @@ use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-
 class ApiLegacyFallbackMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-
         try {
-            // Try to handle the request with Slim routing
-            $response = $handler->handle($request);
+            return $handler->handle($request);
         } catch (HttpNotFoundException $e) {
-
-
-            // If the route is not found in Slim routing, fallback to legacy routes
-
-            $uri = $request->getUri()->getPath();
-            $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
-            $uri = trim(parse_url($uri, PHP_URL_PATH), "/");
-
-            AppRegistry::set('request', $request);
-
-            try {
-                ob_start();
-                require_once APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri;
-                $output = ob_get_clean();
-
-                // Create a new response object
-                $response = new Response();
-
-                // Set the output of the legacy PHP code as the response body
-                $response->getBody()->write($output);
-            } catch (SystemException | Exception $e) {
-                ob_end_clean(); // Clean the buffer in case of an error
-                throw new SystemException("Error in " . $e->getFile() . ":" . $e->getLine() . " : " . $e->getMessage() . PHP_EOL, 500, $e);
-            } catch (Throwable $e) {
-                ob_end_clean(); // Clean the buffer in case of an error
-                throw new SystemException("Error in " . $e->getFile() . ":" . $e->getLine() . " : " . $e->getMessage() . PHP_EOL, 500);
-            }
+            return $this->handleLegacyCode($request);
+        } catch (Exception $e) {
+            // Log the exception here if needed
+            throw new SystemException("Error in processing request: " . $e->getMessage(), 500, $e);
         }
+    }
 
-        return $response;
+    private function handleLegacyCode(ServerRequestInterface $request): ResponseInterface
+    {
+        $uri = $this->sanitizeUri($request->getUri()->getPath());
+        AppRegistry::set('request', $request);
+
+        ob_start();
+        try {
+            require_once APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri;
+            $output = ob_get_clean();
+            $response = new Response('php://memory', 200);
+            $response->getBody()->write($output);
+            return $response;
+        } catch (Throwable $e) {
+            ob_end_clean();
+            // Log the error here if needed
+            throw new SystemException("Error in legacy code: " . $e->getMessage(), 500, $e);
+        }
+    }
+
+    private function sanitizeUri(string $uri): string
+    {
+        $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
+        return trim(parse_url($uri, PHP_URL_PATH), "/");
     }
 }
