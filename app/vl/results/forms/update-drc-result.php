@@ -49,7 +49,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 
 
 $duVisibility = (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((string) $vlQueryInfo['is_patient_new']) == "no") ? 'hidden' : 'visible';
-$femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'none' : 'block';
+$femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'none' : 'block';
 ?>
 
 <style>
@@ -61,10 +61,7 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 	.du {
 		visibility: <?php echo $duVisibility; ?>;
 	}
-
-	#femaleElements {
-		display: <?php echo $femaleElementsDisplay; ?>;
-	}
+	
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -309,7 +306,7 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date dernière charge virale" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['last_viral_load_date']; ?>" style="width:100%;" />
 										</td>
 									</tr>
-									<tr id="femaleElements">
+									<tr class="femaleSection">
 										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
 										<td colspan="1">
 											<label for="breastfeeding">allaitante ?</label>
@@ -570,6 +567,8 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 <script type="text/javascript">
 	$(document).ready(function() {
 		getVlResults($("#testingPlatform").val());
+		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');
+
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -622,6 +621,16 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 			placeholder: "Select Approuvé par"
 		});
 	});
+
+		function showFemaleSection(genderProp){
+			if(genderProp=="none")
+			{
+				$(".femaleSection").hide();
+			}
+			else{
+				$(".femaleSection").show();
+			}
+		}
 
 	function checkreasonForVLTesting() {
 		var reasonForVLTesting = $("#vlTestReason").val();

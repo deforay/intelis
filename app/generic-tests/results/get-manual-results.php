@@ -137,13 +137,13 @@ vl.sample_received_at_hub_datetime,
 vl.sample_received_at_testing_lab_datetime,
 vl.result_dispatched_datetime,
 vl.result_printed_datetime,
-vl.result_approved_by
-FROM form_generic as vl
-LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
-LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
-INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
+vl.result_approved_by 
+FROM form_generic as vl 
+LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
+LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type 
+INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status";
 
 
 $start_date = '';
@@ -244,7 +244,7 @@ if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPa
 if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
      $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
 } else {
-     $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+     $sWhere[] = " vl.result_status = " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 if (!empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";

@@ -361,7 +361,7 @@ if (!empty($testResultsAttribute)) {
             // print_r($finalResult);die;
             if ($resultType == 'qualitative') {
                 $subTestResultSection .= '<tr><th scope="row" colspan="5" class="text-right final-result-row">Final Result</th>';
-                $subTestResultSection .= '<td><select class="form-control result-select" name="finalResult[' . $subTest . ']" id="finalResult' . $key . '" onchange="updateInterpretationResult(this);">';
+                $subTestResultSection .= '<td><select class="form-control result-select" name="finalResult[' . $subTest . ']" id="finalResult' . $key . '" onchange="updateInterpretationResult(this, \'' . strtolower($subTest) . '\');">';
                 $subTestResultSection .= '<option value="">-- Select --</option>';
                 if (!empty($testResultsAttribute[$resultType])) {
                     foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {

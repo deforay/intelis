@@ -43,7 +43,7 @@ $aResult = $db->query($aQuery);
 
 
 $duVisibility = (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((string) $vlQueryInfo['is_patient_new']) == "no") ? 'hidden' : 'visible';
-$femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'none' : 'block';
+$femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'none' : 'block';
 ?>
 
 <style>
@@ -56,9 +56,6 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 		visibility: <?php echo $duVisibility; ?>;
 	}
 
-	#femaleElements {
-		display: <?php echo $femaleElementsDisplay; ?>;
-	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -357,17 +354,17 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 											<input type="text" class="form-control" id="lastViralLoadResult" name="lastViralLoadResult" placeholder="Résultat dernière charge virale" title="Please enter résultat dernière charge virale" value="<?php echo $vlQueryInfo['last_viral_load_result']; ?>" style="width:100%;" />copies/ml
 										</td>
 									</tr>
-									<tr id="femaleElements">
-										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
-										<td colspan="1">
-											<label for="breastfeeding">allaitante ?</label>
+									<tr class="femaleSection">
+									<td style="width:10% !important;"><strong>Si Femme : </strong></td>
+										<td style="width:20% !important;">
+										<label for="breastfeeding">allaitante ?</label>
 											<select class="form-control" id="breastfeeding" name="breastfeeding" title="Please check Si allaitante">
 												<option value=""> -- Select -- </option>
 												<option id="breastfeedingYes" <?php echo (trim((string) $vlQueryInfo['is_patient_breastfeeding']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
 												<option id="breastfeedingNo" <?php echo (trim((string) $vlQueryInfo['is_patient_breastfeeding']) == "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
 											</select>
 										</td>
-										<td colspan="1">
+										<td style="width:15% !important;">
 											<label for="patientPregnant">Ou enceinte ?</label>
 											<select class="form-control" id="pregnant" name="patientPregnant" title="Please check Si Ou enceinte ">
 												<option value=""> -- Select -- </option>
@@ -375,7 +372,7 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 												<option id="pregNo" <?php echo (trim((string) $vlQueryInfo['is_patient_pregnant']) == "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
 											</select>
 										</td>
-										<td colspan="1">
+										<td style="width:30% !important;">
 											<label for="trimester">Si Femme enceinte :</label>
 											<select class="form-control" id="trimester" name="trimester" title="Please check trimestre">
 												<option value=""> -- Select -- </option>
@@ -385,6 +382,7 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 											</select>
 										</td>
 									</tr>
+									
 									<tr class="newreasonForVLTesting" style="display:none;">
 										<td style="width: 15%;"><label for="newreasonForVLTesting">Autre, à préciser <span class="mandatory">*</span></label></td>
 										<td style="width: 35%;">
@@ -621,6 +619,8 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 
 	$(document).ready(function() {
 
+		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');
+
 
 		getVlResults($("#testingPlatform").val());
 		if ($("#status").val() == 4) {
@@ -700,6 +700,16 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 		});
 		checkreasonForVLTesting();
 	});
+
+		function showFemaleSection(genderProp){
+			if(genderProp=="none")
+			{
+				$(".femaleSection").hide();
+			}
+			else{
+				$(".femaleSection").show();
+			}
+		}
 
 
 	//$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
@@ -802,9 +812,9 @@ $femaleElementsDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" ||
 	});
 	$("input:radio[name=gender]").click(function() {
 		if ($(this).val() == 'female') {
-			$("#femaleElements").show();
+			$(".femaleSection").show();
 		} else if ($(this).val() == 'male') {
-			$("#femaleElements").hide();
+			$(".femaleSection").hide();
 		}
 	});
 

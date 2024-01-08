@@ -312,7 +312,7 @@ $sFormat = '';
 											<input type="text" class="form-control" id="lastViralLoadResult" name="lastViralLoadResult" placeholder="Résultat dernière charge virale" title="Please enter résultat dernière charge virale" />copies/ml
 										</td>
 									</tr>
-									<tr id="femaleElements" style="display:none;">
+									<tr class="femaleSection" style="display:none;">
 
 										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
 										<td style="width:20% !important;">
@@ -684,9 +684,9 @@ $sFormat = '';
 	});
 	$("input:radio[name=gender]").click(function() {
 		if ($(this).val() == 'female') {
-			$("#femaleElements").show();
+			$(".femaleSection").show();
 		} else if ($(this).val() == 'male') {
-			$("#femaleElements").hide();
+			$(".femaleSection").hide();
 		}
 	});
 	$("input:radio[name=hasChangedRegimen]").click(function() {

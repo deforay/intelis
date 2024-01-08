@@ -36,7 +36,7 @@ foreach ($_POST['fdropDown'] as $val) {
 try {
     // echo '<pre>'; print_r($_POST); die;
     if (!empty($_POST['testStandardName'])) {
-        $cnt = count($_POST['fieldName  ']);
+        $cnt = count($_POST['fieldName']);
         $sortFieldOrder = $_POST['fieldOrder'];
         sort($sortFieldOrder);
         $fieldName = $fieldId = $fieldType = $dropDown = $mandatoryField = $section = $sectionOther = $fieldOrder = [];
