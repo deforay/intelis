@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\SystemException;
 use MysqliDb;
 use Generator;
 
@@ -67,24 +68,27 @@ class DatabaseService extends MysqliDb
         $this->reset();
     }
 
-
-
-
     /**
      * Set the transaction isolation level to READ COMMITTED.
      */
-    public function setReadOnlyTransaction(): void
+    private function setTransactionIsolationLevel($level = 'READ COMMITTED'): void
     {
-        $this->rawQuery("SET TRANSACTION ISOLATION LEVEL READ COMMITTED;");
+        $validLevels = ['READ UNCOMMITTED', 'READ COMMITTED', 'REPEATABLE READ', 'SERIALIZABLE'];
+        if (!in_array($level, $validLevels)) {
+            $level = 'READ COMMITTED';
+        }
+
+        $this->rawQuery("SET TRANSACTION ISOLATION LEVEL $level;");
     }
+
 
     /**
      * Begin a new transaction if not already started, with read-only optimization.
      */
-    public function beginReadOnlyTransaction(): void
+    public function beginReadOnlyTransaction($level = 'READ COMMITTED'): void
     {
         if (!$this->isTransactionActive) {
-            $this->setReadOnlyTransaction();
+            $this->setTransactionIsolationLevel($level);
             $this->startTransaction();
             $this->isTransactionActive = true;
         }

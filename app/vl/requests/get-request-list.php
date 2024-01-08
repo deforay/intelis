@@ -289,13 +289,10 @@ try {
 
      $_SESSION['vlRequestQuery'] = $sQuery;
 
-     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true, true);
+     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
      $_SESSION['vlRequestQueryCount'] = $resultCount;
 
-     /*
- * Output
- */
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
@@ -314,9 +311,6 @@ try {
           $sync = '';
           $barcode = '';
 
-          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-
           $patientFname = $aRow['patient_first_name'];
           $patientMname = $aRow['patient_middle_name'];
           $patientLname = $aRow['patient_last_name'];
@@ -327,7 +321,7 @@ try {
           if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
-          $row[] = $aRow['sample_collection_date'];
+          $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
           $row[] = $aRow['batch_code'];
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes' && !empty($key)) {
                $aRow['patient_art_no'] = CommonService::crypto('decrypt', $aRow['patient_art_no'], $key);
@@ -343,7 +337,7 @@ try {
           $row[] = $aRow['facility_district'];
           $row[] = $aRow['sample_name'];
           $row[] = $aRow['result'];
-          $row[] = $aRow['last_modified_datetime'];
+          $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
           $row[] = $aRow['status_name'];
 
           if ($editRequest) {
@@ -364,7 +358,7 @@ try {
 
           if ($syncRequest && $_SESSION['instanceType'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
                if ($aRow['data_sync'] == 0) {
-                    $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Sync this sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> ' . _translate("Sync") . '</a>';
+                    $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Sync Sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> ' . _translate("Sync") . '</a>';
                }
           } else {
                $sync = "";

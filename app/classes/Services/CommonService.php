@@ -32,31 +32,36 @@ class CommonService
         try {
             $count = 0;
             $limitOffsetSet = isset($limit) && isset($offset);
-            // Modify the SQL query to include limit and offset if they are set.
             $limitSql = "";
+
             if ($limitOffsetSet) {
                 $limitSql = " LIMIT $offset,$limit";
             }
 
-            // Execute the main query.
+            // Execute the main query
             if ($returnGenerator === true) {
                 $queryResult = $this->db->rawQueryGenerator($sql . $limitSql, $params, $unbuffered);
             } else {
                 $queryResult = $this->db->rawQuery($sql . $limitSql, $params);
             }
 
-            // If limit and offset are set, execute the count query.
+            // Execute the count query if necessary
             if ($limitOffsetSet || $returnGenerator) {
                 if (stripos($sql, 'GROUP BY') !== false) {
-                    // If the query contains GROUP BY
                     $countSql = "SELECT COUNT(*) as totalCount FROM ($sql) as subquery";
                 } else {
-                    // If the query does not contain GROUP BY
                     $countSql = preg_replace('/SELECT.*? FROM/si', 'SELECT COUNT(*) as totalCount FROM', $sql, 1);
                 }
-                $count = (int)$this->db->rawQueryOne($countSql)['totalCount'];
+
+                // Generate a unique session key for the count query
+                $countQuerySessionKey = md5($countSql);
+                if (isset($_SESSION['queryCounters'][$countQuerySessionKey])) {
+                    $count = $_SESSION['queryCounters'][$countQuerySessionKey];
+                } else {
+                    $count = (int)$this->db->rawQueryOne($countSql)['totalCount'];
+                    $_SESSION['queryCounters'][$countQuerySessionKey] = $count;
+                }
             } else {
-                // if limit not set then count full resultset
                 $count = count($queryResult);
             }
 
@@ -65,8 +70,6 @@ class CommonService
             throw new SystemException($e->getMessage(), 500, $e);
         }
     }
-
-
 
     /**
      *
@@ -125,7 +128,7 @@ class CommonService
     }
 
     // get data from the system_config table from database
-    public function getSystemConfig(?string $name = null): string|array|null
+    public function getSystemConfig(?string $name = null)
     {
         if (empty($_SESSION['app']['system_config']) || (!empty($name) && empty($_SESSION['app']['system_config'][$name]))) {
             $returnConfig = [];
@@ -248,21 +251,17 @@ class CommonService
     public static function decrypt($encrypted, $key): string
     {
         try {
-            $decoded = sodium_base642bin((string) $encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
+            $decoded = sodium_base642bin($encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
             if (empty($decoded)) {
                 throw new SystemException('The message encoding failed');
             }
-            if (mb_strlen($decoded, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
+            if (strlen($decoded) < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
                 throw new SystemException('The message was truncated');
             }
-            $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
-            $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
+            $nonce = substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+            $ciphertext = substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
 
-            $plain = sodium_crypto_secretbox_open(
-                $ciphertext,
-                $nonce,
-                $key
-            );
+            $plain = sodium_crypto_secretbox_open($ciphertext, $nonce, $key);
             if ($plain === false) {
                 throw new SystemException('The message was tampered with in transit');
             }
@@ -270,18 +269,25 @@ class CommonService
             sodium_memzero($key);
             return $plain;
         } catch (SodiumException | SystemException $e) {
-            return $encrypted;
+            // Log the exception and return an empty string or specific error message
+            return ''; // or a specific error message
         }
     }
 
-    public static function crypto($action, $inputString, $key)
+    public static function crypto(?string $action, ?string $inputString, $key): ?string
     {
-        if (!empty($inputString) && $action === 'encrypt') {
-            return self::encrypt($inputString, $key);
-        } elseif (!empty($inputString) && $action === 'decrypt') {
-            return self::decrypt($inputString, $key);
-        } else {
-            return $inputString;
+        if (is_null($inputString)) {
+            return null;
+        }
+        switch ($action) {
+            case 'encrypt':
+                return self::encrypt($inputString, $key);
+            case 'decrypt':
+                return self::decrypt($inputString, $key);
+            case 'doNothing':
+                return $inputString;
+            default:
+                return null;
         }
     }
 

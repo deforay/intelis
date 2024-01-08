@@ -86,7 +86,7 @@ try {
      $aWhere = '';
      $sQuery = '';
 
-     $sQuery = "SELECT SQL_CALC_FOUND_ROWS a.*, r.display_name,
+     $sQuery = "SELECT a.*, r.display_name,
                     DATE_FORMAT(a.date_time,'%d-%b-%Y %H:%i:%s') AS createdOn
                     FROM activity_log as a
                     LEFT JOIN resources as r ON a.resource = r.resource_id";
@@ -114,23 +114,17 @@ try {
           $sQuery = $sQuery . " ORDER BY " . $sOrder;
      }
      $_SESSION['auditLogQuery'] = $sQuery;
-     if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-     }
 
-     $rResult = $db->rawQuery($sQuery);
 
-     /* Data set length after filtering */
-     $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-     $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
      /*
      * Output
      */
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
-          "iTotalRecords" => $iTotal,
-          "iTotalDisplayRecords" => $iFilteredTotal,
+          "iTotalRecords" => $resultCount,
+          "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
      );
      foreach ($rResult as $key => $aRow) {
@@ -146,5 +140,5 @@ try {
 
      $db->commitTransaction();
 } catch (Exception $exc) {
-          LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
-     }
+     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+}

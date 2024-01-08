@@ -15,7 +15,7 @@ if (session_status() == PHP_SESSION_NONE) {
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-try{
+try {
 
      $db->beginReadOnlyTransaction();
 
@@ -117,7 +117,7 @@ try{
      * SQL queries
      * Get data to display
      */
-     $sQuery = "SELECT SQL_CALC_FOUND_ROWS
+     $sQuery = "SELECT
                     vl.*,
                     b.batch_code,
                     ts.status_name,
@@ -247,21 +247,14 @@ try{
 
      $_SESSION['hepatitisResultQuery'] = $sQuery;
 
-     if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-     }
+     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
-     $rResult = $db->rawQuery($sQuery);
-
-     $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-     $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-
-     $_SESSION['hepatitisResultQueryCount'] = $iTotal;
+     $_SESSION['hepatitisResultQueryCount'] = $resultCount;
 
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
-          "iTotalRecords" => $iTotal,
-          "iTotalDisplayRecords" => $iFilteredTotal,
+          "iTotalRecords" => $resultCount,
+          "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
      );
 
@@ -304,6 +297,6 @@ try{
      echo MiscUtility::convertToUtf8AndEncode($output);
 
      $db->commitTransaction();
-}    catch (Exception $exc) {
+} catch (Exception $exc) {
      LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
-     }
+}
