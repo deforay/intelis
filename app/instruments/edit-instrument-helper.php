@@ -5,12 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -38,9 +33,10 @@ try {
         if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
                 $configDir = __DIR__;
-                if (!file_exists($configDir)) {
-                    mkdir($configDir, 0777, true);
-                }
+                // if (!file_exists($configDir)) {
+                //     mkdir($configDir, 0777, true);
+                // }
+                MiscUtility::makeDirectory($configDir . DIRECTORY_SEPARATOR . $test);
                 $configFile = $configDir . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
                 if (!file_exists($configFile)) {
                     $fp = fopen($configFile, 'w');
