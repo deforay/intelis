@@ -553,6 +553,7 @@ if [ ! -z "$remote_sts_url" ]; then
 fi
 
 # Run the database migrations and other post-install tasks
+cd "${vlsm_path}"
 echo "Running database migrations and other post-install tasks..."
 sudo -u www-data composer post-install &
 pid=$!

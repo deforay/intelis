@@ -896,7 +896,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                provinceName = true;
                facilityName = true;
                $("#province").html("<?= (string) $province; ?>");
-               $("#facilityId").html("<?= (string) addslashes($facility); ?>");
+               $("#facilityId").html("<?= (string) ($facility); ?>");
                $("#facilityId").select2("val", "");
                $("#district").html("<option value=''> -- Select -- </option>");
           }
@@ -975,7 +975,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                provinceName = true;
                facilityName = true;
                $("#province").html("<?php echo $province; ?>");
-               $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
+               $("#facilityId").html("<?php echo ((string) $facility); ?>");
           }
           $.unblockUI();
           $("#facilityCode").val($('#facilityId').find(':selected').data('code'));

@@ -381,6 +381,7 @@ if ask_yes_no "Do you want to run scripts from ${vlsm_path}/run-once/?" "no"; th
 fi
 
 # Run the PHP script for remote data sync
+cd "${vlsm_path}"
 echo "Running remote data sync script. Please wait..."
 sudo -u www-data composer metadata-sync &
 pid=$!

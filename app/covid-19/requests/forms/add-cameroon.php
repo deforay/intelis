@@ -849,7 +849,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             provinceName = true;
             facilityName = true;
             $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
+            $("#facilityId").html("<?php echo ((string) $facility); ?>");
             $("#facilityId").select2("val", "");
             $("#district").html("<option value=''> <?= _translate("-- Select --"); ?> </option>");
         }
@@ -969,7 +969,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             provinceName = true;
             facilityName = true;
             $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
+            $("#facilityId").html("<?php echo ((string) $facility); ?>");
         }
         $.unblockUI();
     }

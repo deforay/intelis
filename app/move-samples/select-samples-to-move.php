@@ -34,7 +34,7 @@ foreach ($pResult as $provinceName) {
 //$facility = "";
 $facility = "<option value=''> -- select -- </option>";
 foreach ($fResult as $fDetails) {
-	$facility .= "<option value='" . $fDetails['facility_id'] . "'>" . (addslashes((string) $fDetails['facility_name'])) . "</option>";
+	$facility .= "<option value='" . $fDetails['facility_id'] . "'>" . (htmlspecialchars((string) $fDetails['facility_name'])) . "</option>";
 }
 
 ?>

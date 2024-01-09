@@ -75,7 +75,7 @@ foreach ($tablesToTranslate as $tableName => $tableInfo) {
     $result = $db->getValue($tableName, $tableInfo['name_column'], null);
 
     foreach ($result as $string) {
-        $translatableStrings[] = addslashes((string) $string);
+        $translatableStrings[] = htmlspecialchars((string) $string);
     }
 }
 // make $translatableStrings unique and sort it
