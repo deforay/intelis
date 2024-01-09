@@ -75,6 +75,7 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 <script type="text/javascript" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript" src="/assets/js/dayjs.min.js"></script>
 <script type="text/javascript" src="/assets/js/dayjs.customParseFormat.js"></script>
 <script type="text/javascript" src='/assets/js/main.js?v=<?= filemtime(WEB_ROOT . "/assets/js/main.js") ?>'></script>
