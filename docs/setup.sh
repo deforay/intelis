@@ -530,13 +530,6 @@ sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database'
 sed -i "s|\$systemConfig\['database'\]\['username'\]\s*=.*|\$systemConfig['database']['username'] = 'root';|" "${config_file}"
 sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "${config_file}"
 
-# Run the database migrations and other post-install tasks
-echo "Running database migrations and other post-install tasks..."
-sudo -u www-data composer post-install &
-pid=$!
-spinner "$pid"
-wait $pid
-
 # Prompt for Remote STS URL
 read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url
 
@@ -557,15 +550,14 @@ if [ ! -z "$remote_sts_url" ]; then
         # The configuration already exists as desired
         echo "Remote STS URL is already set as desired in the configuration file."
     fi
-
-    # Run the PHP script for remote data sync
-    echo "Running remote data sync script. Please wait..."
-    sudo -u www-data composer metadata-sync &
-    pid=$!
-    spinner "$pid"
-    wait $pid
-    echo "Remote data sync completed."
 fi
+
+# Run the database migrations and other post-install tasks
+echo "Running database migrations and other post-install tasks..."
+sudo -u www-data composer post-install &
+pid=$!
+spinner "$pid"
+wait $pid
 
 if ask_yes_no "Do you want to run scripts from ${vlsm_path}/run-once/?"; then
     # List the files in run-once directory

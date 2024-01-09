@@ -8,11 +8,6 @@ use App\Services\DatabaseService;
 use App\Helpers\ManifestPdfHelper;
 use App\Registries\ContainerRegistry;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -29,7 +24,7 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) == 'pk2') {
     $id = $_POST['ids'];
 }
 
-if (trim((string) $id) != '') {
+if (!empty($id)) {
 
     $sQuery = "SELECT remote_sample_code,
                         pd.number_of_samples,
@@ -48,7 +43,7 @@ if (trim((string) $id) != '') {
                         u_d.user_name as releaser_name,
                         u_d.phone_number as phone,
                         u_d.email as email,
-                        DATE_FORMAT(pd.request_created_datetime,'%d-%b-%Y') as created_date
+                        pd.request_created_datetime as created_date
                 FROM package_details as pd
                 LEFT JOIN form_vl as vl ON vl.sample_package_id=pd.package_id
                 LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
@@ -119,7 +114,7 @@ if (trim((string) $id) != '') {
             $tbl1 .= '<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
             $tbl1 .= '<tr>
         <td align="left"> Releaser Name :  ' . $result[0]['releaser_name'] . '</td>
-        <td align="left"> Date :  ' . $result[0]['created_date'] . '</td>
+        <td align="left"> Date :  ' . DateUtility::humanReadableDateFormat($result[0]['created_date']) . '</td>
         </tr>
         <tr>
         <td align="left"> Phone No. :  ' . $result[0]['phone'] . '</td>
@@ -209,11 +204,6 @@ if (trim((string) $id) != '') {
 
             foreach ($result as $sample) {
 
-                $collectionDate = DateUtility::humanReadableDateFormat($sample['sample_collection_date'] ?? '');
-                $patientDOB = '';
-                if (isset($sample['patient_dob']) && $sample['patient_dob'] != '' && $sample['patient_dob'] != null && $sample['patient_dob'] != '0000-00-00') {
-                    $patientDOB = DateUtility::humanReadableDateFormat($sample['patient_dob']);
-                }
                 // $params = $pdf->serializeTCPDFtagParameters(array($sample['remote_sample_code'], 'C39', '', '', 0, 9, 0.25, array('border' => false, 'align' => 'L', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 9, 'stretchtext' => 2), 'N'));
                 $tbl .= '<table nobr="true" style="width:100%;" border="1" cellpadding="2">';
                 $tbl .= '<tr nobr="true">';
@@ -229,10 +219,10 @@ if (trim((string) $id) != '') {
                     $tbl .= '<td style="font-size:11px;width:15%;">' . ($sample['patient_first_name'] . " " . $sample['patient_middle_name'] . " " . $sample['patient_last_name']) . '<br>' . $sample['patient_art_no'] . '</td>';
                 }
                 $tbl .= '<td style="font-size:11px;width:5%;">' . ($sample['patient_age_in_years']) . '</td>';
-                $tbl .= '<td style="font-size:11px;width:8%;">' . $patientDOB . '</td>';
+                $tbl .= '<td style="font-size:11px;width:8%;">' . DateUtility::humanReadableDateFormat($sample['patient_dob'] ?? '') . '</td>';
                 $tbl .= '<td style="font-size:11px;width:8%;">' . ucwords(str_replace("_", " ", (string) $sample['patient_gender'])) . '</td>';
                 $tbl .= '<td style="font-size:11px;width:8%;">' . ucwords((string) $sample['sample_name']) . '</td>';
-                $tbl .= '<td style="font-size:11px;width:8%;">' . $collectionDate . '</td>';
+                $tbl .= '<td style="font-size:11px;width:8%;">' . DateUtility::humanReadableDateFormat($sample['sample_collection_date'] ?? '') . '</td>';
                 $tbl .= '<td style="font-size:11px;width:20%;"><img style="width:180px;height:25px;" src="' . $general->getBarcodeImageContent($sample['remote_sample_code']) . '"/></td>';
 
 

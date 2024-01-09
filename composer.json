@@ -77,7 +77,7 @@
         "migrate": "php app/system/migrate.php -yq",
         "metadata-sync": "php app/scheduled-jobs/remote/commonDataSync.php",
         "generate-translation-strings": "php app/system/generate-translation-strings.php",
-        "post-install": "php app/system/migrate.php -yq && php run-once/update-privileges.php",
-        "post-update": "php app/scheduled-jobs/cleanup.php 60 && php app/system/migrate.php -yq && php run-once/update-privileges.php"
+        "post-install": "php app/system/migrate.php -yq && php run-once/update-privileges.php && php app/scheduled-jobs/remote/commonDataSync.php",
+        "post-update": "php app/system/migrate.php -yq && php run-once/update-privileges.php"
     }
 }
