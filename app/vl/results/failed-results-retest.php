@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -78,7 +78,7 @@ try {
             }
         }
     }
-    echo htmlspecialchars($id);
+    echo ($id);
 }
 //catch exception
 catch (Exception $e) {

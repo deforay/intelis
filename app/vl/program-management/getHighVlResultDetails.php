@@ -16,17 +16,10 @@ try {
 
     $db->beginReadOnlyTransaction();
 
-
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
 
     $key = (string) $general->getGlobalConfig('key');
-
-    // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
-    $request = AppRegistry::get('request');
-    $_POST = _sanitizeInput($request->getParsedBody());
-
 
     /** @var FacilitiesService $facilitiesService */
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);

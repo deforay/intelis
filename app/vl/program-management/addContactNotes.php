@@ -1,21 +1,10 @@
-<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
-<!-- Bootstrap 3.3.6 -->
-<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-<!-- Font Awesome -->
-<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-<!-- DataTables -->
-<link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
-<link href="/assets/css/deforayModal.css" rel="stylesheet" />
-<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
-<script src="/assets/js/deforayModal.js"></script>
 <?php
 
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object

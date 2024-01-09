@@ -4,10 +4,6 @@ use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\VlService;
 
-
-
-
-
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
