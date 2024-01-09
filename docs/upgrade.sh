@@ -334,23 +334,9 @@ sudo -u www-data composer config process-timeout 30000
 sudo -u www-data composer update --no-dev &&
     sudo -u www-data composer dump-autoload -o
 
-# Run the database migrations
-echo "Running database migrations..."
-sudo -u www-data composer migrate &
-pid=$!
-spinner "$pid"
-wait $pid
-
-# Updating privileges
-echo "Updating privileges..."
-sudo -u www-data composer fix-privileges &
-pid=$!
-spinner "$pid"
-wait $pid
-
-# Cleaning Up
-echo "Cleaning up old files..."
-sudo -u www-data composer cleanup &
+# Run the database migrations and other post-update tasks
+echo "Running database migrations and other post-update tasks..."
+sudo -u www-data composer post-update &
 pid=$!
 spinner "$pid"
 wait $pid
