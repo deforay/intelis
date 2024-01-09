@@ -58,6 +58,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					r_r_b.user_name as revised,
 					l.facility_logo as facilityLogo,
 					rsrr.rejection_reason_name,
+					funding.funding_source_name as funding_source_name,
 					r_c_a.recommended_corrective_action_name
 					FROM form_vl as vl
 					LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id
@@ -68,6 +69,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					LEFT JOIN user_details as r_r_b ON r_r_b.user_id = vl.revised_by
 					LEFT JOIN facility_details as l ON l.facility_id = vl.lab_id
 					LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
+					LEFT JOIN r_funding_sources as funding ON funding.funding_source_id = vl.funding_source
 					LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection
 					LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action";
 

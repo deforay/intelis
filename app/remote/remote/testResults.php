@@ -115,7 +115,10 @@ try {
             $tableName = 'form_vl';
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
-                if (!empty($lab['remote_sample_code'])) {
+                if (!empty($lab['unique_id'])) {
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE unique_id=?";
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
+                } elseif (!empty($lab['remote_sample_code'])) {
                     $sQuery = "SELECT $primaryKey FROM $tableName WHERE remote_sample_code= ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
                 } elseif (!empty($lab['sample_code']) && !empty($lab['lab_id'])) {
@@ -124,9 +127,6 @@ try {
                 } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id'])) {
                     $sQuery = "SELECT $primaryKey FROM $tableName WHERE sample_code=? AND facility_id = ?";
                     $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
-                } elseif (!empty($lab['unique_id'])) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE unique_id=?";
-                    $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
                 }
 
                 $formAttributes = $general->jsonToSetString($lab['form_attributes'], 'form_attributes');
@@ -140,11 +140,15 @@ try {
                     $id = $db->insert($tableName, $lab);
                 }
             } catch (Exception | SystemException $e) {
-                if ($db->getLastErrno() > 0) {
-                    error_log($db->getLastErrno());
-                    error_log($db->getLastError());
-                    error_log($db->getLastQuery());
-                }
+
+                // $sampleCodes[] = $lab['sample_code'];
+                // $facilityIds[] = $lab['facility_id'];
+
+                //if ($db->getLastErrno() > 0) {
+                error_log($db->getLastErrno());
+                error_log($db->getLastError());
+                error_log($db->getLastQuery());
+                //}
                 LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                 continue;
             }
