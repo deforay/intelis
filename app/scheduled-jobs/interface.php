@@ -17,10 +17,7 @@ use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-if (
-    !isset(SYSTEM_CONFIG['interfacing']['enabled']) ||
-    SYSTEM_CONFIG['interfacing']['enabled'] === false
-) {
+if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
     error_log('Interfacing is not enabled. Please enable it in configuration.');
     exit;
 }
@@ -189,9 +186,9 @@ if (!empty($interfaceData)) {
             $data = [
                 'lab_id' => $labId,
                 'tested_by' => $testedByUserId,
-                'result_approved_by' => (isset($approved['vl']) && $approved['vl'] != "") ? $approved['vl'] : null,
+                'result_approved_by' => $approved['vl'] ?? null,
                 'result_approved_datetime' => $result['authorised_date_time'],
-                'result_reviewed_by' => (isset($reviewed['vl']) && $reviewed['vl'] != "") ? $reviewed['vl'] : null,
+                'result_reviewed_by' => $reviewed['vl'] ?? null,
                 'result_reviewed_datetime' => $result['authorised_date_time'],
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
                 'result_value_log' => $logVal,
@@ -271,8 +268,8 @@ if (!empty($interfaceData)) {
                 'eid_test_platform' => $result['machine_used'],
                 'result_status' => SAMPLE_STATUS\ACCEPTED,
                 'manual_result_entry' => 'no',
-                'result_approved_by' => (isset($approved['eid']) && $approved['eid'] != "") ? $approved['eid'] : null,
-                'result_reviewed_by' => (isset($reviewed['eid']) && $reviewed['eid'] != "") ? $reviewed['eid'] : null,
+                'result_approved_by' => $approved['eid'] ?? null,
+                'result_reviewed_by' => $reviewed['eid'] ?? null,
                 'result_printed_datetime' => null,
                 'result_dispatched_datetime' => null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
