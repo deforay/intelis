@@ -370,7 +370,7 @@ $tableResult = $db->rawQuery($sQuery);
                 enabled: false
             },
             xAxis: {
-                categories: [<?= "'" . implode("','", array_map('addslashes', array_column($tableResult, 'facility_name'))) . "'"; ?>],
+                categories: [<?= "'" . implode("','", array_map('htmlspecialchars', array_column($tableResult, 'facility_name'))) . "'"; ?>],
                 crosshair: true,
                 scrollbar: {
                     enabled: true

@@ -360,7 +360,7 @@ class CommonService
                 return '';
             }
             if ($emptySelectText !== false) {
-                $response .= "<option value=''>" . addslashes($emptySelectText) . "</option>";
+                $response .= "<option value=''>" . htmlspecialchars($emptySelectText) . "</option>";
             }
 
             foreach ($optionList as $optId => $optName) {
@@ -372,7 +372,7 @@ class CommonService
                         $selectedText = "selected='selected'";
                     }
                 }
-                $response .= "<option value='" . addslashes($optId) . "' $selectedText>" . addslashes($optName) . "</option>";
+                $response .= "<option value='" . htmlspecialchars($optId) . "' $selectedText>" . htmlspecialchars($optName) . "</option>";
             }
             return $response;
         });

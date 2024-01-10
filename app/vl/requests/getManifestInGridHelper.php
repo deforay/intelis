@@ -12,12 +12,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
-
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 

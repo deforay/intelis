@@ -1028,7 +1028,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      //           provinceName = true;
      //           facilityName = true;
      //           $("#province").html("<?php echo $province; ?>");
-     //           $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
+     //           $("#facilityId").html("<?php echo ((string) $facility); ?>");
      //      }
      //      $.unblockUI();
      // }

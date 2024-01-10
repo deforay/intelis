@@ -92,7 +92,7 @@ function getFacilitiesDropdown($provinceName = null, $districtRequested = null, 
 				$fDetails['contact_person'] = $labContactUser['user_name'];
 			}
 
-			$facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (addslashes((string) $fDetails['facility_name'])) . $fcode . "</option>";
+			$facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (htmlspecialchars((string) $fDetails['facility_name'])) . $fcode . "</option>";
 		}
 	} else {
 		// if(isset($_POST['comingFromUser'])){

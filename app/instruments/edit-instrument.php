@@ -164,7 +164,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="configurationName" class="col-lg-4 control-label">
-										<?php echo _translate("Instrument File Name"); ?><span class="mandatory">*</span>
+										<?= _translate("Instrument File Name"); ?><span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder="<?php echo _translate('eg. roche.php or abbott.php'); ?>" title="<?php echo _translate('Please enter file name'); ?>" value="<?php echo $sInfo['import_machine_file_name']; ?>" />
@@ -176,7 +176,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="configurationFileName" class="col-lg-4 control-label">
-										<?php echo _translate("Lower Limit"); ?>
+										<?= _translate("Lower Limit"); ?>
 									</label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control forceNumeric" id="lowerLimit" name="lowerLimit" placeholder="<?php echo _translate('eg. 20'); ?>" title="<?php echo _translate('Please enter lower limit'); ?>" value="<?php echo $sInfo['lower_limit']; ?>" />
@@ -188,7 +188,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="configurationFileName" class="col-lg-4 control-label">
-										<?php echo _translate("Higher Limit"); ?>
+										<?= _translate("Higher Limit"); ?>
 									</label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control forceNumeric" id="higherLimit" name="higherLimit" placeholder="<?php echo _translate('eg. 10000000'); ?>" title="<?php echo _translate('Please enter lower limit'); ?>" value="<?php echo $sInfo['higher_limit']; ?>" />
@@ -209,7 +209,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 							</div>
 						</div>
 						<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
-							<div class="row lowVlResultText" <?php echo $lowerText; ?>>
+							<div class="row lowVlResultText">
 								<div class="col-md-12">
 									<div class="form-group">
 										<label for="lowVlResultText" class="col-lg-2 control-label">

@@ -39,7 +39,9 @@ try {
         if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
                 $configDir = __DIR__;
-             
+                if (!file_exists($configDir)) {
+                    mkdir($configDir, 0777, true);
+                }
                 MiscUtility::makeDirectory($configDir . DIRECTORY_SEPARATOR . $test);
                 $configFile = $configDir . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
                 if (!file_exists($configFile)) {

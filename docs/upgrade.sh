@@ -230,6 +230,7 @@ backup_database() {
         fi
     done
 }
+
 # Ask the user if they want to backup the database
 if ask_yes_no "Do you want to backup the database" "no"; then
     # Ask for MySQL root password
@@ -296,31 +297,28 @@ else
     echo "Skipping VLSM folder backup as per user request."
 fi
 
-# Download New Version of VLSM from GitHub
-echo "Downloading new version of VLSM from GitHub..."
-wget -q --show-progress --progress=dot:giga -O vlsm-new-version.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip &
+echo "Downloading VLSM..."
+wget -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 download_pid=$!           # Save the process ID of the wget command
 spinner "${download_pid}" # Start the spinner
 wait ${download_pid}      # Wait for the download to finish
 
-# Unzip New VLSM Version
-echo "Unzipping new VLSM version..."
+# Unzip the file into a temporary directory
 temp_dir=$(mktemp -d)
-unzip vlsm-new-version.zip -d "${temp_dir}" &
+unzip master.zip -d "$temp_dir" &
 unzip_pid=$!           # Save the process ID of the unzip command
 spinner "${unzip_pid}" # Start the spinner
 wait ${unzip_pid}      # Wait for the unzip process to finish
 
-# Copy the unzipped content to the VLSM directory, overwriting any existing files
-echo "Updating VLSM files..."
-cp -RT "${temp_dir}/vlsm-master/" "${vlsm_path}" &
+# Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
+cp -R "$temp_dir/vlsm-master/"* "${vlsm_path}"
 cp_pid=$!           # Save the process ID of the cp command
 spinner "${cp_pid}" # Start the spinner
 wait ${cp_pid}      # Wait for the copy process to finish
 
-# Cleanup downloaded and temporary files
-rm vlsm-new-version.zip
-rm -r "${temp_dir}"
+# Remove the empty directory and the downloaded zip file
+rm -rf "$temp_dir/vlsm-master/"
+rm master.zip
 
 # Set proper permissions
 chown -R www-data:www-data "${vlsm_path}"
@@ -334,23 +332,9 @@ sudo -u www-data composer config process-timeout 30000
 sudo -u www-data composer update --no-dev &&
     sudo -u www-data composer dump-autoload -o
 
-# Run the database migrations
-echo "Running database migrations..."
-sudo -u www-data composer migrate &
-pid=$!
-spinner "$pid"
-wait $pid
-
-# Updating privileges
-echo "Updating privileges..."
-sudo -u www-data composer fix-privileges &
-pid=$!
-spinner "$pid"
-wait $pid
-
-# Cleaning Up
-echo "Cleaning up old files..."
-sudo -u www-data composer cleanup &
+# Run the database migrations and other post-update tasks
+echo "Running database migrations and other post-update tasks..."
+sudo -u www-data composer post-update &
 pid=$!
 spinner "$pid"
 wait $pid
@@ -395,6 +379,7 @@ if ask_yes_no "Do you want to run scripts from ${vlsm_path}/run-once/?" "no"; th
 fi
 
 # Run the PHP script for remote data sync
+cd "${vlsm_path}"
 echo "Running remote data sync script. Please wait..."
 sudo -u www-data composer metadata-sync &
 pid=$!

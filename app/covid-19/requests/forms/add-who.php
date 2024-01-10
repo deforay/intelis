@@ -30,7 +30,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = "<option value=''> -- Select -- </option>";
 foreach ($fResult as $fDetails) {
-    $facility .= "<option value='" . $fDetails['facility_id'] . "'>" . (addslashes((string) $fDetails['facility_name'])) . "</option>";
+    $facility .= "<option value='" . $fDetails['facility_id'] . "'>" . (htmlspecialchars((string) $fDetails['facility_name'])) . "</option>";
 }
 
 ?>

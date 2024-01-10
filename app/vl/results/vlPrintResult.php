@@ -41,10 +41,6 @@ $state = $geolocationService->getProvinces("yes");
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
-
-	.center {
-		/*text-align:left;*/
-	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -580,8 +576,7 @@ $state = $geolocationService->getProvinces("yes");
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+
 <script type="text/javascript">
 	var startDate = "";
 	var endDate = "";
@@ -595,13 +590,6 @@ $state = $geolocationService->getProvinces("yes");
 		var i = '<?php echo $i; ?>';
 		$(".printedData").click(function() {
 			loadPrintedVlRequestData();
-			/*Hide Province, District Columns */
-			//var bVisCol = opTable.fnSettings().aoColumns[7].bVisible;
-			opTable.fnSetColumnVis(7, false);
-			//var bVisCol = opTable.fnSettings().aoColumns[8].bVisible;
-			opTable.fnSetColumnVis(8, false);
-			//var bVisCol = opTable.fnSettings().aoColumns[12].bVisible;
-			opTable.fnSetColumnVis(12, false);
 
 			for (colNo = 0; colNo <= i; colNo++) {
 				$("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
@@ -652,15 +640,6 @@ $state = $geolocationService->getProvinces("yes");
 			});
 		$('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
 		loadVlRequestData();
-
-		/*Hide Province, District Columns */
-		//var bVisCol = oTable.fnSettings().aoColumns[7].bVisible;
-		oTable.fnSetColumnVis(7, false);
-		//var bVisCol = oTable.fnSettings().aoColumns[8].bVisible;
-		oTable.fnSetColumnVis(8, false);
-		//var bVisCol = oTable.fnSettings().aoColumns[12].bVisible;
-		oTable.fnSetColumnVis(12, false);
-
 
 		//loadPrintedVlRequestData();
 		$(".showhideCheckBox").change(function() {
@@ -735,7 +714,8 @@ $state = $geolocationService->getProvinces("yes");
 						"sClass": "center"
 					},
 				<?php } ?> {
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
 					"sClass": "center"
@@ -750,10 +730,12 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				},
 				{
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
 					"sClass": "center"
@@ -879,7 +861,8 @@ $state = $geolocationService->getProvinces("yes");
 						"sClass": "center"
 					},
 				<?php } ?> {
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
 					"sClass": "center"
@@ -894,10 +877,12 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				},
 				{
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
 					"sClass": "center"

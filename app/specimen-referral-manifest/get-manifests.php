@@ -5,7 +5,7 @@ use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
+use App\Utilities\DateUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -133,7 +133,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
  */
 
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS p.request_created_datetime,
+$sQuery = "SELECT p.request_created_datetime,
             p.package_code, p.package_status,
             p.module, p.package_id, p.number_of_samples,
             lab.facility_name as labName
@@ -157,40 +157,43 @@ if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
-if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-// echo($sQuery);die;
-//error_log($sQuery);
-$rResult = $db->rawQuery($sQuery);
 
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 /*
  * Output
  */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
 );
-$package = false;
 
-if (_isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_POST['module'])) {
-    $package = true;
+$editUrl = '/specimen-referral-manifest/edit-manifest.php?t=' . $_POST['module'];
+
+$editAllowed = false;
+if (_isAllowed($editUrl)) {
+    $editAllowed = true;
 }
 
 foreach ($rResult as $aRow) {
-    $humanDate = "";
-    $printBarcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Manifest PDF" onclick="generateManifestPDF(\'' . base64_encode((string) $aRow['package_id']) . '\',\'pk1\');"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Manifest PDF") . '</a>';
-    if (trim((string) $aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
-        $date = $aRow['request_created_datetime'];
-        $humanDate = date("d-M-Y H:i:s", strtotime((string) $date));
+
+    $packageId = base64_encode($aRow['package_id']);
+    //$packageCode = ($aRow['package_code']);
+    $printManifestPdfText = _translate("Print Manifest PDF");
+
+    $printBarcode = <<<BARCODEBUTTON
+    <a href="javascript:void(0);" onclick="generateManifestPDF('{$packageId}', 'pk1');" class="btn btn-info btn-xs print-manifest" data-package-id="{$packageId}" title="{$printManifestPdfText}">
+        <em class="fa-solid fa-barcode"></em> {$printManifestPdfText}
+    </a>
+    BARCODEBUTTON;
+
+    $editBtn = '';
+    if ($editAllowed) {
+        $editBtn = '<a href="' . $editUrl . '&id=' . base64_encode((string) $aRow['package_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
     }
+
     $disable = '';
     $pointerEvent = '';
     if ($aRow['package_status'] == 'dispatch') {
@@ -206,15 +209,9 @@ foreach ($rResult as $aRow) {
     $row[] = strtoupper((string) $aRow['module']);
     $row[] = $aRow['labName'];
     $row[] = $aRow['number_of_samples'];
-    $row[] = $humanDate;
-    if ($package) {
-        if ($_SESSION['roleCode'] == 'AD' || $_SESSION['roleCode'] == 'ad') {
-            $editBtn = '<a href="/specimen-referral-manifest/edit-manifest.php?t=' . ($_POST['module']) . '&id=' . base64_encode((string) $aRow['package_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
-        } else {
-            $editBtn = '';
-        }
-        $row[] = $editBtn . '&nbsp;&nbsp;' . $printBarcode;
-    }
+    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
+    $row[] = $editBtn . '&nbsp;&nbsp;' . $printBarcode;
+
     $output['aaData'][] = $row;
 }
 echo json_encode($output);
