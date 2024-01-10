@@ -208,6 +208,7 @@ class TbService extends AbstractTestService
             if (empty($rowData) && !empty($sampleData['sampleCode'])) {
                 $tesRequestData = [
                     'vlsm_country_id' => $formId,
+                    'sample_reordered' => $params['sampleReordered'] ?? 'no',
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
                     'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,

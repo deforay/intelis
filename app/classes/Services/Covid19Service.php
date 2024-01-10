@@ -401,6 +401,7 @@ class Covid19Service extends AbstractTestService
 
                 $tesRequestData = [
                     'vlsm_country_id' => $formId,
+                    'sample_reordered' => $params['sampleReordered'] ?? 'no',
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
                     'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,

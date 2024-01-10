@@ -119,6 +119,7 @@ class EidService extends AbstractTestService
 
                 $tesRequestData = [
                     'vlsm_country_id' => $formId,
+                    'sample_reordered' => $params['sampleReordered'] ?? 'no',
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
                     'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,
@@ -161,9 +162,6 @@ class EidService extends AbstractTestService
                 $tesRequestData['form_attributes'] = json_encode($formAttributes);
                 $this->db->insert("form_eid", $tesRequestData);
                 $id = $this->db->getInsertId();
-                if ($this->db->getLastErrno() > 0) {
-                    throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
-                }
             } else {
 
                 LoggerUtility::log('info', 'Sample Code Exists. Trying to regenerate sample code', [
@@ -182,6 +180,9 @@ class EidService extends AbstractTestService
         } catch (Exception | SystemException $e) {
             // Rollback the current transaction to release locks and undo changes
             $this->db->rollbackTransaction();
+
+            LoggerUtility::log('error', $this->db->getLastErrno() . ":" . $this->db->getLastError());
+            LoggerUtility::log('error', $this->db->getLastQuery());
 
             LoggerUtility::log('error', 'Insert EID Sample : ' . $e->getMessage(), [
                 'exception' => $e,

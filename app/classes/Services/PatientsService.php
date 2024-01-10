@@ -229,36 +229,37 @@ class PatientsService
         if ($testType == 'vl') {
             $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
                         DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
-                        (SELECT count(unique_id) FROM `form_vl` WHERE `patient_art_no`='$patientId') as no_of_req_time,
-                        (SELECT COUNT(unique_id) FROM `form_vl` WHERE `patient_art_no`='$patientId' AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
+                        (SELECT COUNT(unique_id) FROM `form_vl` WHERE `patient_art_no` like ?) as no_of_req_time,
+                        (SELECT COUNT(unique_id) FROM `form_vl` WHERE `patient_art_no` like ? AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
                         FROM form_vl
-                        WHERE `patient_art_no`='$patientId' ORDER by DATE(request_created_datetime) DESC limit 1";
+                        WHERE `patient_art_no`=? ORDER by DATE(request_created_datetime) DESC limit 1";
+            return $this->db->rawQueryOne($sQuery, [$patientId, $patientId, $patientId]);
         } elseif ($testType == 'eid') {
             $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
                         DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
-                        (SELECT count(unique_id) FROM `form_eid` WHERE `child_id`='$patientId') as no_of_req_time,
-                        (SELECT COUNT(unique_id) FROM `form_eid` WHERE `child_id`='$patientId' AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
+                        (SELECT COUNT(unique_id) FROM `form_eid` WHERE `child_id` like ?) as no_of_req_time,
+                        (SELECT COUNT(unique_id) FROM `form_eid` WHERE `child_id` like ? AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
                         FROM form_eid
-                        WHERE `child_id`='$patientId' ORDER by DATE(request_created_datetime) DESC limit 1";
+                        WHERE `child_id` like ? ORDER by DATE(request_created_datetime) DESC limit 1";
+            return $this->db->rawQueryOne($sQuery, [$patientId, $patientId, $patientId]);
         } elseif ($testType == 'covid19') {
             $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
                         DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
-                        (SELECT count(unique_id) FROM `form_covid19` WHERE `patient_id`='$patientId') as no_of_req_time,
-                        (SELECT COUNT(unique_id) FROM `form_covid19` WHERE `patient_id`='$patientId' AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
+                        (SELECT COUNT(unique_id) FROM `form_covid19` WHERE `patient_id` like ?) as no_of_req_time,
+                        (SELECT COUNT(unique_id) FROM `form_covid19` WHERE `patient_id` like ? AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
                         FROM form_covid19
-                        WHERE `patient_id`='$patientId'
+                        WHERE `patient_id` like ?
                         ORDER by DATE(request_created_datetime) DESC limit 1";
+            return $this->db->rawQueryOne($sQuery, [$patientId, $patientId, $patientId]);
         } elseif ($testType == 'hepatitis') {
             $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
                         DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
-                        (SELECT count(unique_id) FROM `form_hepatitis` WHERE `patient_id`='$patientId') as no_of_req_time,
-                        (SELECT COUNT(unique_id) FROM `form_hepatitis` WHERE `patient_id`='$patientId' AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
+                        (SELECT COUNT(unique_id) FROM `form_hepatitis` WHERE `patient_id` like ?) as no_of_req_time,
+                        (SELECT COUNT(unique_id) FROM `form_hepatitis` WHERE `patient_id` like ? AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
                         FROM form_hepatitis
-                        WHERE `patient_id`='$patientId'
+                        WHERE `patient_id` like ?
                         ORDER by DATE(request_created_datetime) DESC limit 1";
-        }
-        if (!empty($sQuery)) {
-            return $this->db->rawQueryOne($sQuery);
+            return $this->db->rawQueryOne($sQuery, [$patientId, $patientId, $patientId]);
         } else {
             return null;
         }

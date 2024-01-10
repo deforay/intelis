@@ -204,7 +204,7 @@ try {
     $vlData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $formId,
-        'sample_reordered' => _castVariable($_POST['sampleReordered'] ?? null, 'string') ?? 'no',
+        'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
         'external_sample_code' => $_POST['serialNo'] ?? null,
         'facility_id' => $_POST['facilityId'] ?? null,
         'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),

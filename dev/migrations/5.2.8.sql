@@ -46,6 +46,14 @@ ALTER TABLE `audit_form_vl` DROP `requesting_vl_service_sector`;
 ALTER TABLE `audit_form_vl` DROP `requesting_category`;
 ALTER TABLE `audit_form_vl` DROP `requesting_professional_number`;
 
+ALTER TABLE `form_vl` CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no'
+ALTER TABLE `audit_form_vl` CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_vl` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_vl` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_generic` CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_generic` CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
 
 -- Jeyabanu 09-Jan-2024
 ALTER TABLE `instruments` ADD `additional_text` VARCHAR(256) NULL DEFAULT NULL AFTER `low_vl_result_text`;
