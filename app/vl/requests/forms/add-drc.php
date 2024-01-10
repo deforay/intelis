@@ -235,6 +235,35 @@ $sFormat = '';
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
 										</td>
 									</tr>
+									<tr class="femaleSection" style="display:none;">
+
+										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
+										<td style="width:20% !important;">
+											<label for="breastfeeding">Allaitante ?</label>
+											<select class="form-control" id="breastfeeding" name="breastfeeding">
+												<option value=""> -- Select -- </option>
+												<option id="breastfeedingYes" value="yes">Oui</option>
+												<option id="breastfeedingNo" value="no">Non</option>
+											</select>
+										</td>
+										<td style="width:15% !important;">
+											<label for="patientPregnant">Ou enceinte ?</label>
+											<select class="form-control" id="pregnant" name="patientPregnant">
+												<option value=""> -- Select -- </option>
+												<option id="pregYes" value="yes">Oui</option>
+												<option id="pregNo" value="no">Non</option>
+											</select>
+										</td>
+										<td class="trimesterSection" style="display:none; width:30% !important;">
+											<label for="trimester">Si Femme enceinte :</label>
+											<select class="form-control" id="trimester" name="trimester">
+												<option value=""> -- Select -- </option>
+												<option id="trimester1" value="1">Trimestre 1</option>
+												<option id="trimester2" value="2">Trimestre 2</option>
+												<option id="trimester3" value="3">Trimestre 3</option>
+											</select>
+										</td>
+									</tr>
 									<tr>
 										<td><label for="patientPhoneNumber">Numéro de portable du patient </label></td>
 										<td>
@@ -310,35 +339,6 @@ $sFormat = '';
 										<td style="width:15% !important;"><label for="lastViralLoadResult">Résultat dernière charge virale </label></td>
 										<td style="width:35% !important;">
 											<input type="text" class="form-control" id="lastViralLoadResult" name="lastViralLoadResult" placeholder="Résultat dernière charge virale" title="Please enter résultat dernière charge virale" />copies/ml
-										</td>
-									</tr>
-									<tr class="femaleSection" style="display:none;">
-
-										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
-										<td style="width:20% !important;">
-											<label for="breastfeeding">allaitante ?</label>
-											<select class="form-control" id="breastfeeding" name="breastfeeding">
-												<option value=""> -- Select -- </option>
-												<option id="breastfeedingYes" value="yes">Oui</option>
-												<option id="breastfeedingNo" value="no">Non</option>
-											</select>
-										</td>
-										<td style="width:15% !important;">
-											<label for="patientPregnant">Ou enceinte ?</label>
-											<select class="form-control" id="pregnant" name="pregnant">
-												<option value=""> -- Select -- </option>
-												<option id="pregYes" value="yes">Oui</option>
-												<option id="pregNo" value="no">Non</option>
-											</select>
-										</td>
-										<td style="width:30% !important;">
-											<label for="trimester">Si Femme enceinte :</label>
-											<select class="form-control" id="trimester" name="trimester">
-												<option value=""> -- Select -- </option>
-												<option id="trimester1" value="1">Trimestre 1</option>
-												<option id="trimester2" value="2">Trimestre 2</option>
-												<option id="trimester3" value="3">Trimestre 3</option>
-											</select>
 										</td>
 									</tr>
 									<tr style="display:none;" class="newreasonForVLTesting">
@@ -689,6 +689,13 @@ $sFormat = '';
 			$(".femaleSection").hide();
 		}
 	});
+	$("#pregnant").change(function() {
+        if ($(this).val() == 'yes') {
+            $(".trimesterSection").show();
+        }else{
+			$(".trimesterSection").hide();
+		}
+    });
 	$("input:radio[name=hasChangedRegimen]").click(function() {
 		if ($(this).val() == 'yes') {
 			$(".arvChangedElement").show();
