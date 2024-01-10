@@ -678,7 +678,7 @@ $reasonForChange = $reasonForChangeArr[1];
 								</div>
 							</div>
 							<div id="otherSection" class="disabledForm"></div>
-							<?php //if (_isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+							<?php if (_isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 								<div class="box box-primary">
 									<div class="box-header with-border">
 										<h3 class="box-title">Laboratory Information</h3>
@@ -913,7 +913,7 @@ $reasonForChange = $reasonForChangeArr[1];
 										<?php } ?>
 										<div class="row" id="labSection"></div>
 									</div>
-								<?php //} ?>
+								<?php } ?>
 								</div>
 						</div>
 					</div>
@@ -1636,7 +1636,7 @@ $reasonForChange = $reasonForChangeArr[1];
 					vlSampleId: editId,
 					result: resultVal,
 					testTypeForm: testedTypeForm,
-					// resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
+					// resultInterpretation: '< ?php echo $genericResultInfo['final_result_interpretation']; ?>',
 					resultUnit: testResultUnit,
 				},
 				function(data) {
@@ -1748,7 +1748,7 @@ $reasonForChange = $reasonForChangeArr[1];
 					result: resultVal,
 					testTypeForm: testedTypeForm,
 					subTests: subTestResult
-					// resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
+					// resultInterpretation: '< ?php echo $genericResultInfo['final_result_interpretation']; ?>',
 				},
 				function(data) {
 					data = JSON.parse(data);
