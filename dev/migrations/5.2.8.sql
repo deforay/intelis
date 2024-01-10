@@ -46,8 +46,15 @@ ALTER TABLE `audit_form_vl` DROP `requesting_vl_service_sector`;
 ALTER TABLE `audit_form_vl` DROP `requesting_category`;
 ALTER TABLE `audit_form_vl` DROP `requesting_professional_number`;
 
-ALTER TABLE `form_vl` CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no'
+ALTER TABLE `form_vl` DROP `sample_code_title`;
+ALTER TABLE `audit_form_vl` DROP `sample_code_title`;
+
+ALTER TABLE `form_vl` CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
 ALTER TABLE `audit_form_vl` CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_vl` CHANGE `is_result_sms_sent` `is_result_sms_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_vl` CHANGE `is_result_sms_sent` `is_result_sms_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
 ALTER TABLE `form_vl` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
 ALTER TABLE `audit_form_vl` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
 

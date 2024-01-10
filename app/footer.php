@@ -12,58 +12,68 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 
+
+
+if (_isAllowed("sync-history.php")) {
+	$syncHistory = "/common/reference/sync-history.php";
+} else {
+	$syncHistory = "javascript:void(0);";
+}
+
+$syncLatestTime = $general->getLastRemoteSyncDateTime();
+
+if (empty($syncLatestTime)) {
+	$syncHistoryDisplay = "display:none;";
+} else {
+	$syncHistoryDisplay = "display:inline;";
+}
+
 ?>
 
 <footer class="main-footer">
 
-	<small>
-		<?= _translate("This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S.
+	<div class="row">
+		<div class="col-lg-8 col-sm-8">
+			<small><?= _translate("This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S.
 		Centers for Disease Control and Prevention (CDC)."); ?>
-	</small>
+			</small>
+			<br>
+			<small class="text-muted"><a href="javascript:void(0);" onclick="clearCache();" style="font-size:0.8em;">Clear Cache</a></small>
+		</div>
+		<div class=" col-lg-4 col-sm-4">
+
+			<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;
+				<?php echo "v" . VERSION; ?>
+			</small>
+			<?php
+
+			if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
+
+				<small class="pull-right">
+					<a href="javascript:syncRemoteData();">
+						<?= _translate("Force Remote Sync"); ?>
+					</a>&nbsp;&nbsp;
+				</small>
+
+			<?php
+			}
+			?>
+			<br>
+			<span class="syncHistoryDiv" style="float:right;font-size:x-small;<?= $syncHistoryDisplay ?>" class="pull-right">
+				<a href="<?= $syncHistory; ?>" class="text-muted">
+					<?= _translate("Last synced at"); ?>
+					<span class="lastSyncDateTime">
+						<?= $syncLatestTime; ?>
+					</span>
+				</a>
+			</span>
+		</div>
+	</div>
 	<?php if (!empty($supportEmail)) { ?>
 		<small><a href="javascript:void(0);" onclick="showModal('/support/index.php?fUrl=<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>', 900, 520);">Support</a></small>
 	<?php } ?>
-	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;
-		<?php echo "v" . VERSION; ?>
-	</small>
-	<?php
 
-	if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
-		<div class="pull-right">
-			<small>
-				<a href="javascript:syncRemoteData();">
-					<?= _translate("Force Remote Sync"); ?>
-				</a>&nbsp;&nbsp;
-			</small>
-		</div>
-	<?php
-	}
-	$lastSync = '';
 
-	if (_isAllowed("sync-history.php")) {
-		$syncHistory = "/common/reference/sync-history.php";
-	} else {
-		$syncHistory = "javascript:void(0);";
-	}
-
-	$syncLatestTime = $general->getLastRemoteSyncDateTime();
-
-	if (empty($syncLatestTime)) {
-		$syncHistoryDisplay = "display:none;";
-	} else {
-		$syncHistoryDisplay = "display:inline;";
-	}
-
-	?>
-	<br>
-	<div class="syncHistoryDiv" style="float:right;font-size:x-small;<?= $syncHistoryDisplay ?>" class="pull-right">
-		<a href="<?= $syncHistory; ?>" class="text-muted">
-			<?= _translate("Last synced at"); ?>
-			<span class="lastSyncDateTime">
-				<?= $syncLatestTime; ?>
-			</span>
-		</a>
-	</div>
 </footer>
 </div>
 
@@ -421,6 +431,25 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 		result = result.toLowerCase();
 		// Replace spaces with underscore
 		return result.replace(/ /g, '_');
+	}
+
+	function clearCache() {
+		$.ajax({
+			url: '/includes/clear-cache.php',
+			cache: false,
+			success: function(data) {
+				Toastify({
+					text: "<?= _translate('Cache cleared successfully', true) ?>",
+					duration: 3000,
+					style: {
+						background: 'green'
+					}
+				}).showToast();
+			},
+			error: function() {
+				console.error("An error occurred while clearing the cache.");
+			}
+		});
 	}
 </script>
 </body>
