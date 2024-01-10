@@ -46,3 +46,11 @@ ALTER TABLE `audit_form_vl` DROP `requesting_vl_service_sector`;
 ALTER TABLE `audit_form_vl` DROP `requesting_category`;
 ALTER TABLE `audit_form_vl` DROP `requesting_professional_number`;
 
+
+-- Jeyabanu 09-Jan-2024
+ALTER TABLE `instruments` ADD `additional_text` VARCHAR(256) NULL DEFAULT NULL AFTER `low_vl_result_text`;
+
+-- Jeyabanu 10-Jan-2024
+ALTER TABLE `generic_test_results` ADD `final_result_interpretation` TEXT NULL DEFAULT NULL AFTER `result_unit`;
+ALTER TABLE `instruments` ADD `reviewed_by` TEXT NULL DEFAULT NULL AFTER `status`;
+ALTER TABLE `instruments` ADD `approved_by` TEXT NULL DEFAULT NULL AFTER `reviewed_by`;

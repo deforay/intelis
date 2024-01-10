@@ -199,6 +199,18 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 								</div>
 							</div>
 						<?php } ?>
+							<div class="row additionalText">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label for="additionalText" class="col-lg-2 control-label">
+											<?php echo _translate("Description/Comment to add in Test Result"); ?>
+										</label>
+										<div class="col-lg-7">
+											<textarea class="form-control" id="additionalText" name="additionalText" placeholder='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>' title='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>'></textarea>
+										</div>
+									</div>
+								</div>
+							</div>
 						<!-- <div class="box-header">
 							<h3 class="box-title ">Machine Names</h3>
 						</div> -->

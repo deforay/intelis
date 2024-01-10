@@ -23,6 +23,7 @@ $tableName3 = "generic_test_reason_map";
 $tableName4 = "generic_test_symptoms_map";
 $tableName5 = "generic_test_failure_reason_map";
 $tableName6 = "generic_sample_rejection_reason_map";
+$tableName7 = "generic_test_result_units_map";
 $tableName8 = "generic_test_methods_map";
 $testAttribute = [];
 $testTypeId = (int) base64_decode((string) $_POST['testTypeId']);
@@ -153,6 +154,15 @@ try {
                     }
                     $value = array('rejection_reason_id' => $val, 'test_type_id' => $testTypeId);
                     $db->insert($tableName6, $value);
+                }
+            }
+
+            if (!empty($_POST['resultConfig']['test_result_unit'])) {
+                $db->where('test_type_id', $testTypeId);
+                $db->delete($tableName7);
+                foreach ($_POST['resultConfig']['test_result_unit'] as $val) {
+                    $value = array('unit_id' => $val, 'test_type_id' => $testTypeId);
+                    $db->insert($tableName7, $value);
                 }
             }
 

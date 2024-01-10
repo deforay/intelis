@@ -7,6 +7,12 @@ use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -33,9 +39,9 @@ try {
         if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
                 $configDir = __DIR__;
-                // if (!file_exists($configDir)) {
-                //     mkdir($configDir, 0777, true);
-                // }
+                if (!file_exists($configDir)) {
+                    mkdir($configDir, 0777, true);
+                }
                 MiscUtility::makeDirectory($configDir . DIRECTORY_SEPARATOR . $test);
                 $configFile = $configDir . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
                 if (!file_exists($configFile)) {
@@ -65,6 +71,7 @@ try {
             'higher_limit' => $_POST['higherLimit'] ?? null,
             'max_no_of_samples_in_a_batch' => $_POST['maxNOfSamplesInBatch'] ?? null,
             'low_vl_result_text' => $_POST['lowVlResultText'] ?? null,
+            'additional_text' => $_POST['additionalText'] ?? null,
             'reviewed_by' => !empty($_POST['reviewedBy']) ? $_POST['reviewedBy'] : null,
             'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
             'status' => $_POST['status']
