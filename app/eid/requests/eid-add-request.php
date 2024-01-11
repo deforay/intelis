@@ -82,6 +82,11 @@ foreach ($iResult as $val) {
     $machine[$val['config_machine_id']] = $val['config_machine_name'];
 }
 
+$testPlatformResult = $general->getTestingPlatforms('eid');
+foreach ($testPlatformResult as $row) {
+    $testPlatformList[$row['machine_name']] = $row['machine_name'];
+}
+
 $minPatientIdLength = 0;
 if (isset($arr['eid_min_patient_id_length']) && $arr['eid_min_patient_id_length'] != "") {
     $minPatientIdLength = $arr['eid_min_patient_id_length'];
