@@ -310,6 +310,7 @@ try {
 		'previous_sample_code' => $_POST['previousSampleCode'] ?? null,
 		'clinical_assessment' => $_POST['clinicalAssessment'] ?? null,
 		'clinician_name' => $_POST['clinicianName'] ?? null,
+		'request_clinician_phone_number' => $_POST['reqClinicianPhoneNumber'] ?? null,
 		'mother_name' => $_POST['mothersName'] ?? null,
 		'mother_surname' => $_POST['mothersSurname'] ?? null,
 		'mother_dob' => $_POST['mothersDob'] ?? null,

@@ -54,6 +54,7 @@ try {
         $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
 
         $data = array(
+            'config_id'  => $general->generateUUID(),
             'machine_name' => $_POST['configurationName'],
             'lab_id' => $_POST['testingLab'],
             'supported_tests' => $_POST['supportedTests'] ?? null,
