@@ -378,7 +378,7 @@ if [ -f "${config_file}" ]; then
     # Check if the file contains the required string
     if ! grep -q "\$systemConfig\['database'\]\['host'\]" "${config_file}"; then
         # Backup config.production.php
-        cp "${config_file}" "${config_file}_backup_$(date +%Y%m%d_%H%M%S)"
+        mv "${config_file}" "${config_file}_backup_$(date +%Y%m%d_%H%M%S)"
 
         # Copy from config.production.dist.php to config.production.php
         cp "${dist_config_file}" "${config_file}"

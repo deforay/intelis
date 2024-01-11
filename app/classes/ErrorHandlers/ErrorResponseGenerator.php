@@ -49,7 +49,13 @@ class ErrorResponseGenerator
 
     private function determineHttpCode(Throwable $exception): int
     {
-        return $exception->getCode() ?: 500;
+        $httpCode = $exception->getCode() ?: 500;
+
+        if ($httpCode < 100 || $httpCode > 599) {
+            $httpCode = 500;
+        }
+
+        return $httpCode;
     }
 
     private function handleDebugMode(Throwable $exception, ResponseInterface $response): ResponseInterface
