@@ -87,10 +87,9 @@ if (isset($arr['eid_min_patient_id_length']) && $arr['eid_min_patient_id_length'
     $minPatientIdLength = $arr['eid_min_patient_id_length'];
 }
 
-$testPlatformResult = $general->getTestingPlatforms('eid');
-foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
-}
+//get import config
+$insCondition = "(JSON_SEARCH(supported_tests, 'all', 'eid') IS NOT NULL) OR (supported_tests IS NULL)";
+$importResult = $general->fetchDataFromTable('instruments', $insCondition);
 
 $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'active'");
 //Recommended corrective actions

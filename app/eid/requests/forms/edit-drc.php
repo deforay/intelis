@@ -174,7 +174,12 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<td>
 											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" value="<?= $eidInfo['clinician_name']; ?>" />
 										</td>
-									</tr>
+									
+										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien </label></td>
+										<td>
+											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" style="width:100%;" value="<?= $eidInfo['request_clinician_phone_number']; ?>"/>
+										</td>
+										</tr>
 								</table>
 								<br><br>
 								<div class="box-header with-border">

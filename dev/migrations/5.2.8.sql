@@ -69,3 +69,19 @@ ALTER TABLE `instruments` ADD `additional_text` VARCHAR(256) NULL DEFAULT NULL A
 ALTER TABLE `generic_test_results` ADD `final_result_interpretation` TEXT NULL DEFAULT NULL AFTER `result_unit`;
 ALTER TABLE `instruments` ADD `reviewed_by` TEXT NULL DEFAULT NULL AFTER `status`;
 ALTER TABLE `instruments` ADD `approved_by` TEXT NULL DEFAULT NULL AFTER `reviewed_by`;
+ALTER TABLE `instruments` CHANGE `config_id` `config_id` VARCHAR(50) NOT NULL;
+
+ALTER TABLE `form_vl` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `vl_test_platform`;
+ALTER TABLE `audit_form_vl` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `vl_test_platform`;
+ALTER TABLE `form_eid` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `eid_test_platform`;
+ALTER TABLE `audit_form_eid` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `eid_test_platform`;
+ALTER TABLE `form_covid19` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `covid19_test_platform`;
+ALTER TABLE `audit_form_covid19` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `covid19_test_platform`;
+ALTER TABLE `form_hepatitis` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `hepatitis_test_platform`;
+ALTER TABLE `audit_form_hepatitis` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `hepatitis_test_platform`;
+ALTER TABLE `form_tb` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `tb_test_platform`;
+ALTER TABLE `audit_form_tb` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `tb_test_platform`;
+
+-- Jeyabanu 11-Jan-2024
+ALTER TABLE `form_eid` ADD `request_clinician_phone_number` VARCHAR(32) NULL DEFAULT NULL AFTER `clinician_name`;
+ALTER TABLE `audit_form_eid` ADD `request_clinician_phone_number` VARCHAR(32) NULL DEFAULT NULL AFTER `clinician_name`;

@@ -121,9 +121,11 @@ try {
 
 
     $testingPlatform = null;
+    $instrumentId = null;
     if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) != '') {
         $platForm = explode("##", (string) $_POST['testingPlatform']);
         $testingPlatform = $platForm[0];
+        $instrumentId = $platForm[3];
     }
 
     if (!empty($_POST['newRejectionReason'])) {
@@ -267,13 +269,14 @@ try {
         'vl_focal_person_phone_number' => $_POST['vlFocalPersonPhoneNumber'] ?? null,
         'lab_id' => $_POST['labId'] ?? null,
         'vl_test_platform' => $testingPlatform ?? null,
+        'instrument_id' => $instrumentId ?? null,
         'sample_received_at_hub_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedAtHubOn'] ?? '', true),
         'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
         'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'] ?? '', true),
         'result_dispatched_datetime' => DateUtility::isoDateFormat($_POST['resultDispatchedOn'] ?? '', true),
         'result_value_hiv_detection' => $hivDetection,
         'reason_for_failure' => $_POST['reasonForFailure'] ?? null,
-        'is_sample_rejected' => $params['isSampleRejected'] ?? null,
+        'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim((string) $_POST['rejectionReason']) != '') ? $_POST['rejectionReason'] : null,
         'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
         'rejection_on' => DateUtility::isoDateFormat($_POST['rejectionDate'] ?? ''),

@@ -732,6 +732,9 @@ $sFormat = '';
 			$("#rejectionReason").addClass('isRequired');
 			$("#vlResult").val('').css('pointer-events', 'none');
 			$("#vlLog").val('').css('pointer-events', 'none');
+			$('#reasonForFailure').val('');
+			$('#reasonForFailure').removeClass('isRequired');
+			$('.reasonForFailure').hide();
 		} else {
 			$(".resultSection").show();
 			$("#rejectionReason").val('');
@@ -842,6 +845,20 @@ $sFormat = '';
 				$("#genderMale").prop('checked', true);
 			} else if (patientArray['gender'] == 'female') {
 				$("#genderFemale").prop('checked', true);
+				$(".femaleSection").show();
+				if ($.trim(patientArray['is_breastfeeding']) != '') {
+					$("#breastfeeding").val($.trim(patientArray['is_breastfeeding']));
+				}
+				if ($.trim(patientArray['is_pregnant']) != '') {
+					$("#pregnant").val($.trim(patientArray['is_pregnant']));
+					$('#pregnant').trigger('change');
+					if($.trim(patientArray['is_pregnant']) == 'yes'){
+						if ($.trim(patientArray['trimester']) != '') {
+							$("#trimester").val($.trim(patientArray['trimester']));
+						}
+					}
+				}
+
 			}
 		}
 		if ($.trim(patientArray['patient_art_no']) != '') {
