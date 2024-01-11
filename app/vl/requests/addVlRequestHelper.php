@@ -41,6 +41,7 @@ $request = AppRegistry::get('request');
 
 // Define custom filters, with only StringTrim for viral load results
 $onlyStringTrim = (new FilterChain())->attach(new StringTrim());
+
 $customFilters = [
     'vlResult' => $onlyStringTrim,
     'cphlVlResult' => $onlyStringTrim,
@@ -57,12 +58,14 @@ $instanceId = $general->getInstanceId();
 
 try {
 
+    $db->beginTransaction();
+
     $mandatoryFields = [
         $_POST['vlSampleId'],
         $_POST['sampleCode'],
         $_POST['sampleCollectionDate']
     ];
-    if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
+    if (empty($_POST) || ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
         $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
         header("Location:/vl/requests/addVlRequest.php");
         die;
@@ -379,6 +382,7 @@ try {
     $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);
 
+    $db->commitTransaction();
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("VL request added successfully");
         $eventType = 'add-vl-request-sudan';
@@ -402,6 +406,7 @@ try {
             header("Location:/vl/requests/vl-requests.php");
         }
     } else {
+        $db->rollbackTransaction();
         if ($db->getLastErrno() > 0) {
             LoggerUtility::log('error', "DB ERROR :: " . $db->getLastError(), [
                 'exception' => $db->getLastError(),
@@ -413,5 +418,6 @@ try {
         header("Location:/vl/requests/vl-requests.php");
     }
 } catch (Exception $e) {
+    $db->rollbackTransaction();
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), 500, $e);
 }

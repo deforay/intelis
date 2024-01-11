@@ -169,7 +169,6 @@ class PatientsService
         } else {
             $params['patientFirstName'] = $params['firstName'];
             $params['patientLastName'] = $params['lastName'];
-            $params['dob'] = $params['dob'];
             $patientId = $params['patientId'];
         }
         $data['patient_code'] = $patientId;

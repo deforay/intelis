@@ -350,7 +350,7 @@ class UsersService
         return $response;
     }
 
-    public function userHistoryLog($loginId, $loginStatus, $userId = null)
+    public function recordLoginAttempt($loginId, $loginStatus, $userId = null)
     {
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
         $os = PHP_OS;

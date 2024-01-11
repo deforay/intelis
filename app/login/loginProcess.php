@@ -113,7 +113,7 @@ try {
             &&
             (empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode'])
         ) {
-            $usersService->userHistoryLog($userName, 'failed');
+            $usersService->recordLoginAttempt($userName, 'failed');
             throw new SystemException(_translate("You have exhausted the maximum number of login attempts. Please retry login after some time."));
         }
 
@@ -132,7 +132,7 @@ try {
                 throw new SystemException(_translate("Please check your login credentials"));
             }
         } elseif (!password_verify((string) $_POST['password'], (string) $userRow['password'])) {
-            $usersService->userHistoryLog($userName, 'failed', $userRow['user_id']);
+            $usersService->recordLoginAttempt($userName, 'failed', $userRow['user_id']);
             throw new SystemException(_translate("Please check your login credentials"));
         }
 
@@ -140,7 +140,7 @@ try {
 
             // regenerate session id
             session_regenerate_id(true);
-            $usersService->userHistoryLog($userName, 'successful', $userRow['user_id']);
+            $usersService->recordLoginAttempt($userName, 'successful', $userRow['user_id']);
             $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
             if (!empty($instanceResult['vlsm_instance_id'])) {
@@ -192,7 +192,7 @@ try {
                 $_SESSION['alertMsg'] = _translate("Please change your password to proceed.");
             }
         } else {
-            $usersService->userHistoryLog($userName, 'failed');
+            $usersService->recordLoginAttempt($userName, 'failed');
             throw new SystemException(_translate("Please check your login credentials"));
         }
     } else {
