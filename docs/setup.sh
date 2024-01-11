@@ -70,6 +70,64 @@ rename_vlsm_database() {
     echo "All tables and triggers moved to ${new_db_name}."
 }
 
+# Function to check if VLSM database exists
+database_exists() {
+    local db_count=$(mysql -u root -p"${mysql_root_password}" -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = 'vlsm';")
+    if [ "$db_count" -gt 0 ]; then
+        return 0 # True, database exists
+    else
+        return 1 # False, database does not exist
+    fi
+}
+
+# Function to prompt for SQL file and import
+prompt_and_import_sql_file() {
+    while :; do
+        echo "Do you want to:"
+        echo "1) Import from an existing backup SQL file"
+        echo "2) Import default init.sql"
+        read -p "Enter your choice (1 or 2): " user_choice
+
+        case $user_choice in
+        1)
+            read -p "Enter the path to your existing VLSM database SQL file: " vlsm_sql_file
+            if [[ -f "$vlsm_sql_file" ]]; then
+                import_sql_file "$vlsm_sql_file"
+                break
+            else
+                echo "File not found: $vlsm_sql_file. Please check the path."
+            fi
+            ;;
+        2)
+            import_init_sql
+            break
+            ;;
+        *)
+            echo "Invalid choice. Please enter 1 or 2."
+            ;;
+        esac
+    done
+}
+
+# Function to create VLSM database
+create_vlsm_database() {
+    echo "Creating VLSM database..."
+    mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+}
+
+# Function to import SQL file
+import_sql_file() {
+    local sql_file=$1
+    echo "Importing SQL file: $sql_file..."
+    mysql -u root -p"${mysql_root_password}" vlsm <"$sql_file"
+}
+
+# Function to import init.sql
+import_init_sql() {
+    echo "Importing init.sql into the VLSM database..."
+    mysql -u root -p"${mysql_root_password}" vlsm <"${vlsm_path}/sql/init.sql"
+}
+
 spinner() {
     local pid=$!
     local delay=0.1
@@ -328,7 +386,7 @@ else
 fi
 
 # Ask user for VLSM installation path
-read -p "Enter the VLSM installation path [/var/www/vlsm]: " vlsm_path
+read -p "Enter the VLSM installation path [press enter to select /var/www/vlsm]: " vlsm_path
 vlsm_path="${vlsm_path:-/var/www/vlsm}"
 
 # VLSM Setup
@@ -397,26 +455,16 @@ sudo -u www-data composer config process-timeout 30000
 sudo -u www-data composer update --no-dev &&
     sudo -u www-data composer dump-autoload -o
 
-# Import init.sql into the vlsm database
+# Check if VLSM database and tables exist
 if has_vlsm_tables; then
-    echo "VLSM database already has tables."
-    if ask_yes_no "Do you want to perform a fresh import and preserve existing data in a backup database?"; then
-        rename_vlsm_database
-        echo "Creating a new VLSM database..."
-        mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-        echo "Importing init.sql into the new vlsm database..."
-        mysql -u root -p"${mysql_root_password}" vlsm <"${vlsm_path}/sql/init.sql"
-        mysql -u root -p"${mysql_root_password}" vlsm <"${vlsm_path}/sql/audit-triggers.sql"
-    else
-        echo "Skipping import. Keeping existing data."
-    fi
+    echo "VLSM database and tables already exist. No further action required."
 else
-    echo "No tables found in VLSM database. Importing init.sql..."
-    mysql -u root -p"${mysql_root_password}" vlsm <"${vlsm_path}/sql/init.sql"
+    create_vlsm_database
+    prompt_and_import_sql_file
 fi
 
 # Ask user for the hostname
-read -p "Enter domain name (default 'vlsm' for local lab machines): " hostname
+read -p "Enter domain name (press enter to select 'vlsm' -- ONLY for local lab machines): " hostname
 hostname="${hostname:-vlsm}"
 
 # Check if the hostname entry is already in /etc/hosts
