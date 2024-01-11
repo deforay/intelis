@@ -95,6 +95,11 @@ function addMissingColumns($db, $fromDbName, $toDbName, $formTable, $auditTable)
 
 function dropExtraColumns($db, $fromDbName, $toDbName, $formTable, $auditTable)
 {
+    $allowedExtraColumns = [
+        'action',
+        'revision',
+        'dt_datetime',
+    ];
     $query = "SELECT COLUMN_NAME
                 FROM information_schema.COLUMNS
                 WHERE TABLE_SCHEMA = '$toDbName'
@@ -104,6 +109,7 @@ function dropExtraColumns($db, $fromDbName, $toDbName, $formTable, $auditTable)
                     FROM information_schema.COLUMNS
                     WHERE TABLE_SCHEMA = '$fromDbName'
                     AND TABLE_NAME = '{$db->escape($formTable)}')
+                    AND COLUMN_NAME NOT IN ('" . implode("','", $allowedExtraColumns) . "')
                 ORDER BY COLUMN_NAME";
 
     $extraColumns = $db->rawQuery($query);
@@ -112,6 +118,9 @@ function dropExtraColumns($db, $fromDbName, $toDbName, $formTable, $auditTable)
         echo "Error checking extra columns for $toDbName.$auditTable and $fromDbName.$formTable: " . $db->getLastError() . "\n";
     } else {
         foreach ($extraColumns as $column) {
+            // if (in_array($column['COLUMN_NAME'], $allowedExtraColumns)) {
+            //     continue;
+            // }
             $dropColumnQuery = "ALTER TABLE `$toDbName`.`$auditTable` DROP COLUMN `" . $column['COLUMN_NAME'] . "`;";
             if (!$db->rawQuery($dropColumnQuery)) {
                 echo "Error dropping column " . $column['COLUMN_NAME'] . " from $toDbName.$auditTable: " . $db->getLastError() . "\n";

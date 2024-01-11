@@ -14,17 +14,21 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
+use App\Utilities\FileCacheUtility;
+use Symfony\Contracts\Cache\ItemInterface;
 
 
 class CommonService
 {
     protected DatabaseService $db;
     protected FacilitiesService $facilitiesService;
+    protected $fileCache;
 
-    public function __construct(DatabaseService $db, FacilitiesService $facilitiesService)
+    public function __construct(DatabaseService $db, FacilitiesService $facilitiesService, FileCacheUtility $fileCache)
     {
         $this->db = $db;
         $this->facilitiesService = $facilitiesService;
+        $this->fileCache = $fileCache;
     }
 
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false, bool $unbuffered = false): array
@@ -129,45 +133,37 @@ class CommonService
     // get data from the system_config table from database
     public function getSystemConfig(?string $name = null)
     {
-        if (empty($_SESSION['app']['system_config']) || (!empty($name) && empty($_SESSION['app']['system_config'][$name]))) {
+        $cacheKey = 'app_system_config';
+
+        $allConfigs = $this->fileCache->get($cacheKey, function () {
             $returnConfig = [];
             $systemConfigResult = $this->db->get('system_config');
             foreach ($systemConfigResult as $config) {
                 $returnConfig[$config['name']] = $config['value'];
             }
+            return $returnConfig;
+        });
 
-            // Store all configurations in session
-            $_SESSION['app']['system_config'] = $returnConfig;
-        }
-
-        if (!empty($name)) {
-            return $_SESSION['app']['system_config'][$name] ?? null;
-        } else {
-            return $_SESSION['app']['system_config'] ?? null;
-        }
+        return $name ? ($allConfigs[$name] ?? null) : ($allConfigs ?? []);
     }
-
 
     // get data from the global_config table from database
     public function getGlobalConfig(?string $name = null): string|array|null
     {
-        if (empty($_SESSION['app']['global_config']) || (!empty($name) && empty($_SESSION['app']['global_config'][$name]))) {
+        $cacheKey = 'app_global_config';
+
+        $allConfigs = $this->fileCache->get($cacheKey, function () {
             $returnConfig = [];
             $configResult = $this->db->get('global_config');
             foreach ($configResult as $config) {
                 $returnConfig[$config['name']] = $config['value'];
             }
+            return $returnConfig;
+        });
 
-            // Store all configurations in session
-            $_SESSION['app']['global_config'] = $returnConfig;
-        }
-
-        if (!empty($name)) {
-            return $_SESSION['app']['global_config'][$name] ?? null;
-        } else {
-            return $_SESSION['app']['global_config'] ?? null;
-        }
+        return $name ? ($allConfigs[$name] ?? null) : ($allConfigs ?? []);
     }
+
 
     public function getDataByTableAndFields($table, $fields, $option = true, $condition = null, $group = null)
     {
@@ -194,6 +190,7 @@ class CommonService
         }
         return $response;
     }
+
 
     public function fetchDataFromTable($tableName = null, $condition = null, $fieldName = null)
     {
