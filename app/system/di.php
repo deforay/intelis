@@ -25,6 +25,7 @@ use App\Services\ResultPdfService;
 use App\Exceptions\SystemException;
 use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
+use App\Utilities\FileCacheUtility;
 use App\Services\InstrumentsService;
 use App\Services\TestResultsService;
 use App\Utilities\ValidationUtility;
@@ -123,6 +124,7 @@ $builder->addDefinitions([
 $builder->addDefinitions([
     DateUtility::class => DI\create(DateUtility::class),
     CaptchaUtility::class => DI\create(CaptchaUtility::class),
+    FileCacheUtility::class => DI\create(FileCacheUtility::class),
     MiscUtility::class => DI\create(MiscUtility::class),
     LoggerUtility::class => DI\create(LoggerUtility::class),
     ValidationUtility::class => DI\create(ValidationUtility::class),

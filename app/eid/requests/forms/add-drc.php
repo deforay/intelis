@@ -145,10 +145,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<td>
 											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" />
 										</td>
+										</tr>
+										<tr>
 										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien </label></td>
 										<td>
 											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="" style="width:100%;" />
 										</td>
+										</tr>
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 									<tr>
 										<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
@@ -160,6 +163,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									</tr>
 
 								<?php } ?>
+
 								</table>
 								<br><br>
 

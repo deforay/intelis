@@ -5,6 +5,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
@@ -16,15 +17,18 @@ $_POST = _sanitizeInput($request->getParsedBody());
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var FileCacheUtility $fileCache */
+$fileCache = ContainerRegistry::get(FileCacheUtility::class);
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $instanceTableName = "s_vlsm_instance";
 
 $currentDateTime = DateUtility::getCurrentDateTime();
 
-// unset global config session so that it can be reloaded with new values
+// unset global config cache so that it can be reloaded with new values
 // this is set in CommonService::getGlobalConfig()
-unset($_SESSION['app']['global_config']);
+$fileCache->delete('app_global_config');
 
 try {
 

@@ -86,7 +86,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 											<?php echo _translate("Testing Lab"); ?> <span class="mandatory">*</span>
 										</label>
 										<div class="col-lg-7">
-											<select class="form-control select2" id="testingLab" name="testingLab" title="Please select the testing lab">
+											<select class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Please select the testing lab">
 												<?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
 											</select>
 										</div>
