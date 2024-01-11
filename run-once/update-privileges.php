@@ -9,6 +9,11 @@ require_once(__DIR__ . '/../bootstrap.php');
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+// Check if connection was successful
+if ($db->isConnected() === false) {
+    exit("Database connection failed. Please check your database settings\n");
+}
+
 // ON THE LEFT IS THE SHARED (INTERNAL/IMPLICIT) PRIVILEGE THAT IS NOT DIRECTLY ASSIGNED TO A USER
 // ON THE RIGHT IS THE PRIVILEGE TO BE CHECKED
 

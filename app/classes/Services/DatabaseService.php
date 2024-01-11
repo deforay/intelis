@@ -20,6 +20,22 @@ class DatabaseService extends MysqliDb
         $this->commitTransaction();
     }
 
+    public function isConnected($connectionName = null)
+    {
+        if ($connectionName === null) {
+            $connectionName = $this->defConnectionName ?? 'default';
+        }
+
+        try {
+            $this->connect($connectionName);
+            return true;
+        } catch (\Throwable $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+
+
     /**
      * Execute a query and return a generator to fetch results row by row.
      * Optionally execute as an unbuffered query.
