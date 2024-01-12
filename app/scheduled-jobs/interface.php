@@ -16,6 +16,7 @@ use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\LoggerUtility;
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
     error_log('Interfacing is not enabled. Please enable it in configuration.');
@@ -35,7 +36,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
 if (empty($labId)) {
-    echo "No Lab ID set in System Config";
+    LoggerUtility::log('error', "No Lab ID set in System Config. Skipping Interfacing Results");
     exit(0);
 }
 

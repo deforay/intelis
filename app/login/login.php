@@ -14,6 +14,10 @@ if (isset($_SESSION['userId'])) {
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+if ($db->isConnected() === false) {
+	throw new Exception("Database connection failed. Please check your database settings", 500);
+}
+
 
 // If there are NO users, then we need to register the admin user
 // This happens during first setup typically
