@@ -453,6 +453,12 @@ if [ -f "${vlsm_path}/cache/CompiledContainer.php" ]; then
     rm "${vlsm_path}/cache/CompiledContainer.php"
 fi
 
+# Old startup.php file is no longer needed, but if it exists, make sure it is empty
+if [ -f "${vlsm_path}/startup.php" ]; then
+    rm "${vlsm_path}/startup.php"
+    touch "${vlsm_path}/startup.php"
+fi
+
 service apache2 restart
 
 echo "VLSM update complete."
