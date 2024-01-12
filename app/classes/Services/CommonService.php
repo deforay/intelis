@@ -59,11 +59,7 @@ class CommonService
 
                 // Generate a unique session key for the count query
                 $countQuerySessionKey = md5($countSql);
-                if (isset($_SESSION['queryCounters'][$countQuerySessionKey])) {
-                    $count = $_SESSION['queryCounters'][$countQuerySessionKey];
-                } else {
-                    $count = $_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->db->rawQueryOne($countSql)['totalCount'];
-                }
+                $count = $_SESSION['queryCounters'][$countQuerySessionKey] ?? ($_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->db->rawQueryOne($countSql)['totalCount']);
             } else {
                 $count = count($queryResult);
             }
@@ -275,16 +271,12 @@ class CommonService
         if (is_null($inputString)) {
             return null;
         }
-        switch ($action) {
-            case 'encrypt':
-                return self::encrypt($inputString, $key);
-            case 'decrypt':
-                return self::decrypt($inputString, $key);
-            case 'doNothing':
-                return $inputString;
-            default:
-                return null;
-        }
+        return match ($action) {
+            'encrypt' => self::encrypt($inputString, $key),
+            'decrypt' => self::decrypt($inputString, $key),
+            'doNothing' => $inputString,
+            default => null,
+        };
     }
 
     public function activityLog($eventType, $action, $resource)
@@ -1240,7 +1232,7 @@ class CommonService
     {
         $ciphering = "AES-128-CTR";
         $options = 0;
-        if (strpos($viewId, '#') !== false) {
+        if (str_contains($viewId, '#')) {
             list($encryptedData, $ivHex) = explode('#', $viewId, 2);
             // Convert the hex string back to binary for the IV
             $decryption_iv = hex2bin($ivHex);

@@ -27,7 +27,7 @@ function convertTableAndColumns($db, $tableName)
         foreach ($columns as $column) {
             $field = $column['Field'];
             $type = $column['Type'];
-            if (strpos($type, 'char') !== false || strpos($type, 'text') !== false) {
+            if (str_contains($type, 'char') || str_contains($type, 'text')) {
                 $db->rawQuery("ALTER TABLE `$tableName` MODIFY `$field` $type CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
             }
         }

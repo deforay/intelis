@@ -310,19 +310,12 @@ class MiscUtility
     // Helper function to convert file size string to bytes
     public static function convertToBytes($sizeString): int
     {
-        switch (substr($sizeString, -1)) {
-            case 'M':
-            case 'm':
-                return (int)$sizeString * 1048576;
-            case 'K':
-            case 'k':
-                return (int)$sizeString * 1024;
-            case 'G':
-            case 'g':
-                return (int)$sizeString * 1073741824;
-            default:
-                return (int)$sizeString;
-        }
+        return match (substr($sizeString, -1)) {
+            'M', 'm' => (int)$sizeString * 1048576,
+            'K', 'k' => (int)$sizeString * 1024,
+            'G', 'g' => (int)$sizeString * 1073741824,
+            default => (int)$sizeString,
+        };
     }
 
     public static function getMimeTypeStrings(array $extensions): array

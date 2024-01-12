@@ -199,9 +199,7 @@ try {
 
      $_SESSION['vlResultQueryCount'] = $resultCount;
 
-     /*
- * Output
- */
+
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
