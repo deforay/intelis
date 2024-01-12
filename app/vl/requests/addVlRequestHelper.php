@@ -107,12 +107,19 @@ try {
         }
     }
 
-
-    //update facility code
-    if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
-        $fData = array('facility_code' => $_POST['facilityCode']);
-        $db->where('facility_id', $_POST['facilityId']);
-        $id = $db->update($fDetails, $fData);
+    try {
+        //update facility code
+        if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
+            $fData = array('facility_code' => $_POST['facilityCode']);
+            $db->where('facility_id', $_POST['facilityId']);
+            $id = $db->update($fDetails, $fData);
+        }
+    } catch (Exception $e) {
+        LoggerUtility::log('error', "Unlabe to update facility_code in addVlRequestHelper.php " . $db->getLastError(), [
+            'exception' => $db->getLastError(),
+            'file' => __FILE__,
+            'line' => __LINE__
+        ]);
     }
     if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {
         $_POST['patientPregnant'] = "N/A";

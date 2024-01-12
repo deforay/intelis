@@ -144,10 +144,10 @@ spinner() {
 
 # Initial Setup
 echo "Updating software packages..."
-apt update && apt upgrade -y && apt autoremove -y
+apt-get update && apt-get upgrade -y && apt-get autoremove -y
 
 echo "Installing basic packages..."
-apt install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk
+apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk
 
 echo "Setting up locale..."
 locale-gen en_US en_US.UTF-8
@@ -160,7 +160,7 @@ if command -v apache2 &>/dev/null; then
     echo "Apache is already installed. Skipping installation..."
 else
     echo "Installing and configuring Apache..."
-    apt install -y apache2
+    apt-get install -y apache2
     a2dismod mpm_event
     a2enmod rewrite headers deflate env mpm_prefork
 
@@ -201,7 +201,7 @@ while :; do # Infinite loop to keep asking until a correct password is provided
         fi
     else
         echo "Installing MySQL..."
-        apt install -y mysql-server
+        apt-get install -y mysql-server
 
         # Set MySQL root password and create databases
         echo "Setting MySQL root password and creating databases..."
@@ -265,8 +265,8 @@ service mysql restart || {
 # PHP Setup
 echo "Installing PHP 8.2..."
 add-apt-repository ppa:ondrej/php -y
-apt update
-apt install -y php8.2 openssl php8.2-common php8.2-cli php8.2-mysql php8.2-zip php8.2-gd php8.2-mbstring php8.2-curl php8.2-xml php8.2-xmlrpc php8.2-bcmath php8.2-gmp php8.2-intl php8.2-imagick php-mime-type php8.2-apcu
+apt-get update
+apt-get install -y php8.2 openssl php8.2-common php8.2-cli php8.2-mysql php8.2-zip php8.2-gd php8.2-mbstring php8.2-curl php8.2-xml php8.2-xmlrpc php8.2-bcmath php8.2-gmp php8.2-intl php8.2-imagick php-mime-type php8.2-apcu
 service apache2 restart || {
     echo "Failed to restart Apache2. Exiting..."
     exit 1

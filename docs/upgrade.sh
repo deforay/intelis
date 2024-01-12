@@ -221,8 +221,8 @@ echo "All system checks passed. Continuing with the update..."
 
 # Update Ubuntu Packages
 echo "Updating Ubuntu packages..."
-apt update && apt upgrade -y
-apt autoremove -y
+apt-get update && apt-get upgrade -y
+apt-get autoremove -y
 
 spinner() {
     local pid=$!

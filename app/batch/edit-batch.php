@@ -16,7 +16,7 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
 $testType = $_GET['type'] ?? 'vl';
-$genericTestType = base64_decode((string) $_GET['testType']);
+$genericTestType = null;
 $title = "Viral Load";
 $refTable = "form_vl";
 $refPrimaryColumn = "vl_sample_id";
@@ -50,6 +50,7 @@ if (isset($testType) && $testType == 'vl') {
 	$refTable = "form_generic";
 	$refPrimaryColumn = "sample_id";
 	$sampleTypeTable = "r_generic_sample_types";
+	$genericTestType = !empty($_GET['testType']) ? base64_decode((string) $_GET['testType']) : null;
 }
 
 

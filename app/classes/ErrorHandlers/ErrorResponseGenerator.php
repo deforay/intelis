@@ -34,8 +34,8 @@ class ErrorResponseGenerator
             return $this->handleDebugMode($exception, $response);
         }
 
-        $httpCode = $this->determineHttpCode($exception);
-        $this->logError($exception, $request, $httpCode);
+        [$httpCode, $originalExceptionCode]  = $this->determineHttpCode($exception);
+        $this->logError($exception, $request);
 
         if (
             str_starts_with($request->getUri()->getPath(), '/api/') ||
@@ -47,15 +47,19 @@ class ErrorResponseGenerator
         return $this->handleGenericErrorResponse($response, $httpCode, $exception);
     }
 
-    private function determineHttpCode(Throwable $exception): int
+    private function determineHttpCode(Throwable $exception): array
     {
-        $httpCode = $exception->getCode() ?: 500;
+        $originalExceptionCode = $exception->getCode();
+        $httpCode = $originalExceptionCode ?: 500;
 
         if ($httpCode < 100 || $httpCode > 599) {
             $httpCode = 500;
         }
 
-        return $httpCode;
+        return [
+            $httpCode,
+            $originalExceptionCode
+        ];
     }
 
     private function handleDebugMode(Throwable $exception, ResponseInterface $response): ResponseInterface
@@ -66,13 +70,15 @@ class ErrorResponseGenerator
         $whoops->pushHandler(new PrettyPageHandler());
         $responseBody = $whoops->handleException($exception);
         $response->getBody()->write($responseBody);
-        return $response->withStatus($this->determineHttpCode($exception));
+        [$httpCode, $originalExceptionCode]  = $this->determineHttpCode($exception);
+        return $response->withStatus($httpCode);
     }
 
-    private function logError(Throwable $exception, ServerRequestInterface $request, int $httpCode): void
+    private function logError(Throwable $exception, ServerRequestInterface $request): void
     {
+        [$httpCode, $originalExceptionCode]  = $this->determineHttpCode($exception);
         $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error');
-        LoggerUtility::log('error', $errorReason . ' : ' . $request->getUri() . ': ' . $exception->getMessage(), [
+        LoggerUtility::log('error', $errorReason . ' : ' . $originalExceptionCode . ' : ' . $request->getUri() . ': ' . $exception->getMessage(), [
             'exception' => $exception,
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
@@ -102,6 +108,7 @@ class ErrorResponseGenerator
     private function handleGenericErrorResponse(ResponseInterface $response, int $httpCode, $exception): ResponseInterface
     {
         ob_start();
+        // $errorReason and $errorMessage are used in error.php so retain them here
         $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error');
         $errorMessage = $exception->getMessage() ??
             _translate('Sorry, something went wrong. Please try again later.');
