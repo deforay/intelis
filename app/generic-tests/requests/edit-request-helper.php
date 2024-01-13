@@ -1,19 +1,13 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
-
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
-
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -26,6 +20,9 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);
+
+
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 // echo "<pre>";print_r($_POST);die;
 // Sanitized values from $request object
@@ -156,12 +153,12 @@ try {
           $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_generic_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower((string) $_POST['newRejectionReason']) . "' OR rejection_reason_name='" . (strtolower((string) $_POST['newRejectionReason'])) . "'";
           $rejectionResult = $db->rawQuery($rejectionReasonQuery);
           if (!isset($rejectionResult[0]['rejection_reason_id'])) {
-               $data = array(
+               $data = [
                     'rejection_reason_name' => $_POST['newRejectionReason'],
                     'rejection_type' => 'general',
                     'rejection_reason_status' => 'active',
                     'updated_datetime' => DateUtility::getCurrentDateTime(),
-               );
+               ];
                $id = $db->insert('r_generic_sample_rejection_reasons', $data);
                $_POST['rejectionReason'] = $id;
           } else {
@@ -219,9 +216,8 @@ try {
 
      $genericData = array(
           'vlsm_instance_id' => $instanceId,
-          'vlsm_country_id' => $_POST['countryFormId'] ?? 1,
-          'sample_reordered' => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] : 'no',
-          'sample_code_format' => (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] : null,
+          'vlsm_country_id' => $formId,
+          'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
           'external_sample_code' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] : null),
           'facility_id' => (isset($_POST['facilityId']) && $_POST['facilityId'] != '') ? $_POST['facilityId'] : null,
           'sample_collection_date' => $_POST['sampleCollectionDate'],
@@ -255,14 +251,13 @@ try {
           'is_sample_rejected' => (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] != '') ? $_POST['isSampleRejected'] : null,
           'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : null,
           'rejection_on' => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-          'result' => $_POST['result'] ?: null,
-          // 'final_result_interpretation' => $interpretationResult,
+          'result' => $_POST['result'] ?? null,
           'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
           'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
           'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,
           'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : null,
           'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] : null,
-          'date_test_ordered_by_physician' => $_POST['dateOfDemand'],
+          'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
           'lab_tech_comments' => (isset($_POST['labComments']) && trim((string) $_POST['labComments']) != '') ? trim((string) $_POST['labComments']) : null,
           'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
           'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,

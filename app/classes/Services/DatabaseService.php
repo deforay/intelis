@@ -143,4 +143,9 @@ class DatabaseService extends MysqliDb
             $this->isTransactionActive = false;
         }
     }
+
+    public function reset(): void
+    {
+        parent::reset();
+    }
 }

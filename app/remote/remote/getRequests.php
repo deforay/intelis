@@ -117,7 +117,7 @@ try {
   $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', $_SERVER['REQUEST_URI'], MiscUtility::convertToUtf8AndEncode($data), $payload, 'json', $labId);
 
 
-  $general->updateTestRequestsSyncDateTime('vl', 'form_vl', 'vl_sample_id', $sampleIds, $transactionId, $facilityIds, $labId);
+  $general->updateTestRequestsSyncDateTime('vl', $facilityIds, $labId);
   $db->commitTransaction();
 } catch (Exception | SystemException $e) {
   $db->rollbackTransaction();

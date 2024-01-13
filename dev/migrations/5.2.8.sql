@@ -85,3 +85,29 @@ ALTER TABLE `audit_form_tb` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AF
 -- Jeyabanu 11-Jan-2024
 ALTER TABLE `form_eid` ADD `request_clinician_phone_number` VARCHAR(32) NULL DEFAULT NULL AFTER `clinician_name`;
 ALTER TABLE `audit_form_eid` ADD `request_clinician_phone_number` VARCHAR(32) NULL DEFAULT NULL AFTER `clinician_name`;
+
+-- Amit 12-Jan-2024
+
+ALTER TABLE `form_eid` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_eid` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_covid19` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_covid19` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_tb` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_tb` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_hepatitis` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_hepatitis` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_generic` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_generic` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+
+UPDATE form_vl SET sample_reordered = 'no' WHERE sample_reordered is null;
+UPDATE form_eid SET sample_reordered = 'no' WHERE sample_reordered is null;
+UPDATE form_covid19 SET sample_reordered = 'no' WHERE sample_reordered is null;
+UPDATE form_tb SET sample_reordered = 'no' WHERE sample_reordered is null;
+UPDATE form_hepatitis SET sample_reordered = 'no' WHERE sample_reordered is null;
+UPDATE form_generic SET sample_reordered = 'no' WHERE sample_reordered is null;
+

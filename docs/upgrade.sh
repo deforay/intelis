@@ -224,6 +224,8 @@ echo "Updating Ubuntu packages..."
 apt-get update && apt-get upgrade -y
 apt-get autoremove -y
 
+setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
+
 spinner() {
     local pid=$!
     local delay=0.75

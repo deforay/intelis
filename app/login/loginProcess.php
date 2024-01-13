@@ -23,10 +23,6 @@ if (!empty($request->getQueryParams())) {
     $_GET = _sanitizeInput($request->getQueryParams());
 }
 
-
-$tableName = "user_details";
-$userName = $_POST['username'];
-$password = $_POST['password'];
 $redirect = "/";
 
 /** @var DatabaseService $db */
@@ -35,21 +31,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$dateFormat = $general->getGlobalConfig('gui_date_format') ?? 'd-M-Y';
 
-$_SESSION['phpDateFormat'] = $dateFormat;
-
-if ($dateFormat == 'd-m-Y') {
-    $_SESSION['jsDateFieldFormat'] = 'dd-mm-yy';
-    $_SESSION['dayjsDateFieldFormat'] = 'DD-MM-YYYY';
-    $_SESSION['jsDateRangeFormat'] = 'DD-MM-YYYY';
-    $_SESSION['jsDateFormatMask'] = '99-99-9999';
-} else {
-    $_SESSION['jsDateFieldFormat'] = 'dd-M-yy';
-    $_SESSION['dayjsDateFieldFormat'] = 'DD-MMM-YYYY';
-    $_SESSION['jsDateRangeFormat'] = 'DD-MMM-YYYY';
-    $_SESSION['jsDateFormatMask'] = '99-aaa-9999';
-}
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -84,14 +66,11 @@ try {
 
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
 
-        $userName = ($_POST['username']);
-        $password = ($_POST['password']);
-
         $userRow = $db->rawQueryOne(
             "SELECT * FROM user_details as ud
                                         INNER JOIN roles as r ON ud.role_id=r.role_id
                                         WHERE ud.login_id = ? AND ud.status = ?",
-            [$userName, 'active']
+            [$_POST['username'], 'active']
         );
 
         $loginAttemptCount = $db->rawQueryOne(
@@ -103,8 +82,12 @@ try {
             WHERE
                 ulh.login_status = 'failed' AND
                 ulh.login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 minute)",
-            [$userName, $ipaddress, DateUtility::getCurrentDateTime()]
+            [$_POST['username'], $ipaddress, DateUtility::getCurrentDateTime()]
         );
+
+
+
+        $usersService->recordLoginAttempt($_POST['username'], 'failed');
 
         $maxLoginAttempts = 3;
 
@@ -113,12 +96,13 @@ try {
             &&
             (empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode'])
         ) {
-            $usersService->recordLoginAttempt($userName, 'failed');
             throw new SystemException(_translate("You have exhausted the maximum number of login attempts. Please retry login after some time."));
         }
 
-        if ($userRow['hash_algorithm'] == 'sha1') {
-            if (sha1($password . SYSTEM_CONFIG['passwordSalt']) == $userRow['password']) {
+        if (empty($userRow)) {
+            throw new SystemException(_translate("Please check your login credentials"));
+        } elseif ($userRow['hash_algorithm'] == 'sha1') {
+            if (sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']) == $userRow['password']) {
                 $newPassword = $usersService->passwordHash($_POST['password']);
                 $db->where('user_id', $userRow['user_id']);
                 $db->update(
@@ -132,75 +116,69 @@ try {
                 throw new SystemException(_translate("Please check your login credentials"));
             }
         } elseif (!password_verify((string) $_POST['password'], (string) $userRow['password'])) {
-            $usersService->recordLoginAttempt($userName, 'failed', $userRow['user_id']);
+            $usersService->recordLoginAttempt($_POST['username'], 'failed', $userRow['user_id']);
             throw new SystemException(_translate("Please check your login credentials"));
         }
 
-        if (!empty($userRow)) {
+        // regenerate session id
+        session_regenerate_id(true);
+        $usersService->recordLoginAttempt($_POST['username'], 'successful', $userRow['user_id']);
+        $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
-            // regenerate session id
-            session_regenerate_id(true);
-            $usersService->recordLoginAttempt($userName, 'successful', $userRow['user_id']);
-            $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
-
-            if (!empty($instanceResult['vlsm_instance_id'])) {
-                $_SESSION['instanceId'] = $instanceResult['vlsm_instance_id'];
-                $_SESSION['instanceFacilityName'] = $instanceResult['instance_facility_name'];
-            } else {
-                $id = $general->generateRandomString();
-                $db->insert('s_vlsm_instance', ['vlsm_instance_id' => $id]);
-                $_SESSION['instanceId'] = $id;
-                $_SESSION['instanceFacilityName'] = null;
-            }
+        if (!empty($instanceResult['vlsm_instance_id'])) {
+            $_SESSION['instanceId'] = $instanceResult['vlsm_instance_id'];
+            $_SESSION['instanceFacilityName'] = $instanceResult['instance_facility_name'];
+        } else {
+            $id = $general->generateRandomString();
+            $db->insert('s_vlsm_instance', ['vlsm_instance_id' => $id]);
+            $_SESSION['instanceId'] = $id;
+            $_SESSION['instanceFacilityName'] = null;
+        }
 
 
-            $_SESSION['userId'] = $userRow['user_id'];
-            $_SESSION['loginId'] = $userRow['login_id'];
-            $_SESSION['userName'] = ($userRow['user_name']);
-            $_SESSION['roleCode'] = $userRow['role_code'];
-            $_SESSION['roleId'] = $userRow['role_id'];
-            $_SESSION['accessType'] = $userRow['access_type'];
-            $_SESSION['email'] = $userRow['email'];
-            $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'];
-            $_SESSION['facilityMap'] = $facilitiesService->getUserFacilityMap($userRow['user_id']);
-            $_SESSION['userLocale'] = $userRow['user_locale'] ?? null;
-            $_SESSION['mappedProvinces'] = null;
+        $_SESSION['userId'] = $userRow['user_id'];
+        $_SESSION['loginId'] = $userRow['login_id'];
+        $_SESSION['userName'] = ($userRow['user_name']);
+        $_SESSION['roleCode'] = $userRow['role_code'];
+        $_SESSION['roleId'] = $userRow['role_id'];
+        $_SESSION['accessType'] = $userRow['access_type'];
+        $_SESSION['email'] = $userRow['email'];
+        $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'];
+        $_SESSION['facilityMap'] = $facilitiesService->getUserFacilityMap($userRow['user_id']);
+        $_SESSION['userLocale'] = $userRow['user_locale'] ?? null;
+        $_SESSION['mappedProvinces'] = null;
 
-            if (!empty($_SESSION['facilityMap'])) {
-                $provinceResult = $db->rawQuery("SELECT DISTINCT f.facility_state_id
+        if (!empty($_SESSION['facilityMap'])) {
+            $provinceResult = $db->rawQuery("SELECT DISTINCT f.facility_state_id
                                                     FROM facility_details as f
                                                     WHERE f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
-                $_SESSION['mappedProvinces'] = implode(',', array_column($provinceResult, 'facility_state_id'));
-            }
-            $_SESSION['crossLoginPass'] = null;
-            if (SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
-                $_SESSION['crossLoginPass'] = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
-            }
-            //Add event log
-            $eventType = 'login';
-            $action = ($userRow['user_name']) . ' logged in';
-            $resource = 'user-login';
-            $general->activityLog($eventType, $action, $resource);
+            $_SESSION['mappedProvinces'] = implode(',', array_column($provinceResult, 'facility_state_id'));
+        }
+        $_SESSION['crossLoginPass'] = null;
+        if (SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
+            $_SESSION['crossLoginPass'] = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
+        }
+        //Add event log
+        $eventType = 'login';
+        $action = ($userRow['user_name']) . ' logged in';
+        $resource = 'user-login';
+        $general->activityLog($eventType, $action, $resource);
 
-            $modules = $privileges = [];
+        $modules = $privileges = [];
 
-            [$_SESSION['modules'], $_SESSION['privileges']] = $usersService->getAllPrivileges($userRow['role_id']);
-            $_SESSION['landingPage'] = $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
+        [$_SESSION['modules'], $_SESSION['privileges']] = $usersService->getAllPrivileges($userRow['role_id']);
+        $_SESSION['landingPage'] = $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
 
-            if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
-                $redirect = "/users/editProfile.php";
-                $_SESSION['alertMsg'] = _translate("Please change your password to proceed.");
-            }
-        } else {
-            $usersService->recordLoginAttempt($userName, 'failed');
-            throw new SystemException(_translate("Please check your login credentials"));
+        if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
+            $redirect = "/users/editProfile.php";
+            $_SESSION['alertMsg'] = _translate("Please change your password to proceed.");
         }
     } else {
         throw new SystemException(_translate("Please check your login credentials"));
     }
 } catch (SystemException $exception) {
     $_SESSION['alertMsg'] = $exception->getMessage();
-    LoggerUtility::log('info', $exception->getMessage() . " | " . $ipaddress . " | " . $userName, [
+    LoggerUtility::log('info', $exception->getMessage() . " | " . $ipaddress . " | " . $_POST['username'], [
         'exception' => $exception,
         'file' => $exception->getFile(), // File where the error occurred
         'line' => $exception->getLine(), // Line number of the error
