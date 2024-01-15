@@ -178,7 +178,7 @@ if [[ "${php_version}" != "${desired_php_version}" ]]; then
 
     # Download and install switch-php script
     wget https://gist.githubusercontent.com/amitdugar/339470e36f6ad6c1910914e854384294/raw/switch-php -O /usr/local/bin/switch-php
-    chmod +x /usr/local/bin/switch-php
+    chmod u+x /usr/local/bin/switch-php
 
     # Switch to PHP 8.2
     switch-php ${desired_php_version}
