@@ -103,7 +103,7 @@ if (isset($_GET['total'])) {
 								<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
 									<h3 style="margin-left:100px; color:green;"><?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?> | <?= _translate("Number of Facilities added"); ?> : <?= $addedRecords; ?> | <?= _translate("Number of Facilities not added"); ?> : <?= $_GET['notAdded']; ?></h3>
 									<?php if ($_GET['notAdded'] > 0) { ?>
-										<a class="text-success" style="text-decoration:underline;margin-left:74px; margin-bottom:10px;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download>Download the Excel sheet of incorrect rows of facilities</a><br><br>
+										<a class="text-danger" style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download>Download the Excel Sheet with not uploaded facilities</a><br><br>
 									<?php } ?>
 								<?php } ?>
 

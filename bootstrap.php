@@ -10,7 +10,6 @@ chdir(__DIR__);
 require_once(__DIR__ . '/app/system/constants.php');
 require_once(ROOT_PATH . '/vendor/autoload.php');
 
-use ErrorException;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;

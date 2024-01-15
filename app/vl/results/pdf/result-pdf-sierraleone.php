@@ -2,7 +2,6 @@
 
 // This file is included in /vl/results/generate-result-pdf.php
 
-
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Helpers\PdfWatermarkHelper;
@@ -163,53 +162,18 @@ if (!empty($result)) {
           }
      }
 
-     if (isset($result['sample_collection_date']) && trim((string) $result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $expStr = explode(" ", (string) $result['sample_collection_date']);
-          $result['sample_collection_date'] = date('d/M/Y', strtotime($expStr[0]));
-          $sampleCollectionTime = $expStr[1];
-     } else {
-          $result['sample_collection_date'] = '';
-          $sampleCollectionTime = '';
-     }
-     $sampleReceivedDate = '';
-     $sampleReceivedTime = '';
-     if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-          $expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
-          $sampleReceivedDate = date('d/M/Y', strtotime($expStr[0]));
-          $sampleReceivedTime = $expStr[1];
-     }
-     $sampleDispatchDate = '';
-     $sampleDispatchTime = '';
+     $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true);
+     $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true);
+
      if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-          $expStr = explode(" ", (string) $result['result_printed_datetime']);
-          $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
-          $sampleDispatchTime = $expStr[1];
+          $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? '', true);
      } else {
-          $expStr = explode(" ", $currentTime);
-          $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
-          $sampleDispatchTime = $expStr[1];
+          $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($currentTime ?? '', true);
      }
 
-     if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-          $expStr = explode(" ", (string) $result['sample_tested_datetime']);
-          $result['sample_tested_datetime'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
-     } else {
-          $result['sample_tested_datetime'] = '';
-     }
-
-     if (isset($result['result_reviewed_datetime']) && trim((string) $result['result_reviewed_datetime']) != '' && $result['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
-          $expStr = explode(" ", (string) $result['result_reviewed_datetime']);
-          $result['result_reviewed_datetime'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
-     } else {
-          $result['result_reviewed_datetime'] = '';
-     }
-
-     if (isset($result['result_approved_datetime']) && trim((string) $result['result_approved_datetime']) != '' && $result['result_approved_datetime'] != '0000-00-00 00:00:00') {
-          $expStr = explode(" ", (string) $result['result_approved_datetime']);
-          $result['result_approved_datetime'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
-     } else {
-          $result['result_approved_datetime'] = '';
-     }
+     $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
+     $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? '', true);
+     $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true);
 
      if (isset($result['last_viral_load_date']) && trim((string) $result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
           $result['last_viral_load_date'] = date('d/M/Y', strtotime((string) $result['last_viral_load_date']));
@@ -286,7 +250,7 @@ if (!empty($result)) {
 
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_art_no'] . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['test_reason_name']) . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['test_reason_name'] . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
      $html .= '</tr>';
      $html .= '</table>';
@@ -325,7 +289,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EMAIL</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ($result['request_clinician_name']) . '</td>';
+     $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_name'] . '</td>';
      $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
      $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
      $html .= '</tr>';
@@ -342,8 +306,8 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_code'] . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_received_at_lab_datetime'] . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE REJECTION STATUS</td>';
@@ -354,7 +318,7 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $rejectedStatus . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['result_printed_datetime'] . '</td>';
      $html .= '</tr>';
 
      $html .= '<tr>';

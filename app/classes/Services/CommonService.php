@@ -855,7 +855,8 @@ class CommonService
         // Build the set string
         $setString = '';
         foreach ($data as $key => $value) {
-            $setString .= ', "$.' . $key . '", JSON_UNQUOTE(' . $this->jsonValueToString($value) . ')';
+            $setString .= ', "$.' . $key . '", ' . (string) $this->jsonValueToString($value) . '';
+            //$setString .= ', "$.' . $key . '", JSON_UNQUOTE(' . (string) $this->jsonValueToString($value) . ')';
         }
 
         // Construct and return the JSON_SET query
