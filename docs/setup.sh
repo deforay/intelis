@@ -121,6 +121,10 @@ for cmd in "apt"; do
     fi
 done
 
+# Ask user for VLSM installation path
+read -p "Enter the VLSM installation path [press enter to select /var/www/vlsm]: " vlsm_path
+vlsm_path="${vlsm_path:-/var/www/vlsm}"
+
 # Initialize variable for database file path
 vlsm_sql_file=""
 
@@ -273,16 +277,6 @@ service mysql restart || {
     exit 1
 }
 
-# Handle database setup and SQL file import
-if [[ -n "$vlsm_sql_file" && -f "$vlsm_sql_file" ]]; then
-    handle_database_setup_and_import "$vlsm_sql_file"
-elif [[ -n "$vlsm_sql_file" ]]; then
-    echo "SQL file not found: $vlsm_sql_file. Please check the path."
-    exit 1
-else
-    handle_database_setup_and_import # Default to init.sql
-fi
-
 # PHP Setup
 echo "Installing PHP 8.2..."
 
@@ -409,10 +403,6 @@ else
     mv composer.phar /usr/local/bin/composer
 fi
 
-# Ask user for VLSM installation path
-read -p "Enter the VLSM installation path [press enter to select /var/www/vlsm]: " vlsm_path
-vlsm_path="${vlsm_path:-/var/www/vlsm}"
-
 # VLSM Setup
 echo "Downloading VLSM..."
 wget -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
@@ -489,12 +479,12 @@ install_as_default="${install_as_default:-yes}"
 
 if [ "$install_as_default" = "yes" ]; then
     echo "Installing VLSM as the default host..."
-    local apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
+    apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
     cp "$apache_vhost_file" "${apache_vhost_file}.bak"
     configure_vhost "$apache_vhost_file"
 else
     echo "Installing VLSM alongside other apps..."
-    local vhost_file="/etc/apache2/sites-available/${hostname}.conf"
+    vhost_file="/etc/apache2/sites-available/${hostname}.conf"
     echo "<VirtualHost *:80>\nServerName ${hostname}\nDocumentRoot /var/www/html\n</VirtualHost>" >"$vhost_file"
     configure_vhost "$vhost_file"
     a2ensite "${hostname}.conf"
@@ -545,6 +535,16 @@ escaped_mysql_root_password=$(perl -e 'print quotemeta $ARGV[0]' -- "${mysql_roo
 sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database']['host'] = 'localhost';|" "${config_file}"
 sed -i "s|\$systemConfig\['database'\]\['username'\]\s*=.*|\$systemConfig['database']['username'] = 'root';|" "${config_file}"
 sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "${config_file}"
+
+# Handle database setup and SQL file import
+if [[ -n "$vlsm_sql_file" && -f "$vlsm_sql_file" ]]; then
+    handle_database_setup_and_import "$vlsm_sql_file"
+elif [[ -n "$vlsm_sql_file" ]]; then
+    echo "SQL file not found: $vlsm_sql_file. Please check the path."
+    exit 1
+else
+    handle_database_setup_and_import # Default to init.sql
+fi
 
 # Prompt for Remote STS URL
 read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url
