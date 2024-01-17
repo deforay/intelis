@@ -200,7 +200,7 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:2px;">';
      $html .= '<tr>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH TRAINING") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH CENTRE") . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH FACILITY CODE") . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("REGION") . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DISTRICT") . '</td>';
@@ -281,7 +281,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT CONTACT") . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     
+
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(_translate($result['patient_gender']) ?? '') . '</td>';
      if ($result['patient_gender'] == 'female') {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(_translate($result['is_patient_breastfeeding']) ?? '-') . '</td>';

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-01-09 15:57+0530\n"
-"PO-Revision-Date: 2024-01-09 15:58+0530\n"
+"POT-Creation-Date: 2024-01-17 18:40+0530\n"
+"PO-Revision-Date: 2024-01-17 18:40+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: addInstanceDetails.php:57 batch/add-batch.php:151 batch/add-batch.php:160
-#: batch/edit-batch.php:165 common/reference/add-funding-sources.php:23
+#: batch/edit-batch.php:166 common/reference/add-funding-sources.php:23
 #: common/reference/add-geographical-divisions.php:43
 #: common/reference/add-implementation-partners.php:23
 #: common/reference/add-recommended-corrective-action.php:37
@@ -33,19 +33,19 @@ msgstr ""
 #: covid-19/reference/add-covid19-test-reasons.php:24
 #: covid-19/reference/edit-covid19-qc-test-kit.php:47
 #: covid-19/requests/covid-19-bulk-import-request.php:35
-#: covid-19/requests/forms/add-cameroon.php:82
-#: covid-19/requests/forms/add-png.php:79
+#: covid-19/requests/forms/add-cameroon.php:77
+#: covid-19/requests/forms/add-png.php:71
 #: covid-19/requests/forms/add-rwanda.php:55
-#: covid-19/requests/forms/add-sierraleone.php:72
-#: covid-19/requests/forms/add-southsudan.php:83
+#: covid-19/requests/forms/add-sierraleone.php:65
+#: covid-19/requests/forms/add-southsudan.php:79
 #: covid-19/requests/forms/add-who.php:53
-#: covid-19/requests/forms/edit-cameroon.php:104
-#: covid-19/requests/forms/edit-png.php:110
+#: covid-19/requests/forms/edit-cameroon.php:97
+#: covid-19/requests/forms/edit-png.php:103
 #: covid-19/requests/forms/edit-rwanda.php:85
-#: covid-19/requests/forms/edit-sierraleone.php:110
-#: covid-19/requests/forms/edit-southsudan.php:108
+#: covid-19/requests/forms/edit-sierraleone.php:100
+#: covid-19/requests/forms/edit-southsudan.php:99
 #: covid-19/requests/forms/edit-who.php:79
-#: covid-19/requests/forms/quick-add-southsudan.php:64
+#: covid-19/requests/forms/quick-add-southsudan.php:55
 #: covid-19/results/add-covid-19-qc-data.php:60
 #: covid-19/results/covid-19-add-confirmation-manifest.php:70
 #: covid-19/results/covid-19-edit-confirmation-manifest.php:88
@@ -128,10 +128,10 @@ msgstr ""
 #: tb/reference/add-tb-sample-rejection-reason.php:22
 #: tb/reference/add-tb-sample-type.php:22
 #: tb/reference/add-tb-test-reasons.php:24
-#: tb/requests/forms/add-sierraleone.php:91
-#: tb/requests/forms/add-southsudan.php:69
-#: tb/requests/forms/edit-sierraleone.php:130
-#: tb/requests/forms/edit-southsudan.php:102 tb/results/email-results.php:75
+#: tb/requests/forms/add-sierraleone.php:84
+#: tb/requests/forms/add-southsudan.php:63
+#: tb/requests/forms/edit-sierraleone.php:123
+#: tb/requests/forms/edit-southsudan.php:93 tb/results/email-results.php:75
 #: tb/results/forms/update-sierraleone.php:109
 #: tb/results/forms/update-southsudan.php:109 users/addUser.php:64
 #: users/editProfile.php:49 users/editUser.php:111
@@ -152,7 +152,7 @@ msgstr ""
 #: vl/requests/forms/add-png.php:40 vl/requests/forms/add-rwanda.php:77
 #: vl/requests/forms/add-sierraleone.php:72
 #: vl/requests/forms/add-southsudan.php:79 vl/requests/forms/add-who.php:68
-#: vl/requests/forms/edit-cameroon.php:126 vl/requests/forms/edit-drc.php:75
+#: vl/requests/forms/edit-cameroon.php:126 vl/requests/forms/edit-drc.php:76
 #: vl/requests/forms/edit-png.php:177 vl/requests/forms/edit-rwanda.php:122
 #: vl/requests/forms/edit-sierraleone.php:184
 #: vl/requests/forms/edit-southsudan.php:166 vl/requests/forms/edit-who.php:170
@@ -175,7 +175,7 @@ msgstr "Sélectionner un laboratoire"
 msgid "Trying to sync Lab Details"
 msgstr "Essayer de synchroniser les détails du laboratoire"
 
-#: addInstanceDetails.php:154 footer.php:115 footer.php:137 footer.php:161
+#: addInstanceDetails.php:154 footer.php:125 footer.php:147 footer.php:171
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
@@ -194,7 +194,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: admin/monitoring/sources-of-requests.php:70
 #: admin/monitoring/sync-status.php:70 batch/add-batch-position.php:206
 #: batch/add-batch.php:121 batch/batches.php:97
-#: batch/edit-batch-position.php:174 batch/edit-batch.php:156
+#: batch/edit-batch-position.php:174 batch/edit-batch.php:157
 #: common/reference/add-funding-sources.php:13
 #: common/reference/add-geographical-divisions.php:34
 #: common/reference/add-implementation-partners.php:13
@@ -226,12 +226,12 @@ msgstr "Bienvenue sur la page d’administration"
 #: covid-19/requests/addSamplesFromManifest.php:22
 #: covid-19/requests/covid-19-bulk-import-request.php:25
 #: covid-19/requests/covid-19-requests.php:117
-#: covid-19/requests/forms/add-cameroon.php:72
+#: covid-19/requests/forms/add-cameroon.php:67
 #: covid-19/requests/forms/add-rwanda.php:45
 #: covid-19/requests/forms/add-who.php:43
-#: covid-19/requests/forms/edit-cameroon.php:96
+#: covid-19/requests/forms/edit-cameroon.php:89
 #: covid-19/requests/forms/edit-who.php:66
-#: covid-19/requests/forms/quick-add-southsudan.php:54
+#: covid-19/requests/forms/quick-add-southsudan.php:45
 #: covid-19/results/add-covid-19-qc-data.php:51
 #: covid-19/results/covid-19-failed-results.php:58
 #: covid-19/results/covid-19-manual-results.php:72
@@ -438,8 +438,8 @@ msgstr "Call to action"
 #: covid-19/management/covid-19-sample-status.php:91
 #: covid-19/management/covid19TestingTargetReport.php:215
 #: covid-19/requests/covid-19-requests.php:359
-#: covid-19/requests/forms/add-cameroon.php:204
-#: covid-19/requests/forms/edit-cameroon.php:221
+#: covid-19/requests/forms/add-cameroon.php:199
+#: covid-19/requests/forms/edit-cameroon.php:214
 #: covid-19/results/covid-19-failed-results.php:168
 #: covid-19/results/covid-19-manual-results.php:115
 #: covid-19/results/covid-19-print-results.php:135
@@ -523,7 +523,7 @@ msgstr "Rechercher"
 #: admin/monitoring/activity-log.php:91 admin/monitoring/activity-log.php:149
 #: admin/monitoring/api-sync-history.php:165
 #: admin/monitoring/sources-of-requests.php:296 batch/add-batch.php:315
-#: batch/edit-batch.php:351 covid-19/mail/mail-covid-19-results.php:281
+#: batch/edit-batch.php:352 covid-19/mail/mail-covid-19-results.php:281
 #: covid-19/management/covid-19-clinic-report.php:496
 #: covid-19/management/covid-19-export-data.php:342
 #: covid-19/management/covid-19-sample-rejection-report.php:106
@@ -593,7 +593,7 @@ msgstr "Rechercher"
 #: vl/program-management/vlMonitoringReport.php:327
 #: vl/program-management/vlSuppressedTargetReport.php:260
 #: vl/program-management/vlTestingTargetReport.php:267
-#: vl/program-management/vlWeeklyReport.php:315 vl/requests/vl-requests.php:754
+#: vl/program-management/vlWeeklyReport.php:315 vl/requests/vl-requests.php:763
 #: vl/results/email-results.php:372 vl/results/vl-failed-results.php:310
 #: vl/results/vlPrintResult.php:615 vl/results/vlResultApproval.php:292
 #: vl/results/vlResultMail.php:372 vl/results/vlTestResult.php:315
@@ -746,8 +746,8 @@ msgstr "Historique de l’API"
 #: facilities/editFacility.php:921 facilities/mapTestType.php:65
 #: generic-tests/requests/view-requests.php:127
 #: generic-tests/requests/view-requests.php:162
-#: instruments/add-instrument.php:211 instruments/add-instrument.php:315
-#: instruments/edit-instrument.php:250 instruments/edit-instrument.php:371
+#: instruments/add-instrument.php:223 instruments/add-instrument.php:327
+#: instruments/edit-instrument.php:262 instruments/edit-instrument.php:383
 #: specimen-referral-manifest/move-manifest.php:212
 #: specimen-referral-manifest/view-manifests.php:58
 #: system-admin/api-stats/api-stats.php:46
@@ -766,8 +766,8 @@ msgstr "Veuillez sélectionner les types de tests"
 #: admin/monitoring/lab-sync-details.php:110
 #: admin/monitoring/sources-of-requests.php:96
 #: admin/monitoring/sync-status.php:90 batch/add-batch.php:172
-#: batch/add-batch.php:220 batch/edit-batch.php:197 batch/edit-batch.php:248
-#: classes/Services/CommonService.php:346
+#: batch/add-batch.php:220 batch/edit-batch.php:198 batch/edit-batch.php:249
+#: classes/Services/CommonService.php:379
 #: common/reference/add-geographical-divisions.php:74
 #: common/reference/edit-geographical-divisions.php:76
 #: covid-19/management/covid-19-clinic-report.php:103
@@ -797,21 +797,21 @@ msgstr "Veuillez sélectionner les types de tests"
 #: covid-19/requests/covid-19-requests.php:211
 #: covid-19/requests/covid-19-requests.php:254
 #: covid-19/requests/covid-19-requests.php:295
-#: covid-19/requests/forms/add-cameroon.php:114
-#: covid-19/requests/forms/add-cameroon.php:140
-#: covid-19/requests/forms/add-cameroon.php:156
-#: covid-19/requests/forms/add-cameroon.php:166
-#: covid-19/requests/forms/add-cameroon.php:248
-#: covid-19/requests/forms/add-cameroon.php:273
-#: covid-19/requests/forms/add-cameroon.php:315
-#: covid-19/requests/forms/add-cameroon.php:411
-#: covid-19/requests/forms/add-cameroon.php:420
-#: covid-19/requests/forms/add-cameroon.php:450
-#: covid-19/requests/forms/add-cameroon.php:484
-#: covid-19/requests/forms/add-cameroon.php:647
-#: covid-19/requests/forms/add-cameroon.php:854
-#: covid-19/requests/forms/add-cameroon.php:876
-#: covid-19/requests/forms/add-cameroon.php:942
+#: covid-19/requests/forms/add-cameroon.php:109
+#: covid-19/requests/forms/add-cameroon.php:135
+#: covid-19/requests/forms/add-cameroon.php:151
+#: covid-19/requests/forms/add-cameroon.php:161
+#: covid-19/requests/forms/add-cameroon.php:243
+#: covid-19/requests/forms/add-cameroon.php:268
+#: covid-19/requests/forms/add-cameroon.php:310
+#: covid-19/requests/forms/add-cameroon.php:406
+#: covid-19/requests/forms/add-cameroon.php:415
+#: covid-19/requests/forms/add-cameroon.php:445
+#: covid-19/requests/forms/add-cameroon.php:479
+#: covid-19/requests/forms/add-cameroon.php:642
+#: covid-19/requests/forms/add-cameroon.php:849
+#: covid-19/requests/forms/add-cameroon.php:871
+#: covid-19/requests/forms/add-cameroon.php:937
 #: covid-19/requests/forms/add-drc.php:50
 #: covid-19/requests/forms/add-drc.php:156
 #: covid-19/requests/forms/add-drc.php:249
@@ -820,24 +820,24 @@ msgstr "Veuillez sélectionner les types de tests"
 #: covid-19/requests/forms/add-drc.php:563
 #: covid-19/requests/forms/add-drc.php:584
 #: covid-19/requests/forms/add-drc.php:601
-#: covid-19/requests/forms/add-drc.php:877
-#: covid-19/requests/forms/add-drc.php:1587
-#: covid-19/requests/forms/edit-cameroon.php:136
-#: covid-19/requests/forms/edit-cameroon.php:162
-#: covid-19/requests/forms/edit-cameroon.php:194
-#: covid-19/requests/forms/edit-cameroon.php:204
-#: covid-19/requests/forms/edit-cameroon.php:264
-#: covid-19/requests/forms/edit-cameroon.php:331
-#: covid-19/requests/forms/edit-cameroon.php:341
-#: covid-19/requests/forms/edit-cameroon.php:360
-#: covid-19/requests/forms/edit-cameroon.php:429
-#: covid-19/requests/forms/edit-cameroon.php:438
-#: covid-19/requests/forms/edit-cameroon.php:523
-#: covid-19/requests/forms/edit-cameroon.php:544
-#: covid-19/requests/forms/edit-cameroon.php:579
-#: covid-19/requests/forms/edit-cameroon.php:671
-#: covid-19/requests/forms/edit-cameroon.php:719
-#: covid-19/requests/forms/edit-cameroon.php:761
+#: covid-19/requests/forms/add-drc.php:868
+#: covid-19/requests/forms/add-drc.php:1578
+#: covid-19/requests/forms/edit-cameroon.php:129
+#: covid-19/requests/forms/edit-cameroon.php:155
+#: covid-19/requests/forms/edit-cameroon.php:187
+#: covid-19/requests/forms/edit-cameroon.php:197
+#: covid-19/requests/forms/edit-cameroon.php:257
+#: covid-19/requests/forms/edit-cameroon.php:324
+#: covid-19/requests/forms/edit-cameroon.php:334
+#: covid-19/requests/forms/edit-cameroon.php:353
+#: covid-19/requests/forms/edit-cameroon.php:422
+#: covid-19/requests/forms/edit-cameroon.php:431
+#: covid-19/requests/forms/edit-cameroon.php:516
+#: covid-19/requests/forms/edit-cameroon.php:537
+#: covid-19/requests/forms/edit-cameroon.php:572
+#: covid-19/requests/forms/edit-cameroon.php:664
+#: covid-19/requests/forms/edit-cameroon.php:712
+#: covid-19/requests/forms/edit-cameroon.php:754
 #: covid-19/requests/forms/edit-drc.php:193
 #: covid-19/requests/forms/edit-drc.php:579
 #: covid-19/requests/forms/edit-drc.php:591
@@ -930,7 +930,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: eid/requests/forms/add-cameroon.php:535
 #: eid/requests/forms/add-cameroon.php:552 eid/requests/forms/add-drc.php:39
 #: eid/requests/forms/add-drc.php:109 eid/requests/forms/add-drc.php:124
-#: eid/requests/forms/add-drc.php:136 eid/requests/forms/add-drc.php:513
+#: eid/requests/forms/add-drc.php:136 eid/requests/forms/add-drc.php:517
 #: eid/requests/forms/edit-cameroon.php:124
 #: eid/requests/forms/edit-cameroon.php:129
 #: eid/requests/forms/edit-cameroon.php:149
@@ -952,7 +952,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: eid/requests/forms/edit-cameroon.php:555
 #: eid/requests/forms/edit-cameroon.php:581 eid/requests/forms/edit-drc.php:126
 #: eid/requests/forms/edit-drc.php:141 eid/requests/forms/edit-drc.php:152
-#: eid/requests/forms/edit-drc.php:527 eid/requests/forms/edit-drc.php:528
+#: eid/requests/forms/edit-drc.php:532 eid/requests/forms/edit-drc.php:533
 #: eid/results/eid-failed-results.php:85 eid/results/eid-failed-results.php:120
 #: eid/results/eid-manual-results.php:88 eid/results/eid-manual-results.php:177
 #: eid/results/eid-print-results.php:83 eid/results/eid-print-results.php:96
@@ -1226,7 +1226,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: vl/requests/forms/add-cameroon.php:660 vl/requests/forms/add-drc.php:23
 #: vl/requests/forms/add-drc.php:104 vl/requests/forms/add-drc.php:128
 #: vl/requests/forms/add-drc.php:146 vl/requests/forms/add-drc.php:227
-#: vl/requests/forms/add-drc.php:290 vl/requests/forms/add-drc.php:374
+#: vl/requests/forms/add-drc.php:319 vl/requests/forms/add-drc.php:374
 #: vl/requests/forms/add-drc.php:442 vl/requests/forms/add-drc.php:454
 #: vl/requests/forms/add-drc.php:462 vl/requests/forms/edit-cameroon.php:181
 #: vl/requests/forms/edit-cameroon.php:189
@@ -1242,10 +1242,10 @@ msgstr "Veuillez sélectionner les types de tests"
 #: vl/requests/forms/edit-cameroon.php:765
 #: vl/requests/forms/edit-cameroon.php:961
 #: vl/requests/forms/edit-cameroon.php:974 vl/requests/forms/edit-drc.php:22
-#: vl/requests/forms/edit-drc.php:126 vl/requests/forms/edit-drc.php:136
-#: vl/requests/forms/edit-drc.php:163 vl/requests/forms/edit-drc.php:180
-#: vl/requests/forms/edit-drc.php:199 vl/requests/forms/edit-drc.php:263
-#: vl/requests/forms/edit-drc.php:331 vl/requests/forms/edit-drc.php:416
+#: vl/requests/forms/edit-drc.php:127 vl/requests/forms/edit-drc.php:137
+#: vl/requests/forms/edit-drc.php:164 vl/requests/forms/edit-drc.php:181
+#: vl/requests/forms/edit-drc.php:200 vl/requests/forms/edit-drc.php:264
+#: vl/requests/forms/edit-drc.php:360 vl/requests/forms/edit-drc.php:416
 #: vl/requests/forms/edit-drc.php:482 vl/requests/forms/edit-drc.php:494
 #: vl/requests/forms/edit-drc.php:502 vl/requests/vl-requests.php:151
 #: vl/requests/vl-requests.php:178 vl/requests/vl-requests.php:224
@@ -1337,9 +1337,9 @@ msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
 #: facilities/editFacility.php:637 facilities/editFacility.php:939
 #: facilities/editFacility.php:990 facilities/facilities.php:95
 #: facilities/mapTestType.php:76 instruments/add-instrument.php:117
-#: instruments/add-instrument.php:259 instruments/add-instrument.php:357
-#: instruments/edit-instrument.php:147 instruments/edit-instrument.php:298
-#: instruments/edit-instrument.php:413
+#: instruments/add-instrument.php:271 instruments/add-instrument.php:369
+#: instruments/edit-instrument.php:147 instruments/edit-instrument.php:310
+#: instruments/edit-instrument.php:425
 msgid "Covid-19"
 msgstr "COVID-19"
 
@@ -1357,9 +1357,9 @@ msgstr "COVID-19"
 #: hepatitis/management/hepatitis-sample-rejection-report.php:37
 #: hepatitis/management/hepatitis-sample-status.php:49
 #: hepatitis/management/hepatitis-testing-target-report.php:179
-#: instruments/add-instrument.php:122 instruments/add-instrument.php:276
-#: instruments/add-instrument.php:370 instruments/edit-instrument.php:150
-#: instruments/edit-instrument.php:315 instruments/edit-instrument.php:426
+#: instruments/add-instrument.php:122 instruments/add-instrument.php:288
+#: instruments/add-instrument.php:382 instruments/edit-instrument.php:150
+#: instruments/edit-instrument.php:327 instruments/edit-instrument.php:438
 msgid "Hepatitis"
 msgstr "Hépatite"
 
@@ -1371,9 +1371,9 @@ msgstr "Hépatite"
 #: facilities/addFacility.php:659 facilities/editFacility.php:385
 #: facilities/editFacility.php:612 facilities/editFacility.php:992
 #: facilities/facilities.php:101 facilities/mapTestType.php:82
-#: instruments/add-instrument.php:127 instruments/add-instrument.php:293
-#: instruments/add-instrument.php:383 instruments/edit-instrument.php:153
-#: instruments/edit-instrument.php:332
+#: instruments/add-instrument.php:127 instruments/add-instrument.php:305
+#: instruments/add-instrument.php:395 instruments/edit-instrument.php:153
+#: instruments/edit-instrument.php:344
 msgid "TB"
 msgstr "Tuberculose"
 
@@ -1437,7 +1437,7 @@ msgstr "Synchronisé sur"
 #: hepatitis/results/hepatitis-manual-results.php:191
 #: hepatitis/results/hepatitis-print-results.php:218
 #: hepatitis/results/hepatitis-print-results.php:370
-#: instruments/add-instrument.php:431 instruments/edit-instrument.php:487
+#: instruments/add-instrument.php:443 instruments/edit-instrument.php:499
 #: instruments/instruments.php:45 roles/roles.php:39
 #: specimen-referral-manifest/view-manifests.php:63
 #: system-admin/instance-overview/instanceIndex.php:127
@@ -1464,11 +1464,11 @@ msgstr "Action"
 #: covid-19/requests/covid-19-requests.php:431
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/requests/forms/add-cameroon.php:100
-#: covid-19/requests/forms/add-cameroon.php:106
-#: covid-19/requests/forms/edit-cameroon.php:122
-#: covid-19/requests/forms/edit-cameroon.php:128
-#: covid-19/requests/forms/edit-cameroon.php:130
+#: covid-19/requests/forms/add-cameroon.php:95
+#: covid-19/requests/forms/add-cameroon.php:101
+#: covid-19/requests/forms/edit-cameroon.php:115
+#: covid-19/requests/forms/edit-cameroon.php:121
+#: covid-19/requests/forms/edit-cameroon.php:123
 #: covid-19/results/covid-19-failed-results.php:198
 #: covid-19/results/covid-19-manual-results.php:125
 #: covid-19/results/covid-19-manual-results.php:178
@@ -1581,7 +1581,7 @@ msgstr "Action"
 msgid "Sample ID"
 msgstr "ID de l'échantillon"
 
-#: admin/monitoring/audit-trail.php:160 batch/edit-batch.php:292
+#: admin/monitoring/audit-trail.php:160 batch/edit-batch.php:293
 #: common/reference/add-funding-sources.php:56
 #: common/reference/add-geographical-divisions.php:98
 #: common/reference/add-implementation-partners.php:56
@@ -1597,7 +1597,7 @@ msgstr "ID de l'échantillon"
 #: covid-19/reference/add-covid19-test-reasons.php:75
 #: covid-19/reference/edit-covid19-qc-test-kit.php:124
 #: covid-19/requests/addSamplesFromManifest.php:46
-#: covid-19/requests/forms/add-cameroon.php:742
+#: covid-19/requests/forms/add-cameroon.php:737
 #: covid-19/results/add-covid-19-qc-data.php:192
 #: covid-19/results/edit-covid-19-qc-data.php:221
 #: eid/reference/add-eid-results.php:55
@@ -1634,8 +1634,8 @@ msgstr "ID de l'échantillon"
 #: hepatitis/reference/add-hepatitis-sample-type.php:56
 #: hepatitis/reference/add-hepatitis-test-reasons.php:69
 #: hepatitis/requests/add-samples-from-manifest.php:46
-#: import-result/import-file.php:164 instruments/add-instrument.php:471
-#: instruments/edit-instrument.php:573 patients/add-patient.php:237
+#: import-result/import-file.php:164 instruments/add-instrument.php:483
+#: instruments/edit-instrument.php:585 patients/add-patient.php:237
 #: patients/edit-patient.php:252 roles/addRole.php:372 roles/editRole.php:366
 #: system-admin/edit-config/index.php:131
 #: system-admin/edit-config/resetPassword.php:56
@@ -1767,7 +1767,7 @@ msgstr "Détails de la synchronisation des laboratoires"
 #: covid-19/requests/addSamplesFromManifest.php:92
 #: covid-19/requests/covid-19-requests.php:291
 #: covid-19/requests/covid-19-requests.php:463
-#: covid-19/requests/forms/add-cameroon.php:644
+#: covid-19/requests/forms/add-cameroon.php:639
 #: covid-19/results/covid-19-failed-results.php:80
 #: covid-19/results/covid-19-failed-results.php:221
 #: covid-19/results/covid-19-print-results.php:90
@@ -1877,8 +1877,8 @@ msgstr "Veuillez choisir Région"
 #: covid-19/requests/addSamplesFromManifest.php:95
 #: covid-19/requests/covid-19-requests.php:303
 #: covid-19/requests/covid-19-requests.php:466
-#: covid-19/requests/forms/add-cameroon.php:681
-#: covid-19/requests/forms/add-cameroon.php:683
+#: covid-19/requests/forms/add-cameroon.php:676
+#: covid-19/requests/forms/add-cameroon.php:678
 #: covid-19/results/covid-19-failed-results.php:88
 #: covid-19/results/covid-19-failed-results.php:224
 #: covid-19/results/covid-19-print-results.php:97
@@ -2066,8 +2066,8 @@ msgstr "Veuillez choisir Région"
 #: covid-19/requests/addSamplesFromManifest.php:83
 #: covid-19/requests/covid-19-requests.php:310
 #: covid-19/requests/covid-19-requests.php:448
-#: covid-19/requests/forms/add-cameroon.php:585
-#: covid-19/requests/forms/add-cameroon.php:587
+#: covid-19/requests/forms/add-cameroon.php:580
+#: covid-19/requests/forms/add-cameroon.php:582
 #: covid-19/requests/patientModal.php:86
 #: covid-19/results/covid-19-failed-results.php:98
 #: covid-19/results/covid-19-failed-results.php:212
@@ -2188,7 +2188,7 @@ msgstr "Veuillez choisir Région"
 #: vl/program-management/vl-export-data.php:435
 #: vl/program-management/vl-export-data.php:495
 #: vl/program-management/vlMonitoringReport.php:270
-#: vl/requests/addSamplesFromManifest.php:87 vl/requests/patientModal.php:112
+#: vl/requests/addSamplesFromManifest.php:87 vl/requests/patientModal.php:113
 #: vl/requests/vl-requests.php:407 vl/requests/vl-requests.php:577
 #: vl/requests/vl-requests.php:630 vl/results/email-results.php:165
 #: vl/results/vl-failed-results.php:79 vl/results/vl-failed-results.php:168
@@ -2293,7 +2293,7 @@ msgstr "Pas de données disponibles"
 #: vl/program-management/highViralLoad.php:1632
 #: vl/program-management/vlWeeklyReport.php:571
 #: vl/program-management/vlWeeklyReport.php:595
-#: vl/requests/vl-requests.php:1131 vl/results/vl-failed-results.php:571
+#: vl/requests/vl-requests.php:1140 vl/results/vl-failed-results.php:571
 msgid "Unable to generate the excel file"
 msgstr "Impossible de générer le fichier excel"
 
@@ -2373,8 +2373,8 @@ msgstr "Échantillon ajouté au lot le"
 
 #: admin/monitoring/sources-of-requests.php:232
 #: batch/generate-batch-pdf.php:205 batch/generate-batch-pdf.php:216
-#: covid-19/requests/forms/add-cameroon.php:442
-#: covid-19/requests/forms/edit-cameroon.php:472
+#: covid-19/requests/forms/add-cameroon.php:437
+#: covid-19/requests/forms/edit-cameroon.php:465
 #: covid-19/results/add-covid-19-qc-data.php:183
 #: covid-19/results/edit-covid-19-qc-data.php:199
 #: covid-19/results/forms/update-cameroon-result.php:426
@@ -2480,21 +2480,21 @@ msgstr "Nom du Labo"
 #: common/reference/add-recommended-corrective-action.php:58
 #: common/reference/edit-geographical-divisions.php:86
 #: common/reference/edit-recommended-corrective-action.php:67
-#: covid-19/requests/forms/add-cameroon.php:211
-#: covid-19/requests/forms/add-cameroon.php:351
-#: covid-19/requests/forms/add-cameroon.php:387
-#: covid-19/requests/forms/add-cameroon.php:395
-#: covid-19/requests/forms/add-png.php:210
+#: covid-19/requests/forms/add-cameroon.php:206
+#: covid-19/requests/forms/add-cameroon.php:346
+#: covid-19/requests/forms/add-cameroon.php:382
+#: covid-19/requests/forms/add-cameroon.php:390
+#: covid-19/requests/forms/add-png.php:202
 #: covid-19/requests/forms/add-rwanda.php:155
-#: covid-19/requests/forms/add-sierraleone.php:182
-#: covid-19/requests/forms/add-southsudan.php:190
-#: covid-19/requests/forms/edit-cameroon.php:228
-#: covid-19/requests/forms/edit-cameroon.php:289
-#: covid-19/requests/forms/edit-cameroon.php:367
-#: covid-19/requests/forms/edit-cameroon.php:405
-#: covid-19/requests/forms/edit-cameroon.php:413
-#: covid-19/requests/forms/edit-cameroon.php:492
-#: covid-19/requests/forms/edit-cameroon.php:509
+#: covid-19/requests/forms/add-sierraleone.php:175
+#: covid-19/requests/forms/add-southsudan.php:186
+#: covid-19/requests/forms/edit-cameroon.php:221
+#: covid-19/requests/forms/edit-cameroon.php:282
+#: covid-19/requests/forms/edit-cameroon.php:360
+#: covid-19/requests/forms/edit-cameroon.php:398
+#: covid-19/requests/forms/edit-cameroon.php:406
+#: covid-19/requests/forms/edit-cameroon.php:485
+#: covid-19/requests/forms/edit-cameroon.php:502
 #: covid-19/results/forms/update-cameroon-result.php:253
 #: covid-19/results/forms/update-cameroon-result.php:323
 #: covid-19/results/forms/update-cameroon-result.php:359
@@ -2505,7 +2505,7 @@ msgstr "Nom du Labo"
 #: eid/requests/forms/add-rwanda.php:166
 #: eid/requests/forms/add-sierraleone.php:187
 #: eid/requests/forms/add-southsudan.php:177
-#: eid/requests/forms/edit-cameroon.php:189 eid/requests/forms/edit-drc.php:192
+#: eid/requests/forms/edit-cameroon.php:189 eid/requests/forms/edit-drc.php:197
 #: eid/requests/forms/edit-png.php:230 eid/requests/forms/edit-rwanda.php:180
 #: eid/requests/forms/edit-sierraleone.php:187
 #: eid/requests/forms/edit-southsudan.php:183 facilities/mapTestType.php:68
@@ -2546,10 +2546,10 @@ msgstr "Nom du Labo"
 #: hepatitis/requests/forms/add-rwanda.php:81
 #: hepatitis/requests/forms/edit-rwanda.php:110 patients/add-patient.php:46
 #: patients/add-patient.php:224 patients/edit-patient.php:63
-#: patients/edit-patient.php:240 tb/requests/forms/add-sierraleone.php:200
-#: tb/requests/forms/add-southsudan.php:174
-#: tb/requests/forms/edit-sierraleone.php:239
-#: tb/requests/forms/edit-southsudan.php:206 users/addUser.php:103
+#: patients/edit-patient.php:240 tb/requests/forms/add-sierraleone.php:193
+#: tb/requests/forms/add-southsudan.php:168
+#: tb/requests/forms/edit-sierraleone.php:232
+#: tb/requests/forms/edit-southsudan.php:197 users/addUser.php:103
 #: users/addUser.php:137 users/editProfile.php:73 users/editUser.php:152
 #: users/editUser.php:189 vl/reference/add-vl-art-code-details.php:69
 #: vl/reference/add-vl-art-code-details.php:80
@@ -2561,7 +2561,7 @@ msgstr "Nom du Labo"
 #: vl/requests/forms/add-sierraleone.php:212
 #: vl/requests/forms/add-southsudan.php:219
 #: vl/requests/forms/edit-cameroon.php:268
-#: vl/requests/forms/edit-cameroon.php:437 vl/requests/forms/edit-drc.php:221
+#: vl/requests/forms/edit-cameroon.php:437 vl/requests/forms/edit-drc.php:222
 #: vl/requests/forms/edit-png.php:289 vl/requests/forms/edit-rwanda.php:221
 #: vl/requests/forms/edit-sierraleone.php:316
 #: vl/requests/forms/edit-southsudan.php:297
@@ -2642,8 +2642,8 @@ msgstr "Lot"
 
 #: batch/add-batch-position.php:215 batch/add-batch.php:261
 #: batch/add-batch.php:264 batch/batches.php:142
-#: batch/edit-batch-position.php:183 batch/edit-batch.php:235
-#: batch/edit-batch.php:237 covid-19/management/covid-19-clinic-report.php:100
+#: batch/edit-batch-position.php:183 batch/edit-batch.php:236
+#: batch/edit-batch.php:238 covid-19/management/covid-19-clinic-report.php:100
 #: covid-19/management/covid-19-clinic-report.php:209
 #: covid-19/management/covid-19-clinic-report.php:312
 #: covid-19/management/covid-19-clinic-report.php:416
@@ -2763,7 +2763,7 @@ msgstr " | Ajouter un lot"
 msgid "Create Batch"
 msgstr "Créer un lot"
 
-#: batch/add-batch.php:167 batch/edit-batch.php:245
+#: batch/add-batch.php:167 batch/edit-batch.php:246
 #: covid-19/management/generate-export-drc.php:94
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
@@ -2773,11 +2773,11 @@ msgstr "Créer un lot"
 msgid "Testing Platform"
 msgstr "Plate-forme d'essai"
 
-#: batch/add-batch.php:170 batch/edit-batch.php:247
+#: batch/add-batch.php:170 batch/edit-batch.php:248
 msgid "Please choose machine"
 msgstr "Veuillez choisir la machine"
 
-#: batch/add-batch.php:181 batch/edit-batch.php:169
+#: batch/add-batch.php:181 batch/edit-batch.php:170
 #: generic-tests/configuration/add-test-type.php:257
 #: generic-tests/configuration/add-test-type.php:589
 #: generic-tests/configuration/clone-test-type.php:312
@@ -2791,7 +2791,7 @@ msgstr "Veuillez choisir la machine"
 msgid "Facility"
 msgstr "Établissement"
 
-#: batch/add-batch.php:184 batch/edit-batch.php:171
+#: batch/add-batch.php:184 batch/edit-batch.php:172
 #: covid-19/management/covid-19-clinic-report.php:143
 #: covid-19/management/covid-19-clinic-report.php:251
 #: covid-19/management/covid-19-clinic-report.php:354
@@ -2863,7 +2863,7 @@ msgstr "Établissement"
 msgid "Please select facility name"
 msgstr "Veuillez sélectionner le nom de l'établissement"
 
-#: batch/add-batch.php:191 batch/edit-batch.php:175
+#: batch/add-batch.php:191 batch/edit-batch.php:176
 #: covid-19/management/covid-19-clinic-report.php:188
 #: covid-19/management/covid-19-clinic-report.php:292
 #: covid-19/management/covid-19-clinic-report.php:308
@@ -2881,10 +2881,10 @@ msgstr "Veuillez sélectionner le nom de l'établissement"
 #: covid-19/requests/covid-19-requests.php:439
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/requests/forms/add-cameroon.php:332
-#: covid-19/requests/forms/add-cameroon.php:334
-#: covid-19/requests/forms/edit-cameroon.php:347
-#: covid-19/requests/forms/edit-cameroon.php:349
+#: covid-19/requests/forms/add-cameroon.php:327
+#: covid-19/requests/forms/add-cameroon.php:329
+#: covid-19/requests/forms/edit-cameroon.php:340
+#: covid-19/requests/forms/edit-cameroon.php:342
 #: covid-19/results/covid-19-failed-results.php:74
 #: covid-19/results/covid-19-failed-results.php:206
 #: covid-19/results/covid-19-manual-results.php:83
@@ -3004,7 +3004,7 @@ msgstr "Veuillez sélectionner le nom de l'établissement"
 msgid "Sample Collection Date"
 msgstr "Date de prélèvement de l'échantillon"
 
-#: batch/add-batch.php:194 batch/edit-batch.php:177
+#: batch/add-batch.php:194 batch/edit-batch.php:178
 #: covid-19/management/covid-19-export-data.php:91
 #: covid-19/management/covid-19-sample-rejection-report.php:50
 #: covid-19/management/covid-19-sample-status.php:59
@@ -3062,19 +3062,19 @@ msgstr "Sélectionner la date de collecte"
 msgid "Date Sample Receieved at Lab"
 msgstr "Date de réception de l'échantillon au laboratoire"
 
-#: batch/add-batch.php:200 batch/edit-batch.php:183
+#: batch/add-batch.php:200 batch/edit-batch.php:184
 msgid "Select Received at Lab Date"
 msgstr "Sélectionner la date de réception au laboratoire"
 
-#: batch/add-batch.php:205 batch/edit-batch.php:185
+#: batch/add-batch.php:205 batch/edit-batch.php:186
 msgid "Positions"
 msgstr "Positions"
 
-#: batch/add-batch.php:208 batch/edit-batch.php:187
+#: batch/add-batch.php:208 batch/edit-batch.php:188
 msgid "Please select the postion"
 msgstr "Veuillez sélectionner le poste"
 
-#: batch/add-batch.php:210 batch/edit-batch.php:188
+#: batch/add-batch.php:210 batch/edit-batch.php:189
 #: global-config/editGlobalConfig.php:515
 #: global-config/editGlobalConfig.php:725
 #: global-config/editGlobalConfig.php:1083
@@ -3083,7 +3083,7 @@ msgstr "Veuillez sélectionner le poste"
 msgid "Numeric"
 msgstr "Numérique"
 
-#: batch/add-batch.php:213 batch/edit-batch.php:189
+#: batch/add-batch.php:213 batch/edit-batch.php:190
 #: global-config/editGlobalConfig.php:516
 #: global-config/editGlobalConfig.php:726
 #: global-config/editGlobalConfig.php:1084
@@ -3092,7 +3092,7 @@ msgstr "Numérique"
 msgid "Alpha Numeric"
 msgstr "Alphanumérique"
 
-#: batch/add-batch.php:217 batch/edit-batch.php:194
+#: batch/add-batch.php:217 batch/edit-batch.php:195
 #: covid-19/management/covid-19-clinic-report.php:113
 #: covid-19/management/covid-19-clinic-report.php:222
 #: covid-19/management/covid-19-clinic-report.php:325
@@ -3187,7 +3187,7 @@ msgstr "Alphanumérique"
 msgid "Sample Type"
 msgstr "Type d'échantillon"
 
-#: batch/add-batch.php:219 batch/edit-batch.php:196
+#: batch/add-batch.php:219 batch/edit-batch.php:197
 #: covid-19/management/covid-19-clinic-report.php:115
 #: covid-19/management/covid-19-clinic-report.php:224
 #: covid-19/management/covid-19-clinic-report.php:327
@@ -3229,15 +3229,15 @@ msgstr "Type d'échantillon"
 msgid "Please select sample type"
 msgstr "Veuillez sélectionner le type d'échantillon"
 
-#: batch/add-batch.php:245 batch/edit-batch.php:222
+#: batch/add-batch.php:245 batch/edit-batch.php:223
 msgid "Filter Samples"
 msgstr "Filtrer les échantillons"
 
-#: batch/add-batch.php:247 batch/edit-batch.php:223
+#: batch/add-batch.php:247 batch/edit-batch.php:224
 msgid "Reset Filters"
 msgstr "Réinitialiser les filtres"
 
-#: batch/add-batch.php:264 batch/edit-batch.php:237
+#: batch/add-batch.php:264 batch/edit-batch.php:238
 msgid "Please enter batch code"
 msgstr "Veuillez saisir le code du lot"
 
@@ -3254,7 +3254,7 @@ msgstr "Veuillez sélectionner une machine"
 msgid "Save and Next"
 msgstr "Sauvegarder et Suivant"
 
-#: batch/add-batch.php:282 batch/edit-batch.php:293
+#: batch/add-batch.php:282 batch/edit-batch.php:294
 #: common/reference/add-funding-sources.php:57
 #: common/reference/add-geographical-divisions.php:99
 #: common/reference/add-implementation-partners.php:57
@@ -3304,7 +3304,7 @@ msgstr "Sauvegarder et Suivant"
 #: hepatitis/reference/add-hepatitis-sample-type.php:57
 #: hepatitis/reference/add-hepatitis-test-reasons.php:70
 #: hepatitis/results/email-results.php:333 import-result/import-file.php:165
-#: instruments/add-instrument.php:474 instruments/edit-instrument.php:576
+#: instruments/add-instrument.php:486 instruments/edit-instrument.php:588
 #: mail/vlResultMail.php:333 patients/add-patient.php:238
 #: patients/edit-patient.php:253 roles/addRole.php:375 roles/editRole.php:369
 #: system-admin/edit-config/resetPassword.php:57
@@ -3341,7 +3341,7 @@ msgstr "Annuler"
 msgid "Select Test Type"
 msgstr "Sélectionnez le Type"
 
-#: batch/add-batch.php:310 batch/edit-batch.php:344
+#: batch/add-batch.php:310 batch/edit-batch.php:345
 #: covid-19/management/covid-19-clinic-report.php:489
 #: covid-19/management/covid-19-export-data.php:329
 #: covid-19/management/covid-19-export-data.php:332
@@ -3379,19 +3379,19 @@ msgstr "Sélectionnez le Type"
 #: tb/results/tb-print-results.php:411 tb/results/tb-result-status.php:206
 #: vl/program-management/highViralLoad.php:1016
 #: vl/program-management/highViralLoad.php:1029
-#: vl/program-management/vl-export-data.php:565 vl/requests/vl-requests.php:743
+#: vl/program-management/vl-export-data.php:565 vl/requests/vl-requests.php:752
 #: vl/results/email-results.php:365 vl/results/vl-failed-results.php:299
 #: vl/results/vlPrintResult.php:611 vl/results/vlResultApproval.php:288
 #: vl/results/vlResultMail.php:365 vl/results/vlTestResult.php:308
 msgid "Select Facilities"
 msgstr "Sélectionnez les structures"
 
-#: batch/add-batch.php:349 batch/edit-batch.php:324
+#: batch/add-batch.php:349 batch/edit-batch.php:325
 msgid "You have selected more than allowed number of samples"
 msgstr ""
 "Vous avez sélectionné un nombre d'échantillons supérieur au nombre autorisé"
 
-#: batch/add-batch.php:354 batch/edit-batch.php:329
+#: batch/add-batch.php:354 batch/edit-batch.php:330
 #: specimen-referral-manifest/add-manifest.php:261
 #: specimen-referral-manifest/edit-manifest.php:338
 msgid "Please select one or more samples"
@@ -3401,7 +3401,7 @@ msgstr "Veuillez sélectionner un ou plusieurs échantillons"
 msgid "You have to choose a testing platform to proceed"
 msgstr "Vous devez choisir une plateforme de test pour procéder"
 
-#: batch/add-batch.php:425 batch/edit-batch.php:459
+#: batch/add-batch.php:425 batch/edit-batch.php:460
 #: batch/get-samples-batch.php:168
 msgid "Maximum number of samples allowed for the selected platform"
 msgstr ""
@@ -3439,9 +3439,9 @@ msgstr "Feuille de travail pour le test de la tuberculose"
 
 #: batch/batches.php:65 dashboard/index.php:96 facilities/addFacility.php:368
 #: facilities/addFacility.php:664 facilities/mapTestType.php:85
-#: instruments/add-instrument.php:132 instruments/add-instrument.php:395
-#: instruments/edit-instrument.php:156 instruments/edit-instrument.php:349
-#: instruments/edit-instrument.php:451
+#: instruments/add-instrument.php:132 instruments/add-instrument.php:407
+#: instruments/edit-instrument.php:156 instruments/edit-instrument.php:361
+#: instruments/edit-instrument.php:463
 msgid "Other Lab Tests"
 msgstr "Autres tests de laboratoire"
 
@@ -3507,21 +3507,21 @@ msgstr " | Modifier la position du lot"
 msgid "Edit Batch Controls Position"
 msgstr "Éditer la position des contrôles de lots"
 
-#: batch/edit-batch.php:9 batch/edit-batch.php:154
+#: batch/edit-batch.php:9 batch/edit-batch.php:155
 #: system/translate-strings.php:119
 msgid "Edit Batch"
 msgstr "Éditer un lot"
 
-#: batch/edit-batch.php:237
+#: batch/edit-batch.php:238
 msgid "This batch code already exists.Try another code"
 msgstr "Ce code de lot existe déjà, essayez un autre code"
 
-#: batch/edit-batch.php:263 batch/get-samples-batch.php:139
+#: batch/edit-batch.php:264 batch/get-samples-batch.php:139
 #: specimen-referral-manifest/get-samples-for-manifest.php:131
 msgid "Number of unselected samples"
 msgstr "Nombre d'échantillons non sélectionnés"
 
-#: batch/edit-batch.php:281 batch/get-samples-batch.php:157
+#: batch/edit-batch.php:282 batch/get-samples-batch.php:157
 #: specimen-referral-manifest/get-samples-for-manifest.php:154
 msgid "Number of selected samples"
 msgstr "Nombre d'échantillons sélectionnés"
@@ -3689,9 +3689,9 @@ msgstr "Calibrateurs"
 #: common/reference/get-corrective-actions-helper.php:157
 #: common/reference/get-geographical-divisions-helper.php:132
 #: covid-19/reference/get-covid19-qc-test-kits-helper.php:132
-#: covid-19/requests/get-request-list.php:318
+#: covid-19/requests/get-request-list.php:308
 #: covid-19/results/get-covid19-qc-data-list.php:135
-#: eid/requests/get-request-list.php:333 facilities/getFacilityDetails.php:158
+#: eid/requests/get-request-list.php:323 facilities/getFacilityDetails.php:158
 #: generic-tests/configuration/getTestTypeDetails.php:137
 #: generic-tests/configuration/sample-types/get-generic-sample-type-helper.php:135
 #: generic-tests/configuration/symptoms/get-symptoms-helper.php:137
@@ -3701,10 +3701,10 @@ msgstr "Calibrateurs"
 #: generic-tests/configuration/test-result-units/get-test-result-units-helper.php:137
 #: generic-tests/configuration/testing-reasons/get-testing-reason-helper.php:133
 #: generic-tests/requests/get-request-list.php:187
-#: hepatitis/requests/get-request-list.php:284
+#: hepatitis/requests/get-request-list.php:276
 #: instruments/get-instruments.php:120 patients/get-patients-helper.php:135
 #: roles/getRoleDetails.php:115 system/translate-strings.php:104
-#: tb/requests/get-request-list.php:290 users/getUserDetails.php:140
+#: tb/requests/get-request-list.php:280 users/getUserDetails.php:140
 #: vl/reference/get-vl-results-helper.php:133
 #: vl/reference/get-vl-test-failure-reasons-helper.php:140
 #: vl/requests/get-request-list.php:350
@@ -3737,9 +3737,9 @@ msgid "Samples position in batch saved"
 msgstr "Position des échantillons dans le lot sauvegardé"
 
 #: classes/ErrorHandlers/ErrorResponseGenerator.php:22
-#: classes/ErrorHandlers/ErrorResponseGenerator.php:68
-#: classes/ErrorHandlers/ErrorResponseGenerator.php:79
-#: classes/ErrorHandlers/ErrorResponseGenerator.php:99 error/error.php:2
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:80
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:91
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:112 error/error.php:2
 msgid "Internal Server Error"
 msgstr "Erreur interne du serveur"
 
@@ -3755,8 +3755,8 @@ msgstr "Interdit"
 msgid "Unauthorized"
 msgstr "Non autorisé"
 
-#: classes/ErrorHandlers/ErrorResponseGenerator.php:81
-#: classes/ErrorHandlers/ErrorResponseGenerator.php:101 error/error.php:3
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:93
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:114 error/error.php:3
 msgid "Sorry, something went wrong. Please try again later."
 msgstr ""
 "Désolé, quelque chose s’est mal passé. Veuillez réessayer à nouveau plus "
@@ -3771,7 +3771,7 @@ msgid "Result On"
 msgstr "Résultat sur"
 
 #: classes/Helpers/BatchPdfHelper.php:47
-#: covid-19/requests/forms/edit-cameroon.php:562
+#: covid-19/requests/forms/edit-cameroon.php:555
 #: covid-19/results/forms/update-cameroon-result.php:518
 #: eid/requests/forms/add-cameroon.php:560
 #: eid/requests/forms/edit-cameroon.php:589
@@ -3826,7 +3826,7 @@ msgstr ""
 msgid "Unauthorized Access. Please contact your system administrator."
 msgstr "Accès non autorisé. Veuillez contacter votre administrateur système."
 
-#: classes/Middlewares/App/AppAuthMiddleware.php:41 login/loginProcess.php:192
+#: classes/Middlewares/App/AppAuthMiddleware.php:41 login/loginProcess.php:174
 msgid "Please change your password to proceed."
 msgstr "Veuillez modifier votre mot de passe pour continuer."
 
@@ -3949,7 +3949,7 @@ msgstr "Veuillez sélectionner le projet"
 #: hepatitis/reference/get-hepatitis-sample-type-helper.php:129
 #: hepatitis/reference/get-hepatitis-test-reasons-helper.php:126
 #: hepatitis/reference/getHepatitisComorbiditiesDetails.php:125
-#: instruments/edit-instrument.php:233 patients/add-patient.php:225
+#: instruments/edit-instrument.php:245 patients/add-patient.php:225
 #: patients/edit-patient.php:241 roles/addRole.php:223 roles/editRole.php:210
 #: tb/reference/add-tb-results.php:74
 #: tb/reference/add-tb-sample-rejection-reason.php:62
@@ -4040,7 +4040,7 @@ msgstr "Actif"
 #: hepatitis/reference/get-hepatitis-sample-type-helper.php:130
 #: hepatitis/reference/get-hepatitis-test-reasons-helper.php:127
 #: hepatitis/reference/getHepatitisComorbiditiesDetails.php:126
-#: instruments/edit-instrument.php:234 patients/add-patient.php:226
+#: instruments/edit-instrument.php:246 patients/add-patient.php:226
 #: patients/edit-patient.php:242 roles/addRole.php:226 roles/editRole.php:211
 #: tb/reference/add-tb-results.php:77
 #: tb/reference/add-tb-sample-rejection-reason.php:63
@@ -4252,7 +4252,7 @@ msgstr "Veuillez sélectionner la division des parents"
 #: hepatitis/results/hepatitis-print-results.php:345
 #: hepatitis/results/hepatitis-print-results.php:369
 #: hepatitis/results/hepatitis-result-status.php:174
-#: import-result/imported-results.php:230 instruments/edit-instrument.php:229
+#: import-result/imported-results.php:230 instruments/edit-instrument.php:241
 #: instruments/instruments.php:42 patients/add-patient.php:221
 #: patients/edit-patient.php:237 patients/view-patients.php:39
 #: roles/addRole.php:215 roles/editRole.php:203 roles/roles.php:37
@@ -4808,8 +4808,8 @@ msgstr "Tout"
 #: covid-19/management/covid-19-clinic-report.php:258
 #: covid-19/management/covid-19-clinic-report.php:358
 #: covid-19/requests/covid-19-requests.php:249
-#: covid-19/requests/forms/add-cameroon.php:245
-#: covid-19/requests/forms/edit-cameroon.php:261
+#: covid-19/requests/forms/add-cameroon.php:240
+#: covid-19/requests/forms/edit-cameroon.php:254
 #: covid-19/requests/patientModal.php:83
 #: covid-19/results/forms/update-cameroon-result.php:224
 #: eid/management/eid-clinic-report.php:156
@@ -4842,7 +4842,7 @@ msgstr "Tout"
 #: vl/program-management/highViralLoad.php:738
 #: vl/program-management/vl-export-data.php:318
 #: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:267
-#: vl/requests/forms/edit-cameroon.php:317 vl/requests/patientModal.php:109
+#: vl/requests/forms/edit-cameroon.php:317 vl/requests/patientModal.php:110
 #: vl/requests/vl-requests.php:326
 #: vl/result-mail/editTestResultEmailConfig.php:90
 #: vl/results/forms/update-cameroon-result.php:344
@@ -4886,8 +4886,8 @@ msgstr "Veuillez choisir le sexe"
 #: covid-19/management/covid-19-clinic-report.php:262
 #: covid-19/management/covid-19-clinic-report.php:362
 #: covid-19/requests/covid-19-requests.php:257
-#: covid-19/requests/forms/add-cameroon.php:249
-#: covid-19/requests/forms/edit-cameroon.php:265
+#: covid-19/requests/forms/add-cameroon.php:244
+#: covid-19/requests/forms/edit-cameroon.php:258
 #: covid-19/results/email-results.php:179
 #: covid-19/results/forms/update-cameroon-result.php:228
 #: eid/management/eid-clinic-report.php:160
@@ -4928,8 +4928,8 @@ msgstr "Homme"
 #: covid-19/management/covid-19-clinic-report.php:263
 #: covid-19/management/covid-19-clinic-report.php:363
 #: covid-19/requests/covid-19-requests.php:260
-#: covid-19/requests/forms/add-cameroon.php:250
-#: covid-19/requests/forms/edit-cameroon.php:266
+#: covid-19/requests/forms/add-cameroon.php:245
+#: covid-19/requests/forms/edit-cameroon.php:259
 #: covid-19/results/email-results.php:182
 #: covid-19/results/forms/update-cameroon-result.php:229
 #: eid/management/eid-clinic-report.php:161
@@ -5228,7 +5228,7 @@ msgstr "Labo de test"
 #: generic-tests/results/generic-result-approval.php:244
 #: generic-tests/results/generic-test-results.php:195
 #: generic-tests/results/generic-test-results.php:251
-#: generic-tests/results/get-generic-test-result-details.php:303
+#: generic-tests/results/get-generic-test-result-details.php:293
 #: generic-tests/results/get-manual-results.php:285
 #: hepatitis/management/hepatitis-clinic-report.php:422
 #: hepatitis/results/hepatitis-failed-results.php:226
@@ -5251,8 +5251,8 @@ msgstr "Labo de test"
 #: vl/program-management/vl-export-data.php:510
 #: vl/program-management/vlMonitoringReport.php:282
 #: vl/requests/addSamplesFromManifest.php:99 vl/requests/vl-requests.php:589
-#: vl/requests/vl-requests.php:642 vl/results/get-manual-results.php:277
-#: vl/results/getVlTestResultDetails.php:222
+#: vl/requests/vl-requests.php:642 vl/results/get-manual-results.php:270
+#: vl/results/getVlTestResultDetails.php:220
 #: vl/results/vl-failed-results.php:180 vl/results/vl-failed-results.php:210
 #: vl/results/vlPrintResult.php:253 vl/results/vlPrintResult.php:301
 #: vl/results/vlPrintResult.php:496 vl/results/vlPrintResult.php:543
@@ -5290,7 +5290,7 @@ msgstr "Résultat"
 #: vl/requests/forms/edit-cameroon.php:684
 #: vl/result-mail/editTestResultEmailConfig.php:113
 #: vl/results/forms/update-cameroon-result.php:711
-#: vl/results/pdf/result-pdf-cameroon.php:400
+#: vl/results/pdf/result-pdf-cameroon.php:350
 msgid "Rejection Reason"
 msgstr "Motif de rejet"
 
@@ -5419,14 +5419,14 @@ msgstr "Veuillez remplir les champs"
 #: tb/results/tb-print-results.php:191 tb/results/tb-print-results.php:267
 #: tb/results/tb-print-results.php:339 tb/results/tb-result-status.php:168
 #: vl/program-management/vl-export-data.php:374
-#: vl/requests/forms/add-cameroon.php:228 vl/requests/patientModal.php:100
+#: vl/requests/forms/add-cameroon.php:228 vl/requests/patientModal.php:101
 #: vl/requests/vl-requests.php:439 vl/results/vl-failed-results.php:115
 #: vl/results/vlPrintResult.php:185 vl/results/vlPrintResult.php:429
 msgid "Patient ID"
 msgstr "No Patient"
 
 #: covid-19/management/covid-19-clinic-report.php:421
-#: covid-19/requests/forms/add-cameroon.php:270
+#: covid-19/requests/forms/add-cameroon.php:265
 #: covid-19/results/forms/update-cameroon-result.php:250
 #: eid/management/eid-clinic-report.php:420
 #: vl/program-management/highViralLoad.php:894
@@ -5706,8 +5706,8 @@ msgstr "Partenaires opérationnels"
 
 #: covid-19/management/covid-19-export-data.php:188
 #: covid-19/requests/covid-19-requests.php:209
-#: covid-19/requests/forms/edit-cameroon.php:193
-#: covid-19/requests/forms/edit-cameroon.php:203
+#: covid-19/requests/forms/edit-cameroon.php:186
+#: covid-19/requests/forms/edit-cameroon.php:196
 #: covid-19/results/forms/update-cameroon-result.php:174
 #: covid-19/results/forms/update-cameroon-result.php:184
 #: eid/management/eid-export-data.php:193 eid/requests/eid-requests.php:192
@@ -5758,15 +5758,15 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: covid-19/management/covid-19-export-data.php:200
 #: covid-19/requests/covid-19-requests.php:153
 #: covid-19/requests/covid-19-requests.php:334
-#: covid-19/requests/forms/add-cameroon.php:213
-#: covid-19/requests/forms/add-cameroon.php:412
-#: covid-19/requests/forms/add-png.php:212
+#: covid-19/requests/forms/add-cameroon.php:208
+#: covid-19/requests/forms/add-cameroon.php:407
+#: covid-19/requests/forms/add-png.php:204
 #: covid-19/requests/forms/add-rwanda.php:157
-#: covid-19/requests/forms/add-sierraleone.php:184
-#: covid-19/requests/forms/add-southsudan.php:192
-#: covid-19/requests/forms/edit-cameroon.php:230
-#: covid-19/requests/forms/edit-cameroon.php:430
-#: covid-19/requests/forms/edit-cameroon.php:580
+#: covid-19/requests/forms/add-sierraleone.php:177
+#: covid-19/requests/forms/add-southsudan.php:188
+#: covid-19/requests/forms/edit-cameroon.php:223
+#: covid-19/requests/forms/edit-cameroon.php:423
+#: covid-19/requests/forms/edit-cameroon.php:573
 #: covid-19/results/email-results.php:195
 #: covid-19/results/forms/update-cameroon-result.php:384
 #: covid-19/results/forms/update-cameroon-result.php:536
@@ -5855,10 +5855,10 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: patients/add-patient.php:191 patients/edit-patient.php:65
 #: patients/edit-patient.php:197 patients/edit-patient.php:208
 #: tb/management/tb-export-data.php:195
-#: tb/requests/forms/add-sierraleone.php:202
-#: tb/requests/forms/add-southsudan.php:176
-#: tb/requests/forms/edit-sierraleone.php:241
-#: tb/requests/forms/edit-southsudan.php:208 tb/requests/tb-requests.php:216
+#: tb/requests/forms/add-sierraleone.php:195
+#: tb/requests/forms/add-southsudan.php:170
+#: tb/requests/forms/edit-sierraleone.php:234
+#: tb/requests/forms/edit-southsudan.php:199 tb/requests/tb-requests.php:216
 #: tb/requests/tb-requests.php:253 tb/requests/tb-requests.php:271
 #: tb/results/email-results.php:195 users/addUser.php:138
 #: users/editUser.php:190 vl/program-management/getHighVlResultDetails.php:250
@@ -5889,7 +5889,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: vl/requests/forms/edit-cameroon.php:270
 #: vl/requests/forms/edit-cameroon.php:342
 #: vl/requests/forms/edit-cameroon.php:359
-#: vl/requests/forms/edit-cameroon.php:675 vl/requests/forms/edit-drc.php:223
+#: vl/requests/forms/edit-cameroon.php:675 vl/requests/forms/edit-drc.php:224
 #: vl/requests/forms/edit-png.php:291 vl/requests/forms/edit-rwanda.php:223
 #: vl/requests/forms/edit-sierraleone.php:318
 #: vl/requests/forms/edit-southsudan.php:299 vl/requests/vl-requests.php:226
@@ -5910,15 +5910,15 @@ msgstr "Oui"
 #: covid-19/management/covid-19-export-data.php:201
 #: covid-19/requests/covid-19-requests.php:156
 #: covid-19/requests/covid-19-requests.php:337
-#: covid-19/requests/forms/add-cameroon.php:212
-#: covid-19/requests/forms/add-cameroon.php:413
-#: covid-19/requests/forms/add-png.php:211
+#: covid-19/requests/forms/add-cameroon.php:207
+#: covid-19/requests/forms/add-cameroon.php:408
+#: covid-19/requests/forms/add-png.php:203
 #: covid-19/requests/forms/add-rwanda.php:156
-#: covid-19/requests/forms/add-sierraleone.php:183
-#: covid-19/requests/forms/add-southsudan.php:191
-#: covid-19/requests/forms/edit-cameroon.php:229
-#: covid-19/requests/forms/edit-cameroon.php:431
-#: covid-19/requests/forms/edit-cameroon.php:581
+#: covid-19/requests/forms/add-sierraleone.php:176
+#: covid-19/requests/forms/add-southsudan.php:187
+#: covid-19/requests/forms/edit-cameroon.php:222
+#: covid-19/requests/forms/edit-cameroon.php:424
+#: covid-19/requests/forms/edit-cameroon.php:574
 #: covid-19/results/email-results.php:196
 #: covid-19/results/forms/update-cameroon-result.php:385
 #: covid-19/results/forms/update-cameroon-result.php:537
@@ -6007,10 +6007,10 @@ msgstr "Oui"
 #: patients/add-patient.php:194 patients/edit-patient.php:64
 #: patients/edit-patient.php:200 patients/edit-patient.php:211
 #: tb/management/tb-export-data.php:196
-#: tb/requests/forms/add-sierraleone.php:201
-#: tb/requests/forms/add-southsudan.php:175
-#: tb/requests/forms/edit-sierraleone.php:240
-#: tb/requests/forms/edit-southsudan.php:207 tb/requests/tb-requests.php:217
+#: tb/requests/forms/add-sierraleone.php:194
+#: tb/requests/forms/add-southsudan.php:169
+#: tb/requests/forms/edit-sierraleone.php:233
+#: tb/requests/forms/edit-southsudan.php:198 tb/requests/tb-requests.php:217
 #: tb/requests/tb-requests.php:254 tb/requests/tb-requests.php:272
 #: tb/results/email-results.php:196 users/addUser.php:139
 #: users/editUser.php:191 vl/program-management/getHighVlResultDetails.php:251
@@ -6041,7 +6041,7 @@ msgstr "Oui"
 #: vl/requests/forms/edit-cameroon.php:269
 #: vl/requests/forms/edit-cameroon.php:345
 #: vl/requests/forms/edit-cameroon.php:362
-#: vl/requests/forms/edit-cameroon.php:676 vl/requests/forms/edit-drc.php:222
+#: vl/requests/forms/edit-cameroon.php:676 vl/requests/forms/edit-drc.php:223
 #: vl/requests/forms/edit-png.php:290 vl/requests/forms/edit-rwanda.php:222
 #: vl/requests/forms/edit-sierraleone.php:317
 #: vl/requests/forms/edit-southsudan.php:298 vl/requests/vl-requests.php:229
@@ -6116,7 +6116,7 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: vl/program-management/highViralLoad.php:885
 #: vl/program-management/vl-export-data.php:383
 #: vl/requests/export-vl-requests.php:27 vl/requests/export-vl-requests.php:29
-#: vl/requests/export-vl-requests.php:30 vl/requests/patientModal.php:103
+#: vl/requests/export-vl-requests.php:30 vl/requests/patientModal.php:104
 #: vl/requests/vl-requests.php:445
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:245
 #: vl/results/vl-failed-results.php:120 vl/results/vlPrintResult.php:195
@@ -6193,8 +6193,8 @@ msgstr "Gérer les colonnes"
 
 #: covid-19/management/covid-19-export-data.php:268
 #: covid-19/management/covid-19-export-data.php:291
-#: covid-19/requests/forms/add-cameroon.php:164
-#: covid-19/requests/forms/edit-cameroon.php:202
+#: covid-19/requests/forms/add-cameroon.php:159
+#: covid-19/requests/forms/edit-cameroon.php:195
 #: covid-19/results/forms/update-cameroon-result.php:183
 #: eid/management/eid-export-data.php:289
 #: eid/management/eid-export-data.php:313
@@ -6460,8 +6460,8 @@ msgid "LIS Result Print Date"
 msgstr "Date d'impression des résultats LIS"
 
 #: covid-19/management/covid-19-sample-status.php:147
-#: covid-19/requests/forms/add-cameroon.php:1053
-#: covid-19/requests/forms/edit-cameroon.php:913
+#: covid-19/requests/forms/add-cameroon.php:1048
+#: covid-19/requests/forms/edit-cameroon.php:906
 #: eid/management/eid-export-data.php:356
 #: eid/management/eid-sample-status.php:160
 #: eid/results/eid-manual-results.php:264
@@ -6574,7 +6574,7 @@ msgid "S. No."
 msgstr "S. No."
 
 #: covid-19/management/generate-export-drc.php:44
-#: covid-19/requests/forms/edit-cameroon.php:566
+#: covid-19/requests/forms/edit-cameroon.php:559
 #: covid-19/results/forms/update-cameroon-result.php:522
 #: import-result/imported-results.php:253
 #: vl/requests/forms/add-cameroon.php:676
@@ -6585,17 +6585,17 @@ msgid "Tested By"
 msgstr "Testé par"
 
 #: covid-19/management/generate-export-drc.php:45
-#: covid-19/requests/forms/add-cameroon.php:348
-#: covid-19/requests/forms/add-cameroon.php:350
-#: covid-19/requests/forms/edit-cameroon.php:364
-#: covid-19/requests/forms/edit-cameroon.php:366
+#: covid-19/requests/forms/add-cameroon.php:343
+#: covid-19/requests/forms/add-cameroon.php:345
+#: covid-19/requests/forms/edit-cameroon.php:357
+#: covid-19/requests/forms/edit-cameroon.php:359
 #: covid-19/results/forms/update-cameroon-result.php:320
 #: covid-19/results/forms/update-cameroon-result.php:322
 msgid "Number of Times Tested"
 msgstr "Nombre de fois testées"
 
 #: covid-19/management/generate-export-drc.php:47
-#: covid-19/requests/forms/add-cameroon.php:262
+#: covid-19/requests/forms/add-cameroon.php:257
 #: vl/results/forms/update-cameroon-result.php:209
 msgid "State"
 msgstr "État"
@@ -6664,8 +6664,8 @@ msgstr "Commune"
 #: covid-19/management/generate-export-drc.php:60
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/requests/forms/add-cameroon.php:283
-#: covid-19/requests/forms/edit-cameroon.php:299
+#: covid-19/requests/forms/add-cameroon.php:278
+#: covid-19/requests/forms/edit-cameroon.php:292
 #: covid-19/results/forms/update-cameroon-result.php:260
 msgid "Nationality"
 msgstr "Nationalité"
@@ -6812,8 +6812,8 @@ msgstr "Date de la consultation initiale"
 #: covid-19/management/generate-export-drc.php:87
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/requests/forms/add-cameroon.php:323
-#: covid-19/requests/forms/edit-cameroon.php:338
+#: covid-19/requests/forms/add-cameroon.php:318
+#: covid-19/requests/forms/edit-cameroon.php:331
 #: covid-19/results/forms/update-cameroon-result.php:294
 msgid "Reason for Test Request"
 msgstr "Motif de la demande de test"
@@ -6845,8 +6845,8 @@ msgstr "Statut du spécimen"
 #: covid-19/management/generate-export-drc.php:92
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/requests/forms/add-cameroon.php:342
-#: covid-19/requests/forms/edit-cameroon.php:357
+#: covid-19/requests/forms/add-cameroon.php:337
+#: covid-19/requests/forms/edit-cameroon.php:350
 #: covid-19/results/forms/update-cameroon-result.php:313
 msgid "Specimen Type"
 msgstr "Type de spécimen"
@@ -6854,8 +6854,8 @@ msgstr "Type de spécimen"
 #: covid-19/management/generate-export-drc.php:95
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/requests/forms/add-cameroon.php:437
-#: covid-19/requests/forms/edit-cameroon.php:467
+#: covid-19/requests/forms/add-cameroon.php:432
+#: covid-19/requests/forms/edit-cameroon.php:460
 #: covid-19/results/forms/update-cameroon-result.php:421
 #: generic-tests/configuration/test-methods/generic-add-test-methods.php:14
 #: generic-tests/configuration/test-methods/generic-add-test-methods.php:33
@@ -7566,8 +7566,8 @@ msgstr "COVID 19 Les détails des motifs de l'essai ont été ajoutés avec succ
 
 #: covid-19/reference/covid19-comorbidities.php:30
 #: covid-19/reference/covid19-sample-type.php:30
-#: covid-19/requests/forms/add-cameroon.php:593
-#: covid-19/requests/forms/add-cameroon.php:595 facilities/addFacility.php:108
+#: covid-19/requests/forms/add-cameroon.php:588
+#: covid-19/requests/forms/add-cameroon.php:590 facilities/addFacility.php:108
 #: facilities/addFacility.php:113 facilities/editFacility.php:171
 #: facilities/editFacility.php:173 facilities/facilities.php:136
 #: facilities/facilities.php:166 global-config/editGlobalConfig.php:103
@@ -7633,7 +7633,7 @@ msgstr "Êtes-vous sûr de que vouloir modifier le statut ?"
 #: hepatitis/reference/hepatitis-sample-type.php:109
 #: hepatitis/reference/hepatitis-test-reasons.php:110
 #: hepatitis/results/hepatitis-result-status.php:414
-#: vl/requests/vl-requests.php:1110 vl/results/vlResultApproval.php:499
+#: vl/requests/vl-requests.php:1119 vl/results/vlResultApproval.php:499
 #: vl/results/vlResultApproval.php:545
 msgid "Updated successfully."
 msgstr "Mis à jour avec succés."
@@ -7784,8 +7784,8 @@ msgstr "Essai de synchronisation du manifeste"
 #: hepatitis/requests/hepatitis-dhis2.php:681
 #: hepatitis/requests/hepatitis-requests.php:832
 #: tb/requests/addSamplesFromManifest.php:209 tb/requests/tb-requests.php:712
-#: vl/requests/addSamplesFromManifest.php:239 vl/requests/vl-requests.php:1149
-#: vl/requests/vl-requests.php:1173 vl/requests/vl-requests.php:1204
+#: vl/requests/addSamplesFromManifest.php:239 vl/requests/vl-requests.php:1158
+#: vl/requests/vl-requests.php:1182 vl/requests/vl-requests.php:1213
 msgid "Please wait"
 msgstr "Veuillez patienter"
 
@@ -7809,19 +7809,19 @@ msgstr ""
 msgid "Samples from this Manifest have been activated"
 msgstr "Des échantillons de ce manifeste ont été activés"
 
-#: covid-19/requests/covid-19-add-request-helper.php:385
+#: covid-19/requests/covid-19-add-request-helper.php:394
 msgid "Covid-19 test request added successfully"
 msgstr "Demande de test Covid-19 ajoutée avec succès"
 
-#: covid-19/requests/covid-19-add-request-helper.php:393
+#: covid-19/requests/covid-19-add-request-helper.php:402
 msgid "Unable to add this Covid-19 sample. Please try again later"
 msgstr ""
 "Impossible d'ajouter cet échantillon Covid-19. Veuillez réessayer plus tard"
 
-#: covid-19/requests/covid-19-add-request.php:304
-#: covid-19/requests/covid-19-edit-request.php:169
-#: covid-19/requests/covid-19-quick-add.php:237
-#: eid/requests/eid-add-request.php:259 eid/requests/eid-edit-request.php:234
+#: covid-19/requests/covid-19-add-request.php:309
+#: covid-19/requests/covid-19-edit-request.php:175
+#: covid-19/requests/covid-19-quick-add.php:242
+#: eid/requests/eid-add-request.php:265 eid/requests/eid-edit-request.php:234
 #: generic-tests/requests/add-request.php:1473
 #: generic-tests/requests/clone-request.php:1454
 #: generic-tests/requests/edit-request.php:1339
@@ -7829,17 +7829,17 @@ msgstr ""
 #: hepatitis/requests/hepatitis-add-request.php:267
 #: hepatitis/requests/hepatitis-edit-request.php:177
 #: hepatitis/requests/hepatitis-quick-add.php:228
-#: tb/requests/tb-add-request.php:279 tb/requests/tb-edit-request.php:202
+#: tb/requests/tb-add-request.php:285 tb/requests/tb-edit-request.php:207
 #: tb/results/tb-update-result.php:206 vl/vl.js.php:172
 msgid "This Sample Code already exists"
 msgstr "Cet exemple de code existe déjà"
 
-#: covid-19/requests/covid-19-add-request.php:334
-#: covid-19/requests/covid-19-quick-add.php:265
-#: eid/requests/eid-add-request.php:287
+#: covid-19/requests/covid-19-add-request.php:339
+#: covid-19/requests/covid-19-quick-add.php:270
+#: eid/requests/eid-add-request.php:293
 #: hepatitis/requests/hepatitis-add-request.php:296
 #: hepatitis/requests/hepatitis-quick-add.php:256
-#: tb/requests/tb-add-request.php:308
+#: tb/requests/tb-add-request.php:314
 msgid "We could not save this form. Please try saving again."
 msgstr ""
 "Nous n'avons pas pu enregistrer ce formulaire. Veuillez réessayer de "
@@ -7854,25 +7854,25 @@ msgstr "Importer des demandes de test en bloc"
 
 #: covid-19/requests/covid-19-dhis2.php:94
 #: covid-19/results/can-record-confirmatory-tests.php:185
-#: dashboard/vlTestResultStatus.php:158 vl/requests/patientModal.php:121
+#: dashboard/vlTestResultStatus.php:158 vl/requests/patientModal.php:122
 msgid "Previous Result"
 msgstr "Résultat Précédent"
 
-#: covid-19/requests/covid-19-edit-request-helper.php:396
+#: covid-19/requests/covid-19-edit-request-helper.php:405
 msgid "Covid-19 request updated successfully"
 msgstr "La demande de Covid-19 a été mise à jour avec succès"
 
-#: covid-19/requests/covid-19-edit-request-helper.php:404
+#: covid-19/requests/covid-19-edit-request-helper.php:413
 #: covid-19/results/covid-19-update-result-helper.php:190
-#: eid/requests/eid-add-request-helper.php:460
-#: eid/requests/eid-edit-request-helper.php:478
-#: generic-tests/requests/add-request-helper.php:416
-#: generic-tests/requests/edit-request-helper.php:346
-#: generic-tests/results/update-generic-test-result-helper.php:207
-#: hepatitis/requests/hepatitis-edit-request-helper.php:264
+#: eid/requests/eid-add-request-helper.php:470
+#: eid/requests/eid-edit-request-helper.php:488
+#: generic-tests/requests/add-request-helper.php:382
+#: generic-tests/requests/edit-request-helper.php:341
+#: generic-tests/results/update-generic-test-result-helper.php:206
+#: hepatitis/requests/hepatitis-edit-request-helper.php:273
 #: hepatitis/results/hepatitis-update-result-helper.php:105
-#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:412
-#: vl/requests/editVlRequestHelper.php:393
+#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:427
+#: vl/requests/editVlRequestHelper.php:396
 #: vl/results/updateVlTestResultHelper.php:213
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
@@ -8004,8 +8004,8 @@ msgstr "Afficher la recherche avancée"
 
 #: covid-19/requests/covid-19-requests.php:452
 #: covid-19/requests/export-covid19-requests.php:41
-#: covid-19/requests/forms/add-cameroon.php:218
-#: covid-19/requests/forms/edit-cameroon.php:235
+#: covid-19/requests/forms/add-cameroon.php:213
+#: covid-19/requests/forms/edit-cameroon.php:228
 #: covid-19/results/forms/update-cameroon-result.php:212
 #: tb/requests/tb-requests.php:322
 msgid "Case ID"
@@ -8065,7 +8065,7 @@ msgstr "Imprimante:"
 #: hepatitis/requests/hepatitis-requests.php:551
 #: hepatitis/results/hepatitis-manual-results.php:224
 #: tb/requests/tb-requests.php:418 tb/results/tb-manual-results.php:229
-#: vl/program-management/vl-export-data.php:568 vl/requests/vl-requests.php:746
+#: vl/program-management/vl-export-data.php:568 vl/requests/vl-requests.php:755
 #: vl/results/vlTestResult.php:311
 msgid "Select Vl Lab"
 msgstr "Selectioner la Labo CV"
@@ -8077,7 +8077,7 @@ msgstr "Selectioner la Labo CV"
 #: hepatitis/requests/hepatitis-dhis2.php:445
 #: hepatitis/requests/hepatitis-requests.php:554
 #: tb/requests/tb-requests.php:421 vl/program-management/vl-export-data.php:571
-#: vl/requests/vl-requests.php:749
+#: vl/requests/vl-requests.php:758
 msgid "Select Batch Code"
 msgstr "Selectioner le code du batch"
 
@@ -8086,14 +8086,14 @@ msgstr "Selectioner le code du batch"
 #: generic-tests/requests/view-requests.php:547
 #: hepatitis/requests/hepatitis-dhis2.php:681
 #: hepatitis/requests/hepatitis-requests.php:832
-#: tb/requests/tb-requests.php:712 vl/requests/vl-requests.php:1149
+#: tb/requests/tb-requests.php:712 vl/requests/vl-requests.php:1158
 msgid "Trying to sync"
 msgstr "Essai de synchronisation"
 
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/requests/forms/add-cameroon.php:401
-#: covid-19/requests/forms/edit-cameroon.php:419
+#: covid-19/requests/forms/add-cameroon.php:396
+#: covid-19/requests/forms/edit-cameroon.php:412
 #: covid-19/results/add-covid-19-qc-data.php:142
 #: covid-19/results/edit-covid-19-qc-data.php:159
 #: covid-19/results/forms/update-cameroon-result.php:373
@@ -8112,24 +8112,24 @@ msgstr "Sources de financement"
 
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/requests/forms/add-cameroon.php:137
-#: covid-19/requests/forms/edit-cameroon.php:159
+#: covid-19/requests/forms/add-cameroon.php:132
+#: covid-19/requests/forms/edit-cameroon.php:152
 #: covid-19/results/forms/update-cameroon-result.php:159
 msgid "Health Facility/POE County"
 msgstr "Établissement de santé/POE Comté"
 
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/requests/forms/add-cameroon.php:131
-#: covid-19/requests/forms/edit-cameroon.php:153
+#: covid-19/requests/forms/add-cameroon.php:126
+#: covid-19/requests/forms/edit-cameroon.php:146
 #: covid-19/results/forms/update-cameroon-result.php:153
 msgid "Health Facility/POE State"
 msgstr "Établissement de santé/POE État"
 
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/requests/forms/add-cameroon.php:143
-#: covid-19/requests/forms/edit-cameroon.php:165
+#: covid-19/requests/forms/add-cameroon.php:138
+#: covid-19/requests/forms/edit-cameroon.php:158
 #: covid-19/results/forms/update-cameroon-result.php:165
 msgid "Health Facility/POE"
 msgstr "Établissement de santé/POE"
@@ -8149,119 +8149,119 @@ msgstr "Comté du patient"
 msgid "Patient City/Village"
 msgstr "CITY"
 
-#: covid-19/requests/forms/add-cameroon.php:70
+#: covid-19/requests/forms/add-cameroon.php:65
 #: covid-19/requests/forms/add-rwanda.php:43
-#: covid-19/requests/forms/edit-cameroon.php:94
+#: covid-19/requests/forms/edit-cameroon.php:87
 #: covid-19/requests/forms/edit-rwanda.php:74
-#: covid-19/requests/forms/quick-add-southsudan.php:52
+#: covid-19/requests/forms/quick-add-southsudan.php:43
 #: covid-19/results/forms/update-cameroon-result.php:93
 msgid "COVID-19 VIRUS LABORATORY TEST REQUEST FORM"
 msgstr "COVID-19-FORMULAIRE DE DEMANDE DE TEST DE LABORATOIRE"
 
-#: covid-19/requests/forms/add-cameroon.php:73
+#: covid-19/requests/forms/add-cameroon.php:68
 #: covid-19/requests/forms/add-rwanda.php:46
 #: covid-19/requests/forms/add-who.php:44
-#: covid-19/requests/forms/quick-add-southsudan.php:55
+#: covid-19/requests/forms/quick-add-southsudan.php:46
 #: system/translate-strings.php:57
 msgid "Add New Request"
 msgstr "Ajouter une nouvelle demande"
 
-#: covid-19/requests/forms/add-cameroon.php:92
-#: covid-19/requests/forms/edit-cameroon.php:114
+#: covid-19/requests/forms/add-cameroon.php:87
+#: covid-19/requests/forms/edit-cameroon.php:107
 msgid "SITE INFORMATION"
 msgstr "INFORMATIONS SUR LE SITE"
 
-#: covid-19/requests/forms/add-cameroon.php:95
-#: covid-19/requests/forms/edit-cameroon.php:117
+#: covid-19/requests/forms/add-cameroon.php:90
+#: covid-19/requests/forms/edit-cameroon.php:110
 #: covid-19/results/forms/update-cameroon-result.php:117
 #: eid/requests/forms/edit-cameroon.php:94
 #: eid/results/forms/update-cameroon-result.php:89
 msgid "To be filled by requesting Clinician/Nurse"
 msgstr "A remplir par le clinicien/infirmier demandeur"
 
-#: covid-19/requests/forms/add-cameroon.php:111
-#: covid-19/requests/forms/edit-cameroon.php:133
+#: covid-19/requests/forms/add-cameroon.php:106
+#: covid-19/requests/forms/edit-cameroon.php:126
 #: covid-19/results/forms/update-cameroon-result.php:133
 msgid "Source of Alert / POE"
 msgstr "Source d'alerte / POE"
 
-#: covid-19/requests/forms/add-cameroon.php:115
-#: covid-19/requests/forms/edit-cameroon.php:137
+#: covid-19/requests/forms/add-cameroon.php:110
+#: covid-19/requests/forms/edit-cameroon.php:130
 #: covid-19/results/forms/update-cameroon-result.php:137
 msgid "Hotline"
 msgstr "Hotline"
 
-#: covid-19/requests/forms/add-cameroon.php:116
-#: covid-19/requests/forms/edit-cameroon.php:138
+#: covid-19/requests/forms/add-cameroon.php:111
+#: covid-19/requests/forms/edit-cameroon.php:131
 #: covid-19/results/forms/update-cameroon-result.php:138
 msgid "Community Surveillance"
 msgstr "Surveillance communautaire"
 
-#: covid-19/requests/forms/add-cameroon.php:117
-#: covid-19/requests/forms/edit-cameroon.php:139
+#: covid-19/requests/forms/add-cameroon.php:112
+#: covid-19/requests/forms/edit-cameroon.php:132
 #: covid-19/results/forms/update-cameroon-result.php:139
 msgid "POE"
 msgstr "POE"
 
-#: covid-19/requests/forms/add-cameroon.php:118
-#: covid-19/requests/forms/edit-cameroon.php:140
+#: covid-19/requests/forms/add-cameroon.php:113
+#: covid-19/requests/forms/edit-cameroon.php:133
 #: covid-19/results/forms/update-cameroon-result.php:140
 msgid "Contact Tracing"
 msgstr "Recherche de contacts"
 
-#: covid-19/requests/forms/add-cameroon.php:119
-#: covid-19/requests/forms/edit-cameroon.php:141
+#: covid-19/requests/forms/add-cameroon.php:114
+#: covid-19/requests/forms/edit-cameroon.php:134
 #: covid-19/results/forms/update-cameroon-result.php:141
 msgid "Clinic"
 msgstr "Clinique"
 
-#: covid-19/requests/forms/add-cameroon.php:120
-#: covid-19/requests/forms/edit-cameroon.php:142
+#: covid-19/requests/forms/add-cameroon.php:115
+#: covid-19/requests/forms/edit-cameroon.php:135
 #: covid-19/results/forms/update-cameroon-result.php:142
 msgid "Sentinel Site"
 msgstr "Site Sentinelle"
 
-#: covid-19/requests/forms/add-cameroon.php:121
-#: covid-19/requests/forms/edit-cameroon.php:143
+#: covid-19/requests/forms/add-cameroon.php:116
+#: covid-19/requests/forms/edit-cameroon.php:136
 #: covid-19/results/forms/update-cameroon-result.php:143
 msgid "Screening"
 msgstr "Projection"
 
-#: covid-19/requests/forms/add-cameroon.php:122
-#: covid-19/requests/forms/add-cameroon.php:456
-#: covid-19/requests/forms/edit-cameroon.php:144
-#: covid-19/requests/forms/edit-cameroon.php:497
-#: covid-19/requests/forms/edit-cameroon.php:514
+#: covid-19/requests/forms/add-cameroon.php:117
+#: covid-19/requests/forms/add-cameroon.php:451
+#: covid-19/requests/forms/edit-cameroon.php:137
+#: covid-19/requests/forms/edit-cameroon.php:490
+#: covid-19/requests/forms/edit-cameroon.php:507
 #: covid-19/results/forms/update-cameroon-result.php:144
 #: covid-19/results/forms/update-cameroon-result.php:451
 #: covid-19/results/forms/update-cameroon-result.php:468
 msgid "Others"
 msgstr "Autres"
 
-#: covid-19/requests/forms/add-cameroon.php:125
-#: covid-19/requests/forms/add-cameroon.php:127
-#: covid-19/requests/forms/edit-cameroon.php:147
-#: covid-19/requests/forms/edit-cameroon.php:149
+#: covid-19/requests/forms/add-cameroon.php:120
+#: covid-19/requests/forms/add-cameroon.php:122
+#: covid-19/requests/forms/edit-cameroon.php:140
+#: covid-19/requests/forms/edit-cameroon.php:142
 #: covid-19/results/forms/update-cameroon-result.php:147
 #: covid-19/results/forms/update-cameroon-result.php:149
 msgid "Source of Alert / POE Others"
 msgstr "Source d'alerte / POE Autres"
 
-#: covid-19/requests/forms/add-cameroon.php:127
-#: covid-19/requests/forms/edit-cameroon.php:149
+#: covid-19/requests/forms/add-cameroon.php:122
+#: covid-19/requests/forms/edit-cameroon.php:142
 #: covid-19/results/forms/update-cameroon-result.php:135
 #: covid-19/results/forms/update-cameroon-result.php:149
 msgid "Please choose source of Alert / POE"
 msgstr "Veuillez choisir la source d'alerte / POE"
 
-#: covid-19/requests/forms/add-cameroon.php:133
-#: covid-19/requests/forms/edit-cameroon.php:155
+#: covid-19/requests/forms/add-cameroon.php:128
+#: covid-19/requests/forms/edit-cameroon.php:148
 #: covid-19/results/forms/update-cameroon-result.php:155
 msgid "Please choose State"
 msgstr "Veuillez choisir l'État"
 
-#: covid-19/requests/forms/add-cameroon.php:154
-#: covid-19/requests/forms/edit-cameroon.php:192
+#: covid-19/requests/forms/add-cameroon.php:149
+#: covid-19/requests/forms/edit-cameroon.php:185
 #: covid-19/results/forms/update-cameroon-result.php:173
 #: eid/requests/forms/add-cameroon.php:131
 #: eid/requests/forms/edit-cameroon.php:147
@@ -8272,22 +8272,22 @@ msgstr "Veuillez choisir l'État"
 msgid "Project Name"
 msgstr "Nom du projet"
 
-#: covid-19/requests/forms/add-cameroon.php:178
-#: covid-19/requests/forms/add-cameroon.php:376
-#: covid-19/requests/forms/edit-cameroon.php:175
-#: covid-19/requests/forms/edit-cameroon.php:394
+#: covid-19/requests/forms/add-cameroon.php:173
+#: covid-19/requests/forms/add-cameroon.php:371
+#: covid-19/requests/forms/edit-cameroon.php:168
+#: covid-19/requests/forms/edit-cameroon.php:387
 #: covid-19/results/forms/update-cameroon-result.php:348
 msgid "Testing Laboratory"
 msgstr "Laboratoire d'essais"
 
-#: covid-19/requests/forms/add-cameroon.php:199
-#: covid-19/requests/forms/edit-cameroon.php:216
+#: covid-19/requests/forms/add-cameroon.php:194
+#: covid-19/requests/forms/edit-cameroon.php:209
 #: covid-19/results/forms/update-cameroon-result.php:197
 msgid "CASE DETAILS/DEMOGRAPHICS"
 msgstr "DÉTAILS DE L'AFFAIRE/DONNÉES DÉMOGRAPHIQUES"
 
-#: covid-19/requests/forms/add-cameroon.php:202
-#: covid-19/requests/forms/edit-cameroon.php:219
+#: covid-19/requests/forms/add-cameroon.php:197
+#: covid-19/requests/forms/edit-cameroon.php:212
 #: vl/requests/forms/add-cameroon.php:205
 #: vl/requests/forms/edit-cameroon.php:257
 #: vl/results/forms/update-cameroon-result.php:307
@@ -8295,37 +8295,37 @@ msgstr "DÉTAILS DE L'AFFAIRE/DONNÉES DÉMOGRAPHIQUES"
 msgid "Patient Information"
 msgstr "Information du patient"
 
-#: covid-19/requests/forms/add-cameroon.php:203
-#: covid-19/requests/forms/edit-cameroon.php:220
+#: covid-19/requests/forms/add-cameroon.php:198
+#: covid-19/requests/forms/edit-cameroon.php:213
 msgid "Enter Case ID or Patient Name"
 msgstr "Saisir l'identifiant du cas ou le nom du patient"
 
-#: covid-19/requests/forms/add-cameroon.php:203
-#: covid-19/requests/forms/edit-cameroon.php:220
+#: covid-19/requests/forms/add-cameroon.php:198
+#: covid-19/requests/forms/edit-cameroon.php:213
 #: vl/requests/forms/add-cameroon.php:206
 #: vl/requests/forms/edit-cameroon.php:258
 msgid "Enter art number or patient name"
 msgstr "Saisir le numéro d'art ou le nom du patient"
 
-#: covid-19/requests/forms/add-cameroon.php:204
-#: covid-19/requests/forms/edit-cameroon.php:221
+#: covid-19/requests/forms/add-cameroon.php:199
+#: covid-19/requests/forms/edit-cameroon.php:214
 #: vl/requests/forms/add-cameroon.php:207 vl/requests/forms/add-drc.php:174
 msgid "No Patient Found"
 msgstr "Aucun patient trouvé"
 
-#: covid-19/requests/forms/add-cameroon.php:208
-#: covid-19/requests/forms/add-png.php:207
+#: covid-19/requests/forms/add-cameroon.php:203
+#: covid-19/requests/forms/add-png.php:199
 #: covid-19/requests/forms/add-rwanda.php:152
-#: covid-19/requests/forms/add-sierraleone.php:179
-#: covid-19/requests/forms/add-southsudan.php:187
-#: covid-19/requests/forms/edit-cameroon.php:225
-#: covid-19/requests/forms/edit-cameroon.php:227
+#: covid-19/requests/forms/add-sierraleone.php:172
+#: covid-19/requests/forms/add-southsudan.php:183
+#: covid-19/requests/forms/edit-cameroon.php:218
+#: covid-19/requests/forms/edit-cameroon.php:220
 #: eid/requests/forms/add-cameroon.php:169 eid/requests/forms/add-png.php:195
 #: eid/requests/forms/add-rwanda.php:163
 #: eid/requests/forms/add-sierraleone.php:184
 #: eid/requests/forms/add-southsudan.php:174
 #: eid/requests/forms/edit-cameroon.php:186
-#: eid/requests/forms/edit-cameroon.php:188 eid/requests/forms/edit-drc.php:191
+#: eid/requests/forms/edit-cameroon.php:188 eid/requests/forms/edit-drc.php:196
 #: eid/requests/forms/edit-png.php:227 eid/requests/forms/edit-png.php:229
 #: eid/requests/forms/edit-rwanda.php:177
 #: eid/requests/forms/edit-rwanda.php:179
@@ -8336,31 +8336,31 @@ msgstr "Aucun patient trouvé"
 #: hepatitis/requests/forms/add-rwanda.php:78
 #: hepatitis/requests/forms/edit-rwanda.php:107
 #: hepatitis/requests/forms/edit-rwanda.php:109
-#: tb/requests/forms/add-sierraleone.php:197
-#: tb/requests/forms/add-southsudan.php:171
-#: tb/requests/forms/edit-sierraleone.php:236
-#: tb/requests/forms/edit-sierraleone.php:238
-#: tb/requests/forms/edit-southsudan.php:203
-#: tb/requests/forms/edit-southsudan.php:205 vl/requests/forms/add-drc.php:179
+#: tb/requests/forms/add-sierraleone.php:190
+#: tb/requests/forms/add-southsudan.php:165
+#: tb/requests/forms/edit-sierraleone.php:229
+#: tb/requests/forms/edit-sierraleone.php:231
+#: tb/requests/forms/edit-southsudan.php:194
+#: tb/requests/forms/edit-southsudan.php:196 vl/requests/forms/add-drc.php:179
 #: vl/requests/forms/add-png.php:140 vl/requests/forms/add-sierraleone.php:209
-#: vl/requests/forms/add-southsudan.php:216 vl/requests/forms/edit-drc.php:218
-#: vl/requests/forms/edit-drc.php:220 vl/requests/forms/edit-png.php:286
+#: vl/requests/forms/add-southsudan.php:216 vl/requests/forms/edit-drc.php:219
+#: vl/requests/forms/edit-drc.php:221 vl/requests/forms/edit-png.php:286
 #: vl/requests/forms/edit-png.php:288
 msgid "Encrypt PII"
 msgstr "Cryptage des IPI"
 
-#: covid-19/requests/forms/add-cameroon.php:210
-#: covid-19/requests/forms/add-png.php:209
+#: covid-19/requests/forms/add-cameroon.php:205
+#: covid-19/requests/forms/add-png.php:201
 #: covid-19/requests/forms/add-rwanda.php:154
-#: covid-19/requests/forms/add-sierraleone.php:181
-#: covid-19/requests/forms/add-southsudan.php:189
+#: covid-19/requests/forms/add-sierraleone.php:174
+#: covid-19/requests/forms/add-southsudan.php:185
 #: eid/requests/forms/add-cameroon.php:171 eid/requests/forms/add-png.php:197
 #: eid/requests/forms/add-rwanda.php:165
 #: eid/requests/forms/add-sierraleone.php:186
 #: eid/requests/forms/add-southsudan.php:176
 #: hepatitis/requests/forms/add-rwanda.php:80 patients/add-patient.php:45
-#: patients/edit-patient.php:62 tb/requests/forms/add-sierraleone.php:199
-#: tb/requests/forms/add-southsudan.php:173
+#: patients/edit-patient.php:62 tb/requests/forms/add-sierraleone.php:192
+#: tb/requests/forms/add-southsudan.php:167
 #: vl/requests/forms/add-cameroon.php:215 vl/requests/forms/add-drc.php:181
 #: vl/requests/forms/add-png.php:142 vl/requests/forms/add-rwanda.php:182
 #: vl/requests/forms/add-sierraleone.php:211
@@ -8372,47 +8372,47 @@ msgstr "Cryptage des IPI"
 msgid "Encrypt Patient Identifying Information"
 msgstr "Cryptage des données d'identification des patients"
 
-#: covid-19/requests/forms/add-cameroon.php:220
+#: covid-19/requests/forms/add-cameroon.php:215
 msgid "Case Identification"
 msgstr "Identification des cas"
 
-#: covid-19/requests/forms/add-cameroon.php:220
+#: covid-19/requests/forms/add-cameroon.php:215
 msgid "Please enter Case ID"
 msgstr "Veuillez saisir l'identifiant du cas"
 
-#: covid-19/requests/forms/add-cameroon.php:222
-#: covid-19/requests/forms/add-cameroon.php:223
-#: covid-19/requests/forms/edit-cameroon.php:239
-#: covid-19/requests/forms/edit-cameroon.php:240
+#: covid-19/requests/forms/add-cameroon.php:217
+#: covid-19/requests/forms/add-cameroon.php:218
+#: covid-19/requests/forms/edit-cameroon.php:232
+#: covid-19/requests/forms/edit-cameroon.php:233
 msgid "DHIS2 Case ID"
 msgstr "DHIS2 Case ID"
 
-#: covid-19/requests/forms/add-cameroon.php:223
-#: covid-19/requests/forms/edit-cameroon.php:240
+#: covid-19/requests/forms/add-cameroon.php:218
+#: covid-19/requests/forms/edit-cameroon.php:233
 msgid "Please enter DHIS2 Case ID"
 msgstr "Veuillez saisir l'identifiant du dossier DHIS2"
 
-#: covid-19/requests/forms/add-cameroon.php:226
-#: covid-19/requests/forms/edit-cameroon.php:243
-#: covid-19/requests/forms/edit-cameroon.php:245
+#: covid-19/requests/forms/add-cameroon.php:221
+#: covid-19/requests/forms/edit-cameroon.php:236
+#: covid-19/requests/forms/edit-cameroon.php:238
 #: covid-19/results/forms/update-cameroon-result.php:202
 #: covid-19/results/forms/update-cameroon-result.php:204
 #: global-config/editGlobalConfig.php:1521
 msgid "First Name"
 msgstr "Prénom"
 
-#: covid-19/requests/forms/add-cameroon.php:230
-#: covid-19/requests/forms/edit-cameroon.php:247
-#: covid-19/requests/forms/edit-cameroon.php:249
+#: covid-19/requests/forms/add-cameroon.php:225
+#: covid-19/requests/forms/edit-cameroon.php:240
+#: covid-19/requests/forms/edit-cameroon.php:242
 #: covid-19/results/forms/update-cameroon-result.php:206
 #: covid-19/results/forms/update-cameroon-result.php:208
 msgid "Last name"
 msgstr "Nom"
 
-#: covid-19/requests/forms/add-cameroon.php:237
-#: covid-19/requests/forms/add-cameroon.php:239
-#: covid-19/requests/forms/edit-cameroon.php:253
-#: covid-19/requests/forms/edit-cameroon.php:255
+#: covid-19/requests/forms/add-cameroon.php:232
+#: covid-19/requests/forms/add-cameroon.php:234
+#: covid-19/requests/forms/edit-cameroon.php:246
+#: covid-19/requests/forms/edit-cameroon.php:248
 #: covid-19/results/forms/update-cameroon-result.php:216
 #: covid-19/results/forms/update-cameroon-result.php:218
 #: eid/requests/forms/add-cameroon.php:191
@@ -8429,8 +8429,8 @@ msgstr "Nom"
 msgid "Date of Birth"
 msgstr "Date de naissance"
 
-#: covid-19/requests/forms/add-cameroon.php:239
-#: covid-19/requests/forms/edit-cameroon.php:255
+#: covid-19/requests/forms/add-cameroon.php:234
+#: covid-19/requests/forms/edit-cameroon.php:248
 #: covid-19/results/forms/update-cameroon-result.php:218
 #: eid/requests/forms/add-cameroon.php:193
 #: eid/requests/forms/add-cameroon.php:253
@@ -8441,25 +8441,25 @@ msgstr "Date de naissance"
 msgid "Please enter Date of birth"
 msgstr "Veuillez saisir votre date de naissance"
 
-#: covid-19/requests/forms/add-cameroon.php:241
+#: covid-19/requests/forms/add-cameroon.php:236
 msgid "Age (years)"
 msgstr "Âge (Années )"
 
-#: covid-19/requests/forms/add-cameroon.php:242
+#: covid-19/requests/forms/add-cameroon.php:237
 msgid "Case Age (in years)"
 msgstr "Âge du cas (en années)"
 
-#: covid-19/requests/forms/add-cameroon.php:242
+#: covid-19/requests/forms/add-cameroon.php:237
 msgid "Case Age"
 msgstr "Âge du cas"
 
-#: covid-19/requests/forms/add-cameroon.php:247
+#: covid-19/requests/forms/add-cameroon.php:242
 msgid "Please select the gender"
 msgstr "Veuillez sélectionner le sexe"
 
-#: covid-19/requests/forms/add-cameroon.php:251
-#: covid-19/requests/forms/add-cameroon.php:655
-#: covid-19/requests/forms/edit-cameroon.php:267
+#: covid-19/requests/forms/add-cameroon.php:246
+#: covid-19/requests/forms/add-cameroon.php:650
+#: covid-19/requests/forms/edit-cameroon.php:260
 #: covid-19/results/forms/update-cameroon-result.php:230
 #: eid/requests/forms/add-cameroon.php:227
 #: eid/requests/forms/add-cameroon.php:288
@@ -8485,16 +8485,16 @@ msgstr "Veuillez sélectionner le sexe"
 msgid "Other"
 msgstr "Autre"
 
-#: covid-19/requests/forms/add-cameroon.php:255
-#: covid-19/requests/forms/edit-cameroon.php:271
+#: covid-19/requests/forms/add-cameroon.php:250
+#: covid-19/requests/forms/edit-cameroon.php:264
 #: covid-19/results/forms/update-cameroon-result.php:236
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
-#: covid-19/requests/forms/add-cameroon.php:256
-#: covid-19/requests/forms/add-cameroon.php:663
-#: covid-19/requests/forms/add-cameroon.php:665
-#: covid-19/requests/forms/edit-cameroon.php:272
+#: covid-19/requests/forms/add-cameroon.php:251
+#: covid-19/requests/forms/add-cameroon.php:658
+#: covid-19/requests/forms/add-cameroon.php:660
+#: covid-19/requests/forms/edit-cameroon.php:265
 #: covid-19/results/forms/update-cameroon-result.php:237
 #: facilities/addFacility.php:224 facilities/addFacility.php:227
 #: facilities/editFacility.php:260 facilities/editFacility.php:262
@@ -8510,14 +8510,14 @@ msgstr "Numéro de téléphone"
 msgid "Phone Number"
 msgstr "Numéro de téléphone"
 
-#: covid-19/requests/forms/add-cameroon.php:256
+#: covid-19/requests/forms/add-cameroon.php:251
 msgid "Case Phone Number"
 msgstr "Numéro de téléphone de l'affaire"
 
-#: covid-19/requests/forms/add-cameroon.php:259
-#: covid-19/requests/forms/add-cameroon.php:260
-#: covid-19/requests/forms/add-cameroon.php:700
-#: covid-19/requests/forms/edit-cameroon.php:276
+#: covid-19/requests/forms/add-cameroon.php:254
+#: covid-19/requests/forms/add-cameroon.php:255
+#: covid-19/requests/forms/add-cameroon.php:695
+#: covid-19/requests/forms/edit-cameroon.php:269
 #: covid-19/results/forms/update-cameroon-result.php:240
 #: facilities/addFacility.php:291 facilities/addFacility.php:294
 #: facilities/editFacility.php:318 facilities/editFacility.php:320
@@ -8527,73 +8527,73 @@ msgstr "Numéro de téléphone de l'affaire"
 msgid "Address"
 msgstr "Adresse"
 
-#: covid-19/requests/forms/add-cameroon.php:260 patients/add-patient.php:213
+#: covid-19/requests/forms/add-cameroon.php:255 patients/add-patient.php:213
 #: patients/edit-patient.php:230
 msgid "Case Address"
 msgstr "Adresse du dossier"
 
-#: covid-19/requests/forms/add-cameroon.php:264
-#: covid-19/requests/forms/edit-cameroon.php:280
+#: covid-19/requests/forms/add-cameroon.php:259
+#: covid-19/requests/forms/edit-cameroon.php:273
 #: covid-19/results/forms/update-cameroon-result.php:245
 msgid "Please Case State"
 msgstr "Veuillez indiquer l'État de l'affaire"
 
-#: covid-19/requests/forms/add-cameroon.php:276
-#: covid-19/requests/forms/edit-cameroon.php:292
+#: covid-19/requests/forms/add-cameroon.php:271
+#: covid-19/requests/forms/edit-cameroon.php:285
 msgid "Payam"
 msgstr "Payam"
 
-#: covid-19/requests/forms/add-cameroon.php:277
-#: covid-19/requests/forms/edit-cameroon.php:293
+#: covid-19/requests/forms/add-cameroon.php:272
+#: covid-19/requests/forms/edit-cameroon.php:286
 msgid "Case Payam"
 msgstr "Cas Payam"
 
-#: covid-19/requests/forms/add-cameroon.php:277
-#: covid-19/requests/forms/edit-cameroon.php:293
+#: covid-19/requests/forms/add-cameroon.php:272
+#: covid-19/requests/forms/edit-cameroon.php:286
 msgid "Please enter the Case Payam"
 msgstr "Veuillez saisir le cas Payam"
 
-#: covid-19/requests/forms/add-cameroon.php:281
-#: covid-19/requests/forms/edit-cameroon.php:297
+#: covid-19/requests/forms/add-cameroon.php:276
+#: covid-19/requests/forms/edit-cameroon.php:290
 msgid "Boma/Village"
 msgstr "Boma/Village"
 
-#: covid-19/requests/forms/add-cameroon.php:282
-#: covid-19/requests/forms/edit-cameroon.php:298
+#: covid-19/requests/forms/add-cameroon.php:277
+#: covid-19/requests/forms/edit-cameroon.php:291
 msgid "Case Boma/Village"
 msgstr "Cas Boma/Village"
 
-#: covid-19/requests/forms/add-cameroon.php:282
-#: covid-19/requests/forms/edit-cameroon.php:298
+#: covid-19/requests/forms/add-cameroon.php:277
+#: covid-19/requests/forms/edit-cameroon.php:291
 msgid "Please enter the Case Boma/Village"
 msgstr "Veuillez saisir le cas Boma/Village"
 
-#: covid-19/requests/forms/add-cameroon.php:285
-#: covid-19/requests/forms/edit-cameroon.php:301
+#: covid-19/requests/forms/add-cameroon.php:280
+#: covid-19/requests/forms/edit-cameroon.php:294
 #: covid-19/results/forms/update-cameroon-result.php:262
 msgid "Please choose nationality"
 msgstr "Veuillez choisir la nationalité"
 
-#: covid-19/requests/forms/add-cameroon.php:291
-#: covid-19/requests/forms/add-cameroon.php:292
-#: covid-19/requests/forms/edit-cameroon.php:307
-#: covid-19/requests/forms/edit-cameroon.php:308
+#: covid-19/requests/forms/add-cameroon.php:286
+#: covid-19/requests/forms/add-cameroon.php:287
+#: covid-19/requests/forms/edit-cameroon.php:300
+#: covid-19/requests/forms/edit-cameroon.php:301
 msgid "Passport Number"
 msgstr "No de passeport"
 
-#: covid-19/requests/forms/add-cameroon.php:292
-#: covid-19/requests/forms/edit-cameroon.php:308
+#: covid-19/requests/forms/add-cameroon.php:287
+#: covid-19/requests/forms/edit-cameroon.php:301
 msgid "Please enter Passport Number"
 msgstr "Veuillez saisir le numéro de passeport"
 
-#: covid-19/requests/forms/add-cameroon.php:299
-#: covid-19/requests/forms/edit-cameroon.php:314
+#: covid-19/requests/forms/add-cameroon.php:294
+#: covid-19/requests/forms/edit-cameroon.php:307
 #: covid-19/results/forms/update-cameroon-result.php:270
 msgid "SPECIMEN INFORMATION"
 msgstr "INFORMATIONS SUR LES SPÉCIMENS"
 
-#: covid-19/requests/forms/add-cameroon.php:305
-#: covid-19/requests/forms/edit-cameroon.php:321
+#: covid-19/requests/forms/add-cameroon.php:300
+#: covid-19/requests/forms/edit-cameroon.php:314
 #: covid-19/results/forms/update-cameroon-result.php:277
 msgid ""
 "All specimens collected should be regarded as potentially infectious and you "
@@ -8603,7 +8603,7 @@ msgstr ""
 "potentiellement infectieux et vous DEVEZ <u>CONTACTER</u> le laboratoire de "
 "référence avant d'envoyer des échantillons."
 
-#: covid-19/requests/forms/add-cameroon.php:306
+#: covid-19/requests/forms/add-cameroon.php:301
 msgid ""
 "All samples must be sent in accordance with Category B transport "
 "requirements."
@@ -8611,90 +8611,90 @@ msgstr ""
 "Tous les échantillons doivent être envoyés conformément aux exigences de "
 "transport de la catégorie B."
 
-#: covid-19/requests/forms/add-cameroon.php:312
-#: covid-19/requests/forms/edit-cameroon.php:328
+#: covid-19/requests/forms/add-cameroon.php:307
+#: covid-19/requests/forms/edit-cameroon.php:321
 #: covid-19/results/forms/update-cameroon-result.php:284
 msgid "Type of Test Request"
 msgstr "Type de demande de test"
 
-#: covid-19/requests/forms/add-cameroon.php:314
-#: covid-19/requests/forms/edit-cameroon.php:330
+#: covid-19/requests/forms/add-cameroon.php:309
+#: covid-19/requests/forms/edit-cameroon.php:323
 #: covid-19/results/forms/update-cameroon-result.php:286
 msgid "Please choose type of test request"
 msgstr "Veuillez choisir le type de demande de test"
 
-#: covid-19/requests/forms/add-cameroon.php:316
-#: covid-19/requests/forms/add-cameroon.php:451
-#: covid-19/requests/forms/edit-cameroon.php:332
-#: covid-19/requests/forms/edit-cameroon.php:493
+#: covid-19/requests/forms/add-cameroon.php:311
+#: covid-19/requests/forms/add-cameroon.php:446
+#: covid-19/requests/forms/edit-cameroon.php:325
+#: covid-19/requests/forms/edit-cameroon.php:486
 #: covid-19/results/forms/update-cameroon-result.php:288
 #: covid-19/results/forms/update-cameroon-result.php:447
 msgid "Real Time RT-PCR"
 msgstr "RT-PCR en temps réel"
 
-#: covid-19/requests/forms/add-cameroon.php:317
-#: covid-19/requests/forms/add-cameroon.php:452
-#: covid-19/requests/forms/edit-cameroon.php:333
-#: covid-19/requests/forms/edit-cameroon.php:494
+#: covid-19/requests/forms/add-cameroon.php:312
+#: covid-19/requests/forms/add-cameroon.php:447
+#: covid-19/requests/forms/edit-cameroon.php:326
+#: covid-19/requests/forms/edit-cameroon.php:487
 #: covid-19/results/forms/update-cameroon-result.php:289
 #: covid-19/results/forms/update-cameroon-result.php:448
 msgid "RDT-Antibody"
 msgstr "RDT-Anticorps"
 
-#: covid-19/requests/forms/add-cameroon.php:318
-#: covid-19/requests/forms/add-cameroon.php:453
-#: covid-19/requests/forms/edit-cameroon.php:334
-#: covid-19/requests/forms/edit-cameroon.php:495
+#: covid-19/requests/forms/add-cameroon.php:313
+#: covid-19/requests/forms/add-cameroon.php:448
+#: covid-19/requests/forms/edit-cameroon.php:327
+#: covid-19/requests/forms/edit-cameroon.php:488
 #: covid-19/results/forms/update-cameroon-result.php:290
 #: covid-19/results/forms/update-cameroon-result.php:449
 msgid "RDT-Antigen"
 msgstr "RDT-Antigène"
 
-#: covid-19/requests/forms/add-cameroon.php:319
-#: covid-19/requests/forms/add-cameroon.php:454
+#: covid-19/requests/forms/add-cameroon.php:314
+#: covid-19/requests/forms/add-cameroon.php:449
 msgid "GeneXpert"
 msgstr "GeneXpert"
 
-#: covid-19/requests/forms/add-cameroon.php:320
-#: covid-19/requests/forms/add-cameroon.php:455
-#: covid-19/requests/forms/edit-cameroon.php:335
-#: covid-19/requests/forms/edit-cameroon.php:496
+#: covid-19/requests/forms/add-cameroon.php:315
+#: covid-19/requests/forms/add-cameroon.php:450
+#: covid-19/requests/forms/edit-cameroon.php:328
+#: covid-19/requests/forms/edit-cameroon.php:489
 #: covid-19/results/forms/update-cameroon-result.php:291
 #: covid-19/results/forms/update-cameroon-result.php:450
 msgid "ELISA"
 msgstr "ELISA"
 
-#: covid-19/requests/forms/add-cameroon.php:325
+#: covid-19/requests/forms/add-cameroon.php:320
 msgid "Please choose reason for testing"
 msgstr "Veuillez choisir la raison du test"
 
-#: covid-19/requests/forms/add-cameroon.php:336
-#: covid-19/requests/forms/add-cameroon.php:338
-#: covid-19/requests/forms/edit-cameroon.php:351
-#: covid-19/requests/forms/edit-cameroon.php:353
+#: covid-19/requests/forms/add-cameroon.php:331
+#: covid-19/requests/forms/add-cameroon.php:333
+#: covid-19/requests/forms/edit-cameroon.php:344
+#: covid-19/requests/forms/edit-cameroon.php:346
 #: covid-19/results/forms/update-cameroon-result.php:307
 #: covid-19/results/forms/update-cameroon-result.php:309
 msgid "Sample Dispatched On"
 msgstr "Échantillon envoyé le"
 
-#: covid-19/requests/forms/add-cameroon.php:344
-#: covid-19/requests/forms/edit-cameroon.php:340
-#: covid-19/requests/forms/edit-cameroon.php:359
+#: covid-19/requests/forms/add-cameroon.php:339
+#: covid-19/requests/forms/edit-cameroon.php:333
+#: covid-19/requests/forms/edit-cameroon.php:352
 #: covid-19/results/forms/update-cameroon-result.php:296
 #: covid-19/results/forms/update-cameroon-result.php:315
 msgid "Please choose specimen type"
 msgstr "Veuillez choisir le type de spécimen"
 
-#: covid-19/requests/forms/add-cameroon.php:368
-#: covid-19/requests/forms/edit-cameroon.php:386
+#: covid-19/requests/forms/add-cameroon.php:363
+#: covid-19/requests/forms/edit-cameroon.php:379
 #: covid-19/results/forms/update-cameroon-result.php:340
 #: eid/requests/forms/add-cameroon.php:503
 #: eid/results/forms/update-cameroon-result.php:494
 msgid "Reserved for Laboratory Use"
 msgstr "Réservé à l'usage des laboratoires"
 
-#: covid-19/requests/forms/add-cameroon.php:372
-#: covid-19/requests/forms/edit-cameroon.php:390
+#: covid-19/requests/forms/add-cameroon.php:367
+#: covid-19/requests/forms/edit-cameroon.php:383
 #: covid-19/results/forms/update-cameroon-result.php:344
 #: eid/requests/forms/add-cameroon.php:513
 #: eid/requests/forms/edit-cameroon.php:534
@@ -8708,27 +8708,27 @@ msgstr "Réservé à l'usage des laboratoires"
 msgid "Sample Received Date"
 msgstr "Date de réception de l'échantillon"
 
-#: covid-19/requests/forms/add-cameroon.php:374
+#: covid-19/requests/forms/add-cameroon.php:369
 #: covid-19/requests/forms/add-drc.php:682
-#: covid-19/requests/forms/add-drc.php:746
-#: covid-19/requests/forms/add-png.php:520
+#: covid-19/requests/forms/add-drc.php:737
+#: covid-19/requests/forms/add-png.php:512
 #: covid-19/requests/forms/add-rwanda.php:402
 #: covid-19/requests/forms/add-rwanda.php:526
-#: covid-19/requests/forms/add-sierraleone.php:377
-#: covid-19/requests/forms/add-southsudan.php:353
+#: covid-19/requests/forms/add-sierraleone.php:370
+#: covid-19/requests/forms/add-southsudan.php:349
 #: covid-19/requests/forms/add-who.php:322
 #: covid-19/requests/forms/add-who.php:437
-#: covid-19/requests/forms/edit-cameroon.php:392
+#: covid-19/requests/forms/edit-cameroon.php:385
 #: covid-19/requests/forms/edit-drc.php:715
 #: covid-19/requests/forms/edit-drc.php:770
-#: covid-19/requests/forms/edit-png.php:534
+#: covid-19/requests/forms/edit-png.php:527
 #: covid-19/requests/forms/edit-rwanda.php:421
 #: covid-19/requests/forms/edit-rwanda.php:582
-#: covid-19/requests/forms/edit-sierraleone.php:404
-#: covid-19/requests/forms/edit-southsudan.php:366
+#: covid-19/requests/forms/edit-sierraleone.php:394
+#: covid-19/requests/forms/edit-southsudan.php:357
 #: covid-19/requests/forms/edit-who.php:338
 #: covid-19/requests/forms/edit-who.php:480
-#: covid-19/requests/forms/quick-add-southsudan.php:139
+#: covid-19/requests/forms/quick-add-southsudan.php:130
 #: covid-19/results/forms/update-cameroon-result.php:346
 #: covid-19/results/forms/update-drc-result.php:686
 #: covid-19/results/forms/update-drc-result.php:742
@@ -8740,20 +8740,20 @@ msgstr "Date de réception de l'échantillon"
 #: covid-19/results/forms/update-who-result.php:369
 #: covid-19/results/forms/update-who-result.php:526
 #: eid/requests/forms/add-cameroon.php:515
-#: eid/requests/forms/add-cameroon.php:545 eid/requests/forms/add-drc.php:489
-#: eid/requests/forms/add-drc.php:537 eid/requests/forms/add-png.php:490
+#: eid/requests/forms/add-cameroon.php:545 eid/requests/forms/add-drc.php:493
+#: eid/requests/forms/add-drc.php:541 eid/requests/forms/add-png.php:490
 #: eid/requests/forms/add-png.php:527 eid/requests/forms/add-rwanda.php:365
 #: eid/requests/forms/add-rwanda.php:402
 #: eid/requests/forms/add-sierraleone.php:448
 #: eid/requests/forms/add-sierraleone.php:513
 #: eid/requests/forms/add-sierraleone.php:556
 #: eid/requests/forms/add-southsudan.php:389
-#: eid/requests/forms/add-southsudan.php:443
-#: eid/requests/forms/add-southsudan.php:486 eid/requests/forms/add-who.php:351
+#: eid/requests/forms/add-southsudan.php:442
+#: eid/requests/forms/add-southsudan.php:485 eid/requests/forms/add-who.php:351
 #: eid/requests/forms/add-who.php:404 eid/requests/forms/add-who.php:447
 #: eid/requests/forms/edit-cameroon.php:536
-#: eid/requests/forms/edit-cameroon.php:575 eid/requests/forms/edit-drc.php:502
-#: eid/requests/forms/edit-drc.php:551 eid/requests/forms/edit-png.php:519
+#: eid/requests/forms/edit-cameroon.php:575 eid/requests/forms/edit-drc.php:507
+#: eid/requests/forms/edit-drc.php:556 eid/requests/forms/edit-png.php:519
 #: eid/requests/forms/edit-png.php:565 eid/requests/forms/edit-rwanda.php:378
 #: eid/requests/forms/edit-rwanda.php:422
 #: eid/requests/forms/edit-sierraleone.php:432
@@ -8790,24 +8790,24 @@ msgstr "Date de réception de l'échantillon"
 #: hepatitis/requests/forms/edit-rwanda.php:308
 #: hepatitis/results/forms/update-rwanda-result.php:273
 #: hepatitis/results/forms/update-rwanda-result.php:285
-#: tb/requests/forms/add-sierraleone.php:153
-#: tb/requests/forms/add-sierraleone.php:433
-#: tb/requests/forms/add-sierraleone.php:439
-#: tb/requests/forms/add-sierraleone.php:444
-#: tb/requests/forms/add-sierraleone.php:456
-#: tb/requests/forms/add-southsudan.php:131
+#: tb/requests/forms/add-sierraleone.php:146
+#: tb/requests/forms/add-sierraleone.php:426
+#: tb/requests/forms/add-sierraleone.php:432
+#: tb/requests/forms/add-sierraleone.php:437
+#: tb/requests/forms/add-sierraleone.php:449
+#: tb/requests/forms/add-southsudan.php:125
+#: tb/requests/forms/add-southsudan.php:347
 #: tb/requests/forms/add-southsudan.php:353
-#: tb/requests/forms/add-southsudan.php:359
-#: tb/requests/forms/add-southsudan.php:364
-#: tb/requests/forms/edit-sierraleone.php:192
-#: tb/requests/forms/edit-sierraleone.php:466
-#: tb/requests/forms/edit-sierraleone.php:472
-#: tb/requests/forms/edit-sierraleone.php:476
-#: tb/requests/forms/edit-sierraleone.php:488
-#: tb/requests/forms/edit-southsudan.php:164
-#: tb/requests/forms/edit-southsudan.php:380
-#: tb/requests/forms/edit-southsudan.php:386
-#: tb/requests/forms/edit-southsudan.php:390
+#: tb/requests/forms/add-southsudan.php:358
+#: tb/requests/forms/edit-sierraleone.php:185
+#: tb/requests/forms/edit-sierraleone.php:459
+#: tb/requests/forms/edit-sierraleone.php:465
+#: tb/requests/forms/edit-sierraleone.php:469
+#: tb/requests/forms/edit-sierraleone.php:481
+#: tb/requests/forms/edit-southsudan.php:155
+#: tb/requests/forms/edit-southsudan.php:371
+#: tb/requests/forms/edit-southsudan.php:377
+#: tb/requests/forms/edit-southsudan.php:381
 #: tb/results/forms/update-sierraleone.php:171
 #: tb/results/forms/update-sierraleone.php:317
 #: tb/results/forms/update-sierraleone.php:381
@@ -8818,14 +8818,14 @@ msgstr "Date de réception de l'échantillon"
 #: tb/results/forms/update-southsudan.php:311
 #: tb/results/forms/update-southsudan.php:375
 #: tb/results/forms/update-southsudan.php:381 vl/requests/forms/add-drc.php:141
-#: vl/requests/forms/add-drc.php:258 vl/requests/forms/add-drc.php:283
-#: vl/requests/forms/add-drc.php:308 vl/requests/forms/add-drc.php:364
+#: vl/requests/forms/add-drc.php:287 vl/requests/forms/add-drc.php:312
+#: vl/requests/forms/add-drc.php:337 vl/requests/forms/add-drc.php:364
 #: vl/requests/forms/add-drc.php:400 vl/requests/forms/add-drc.php:423
 #: vl/requests/forms/add-drc.php:436 vl/requests/forms/add-sierraleone.php:828
 #: vl/requests/forms/add-southsudan.php:718 vl/requests/forms/add-who.php:687
-#: vl/requests/forms/edit-drc.php:117 vl/requests/forms/edit-drc.php:175
-#: vl/requests/forms/edit-drc.php:235 vl/requests/forms/edit-drc.php:297
-#: vl/requests/forms/edit-drc.php:324 vl/requests/forms/edit-drc.php:349
+#: vl/requests/forms/edit-drc.php:118 vl/requests/forms/edit-drc.php:176
+#: vl/requests/forms/edit-drc.php:236 vl/requests/forms/edit-drc.php:326
+#: vl/requests/forms/edit-drc.php:353 vl/requests/forms/edit-drc.php:378
 #: vl/requests/forms/edit-drc.php:405 vl/requests/forms/edit-drc.php:443
 #: vl/requests/forms/edit-drc.php:465 vl/requests/forms/edit-drc.php:477
 #: vl/requests/forms/edit-sierraleone.php:975
@@ -8844,54 +8844,54 @@ msgstr "Date de réception de l'échantillon"
 msgid "Please enter date"
 msgstr "Veuillez saisir la date"
 
-#: covid-19/requests/forms/add-cameroon.php:374
-#: covid-19/requests/forms/edit-cameroon.php:392
+#: covid-19/requests/forms/add-cameroon.php:369
+#: covid-19/requests/forms/edit-cameroon.php:385
 #: covid-19/results/forms/update-cameroon-result.php:346
 #: eid/results/forms/update-cameroon-result.php:506
 msgid "Please enter sample receipt date"
 msgstr "Veuillez indiquer la date de réception de l'échantillon"
 
-#: covid-19/requests/forms/add-cameroon.php:378
-#: covid-19/requests/forms/edit-cameroon.php:177
-#: covid-19/requests/forms/edit-cameroon.php:396
+#: covid-19/requests/forms/add-cameroon.php:373
+#: covid-19/requests/forms/edit-cameroon.php:170
+#: covid-19/requests/forms/edit-cameroon.php:389
 #: covid-19/results/forms/update-cameroon-result.php:350
 msgid "Please select Testing Testing Laboratory"
 msgstr "Veuillez sélectionner le laboratoire d'essais"
 
-#: covid-19/requests/forms/add-cameroon.php:384
-#: covid-19/requests/forms/edit-cameroon.php:402
+#: covid-19/requests/forms/add-cameroon.php:379
+#: covid-19/requests/forms/edit-cameroon.php:395
 #: covid-19/results/forms/update-cameroon-result.php:356
 msgid "Specimen Quality"
 msgstr "Qualité des échantillons"
 
-#: covid-19/requests/forms/add-cameroon.php:388
-#: covid-19/requests/forms/edit-cameroon.php:406
+#: covid-19/requests/forms/add-cameroon.php:383
+#: covid-19/requests/forms/edit-cameroon.php:399
 #: covid-19/results/forms/update-cameroon-result.php:360
 msgid "Good"
 msgstr "Bon"
 
-#: covid-19/requests/forms/add-cameroon.php:389
-#: covid-19/requests/forms/edit-cameroon.php:407
+#: covid-19/requests/forms/add-cameroon.php:384
+#: covid-19/requests/forms/edit-cameroon.php:400
 #: covid-19/results/forms/update-cameroon-result.php:361
 msgid "Poor"
 msgstr "Faible"
 
-#: covid-19/requests/forms/add-cameroon.php:392
-#: covid-19/requests/forms/edit-cameroon.php:410
+#: covid-19/requests/forms/add-cameroon.php:387
+#: covid-19/requests/forms/edit-cameroon.php:403
 #: covid-19/results/forms/update-cameroon-result.php:364
 msgid "Lab Technician"
 msgstr "Technicien de l’analyse"
 
-#: covid-19/requests/forms/add-cameroon.php:403
-#: covid-19/requests/forms/edit-cameroon.php:421
+#: covid-19/requests/forms/add-cameroon.php:398
+#: covid-19/requests/forms/edit-cameroon.php:414
 #: covid-19/results/forms/update-cameroon-result.php:375
 msgid "Please select a Testing Point"
 msgstr "Veuillez sélectionner un point de contrôle"
 
-#: covid-19/requests/forms/add-cameroon.php:408
-#: covid-19/requests/forms/add-drc.php:764
-#: covid-19/requests/forms/add-drc.php:766
-#: covid-19/requests/forms/edit-cameroon.php:426
+#: covid-19/requests/forms/add-cameroon.php:403
+#: covid-19/requests/forms/add-drc.php:755
+#: covid-19/requests/forms/add-drc.php:757
+#: covid-19/requests/forms/edit-cameroon.php:419
 #: covid-19/requests/forms/edit-drc.php:789
 #: covid-19/requests/forms/edit-drc.php:791
 #: covid-19/results/forms/update-cameroon-result.php:380
@@ -8908,8 +8908,8 @@ msgstr "Veuillez sélectionner un point de contrôle"
 msgid "Is Sample Rejected?"
 msgstr "L'échantillon est-il rejeté ?"
 
-#: covid-19/requests/forms/add-cameroon.php:417
-#: covid-19/requests/forms/edit-cameroon.php:435
+#: covid-19/requests/forms/add-cameroon.php:412
+#: covid-19/requests/forms/edit-cameroon.php:428
 #: covid-19/results/forms/update-cameroon-result.php:389
 #: eid/requests/forms/add-cameroon.php:532
 #: eid/requests/forms/edit-cameroon.php:552
@@ -8917,13 +8917,13 @@ msgstr "L'échantillon est-il rejeté ?"
 msgid "Reason for Rejection"
 msgstr "Motif du refus"
 
-#: covid-19/requests/forms/add-cameroon.php:419
-#: covid-19/requests/forms/edit-cameroon.php:437
+#: covid-19/requests/forms/add-cameroon.php:414
+#: covid-19/requests/forms/edit-cameroon.php:430
 msgid "Please select the Reason for Rejection"
 msgstr "Veuillez sélectionner le motif du refus"
 
-#: covid-19/requests/forms/add-cameroon.php:426
-#: covid-19/requests/forms/edit-cameroon.php:456
+#: covid-19/requests/forms/add-cameroon.php:421
+#: covid-19/requests/forms/edit-cameroon.php:449
 #: covid-19/results/forms/update-cameroon-result.php:410
 #: eid/requests/forms/add-cameroon.php:539
 #: eid/requests/forms/edit-cameroon.php:568
@@ -8935,8 +8935,8 @@ msgstr "Veuillez sélectionner le motif du refus"
 msgid "Rejection Date"
 msgstr "Date de rejet"
 
-#: covid-19/requests/forms/add-cameroon.php:427
-#: covid-19/requests/forms/edit-cameroon.php:457
+#: covid-19/requests/forms/add-cameroon.php:422
+#: covid-19/requests/forms/edit-cameroon.php:450
 #: covid-19/results/forms/update-cameroon-result.php:411
 #: eid/requests/forms/add-cameroon.php:540
 #: eid/requests/forms/edit-cameroon.php:569
@@ -8947,35 +8947,35 @@ msgstr "Date de rejet"
 msgid "Select Rejection Date"
 msgstr "Sélectionner la date de rejet"
 
-#: covid-19/requests/forms/add-cameroon.php:427
-#: covid-19/requests/forms/edit-cameroon.php:457
+#: covid-19/requests/forms/add-cameroon.php:422
+#: covid-19/requests/forms/edit-cameroon.php:450
 msgid "Please select the Rejection Date"
 msgstr "Veuillez sélectionner le statut"
 
-#: covid-19/requests/forms/add-cameroon.php:436
+#: covid-19/requests/forms/add-cameroon.php:431
 msgid "Test No"
 msgstr "Test Non"
 
-#: covid-19/requests/forms/add-cameroon.php:438
-#: covid-19/requests/forms/edit-cameroon.php:468
+#: covid-19/requests/forms/add-cameroon.php:433
+#: covid-19/requests/forms/edit-cameroon.php:461
 #: covid-19/results/forms/update-cameroon-result.php:422
 msgid "Date of Testing"
 msgstr "Date du test"
 
-#: covid-19/requests/forms/add-cameroon.php:439
-#: covid-19/requests/forms/edit-cameroon.php:469
+#: covid-19/requests/forms/add-cameroon.php:434
+#: covid-19/requests/forms/edit-cameroon.php:462
 #: covid-19/results/forms/update-cameroon-result.php:423
 msgid "Test Platform/Test Kit"
 msgstr "Plate-forme d'essai/kit d'essai"
 
-#: covid-19/requests/forms/add-cameroon.php:440
-#: covid-19/requests/forms/edit-cameroon.php:470
+#: covid-19/requests/forms/add-cameroon.php:435
+#: covid-19/requests/forms/edit-cameroon.php:463
 #: covid-19/results/forms/update-cameroon-result.php:424
 msgid "Kit Lot No"
 msgstr "Kit Lot No"
 
-#: covid-19/requests/forms/add-cameroon.php:441
-#: covid-19/requests/forms/edit-cameroon.php:471
+#: covid-19/requests/forms/add-cameroon.php:436
+#: covid-19/requests/forms/edit-cameroon.php:464
 #: covid-19/results/add-covid-19-qc-data.php:99
 #: covid-19/results/covid-19-qc-data.php:84
 #: covid-19/results/edit-covid-19-qc-data.php:116
@@ -8983,12 +8983,12 @@ msgstr "Kit Lot No"
 msgid "Expiry Date"
 msgstr "Date d'expiration"
 
-#: covid-19/requests/forms/add-cameroon.php:449
-#: covid-19/requests/forms/add-cameroon.php:458
-#: covid-19/requests/forms/edit-cameroon.php:491
-#: covid-19/requests/forms/edit-cameroon.php:499
-#: covid-19/requests/forms/edit-cameroon.php:989
-#: covid-19/requests/forms/edit-cameroon.php:998
+#: covid-19/requests/forms/add-cameroon.php:444
+#: covid-19/requests/forms/add-cameroon.php:453
+#: covid-19/requests/forms/edit-cameroon.php:484
+#: covid-19/requests/forms/edit-cameroon.php:492
+#: covid-19/requests/forms/edit-cameroon.php:982
+#: covid-19/requests/forms/edit-cameroon.php:991
 #: covid-19/results/forms/update-cameroon-result.php:445
 #: covid-19/results/forms/update-cameroon-result.php:453
 #: covid-19/results/forms/update-cameroon-result.php:802
@@ -8997,59 +8997,59 @@ msgid "Please enter the name of the Testkit (or) Test Method used"
 msgstr ""
 "Veuillez indiquer le nom du kit de test (ou de la méthode de test) utilisé(e)"
 
-#: covid-19/requests/forms/add-cameroon.php:587 facilities/addFacility.php:101
+#: covid-19/requests/forms/add-cameroon.php:582 facilities/addFacility.php:101
 #: facilities/editFacility.php:164
 msgid "Please enter facility name"
 msgstr "Veuillez saisir le nom de l'établissement"
 
-#: covid-19/requests/forms/add-cameroon.php:595 facilities/addFacility.php:113
+#: covid-19/requests/forms/add-cameroon.php:590 facilities/addFacility.php:113
 #: facilities/editFacility.php:173
 msgid "Please enter facility code"
 msgstr "Veuillez saisir le code de l'établissement"
 
-#: covid-19/requests/forms/add-cameroon.php:604
-#: covid-19/requests/forms/add-cameroon.php:606
+#: covid-19/requests/forms/add-cameroon.php:599
+#: covid-19/requests/forms/add-cameroon.php:601
 msgid "Other ID"
 msgstr "Autre ID"
 
-#: covid-19/requests/forms/add-cameroon.php:607 facilities/addFacility.php:136
+#: covid-19/requests/forms/add-cameroon.php:602 facilities/addFacility.php:136
 #: facilities/editFacility.php:191 facilities/facilities.php:73
 #: users/addUser.php:231 users/editUser.php:310
 msgid "Please select facility type"
 msgstr "Veuillez sélectionner le type d'établissement"
 
-#: covid-19/requests/forms/add-cameroon.php:613 facilities/addFacility.php:157
+#: covid-19/requests/forms/add-cameroon.php:608 facilities/addFacility.php:157
 #: facilities/editFacility.php:210
 msgid "Email(s)"
 msgstr "Email(s)"
 
-#: covid-19/requests/forms/add-cameroon.php:615 facilities/addFacility.php:162
+#: covid-19/requests/forms/add-cameroon.php:610 facilities/addFacility.php:162
 #: facilities/editFacility.php:212
 msgid "eg-email1@gmail.com,email2@gmail.com"
 msgstr "eg-email1@gmail.com,email2@gmail.com"
 
-#: covid-19/requests/forms/add-cameroon.php:625 facilities/addFacility.php:197
+#: covid-19/requests/forms/add-cameroon.php:620 facilities/addFacility.php:197
 #: facilities/editFacility.php:233
 msgid "Testing Point(s)"
 msgstr "Point(s) de contrôle"
 
-#: covid-19/requests/forms/add-cameroon.php:625 facilities/addFacility.php:158
+#: covid-19/requests/forms/add-cameroon.php:620 facilities/addFacility.php:158
 #: facilities/addFacility.php:198 facilities/editFacility.php:210
 #: facilities/editFacility.php:233
 msgid "(comma separated)"
 msgstr "(séparés par des virgules)"
 
-#: covid-19/requests/forms/add-cameroon.php:627 facilities/addFacility.php:202
+#: covid-19/requests/forms/add-cameroon.php:622 facilities/addFacility.php:202
 #: facilities/editFacility.php:240
 msgid "eg. VCT, PMTCT"
 msgstr "eg. VCT, PMTCT"
 
-#: covid-19/requests/forms/add-cameroon.php:633
-#: covid-19/requests/forms/add-cameroon.php:635
+#: covid-19/requests/forms/add-cameroon.php:628
+#: covid-19/requests/forms/add-cameroon.php:630
 msgid "Contact Person"
 msgstr "Personne à contacter"
 
-#: covid-19/requests/forms/add-cameroon.php:646
+#: covid-19/requests/forms/add-cameroon.php:641
 #: covid-19/results/email-results.php:211 eid/results/email-results.php:208
 #: facilities/addFacility.php:238 facilities/editFacility.php:271
 #: generic-tests/results/email-results.php:211
@@ -9059,118 +9059,118 @@ msgstr "Personne à contacter"
 msgid "Please choose province/state"
 msgstr "Veuillez choisir la province ou l'État"
 
-#: covid-19/requests/forms/add-cameroon.php:657 facilities/addFacility.php:244
+#: covid-19/requests/forms/add-cameroon.php:652 facilities/addFacility.php:244
 #: facilities/addFacility.php:247 facilities/editFacility.php:275
 #: facilities/editFacility.php:279 hepatitis/requests/hepatitis-dhis2.php:129
 msgid "Enter Province/State"
 msgstr "Saisir la province ou l'État"
 
-#: covid-19/requests/forms/add-cameroon.php:657 facilities/addFacility.php:244
+#: covid-19/requests/forms/add-cameroon.php:652 facilities/addFacility.php:244
 #: facilities/addFacility.php:247 facilities/editFacility.php:275
 #: facilities/editFacility.php:279
 msgid "Please enter province/state"
 msgstr "Veuillez indiquer la province ou l'état"
 
-#: covid-19/requests/forms/add-cameroon.php:673
+#: covid-19/requests/forms/add-cameroon.php:668
 msgid "Linked Hub Name (If Applicable)"
 msgstr "Nom du centre de liaison (le cas échéant)"
 
-#: covid-19/requests/forms/add-cameroon.php:675 facilities/addFacility.php:281
+#: covid-19/requests/forms/add-cameroon.php:670 facilities/addFacility.php:281
 #: facilities/editFacility.php:308
 msgid "Hub Name"
 msgstr "Nom du Hub"
 
-#: covid-19/requests/forms/add-cameroon.php:675 facilities/addFacility.php:281
+#: covid-19/requests/forms/add-cameroon.php:670 facilities/addFacility.php:281
 #: facilities/editFacility.php:308
 msgid "Please enter hub name"
 msgstr "Veuillez saisir le nom du hub"
 
-#: covid-19/requests/forms/add-cameroon.php:683 facilities/editFacility.php:299
+#: covid-19/requests/forms/add-cameroon.php:678 facilities/editFacility.php:299
 msgid "Please enter district/county"
 msgstr "District"
 
-#: covid-19/requests/forms/add-cameroon.php:692 facilities/addFacility.php:301
+#: covid-19/requests/forms/add-cameroon.php:687 facilities/addFacility.php:301
 #: facilities/addFacility.php:304 facilities/editFacility.php:326
 #: facilities/editFacility.php:328
 msgid "Country"
 msgstr "Pays"
 
-#: covid-19/requests/forms/add-cameroon.php:711
-#: covid-19/requests/forms/add-cameroon.php:713 facilities/addFacility.php:314
+#: covid-19/requests/forms/add-cameroon.php:706
+#: covid-19/requests/forms/add-cameroon.php:708 facilities/addFacility.php:314
 #: facilities/addFacility.php:317 facilities/editFacility.php:337
-#: facilities/editFacility.php:339 instruments/add-instrument.php:452
-#: instruments/add-instrument.php:602 instruments/edit-instrument.php:521
-#: instruments/edit-instrument.php:553 instruments/edit-instrument.php:672
+#: facilities/editFacility.php:339 instruments/add-instrument.php:464
+#: instruments/add-instrument.php:614 instruments/edit-instrument.php:533
+#: instruments/edit-instrument.php:565 instruments/edit-instrument.php:684
 msgid "Latitude"
 msgstr "Latitude"
 
-#: covid-19/requests/forms/add-cameroon.php:713 facilities/addFacility.php:317
+#: covid-19/requests/forms/add-cameroon.php:708 facilities/addFacility.php:317
 #: facilities/editFacility.php:339
 msgid "Please enter latitude"
 msgstr "Latitude"
 
-#: covid-19/requests/forms/add-cameroon.php:719
-#: covid-19/requests/forms/add-cameroon.php:721 facilities/addFacility.php:324
+#: covid-19/requests/forms/add-cameroon.php:714
+#: covid-19/requests/forms/add-cameroon.php:716 facilities/addFacility.php:324
 #: facilities/addFacility.php:327 facilities/editFacility.php:346
-#: facilities/editFacility.php:348 instruments/add-instrument.php:455
-#: instruments/add-instrument.php:605 instruments/edit-instrument.php:524
-#: instruments/edit-instrument.php:556 instruments/edit-instrument.php:675
+#: facilities/editFacility.php:348 instruments/add-instrument.php:467
+#: instruments/add-instrument.php:617 instruments/edit-instrument.php:536
+#: instruments/edit-instrument.php:568 instruments/edit-instrument.php:687
 msgid "Longitude"
 msgstr "Longitude"
 
-#: covid-19/requests/forms/add-cameroon.php:721 facilities/addFacility.php:327
+#: covid-19/requests/forms/add-cameroon.php:716 facilities/addFacility.php:327
 #: facilities/editFacility.php:348
 msgid "Please enter longitude"
 msgstr "Veuillez saisir la longitude"
 
-#: covid-19/requests/forms/add-cameroon.php:743
+#: covid-19/requests/forms/add-cameroon.php:738
 msgid "Close"
 msgstr "Fermer"
 
-#: covid-19/requests/forms/add-cameroon.php:1057
-#: covid-19/requests/forms/edit-cameroon.php:917
+#: covid-19/requests/forms/add-cameroon.php:1052
+#: covid-19/requests/forms/edit-cameroon.php:910
 #: eid/requests/forms/add-cameroon.php:856
 #: vl/requests/forms/add-cameroon.php:806
 msgid "Select Reviewed By"
 msgstr "Sélectionner Révisé par"
 
-#: covid-19/requests/forms/add-cameroon.php:1060
-#: covid-19/requests/forms/edit-cameroon.php:931
+#: covid-19/requests/forms/add-cameroon.php:1055
+#: covid-19/requests/forms/edit-cameroon.php:924
 #: eid/requests/forms/add-cameroon.php:850
 #: vl/requests/forms/add-cameroon.php:800
 msgid "Select Clinic/Health Center"
 msgstr "Sélectionner une clinique/un centre de santé"
 
-#: covid-19/requests/forms/add-cameroon.php:1063
-#: covid-19/requests/forms/edit-cameroon.php:935
+#: covid-19/requests/forms/add-cameroon.php:1058
+#: covid-19/requests/forms/edit-cameroon.php:928
 msgid "Select Lab Technician"
 msgstr "Sélectionner le technicien de laboratoire"
 
-#: covid-19/requests/forms/add-cameroon.php:1067
-#: covid-19/requests/forms/edit-cameroon.php:923
+#: covid-19/requests/forms/add-cameroon.php:1062
+#: covid-19/requests/forms/edit-cameroon.php:916
 msgid "Select Nationality"
 msgstr "Sélectionner la nationalité"
 
-#: covid-19/requests/forms/add-cameroon.php:1071
-#: covid-19/requests/forms/edit-cameroon.php:927
+#: covid-19/requests/forms/add-cameroon.php:1066
+#: covid-19/requests/forms/edit-cameroon.php:920
 msgid "Select Case State"
 msgstr "Sélectionner l'état de l'affaire"
 
-#: covid-19/requests/forms/add-cameroon.php:1075
-#: covid-19/requests/forms/edit-cameroon.php:939
+#: covid-19/requests/forms/add-cameroon.php:1070
+#: covid-19/requests/forms/edit-cameroon.php:932
 msgid "Select Authorized By"
 msgstr "Sélectionner Autorisé par"
 
 #: covid-19/requests/forms/add-drc.php:186
-#: covid-19/requests/forms/edit-drc.php:222 eid/requests/forms/add-drc.php:169
-#: eid/requests/forms/edit-drc.php:183 vl/requests/forms/add-drc.php:170
-#: vl/requests/forms/add-drc.php:192 vl/requests/forms/edit-drc.php:212
-#: vl/requests/forms/edit-drc.php:231
+#: covid-19/requests/forms/edit-drc.php:222 eid/requests/forms/add-drc.php:173
+#: eid/requests/forms/edit-drc.php:188 vl/requests/forms/add-drc.php:170
+#: vl/requests/forms/add-drc.php:192 vl/requests/forms/edit-drc.php:213
+#: vl/requests/forms/edit-drc.php:232
 #: vl/results/forms/update-drc-result.php:187
 msgid "Please enter the Patient ID"
 msgstr "No Patient"
 
-#: covid-19/requests/forms/add-drc.php:1261
+#: covid-19/requests/forms/add-drc.php:1252
 msgid "Please enter Patient Age or Date of Birth"
 msgstr "Veuillez saisir l'âge ou la date de naissance du patient"
 
@@ -9179,22 +9179,22 @@ msgstr "Veuillez saisir l'âge ou la date de naissance du patient"
 msgid "WHO COVID-19 VIRUS LABORATORY TEST REQUEST FORM"
 msgstr "COVID-19-FORMULAIRE DE DEMANDE DE TEST DE LABORATOIRE DE L'OMS"
 
-#: covid-19/requests/forms/edit-cameroon.php:97
+#: covid-19/requests/forms/edit-cameroon.php:90
 #: covid-19/results/forms/update-cameroon-result.php:96
 msgid "Edit Request"
 msgstr "Modifier la demande"
 
-#: covid-19/requests/forms/edit-cameroon.php:130
+#: covid-19/requests/forms/edit-cameroon.php:123
 #: covid-19/results/forms/update-cameroon-result.php:130
 msgid "Please enter Sample ID"
 msgstr "Veuillez saisir l'ID de l'échantillon"
 
-#: covid-19/requests/forms/edit-cameroon.php:161
+#: covid-19/requests/forms/edit-cameroon.php:154
 #: covid-19/results/forms/update-cameroon-result.php:161
 msgid "Please choose County"
 msgstr "Veuillez choisir le comté"
 
-#: covid-19/requests/forms/edit-cameroon.php:167
+#: covid-19/requests/forms/edit-cameroon.php:160
 #: covid-19/results/forms/update-cameroon-result.php:167
 #: eid/requests/forms/add-drc.php:114 eid/requests/forms/edit-drc.php:131
 #: eid/results/forms/update-drc-result.php:113
@@ -9202,37 +9202,37 @@ msgstr "Veuillez choisir le comté"
 msgid "Please choose facility"
 msgstr "Veuillez choisir un établissement"
 
-#: covid-19/requests/forms/edit-cameroon.php:237
+#: covid-19/requests/forms/edit-cameroon.php:230
 #: covid-19/results/forms/update-cameroon-result.php:214
 msgid "Identification"
 msgstr "Identification"
 
-#: covid-19/requests/forms/edit-cameroon.php:237
+#: covid-19/requests/forms/edit-cameroon.php:230
 #: covid-19/results/forms/update-cameroon-result.php:214
 msgid "Please enter ID"
 msgstr "Veuillez saisir l'ID"
 
-#: covid-19/requests/forms/edit-cameroon.php:245
+#: covid-19/requests/forms/edit-cameroon.php:238
 #: covid-19/results/forms/update-cameroon-result.php:204
 msgid "Please enter Case first name"
 msgstr "Veuillez saisir le prénom du cas"
 
-#: covid-19/requests/forms/edit-cameroon.php:249
+#: covid-19/requests/forms/edit-cameroon.php:242
 #: covid-19/results/forms/update-cameroon-result.php:208
 msgid "Please enter Case last name"
 msgstr "Veuillez saisir le nom de famille de l'affaire"
 
-#: covid-19/requests/forms/edit-cameroon.php:257
+#: covid-19/requests/forms/edit-cameroon.php:250
 #: covid-19/results/forms/update-cameroon-result.php:222
 msgid "Case Age (years)"
 msgstr "Cas Âge (années)"
 
-#: covid-19/requests/forms/edit-cameroon.php:258
+#: covid-19/requests/forms/edit-cameroon.php:251
 #: covid-19/results/forms/update-cameroon-result.php:223
 msgid "Age (in years)"
 msgstr "Âge (en années)"
 
-#: covid-19/requests/forms/edit-cameroon.php:258
+#: covid-19/requests/forms/edit-cameroon.php:251
 #: covid-19/requests/patientModal.php:80
 #: covid-19/results/forms/update-cameroon-result.php:223
 #: eid/requests/forms/add-cameroon.php:207
@@ -9241,26 +9241,26 @@ msgstr "Âge (en années)"
 #: tb/requests/patientModal.php:82
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27 vl/requests/patientModal.php:106
+#: vl/requests/export-vl-requests.php:27 vl/requests/patientModal.php:107
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:246
 msgid "Age"
 msgstr "Age"
 
-#: covid-19/requests/forms/edit-cameroon.php:275
+#: covid-19/requests/forms/edit-cameroon.php:268
 #: covid-19/results/forms/update-cameroon-result.php:239
 msgid "Case address"
 msgstr "Adresse du dossier"
 
-#: covid-19/requests/forms/edit-cameroon.php:278
+#: covid-19/requests/forms/edit-cameroon.php:271
 #: covid-19/results/forms/update-cameroon-result.php:243
 msgid "Case State"
 msgstr "État de l'affaire"
 
-#: covid-19/requests/forms/edit-cameroon.php:288
+#: covid-19/requests/forms/edit-cameroon.php:281
 msgid "Please Case County"
 msgstr "Case County"
 
-#: covid-19/requests/forms/edit-cameroon.php:322
+#: covid-19/requests/forms/edit-cameroon.php:315
 #: covid-19/results/forms/update-cameroon-result.php:278
 msgid ""
 "All samples must be sent in accordance with category B transport "
@@ -9269,67 +9269,67 @@ msgstr ""
 "Tous les échantillons doivent être envoyés conformément aux exigences de "
 "transport de la catégorie B."
 
-#: covid-19/requests/forms/edit-cameroon.php:404
+#: covid-19/requests/forms/edit-cameroon.php:397
 #: covid-19/results/forms/update-cameroon-result.php:358
 msgid "Please enter the specimen quality"
 msgstr "Veuillez indiquer la qualité de l'échantillon"
 
-#: covid-19/requests/forms/edit-cameroon.php:412
+#: covid-19/requests/forms/edit-cameroon.php:405
 #: covid-19/results/forms/update-cameroon-result.php:366
 msgid "Please select a Lab Technician"
 msgstr "Veuillez sélectionner un technicien de laboratoire"
 
-#: covid-19/requests/forms/edit-cameroon.php:466
+#: covid-19/requests/forms/edit-cameroon.php:459
 #: covid-19/results/forms/update-cameroon-result.php:420
 msgid "Test No."
 msgstr "Test No."
 
-#: covid-19/requests/forms/edit-cameroon.php:499
+#: covid-19/requests/forms/edit-cameroon.php:492
 msgid "Enter Test Method used"
 msgstr "Indiquer la méthode d'essai utilisée"
 
-#: covid-19/requests/forms/edit-cameroon.php:501
-#: covid-19/requests/forms/edit-cameroon.php:1000
+#: covid-19/requests/forms/edit-cameroon.php:494
+#: covid-19/requests/forms/edit-cameroon.php:993
 #: covid-19/results/add-covid-19-qc-data.php:172
 #: covid-19/results/edit-covid-19-qc-data.php:188
 #: covid-19/results/forms/update-cameroon-result.php:455
 msgid "Tested on"
 msgstr "Nombre d'échantillons testés"
 
-#: covid-19/requests/forms/edit-cameroon.php:510
+#: covid-19/requests/forms/edit-cameroon.php:503
 #: covid-19/results/forms/update-cameroon-result.php:464
 msgid "Abbott Panbio™ COVID-19 Ag Test"
 msgstr "Abbott Panbio™ COVID-19 Ag Test"
 
-#: covid-19/requests/forms/edit-cameroon.php:511
+#: covid-19/requests/forms/edit-cameroon.php:504
 #: covid-19/results/forms/update-cameroon-result.php:465
 msgid "STANDARD™ Q COVID-19 Ag Test"
 msgstr "STANDARD™ Q COVID-19 Ag Test"
 
-#: covid-19/requests/forms/edit-cameroon.php:512
+#: covid-19/requests/forms/edit-cameroon.php:505
 #: covid-19/results/forms/update-cameroon-result.php:466
 msgid "LumiraDx ™ SARS-CoV-2 Ag Test"
 msgstr "LumiraDx ™ SARS-CoV-2 Ag Test"
 
-#: covid-19/requests/forms/edit-cameroon.php:513
+#: covid-19/requests/forms/edit-cameroon.php:506
 #: covid-19/results/forms/update-cameroon-result.php:467
 msgid "Sure Status® COVID-19 Antigen Card Test"
 msgstr "Carte de test de l'antigène COVID-19 Sure Status"
 
-#: covid-19/requests/forms/edit-cameroon.php:520
-#: covid-19/requests/forms/edit-cameroon.php:1002
+#: covid-19/requests/forms/edit-cameroon.php:513
+#: covid-19/requests/forms/edit-cameroon.php:995
 #: covid-19/results/forms/update-cameroon-result.php:475
 #: covid-19/results/forms/update-cameroon-result.php:815
 msgid "Kit lot no"
 msgstr "Numéro de lot du kit"
 
-#: covid-19/requests/forms/edit-cameroon.php:520
+#: covid-19/requests/forms/edit-cameroon.php:513
 #: covid-19/results/forms/update-cameroon-result.php:475
 msgid "Please enter the kit lot no. for row 1"
 msgstr "Veuillez saisir le numéro de lot du kit pour la ligne 1"
 
-#: covid-19/requests/forms/edit-cameroon.php:521
-#: covid-19/requests/forms/edit-cameroon.php:1003
+#: covid-19/requests/forms/edit-cameroon.php:514
+#: covid-19/requests/forms/edit-cameroon.php:996
 #: covid-19/results/add-covid-19-qc-data.php:101
 #: covid-19/results/edit-covid-19-qc-data.php:118
 #: covid-19/results/forms/update-cameroon-result.php:478
@@ -9337,16 +9337,16 @@ msgstr "Veuillez saisir le numéro de lot du kit pour la ligne 1"
 msgid "Expiry date"
 msgstr "Date d'expiration"
 
-#: covid-19/requests/forms/edit-cameroon.php:521
+#: covid-19/requests/forms/edit-cameroon.php:514
 #: covid-19/results/forms/update-cameroon-result.php:478
 msgid "Please enter the expiry date for row 1"
 msgstr "Veuillez saisir la date d'expiration de la ligne 1"
 
-#: covid-19/requests/forms/edit-cameroon.php:541
+#: covid-19/requests/forms/edit-cameroon.php:534
 msgid "Final Result"
 msgstr "Résultat final"
 
-#: covid-19/requests/forms/edit-cameroon.php:556
+#: covid-19/requests/forms/edit-cameroon.php:549
 #: covid-19/results/forms/update-cameroon-result.php:512
 #: eid/requests/forms/add-cameroon.php:562
 #: eid/requests/forms/edit-cameroon.php:591
@@ -9359,7 +9359,7 @@ msgstr "Résultat final"
 msgid "Reviewed By"
 msgstr "Révisé par"
 
-#: covid-19/requests/forms/edit-cameroon.php:558
+#: covid-19/requests/forms/edit-cameroon.php:551
 #: covid-19/results/forms/update-cameroon-result.php:514
 #: eid/requests/forms/add-cameroon.php:564
 #: eid/requests/forms/edit-cameroon.php:593
@@ -9369,7 +9369,7 @@ msgstr "Révisé par"
 msgid "Please choose reviewed by"
 msgstr "Veuillez choisir examiné par"
 
-#: covid-19/requests/forms/edit-cameroon.php:563
+#: covid-19/requests/forms/edit-cameroon.php:556
 #: covid-19/results/forms/update-cameroon-result.php:519
 #: eid/requests/forms/add-cameroon.php:561
 #: eid/requests/forms/edit-cameroon.php:590
@@ -9380,7 +9380,7 @@ msgstr "Veuillez choisir examiné par"
 msgid "Reviewed on"
 msgstr "Examiné le"
 
-#: covid-19/requests/forms/edit-cameroon.php:563
+#: covid-19/requests/forms/edit-cameroon.php:556
 #: covid-19/results/forms/update-cameroon-result.php:519
 #: eid/requests/forms/add-cameroon.php:561
 #: eid/results/forms/update-cameroon-result.php:565
@@ -9390,7 +9390,7 @@ msgstr "Examiné le"
 msgid "Please enter the Reviewed on"
 msgstr "Veuillez saisir le statut de l'échantillon"
 
-#: covid-19/requests/forms/edit-cameroon.php:568
+#: covid-19/requests/forms/edit-cameroon.php:561
 #: covid-19/results/forms/update-cameroon-result.php:524
 #: eid/requests/forms/add-cameroon.php:574
 #: eid/results/forms/update-cameroon-result.php:578
@@ -9398,72 +9398,72 @@ msgstr "Veuillez saisir le statut de l'échantillon"
 msgid "Please choose approved by"
 msgstr "Veuillez choisir approuvé par"
 
-#: covid-19/requests/forms/edit-cameroon.php:572
+#: covid-19/requests/forms/edit-cameroon.php:565
 #: covid-19/results/forms/update-cameroon-result.php:528
 #: eid/requests/forms/edit-cameroon.php:609
 #: eid/results/forms/update-cameroon-result.php:584
 msgid "Reason for Changing"
 msgstr "Raison du changement"
 
-#: covid-19/requests/forms/edit-cameroon.php:573
+#: covid-19/requests/forms/edit-cameroon.php:566
 #: covid-19/results/forms/update-cameroon-result.php:529
 #: eid/requests/forms/edit-cameroon.php:610
 #: eid/results/forms/update-cameroon-result.php:585
 msgid "Enter the reason for changing"
 msgstr "Indiquer le motif de la modification"
 
-#: covid-19/requests/forms/edit-cameroon.php:573
+#: covid-19/requests/forms/edit-cameroon.php:566
 #: covid-19/results/forms/update-cameroon-result.php:529
 #: eid/requests/forms/edit-cameroon.php:610
 #: eid/results/forms/update-cameroon-result.php:585
 msgid "Please enter the reason for changing"
 msgstr "Veuillez indiquer la raison du changement"
 
-#: covid-19/requests/forms/edit-cameroon.php:576
+#: covid-19/requests/forms/edit-cameroon.php:569
 #: covid-19/results/forms/update-cameroon-result.php:532
 msgid "Is Result Authorized ?"
 msgstr "Le résultat est-il autorisé ?"
 
-#: covid-19/requests/forms/edit-cameroon.php:578
+#: covid-19/requests/forms/edit-cameroon.php:571
 #: covid-19/results/forms/update-cameroon-result.php:534
 msgid "Is Result authorized ?"
 msgstr "Le résultat est-il autorisé ?"
 
-#: covid-19/requests/forms/edit-cameroon.php:587
+#: covid-19/requests/forms/edit-cameroon.php:580
 #: covid-19/results/forms/update-cameroon-result.php:540
 msgid "Authorized By"
 msgstr "Autorisé par"
 
-#: covid-19/requests/forms/edit-cameroon.php:589
+#: covid-19/requests/forms/edit-cameroon.php:582
 #: covid-19/results/forms/update-cameroon-result.php:542
 msgid "Please choose authorized by"
 msgstr "Veuillez choisir autorisé par"
 
-#: covid-19/requests/forms/edit-cameroon.php:595
-#: covid-19/requests/forms/edit-cameroon.php:596
+#: covid-19/requests/forms/edit-cameroon.php:588
+#: covid-19/requests/forms/edit-cameroon.php:589
 #: covid-19/results/forms/update-cameroon-result.php:548
 #: covid-19/results/forms/update-cameroon-result.php:549
 msgid "Authorized on"
 msgstr "Autorisé le"
 
-#: covid-19/requests/forms/edit-cameroon.php:596
+#: covid-19/requests/forms/edit-cameroon.php:589
 msgid "Please select the Authorized On"
 msgstr "Veuillez sélectionner la personne autorisée le"
 
-#: covid-19/requests/forms/edit-cameroon.php:1000
+#: covid-19/requests/forms/edit-cameroon.php:993
 msgid "Please enter the tested on for row"
 msgstr "Veuillez saisir la valeur testée pour la ligne"
 
-#: covid-19/requests/forms/edit-cameroon.php:1001
+#: covid-19/requests/forms/edit-cameroon.php:994
 msgid "Please select the Testing Platform for"
 msgstr "Veuillez sélectionner la plate-forme de test pour"
 
-#: covid-19/requests/forms/edit-cameroon.php:1002
+#: covid-19/requests/forms/edit-cameroon.php:995
 #: covid-19/results/forms/update-cameroon-result.php:815
 msgid "Please enter the kit lot no. for row"
 msgstr "Veuillez saisir le numéro de lot du kit pour la rangée"
 
-#: covid-19/requests/forms/edit-cameroon.php:1003
+#: covid-19/requests/forms/edit-cameroon.php:996
 #: covid-19/results/forms/update-cameroon-result.php:816
 msgid "Please enter the expiry date for row"
 msgstr "Veuillez saisir la date d'expiration de la rangée"
@@ -9476,51 +9476,51 @@ msgstr "Voir la demande"
 msgid "Update Request"
 msgstr "Mettre à jour la demande"
 
-#: covid-19/requests/get-request-list.php:321
+#: covid-19/requests/get-request-list.php:311
 #: covid-19/results/covid-19-samples-for-manual-result-entry.php:245
-#: eid/requests/get-request-list.php:336
+#: eid/requests/get-request-list.php:326
 #: eid/results/eid-samples-for-manual-result-entry.php:233
-#: generic-tests/results/get-generic-test-result-details.php:306
+#: generic-tests/results/get-generic-test-result-details.php:296
 #: generic-tests/results/get-manual-results.php:288
-#: hepatitis/requests/get-request-list.php:287
+#: hepatitis/requests/get-request-list.php:279
 #: hepatitis/results/hepatitis-samples-for-manual-result-entry.php:246
-#: tb/requests/get-request-list.php:293
+#: tb/requests/get-request-list.php:283
 #: tb/results/tb-samples-for-manual-result-entry.php:231
-#: vl/requests/get-request-list.php:353 vl/results/get-manual-results.php:280
-#: vl/results/getVlTestResultDetails.php:225
+#: vl/requests/get-request-list.php:353 vl/results/get-manual-results.php:273
+#: vl/results/getVlTestResultDetails.php:223
 msgid "Locked"
 msgstr "Verrouillé"
 
-#: covid-19/requests/get-request-list.php:329
-#: eid/requests/get-request-list.php:343
-#: hepatitis/requests/get-request-list.php:294
-#: tb/requests/get-request-list.php:301 vl/requests/get-request-list.php:364
+#: covid-19/requests/get-request-list.php:319
+#: eid/requests/get-request-list.php:333
+#: hepatitis/requests/get-request-list.php:286
+#: tb/requests/get-request-list.php:291 vl/requests/get-request-list.php:364
 msgid "Sync Sample"
 msgstr "Échantillon de synchronisation"
 
-#: covid-19/requests/get-request-list.php:329
-#: eid/requests/get-request-list.php:343
-#: hepatitis/requests/get-request-list.php:294
-#: tb/requests/get-request-list.php:301 vl/requests/get-request-list.php:364
+#: covid-19/requests/get-request-list.php:319
+#: eid/requests/get-request-list.php:333
+#: hepatitis/requests/get-request-list.php:286
+#: tb/requests/get-request-list.php:291 vl/requests/get-request-list.php:364
 msgid "Sync"
 msgstr "Synchroniser"
 
-#: covid-19/requests/get-request-list.php:337
-#: eid/requests/get-request-list.php:351
-#: hepatitis/requests/get-request-list.php:299
-#: tb/requests/get-request-list.php:309 vl/requests/get-request-list.php:359
+#: covid-19/requests/get-request-list.php:327
+#: eid/requests/get-request-list.php:341
+#: hepatitis/requests/get-request-list.php:291
+#: tb/requests/get-request-list.php:299 vl/requests/get-request-list.php:359
 msgid "Barcode"
 msgstr "Code barre"
 
 #: covid-19/requests/patientModal.php:71 eid/requests/patientModal.php:90
 #: generic-tests/requests/patientModal.php:97 tb/requests/patientModal.php:73
-#: vl/requests/facilitiesModal.php:101 vl/requests/patientModal.php:97
+#: vl/requests/facilitiesModal.php:101 vl/requests/patientModal.php:98
 msgid "Select"
 msgstr "Sélectionner"
 
 #: covid-19/requests/patientModal.php:89 eid/requests/patientModal.php:108
 #: generic-tests/requests/patientModal.php:115 tb/requests/patientModal.php:91
-#: vl/requests/patientModal.php:115
+#: vl/requests/patientModal.php:116
 msgid "Date and Time"
 msgstr "Date et Heure"
 
@@ -10006,7 +10006,7 @@ msgstr "Dernière date de modification"
 #: covid-19/results/covid-19-result-status.php:394
 #: generic-tests/requests/view-requests.php:493
 #: hepatitis/results/hepatitis-result-status.php:396
-#: tb/results/tb-result-status.php:391 vl/requests/vl-requests.php:1094
+#: tb/results/tb-result-status.php:391 vl/requests/vl-requests.php:1103
 msgid "Do you wish to change the test status ?"
 msgstr "Souhaitez-vous modifier le statut du test ?"
 
@@ -10034,12 +10034,12 @@ msgstr "Souhaitez-vous modifier le statut ?"
 
 #: covid-19/results/covid-19-samples-for-manual-result-entry.php:242
 #: eid/results/eid-samples-for-manual-result-entry.php:230
-#: generic-tests/results/get-generic-test-result-details.php:303
+#: generic-tests/results/get-generic-test-result-details.php:293
 #: generic-tests/results/get-manual-results.php:285
 #: hepatitis/results/hepatitis-samples-for-manual-result-entry.php:243
 #: tb/results/tb-samples-for-manual-result-entry.php:228
-#: vl/results/get-manual-results.php:277
-#: vl/results/getVlTestResultDetails.php:222
+#: vl/results/get-manual-results.php:270
+#: vl/results/getVlTestResultDetails.php:220
 msgid "Enter Result"
 msgstr "Saisir le résultat"
 
@@ -10546,12 +10546,12 @@ msgstr "Retester"
 
 #: covid-19/results/get-results-for-print.php:256
 #: eid/results/get-results-for-print.php:274
-#: generic-tests/results/get-generic-test-result-details.php:301
+#: generic-tests/results/get-generic-test-result-details.php:291
 #: generic-tests/results/get-manual-results.php:283
 #: hepatitis/results/get-results-for-print.php:282
 #: tb/results/get-results-for-print.php:275
-#: vl/results/get-manual-results.php:275
-#: vl/results/getVlTestResultDetails.php:220
+#: vl/results/get-manual-results.php:268
+#: vl/results/getVlTestResultDetails.php:218
 msgid "Print"
 msgstr "Imprimer"
 
@@ -10984,11 +10984,11 @@ msgstr "Nom de la mère"
 msgid "Please enter the manifest code then submit"
 msgstr "Veuillez saisir le code manifeste puis soumettre"
 
-#: eid/requests/eid-add-request-helper.php:452
+#: eid/requests/eid-add-request-helper.php:462
 msgid "EID request added successfully"
 msgstr "Demande d'EID ajoutée avec succès"
 
-#: eid/requests/eid-edit-request-helper.php:470
+#: eid/requests/eid-edit-request-helper.php:480
 msgid "EID request updated successfully"
 msgstr "La demande d'EID a été mise à jour avec succès"
 
@@ -11857,7 +11857,7 @@ msgstr "Code d'Erreur"
 msgid "Go to Dashboard"
 msgstr "Aller au tableau de bord"
 
-#: error/error.php:94 footer.php:20
+#: error/error.php:94 footer.php:37
 msgid ""
 "This project is supported by the U.S. President's Emergency Plan for AIDS "
 "Relief (PEPFAR) through the U.S.\n"
@@ -12254,16 +12254,16 @@ msgstr "Facility Mapped to Selected Test Type successfully"
 msgid "No Facility Mapped to Selected Test Type"
 msgstr "Aucune installation n'est associée au type de test sélectionné"
 
-#: facilities/upload-facilities-helper.php:68
-#: facilities/upload-facilities-helper.php:81
+#: facilities/upload-facilities-helper.php:64
+#: facilities/upload-facilities-helper.php:71
 msgid "Please enter all the mandatory fields in the excel sheet"
 msgstr "Veuillez saisir tous les champs obligatoires dans la feuille Excel"
 
-#: facilities/upload-facilities-helper.php:171
+#: facilities/upload-facilities-helper.php:160
 msgid "Facilities added successfully"
 msgstr "Des installations ajoutées avec succès"
 
-#: facilities/upload-facilities-helper.php:173
+#: facilities/upload-facilities-helper.php:162
 msgid "Bulk Facility Import Failed"
 msgstr "Échec de l'importation de l'installation en vrac"
 
@@ -12320,41 +12320,41 @@ msgstr ""
 "Cliquez ici pour télécharger le format Excel permettant de télécharger des "
 "installations en masse"
 
-#: footer.php:35
+#: footer.php:54
 msgid "Force Remote Sync"
 msgstr "Forcer la synchronisation à distance"
 
-#: footer.php:61
+#: footer.php:64
 msgid "Last synced at"
 msgstr "Dernière synchronisation le"
 
-#: footer.php:109
+#: footer.php:119
 msgid "Please connect to internet to sync with STS"
 msgstr "Veuillez vous connecter à Internet pour synchroniser avec STS"
 
-#: footer.php:115
+#: footer.php:125
 msgid "Preparing for STS sync."
 msgstr "Préparation de la synchronisation STS."
 
-#: footer.php:126 footer.php:150 footer.php:174
+#: footer.php:136 footer.php:160 footer.php:184
 msgid "Unable to do STS Sync. Please contact technical team for assistance."
 msgstr ""
 "Impossible d'effectuer la synchronisation STS. Veuillez contacter l'équipe "
 "technique pour obtenir de l'aide."
 
-#: footer.php:137
+#: footer.php:147
 msgid "Trying to sync Test Results"
 msgstr "Essayer de synchroniser les résultats des tests"
 
-#: footer.php:161
+#: footer.php:171
 msgid "Trying to sync Test Requests"
 msgstr "Essayer de synchroniser les demandes de test"
 
-#: footer.php:194 footer.php:205
+#: footer.php:204 footer.php:215
 msgid "Thank you.Your message has been submitted."
 msgstr "Merci, votre message a été envoyé."
 
-#: footer.php:321
+#: footer.php:331
 msgid ""
 "Invalid phone number. Please enter full phone number with the proper country "
 "code"
@@ -12362,13 +12362,17 @@ msgstr ""
 "Numéro de téléphone non valide. Veuillez saisir le numéro de téléphone "
 "complet avec l'indicatif du pays"
 
-#: footer.php:357
+#: footer.php:367
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identité du patient : "
 
-#: footer.php:377
+#: footer.php:387
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères à rechercher"
+
+#: footer.php:442
+msgid "Cache cleared successfully"
+msgstr "Le cache a été éliminé avec succès"
 
 #: generic-tests/configuration/add-test-type.php:56
 #: generic-tests/configuration/add-test-type.php:59
@@ -13059,7 +13063,7 @@ msgstr "Saisir les options..."
 msgid "Please enter the options"
 msgstr "Veuillez saisir les options"
 
-#: generic-tests/configuration/editTestTypeHelper.php:171
+#: generic-tests/configuration/editTestTypeHelper.php:181
 msgid "Test type updated successfully"
 msgstr "Type de test mis à jour avec succès"
 
@@ -13760,19 +13764,19 @@ msgstr "Aperçu de l'état des échantillons (N = "
 msgid "Laboratory Turnaround Time"
 msgstr "Délai d'exécution du laboratoire"
 
-#: generic-tests/requests/add-request-helper.php:45
-#: generic-tests/requests/edit-request-helper.php:52
-#: vl/requests/addVlRequestHelper.php:66 vl/requests/editVlRequestHelper.php:71
+#: generic-tests/requests/add-request-helper.php:46
+#: generic-tests/requests/edit-request-helper.php:49
+#: vl/requests/addVlRequestHelper.php:69 vl/requests/editVlRequestHelper.php:71
 msgid "Please enter all mandatory fields to save the test request"
 msgstr ""
 "Veuillez remplir tous les champs obligatoires pour enregistrer la demande de "
 "test"
 
-#: generic-tests/requests/add-request-helper.php:371
+#: generic-tests/requests/add-request-helper.php:337
 msgid "Please check your Sample ID"
 msgstr "Veuillez vérifier votre numéro d'identification de l'échantillon"
 
-#: generic-tests/requests/add-request-helper.php:388
+#: generic-tests/requests/add-request-helper.php:354
 msgid "Lab test request added successfully"
 msgstr "Demande de test de laboratoire ajoutée avec succès"
 
@@ -13857,7 +13861,7 @@ msgstr "Exemple de code de manifeste"
 msgid "Last Modified Date"
 msgstr "Date de dernière modification"
 
-#: generic-tests/requests/edit-request-helper.php:337
+#: generic-tests/requests/edit-request-helper.php:332
 msgid "Request updated successfully"
 msgstr "Demande mise à jour avec succès"
 
@@ -13869,7 +13873,7 @@ msgstr "Veuillez sélectionner une option"
 msgid "Please select one or more options"
 msgstr "Veuillez sélectionner une ou plusieurs options"
 
-#: generic-tests/requests/patientModal.php:118 vl/requests/patientModal.php:118
+#: generic-tests/requests/patientModal.php:118 vl/requests/patientModal.php:119
 msgid "Previous Tested Date"
 msgstr "Date de l'essai précédent"
 
@@ -13903,7 +13907,7 @@ msgid "No printer selected!"
 msgstr "Aucune imprimante sélectionnée !"
 
 #: generic-tests/requests/view-requests.php:514
-#: vl/requests/vl-requests.php:1115
+#: vl/requests/vl-requests.php:1124
 msgid "Please checked atleast one checkbox."
 msgstr "Veuillez cocher au moins une case."
 
@@ -13938,7 +13942,7 @@ msgstr "Saisir le résultat VL"
 msgid "Enter Other Lab Tests Result"
 msgstr "Saisir le résultat d'autres tests de laboratoire"
 
-#: generic-tests/results/update-generic-test-result-helper.php:205
+#: generic-tests/results/update-generic-test-result-helper.php:204
 msgid "Lab Tests results updated successfully"
 msgstr "Les résultats des tests de laboratoire ont été mis à jour avec succès"
 
@@ -14000,10 +14004,10 @@ msgstr "Clinique/laboratoire"
 msgid "Both"
 msgstr "Les deux"
 
-#: global-config/editGlobalConfig.php:155 instruments/add-instrument.php:422
-#: instruments/add-instrument.php:441 instruments/add-instrument.php:595
-#: instruments/edit-instrument.php:478 instruments/edit-instrument.php:510
-#: instruments/edit-instrument.php:542 instruments/edit-instrument.php:665
+#: global-config/editGlobalConfig.php:155 instruments/add-instrument.php:434
+#: instruments/add-instrument.php:453 instruments/add-instrument.php:607
+#: instruments/edit-instrument.php:490 instruments/edit-instrument.php:522
+#: instruments/edit-instrument.php:554 instruments/edit-instrument.php:677
 #: system-admin/api-stats/api-stats.php:52
 msgid "Date Format"
 msgstr "Format de date"
@@ -14025,7 +14029,7 @@ msgstr "Paramètres globaux"
 msgid "Choose Country of Installation"
 msgstr "Choisir le pays d'installation"
 
-#: global-config/editGlobalConfig.php:188 setup/index.php:118
+#: global-config/editGlobalConfig.php:188 setup/index.php:121
 msgid "Please select the viral load form"
 msgstr "Veuillez sélectionner la forme de charge virale"
 
@@ -14033,12 +14037,12 @@ msgstr "Veuillez sélectionner la forme de charge virale"
 msgid "Default Time Zone"
 msgstr "Fuseau horaire par défaut"
 
-#: global-config/editGlobalConfig.php:206 setup/index.php:131
+#: global-config/editGlobalConfig.php:206 setup/index.php:134
 #: system-admin/edit-config/index.php:53 system-admin/edit-config/index.php:55
 msgid "Timezone"
 msgstr "Fuseau horaire"
 
-#: global-config/editGlobalConfig.php:206 setup/index.php:131
+#: global-config/editGlobalConfig.php:206 setup/index.php:134
 #: system-admin/edit-config/index.php:55
 msgid "Please choose Timezone"
 msgstr "Veuillez choisir un fuseau horaire"
@@ -14047,7 +14051,7 @@ msgstr "Veuillez choisir un fuseau horaire"
 msgid "System Locale"
 msgstr "Locale System"
 
-#: global-config/editGlobalConfig.php:229 setup/index.php:148
+#: global-config/editGlobalConfig.php:229 setup/index.php:151
 msgid "Please select the System Locale"
 msgstr "Veuillez sélectionner le lieu du System"
 
@@ -14845,7 +14849,7 @@ msgstr "Choisissez une option"
 msgid "Last Name"
 msgstr "Nom"
 
-#: global-config/editGlobalConfig.php:1522 setup/index.php:161
+#: global-config/editGlobalConfig.php:1522 setup/index.php:164
 #: users/addUser.php:74 users/addUser.php:76
 msgid "Full Name"
 msgstr "Nom complet"
@@ -14905,11 +14909,11 @@ msgstr "Résultat VL"
 msgid "Enter Field Name"
 msgstr "Saisir le nom du champ"
 
-#: global-config/globalConfigHelper.php:236
+#: global-config/globalConfigHelper.php:227
 msgid "Configuration updated successfully"
 msgstr "La configuration a été mise à jour avec succès"
 
-#: header.php:32 login/login.php:37
+#: header.php:32 login/login.php:41
 msgid "Lab Sample Management Module"
 msgstr "Module de gestion des échantillons dU labo"
 
@@ -15175,11 +15179,11 @@ msgstr "Hepatite-Demande de test"
 msgid "Remote Sample"
 msgstr "Échantillon prélevé à l'extérieur du labo"
 
-#: hepatitis/requests/hepatitis-add-request-helper.php:227
+#: hepatitis/requests/hepatitis-add-request-helper.php:236
 msgid "Hepatitis test request added successfully"
 msgstr "Demande de test de dépistage de l'hépatite ajoutée avec succès"
 
-#: hepatitis/requests/hepatitis-add-request-helper.php:235
+#: hepatitis/requests/hepatitis-add-request-helper.php:244
 msgid "Unable to add this hepatitis sample. Please try again later"
 msgstr ""
 "Impossible d'ajouter cet échantillon d'hépatite. Veuillez réessayer plus tard"
@@ -15220,7 +15224,7 @@ msgstr "HCV VL Count"
 msgid "HBV VL Count"
 msgstr "HBV VL Count"
 
-#: hepatitis/requests/hepatitis-edit-request-helper.php:256
+#: hepatitis/requests/hepatitis-edit-request-helper.php:265
 msgid "Hepatitis request updated successfully"
 msgstr "Mise à jour réussie de la demande relative à l'hépatite"
 
@@ -15498,16 +15502,16 @@ msgid "Are you sure you want to mark all samples as Accepted?"
 msgstr ""
 "Êtes-vous sûr de vouloir marquer tous les échantillons comme acceptés ?"
 
-#: instruments/add-instrument-helper.php:92
+#: instruments/add-instrument-helper.php:94
 msgid "Result Import configuration initited for "
 msgstr "Résultat Configuration d'importation initiée pour "
 
-#: instruments/add-instrument-helper.php:92
+#: instruments/add-instrument-helper.php:94
 msgid "Please proceed to write the import logic in the file "
 msgstr ""
 "Veuillez procéder à l'écriture de la logique d'importation dans le fichier "
 
-#: instruments/add-instrument-helper.php:92
+#: instruments/add-instrument-helper.php:94
 msgid " present in instruments folder"
 msgstr " présent dans le dossier des instruments"
 
@@ -15532,9 +15536,9 @@ msgstr "Ce nom d'instrument existe déjà, essayez un autre nom"
 msgid "Supported Tests"
 msgstr "Tests pris en charge"
 
-#: instruments/add-instrument.php:112 instruments/add-instrument.php:242
-#: instruments/add-instrument.php:344 instruments/edit-instrument.php:144
-#: instruments/edit-instrument.php:281 instruments/edit-instrument.php:400
+#: instruments/add-instrument.php:112 instruments/add-instrument.php:254
+#: instruments/add-instrument.php:356 instruments/edit-instrument.php:144
+#: instruments/edit-instrument.php:293 instruments/edit-instrument.php:412
 msgid "EID"
 msgstr "EID"
 
@@ -15546,9 +15550,9 @@ msgstr "Fichier des instruments"
 msgid "eg. roche.php or abbott.php"
 msgstr "ex. roche.php ou abbott.php"
 
-#: instruments/add-instrument.php:147 instruments/add-instrument.php:438
-#: instruments/add-instrument.php:594 instruments/edit-instrument.php:507
-#: instruments/edit-instrument.php:539 instruments/edit-instrument.php:664
+#: instruments/add-instrument.php:147 instruments/add-instrument.php:450
+#: instruments/add-instrument.php:606 instruments/edit-instrument.php:519
+#: instruments/edit-instrument.php:551 instruments/edit-instrument.php:676
 msgid "Please enter machine name"
 msgstr "Veuillez saisir le nom de la machine"
 
@@ -15607,276 +15611,285 @@ msgstr ""
 "Texte du résultat de faible charge virale, par exemple : cible non détectée, "
 "TND, < 20, < 40"
 
-#: instruments/add-instrument.php:214 instruments/edit-instrument.php:253
+#: instruments/add-instrument.php:206 instruments/edit-instrument.php:229
+msgid "Description/Comment to add in Test Result"
+msgstr "Description/Commentaire à ajouter dans le résultat du test"
+
+#: instruments/add-instrument.php:209 instruments/edit-instrument.php:232
+msgid "Enter Description or Comment to be added in Test Result"
+msgstr ""
+"Saisir la description ou le commentaire à ajouter dans le résultat du test"
+
+#: instruments/add-instrument.php:226 instruments/edit-instrument.php:265
 msgid "Default Reviewer"
 msgstr "Réviseur par défaut"
 
-#: instruments/add-instrument.php:217 instruments/edit-instrument.php:256
+#: instruments/add-instrument.php:229 instruments/edit-instrument.php:268
 msgid "Default Approver"
 msgstr "Approbateur par défaut"
 
-#: instruments/add-instrument.php:225 instruments/add-instrument.php:332
-#: instruments/edit-instrument.php:264 instruments/edit-instrument.php:388
+#: instruments/add-instrument.php:237 instruments/add-instrument.php:344
+#: instruments/edit-instrument.php:276 instruments/edit-instrument.php:400
 msgid "VL"
 msgstr "VL"
 
-#: instruments/add-instrument.php:228 instruments/edit-instrument.php:267
+#: instruments/add-instrument.php:240 instruments/edit-instrument.php:279
 msgid "Please enter Reviewed By for VL Test"
 msgstr "Veuillez saisir Reviewed By pour VL Test"
 
-#: instruments/add-instrument.php:233 instruments/edit-instrument.php:272
+#: instruments/add-instrument.php:245 instruments/edit-instrument.php:284
 msgid "Please enter Approved By for VL Test"
 msgstr "Veuillez saisir Approuvé par pour le test VL"
 
-#: instruments/add-instrument.php:245 instruments/edit-instrument.php:284
+#: instruments/add-instrument.php:257 instruments/edit-instrument.php:296
 msgid "Please enter Reviewed By for EID Test"
 msgstr "Veuillez saisir Reviewed By pour le test EID"
 
-#: instruments/add-instrument.php:250 instruments/edit-instrument.php:289
+#: instruments/add-instrument.php:262 instruments/edit-instrument.php:301
 msgid "Please enter Approved By for EID Test"
 msgstr "Veuillez saisir Approuvé par pour le test EID"
 
-#: instruments/add-instrument.php:262 instruments/edit-instrument.php:301
+#: instruments/add-instrument.php:274 instruments/edit-instrument.php:313
 msgid "Please enter Reviewed By for Covid19 Test"
 msgstr "Veuillez saisir Reviewed By pour Covid19 Test"
 
-#: instruments/add-instrument.php:267 instruments/edit-instrument.php:306
+#: instruments/add-instrument.php:279 instruments/edit-instrument.php:318
 msgid "Please enter Approved By for Covid19 Test"
 msgstr "Veuillez saisir Approved By pour Covid19 Test"
 
-#: instruments/add-instrument.php:279 instruments/edit-instrument.php:318
+#: instruments/add-instrument.php:291 instruments/edit-instrument.php:330
 msgid "Please enter Reviewed By for Hepatitis Test"
 msgstr "Veuillez saisir Reviewed By pour Hepatitis Test"
 
-#: instruments/add-instrument.php:284 instruments/edit-instrument.php:323
+#: instruments/add-instrument.php:296 instruments/edit-instrument.php:335
 msgid "Please enter Approved By for Hepatitis Test"
 msgstr "Veuillez saisir Approved By pour le test de dépistage de l'hépatite"
 
-#: instruments/add-instrument.php:296 instruments/edit-instrument.php:335
+#: instruments/add-instrument.php:308 instruments/edit-instrument.php:347
 msgid "Please enter Reviewed By for TB Test"
 msgstr ""
 "Veuillez saisir Examiné par pour le test de dépistage de la tuberculose"
 
-#: instruments/add-instrument.php:301 instruments/edit-instrument.php:340
+#: instruments/add-instrument.php:313 instruments/edit-instrument.php:352
 msgid "Please enter Approved By for TB Test"
 msgstr ""
 "Veuillez saisir \"Approuvé par\" pour le test de dépistage de la tuberculose"
 
-#: instruments/add-instrument.php:318 instruments/edit-instrument.php:374
+#: instruments/add-instrument.php:330 instruments/edit-instrument.php:386
 msgid "Number of In-House Controls"
 msgstr "Nombre de contrôles internes"
 
-#: instruments/add-instrument.php:321 instruments/edit-instrument.php:377
+#: instruments/add-instrument.php:333 instruments/edit-instrument.php:389
 msgid "Number of Manufacturer Controls"
 msgstr "Nombre de contrôles du fabricant"
 
-#: instruments/add-instrument.php:324 instruments/edit-instrument.php:380
+#: instruments/add-instrument.php:336 instruments/edit-instrument.php:392
 msgid "No. Of Calibrators"
 msgstr "Nombre d'étalonneurs"
 
-#: instruments/add-instrument.php:334 instruments/edit-instrument.php:390
+#: instruments/add-instrument.php:346 instruments/edit-instrument.php:402
 msgid "No of In-House Controls in vl"
 msgstr "Nombre de contrôles internes dans le vl"
 
-#: instruments/add-instrument.php:334 instruments/edit-instrument.php:390
+#: instruments/add-instrument.php:346 instruments/edit-instrument.php:402
 msgid "Please enter No of In-House Controls in vl"
 msgstr "Veuillez saisir le nombre de contrôles internes dans le vl"
 
-#: instruments/add-instrument.php:336 instruments/edit-instrument.php:392
+#: instruments/add-instrument.php:348 instruments/edit-instrument.php:404
 msgid "No of Manufacturer Controls in vl"
 msgstr "Nombre de contrôles de fabricants dans le vl"
 
-#: instruments/add-instrument.php:336 instruments/edit-instrument.php:392
+#: instruments/add-instrument.php:348 instruments/edit-instrument.php:404
 msgid "Please enter No of Manufacturer Controls in vl"
 msgstr "Veuillez saisir le nombre de contrôles du fabricant en vl"
 
-#: instruments/add-instrument.php:338 instruments/edit-instrument.php:394
+#: instruments/add-instrument.php:350 instruments/edit-instrument.php:406
 msgid "No of Calibrators in vl"
 msgstr "Nombre d'étalons en vl"
 
-#: instruments/add-instrument.php:338 instruments/edit-instrument.php:394
+#: instruments/add-instrument.php:350 instruments/edit-instrument.php:406
 msgid "Please enter No of Calibrators in vl"
 msgstr "Veuillez saisir le nombre d'étalonneurs en vl"
 
-#: instruments/add-instrument.php:346
+#: instruments/add-instrument.php:358
 msgid "No of In-House Controls in EID"
 msgstr "Nombre de contrôles internes dans l'EID"
 
-#: instruments/add-instrument.php:346
+#: instruments/add-instrument.php:358
 msgid "Please enter No of In-House Controls in EID"
 msgstr "Veuillez indiquer le nombre de contrôles internes dans l'EID"
 
-#: instruments/add-instrument.php:348
+#: instruments/add-instrument.php:360
 msgid "No of Manufacturer Controls in EID"
 msgstr "Nombre de contrôles de fabricants dans l'EID"
 
-#: instruments/add-instrument.php:348
+#: instruments/add-instrument.php:360
 msgid "Please enter No of Manufacturer Controls in EID"
 msgstr "Veuillez indiquer le nombre de contrôles du fabricant dans l'EID"
 
-#: instruments/add-instrument.php:350
+#: instruments/add-instrument.php:362
 msgid "No of Calibrators in EID"
 msgstr "Nombre d'étalons dans l'EID"
 
-#: instruments/add-instrument.php:350
+#: instruments/add-instrument.php:362
 msgid "Please enter No of Calibrators in EID"
 msgstr "Veuillez saisir le nombre d'étalonneurs dans l'EID"
 
-#: instruments/add-instrument.php:359 instruments/edit-instrument.php:415
+#: instruments/add-instrument.php:371 instruments/edit-instrument.php:427
 msgid "No of In-House Controls in covid-19"
 msgstr "Nombre de contrôles internes dans covid-19"
 
-#: instruments/add-instrument.php:359 instruments/edit-instrument.php:415
+#: instruments/add-instrument.php:371 instruments/edit-instrument.php:427
 msgid "Please enter No of In-House Controls in covid-19"
 msgstr "Veuillez indiquer le nombre de contrôles internes dans covid-19"
 
-#: instruments/add-instrument.php:361 instruments/edit-instrument.php:417
+#: instruments/add-instrument.php:373 instruments/edit-instrument.php:429
 msgid "No of Manufacturer Controls in covid-19"
 msgstr "Nombre de contrôles du fabricant dans covid-19"
 
-#: instruments/add-instrument.php:361 instruments/edit-instrument.php:417
+#: instruments/add-instrument.php:373 instruments/edit-instrument.php:429
 msgid "Please enter No of Manufacturer Controls in covid-19"
 msgstr "Veuillez saisir le nombre de contrôles du fabricant dans covid-19"
 
-#: instruments/add-instrument.php:363 instruments/edit-instrument.php:419
+#: instruments/add-instrument.php:375 instruments/edit-instrument.php:431
 msgid "No of Calibrators in covid-19"
 msgstr "Nombre de calibrateurs dans covid-19"
 
-#: instruments/add-instrument.php:363 instruments/edit-instrument.php:419
+#: instruments/add-instrument.php:375 instruments/edit-instrument.php:431
 msgid "Please enter No of Calibrators in covid-19"
 msgstr "Veuillez saisir le nombre de calibrateurs dans covid-19"
 
-#: instruments/add-instrument.php:372
+#: instruments/add-instrument.php:384
 msgid "No of In-House Controls in Hepatitis"
 msgstr "Nombre de contrôles internes dans le domaine de l'hépatite"
 
-#: instruments/add-instrument.php:372
+#: instruments/add-instrument.php:384
 msgid "Please enter No of In-House Controls in Hepatitis"
 msgstr ""
 "Veuillez indiquer le nombre de contrôles internes dans le domaine de "
 "l'hépatite"
 
-#: instruments/add-instrument.php:374
+#: instruments/add-instrument.php:386
 msgid "No of Manufacturer Controls in Hepatitis"
 msgstr ""
 "Nombre de contrôles effectués par les fabricants dans le domaine de "
 "l'hépatite"
 
-#: instruments/add-instrument.php:374
+#: instruments/add-instrument.php:386
 msgid "Please enter No of Manufacturer Controls in Hepatitis"
 msgstr ""
 "Veuillez saisir le nombre de contrôles du fabricant dans le domaine de "
 "l'hépatite"
 
-#: instruments/add-instrument.php:376
+#: instruments/add-instrument.php:388
 msgid "No of Calibrators in Hepatitis"
 msgstr "Nombre de calibrateurs dans l'hépatite"
 
-#: instruments/add-instrument.php:376
+#: instruments/add-instrument.php:388
 msgid "Please enter No of Calibrators in Hepatitis"
 msgstr ""
 "Veuillez saisir le nombre de calibrateurs dans le domaine de l'hépatite"
 
-#: instruments/add-instrument.php:385 instruments/edit-instrument.php:441
+#: instruments/add-instrument.php:397 instruments/edit-instrument.php:453
 msgid "No of In-House Controls in TB"
 msgstr "Nombre de contrôles internes au sein du CT"
 
-#: instruments/add-instrument.php:385 instruments/edit-instrument.php:441
+#: instruments/add-instrument.php:397 instruments/edit-instrument.php:453
 msgid "Please enter No of In-House Controls in TB"
 msgstr "Veuillez indiquer le nombre de contrôles internes dans TB"
 
-#: instruments/add-instrument.php:387 instruments/edit-instrument.php:443
+#: instruments/add-instrument.php:399 instruments/edit-instrument.php:455
 msgid "No of Manufacturer Controls in TB"
 msgstr "Nombre de contrôles du fabricant dans la tuberculose"
 
-#: instruments/add-instrument.php:387 instruments/edit-instrument.php:443
+#: instruments/add-instrument.php:399 instruments/edit-instrument.php:455
 msgid "Please enter No of Manufacturer Controls in TB"
 msgstr "Veuillez indiquer le nombre de contrôles du fabricant dans TB"
 
-#: instruments/add-instrument.php:389 instruments/edit-instrument.php:445
+#: instruments/add-instrument.php:401 instruments/edit-instrument.php:457
 msgid "No of Calibrators in TB"
 msgstr "Nombre d'étalons dans le CT"
 
-#: instruments/add-instrument.php:389 instruments/edit-instrument.php:445
+#: instruments/add-instrument.php:401 instruments/edit-instrument.php:457
 msgid "Please enter No of Calibrators in TB"
 msgstr "Veuillez saisir le nombre d'étalonneurs dans TB"
 
-#: instruments/add-instrument.php:397 instruments/edit-instrument.php:453
+#: instruments/add-instrument.php:409 instruments/edit-instrument.php:465
 msgid "No of In-House Controls in Other Lab Tests"
 msgstr "Nombre de contrôles internes dans d'autres tests de laboratoire"
 
-#: instruments/add-instrument.php:397 instruments/edit-instrument.php:453
+#: instruments/add-instrument.php:409 instruments/edit-instrument.php:465
 msgid "Please enter No of In-House Controls in Other Lab Tests"
 msgstr ""
 "Veuillez indiquer le nombre de contrôles internes dans d'autres tests de "
 "laboratoire"
 
-#: instruments/add-instrument.php:399 instruments/edit-instrument.php:455
+#: instruments/add-instrument.php:411 instruments/edit-instrument.php:467
 msgid "No of Manufacturer Controls in Other Lab Tests"
 msgstr "Nombre de contrôles du fabricant dans d'autres tests de laboratoire"
 
-#: instruments/add-instrument.php:399 instruments/edit-instrument.php:455
+#: instruments/add-instrument.php:411 instruments/edit-instrument.php:467
 msgid "Please enter No of Manufacturer Controls in Other Lab Tests"
 msgstr ""
 "Veuillez indiquer le nombre de contrôles effectués par le fabricant dans "
 "d'autres tests de laboratoire"
 
-#: instruments/add-instrument.php:401 instruments/edit-instrument.php:457
+#: instruments/add-instrument.php:413 instruments/edit-instrument.php:469
 msgid "No of Calibrators in Other Lab Tests"
 msgstr "Nombre d'étalons dans d'autres tests de laboratoire"
 
-#: instruments/add-instrument.php:401 instruments/edit-instrument.php:457
+#: instruments/add-instrument.php:413 instruments/edit-instrument.php:469
 msgid "Please enter No of Calibrators in Other Lab Tests"
 msgstr ""
 "Veuillez saisir le nombre d'étalonneurs dans les autres tests de laboratoire"
 
-#: instruments/add-instrument.php:411 instruments/edit-instrument.php:467
+#: instruments/add-instrument.php:423 instruments/edit-instrument.php:479
 msgid "Machine Names"
 msgstr "Noms des machines"
 
-#: instruments/add-instrument.php:419 instruments/add-instrument.php:438
-#: instruments/add-instrument.php:594 instruments/edit-instrument.php:475
-#: instruments/edit-instrument.php:507 instruments/edit-instrument.php:539
-#: instruments/edit-instrument.php:664
+#: instruments/add-instrument.php:431 instruments/add-instrument.php:450
+#: instruments/add-instrument.php:606 instruments/edit-instrument.php:487
+#: instruments/edit-instrument.php:519 instruments/edit-instrument.php:551
+#: instruments/edit-instrument.php:676
 msgid "Machine Name"
 msgstr "Nom système"
 
-#: instruments/add-instrument.php:425 instruments/edit-instrument.php:167
-#: instruments/edit-instrument.php:481
+#: instruments/add-instrument.php:437 instruments/edit-instrument.php:167
+#: instruments/edit-instrument.php:493
 msgid "Instrument File Name"
 msgstr "Nom du fichier de l'instrument"
 
-#: instruments/add-instrument.php:428 instruments/edit-instrument.php:484
+#: instruments/add-instrument.php:440 instruments/edit-instrument.php:496
 msgid "Is this a POC Device?"
 msgstr "S'agit-il d'un dispositif POC ?"
 
-#: instruments/add-instrument.php:441 instruments/add-instrument.php:595
-#: instruments/edit-instrument.php:510 instruments/edit-instrument.php:542
-#: instruments/edit-instrument.php:665
+#: instruments/add-instrument.php:453 instruments/add-instrument.php:607
+#: instruments/edit-instrument.php:522 instruments/edit-instrument.php:554
+#: instruments/edit-instrument.php:677
 msgid "Please enter date format"
 msgstr "Veuillez saisir le format de la date"
 
-#: instruments/add-instrument.php:444 instruments/add-instrument.php:596
-#: instruments/edit-instrument.php:513 instruments/edit-instrument.php:545
-#: instruments/edit-instrument.php:666
+#: instruments/add-instrument.php:456 instruments/add-instrument.php:608
+#: instruments/edit-instrument.php:525 instruments/edit-instrument.php:557
+#: instruments/edit-instrument.php:678
 msgid "File Name"
 msgstr "Nom du fichier"
 
-#: instruments/add-instrument.php:444 instruments/add-instrument.php:596
-#: instruments/edit-instrument.php:170 instruments/edit-instrument.php:513
-#: instruments/edit-instrument.php:545 instruments/edit-instrument.php:666
+#: instruments/add-instrument.php:456 instruments/add-instrument.php:608
+#: instruments/edit-instrument.php:170 instruments/edit-instrument.php:525
+#: instruments/edit-instrument.php:557 instruments/edit-instrument.php:678
 msgid "Please enter file name"
 msgstr "Veuillez saisir le nom du fichier"
 
-#: instruments/add-instrument.php:495
+#: instruments/add-instrument.php:507
 msgid "Select the options"
 msgstr "Sélectionner les options"
 
-#: instruments/add-instrument.php:499 instruments/edit-instrument.php:601
+#: instruments/add-instrument.php:511 instruments/edit-instrument.php:613
 msgid "Select Test Types"
 msgstr "Sélectionner les types de tests"
 
-#: instruments/edit-instrument-helper.php:122
+#: instruments/edit-instrument-helper.php:125
 msgid "Import config details updated successfully"
 msgstr ""
 "Les détails de la configuration de l'importation ont été mis à jour avec "
@@ -15886,75 +15899,75 @@ msgstr ""
 msgid "Edit Instrument"
 msgstr "Modifier l'instrument"
 
-#: instruments/edit-instrument.php:232
+#: instruments/edit-instrument.php:244
 msgid "Please select import config status"
 msgstr "Veuillez sélectionner l'état de la configuration de l'importation"
 
-#: instruments/edit-instrument.php:352
+#: instruments/edit-instrument.php:364
 msgid "Please enter Reviewed By for Other Lab Test"
 msgstr "Veuillez saisir Reviewed By pour Other Lab Test"
 
-#: instruments/edit-instrument.php:357
+#: instruments/edit-instrument.php:369
 msgid "Please enter Approved By for Other Lab Test"
 msgstr "Veuillez saisir Approuvé par pour l'autre test de laboratoire"
 
-#: instruments/edit-instrument.php:402
+#: instruments/edit-instrument.php:414
 msgid "No of In-House Controls in eid"
 msgstr "Nombre de contrôles internes dans l'eid"
 
-#: instruments/edit-instrument.php:402
+#: instruments/edit-instrument.php:414
 msgid "Please enter No of In-House Controls in eid"
 msgstr "Veuillez indiquer le nombre de contrôles internes dans l'eid"
 
-#: instruments/edit-instrument.php:404
+#: instruments/edit-instrument.php:416
 msgid "No of Manufacturer Controls in eid"
 msgstr "Nombre de contrôles de fabricants à l'occasion de l'Aïd"
 
-#: instruments/edit-instrument.php:404
+#: instruments/edit-instrument.php:416
 msgid "Please enter No of Manufacturer Controls in eid"
 msgstr "Veuillez saisir le numéro des contrôles du fabricant dans l'eid"
 
-#: instruments/edit-instrument.php:406
+#: instruments/edit-instrument.php:418
 msgid "No of Calibrators in eid"
 msgstr "Nombre d'étalonneurs dans l'eid"
 
-#: instruments/edit-instrument.php:406
+#: instruments/edit-instrument.php:418
 msgid "Please enter No of Calibrators in eid"
 msgstr "Veuillez saisir le nombre d'étalonneurs dans l'eid"
 
-#: instruments/edit-instrument.php:428
+#: instruments/edit-instrument.php:440
 msgid "No of In-House Controls in hepatitis"
 msgstr "Nombre de contrôles internes dans le domaine de l'hépatite"
 
-#: instruments/edit-instrument.php:428
+#: instruments/edit-instrument.php:440
 msgid "Please enter No of In-House Controls in hepatitis"
 msgstr ""
 "Veuillez indiquer le nombre de contrôles internes dans le domaine de "
 "l'hépatite"
 
-#: instruments/edit-instrument.php:430
+#: instruments/edit-instrument.php:442
 msgid "No of Manufacturer Controls in hepatitis"
 msgstr "Nombre de contrôles de fabricants dans le domaine de l'hépatite"
 
-#: instruments/edit-instrument.php:430
+#: instruments/edit-instrument.php:442
 msgid "Please enter No of Manufacturer Controls in hepatitis"
 msgstr ""
 "Veuillez saisir le numéro des contrôles du fabricant dans le domaine de "
 "l'hépatite"
 
-#: instruments/edit-instrument.php:432
+#: instruments/edit-instrument.php:444
 msgid "No of Calibrators in hepatitis"
 msgstr "Nombre de calibrateurs dans l'hépatite"
 
-#: instruments/edit-instrument.php:432
+#: instruments/edit-instrument.php:444
 msgid "Please enter No of Calibrators in hepatitis"
 msgstr "Veuillez saisir le nombre de calibrateurs dans l'hépatite"
 
-#: instruments/edit-instrument.php:439
+#: instruments/edit-instrument.php:451
 msgid "tb"
 msgstr "tb"
 
-#: instruments/edit-instrument.php:597
+#: instruments/edit-instrument.php:609
 msgid "Select a user"
 msgstr "Sélectionnez un utilisateur"
 
@@ -15963,25 +15976,25 @@ msgstr "Sélectionnez un utilisateur"
 msgid "Instruments"
 msgstr "Instruments"
 
-#: login/login.php:40
+#: login/login.php:44
 msgid "Sample Management System"
 msgstr "Système de gestion des échantillons"
 
-#: login/login.php:67 login/login.php:178 system-admin/login/login.php:70
+#: login/login.php:71 login/login.php:182 system-admin/login/login.php:70
 msgid "Login"
 msgstr "Connexion"
 
-#: login/login.php:156 system-admin/login/login.php:61
+#: login/login.php:160 system-admin/login/login.php:61
 #: system-admin/setup/index.php:78 users/editUser.php:121
 #: users/editUser.php:123 users/users.php:30 users/users.php:57
 msgid "User Name"
 msgstr "Nom d'utilisateur"
 
-#: login/login.php:156
+#: login/login.php:160
 msgid "Please enter your user name"
 msgstr "Veuillez entrer votre nom d’utilisateur"
 
-#: login/login.php:161 setup/index.php:169
+#: login/login.php:165 setup/index.php:172
 #: system-admin/edit-config/resetPassword.php:36
 #: system-admin/edit-config/resetPassword.php:38
 #: system-admin/login/login.php:65 system-admin/setup/index.php:90
@@ -15992,32 +16005,32 @@ msgstr "Veuillez entrer votre nom d’utilisateur"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: login/login.php:161
+#: login/login.php:165
 msgid "Please enter your password"
 msgstr "Veuillez saisir votre mot de passe"
 
-#: login/login.php:166
+#: login/login.php:170
 msgid "Get New Image"
 msgstr "Obtenir une nouvelle image"
 
-#: login/login.php:171
+#: login/login.php:175
 msgid "Please enter the text from the image"
 msgstr "Veuillez saisir le texte de l'image"
 
-#: login/login.php:227
+#: login/login.php:231
 msgid "Text you entered from the image is incorrect. Please try again"
 msgstr ""
 "Le texte que vous avez saisi dans l'image est incorrect. Veuillez réessayer"
 
-#: login/login.php:237
+#: login/login.php:241
 msgid "Please enter the text from the image to proceed."
 msgstr "Veuillez saisir le texte de l'image pour continuer."
 
-#: login/loginProcess.php:81
+#: login/loginProcess.php:63
 msgid "Request expired. Please try to login again."
 msgstr "La demande a expiré. Veuillez essayer de vous connecter à nouveau."
 
-#: login/loginProcess.php:117
+#: login/loginProcess.php:99
 msgid ""
 "You have exhausted the maximum number of login attempts. Please retry login "
 "after some time."
@@ -16025,8 +16038,8 @@ msgstr ""
 "Vous avez épuisé le nombre maximum de tentatives de connexion. Veuillez "
 "réessayer après un certain temps."
 
-#: login/loginProcess.php:132 login/loginProcess.php:136
-#: login/loginProcess.php:196 login/loginProcess.php:199
+#: login/loginProcess.php:103 login/loginProcess.php:116
+#: login/loginProcess.php:120 login/loginProcess.php:177
 #: system-admin/login/adminLoginProcess.php:41
 msgid "Please check your login credentials"
 msgstr "Veuillez vérifier vos identifiants de connexion"
@@ -16369,29 +16382,29 @@ msgstr "Importer le résultat VL"
 msgid "Role updated successfully"
 msgstr "Rôle mis à jour avec succès"
 
-#: setup/index.php:38
+#: setup/index.php:41
 msgid "Lab Sample Management System"
 msgstr "Système de gestion des échantillons de laboratoire"
 
-#: setup/index.php:54 setup/index.php:109
+#: setup/index.php:57 setup/index.php:112
 msgid "Register Admin User"
 msgstr "Enregistrer l'utilisateur Admin"
 
-#: setup/index.php:149
+#: setup/index.php:152
 msgid "-- Choose System Language --"
 msgstr "-- Choisir la langue du système --"
 
-#: setup/index.php:157 system-admin/setup/index.php:82
+#: setup/index.php:160 system-admin/setup/index.php:82
 msgid "Email ID"
 msgstr "Email ID"
 
-#: setup/index.php:165 system-admin/setup/index.php:86
+#: setup/index.php:168 system-admin/setup/index.php:86
 #: system-admin/user-login-history/userLoginIndex.php:34 users/addUser.php:173
 #: users/editProfile.php:143 users/users.php:58
 msgid "Login ID"
 msgstr "Identifiant de connexion"
 
-#: setup/index.php:173 system-admin/edit-config/resetPassword.php:45
+#: setup/index.php:176 system-admin/edit-config/resetPassword.php:45
 #: system-admin/edit-config/resetPassword.php:47
 #: system-admin/setup/index.php:94 users/addUser.php:193 users/addUser.php:195
 #: users/editProfile.php:118 users/editProfile.php:120 users/editUser.php:258
@@ -16399,11 +16412,11 @@ msgstr "Identifiant de connexion"
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
 
-#: setup/index.php:178
+#: setup/index.php:181
 msgid "Create User"
 msgstr "Créer un utilisateur"
 
-#: setup/index.php:212 system-admin/edit-config/resetPassword.php:39
+#: setup/index.php:215 system-admin/edit-config/resetPassword.php:39
 #: system-admin/edit-config/resetPassword.php:95
 #: system-admin/setup/index.php:132 users/addUser.php:187 users/addUser.php:397
 #: users/editProfile.php:112 users/editProfile.php:240 users/editUser.php:252
@@ -16415,11 +16428,11 @@ msgstr ""
 "Le mot de passe doit comporter au moins 8 caractères et doit inclure AU "
 "MOINS un chiffre, un alphabet et éventuellement des caractères spéciaux."
 
-#: setup/index.php:229
+#: setup/index.php:232
 msgid "-- Choose Country of Installation --"
 msgstr "-- Choisir le pays d'installation --"
 
-#: setup/index.php:232
+#: setup/index.php:235
 msgid "-- Select Timezone --"
 msgstr "- Sélectionnez un fuseau horaire -"
 
@@ -16460,11 +16473,11 @@ msgstr "Manifeste de renvoi de l'échantillon d'hépatite"
 msgid "TB Sample Referral Manifest"
 msgstr "Modèle de manifeste d'orientation de la tuberculose"
 
-#: specimen-referral-manifest/generateVLManifest.php:74
+#: specimen-referral-manifest/generateVLManifest.php:69
 msgid "Viral Load Sample Referral Manifest"
 msgstr "Manifeste d'orientation de l'échantillon de charge virale"
 
-#: specimen-referral-manifest/get-manifests.php:189
+#: specimen-referral-manifest/get-manifests.php:184
 msgid "Print Manifest PDF"
 msgstr "Imprimer le manifeste PDF"
 
@@ -17711,8 +17724,8 @@ msgstr ""
 msgid "TB Test Request"
 msgstr "Tuberculose-Demande de test"
 
-#: tb/requests/forms/add-sierraleone.php:157
-#: tb/requests/forms/edit-sierraleone.php:196
+#: tb/requests/forms/add-sierraleone.php:150
+#: tb/requests/forms/edit-sierraleone.php:189
 msgid "Enter clinician name"
 msgstr "Saisir le nom du clinicien"
 
@@ -18599,7 +18612,7 @@ msgstr "Ajouter les résultats VL"
 #: vl/reference/vl-results.php:32 vl/requests/forms/add-cameroon.php:601
 #: vl/requests/forms/edit-cameroon.php:705
 #: vl/results/forms/update-cameroon-result.php:732
-#: vl/results/pdf/result-pdf-cameroon.php:398
+#: vl/results/pdf/result-pdf-cameroon.php:348
 msgid "Viral Load Result"
 msgstr "Résultat de la charge virale"
 
@@ -18742,11 +18755,11 @@ msgstr "Ajouter le motif du test VL"
 msgid "Failure Reason"
 msgstr "Raison de l'échec"
 
-#: vl/requests/addVlRequestHelper.php:383
+#: vl/requests/addVlRequestHelper.php:397
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: vl/requests/editVlRequestHelper.php:385
+#: vl/requests/editVlRequestHelper.php:388
 #: vl/results/updateVlTestResultHelper.php:203
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
@@ -19008,6 +19021,7 @@ msgstr "Veuillez vérifier le type de test d'indication de la charge virale"
 #: vl/requests/forms/add-cameroon.php:427
 #: vl/requests/forms/edit-cameroon.php:505
 #: vl/results/forms/update-cameroon-result.php:531
+#: vl/results/pdf/result-pdf-cameroon.php:253
 msgid "Control VL Testing"
 msgstr "Test VL de contrôle"
 
@@ -19084,6 +19098,7 @@ msgstr "VL Femme allaitante"
 #: vl/requests/forms/add-cameroon.php:460
 #: vl/requests/forms/edit-cameroon.php:550
 #: vl/results/forms/update-cameroon-result.php:576
+#: vl/results/pdf/result-pdf-cameroon.php:250
 msgid "Co-infection"
 msgstr "Co-infection"
 
@@ -19230,28 +19245,28 @@ msgstr "Commentaires du laboratoire"
 msgid "Loading Printer Details..."
 msgstr "Chargement des détails de l'imprimante..."
 
-#: vl/requests/forms/add-cameroon.php:770 vl/requests/forms/add-drc.php:874
+#: vl/requests/forms/add-cameroon.php:770 vl/requests/forms/add-drc.php:898
 #: vl/requests/forms/add-png.php:659 vl/requests/forms/add-rwanda.php:729
 #: vl/requests/forms/add-sierraleone.php:943
 #: vl/requests/forms/add-southsudan.php:814 vl/requests/forms/add-who.php:783
 msgid "No. of times Test Requested for this Patient"
 msgstr "Nombre de fois où le test a été demandé pour ce patient"
 
-#: vl/requests/forms/add-cameroon.php:773 vl/requests/forms/add-drc.php:877
+#: vl/requests/forms/add-cameroon.php:773 vl/requests/forms/add-drc.php:901
 #: vl/requests/forms/add-png.php:662 vl/requests/forms/add-rwanda.php:732
 #: vl/requests/forms/add-sierraleone.php:946
 #: vl/requests/forms/add-southsudan.php:817 vl/requests/forms/add-who.php:786
 msgid "Last Test Request Added On LIS/STS"
 msgstr "Dernière demande envoyée par LIS/STS"
 
-#: vl/requests/forms/add-cameroon.php:776 vl/requests/forms/add-drc.php:880
+#: vl/requests/forms/add-cameroon.php:776 vl/requests/forms/add-drc.php:904
 #: vl/requests/forms/add-png.php:665 vl/requests/forms/add-rwanda.php:735
 #: vl/requests/forms/add-sierraleone.php:949
 #: vl/requests/forms/add-southsudan.php:820 vl/requests/forms/add-who.php:789
 msgid "Sample Collection Date for Last Request"
 msgstr "Date de prélèvement de l'échantillon pour la dernière demande"
 
-#: vl/requests/forms/add-cameroon.php:779 vl/requests/forms/add-drc.php:883
+#: vl/requests/forms/add-cameroon.php:779 vl/requests/forms/add-drc.php:907
 #: vl/requests/forms/add-png.php:668 vl/requests/forms/add-rwanda.php:738
 #: vl/requests/forms/add-sierraleone.php:952
 #: vl/requests/forms/add-southsudan.php:823 vl/requests/forms/add-who.php:792
@@ -19271,7 +19286,7 @@ msgstr ""
 "essayer un autre ID d'échantillon"
 
 #: vl/requests/forms/add-drc.php:87 vl/requests/forms/add-drc.php:89
-#: vl/requests/forms/edit-drc.php:111 vl/requests/forms/edit-drc.php:113
+#: vl/requests/forms/edit-drc.php:112 vl/requests/forms/edit-drc.php:114
 msgid "Recency ID"
 msgstr "ID de récence"
 
@@ -19279,12 +19294,12 @@ msgstr "ID de récence"
 msgid "Please enter the Date of Birth"
 msgstr "Veuillez saisir la date de naissance"
 
-#: vl/requests/forms/add-drc.php:203 vl/requests/forms/edit-drc.php:241
+#: vl/requests/forms/add-drc.php:203 vl/requests/forms/edit-drc.php:242
 msgid "Please enter Patient age"
 msgstr "Veuillez indiquer l'âge du patient"
 
 #: vl/requests/forms/add-drc.php:217 vl/requests/forms/add-drc.php:221
-#: vl/requests/forms/edit-drc.php:253 vl/requests/forms/edit-drc.php:257
+#: vl/requests/forms/edit-drc.php:254 vl/requests/forms/edit-drc.php:258
 #: vl/results/forms/update-drc-result.php:209
 #: vl/results/forms/update-drc-result.php:213
 msgid "Please select a gender"
@@ -19341,11 +19356,11 @@ msgstr "EMR/FHIR - ENVOYER LES RÉSULTATS"
 msgid "EMR/FHIR - GET TESTS"
 msgstr "EMR/FHIR - OBTENIR DES TESTS"
 
-#: vl/requests/vl-requests.php:1173
+#: vl/requests/vl-requests.php:1182
 msgid "Trying to sync from EMR/FHIR"
 msgstr "Essayer de synchroniser depuis EMR/FHIR"
 
-#: vl/requests/vl-requests.php:1204
+#: vl/requests/vl-requests.php:1213
 msgid "Trying to sync to EMR/FHIR"
 msgstr "Essai de synchronisation avec EMR/FHIR"
 
@@ -19393,8 +19408,8 @@ msgid "Viral Load Result(copiesl/ml)"
 msgstr "Résultat de la charge virale (copiesl/ml)"
 
 #: vl/result-mail/editTestResultEmailConfig.php:111
-#: vl/results/pdf/result-pdf-cameroon.php:389
-#: vl/results/pdf/result-pdf-cameroon.php:393
+#: vl/results/pdf/result-pdf-cameroon.php:339
+#: vl/results/pdf/result-pdf-cameroon.php:343
 msgid "Log Value"
 msgstr "Valeur logarithmique"
 
@@ -19578,142 +19593,137 @@ msgstr "Validé par"
 msgid "Authorized by"
 msgstr "Autorisé par"
 
-#: vl/results/pdf/result-pdf-cameroon.php:258
-msgid "REQUESTING HEALTH FACILITY NAME"
-msgstr "NOM DE L'ÉTABLISSEMENT DE SANTÉ DEMANDEUR"
+#: vl/results/pdf/result-pdf-cameroon.php:203
+msgid "HEALTH CENTRE"
+msgstr "FORMATION SANITAIRE"
 
-#: vl/results/pdf/result-pdf-cameroon.php:259
+#: vl/results/pdf/result-pdf-cameroon.php:204
 msgid "HEALTH FACILITY CODE"
 msgstr "CODE DES ÉTABLISSEMENTS DE SANTÉ"
 
-#: vl/results/pdf/result-pdf-cameroon.php:260
-msgid "STATE"
-msgstr "Etat"
+#: vl/results/pdf/result-pdf-cameroon.php:205
+msgid "REGION"
+msgstr "RÉGION"
 
-#: vl/results/pdf/result-pdf-cameroon.php:261
-msgid "COUNTY"
-msgstr "Pays"
+#: vl/results/pdf/result-pdf-cameroon.php:206
+msgid "DISTRICT"
+msgstr "DISTRICT"
 
-#: vl/results/pdf/result-pdf-cameroon.php:276
-msgid "PATIENT NAME"
-msgstr "Nom du patient"
+#: vl/results/pdf/result-pdf-cameroon.php:217
+msgid "PROJECT"
+msgstr "PROJET"
 
-#: vl/results/pdf/result-pdf-cameroon.php:277
-msgid "UNIQUE ART (TRACNET) NO."
-msgstr "ART UNIQUE (TRACNET) NO."
-
-#: vl/results/pdf/result-pdf-cameroon.php:278
-msgid "REASON FOR VL TESTING"
-msgstr "RAISON DU TEST VL"
-
-#: vl/results/pdf/result-pdf-cameroon.php:314
-msgid "AGE"
-msgstr "AGE"
-
-#: vl/results/pdf/result-pdf-cameroon.php:315
-msgid "GENDER"
-msgstr "SEXE"
-
-#: vl/results/pdf/result-pdf-cameroon.php:317
-msgid "BREAST FEEDING"
-msgstr "ALIMENTATION AU SEIN"
-
-#: vl/results/pdf/result-pdf-cameroon.php:318
-msgid "PREGNANCY STATUS"
-msgstr "ÉTAT DE GROSSESSE"
-
-#: vl/results/pdf/result-pdf-cameroon.php:337
+#: vl/results/pdf/result-pdf-cameroon.php:218
 msgid "REQUESTING CLINICIAN NAME"
 msgstr "NOM DU CLINICIEN DEMANDEUR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:338
+#: vl/results/pdf/result-pdf-cameroon.php:219
 msgid "TEL"
 msgstr "TEL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:339
+#: vl/results/pdf/result-pdf-cameroon.php:220
 msgid "EMAIL"
 msgstr "EMAIL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:353
+#: vl/results/pdf/result-pdf-cameroon.php:235
+msgid "PATIENT NAME"
+msgstr "Nom du patient"
+
+#: vl/results/pdf/result-pdf-cameroon.php:236
+msgid "PATIENT ID"
+msgstr "ID DU PATIENT"
+
+#: vl/results/pdf/result-pdf-cameroon.php:237
+msgid "ARV PROTOCOL"
+msgstr "PROTOCOLE ARV"
+
+#: vl/results/pdf/result-pdf-cameroon.php:238
+msgid "AGE"
+msgstr "AGE"
+
+#: vl/results/pdf/result-pdf-cameroon.php:256
+msgid "Other Reason"
+msgstr "Autre raison"
+
+#: vl/results/pdf/result-pdf-cameroon.php:273
+msgid "GENDER"
+msgstr "SEXE"
+
+#: vl/results/pdf/result-pdf-cameroon.php:275
+msgid "BREASTFEEDING"
+msgstr "Allaitement"
+
+#: vl/results/pdf/result-pdf-cameroon.php:276
+msgid "PREGNANCY STATUS"
+msgstr "ÉTAT DE GROSSESSE"
+
+#: vl/results/pdf/result-pdf-cameroon.php:281
+msgid "PATIENT CONTACT"
+msgstr "CONTACT AVEC LE PATIENT"
+
+#: vl/results/pdf/result-pdf-cameroon.php:303
 msgid "SAMPLE ID"
 msgstr "ID de l'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon.php:354
+#: vl/results/pdf/result-pdf-cameroon.php:304
 msgid "SAMPLE COLLECTION DATE"
 msgstr "Date de prélèvement de l'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon.php:355
+#: vl/results/pdf/result-pdf-cameroon.php:305
 msgid "SAMPLE RECEIPT DATE"
 msgstr "DATE DE RÉCEPTION DE L'ÉCHANTILLON"
 
-#: vl/results/pdf/result-pdf-cameroon.php:363
-msgid "SAMPLE REJECTION STATUS"
-msgstr "STATUT DU REJET DE L'ÉCHANTILLON"
+#: vl/results/pdf/result-pdf-cameroon.php:313
+msgid "SAMPLE REJECTED?"
+msgstr "ÉCHANTILLON REJETÉ ?"
 
-#: vl/results/pdf/result-pdf-cameroon.php:364
+#: vl/results/pdf/result-pdf-cameroon.php:314
 msgid "SAMPLE TEST DATE"
 msgstr "Date du test de l'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon.php:365
+#: vl/results/pdf/result-pdf-cameroon.php:315
 msgid "RESULT RELEASE DATE"
 msgstr "DATE DE PUBLICATION DES RÉSULTATS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:375
+#: vl/results/pdf/result-pdf-cameroon.php:325
 msgid "SAMPLE TYPE"
 msgstr "Type d'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon.php:404
-msgid "Abbott Linear Detection range: 839 copies/ml - 10 million copies/ml"
-msgstr ""
-"Abbott Linear Plage de détection : 839 copies/ml - 10 millions de copies/ml"
-
-#: vl/results/pdf/result-pdf-cameroon.php:442
+#: vl/results/pdf/result-pdf-cameroon.php:392
 msgid "TEST PLATFORM"
 msgstr "PLATE-FORME D'ESSAI"
 
-#: vl/results/pdf/result-pdf-cameroon.php:470
-msgid "TESTED BY"
-msgstr "TESTÉ PAR"
-
-#: vl/results/pdf/result-pdf-cameroon.php:471
-#: vl/results/pdf/result-pdf-cameroon.php:493
-#: vl/results/pdf/result-pdf-cameroon.php:512
-#: vl/results/pdf/result-pdf-cameroon.php:533
-msgid "SIGNATURE"
-msgstr "SIGNATURE"
-
-#: vl/results/pdf/result-pdf-cameroon.php:472
-#: vl/results/pdf/result-pdf-cameroon.php:494
-#: vl/results/pdf/result-pdf-cameroon.php:513
-#: vl/results/pdf/result-pdf-cameroon.php:534
-msgid "DATE"
-msgstr "DATE"
-
-#: vl/results/pdf/result-pdf-cameroon.php:492
-msgid "REVIEWED BY"
-msgstr "REVUE PAR"
-
-#: vl/results/pdf/result-pdf-cameroon.php:511
+#: vl/results/pdf/result-pdf-cameroon.php:461
 msgid "REPORT REVISED BY"
 msgstr "RAPPORT RÉVISÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:532
+#: vl/results/pdf/result-pdf-cameroon.php:462
+#: vl/results/pdf/result-pdf-cameroon.php:483
+msgid "SIGNATURE"
+msgstr "SIGNATURE"
+
+#: vl/results/pdf/result-pdf-cameroon.php:463
+#: vl/results/pdf/result-pdf-cameroon.php:484
+msgid "DATE"
+msgstr "DATE"
+
+#: vl/results/pdf/result-pdf-cameroon.php:482
 msgid "APPROVED BY"
 msgstr "APPROUVÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:569
+#: vl/results/pdf/result-pdf-cameroon.php:519
 msgid "Lab Comments"
 msgstr "Commentaires du laboratoire"
 
-#: vl/results/pdf/result-pdf-cameroon.php:586
+#: vl/results/pdf/result-pdf-cameroon.php:536
 msgid "Continue on current regimen"
 msgstr "Poursuivre le régime actuel"
 
-#: vl/results/pdf/result-pdf-cameroon.php:587
+#: vl/results/pdf/result-pdf-cameroon.php:537
 msgid "Printed on"
 msgstr "Imprimé le"
 
-#: vl/results/pdf/result-pdf-cameroon.php:590
+#: vl/results/pdf/result-pdf-cameroon.php:540
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 
@@ -19726,6 +19736,38 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "NAME OF REQUESTING CLINIC"
+#~ msgstr "NOM DE LA CLINIQUE DEMANDEUSE"
+
+#~ msgid "REQUESTING HEALTH FACILITY NAME"
+#~ msgstr "NOM DE L'ÉTABLISSEMENT DE SANTÉ DEMANDEUR"
+
+#~ msgid "STATE"
+#~ msgstr "Etat"
+
+#~ msgid "COUNTY"
+#~ msgstr "Pays"
+
+#~ msgid "UNIQUE ART (TRACNET) NO."
+#~ msgstr "ART UNIQUE (TRACNET) NO."
+
+#~ msgid "REASON FOR VL TESTING"
+#~ msgstr "RAISON DU TEST VL"
+
+#~ msgid "SAMPLE REJECTION STATUS"
+#~ msgstr "STATUT DU REJET DE L'ÉCHANTILLON"
+
+#~ msgid "Abbott Linear Detection range: 839 copies/ml - 10 million copies/ml"
+#~ msgstr ""
+#~ "Abbott Linear Plage de détection : 839 copies/ml - 10 millions de copies/"
+#~ "ml"
+
+#~ msgid "TESTED BY"
+#~ msgstr "TESTÉ PAR"
+
+#~ msgid "REVIEWED BY"
+#~ msgstr "REVUE PAR"
 
 #~ msgid "Email Test Request"
 #~ msgstr "Demande de test par courriel"
