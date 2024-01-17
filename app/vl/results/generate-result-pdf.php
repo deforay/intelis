@@ -134,11 +134,14 @@ foreach ($requestResult as $result) {
 		$selectedReportFormats = json_decode((string) $result['reportFormat'], true);
 	}
 
+	$fileToInclude = $fileArray[$arr['vl_form']];
 	if (!empty($selectedReportFormats) && !empty($selectedReportFormats['vl']) && file_exists($selectedReportFormats['vl'])) {
-		require($selectedReportFormats['vl']);
-	} else {
-		require($fileArray[$arr['vl_form']]);
+		$fileExtension = pathinfo($selectedReportFormats['vl'], PATHINFO_EXTENSION);
+		if (($fileExtension === 'php' || $fileExtension === 'phtml') && file_exists($selectedReportFormats['vl'])) {
+			$fileToInclude = $selectedReportFormats['vl'];
+		}
 	}
+	require($fileToInclude);
 }
 
 

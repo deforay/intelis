@@ -8,7 +8,7 @@
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
-    echo "Please run as root."
+    echo "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
     exit 1
 fi
 
