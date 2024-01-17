@@ -20,7 +20,7 @@ class LoggerUtility
         return self::$logger;
     }
 
-    public static function log($level, $message, $context = [])
+    public static function log($level, $message, array $context = []): void
     {
         $logger = self::getLogger();
         $logger->log($level, $message, $context);

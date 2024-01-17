@@ -14,12 +14,12 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\LoggerUtility;
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
-    error_log('Interfacing is not enabled. Please enable it in configuration.');
+    LoggerUtility::log('error', 'Interfacing is not enabled. Please enable it in configuration.');
     exit;
 }
 

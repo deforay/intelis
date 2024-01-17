@@ -452,7 +452,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['resul
 										<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label>
 										</td>
 										<td style="width: 25%;">
-											<select name="eidPlatform" id="eidPlatform" class="form-control" title="Please choose EID Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
+											<select name="eidPlatform" id="eidPlatform" class="form-control" title="Please choose EID Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;">
 												<?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
 											</select>
 										</td>
