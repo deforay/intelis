@@ -136,7 +136,7 @@ if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleRece
 	if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
 		$sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
 	} else {
-		$sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
+		$sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 	}
 }
 

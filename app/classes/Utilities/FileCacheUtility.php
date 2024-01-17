@@ -14,7 +14,7 @@ class FileCacheUtility
 
     public function __construct()
     {
-        $this->filesystemAdapter = new FilesystemAdapter('', 0, ROOT_PATH . DIRECTORY_SEPARATOR . 'cache');
+        $this->filesystemAdapter = new FilesystemAdapter('', 0, CACHE_PATH . DIRECTORY_SEPARATOR . 'file_cache');
         $this->tagAwareAdapter = new TagAwareAdapter($this->filesystemAdapter);
     }
 

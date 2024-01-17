@@ -78,6 +78,8 @@ class SystemService
     // Setup Timezone
     public function setDateTimeZone(): void
     {
+        $this->commonService->setGlobalDateFormat();
+
         $_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ??
             $this->commonService->getGlobalConfig('default_time_zone') ?? 'UTC';
         date_default_timezone_set($_SESSION['APP_TIMEZONE']);

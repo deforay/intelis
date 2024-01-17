@@ -80,42 +80,27 @@ if (!empty($result)) {
         $result['labName'] = '';
     }
     //Set Age
-    $age = 'Unknown';
-    if (isset($result['child_dob']) && trim((string) $result['child_dob']) != '' && $result['child_dob'] != '0000-00-00') {
-        $todayDate = strtotime(date('Y-m-d'));
-        $dob = strtotime((string) $result['child_dob']);
-        $difference = $todayDate - $dob;
-        $seconds_per_year = 60 * 60 * 24 * 365;
-        $age = round($difference / $seconds_per_year);
-    } elseif (isset($result['child_age']) && trim((string) $result['child_age']) != '' && trim((string) $result['child_age']) > 0) {
-        $age = $result['child_age'];
-    }
+    // $age = 'Unknown';
+    // if (isset($result['child_dob']) && trim((string) $result['child_dob']) != '' && $result['child_dob'] != '0000-00-00') {
+    //     $todayDate = strtotime(date('Y-m-d'));
+    //     $dob = strtotime((string) $result['child_dob']);
+    //     $difference = $todayDate - $dob;
+    //     $seconds_per_year = 60 * 60 * 24 * 365;
+    //     $age = round($difference / $seconds_per_year);
+    // } elseif (isset($result['child_age']) && trim((string) $result['child_age']) != '' && trim((string) $result['child_age']) > 0) {
+    //     $age = $result['child_age'];
+    // }
 
-    if (isset($result['sample_collection_date']) && trim((string) $result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", (string) $result['sample_collection_date']);
-        $result['sample_collection_date'] = date('d/M/Y', strtotime($expStr[0]));
-        $sampleCollectionTime = $expStr[1];
-    } else {
-        $result['sample_collection_date'] = '';
-        $sampleCollectionTime = '';
-    }
-    $sampleReceivedDate = '';
-    $sampleReceivedTime = '';
-    if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
-        $sampleReceivedDate = date('d/M/Y', strtotime($expStr[0]));
-        $sampleReceivedTime = $expStr[1];
-    }
+    $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '', true, 'd/M/Y H:i:s');
+    $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true, 'd/M/Y H:i:s');
+
+
     $sampleDispatchDate = '';
     $sampleDispatchTime = '';
     if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", (string) $result['result_printed_datetime']);
-        $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
-        $sampleDispatchTime = $expStr[1];
+        $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? '', true, 'd/M/Y H:i:s');
     } else {
-        $expStr = explode(" ", $currentTime);
-        $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
-        $sampleDispatchTime = $expStr[1];
+        $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($currentDateTime, true, 'd/M/Y H:i:s');
     }
     $testedBy = '';
     if (!empty($result['tested_by'])) {
@@ -155,7 +140,7 @@ if (!empty($result)) {
 
     $revisedSignaturePath = $reviewedBySignaturePath = $testUserSignaturePath = null;
     if (!empty($testedByRes['user_signature'])) {
-        $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
+        $testUserSignaturePath =  $testedByRes['user_signature'];
     }
     if (!empty($result['reviewedBySignature'])) {
         $reviewedBySignaturePath =  $result['reviewedBySignature'];
@@ -164,15 +149,10 @@ if (!empty($result)) {
         $approvedBySignaturePath =  $result['approvedBySignature'];
     }
     if (!empty($revisedByRes['user_signature'])) {
-        $revisedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];
+        $revisedSignaturePath =  $revisedByRes['user_signature'];
     }
 
-    if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", (string) $result['sample_tested_datetime']);
-        $result['sample_tested_datetime'] = date('d/M/Y', strtotime($expStr[0]));
-    } else {
-        $result['sample_tested_datetime'] = '';
-    }
+    $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true, 'd/M/Y H:i');
 
     if (!isset($result['child_gender']) || trim((string) $result['child_gender']) == '') {
         $result['child_gender'] = 'not reported';
@@ -318,8 +298,8 @@ if (!empty($result)) {
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_code'] . '</td>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_received_at_lab_datetime'] . '</td>';
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td colspan="3" style="line-height:5px;"></td>';
@@ -335,7 +315,7 @@ if (!empty($result)) {
     $html .= '<tr>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_name']) . '</td>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (!empty($result['sample_tested_datetime']) ? $result['sample_tested_datetime'] : '-') . '</td>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['result_printed_datetime'] . '</td>';
     $html .= '</tr>';
 
     $html .= '<tr>';

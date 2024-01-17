@@ -496,8 +496,8 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 													<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
 												</select>
 											</td>
-											<td class="rejectionReason" style="display:none;"><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
-											<td class="rejectionReason" style="display:none;">
+											<td class="rejectionReason" style="<?php echo ($vlQueryInfo['is_sample_rejected'] != 'yes') ? 'display: none;' : ''; ?>"><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
+											<td class="rejectionReason" style="<?php echo ($vlQueryInfo['is_sample_rejected'] != 'yes') ? 'display: none;' : ''; ?>">
 												<select class="form-control" id="rejectionReason" name="rejectionReason" title="Please select motifs de rejet" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
 													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($rejectionResult as $rjctReason) { ?>
@@ -514,17 +514,17 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 											<th scope="row" class="rejectionReason" style="display:none;">
 												<?php echo _translate("Rejection Date"); ?> <span class="mandatory">*</span>
 											</th>
-											<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+											<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										</tr>
 										<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
 											<td class="vlResult"><label for="vlResult">Résultat</label></td>
 											<td class="vlResult resultInputContainer">
 												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
 												<datalist id="possibleVlResults">
-													<!--<option value="< 20" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 20') ? "selected='selected'" : ""; ?>> &lt; 20 </option>
-													<option value="< 40" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 40') ? "selected='selected'" : ""; ?>> &lt; 40 </option>
-													<option value="< 400" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 400') ? "selected='selected'" : ""; ?>> &lt; 400 </option>
-													<option value="Target Not Detected" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Target Not Detected') ? "selected='selected'" : ""; ?>> Target Not Detected </option>-->
+													<!--<option value="< 20" < ?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 20') ? "selected='selected'" : ""; ?>> &lt; 20 </option>
+													<option value="< 40" < ?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 40') ? "selected='selected'" : ""; ?>> &lt; 40 </option>
+													<option value="< 400" < ?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 400') ? "selected='selected'" : ""; ?>> &lt; 400 </option>
+													<option value="Target Not Detected" < ?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Target Not Detected') ? "selected='selected'" : ""; ?>> Target Not Detected </option>-->
 												</datalist>
 											</td>
 											<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label>
@@ -534,12 +534,12 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 											</td>
 										</tr>
 										<?php if (count($reasonForFailure) > 0) { ?>
-											<tr class="reasonForFailure vlResult" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
+											<tr class="reasonForFailure" style="<?php echo ( strtolower(trim($vlQueryInfo['result'])) != 'failed') ? 'display: none;' : ''; ?>">
 												<th scope="row" class="reasonForFailure">
 													<?php echo _translate("Reason for Failure"); ?>
 												</th>
 												<td class="reasonForFailure">
-													<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
+													<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
 														<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
 													</select>
 												</td>
@@ -592,7 +592,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 					<div class="box-footer">
 						<input type="hidden" name="sampleCodeCol" value="<?= ($vlQueryInfo['sample_code']); ?>" />
 						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
-						<input type="hidden" name="oldStatus" value="<?= ($vlQueryInfo['result_status']); ?>" />
+						<input type="hidden" id="status" name="oldStatus" value="<?= ($vlQueryInfo['result_status']); ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="/vl/requests/vl-requests.php" class="btn btn-default"> Cancel</a>
@@ -788,6 +788,19 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 				$("#genderMale").prop('checked', true);
 			} else if (patientArray['gender'] == 'female') {
 				$("#genderFemale").prop('checked', true);
+				$(".femaleSection").show();
+				if ($.trim(patientArray['is_breastfeeding']) != '') {
+					$("#breastfeeding").val($.trim(patientArray['is_breastfeeding']));
+				}
+				if ($.trim(patientArray['is_pregnant']) != '') {
+					$("#pregnant").val($.trim(patientArray['is_pregnant']));
+					$('#pregnant').trigger('change');
+					if($.trim(patientArray['is_pregnant']) == 'yes'){
+						if ($.trim(patientArray['trimester']) != '') {
+							$("#trimester").val($.trim(patientArray['trimester']));
+						}
+					}
+				}
 			}
 		}
 		if ($.trim(patientArray['patient_art_no']) != '') {
@@ -869,7 +882,9 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 			$("#vlLog").val('').css('pointer-events', 'none');
 			$("#rejectionReason").val('').css('pointer-events', 'auto');
 			$(".vlResult, .vlLog").hide();
-			$("#reasonForFailure").removeClass('isRequired');
+			$('#reasonForFailure').val('');
+			$('#reasonForFailure').removeClass('isRequired');
+			$('.reasonForFailure').hide();
 		} else {
 			$(".rejectionReason").hide();
 			$("#rejectionReason").val('');

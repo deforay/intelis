@@ -18,6 +18,44 @@ get_ubuntu_version() {
     echo "$version"
 }
 
+# Function to update configuration
+update_configuration() {
+    local mysql_root_password
+    local mysql_root_password_confirm
+
+    while :; do
+        # Ask for MySQL root password
+        read -sp "Please enter the MySQL root password: " mysql_root_password
+        echo
+        read -sp "Please confirm the MySQL root password: " mysql_root_password_confirm
+        echo
+
+        if [ "$mysql_root_password" == "$mysql_root_password_confirm" ]; then
+            break
+        else
+            echo "Passwords do not match. Please try again."
+        fi
+    done
+
+    # Escape special characters in password for sed
+    escaped_mysql_root_password=$(perl -e 'print quotemeta $ARGV[0]' -- "${mysql_root_password}")
+
+    # Update database configurations in config.production.php
+    sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database']['host'] = 'localhost';|" "${config_file}"
+    sed -i "s|\$systemConfig\['database'\]\['username'\]\s*=.*|\$systemConfig['database']['username'] = 'root';|" "${config_file}"
+    sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "${config_file}"
+
+    # Prompt for Remote STS URL
+    read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url
+
+    # Update config.production.php with Remote STS URL if provided
+    if [ ! -z "$remote_sts_url" ]; then
+        sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|\$systemConfig['remoteURL'] = '$remote_sts_url';|" "${config_file}"
+    fi
+
+    echo "Configuration file updated."
+}
+
 # Check if Ubuntu version is 20.04 or newer
 min_version="20.04"
 current_version=$(get_ubuntu_version)
@@ -28,7 +66,7 @@ if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" 
 fi
 
 # Ask user for VLSM installation path
-read -p "Enter the VLSM installation path [/var/www/vlsm]: " vlsm_path
+read -p "Enter the VLSM installation path [press enter to select /var/www/vlsm]: " vlsm_path
 vlsm_path="${vlsm_path:-/var/www/vlsm}"
 
 # Check if VLSM folder exists
@@ -140,7 +178,7 @@ if [[ "${php_version}" != "${desired_php_version}" ]]; then
 
     # Download and install switch-php script
     wget https://gist.githubusercontent.com/amitdugar/339470e36f6ad6c1910914e854384294/raw/switch-php -O /usr/local/bin/switch-php
-    chmod +x /usr/local/bin/switch-php
+    chmod u+x /usr/local/bin/switch-php
 
     # Switch to PHP 8.2
     switch-php ${desired_php_version}
@@ -183,8 +221,10 @@ echo "All system checks passed. Continuing with the update..."
 
 # Update Ubuntu Packages
 echo "Updating Ubuntu packages..."
-apt update && apt upgrade -y
-apt autoremove -y
+apt-get update && apt-get upgrade -y
+apt-get autoremove -y
+
+setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
 spinner() {
     local pid=$!
@@ -238,7 +278,7 @@ if ask_yes_no "Do you want to backup the database" "no"; then
     read -s mysql_root_password
 
     # Ask for the backup location and create it if it doesn't exist
-    read -p "Enter the backup location [/var/vlsm-backup/db/]: " backup_location
+    read -p "Enter the backup location [press enter to select /var/vlsm-backup/db/]: " backup_location
     backup_location="${backup_location:-/var/vlsm-backup/db/}"
 
     # Create the backup directory if it does not exist
@@ -332,6 +372,30 @@ sudo -u www-data composer config process-timeout 30000
 sudo -u www-data composer update --no-dev &&
     sudo -u www-data composer dump-autoload -o
 
+# Check for config.production.php and its content
+config_file="${vlsm_path}/configs/config.production.php"
+dist_config_file="${vlsm_path}/configs/config.production.dist.php"
+
+if [ -f "${config_file}" ]; then
+    # Check if the file contains the required string
+    if ! grep -q "\$systemConfig\['database'\]\['host'\]" "${config_file}"; then
+        # Backup config.production.php
+        mv "${config_file}" "${config_file}_backup_$(date +%Y%m%d_%H%M%S)"
+
+        # Copy from config.production.dist.php to config.production.php
+        cp "${dist_config_file}" "${config_file}"
+
+        update_configuration
+    else
+        echo "Configuration file already contains required settings."
+    fi
+else
+    echo "Configuration file does not exist. Creating a new one from the distribution file."
+    cp "${dist_config_file}" "${config_file}"
+
+    update_configuration
+fi
+
 # Run the database migrations and other post-update tasks
 echo "Running database migrations and other post-update tasks..."
 sudo -u www-data composer post-update &
@@ -389,6 +453,12 @@ echo "Remote data sync completed."
 
 if [ -f "${vlsm_path}/cache/CompiledContainer.php" ]; then
     rm "${vlsm_path}/cache/CompiledContainer.php"
+fi
+
+# Old startup.php file is no longer needed, but if it exists, make sure it is empty
+if [ -f "${vlsm_path}/startup.php" ]; then
+    rm "${vlsm_path}/startup.php"
+    touch "${vlsm_path}/startup.php"
 fi
 
 service apache2 restart

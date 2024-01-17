@@ -188,7 +188,7 @@ try {
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'covid19', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
 
-    $general->updateResultSyncDateTime('covid19', 'form_covid19', $sampleCodes, $transactionId, $facilityIds, $labId);
+    $general->updateResultSyncDateTime('covid19', $facilityIds, $labId);
     $db->commitTransaction();
 } catch (Exception | SystemException $e) {
     $db->rollbackTransaction();

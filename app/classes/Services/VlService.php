@@ -467,7 +467,7 @@ class VlService extends AbstractTestService
 
                 $tesRequestData = [
                     'vlsm_country_id' => $formId,
-                    'sample_reordered' => _castVariable($params['sampleReordered'] ?? null, 'string') ?? 'no',
+                    'sample_reordered' => $params['sampleReordered'] ?? 'no',
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
                     'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,
@@ -483,6 +483,7 @@ class VlService extends AbstractTestService
                     'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'result_modified'  => 'no',
+                    'is_result_sms_sent'  => 'no',
                     'manual_result_entry' => 'yes'
                 ];
 
@@ -547,9 +548,8 @@ class VlService extends AbstractTestService
             $this->db->rollbackTransaction();
 
             //if ($this->db->getLastErrno() > 0) {
-            error_log($this->db->getLastErrno());
-            error_log($this->db->getLastError());
-            error_log($this->db->getLastQuery());
+            LoggerUtility::log('error', $this->db->getLastErrno() . ":" . $this->db->getLastError());
+            LoggerUtility::log('error', $this->db->getLastQuery());
             //}
 
             LoggerUtility::log('error', 'Insert VL Sample : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [

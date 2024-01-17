@@ -86,7 +86,7 @@ $query = "SELECT
             FROM form_covid19
             WHERE source_of_request LIKE 'dhis2'
             AND result_status = 7
-            AND result_sent_to_source NOT LIKE 'sent' LIMIT 100";;
+            AND result_sent_to_source NOT LIKE 'sent' LIMIT 100";
 
 $formResults = $db->rawQueryGenerator($query);
 $counter = 0;

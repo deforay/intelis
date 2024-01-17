@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\SystemException;
 use MysqliDb;
 use Generator;
+use Throwable;
 
 class DatabaseService extends MysqliDb
 {
@@ -19,6 +20,22 @@ class DatabaseService extends MysqliDb
     {
         $this->commitTransaction();
     }
+
+    public function isConnected($connectionName = null)
+    {
+        if ($connectionName === null) {
+            $connectionName = $this->defConnectionName ?? 'default';
+        }
+
+        try {
+            $this->connect($connectionName);
+            return true;
+        } catch (Throwable $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+
 
     /**
      * Execute a query and return a generator to fetch results row by row.
@@ -38,7 +55,7 @@ class DatabaseService extends MysqliDb
         if (is_array($bindParams)) {
             foreach ($bindParams as $val) {
                 $params[0] .= $this->_determineType($val);
-                array_push($params, $val);
+                $params[] = $val;
             }
             $stmt->bind_param(...$this->refValues($params));
         }
@@ -125,5 +142,10 @@ class DatabaseService extends MysqliDb
             $this->rollback();
             $this->isTransactionActive = false;
         }
+    }
+
+    public function reset(): void
+    {
+        parent::reset();
     }
 }

@@ -151,21 +151,8 @@ try {
         }
     }
 
-
     $dateFormat = $_POST['gui_date_format'] ?? 'd-M-Y';
-    $_SESSION['phpDateFormat'] = $dateFormat;
-
-    if ($dateFormat == 'd-m-Y') {
-        $_SESSION['jsDateFieldFormat'] = 'dd-mm-yy';
-        $_SESSION['dayjsDateFieldFormat'] = 'DD-MM-YYYY';
-        $_SESSION['jsDateRangeFormat'] = 'DD-MM-YYYY';
-        $_SESSION['jsDateFormatMask'] = '99-99-9999';
-    } else {
-        $_SESSION['jsDateFieldFormat'] = 'dd-M-yy';
-        $_SESSION['dayjsDateFieldFormat'] = 'DD-MMM-YYYY';
-        $_SESSION['jsDateRangeFormat'] = 'DD-MMM-YYYY';
-        $_SESSION['jsDateFormatMask'] = '99-aaa-9999';
-    }
+    $general->setGlobalDateFormat($dateFormat);
 
 
     /* For Lock approve sample updates */

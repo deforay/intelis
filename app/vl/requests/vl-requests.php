@@ -728,11 +728,20 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 <script type="text/javascript">
 	let searchExecuted = false;
-	var startDate = "";
-	var endDate = "";
-	var selectedTests = [];
-	var selectedTestsId = [];
-	var oTable = null;
+	let startDate = "";
+	let endDate = "";
+	let selectedTests = [];
+	let selectedTestsId = [];
+	let oTable = null;
+	// let xhrRequests = [];
+
+	// $(window).on('beforeunload', function() {
+	// 	for (var i = 0; i < xhrRequests.length; i++) {
+	// 		xhrRequests[i].abort();
+	// 	}
+	// 	xhrRequests = []; // Clear the array
+	// });
+
 	$(document).ready(function() {
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {

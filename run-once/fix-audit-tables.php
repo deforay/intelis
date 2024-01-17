@@ -190,6 +190,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $mainDbName = SYSTEM_CONFIG['database']['db'];
 $archiveDbName = null;
 
+if ($db->isConnected() === false) {
+    exit("Database connection failed. Please check your database settings\n");
+}
 processAuditTables($db->connection('default'), $mainDbName, $mainDbName);
 
 if (
@@ -200,5 +203,9 @@ if (
 ) {
     $archiveDbName = SYSTEM_CONFIG['archive']['database']['db'];
     $db->addConnection('archive', SYSTEM_CONFIG['archive']['database']);
-    processAuditTables($db->connection('archive'), $mainDbName, $archiveDbName, false);
+
+    // Check if connection was successful
+    if ($db->isConnected('archive') === true) {
+        processAuditTables($db->connection('archive'), $mainDbName, $archiveDbName, false);
+    }
 }

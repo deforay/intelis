@@ -82,7 +82,7 @@ try {
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
 
-    $general->updateTestRequestsSyncDateTime('hepatitis', 'form_hepatitis', 'hepatitis_id', $sampleIds, $transactionId, $facilityIds, $labId);
+    $general->updateTestRequestsSyncDateTime('hepatitis', $facilityIds, $labId);
     $db->commitTransaction();
 } catch (Exception | SystemException $e) {
     $db->rollbackTransaction();

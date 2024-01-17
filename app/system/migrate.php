@@ -25,6 +25,13 @@ if (version_compare(VERSION, '4.5.3', '<')) {
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+
+// Check if connection was successful
+if ($db->isConnected() === false) {
+    exit("Database connection failed. Please check your database settings\n");
+}
+
+
 $db->where('name', 'sc_version');
 $currentVersion = $db->getValue('system_config', 'value');
 $migrationFiles = glob(APPLICATION_PATH . '/../dev/migrations/*.sql');

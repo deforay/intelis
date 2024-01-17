@@ -4,6 +4,7 @@ namespace App\Services;
 
 use COUNTRY;
 use Exception;
+use Throwable;
 use TCPDFBarcode;
 use TCPDF2DBarcode;
 use SodiumException;
@@ -15,7 +16,6 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
-use Symfony\Contracts\Cache\ItemInterface;
 
 
 class CommonService
@@ -29,6 +29,50 @@ class CommonService
         $this->db = $db;
         $this->facilitiesService = $facilitiesService;
         $this->fileCache = $fileCache;
+    }
+
+    public function setGlobalDateFormat($inputFormat = null)
+    {
+        $dateFormatArray = $this->getDateFormat(null, $inputFormat);
+        foreach ($dateFormatArray as $key => $value) {
+            $_SESSION[$key] = $value;
+        }
+    }
+
+    public function getDateFormat($category = null, $inputFormat = null)
+    {
+        $dateFormat = $inputFormat ?? $this->getGlobalConfig('gui_date_format') ?? 'd-M-Y';
+
+        $dateFormatArray = ['phpDateFormat' => $dateFormat];
+
+        if ($dateFormat == 'd-m-Y') {
+            $dateFormatArray['jsDateFieldFormat'] = 'dd-mm-yy';
+            $dateFormatArray['dayjsDateFieldFormat'] = 'DD-MM-YYYY';
+            $dateFormatArray['jsDateRangeFormat'] = 'DD-MM-YYYY';
+            $dateFormatArray['jsDateFormatMask'] = '99-99-9999';
+        } else {
+            $dateFormatArray['jsDateFieldFormat'] = 'dd-M-yy';
+            $dateFormatArray['dayjsDateFieldFormat'] = 'DD-MMM-YYYY';
+            $dateFormatArray['jsDateRangeFormat'] = 'DD-MMM-YYYY';
+            $dateFormatArray['jsDateFormatMask'] = '99-aaa-9999';
+        }
+
+        if (empty($category)) {
+            // Return all date formats
+            return $dateFormatArray;
+        } elseif ($category == 'php') {
+            return $dateFormatArray['phpDateFormat'] ?? 'd-m-Y';
+        } elseif ($category == 'js') {
+            return $dateFormatArray['jsDateFieldFormat'] ?? 'dd-mm-yy';
+        } elseif ($category == 'dayjs') {
+            return $dateFormatArray['dayjsDateFieldFormat'] ?? 'DD-MM-YYYY';
+        } elseif ($category == 'jsDateRange') {
+            return $dateFormatArray['jsDateRangeFormat'] ?? 'DD-MM-YYYY';
+        } elseif ($category == 'jsMask') {
+            return $dateFormatArray['jsDateFormatMask'] ?? '99-99-9999';
+        } else {
+            return null;
+        }
     }
 
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false, bool $unbuffered = false): array
@@ -59,11 +103,7 @@ class CommonService
 
                 // Generate a unique session key for the count query
                 $countQuerySessionKey = md5($countSql);
-                if (isset($_SESSION['queryCounters'][$countQuerySessionKey])) {
-                    $count = $_SESSION['queryCounters'][$countQuerySessionKey];
-                } else {
-                    $count = $_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->db->rawQueryOne($countSql)['totalCount'];
-                }
+                $count = $_SESSION['queryCounters'][$countQuerySessionKey] ?? ($_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->db->rawQueryOne($countSql)['totalCount']);
             } else {
                 $count = count($queryResult);
             }
@@ -275,16 +315,12 @@ class CommonService
         if (is_null($inputString)) {
             return null;
         }
-        switch ($action) {
-            case 'encrypt':
-                return self::encrypt($inputString, $key);
-            case 'decrypt':
-                return self::decrypt($inputString, $key);
-            case 'doNothing':
-                return $inputString;
-            default:
-                return null;
-        }
+        return match ($action) {
+            'encrypt' => self::encrypt($inputString, $key),
+            'decrypt' => self::decrypt($inputString, $key),
+            'doNothing' => $inputString,
+            default => null,
+        };
     }
 
     public function activityLog($eventType, $action, $resource)
@@ -704,7 +740,7 @@ class CommonService
                 MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'responses');
                 MiscUtility::zipJson($responseData, "$folderPath/responses/$transactionId.json");
             }
-
+            $this->db->reset();
             $data = [
                 'transaction_id' => $transactionId ?? null,
                 'requested_by' => $user ?? 'system',
@@ -728,31 +764,10 @@ class CommonService
         }
     }
 
-    public function updateSyncDateTime($testType, $testTable, $columnForWhereCondition, $sampleIds, $transactionId, $facilityIds, $labId, $syncType): void
+    public function updateSyncDateTime($testType, $facilityIds, $labId, $syncType): void
     {
         try {
             $currentDateTime = DateUtility::getCurrentDateTime();
-            // $batchSize = 100;
-
-
-            // if (!empty($sampleIds)) {
-            //     $sampleIdsBatches = array_chunk($sampleIds, $batchSize);
-
-            //     foreach ($sampleIdsBatches as $batch) {
-            //         $sampleIdsStr = "'" . implode("','", $batch) . "'";
-            //         $formAttributes = [
-            //             "remote{$syncType}Sync" => $currentDateTime,
-            //             "{$syncType}SyncTransactionId" => $transactionId
-            //         ];
-            //         $formAttributes = $this->jsonToSetString(json_encode($formAttributes), 'form_attributes');
-            //         $data = [
-            //             'form_attributes' => $this->db->func($formAttributes),
-            //             'data_sync' => 1
-            //         ];
-            //         $this->db->where($columnForWhereCondition, [$sampleIdsStr], 'IN');
-            //         $this->db->update($testTable, $data);
-            //     }
-            // }
 
             if (!empty($facilityIds)) {
                 $facilityIdsStr = implode(",", array_unique(array_filter($facilityIds)));
@@ -780,7 +795,7 @@ class CommonService
                 $this->db->where('facility_id', $labId);
                 $this->db->update('facility_details', $data);
             }
-        } catch (Exception | SystemException $exc) {
+        } catch (Throwable $exc) {
             if ($this->db->getLastErrno() > 0) {
                 error_log($this->db->getLastError());
                 error_log($this->db->getLastQuery());
@@ -789,14 +804,14 @@ class CommonService
         }
     }
 
-    public function updateTestRequestsSyncDateTime($testType, $testTable, $testTablePrimaryKey, $sampleIds, $transactionId, $facilityIds, $labId): void
+    public function updateTestRequestsSyncDateTime($testType, $facilityIds, $labId): void
     {
-        $this->updateSyncDateTime($testType, $testTable, $testTablePrimaryKey, $sampleIds, $transactionId, $facilityIds, $labId, 'Requests');
+        $this->updateSyncDateTime($testType, $facilityIds, $labId, 'Requests');
     }
 
-    public function updateResultSyncDateTime($testType, $testTable, $sampleCodes, $transactionId, $facilityIds, $labId): void
+    public function updateResultSyncDateTime($testType, $facilityIds, $labId): void
     {
-        $this->updateSyncDateTime($testType, $testTable, 'sample_code', $sampleCodes, $transactionId, $facilityIds, $labId, 'Results');
+        $this->updateSyncDateTime($testType, $facilityIds, $labId, 'Results');
     }
 
     public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = [0, 0, 0]): string
@@ -840,7 +855,8 @@ class CommonService
         // Build the set string
         $setString = '';
         foreach ($data as $key => $value) {
-            $setString .= ', "$.' . $key . '", JSON_UNQUOTE(' . $this->jsonValueToString($value) . ')';
+            $setString .= ', "$.' . $key . '", ' . (string) $this->jsonValueToString($value) . '';
+            //$setString .= ', "$.' . $key . '", JSON_UNQUOTE(' . (string) $this->jsonValueToString($value) . ')';
         }
 
         // Construct and return the JSON_SET query
@@ -1240,7 +1256,7 @@ class CommonService
     {
         $ciphering = "AES-128-CTR";
         $options = 0;
-        if (strpos($viewId, '#') !== false) {
+        if (str_contains($viewId, '#')) {
             list($encryptedData, $ivHex) = explode('#', $viewId, 2);
             // Convert the hex string back to binary for the IV
             $decryption_iv = hex2bin($ivHex);

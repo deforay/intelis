@@ -16,6 +16,7 @@ use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\LoggerUtility;
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
     error_log('Interfacing is not enabled. Please enable it in configuration.');
@@ -35,7 +36,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
 if (empty($labId)) {
-    echo "No Lab ID set in System Config";
+    LoggerUtility::log('error', "No Lab ID set in System Config. Skipping Interfacing Results");
     exit(0);
 }
 
@@ -103,18 +104,18 @@ if (!empty($interfaceData)) {
 
     foreach ($interfaceData as $key => $result) {
 
-        if (empty($result['order_id'])) {
+        if (empty($result['order_id']) && empty($result['test_id'])) {
             continue;
         }
 
-        if ($allowRepeatedTests === false && in_array($result['order_id'], $processedResults)) {
+        if ($allowRepeatedTests === false && (in_array($result['test_id'], $processedResults) || in_array($result['order_id'], $processedResults))) {
             continue;
         }
 
         $tableInfo = [];
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
-            $tableQuery = "SELECT $individualIdColumn FROM $individualTableName WHERE sample_code = ? OR remote_sample_code = ?";
-            $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id'], $result['order_id']]);
+            $tableQuery = "SELECT $individualIdColumn FROM $individualTableName WHERE (sample_code = ? OR remote_sample_code = ?) OR (sample_code = ? OR remote_sample_code = ?)";
+            $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id'], $result['order_id'], $result['test_id'], $result['test_id']]);
             if (!empty($tableInfo[$individualIdColumn])) {
                 break;
             }
@@ -219,24 +220,25 @@ if (!empty($interfaceData)) {
             $vlUpdateId = $db->update('form_vl', $data);
             $numberOfResults++;
             $processedResults[] = $result['order_id'];
+            $processedResults[] = $result['test_id'];
             if ($vlUpdateId) {
                 if ($mysqlConnected) {
                     $interfaceData = [
                         'lims_sync_status' => 1,
                         'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
                     ];
-                    $db->connection('interface')->where('order_id', $result['order_id']);
+                    $db->connection('interface')->where('id', $result['id']);
                     $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
                 }
 
                 if ($sqliteConnected) {
                     // Prepare the SQL query
-                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE id = :id");
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
                     $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
-                    $stmt->bindValue(':order_id', $result['order_id'], PDO::PARAM_INT);
+                    $stmt->bindValue(':id', $result['id'], PDO::PARAM_INT);
 
                     // Execute the prepared statement
                     $stmt->execute();
@@ -280,23 +282,24 @@ if (!empty($interfaceData)) {
             $eidUpdateId = $db->update('form_eid', $data);
             $numberOfResults++;
             $processedResults[] = $result['order_id'];
+            $processedResults[] = $result['test_id'];
             if ($eidUpdateId) {
                 if ($mysqlConnected) {
                     $interfaceData = [
                         'lims_sync_status' => 1,
                         'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
                     ];
-                    $db->connection('interface')->where('order_id', $result['order_id']);
+                    $db->connection('interface')->where('id', $result['id']);
                     $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
                 }
                 if ($sqliteConnected) {
                     // Prepare the SQL query
-                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE id = :id");
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
                     $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
-                    $stmt->bindValue(':order_id', $result['order_id'], PDO::PARAM_INT);
+                    $stmt->bindValue(':id', $result['id'], PDO::PARAM_INT);
 
                     // Execute the prepared statement
                     $stmt->execute();
@@ -359,23 +362,24 @@ if (!empty($interfaceData)) {
             $vlUpdateId = $db->update('form_hepatitis', $data);
             $numberOfResults++;
             $processedResults[] = $result['order_id'];
+            $processedResults[] = $result['test_id'];
             if ($vlUpdateId) {
                 if ($mysqlConnected) {
                     $interfaceData = [
                         'lims_sync_status' => 1,
                         'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
                     ];
-                    $db->connection('interface')->where('order_id', $result['order_id']);
+                    $db->connection('interface')->where('id', $result['id']);
                     $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
                 }
                 if ($sqliteConnected) {
                     // Prepare the SQL query
-                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE id = :id");
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
                     $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
-                    $stmt->bindValue(':order_id', $result['order_id'], PDO::PARAM_INT);
+                    $stmt->bindValue(':id', $result['id'], PDO::PARAM_INT);
 
                     // Execute the prepared statement
                     $stmt->execute();
@@ -387,17 +391,17 @@ if (!empty($interfaceData)) {
                     'lims_sync_status' => 2,
                     'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
                 ];
-                $db->connection('interface')->where('order_id', $result['order_id']);
+                $db->connection('interface')->where('id', $result['id']);
                 $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
             }
             if ($sqliteConnected) {
                 // Prepare the SQL query
-                $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE order_id = :order_id");
+                $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE id = :id");
 
                 // Bind the values to the placeholders in the prepared statement
                 $stmt->bindValue(':lims_sync_status', 2, PDO::PARAM_INT);
                 $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
-                $stmt->bindValue(':order_id', $result['order_id'], PDO::PARAM_INT);
+                $stmt->bindValue(':id', $result['id'], PDO::PARAM_INT);
 
                 // Execute the prepared statement
                 $stmt->execute();

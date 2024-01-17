@@ -127,6 +127,7 @@ class GenericTestsService extends AbstractTestService
 
                 $tesRequestData = [
                     'vlsm_country_id' => $formId,
+                    'sample_reordered' => $params['sampleReordered'] ?? 'no',
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
                     'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,
@@ -139,7 +140,8 @@ class GenericTestsService extends AbstractTestService
                     'form_attributes' => $params['formAttributes'] ?? "{}",
                     'request_created_datetime' => DateUtility::getCurrentDateTime(),
                     'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                    'last_modified_datetime' => DateUtility::getCurrentDateTime()
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                    'is_result_sms_sent'  => 'no',
                 ];
 
                 $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;

@@ -157,7 +157,7 @@ try {
 
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
-    $general->updateResultSyncDateTime('eid', 'form_eid', $sampleCodes, $transactionId, $facilityIds, $labId);
+    $general->updateResultSyncDateTime('eid', $facilityIds, $labId);
 
     $db->commitTransaction();
 } catch (Exception | SystemException $e) {

@@ -970,9 +970,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           } else if (pName == '') {
                provinceName = true;
                facilityName = true;
-               $("#province").html("<?= (string) $province; ?>");
+               $("#province").html("<?= $province; ?>");
                $("#district").html("<option value=''> <?= _translate('-- Select --'); ?> </option>");
-               $("#facilityId").html("<?= (string) $facility; ?>");
+               $("#facilityId").html("<?= $facility; ?>");
                $("#facilityId").select2("val", "");
           }
           $.unblockUI();

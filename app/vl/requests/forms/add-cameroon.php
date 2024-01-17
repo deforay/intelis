@@ -895,8 +895,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           } else if (pName == '') {
                provinceName = true;
                facilityName = true;
-               $("#province").html("<?= (string) $province; ?>");
-               $("#facilityId").html("<?= (string) ($facility); ?>");
+               $("#province").html("<?= $province; ?>");
+               $("#facilityId").html("<?= $facility; ?>");
                $("#facilityId").select2("val", "");
                $("#district").html("<option value=''> -- Select -- </option>");
           }

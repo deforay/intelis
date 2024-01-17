@@ -46,6 +46,21 @@ ALTER TABLE `audit_form_vl` DROP `requesting_vl_service_sector`;
 ALTER TABLE `audit_form_vl` DROP `requesting_category`;
 ALTER TABLE `audit_form_vl` DROP `requesting_professional_number`;
 
+ALTER TABLE `form_vl` DROP `sample_code_title`;
+ALTER TABLE `audit_form_vl` DROP `sample_code_title`;
+
+ALTER TABLE `form_vl` CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_vl` CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_vl` CHANGE `is_result_sms_sent` `is_result_sms_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_vl` CHANGE `is_result_sms_sent` `is_result_sms_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_vl` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_vl` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_generic` CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_generic` CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
 
 -- Jeyabanu 09-Jan-2024
 ALTER TABLE `instruments` ADD `additional_text` VARCHAR(256) NULL DEFAULT NULL AFTER `low_vl_result_text`;
@@ -70,7 +85,35 @@ ALTER TABLE `covid19_tests` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AF
 ALTER TABLE `form_eid` ADD `request_clinician_phone_number` VARCHAR(32) NULL DEFAULT NULL AFTER `clinician_name`;
 ALTER TABLE `audit_form_eid` ADD `request_clinician_phone_number` VARCHAR(32) NULL DEFAULT NULL AFTER `clinician_name`;
 
+-- Amit 12-Jan-2024
+
+ALTER TABLE `form_eid` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_eid` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_covid19` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_covid19` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_tb` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_tb` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_hepatitis` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_hepatitis` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `form_generic` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_generic` CHANGE `sample_reordered` `sample_reordered` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+
+UPDATE form_vl SET sample_reordered = 'no' WHERE sample_reordered is null;
+UPDATE form_eid SET sample_reordered = 'no' WHERE sample_reordered is null;
+UPDATE form_covid19 SET sample_reordered = 'no' WHERE sample_reordered is null;
+UPDATE form_tb SET sample_reordered = 'no' WHERE sample_reordered is null;
+UPDATE form_hepatitis SET sample_reordered = 'no' WHERE sample_reordered is null;
+UPDATE form_generic SET sample_reordered = 'no' WHERE sample_reordered is null;
+
+
+
 -- Jeyabanu 12-Jan-2024
 ALTER TABLE `instruments` CHANGE `config_id` `instrument_id` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 ALTER TABLE `instrument_controls` CHANGE `config_id` `instrument_id` VARCHAR(50) NOT NULL;
 ALTER TABLE `instrument_machines` CHANGE `config_id` `instrument_id` VARCHAR(50) NOT NULL;
+

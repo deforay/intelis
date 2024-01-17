@@ -41,6 +41,7 @@ $request = AppRegistry::get('request');
 
 // Define custom filters, with only StringTrim for viral load results
 $onlyStringTrim = (new FilterChain())->attach(new StringTrim());
+
 $customFilters = [
     'vlResult' => $onlyStringTrim,
     'cphlVlResult' => $onlyStringTrim,
@@ -57,12 +58,14 @@ $instanceId = $general->getInstanceId();
 
 try {
 
+    $db->beginTransaction();
+
     $mandatoryFields = [
         $_POST['vlSampleId'],
         $_POST['sampleCode'],
         $_POST['sampleCollectionDate']
     ];
-    if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
+    if (empty($_POST) || ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
         $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
         header("Location:/vl/requests/addVlRequest.php");
         die;
@@ -104,12 +107,19 @@ try {
         }
     }
 
-
-    //update facility code
-    if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
-        $fData = array('facility_code' => $_POST['facilityCode']);
-        $db->where('facility_id', $_POST['facilityId']);
-        $id = $db->update($fDetails, $fData);
+    try {
+        //update facility code
+        if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
+            $fData = array('facility_code' => $_POST['facilityCode']);
+            $db->where('facility_id', $_POST['facilityId']);
+            $id = $db->update($fDetails, $fData);
+        }
+    } catch (Exception $e) {
+        LoggerUtility::log('error', "Unlabe to update facility_code in addVlRequestHelper.php " . $db->getLastError(), [
+            'exception' => $db->getLastError(),
+            'file' => __FILE__,
+            'line' => __LINE__
+        ]);
     }
     if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {
         $_POST['patientPregnant'] = "N/A";
@@ -206,7 +216,7 @@ try {
     $vlData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $formId,
-        'sample_reordered' => _castVariable($_POST['sampleReordered'] ?? null, 'string') ?? 'no',
+        'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
         'external_sample_code' => $_POST['serialNo'] ?? null,
         'facility_id' => $_POST['facilityId'] ?? null,
         'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),
@@ -273,7 +283,7 @@ try {
         'result_dispatched_datetime' => DateUtility::isoDateFormat($_POST['resultDispatchedOn'] ?? '', true),
         'result_value_hiv_detection' => $hivDetection,
         'reason_for_failure' => $_POST['reasonForFailure'] ?? null,
-        'is_sample_rejected' => $params['isSampleRejected'] ?? null,
+        'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim((string) $_POST['rejectionReason']) != '') ? $_POST['rejectionReason'] : null,
         'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
         'rejection_on' => DateUtility::isoDateFormat($_POST['rejectionDate'] ?? ''),
@@ -382,6 +392,7 @@ try {
     $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);
 
+    $db->commitTransaction();
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("VL request added successfully");
         $eventType = 'add-vl-request-sudan';
@@ -405,6 +416,7 @@ try {
             header("Location:/vl/requests/vl-requests.php");
         }
     } else {
+        $db->rollbackTransaction();
         if ($db->getLastErrno() > 0) {
             LoggerUtility::log('error', "DB ERROR :: " . $db->getLastError(), [
                 'exception' => $db->getLastError(),
@@ -416,5 +428,6 @@ try {
         header("Location:/vl/requests/vl-requests.php");
     }
 } catch (Exception $e) {
+    $db->rollbackTransaction();
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), 500, $e);
 }
