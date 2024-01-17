@@ -60,13 +60,17 @@ ALTER TABLE `form_vl` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `v
 ALTER TABLE `audit_form_vl` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `vl_test_platform`;
 ALTER TABLE `form_eid` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `eid_test_platform`;
 ALTER TABLE `audit_form_eid` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `eid_test_platform`;
-ALTER TABLE `form_covid19` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `covid19_test_platform`;
-ALTER TABLE `audit_form_covid19` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `covid19_test_platform`;
 ALTER TABLE `form_hepatitis` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `hepatitis_test_platform`;
 ALTER TABLE `audit_form_hepatitis` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `hepatitis_test_platform`;
 ALTER TABLE `form_tb` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `tb_test_platform`;
 ALTER TABLE `audit_form_tb` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `tb_test_platform`;
+ALTER TABLE `covid19_tests` ADD `instrument_id` VARCHAR(50) NULL DEFAULT NULL AFTER `testing_platform`;
 
 -- Jeyabanu 11-Jan-2024
 ALTER TABLE `form_eid` ADD `request_clinician_phone_number` VARCHAR(32) NULL DEFAULT NULL AFTER `clinician_name`;
 ALTER TABLE `audit_form_eid` ADD `request_clinician_phone_number` VARCHAR(32) NULL DEFAULT NULL AFTER `clinician_name`;
+
+-- Jeyabanu 12-Jan-2024
+ALTER TABLE `instruments` CHANGE `config_id` `instrument_id` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `instrument_controls` CHANGE `config_id` `instrument_id` VARCHAR(50) NOT NULL;
+ALTER TABLE `instrument_machines` CHANGE `config_id` `instrument_id` VARCHAR(50) NOT NULL;

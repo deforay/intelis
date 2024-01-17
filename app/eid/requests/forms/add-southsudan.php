@@ -403,13 +403,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th scope="row" class="labels">Testing Platform </th>
                                             <td><select name="eidPlatform" id="eidPlatform" class="form-control result-optional" title="Please select the testing platform">
-                                            <option value="">-- Select --</option>
-                                                                                <?php foreach ($importResult as $mName) { ?>
-                                                                                     <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
-                                                                                <?php } ?>
+                                                <?= $general->generateSelectOptions($testPlatformList, null , '-- Select --'); ?>
                                                 </select>
                                             </td>
-
 
                                             <th scope="row" class="labels">Machine used to test </th>
                                             <td><select name="machineName" id="machineName" class="form-control result-optional" title="Please select the machine name">

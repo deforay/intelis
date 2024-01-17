@@ -123,7 +123,7 @@ foreach ($iResult as $val) {
 
 $testPlatformResult = $general->getTestingPlatforms('eid');
 foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
+    $testPlatformList[$row['machine_name'].'##'.$row['instrument_id']] = $row['machine_name'];
 }
 
 

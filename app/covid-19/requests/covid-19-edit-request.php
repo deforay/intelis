@@ -138,6 +138,12 @@ if (isset($arr['covid19_min_patient_id_length']) && $arr['covid19_min_patient_id
     $minPatientIdLength = $arr['covid19_min_patient_id_length'];
 }
 
+/* To get testing platform names */
+$testPlatformResult = $general->getTestingPlatforms('covid19');
+foreach ($testPlatformResult as $row) {
+    $testPlatformList[$row['machine_name'].'##'.$row['instrument_id']] = $row['machine_name'];
+}
+
 $fileArray = array(
     COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
     COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',

@@ -76,11 +76,11 @@ if (!isset($id) || trim($id) == '') {
 }
 $content = '';
 $displayOrder = [];
-$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id= ? ";
+$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.instrument_id=b_d.machine where batch_id= ? ";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
 // Config control
-$configControlQuery = "SELECT * from instrument_controls where config_id= ? ";
-$configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['config_id']]);
+$configControlQuery = "SELECT * from instrument_controls where instrument_id= ? ";
+$configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['instrument_id']]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];

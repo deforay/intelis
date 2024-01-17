@@ -30,7 +30,7 @@ class InstrumentsService
         $result = $db->get($this->table);
         if ($dropDown) {
             foreach ($result as $row) {
-                $response[$row['config_id']] = $row['machine_name'];
+                $response[$row['instrument_id']] = $row['machine_name'];
             }
             return $response;
         } else {

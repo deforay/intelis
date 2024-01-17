@@ -75,6 +75,12 @@ foreach ($rejectionTypeResult as $type) {
     $rejectionReason .= '</optgroup>';
 }
 
+
+$testPlatformResult = $general->getTestingPlatforms('eid');
+foreach ($testPlatformResult as $row) {
+    $testPlatformList[$row['machine_name'].'##'.$row['instrument_id']] = $row['machine_name'];
+}
+
 $iResultQuery = "select * from  instrument_machines";
 $iResult = $db->rawQuery($iResultQuery);
 $machine = [];
@@ -86,10 +92,6 @@ $minPatientIdLength = 0;
 if (isset($arr['eid_min_patient_id_length']) && $arr['eid_min_patient_id_length'] != "") {
     $minPatientIdLength = $arr['eid_min_patient_id_length'];
 }
-
-//get import config
-$insCondition = "(JSON_SEARCH(supported_tests, 'all', 'eid') IS NOT NULL) OR (supported_tests IS NULL)";
-$importResult = $general->fetchDataFromTable('instruments', $insCondition);
 
 $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'active'");
 //Recommended corrective actions

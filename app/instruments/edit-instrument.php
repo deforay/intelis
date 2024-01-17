@@ -29,7 +29,7 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$sQuery = "SELECT * from instruments where config_id=?";
+$sQuery = "SELECT * from instruments where instrument_id=?";
 $sInfo = $db->rawQueryOne($sQuery, [$id]);
 
 
@@ -45,9 +45,9 @@ if (!empty($sInfo['approved_by'])) {
 	$sInfo['approved_by'] = json_decode((string) $sInfo['approved_by'], true);
 }
 
-$configMachineQuery = "SELECT * FROM instrument_machines WHERE config_id=?";
+$configMachineQuery = "SELECT * FROM instrument_machines WHERE instrument_id=?";
 $configMachineInfo = $db->rawQuery($configMachineQuery, [$id]);
-$configControlQuery = "SELECT * FROM instrument_controls WHERE config_id=?";
+$configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id=?";
 $configControlInfo = $db->rawQuery($configControlQuery, [$id]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
@@ -106,7 +106,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										<?php echo _translate("Instrument Name"); ?><span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder="<?php echo _translate('eg. Roche or Abbott'); ?>" title="<?php echo _translate('Please enter instrument name'); ?>" value="<?php echo $sInfo['machine_name']; ?>" onblur="checkNameValidation('instruments','machine_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','<?php echo _translate('This instrument name already exists.Try another name'); ?>',null);" />
+										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder="<?php echo _translate('eg. Roche or Abbott'); ?>" title="<?php echo _translate('Please enter instrument name'); ?>" value="<?php echo $sInfo['machine_name']; ?>" onblur="checkNameValidation('instruments','machine_name',this,'<?php echo "instrument_id##" . $sInfo['instrument_id']; ?>','<?php echo _translate('This instrument name already exists.Try another name'); ?>',null);" />
 									</div>
 								</div>
 							</div>
@@ -580,7 +580,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<input type="hidden" id="configId" name="configId" value="<?php echo base64_encode((string) $sInfo['config_id']); ?>" />
+						<input type="hidden" id="configId" name="configId" value="<?php echo base64_encode((string) $sInfo['instrument_id']); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
 							<?php echo _translate("Submit"); ?>
 						</a>

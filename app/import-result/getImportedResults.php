@@ -114,7 +114,7 @@ $tsResult = $db->rawQuery($tsQuery);
 $scQuery = "select r_sample_control_name from r_sample_controls ORDER BY r_sample_control_name DESC";
 $scResult = $db->rawQuery($scQuery);
 //in-house control limit
-$inQuery = "SELECT ic.number_of_in_house_controls,ic.number_of_manufacturer_controls,i.machine_name from temp_sample_import as ts INNER JOIN instruments as i ON i.machine_name=ts.vl_test_platform INNER JOIN instrument_controls as ic ON ic.config_id=i.config_id WHERE ic.test_type = '" . $module . "' limit 0,1";
+$inQuery = "SELECT ic.number_of_in_house_controls,ic.number_of_manufacturer_controls,i.machine_name from temp_sample_import as ts INNER JOIN instruments as i ON i.machine_name=ts.vl_test_platform INNER JOIN instrument_controls as ic ON ic.instrument_id=i.instrument_id WHERE ic.test_type = '" . $module . "' limit 0,1";
 $inResult = $db->rawQuery($inQuery);
 
 $sampleTypeTotal = 0;

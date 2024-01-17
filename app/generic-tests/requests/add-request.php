@@ -549,7 +549,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                                  <select name="testPlatform" id="testPlatform" class="form-control result-optional" title="Please choose Testing Platform">
                                                                       <option value="">-- Select --</option>
                                                                       <?php foreach ($importResult as $mName) { ?>
-                                                                           <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
+                                                                           <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>"><?php echo $mName['machine_name']; ?></option>
                                                                       <?php } ?>
                                                                  </select>
                                                             </div>

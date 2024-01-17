@@ -274,6 +274,14 @@ try {
 		$_POST['approvedOnDateTime'] = null;
 	}
 
+	$testingPlatform = null;
+    $instrumentId = null;
+    if (isset($_POST['eidPlatform']) && trim((string) $_POST['eidPlatform']) != '') {
+        $platForm = explode("##", (string) $_POST['eidPlatform']);
+        $testingPlatform = $platForm[0];
+        $instrumentId = $platForm[1];
+    }
+
 	//Update patient Information in Patients Table
 	$patientsService->savePatient($_POST, 'form_eid');
 
@@ -370,7 +378,7 @@ try {
 		'rapid_test_result' => $_POST['rapidTestResult'] ?? null,
 		'lab_reception_person' => $_POST['labReceptionPerson'] ?? null,
 		'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'] ?? null,
-		'eid_test_platform' => $_POST['eidPlatform'] ?? null,
+		'eid_test_platform' => $testingPlatform ?? null,
 		'instrument_id' => $instrumentId ?? null,
 		'import_machine_name' => $_POST['machineName'] ?? null,
 		'sample_tested_datetime' => $_POST['sampleTestedDateTime'] ?? null,

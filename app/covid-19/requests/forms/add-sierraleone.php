@@ -15,14 +15,7 @@ foreach ($nationalityResult as $nrow) {
     $nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
 
-/* To get testing platform names */
-$testPlatformResult = $general->getTestingPlatforms('covid19');
-foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
-}
-
 $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
-
 
 
 /** @var Covid19Service $covid19Service */

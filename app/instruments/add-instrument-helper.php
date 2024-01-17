@@ -54,7 +54,7 @@ try {
         $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
 
         $data = array(
-            'config_id'  => $general->generateUUID(),
+            'instrument_id'  => $general->generateUUID(),
             'machine_name' => $_POST['configurationName'],
             'lab_id' => $_POST['testingLab'],
             'supported_tests' => $_POST['supportedTests'] ?? null,
@@ -76,7 +76,7 @@ try {
                     $pocDev = 'yes';
                 }
                 if (trim((string) $_POST['configMachineName'][$c]) != '') {
-                    $configMachineData = array('config_id' => $id, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime());
+                    $configMachineData = array('instrument_id' => $id, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime());
                     $db->insert($importMachineTable, $configMachineData);
                 }
             }
@@ -85,7 +85,7 @@ try {
         if ($id > 0 && !empty($_POST['testType'])) {
             foreach ($_POST['testType'] as $key => $val) {
                 if (trim((string) $val) != '') {
-                    $configControlData = array('test_type' => $val, 'config_id' => $id, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
+                    $configControlData = array('test_type' => $val, 'instrument_id' => $id, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
                     $db->insert($importControlTable, $configControlData);
                 }
             }

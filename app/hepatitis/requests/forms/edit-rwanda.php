@@ -373,7 +373,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <td><label for="">Testing Platform </label></td>
                                             <td><select name="hepatitisPlatform" id="hepatitisPlatform" class="labSecInput form-control rejected-input" title="Please select the testing platform">
-                                                    <?= $general->generateSelectOptions($testPlatformList, $hepatitisInfo['hepatitis_test_platform'], '-- Select --'); ?>
+                                                    <?= $general->generateSelectOptions($testPlatformList, $hepatitisInfo['hepatitis_test_platform'].'##'.$hepatitisInfo['instrument_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                             <td><label for="">Machine used to test </label></td>
