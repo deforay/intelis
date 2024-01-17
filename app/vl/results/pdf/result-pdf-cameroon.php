@@ -3,8 +3,8 @@
 // This file is included in /vl/results/generate-result-pdf.php
 
 use App\Services\UsersService;
-use App\Services\ResultPdfService;
 use App\Utilities\DateUtility;
+use App\Services\ResultPdfService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
@@ -148,38 +148,27 @@ if (!empty($result)) {
      if (!isset($result['labName']) || trim((string) $result['labName']) == '') {
           $result['labName'] = '';
      }
+
      //Set Age
      $age = 'Unknown';
-     if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
-          $todayDate = strtotime(date('Y-m-d'));
-          $dob = strtotime((string) $result['patient_dob']);
-          $difference = $todayDate - $dob;
-          $seconds_per_year = 60 * 60 * 24 * 365;
-          $age = round($difference / $seconds_per_year);
-     } elseif (isset($result['patient_age_in_years']) && trim((string) $result['patient_age_in_years']) != '' && trim((string) $result['patient_age_in_years']) > 0) {
+     if (!empty($result['patient_dob']) && $result['patient_dob'] != '0000-00-00') {
+          $dob = new DateTime($result['patient_dob']);
+          $today = new DateTime(date('Y-m-d'));
+          $age = $dob->diff($today)->y;
+     } elseif (!empty($result['patient_age_in_years']) && $result['patient_age_in_years'] > 0) {
           $age = $result['patient_age_in_years'];
-     } elseif (isset($result['patient_age_in_months']) && trim((string) $result['patient_age_in_months']) != '' && trim((string) $result['patient_age_in_months']) > 0) {
-          if ($result['patient_age_in_months'] > 1) {
-               $age = $result['patient_age_in_months'] . ' months';
-          } else {
-               $age = $result['patient_age_in_months'] . ' month';
-          }
+     } elseif (!empty($result['patient_age_in_months']) && $result['patient_age_in_months'] > 0) {
+          $age = $result['patient_age_in_months'] . ' month' . ($result['patient_age_in_months'] > 1 ? 's' : '');
      }
 
      $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? $currentTime, true, 'd/M/Y H:i:s');
-
      $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '', true, 'd/M/Y H:i:s');
      $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true, 'd/M/Y H:i:s');
      $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true, 'd/M/Y H:i:s');
      $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? '', true, 'd/M/Y H:i:s');
      $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true, 'd/M/Y H:i:s');
+     $result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date'] ?? '', true, 'd/M/Y H:i:s');
 
-     if (isset($result['last_viral_load_date']) && trim((string) $result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
-          $result['last_viral_load_date'] = date('d/M/Y', strtotime((string) $result['last_viral_load_date']));
-          $result['last_viral_load_date'] = date('d/M/Y', strtotime($result['last_viral_load_date']));
-     } else {
-          $result['last_viral_load_date'] = '';
-     }
      if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
           $result['patient_gender'] = 'not reported';
      }
