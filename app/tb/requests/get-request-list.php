@@ -26,9 +26,6 @@ try {
      $tableName = "form_tb";
      $primaryKey = "tb_id";
 
-     /* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
      $sampleCode = 'sample_code';
 
      $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l.facility_name', 'f.facility_name', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
@@ -46,9 +43,7 @@ try {
      $sIndexColumn = $primaryKey;
 
      $sTable = $tableName;
-     /*
- * Paging
- */
+
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
@@ -102,10 +97,7 @@ try {
 
 
 
-     /*
- * SQL queries
- * Get data to display
- */
+
      $sQuery = '';
 
      $sQuery = "SELECT vl.*, f.*, l.facility_name as lab_name, rtbr.result as lamResult, ts.status_name, b.batch_code FROM form_tb as vl
@@ -133,7 +125,7 @@ try {
           if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
                $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
           } else {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEnddate . '"';
+               $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
           }
      }
 
@@ -238,9 +230,7 @@ try {
 
      $_SESSION['tbRequestSearchResultQueryCount'] = $resultCount;
 
-     /*
- * Output
- */
+
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,

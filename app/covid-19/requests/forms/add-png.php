@@ -13,9 +13,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/* To get testing platform names */
-
-$testPlatformResult = $general->getTestingPlatforms('covid19');
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
@@ -23,11 +20,6 @@ $nationalityResult = $db->query($nationalityQry);
 foreach ($nationalityResult as $nrow) {
     $nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
-
-foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
-}
-
 
 
 // Getting the list of Provinces, Districts and Facilities

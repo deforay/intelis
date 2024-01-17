@@ -20,7 +20,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$query = "SELECT config_id,machine_name,import_machine_file_name
+$query = "SELECT instrument_id,machine_name,import_machine_file_name
             FROM instruments
             WHERE status='active'
             ORDER BY machine_name ASC";

@@ -79,6 +79,11 @@ foreach ($rejectionTypeResult as $type) {
 
 $specimenTypeResult = $general->fetchDataFromTable('r_covid19_sample_type', "status = 'active'");
 
+/* To get testing platform names */
+$testPlatformResult = $general->getTestingPlatforms('covid19');
+foreach ($testPlatformResult as $row) {
+    $testPlatformList[$row['machine_name'].'##'.$row['instrument_id']] = $row['machine_name'];
+}
 
 $fileArray = array(
     COUNTRY\SOUTH_SUDAN => 'forms/quick-add-southsudan.php',

@@ -163,7 +163,7 @@ try {
     $payload = json_encode($sampleCodes);
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'vl', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
-    $general->updateResultSyncDateTime('vl', 'form_vl', $sampleCodes, $transactionId, $facilityIds, $labId);
+    $general->updateResultSyncDateTime('vl', $facilityIds, $labId);
 
     $db->commitTransaction();
 } catch (Exception | SystemException $e) {

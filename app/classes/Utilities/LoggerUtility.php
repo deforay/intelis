@@ -7,14 +7,22 @@ use Monolog\Handler\RotatingFileHandler;
 
 class LoggerUtility
 {
-    // Log the error with Monolog, including the file, line, and stack trace
-    public static function log($level, $message, $context = [], $name = 'logger')
-    {
-        $logger = new Logger($name);
+    private static ?Logger $logger = null;
 
-        $handler = new RotatingFileHandler(ROOT_PATH . '/logs/logfile.log', 30, Logger::ERROR, true, 0777);
-        $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
-        $logger->pushHandler($handler);
-        $logger->log($level, $message, $context ?? []);
+    private static function getLogger(): Logger
+    {
+        if (self::$logger === null) {
+            self::$logger = new Logger('logger');
+            $handler = new RotatingFileHandler(ROOT_PATH . '/logs/logfile.log', 30, Logger::DEBUG);
+            $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
+            self::$logger->pushHandler($handler);
+        }
+        return self::$logger;
+    }
+
+    public static function log($level, $message, $context = [])
+    {
+        $logger = self::getLogger();
+        $logger->log($level, $message, $context);
     }
 }

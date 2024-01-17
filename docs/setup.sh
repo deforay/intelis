@@ -15,117 +15,79 @@ fi
 # Error trap
 trap 'echo "An error occurred. Exiting..."; exit 1' ERR
 
-# Function to get Ubuntu version
-get_ubuntu_version() {
-    local version=$(lsb_release -rs)
-    echo "$version"
-}
+ask_yes_no() {
+    local timeout=15
+    local default=${2:-"no"} # set default value from the argument, fallback to "no" if not provided
+    local answer=""
 
-# Check if Ubuntu version is 20.04 or newer
-min_version="20.04"
-current_version=$(get_ubuntu_version)
+    while true; do
+        echo -n "$1 (y/n): "
+        read -t $timeout answer
+        if [ $? -ne 0 ]; then
+            answer=$default
+        fi
 
-if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
-    echo "This script is not compatible with Ubuntu versions older than ${min_version}."
-    exit 1
-fi
-
-# Check for dependencies
-for cmd in "apt"; do
-    if ! command -v $cmd &>/dev/null; then
-        echo "$cmd is not installed. Exiting..."
-        exit 1
-    fi
-done
-
-# Function to check if VLSM database has tables
-has_vlsm_tables() {
-    local table_count=$(mysql -u root -p"${mysql_root_password}" -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'vlsm';")
-    if [ "$table_count" -gt 0 ]; then
-        return 0 # True, tables exist
-    else
-        return 1 # False, no tables
-    fi
-}
-
-# Function to rename the VLSM database
-rename_vlsm_database() {
-    local todays_date=$(date +%Y%m%d_%H%M%S)
-    local new_db_name="vlsm_${todays_date}"
-    echo "Creating new database ${new_db_name}..."
-    mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-
-    echo "Copying tables and triggers from vlsm to ${new_db_name}..."
-    local tables=$(mysql -u root -p"${mysql_root_password}" -Nse "SHOW TABLES" vlsm)
-    for table in $tables; do
-        mysql -u root -p"${mysql_root_password}" -e "RENAME TABLE vlsm.${table} TO ${new_db_name}.${table};"
-    done
-
-    local triggers=$(mysql -u root -p"${mysql_root_password}" -Nse "SHOW TRIGGERS IN vlsm;")
-    for trigger in $triggers; do
-        local trigger_sql=$(mysql -u root -p"${mysql_root_password}" -Nse "SHOW CREATE TRIGGER vlsm.${trigger}\G" | sed -n 's/.*SQL: \(.*\)/\1/p')
-        mysql -u root -p"${mysql_root_password}" ${new_db_name} -e "${trigger_sql}"
-    done
-
-    echo "All tables and triggers moved to ${new_db_name}."
-}
-
-# Function to check if VLSM database exists
-database_exists() {
-    local db_count=$(mysql -u root -p"${mysql_root_password}" -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = 'vlsm';")
-    if [ "$db_count" -gt 0 ]; then
-        return 0 # True, database exists
-    else
-        return 1 # False, database does not exist
-    fi
-}
-
-# Function to prompt for SQL file and import
-prompt_and_import_sql_file() {
-    while :; do
-        echo "Do you want to:"
-        echo "1) Import from an existing backup SQL file"
-        echo "2) Import default init.sql"
-        read -p "Enter your choice (1 or 2): " user_choice
-
-        case $user_choice in
-        1)
-            read -p "Enter the path to your existing VLSM database SQL file: " vlsm_sql_file
-            if [[ -f "$vlsm_sql_file" ]]; then
-                import_sql_file "$vlsm_sql_file"
-                break
-            else
-                echo "File not found: $vlsm_sql_file. Please check the path."
-            fi
-            ;;
-        2)
-            import_init_sql
-            break
-            ;;
+        answer=$(echo "$answer" | awk '{print tolower($0)}')
+        case "$answer" in
+        "yes" | "y") return 0 ;;
+        "no" | "n") return 1 ;;
         *)
-            echo "Invalid choice. Please enter 1 or 2."
+            if [ -z "$answer" ]; then
+                # If no input is given and it times out, apply the default value
+                if [ "$default" == "yes" ] || [ "$default" == "y" ]; then
+                    return 0
+                else
+                    return 1
+                fi
+            else
+                echo "Invalid response. Please answer 'yes/y' or 'no/n'."
+            fi
             ;;
         esac
     done
 }
 
-# Function to create VLSM database
-create_vlsm_database() {
-    echo "Creating VLSM database..."
+handle_database_setup_and_import() {
+    # Check if VLSM database exists
+    db_exists=$(mysql -u root -p"${mysql_root_password}" -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = 'vlsm';")
+
+    # Check if VLSM database is not empty (has tables)
+    db_not_empty=$(mysql -u root -p"${mysql_root_password}" -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'vlsm';")
+
+    if [ "$db_exists" -eq 1 ] && [ "$db_not_empty" -gt 0 ]; then
+        echo "Renaming existing VLSM database..."
+        local todays_date=$(date +%Y%m%d_%H%M%S)
+        local new_db_name="vlsm_${todays_date}"
+        mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+
+        # Get the list of tables in the original database
+        local tables=$(mysql -u root -p"${mysql_root_password}" -sse "SHOW TABLES IN vlsm;")
+
+        for table in $tables; do
+            mysql -u root -p"${mysql_root_password}" -e "RENAME TABLE vlsm.$table TO ${new_db_name}.$table;"
+        done
+
+        # Copy triggers (if necessary)
+        local triggers=$(mysql -u root -p"${mysql_root_password}" -sse "SHOW TRIGGERS FROM vlsm;")
+        for trigger in $triggers; do
+            local trigger_stmt=$(mysql -u root -p"${mysql_root_password}" -sse "SHOW CREATE TRIGGER vlsm.$trigger\G" | sed -n 's/.*SQL: \(.*\)/\1/p')
+            mysql -u root -p"${mysql_root_password}" -e "USE ${new_db_name}; ${trigger_stmt}"
+        done
+
+        echo "All tables and triggers moved to ${new_db_name}."
+    fi
+
     mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-}
 
-# Function to import SQL file
-import_sql_file() {
-    local sql_file=$1
-    echo "Importing SQL file: $sql_file..."
-    mysql -u root -p"${mysql_root_password}" vlsm <"$sql_file"
-}
-
-# Function to import init.sql
-import_init_sql() {
-    echo "Importing init.sql into the VLSM database..."
-    mysql -u root -p"${mysql_root_password}" vlsm <"${vlsm_path}/sql/init.sql"
+    # Import SQL file if provided, or use init.sql
+    local sql_file="${1:-${vlsm_path}/sql/init.sql}"
+    if [[ "$sql_file" == *".gz" ]]; then
+        gunzip -c "$sql_file" | mysql -u root -p"${mysql_root_password}" vlsm
+    elif [[ "$sql_file" == *".zip" ]]; then
+        unzip -p "$sql_file" | mysql -u root -p"${mysql_root_password}" vlsm
+    else
+        mysql -u root -p"${mysql_root_password}" vlsm <"$sql_file"
+    fi
 }
 
 spinner() {
@@ -141,6 +103,55 @@ spinner() {
     done
     printf "    \b\b\b\b"
 }
+
+# Check if Ubuntu version is 20.04 or newer
+min_version="20.04"
+current_version=$(lsb_release -rs)
+
+if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
+    echo "This script is not compatible with Ubuntu versions older than ${min_version}."
+    exit 1
+fi
+
+# Check for dependencies
+for cmd in "apt"; do
+    if ! command -v $cmd &>/dev/null; then
+        echo "$cmd is not installed. Exiting..."
+        exit 1
+    fi
+done
+
+# Initialize variable for database file path
+vlsm_sql_file=""
+
+# Parse command-line arguments for --database or --db flag
+for arg in "$@"; do
+    case $arg in
+    --database=* | --db=*)
+        vlsm_sql_file="${arg#*=}"
+        shift # Remove --database or --db argument from processing
+        ;;
+    --database | --db)
+        vlsm_sql_file="$2"
+        shift # Remove --database or --db argument
+        shift # Remove its associated value
+        ;;
+    esac
+done
+
+# Check if the specified SQL file exists
+if [[ -n "$vlsm_sql_file" ]]; then
+    # Check if the file path is absolute or relative
+    if [[ "$vlsm_sql_file" != /* ]]; then
+        # File path is relative, check in the current directory
+        vlsm_sql_file="$(pwd)/$vlsm_sql_file"
+    fi
+
+    if [[ ! -f "$vlsm_sql_file" ]]; then
+        echo "SQL file not found: $vlsm_sql_file. Please check the path."
+        exit 1
+    fi
+fi
 
 # Initial Setup
 echo "Updating software packages..."
@@ -262,11 +273,24 @@ service mysql restart || {
     exit 1
 }
 
+# Handle database setup and SQL file import
+if [[ -n "$vlsm_sql_file" && -f "$vlsm_sql_file" ]]; then
+    handle_database_setup_and_import "$vlsm_sql_file"
+elif [[ -n "$vlsm_sql_file" ]]; then
+    echo "SQL file not found: $vlsm_sql_file. Please check the path."
+    exit 1
+else
+    handle_database_setup_and_import # Default to init.sql
+fi
+
 # PHP Setup
 echo "Installing PHP 8.2..."
-add-apt-repository ppa:ondrej/php -y
-apt-get update
-apt-get install -y php8.2 openssl php8.2-common php8.2-cli php8.2-mysql php8.2-zip php8.2-gd php8.2-mbstring php8.2-curl php8.2-xml php8.2-xmlrpc php8.2-bcmath php8.2-gmp php8.2-intl php8.2-imagick php-mime-type php8.2-apcu
+
+wget https://gist.githubusercontent.com/amitdugar/339470e36f6ad6c1910914e854384294/raw/switch-php -O /usr/local/bin/switch-php
+chmod u+x /usr/local/bin/switch-php
+
+switch-php 8.2
+
 service apache2 restart || {
     echo "Failed to restart Apache2. Exiting..."
     exit 1
@@ -404,38 +428,6 @@ else
     mkdir -p "${vlsm_path}"
 fi
 
-ask_yes_no() {
-    local timeout=15
-    local default=${2:-"no"} # set default value from the argument, fallback to "no" if not provided
-    local answer=""
-
-    while true; do
-        echo -n "$1 (y/n): "
-        read -t $timeout answer
-        if [ $? -ne 0 ]; then
-            answer=$default
-        fi
-
-        answer=$(echo "$answer" | awk '{print tolower($0)}')
-        case "$answer" in
-        "yes" | "y") return 0 ;;
-        "no" | "n") return 1 ;;
-        *)
-            if [ -z "$answer" ]; then
-                # If no input is given and it times out, apply the default value
-                if [ "$default" == "yes" ] || [ "$default" == "y" ]; then
-                    return 0
-                else
-                    return 1
-                fi
-            else
-                echo "Invalid response. Please answer 'yes/y' or 'no/n'."
-            fi
-            ;;
-        esac
-    done
-}
-
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
 cp -R "$temp_dir/vlsm-master/"* "${vlsm_path}"
 
@@ -455,16 +447,32 @@ sudo -u www-data composer config process-timeout 30000
 sudo -u www-data composer update --no-dev &&
     sudo -u www-data composer dump-autoload -o
 
-# Check if VLSM database and tables exist
-if has_vlsm_tables; then
-    echo "VLSM database and tables already exist. No further action required."
-else
-    create_vlsm_database
-    prompt_and_import_sql_file
-fi
+# Function to configure Apache Virtual Host
+configure_vhost() {
+    local vhost_file=$1
+    local document_root="${vlsm_path}/public"
+    local directory_block="<Directory ${vlsm_path}/public>\n\
+        AddDefaultCharset UTF-8\n\
+        Options -Indexes -MultiViews +FollowSymLinks\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>"
+
+    # Replace the DocumentRoot line
+    sed -i "s|DocumentRoot .*|DocumentRoot ${document_root}|" "$vhost_file"
+
+    # Check if any Directory block exists
+    if grep -q "<Directory" "$vhost_file"; then
+        # Replace existing Directory block
+        sed -i "/<Directory/,/<\/Directory>/c\\$directory_block" "$vhost_file"
+    else
+        # Insert Directory block after DocumentRoot line
+        sed -i "/DocumentRoot/a\\$directory_block" "$vhost_file"
+    fi
+}
 
 # Ask user for the hostname
-read -p "Enter domain name (press enter to select 'vlsm' -- ONLY for local lab machines): " hostname
+read -p "Enter domain name (press enter to use 'vlsm'): " hostname
 hostname="${hostname:-vlsm}"
 
 # Check if the hostname entry is already in /etc/hosts
@@ -475,71 +483,31 @@ else
     echo "${hostname} entry is already in the hosts file."
 fi
 
-# Define the desired configuration using the variable for VLSM installation path
-vlsm_config_block="DocumentRoot \"${vlsm_path}/public\"
-    ServerName ${hostname}
-    <Directory \"${vlsm_path}/public\">
-        AddDefaultCharset UTF-8
-        Options -Indexes -MultiViews +FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>"
+# Ask user if they want to install VLSM as the default host or along with other apps
+read -p "Install VLSM as the default host? (yes for default, no for alongside other apps) [yes/no]: " install_as_default
+install_as_default="${install_as_default:-yes}"
 
-# Path to the default Apache2 vhost file
-apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
-
-# Make a backup of the current Apache2 vhost file
-cp "${apache_vhost_file}" "${apache_vhost_file}.bak"
-
-# Convert newlines to a unique pattern for single-line pattern matching
-pattern=$(echo "${vlsm_config_block}" | tr '\n' '\a')
-
-# Check if the pattern already exists in the file
-if ! grep -qza "${pattern}" "${apache_vhost_file}"; then
-    # The pattern doesn't exist, so we insert/update the configuration
-
-    # Replace the existing DocumentRoot line with the desired configuration
-    # Restore newlines from the unique pattern before using awk
-    vlsm_config_block=$(echo "${vlsm_config_block}" | tr '\a' '\n')
-    awk -v vlsm_config_block="${vlsm_config_block}" \
-        'BEGIN {printed=0}
-        /DocumentRoot/ && !printed {
-            print vlsm_config_block;
-            printed=1;
-            next;
-        }
-        {print}' "${apache_vhost_file}" >temp_vhost && mv temp_vhost "${apache_vhost_file}"
-
-    # No need to check for ServerName and <Directory> separately as they are included in the block
-    echo "Apache configuration has been updated."
+if [ "$install_as_default" = "yes" ]; then
+    echo "Installing VLSM as the default host..."
+    local apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
+    cp "$apache_vhost_file" "${apache_vhost_file}.bak"
+    configure_vhost "$apache_vhost_file"
 else
-    echo "Apache configuration is already set as desired."
+    echo "Installing VLSM alongside other apps..."
+    local vhost_file="/etc/apache2/sites-available/${hostname}.conf"
+    echo "<VirtualHost *:80>\nServerName ${hostname}\nDocumentRoot /var/www/html\n</VirtualHost>" >"$vhost_file"
+    configure_vhost "$vhost_file"
+    a2ensite "${hostname}.conf"
 fi
-
-# Create and configure ${hostname}.conf
-vhost_file="/etc/apache2/sites-available/${hostname}.conf"
-
-# Check if the file exists. If yes, delete it.
-if [ -f "${vhost_file}" ]; then
-    echo "Existing ${vhost_file} found. Deleting old file..."
-    rm "${vhost_file}"
-fi
-
-echo "Creating ${vhost_file} with VLSM configuration..."
-{
-    echo "<VirtualHost *:8080>"
-    echo "${vlsm_config_block}"
-    echo "</VirtualHost>"
-} >"${vhost_file}"
-
-# Enable the new site
-a2ensite "${hostname}.conf"
 
 # Restart Apache to apply changes
 service apache2 restart || {
     echo "Failed to restart Apache. Please check the configuration."
     exit 1
 }
+
+# Restart Apache to apply changes
+service apache2 restart
 
 # cron job
 

@@ -178,7 +178,7 @@ if [[ "${php_version}" != "${desired_php_version}" ]]; then
 
     # Download and install switch-php script
     wget https://gist.githubusercontent.com/amitdugar/339470e36f6ad6c1910914e854384294/raw/switch-php -O /usr/local/bin/switch-php
-    chmod +x /usr/local/bin/switch-php
+    chmod u+x /usr/local/bin/switch-php
 
     # Switch to PHP 8.2
     switch-php ${desired_php_version}
@@ -223,6 +223,8 @@ echo "All system checks passed. Continuing with the update..."
 echo "Updating Ubuntu packages..."
 apt-get update && apt-get upgrade -y
 apt-get autoremove -y
+
+setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
 spinner() {
     local pid=$!
@@ -451,6 +453,12 @@ echo "Remote data sync completed."
 
 if [ -f "${vlsm_path}/cache/CompiledContainer.php" ]; then
     rm "${vlsm_path}/cache/CompiledContainer.php"
+fi
+
+# Old startup.php file is no longer needed, but if it exists, make sure it is empty
+if [ -f "${vlsm_path}/startup.php" ]; then
+    rm "${vlsm_path}/startup.php"
+    touch "${vlsm_path}/startup.php"
 fi
 
 service apache2 restart

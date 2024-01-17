@@ -448,7 +448,7 @@ $aResult = $db->query($aQuery);
 
                                             <td><label for="" class="labels">Testing Platform </label></td>
                                             <td><select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
-                                                    <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
+                                                    <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'].'##'.$eidInfo['instrument_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                             <td class="labels"><label>Machine used to test </label></td>

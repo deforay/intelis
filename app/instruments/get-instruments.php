@@ -2,7 +2,7 @@
 
 
 $tableName = "instruments";
-$primaryKey = "config_id";
+$primaryKey = "instrument_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
@@ -117,7 +117,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     $row[] = ($aRow['machine_name']);
     $row[] = ($aRow['status']);
-    $row[] = '<a href="edit-instrument.php?id=' . base64_encode((string) $aRow['config_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+    $row[] = '<a href="edit-instrument.php?id=' . base64_encode((string) $aRow['instrument_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     $output['aaData'][] = $row;
 }
 echo json_encode($output);

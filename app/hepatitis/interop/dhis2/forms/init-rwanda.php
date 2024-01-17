@@ -132,17 +132,7 @@ try {
             $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);
         }
     }
-} catch (InvalidArgumentException $e) {
-    LoggerUtility::log('error', $e->getMessage(), [
-        'line' => $e->getLine(),
-        'file' => $e->getFile()
-    ]);
-} catch (PathNotFoundException $e) {
-    LoggerUtility::log('error', $e->getMessage(), [
-        'line' => $e->getLine(),
-        'file' => $e->getFile()
-    ]);
-} catch (Exception $e) {
+} catch (InvalidArgumentException|PathNotFoundException|Exception $e) {
     LoggerUtility::log('error', $e->getMessage(), [
         'line' => $e->getLine(),
         'file' => $e->getFile()

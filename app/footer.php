@@ -97,7 +97,7 @@ if (empty($syncLatestTime)) {
 
 <script type="text/javascript">
 	let remoteSync = false;
-	let globalDayjsDateFormat = '<?= $_SESSION['dayjsDateFieldFormat'] ?? 'dd-M-yy'; ?>';
+	let globalDayjsDateFormat = '<?= $general->getDateFormat('dayjsDateFieldFormat') ?? 'dd-M-yy'; ?>';
 
 	window.additionalXHRParams = {
 		layout: 0,

@@ -338,12 +338,21 @@ try {
 		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testKitName) {
 				if (!empty($testKitName)) {
+					$testingPlatform = null;
+					$instrumentId = null;
+					if (isset($_POST['testingPlatform'][$testKey]) && trim((string) $_POST['testingPlatform'][$testKey]) != '') {
+						$platForm = explode("##", (string) $_POST['testingPlatform'][$testKey]);
+						$testingPlatform = $platForm[0];
+						$instrumentId = $platForm[1];
+					}
+					
 					$covid19TestData = array(
 						'covid19_id' => $_POST['covid19SampleId'],
 						'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
 						'facility_id' => $_POST['labId'] ?? null,
 						'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
-						'testing_platform' => $_POST['testingPlatform'][$testKey] ?? null,
+						'testing_platform' => $testingPlatform ?? null,
+						'instrument_id' => $instrumentId ?? null,
 						'kit_lot_no' => (str_contains((string)$testKitName, 'RDT')) ? $_POST['lotNo'][$testKey] : null,
 						'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
 						'result' => $_POST['testResult'][$testKey]

@@ -16,8 +16,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
-/* To get testing platform names */
-$testPlatformResult = $general->getTestingPlatforms('covid19');
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
@@ -25,11 +23,6 @@ $nationalityResult = $db->query($nationalityQry);
 foreach ($nationalityResult as $nrow) {
     $nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
-
-foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
-}
-
 
 
 $covid19Results = $covid19Service->getCovid19Results();
@@ -601,7 +594,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
                                                                     <td>
                                                                         <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
-                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --'); ?>
+                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'].'##'.$rows['instrument_id'], '-- Select --'); ?>
                                                                         </select>
                                                                     </td>
                                                                     <td>

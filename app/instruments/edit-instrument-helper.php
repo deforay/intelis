@@ -30,7 +30,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 $configId = (int) base64_decode((string) $_POST['configId']);
 
-$configControlQuery = "SELECT * FROM instrument_controls WHERE config_id=?";
+$configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id=?";
 $configControlInfo = $db->rawQuery($configControlQuery, [$configId]);
 // echo "<pre>";print_r($_POST);die;
 try {
@@ -76,7 +76,7 @@ try {
             'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
             'status' => $_POST['status']
         );
-        $db->where('config_id', $configId);
+        $db->where('instrument_id', $configId);
         //print_r($vldata);die;
         $db->update($tableName, $importConfigData);
         if (count($_POST['configMachineName']) > 0) {
@@ -91,7 +91,7 @@ try {
                         $db->where('config_machine_id', $_POST['configMachineId'][$c]);
                         $db->update($importMachineTable, $configMachineData);
                     } else {
-                        $configMachineData = array('config_id' => $configId, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime());
+                        $configMachineData = array('instrument_id' => $configId, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime());
                         $db->insert($importMachineTable, $configMachineData);
                     }
                 }
@@ -101,22 +101,22 @@ try {
         if ($configId > 0 && !empty($_POST['testType'])) {
             if (!empty($configControlInfo)) {
                 foreach ($_POST['testType'] as $key => $val) {
-                    $cQuery = "SELECT * FROM instrument_controls WHERE config_id= " . $configId . " AND test_type like '" . $val . "'";
+                    $cQuery = "SELECT * FROM instrument_controls WHERE instrument_id= " . $configId . " AND test_type like '" . $val . "'";
                     $cResult = $db->rawQueryOne($cQuery);
                     if (trim((string) $val) != '' && $cResult) {
                         $configControlData = array('number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
-                        $db->where('config_id', $configId);
+                        $db->where('instrument_id', $configId);
                         $db->where('test_type', $val);
                         $db->update($importControlTable, $configControlData);
                     } else {
-                        $configControlData = array('test_type' => $val, 'config_id' => $configId, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
+                        $configControlData = array('test_type' => $val, 'instrument_id' => $configId, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
                         $db->insert($importControlTable, $configControlData);
                     }
                 }
             } else {
                 foreach ($_POST['testType'] as $key => $val) {
                     if (trim((string) $val) != '') {
-                        $configControlData = array('test_type' => $val, 'config_id' => $configId, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
+                        $configControlData = array('test_type' => $val, 'instrument_id' => $configId, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
                         $db->insert($importControlTable, $configControlData);
                     }
                 }

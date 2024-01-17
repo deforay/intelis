@@ -2,8 +2,8 @@
 
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
-use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
@@ -11,11 +11,15 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 try {
 
      $db->beginReadOnlyTransaction();
-     /** @var CommonService $general */
-     $general = ContainerRegistry::get(CommonService::class);
 
      $gconfig = $general->getGlobalConfig();
      $sarr = $general->getSystemConfig();
@@ -24,9 +28,6 @@ try {
      $tableName = "form_hepatitis";
      $primaryKey = "hepatitis_id";
 
-     /* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
      $sampleCode = 'sample_code';
 
      $aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l.facility_name', 'f.facility_name', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
@@ -43,9 +44,7 @@ try {
      $sIndexColumn = $primaryKey;
 
      $sTable = $tableName;
-     /*
- * Paging
- */
+
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
@@ -60,10 +59,7 @@ try {
 
 
 
-     /*
- * SQL queries
- * Get data to display
- */
+
      $aWhere = '';
 
      $sQuery = "SELECT vl.*,
@@ -111,10 +107,10 @@ try {
      }
 
      if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-          if (trim((string) $labStartDate) == trim((string) $labEnddate)) {
+          if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
                $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
           } else {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEnddate . '"';
+               $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
           }
      }
 
@@ -228,9 +224,7 @@ try {
 
      $_SESSION['hepatitisRequestSearchResultQueryCount'] = $resultCount;
 
-     /*
- * Output
- */
+
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
@@ -244,8 +238,6 @@ try {
           $syncRequest = true;
      }
 
-     /** @var HepatitisService $hepatitisService */
-     $hepatitisService = ContainerRegistry::get(HepatitisService::class);
      $hepatitisResults = $hepatitisService->getHepatitisResults();
      foreach ($rResult as $aRow) {
           $vlResult = '';

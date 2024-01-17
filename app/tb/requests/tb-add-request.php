@@ -90,6 +90,12 @@ $fundingSourceList = $general->getFundingSources();
 //Implementing partner list
 $implementingPartnerList = $general->getImplementationPartners();
 
+// Import machine config
+$testPlatformResult = $general->getTestingPlatforms('hepatitis');
+$testPlatformList = [];
+foreach ($testPlatformResult as $row) {
+    $testPlatformList[$row['machine_name'].'##'.$row['instrument_id']] = $row['machine_name'];
+}
 
 $fileArray = [
     COUNTRY\SOUTH_SUDAN => 'forms/add-southsudan.php',

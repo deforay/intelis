@@ -466,13 +466,7 @@ $state = $geolocationService->getProvinces("yes");
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
         loadVlRequestData();
 
-        /*Hide Province, District Columns */
-        //var bVisCol = oTable.fnSettings().aoColumns[9].bVisible;
-        oTable.fnSetColumnVis(9, false);
-        //var bVisCol = oTable.fnSettings().aoColumns[10].bVisible;
-        oTable.fnSetColumnVis(10, false);
-        //var bVisCol = oTable.fnSettings().aoColumns[13].bVisible;
-        oTable.fnSetColumnVis(13, false);
+    
         // loadPrintedVlRequestData();
         $(".checkRows").change(function() {
             console.log("CHECK");
@@ -580,7 +574,14 @@ $state = $geolocationService->getProvinces("yes");
                     "sClass": "center"
                 },
                 {
-                    "sClass": "center"
+                    "sClass": "center",
+                    "bVisible": false
+
+                },
+                {
+                    "sClass": "center",
+                    "bVisible": false
+
                 },
                 {
                     "sClass": "center"
@@ -589,10 +590,9 @@ $state = $geolocationService->getProvinces("yes");
                     "sClass": "center"
                 },
                 {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
+                    "sClass": "center",
+                    "bVisible": false
+
                 },
                 {
                     "sClass": "center"

@@ -162,7 +162,7 @@ try {
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'hepatitis', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
-    $general->updateResultSyncDateTime('hepatitis', 'form_hepatitis', $sampleCodes, $transactionId, $facilityIds, $labId);
+    $general->updateResultSyncDateTime('hepatitis', $facilityIds, $labId);
 
     $db->commitTransaction();
 } catch (Exception | SystemException $e) {

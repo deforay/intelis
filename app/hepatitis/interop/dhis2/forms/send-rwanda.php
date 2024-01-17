@@ -203,7 +203,7 @@ foreach ($formResults as $row) {
   if (empty($dhis2Response['events']) || count($dhis2Response['events']) == 0) {
     $idGeneratorApi = $dhis2->get("/api/system/id?limit=1");
     $idGeneratorApi = !empty($idGeneratorApi) ? (string) $idGeneratorApi->getBody() : "";
-    $idResponse = (json_decode((string) $idGeneratorApi, true));
+    $idResponse = (json_decode($idGeneratorApi, true));
     $eventId = $idResponse['codes'][0];
 
     $eventPayload = [

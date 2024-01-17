@@ -223,7 +223,7 @@ try{
           }
      }
      if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-          if (!empty($sTestDate) && trim((string) $sTestDate) == trim((string) $eTestDate)) {
+          if (!empty($sTestDate) && trim($sTestDate) == trim((string) $eTestDate)) {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) like "' . $sTestDate . '"';
           } else {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
