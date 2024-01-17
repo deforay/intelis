@@ -73,7 +73,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $batchQuery = "SELECT * from batch_details as b_d
-                    LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine
+                    LEFT JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
                     WHERE batch_id=?";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
 $bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
@@ -248,7 +248,7 @@ $fundingSourceList = $general->getFundingSources();
 										<select name="machine" id="machine" class="form-control isRequired" title="<?php echo _translate('Please choose machine'); ?>">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<?php foreach ($testPlatformResult as $machine) { ?>
-												<option value="<?= $machine['config_id'] ?>" <?= ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected' : '' ?> data-no-of-samples="<?= $machine['max_no_of_samples_in_a_batch'] ?>"><?= $machine['machine_name'] ?></option>
+												<option value="<?= $machine['instrument_id'] ?>" <?= ($batchInfo[0]['machine'] == $machine['instrument_id']) ? 'selected' : '' ?> data-no-of-samples="<?= $machine['max_no_of_samples_in_a_batch'] ?>"><?= $machine['machine_name'] ?></option>
 											<?php } ?>
 										</select>
 									</div>

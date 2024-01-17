@@ -99,7 +99,7 @@ if (!empty($id)) {
     $headerText = $globalConfig['header'] ?? '';
 
     $bQuery = "SELECT * FROM batch_details as b_d
-                    LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine
+                    LEFT JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
                     LEFT JOIN user_details as u ON u.user_id=b_d.created_by
                     WHERE batch_id=?";
     $bResult = $db->rawQueryOne($bQuery, [$id]);

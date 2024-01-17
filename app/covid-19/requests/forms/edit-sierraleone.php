@@ -8,12 +8,6 @@ use App\Utilities\DateUtility;
 
 
 
-
-
-
-/* To get testing platform names */
-
-$testPlatformResult = $general->getTestingPlatforms('covid19');
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
@@ -21,14 +15,10 @@ $nationalityResult = $db->query($nationalityQry);
 foreach ($nationalityResult as $nrow) {
     $nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
-foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
-}
 
 //Implementing partner list
 // $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 // $implementingPartnerList = $db->query($implementingPartnerQry);
-
 
 
 /** @var Covid19Service $covid19Service */
@@ -535,7 +525,7 @@ $patientProvince = $patientProvinceInfo[0];
                                                                                 <option value="Sure Status® COVID-19 Antigen Card Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'Sure Status® COVID-19 Antigen Card Test') ? "selected='selected'" : ""; ?>>Sure Status® COVID-19 Antigen Card Test</option>
                                                                                 <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>Others</option>
                                                                             <?php } else { ?>
-                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --');
+                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'].'##'.$rows['instrument_id'], '-- Select --');
                                                                             } ?>
                                                                         </select>
                                                                     </td>

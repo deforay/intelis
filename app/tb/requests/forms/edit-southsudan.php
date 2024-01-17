@@ -5,10 +5,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\TbService;
 use App\Utilities\DateUtility;
 
-
-/* To get testing platform names */
-
-$testPlatformResult = $general->getTestingPlatforms('tb');
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
@@ -16,11 +12,6 @@ $nationalityResult = $db->query($nationalityQry);
 foreach ($nationalityResult as $nrow) {
 	$nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
-
-foreach ($testPlatformResult as $row) {
-	$testPlatformList[$row['machine_name']] = $row['machine_name'];
-}
-
 
 
 /** @var TbService $tbService */

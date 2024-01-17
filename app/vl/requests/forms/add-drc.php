@@ -441,7 +441,7 @@ $sFormat = '';
 												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($importResult as $mName) { ?>
-														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>">
+														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>">
 															<?php echo $mName['machine_name']; ?></option>
 													<?php } ?>
 												</select>

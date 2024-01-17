@@ -127,7 +127,7 @@ if (!empty($interfaceData)) {
 
         if (empty($instrumentDetails)) {
             $sql = "SELECT * FROM instruments
-                    INNER JOIN instrument_machines ON instruments.config_id = instrument_machines.config_machine_id
+                    INNER JOIN instrument_machines ON instruments.instrument_id = instrument_machines.config_machine_id
                     WHERE instrument_machines.config_machine_name LIKE ?";
             $instrumentDetails = $db->rawQueryOne($sql, [$result['machine_used']]);
         }

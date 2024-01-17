@@ -64,11 +64,11 @@ $machinesLabelOrder = [];
 foreach ($testPlatformResult as $machine) {
     $lastOrderQuery = "SELECT label_order   FROM batch_details
                         WHERE machine = ? ORDER BY request_created_datetime DESC";
-    $lastOrderInfo = $db->rawQuery($lastOrderQuery, [$machine['config_id']]);
+    $lastOrderInfo = $db->rawQuery($lastOrderQuery, [$machine['instrument_id']]);
     if (isset($lastOrderInfo[0]['label_order']) && trim((string) $lastOrderInfo[0]['label_order']) != '') {
-        $machinesLabelOrder[$machine['config_id']] = implode(",", json_decode((string) $lastOrderInfo[0]['label_order'], true));
+        $machinesLabelOrder[$machine['instrument_id']] = implode(",", json_decode((string) $lastOrderInfo[0]['label_order'], true));
     } else {
-        $machinesLabelOrder[$machine['config_id']] = '';
+        $machinesLabelOrder[$machine['instrument_id']] = '';
     }
 }
 $testTypeQuery = "SELECT * FROM r_test_types
@@ -172,8 +172,8 @@ $fundingSourceList = $general->getFundingSources();
                                 <?php echo _translate("-- Select --"); ?>
                             </option>
                             <?php foreach ($testPlatformResult as $machine) {
-                                $labelOrder = $machinesLabelOrder[$machine['config_id']]; ?>
-                                <option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>"><?= $machine['machine_name']; ?></option>
+                                $labelOrder = $machinesLabelOrder[$machine['instrument_id']]; ?>
+                                <option value="<?php echo $machine['instrument_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>"><?= $machine['machine_name']; ?></option>
                             <?php } ?>
                         </select>
                     </td>

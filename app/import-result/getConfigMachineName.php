@@ -19,10 +19,10 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $configId = base64_decode((string) $_POST['configId']);
-$iQuery = "SELECT config_id,machine_name,import_machine_file_name FROM instruments where import_machine_file_name='$configId'";
+$iQuery = "SELECT instrument_id,machine_name,import_machine_file_name FROM instruments where import_machine_file_name='$configId'";
 $iResult = $db->rawQuery($iQuery);
 
-$configMachineQuery = "SELECT config_machine_id,config_machine_name,file_name,date_format  from instrument_machines where config_id=" . $iResult[0]['config_id'];
+$configMachineQuery = "SELECT config_machine_id,config_machine_name,file_name,date_format  from instrument_machines where instrument_id=" . $iResult[0]['instrument_id'];
 $configMachineInfo = $db->query($configMachineQuery);
 $configMachine = '';
 if (!empty($configMachineInfo)) {
@@ -35,7 +35,7 @@ if (!empty($configMachineInfo)) {
         $configMachine .= '<option value="' . $machine['config_machine_id'] . '" data-filename="' . $machine['file_name'] . '" data-dateformat="' . $machine['date_format'] . '" selected=' . $selected . '>' . ($machine['config_machine_name']) . '</option>';
     }
 } else {
-    $configMachineData = array('config_id' => $iResult[0]['config_id'], 'config_machine_name' => $iResult[0]['machine_name'] . " 1");
+    $configMachineData = array('instrument_id' => $iResult[0]['instrument_id'], 'config_machine_name' => $iResult[0]['machine_name'] . " 1");
     $db->insert($importMachineTable, $configMachineData);
     $configMachineInfo = $db->query($configMachineQuery);
     $configMachine .= '<option value"">-- Select --</option>';

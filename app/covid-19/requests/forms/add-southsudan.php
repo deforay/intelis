@@ -22,11 +22,7 @@ foreach ($nationalityResult as $nrow) {
     $nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
 
-/* To get testing platform names */
-$testPlatformResult = $general->getTestingPlatforms('covid19');
-foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
-}
+
 //Implementing partner list
 // $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 // $implementingPartnerList = $db->query($implementingPartnerQry);

@@ -122,6 +122,14 @@ try {
 		$_POST['reviewedOn'] = null;
 	}
 
+	$testingPlatform = null;
+    $instrumentId = null;
+    if (isset($_POST['hepatitisPlatform']) && trim((string) $_POST['hepatitisPlatform']) != '') {
+        $platForm = explode("##", (string) $_POST['hepatitisPlatform']);
+        $testingPlatform = $platForm[0];
+        $instrumentId = $platForm[1];
+    }
+
 	//Update patient Information in Patients Table
 	$patientsService->updatePatient($_POST, 'form_hepatitis');
 
@@ -171,7 +179,8 @@ try {
 		'hbv_vl_result' => $_POST['hbv'] ?? null,
 		'hcv_vl_count' => $_POST['hcvCount'] ?? null,
 		'hbv_vl_count' => $_POST['hbvCount'] ?? null,
-		'hepatitis_test_platform' => $_POST['hepatitisPlatform'] ?? null,
+		'hepatitis_test_platform' => $testingPlatform ?? null,
+		'instrument_id' => $instrumentId ?? null,
 		'import_machine_name' => $_POST['machineName'] ?? null,
 		'is_result_authorised' => $_POST['isResultAuthorized'] ?? null,
 		'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,

@@ -5,15 +5,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
 
 
-/* To get testing platform names */
-
-$testPlatformResult = $general->getTestingPlatforms('covid19');
-
-foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
-}
-
-
 
 // Getting the list of Provinces, Districts and Facilities
 
