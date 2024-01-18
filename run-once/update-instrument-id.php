@@ -18,6 +18,11 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$systemConfig = $general->getSystemConfig();
+
+if ($systemConfig['sc_user_type'] == 'remoteuser') {
+    exit("Script not required for STS instance");
+}
 
 $scriptName = basename(__FILE__);
 
