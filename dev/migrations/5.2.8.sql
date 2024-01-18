@@ -117,3 +117,14 @@ ALTER TABLE `instruments` CHANGE `config_id` `instrument_id` VARCHAR(50) CHARACT
 ALTER TABLE `instrument_controls` CHANGE `config_id` `instrument_id` VARCHAR(50) NOT NULL;
 ALTER TABLE `instrument_machines` CHANGE `config_id` `instrument_id` VARCHAR(50) NOT NULL;
 
+
+
+-- Amit 18-Jan-2024
+
+CREATE TABLE IF NOT EXISTS s_run_once_scripts_log (
+    `script_name` VARCHAR(255) PRIMARY KEY,
+    `execution_date` DATETIME,
+    `status` VARCHAR(50)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+

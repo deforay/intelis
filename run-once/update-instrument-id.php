@@ -1,9 +1,14 @@
 <?php
+
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
+// only run from command line
+if (php_sapi_name() !== 'cli') {
+    exit(0);
+}
 
 require_once(__DIR__ . '/../bootstrap.php');
 
@@ -14,16 +19,28 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
+$scriptName = basename(__FILE__);
+
+// Check if the script has already been run
+$db->where('script_name', $scriptName);
+$executed = $db->getOne('s_run_once_scripts_log');
+
+if ($executed) {
+    // Script has already been run
+    exit("Script $scriptName has already been executed. Exiting...");
+}
+
+
 /* Save Province / State details to geolocation table */
 $query = "SELECT * FROM instruments";
 $instrumentResult = $db->rawQuery($query);
 
 foreach ($instrumentResult as $row) {
     $generatedInstrumentId = $general->generateUUID();
-   // if(strlen($row['instrument_id'])==1){
-        $db->where("instrument_id",$row['instrument_id']);
-        $db->update('instruments',array('instrument_id' => $generatedInstrumentId));
-   // }
+    // if(strlen($row['instrument_id'])==1){
+    $db->where("instrument_id", $row['instrument_id']);
+    $db->update('instruments', array('instrument_id' => $generatedInstrumentId));
+    // }
 }
 
 /** VL table */
@@ -31,8 +48,8 @@ $vlQuery = "SELECT vl.vl_sample_id,ins.instrument_id FROM form_vl as vl INNER JO
 $vlResult = $db->rawQuery($vlQuery);
 
 foreach ($vlResult as $vlRow) {
-    $db->where("vl_sample_id",$vlRow["vl_sample_id"]);
-    $db->update('form_vl',array('instrument_id' => $vlRow['instrument_id']));
+    $db->where("vl_sample_id", $vlRow["vl_sample_id"]);
+    $db->update('form_vl', array('instrument_id' => $vlRow['instrument_id']));
 }
 
 /** EID table */
@@ -40,8 +57,8 @@ $eidQuery = "SELECT eid.eid_id,ins.instrument_id FROM form_eid as eid INNER JOIN
 $eidResult = $db->rawQuery($eidQuery);
 
 foreach ($eidResult as $eidRow) {
-    $db->where("eid_id",$eidRow["eid_id"]);
-    $db->update('form_eid',array('instrument_id' => $eidRow['instrument_id']));
+    $db->where("eid_id", $eidRow["eid_id"]);
+    $db->update('form_eid', array('instrument_id' => $eidRow['instrument_id']));
 }
 
 /** Covid-19 table */
@@ -49,8 +66,8 @@ $covidQuery = "SELECT covid.test_id,ins.instrument_id FROM covid19_tests as covi
 $covidResult = $db->rawQuery($covidQuery);
 
 foreach ($covidResult as $covidRow) {
-    $db->where("test_id",$covidRow["test_id"]);
-    $db->update('covid19_tests',array('instrument_id' => $covidRow['instrument_id']));
+    $db->where("test_id", $covidRow["test_id"]);
+    $db->update('covid19_tests', array('instrument_id' => $covidRow['instrument_id']));
 }
 
 /** Hepatitis table */
@@ -58,8 +75,8 @@ $hepatitisQuery = "SELECT hep.hepatitis_id,ins.instrument_id FROM form_hepatitis
 $hepatitisResult = $db->rawQuery($hepatitisQuery);
 
 foreach ($hepatitisResult as $hepatitisRow) {
-    $db->where("hepatitis_id",$hepatitisRow["hepatitis_id"]);
-    $db->update('form_hepatitis',array('instrument_id' => $hepatitisRow['instrument_id']));
+    $db->where("hepatitis_id", $hepatitisRow["hepatitis_id"]);
+    $db->update('form_hepatitis', array('instrument_id' => $hepatitisRow['instrument_id']));
 }
 
 /** TB table */
@@ -67,6 +84,15 @@ $tbQuery = "SELECT tb.tb_id,ins.instrument_id FROM form_tb as tb INNER JOIN inst
 $tbResult = $db->rawQuery($tbQuery);
 
 foreach ($tbResult as $tbRow) {
-    $db->where("tb_id",$tbRow["tb_id"]);
-    $db->update('form_tb',array('instrument_id' => $tbRow['instrument_id']));
+    $db->where("tb_id", $tbRow["tb_id"]);
+    $db->update('form_tb', array('instrument_id' => $tbRow['instrument_id']));
 }
+
+
+// After successful execution, log the script run
+$data = [
+    'script_name' => $scriptName,
+    'execution_date' => DateUtility::getCurrentDateTime(),
+    'status' => 'Completed'
+];
+$db->insert('s_run_once_scripts_log', $data);
