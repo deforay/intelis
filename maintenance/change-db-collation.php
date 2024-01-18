@@ -7,46 +7,63 @@ use mysqli_sql_exception;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
-// Assuming SYSTEM_CONFIG is defined and accessible here
 $dbName = SYSTEM_CONFIG['database']['db'];
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-// Function to convert table and column collation and character set
-function convertTableAndColumns($db, $tableName)
+function needsTableConversion($db, $tableName)
 {
-    try {
-        // Change table default character set and collation
-        $db->rawQuery("ALTER TABLE `$tableName` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+    global $dbName; // Access the global variable
 
-        // Get columns for the table
-        $columns = $db->rawQuery("SHOW FULL COLUMNS FROM `$tableName`");
-
-        // Change each column's character set and collation
-        foreach ($columns as $column) {
-            $field = $column['Field'];
-            $type = $column['Type'];
-            if (str_contains($type, 'char') || str_contains($type, 'text')) {
-                $db->rawQuery("ALTER TABLE `$tableName` MODIFY `$field` $type CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
-            }
-        }
-    } catch (mysqli_sql_exception $e) {
-        error_log("Error processing table $tableName: " . $e->getMessage());
-    }
+    $tableInfo = $db->rawQueryOne("SELECT TABLE_COLLATION FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{$dbName}' AND TABLE_NAME = '{$tableName}'");
+    return $tableInfo['TABLE_COLLATION'] !== 'utf8mb4_general_ci';
 }
 
-// Get list of tables
+function needsColumnConversion($db, $tableName, $columnName, $columnType)
+{
+    global $dbName; // Access the global variable
+
+    $columnInfo = $db->rawQueryOne("SELECT CHARACTER_SET_NAME, COLLATION_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '{$dbName}' AND TABLE_NAME = '{$tableName}' AND COLUMN_NAME = '{$columnName}'");
+    return (str_contains($columnType, 'char') || str_contains($columnType, 'text')) && ($columnInfo['CHARACTER_SET_NAME'] !== 'utf8mb4' || $columnInfo['COLLATION_NAME'] !== 'utf8mb4_general_ci');
+}
+
+
+
+function convertTableAndColumns($db, $tableName)
+{
+    /** @var DatabaseService $db */
+    $db->startTransaction();
+
+    // Convert table if necessary
+    if (needsTableConversion($db, $tableName)) {
+        $db->rawQuery("ALTER TABLE `$tableName` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+        echo "Converted table $tableName to utf8mb4 and utf8mb4_general_ci.\n";
+    } else {
+        echo "Table $tableName already has the desired collation and character set.\n";
+    }
+
+    // Convert individual columns if necessary
+    $columns = $db->rawQuery("SHOW FULL COLUMNS FROM `$tableName`");
+    foreach ($columns as $column) {
+        if (needsColumnConversion($db, $tableName, $column['Field'], $column['Type'])) {
+            $db->rawQuery("ALTER TABLE `$tableName` MODIFY `{$column['Field']}` {$column['Type']} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+            echo "Converted column {$column['Field']} in table $tableName to utf8mb4 and utf8mb4_general_ci.\n";
+        }
+    }
+
+    $db->commit();
+}
+
+
 try {
     $tables = $db->rawQuery("SHOW TABLES FROM `$dbName`");
     $tablesList = array_column($tables, "Tables_in_$dbName");
 
-    // Iterate through each table and convert its character set and collation
     foreach ($tablesList as $table) {
         convertTableAndColumns($db, $table);
     }
 
-    echo "Conversion to utf8mb4 and utf8mb4_general_ci completed for database $dbName.\n";
+    echo "Conversion process completed for database $dbName.\n";
 } catch (mysqli_sql_exception $e) {
     error_log("Error fetching tables from database $dbName: " . $e->getMessage());
 }

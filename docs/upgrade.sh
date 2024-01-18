@@ -337,6 +337,8 @@ else
     echo "Skipping VLSM folder backup as per user request."
 fi
 
+rm -rf "${vlsm_path}/run-once"
+
 echo "Downloading VLSM..."
 wget -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 download_pid=$!           # Save the process ID of the wget command
