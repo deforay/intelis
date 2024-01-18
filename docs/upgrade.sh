@@ -403,6 +403,10 @@ pid=$!
 spinner "$pid"
 wait $pid
 
+for script in "${vlsm_path}/run-once/*.php"; do
+    php $script
+done
+
 # Ask User to Run 'maintenance' Scripts
 if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
     # List the files in maintenance directory
