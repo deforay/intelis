@@ -233,7 +233,7 @@ if (!empty($result)) {
      $html .= '<table style="padding:4px 2px 2px 2px;">';
      $html .= '<tr>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT NAME") . '</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT ID") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT IDENTIFIER") . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("ARV PROTOCOL") . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("AGE") . '</td>';
      $html .= '</tr>';
@@ -278,7 +278,7 @@ if (!empty($result)) {
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
      }
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT CONTACT") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT'S CONTACT") . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
 
