@@ -73,12 +73,12 @@
         "cleanup": "php app/scheduled-jobs/cleanup.php 60",
         "db-backup": "php app/scheduled-jobs/db-backups.php",
         "interface": "php app/scheduled-jobs/interface.php",
-        "fix-privileges": "php run-once/update-privileges.php",
-        "fix-audit-tables": "php run-once/fix-audit-tables.php",
+        "fix-privileges": "php maintenance/update-privileges.php",
+        "fix-audit-tables": "php maintenance/fix-audit-tables.php",
         "migrate": "php app/system/migrate.php -yq",
         "metadata-sync": "php app/scheduled-jobs/remote/commonDataSync.php",
         "generate-translation-strings": "php app/system/generate-translation-strings.php",
-        "post-install": "php app/system/migrate.php -yq && php run-once/update-privileges.php && php app/scheduled-jobs/remote/commonDataSync.php",
-        "post-update": "php app/system/migrate.php -yq && php run-once/update-privileges.php"
+        "post-install": "php app/system/migrate.php -yq && php maintenance/update-privileges.php && php app/scheduled-jobs/remote/commonDataSync.php",
+        "post-update": "php app/system/migrate.php -yq && php maintenance/update-privileges.php"
     }
 }

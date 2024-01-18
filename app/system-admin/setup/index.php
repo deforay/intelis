@@ -1,25 +1,25 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-  session_start();
-}
-$adminCount = $db->rawQuery("SELECT * FROM system_admin as ud");
-if (count($adminCount) != 0) {
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+
+$countSql = "SELECT COUNT(*) as totalCount FROM system_admin";
+$adminCount =  (int) $db->rawQueryOne($countSql)['totalCount'];
+if ($adminCount > 0) {
   header("Location:/system-admin/login/login.php");
 }
 
 $path = '/assets/img/remote-bg.jpg';
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$myfile = fopen(APPLICATION_PATH . "/system-admin/secretKey.txt", "w+") or die("Unable to open file!");
+$myfile = fopen(APPLICATION_PATH . "/system-admin/secretKey.txt", "w+") or die("No permission to write file");
 
 $randomString = $general->generateRandomString();
 fwrite($myfile, $randomString);
@@ -68,15 +68,15 @@ fclose($myfile);
 
         <div style="padding-top:10px;" class="panel-body">
           <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-          <form id="registerForm" name="registerForm" class="form-horizontal" autocomplete="no" role="form" method="post" action="registerProcess.php" onsubmit="validateNow();return false;">
+          <form id="registerForm" name="registerForm" class="form-horizontal" autocomplete="no" role="form" method="post" action="/system-admin/setup/registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-key"></em></span>
               <input type="text" class="form-control isRequired" id="secretKey" name="secretKey" placeholder="<?= _translate('Secret Key'); ?>" title="" autocomplete="no" />
             </div>
-            <div style="margin-bottom: 5px" class="input-group">
+            <!-- <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
               <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?= _translate('User Name'); ?>" title="<?php echo _translate('Please enter the user name'); ?>" autocomplete="no">
-            </div>
+            </div> -->
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
               <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _translate('Email ID'); ?>" title="<?php echo _translate('Please enter the email id'); ?>">

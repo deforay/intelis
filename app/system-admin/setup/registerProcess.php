@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $tableName = "system_admin";
-$userName = ($_POST['username']);
+//$userName = ($_POST['username']);
 $emailId = ($_POST['email']);
 $loginId = ($_POST['loginid']);
 $password = ($_POST['password']);
@@ -25,12 +25,12 @@ try {
 
     if ($secretKey == trim($key)) {
         if (!empty($_POST['username']) && !empty($_POST['password'])) {
-            $insertData = array(
-                'system_admin_name'     => $userName,
+            $insertData = [
+                //'system_admin_name'     => $userName,
                 'system_admin_email'    => $emailId,
                 'system_admin_login'    => $loginId,
                 'system_admin_password' => $userPassword
-            );
+            ];
             $db->insert($tableName, $insertData);
             unlink("app/system-admin/secretKey.txt");
             $_SESSION['alertMsg'] = _translate("New User Added successfully");

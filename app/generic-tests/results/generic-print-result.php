@@ -671,7 +671,8 @@ $state = $geolocationService->getProvinces("yes");
 						"sClass": "center"
 					},
 				<?php } ?> {
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
 					"sClass": "center"
@@ -686,10 +687,12 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				},
 				{
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
 					"sClass": "center"
@@ -819,7 +822,8 @@ $state = $geolocationService->getProvinces("yes");
 						"sClass": "center"
 					},
 				<?php } ?> {
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
 					"sClass": "center"
@@ -834,10 +838,12 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				},
 				{
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
-					"sClass": "center"
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
 					"sClass": "center"

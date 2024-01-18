@@ -403,18 +403,22 @@ pid=$!
 spinner "$pid"
 wait $pid
 
-# Ask User to Run 'run-once' Scripts
-if ask_yes_no "Do you want to run scripts from ${vlsm_path}/run-once/?" "no"; then
-    # List the files in run-once directory
-    echo "Available scripts to run:"
-    files=("${vlsm_path}/run-once/"*.php)
+for script in "${vlsm_path}/run-once/*.php"; do
+    php $script
+done
+
+# Ask User to Run 'maintenance' Scripts
+if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
+    # List the files in maintenance directory
+    echo "Available maintenance scripts to run:"
+    files=("${vlsm_path}/maintenance/"*.php)
     for i in "${!files[@]}"; do
         filename=$(basename "${files[$i]}")
         echo "$((i + 1))) $filename"
     done
 
     # Ask which files to run
-    echo "Enter the numbers of the scripts you want to run separated by commas (e.g., 1,3,6) or type 'all' to run them all."
+    echo "Enter the numbers of the scripts you want to run separated by commas (e.g., 1,2,4) or type 'all' to run them all."
     read -r files_to_run
 
     # Run selected files

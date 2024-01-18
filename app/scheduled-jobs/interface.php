@@ -100,7 +100,7 @@ if (!empty($interfaceData)) {
     }
 
     $processedResults = [];
-    $allowRepeatedTests = false;
+    //$allowRepeatedTests = false;
 
     foreach ($interfaceData as $key => $result) {
 
@@ -108,9 +108,9 @@ if (!empty($interfaceData)) {
             continue;
         }
 
-        if ($allowRepeatedTests === false && (in_array($result['test_id'], $processedResults) || in_array($result['order_id'], $processedResults))) {
-            continue;
-        }
+        // if ($allowRepeatedTests === false && (in_array($result['test_id'], $processedResults) || in_array($result['order_id'], $processedResults))) {
+        //     continue;
+        // }
 
         $tableInfo = [];
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
@@ -219,8 +219,8 @@ if (!empty($interfaceData)) {
             $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
             $vlUpdateId = $db->update('form_vl', $data);
             $numberOfResults++;
-            $processedResults[] = $result['order_id'];
-            $processedResults[] = $result['test_id'];
+            // $processedResults[] = $result['order_id'];
+            //  $processedResults[] = $result['test_id'];
             if ($vlUpdateId) {
                 if ($mysqlConnected) {
                     $interfaceData = [
@@ -281,8 +281,8 @@ if (!empty($interfaceData)) {
             $db->where('eid_id', $tableInfo['eid_id']);
             $eidUpdateId = $db->update('form_eid', $data);
             $numberOfResults++;
-            $processedResults[] = $result['order_id'];
-            $processedResults[] = $result['test_id'];
+            // $processedResults[] = $result['order_id'];
+            //  $processedResults[] = $result['test_id'];
             if ($eidUpdateId) {
                 if ($mysqlConnected) {
                     $interfaceData = [
@@ -361,8 +361,8 @@ if (!empty($interfaceData)) {
             $db->where('hepatitis_id', $tableInfo['hepatitis_id']);
             $vlUpdateId = $db->update('form_hepatitis', $data);
             $numberOfResults++;
-            $processedResults[] = $result['order_id'];
-            $processedResults[] = $result['test_id'];
+            // $processedResults[] = $result['order_id'];
+            //  $processedResults[] = $result['test_id'];
             if ($vlUpdateId) {
                 if ($mysqlConnected) {
                     $interfaceData = [
