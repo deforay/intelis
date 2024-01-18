@@ -11,25 +11,25 @@ $_GET = _sanitizeInput($request->getQueryParams());
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$userName = $_GET['userName'];
+$userId = $_GET['userId'];
 
-$sQuery = "SELECT * FROM system_admin";
+$sQuery = "SELECT * FROM user_details";
 
-if(isset($userName) && $userName != ''){
-    $sWhere = ' WHERE ' . ' system_admin_name = "' . $userName . '"';
-    $sQuery = $sQuery . ' ' . $sWhere;
+if(isset($userId) && $userId != ''){
+    $sQuery .= ' WHERE user_id = "' . $userId . '"';
 }
 $userInfo = $db->rawQuery($sQuery);
 ?>
-
+    <?php if($userInfo != null){ ?>
         <form class="form-horizontal" method='post' name='resetPasswordForm' id='resetPasswordForm' autocomplete="off" action="resetPasswordProcess.php">
-          <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode((string) $userInfo[0]['system_admin_id']); ?>" />
+          <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode((string) $userInfo[0]['user_id']); ?>" />
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?> <span class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
+                    <input type="password" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
+                    <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><strong><?= _translate("Generate Random Password"); ?></strong></button><br>
                     <code><?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                   </div>
                 </div>
@@ -38,7 +38,7 @@ $userInfo = $db->rawQuery($sQuery);
                 <div class="form-group">
                   <label for="confirmPassword" class="col-lg-4 control-label"><?php echo _translate("Confirm Password"); ?> <span class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _translate('Confirm Password'); ?>" title="" />
+                    <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _translate('Confirm Password'); ?>" title="" />
                   </div>
                 </div>
               </div>
@@ -63,4 +63,5 @@ $userInfo = $db->rawQuery($sQuery);
           </div>
           <!-- /.box-footer -->
         </form>
+    <?php } ?>
        
