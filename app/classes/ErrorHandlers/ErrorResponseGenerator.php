@@ -94,7 +94,7 @@ class ErrorResponseGenerator
             'error' => [
                 'code' => $httpCode,
                 'timestamp' => time(),
-                'message' => $errorReason . " " . $errorMessage,
+                'message' => $errorReason . " | " . $errorMessage,
             ],
         ]);
 

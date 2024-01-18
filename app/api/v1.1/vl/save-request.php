@@ -86,7 +86,9 @@ try {
     $deviceId = $general->getHeader('deviceId');
 
 
+    $dataCounter = 0;
     foreach ($input as $rootKey => $data) {
+        $dataCounter++;
 
         $mandatoryFields = [
             'sampleCollectionDate',
@@ -158,8 +160,7 @@ try {
 
             if (!empty($uniqueId)) {
                 $sQueryWhere[] = " unique_id like '$uniqueId'";
-            }
-            if (!empty($data['appSampleCode'])) {
+            } elseif (!empty($data['appSampleCode'])) {
                 $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
             }
 
@@ -177,7 +178,6 @@ try {
                         'status' => 'failed',
                         'action' => 'skipped',
                         'error' => _translate("Sample Locked or Finalized")
-
                     ];
                     continue;
                 }
@@ -417,7 +417,7 @@ try {
         }
     }
 
-    if ($noOfFailedRecords > 0 && $noOfFailedRecords == iterator_count($input)) {
+    if ($noOfFailedRecords > 0 && $noOfFailedRecords == $dataCounter) {
         $payloadStatus = 'failed';
     } elseif ($noOfFailedRecords > 0) {
         $payloadStatus = 'partial';
@@ -451,5 +451,5 @@ try {
 
 
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;
