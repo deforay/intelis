@@ -96,3 +96,5 @@ $data = [
     'status' => 'Completed'
 ];
 $db->insert('s_run_once_scripts_log', $data);
+
+echo "$scriptName executed and logged successfully";
