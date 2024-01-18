@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$tableName = "system_admin";
+$tableName = "user_details";
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -16,8 +16,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 try {
     $userId = base64_decode((string) $_POST['userId']);
     if (isset($_POST['password']) && trim((string) $_POST['password']) != "") {
-        $data['system_admin_password'] = $usersService->passwordHash($_POST['password']);
-        $db->where('system_admin_id', $userId);
+        $data['password'] = $usersService->passwordHash($_POST['password']);
+        $data['status'] = $_POST['status'];
+        $db->where('user_id', $userId);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = _translate("Password updated successfully");
     }

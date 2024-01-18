@@ -9,7 +9,8 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
-$sQuery = "SELECT * FROM user_login_history";
+$sQuery = "SELECT * FROM user_details ORDER BY user_name ASC";
+
 $sResult = $db->rawQuery($sQuery);
 ?>
 
@@ -33,7 +34,12 @@ $sResult = $db->rawQuery($sQuery);
 						<tr>
 							<td><strong><?php echo _translate("User"); ?>&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="userName" name="userName" class="form-control" placeholder="<?php echo _translate('User'); ?>" style="width:220px;background:#fff;" />
+								<select class="form-control" name="userId" id="userId" placeholder="<?php echo _translate('User'); ?>">
+									<option value="">--Select--</option>
+									<?php foreach($sResult as $data) { ?>
+										<option value="<?php echo $data['user_id']?>"><?php echo $data['user_name']?></option>
+									<?php } ?>
+								</select>
 							</td>
 							<td>
 								&nbsp;<button onclick="viewUser();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
@@ -63,16 +69,18 @@ $sResult = $db->rawQuery($sQuery);
 <script>
 
 	function viewUser() {
-		if ($('#userName').val() != "") {
+		if ($('#userId').val() != "") {
 			$.ajax({
 				async: false,
-				url: 'get-user.php?userName=' + $('#userName').val(),
+				url: 'get-user.php?userId=' + $('#userId').val(),
 				dataType: 'text',
 				success: function(data) {
 					$('#viewUser').html(data);
 					$('.viewUser').removeClass('hide');
 				}
 			});
+		}else{
+			$('.viewUser').addClass('hide');
 		}
 	}
 
@@ -101,6 +109,29 @@ $sResult = $db->rawQuery($sQuery);
 		}
 		return regex.test(pwd);
 	}
+
+	async function passwordType() {
+		document.getElementById('password').type = "text";
+		document.getElementById('confirmPassword').type = "text";
+		const data = await $.post("/includes/generate-password.php", {
+			size: 32
+		});
+		$("#password").val(data);
+		$("#confirmPassword").val(data);
+		try {
+			const success = await Utilities.copyToClipboard(data);
+			if (success) {
+				Toastify({
+					text: "<?= _translate("Random password generated and copied to clipboard", true); ?>",
+					duration: 3000,
+				}).showToast();
+			} else {
+				console.log('Failed to copy text');
+			}
+		} catch (error) {
+			console.log(error);
+		}
+  }
 </script>
 <?php
 require_once(APPLICATION_PATH . '/system-admin/admin-footer.php');
