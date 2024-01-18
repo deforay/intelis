@@ -59,6 +59,10 @@
     $(".manage").addClass('active');
     $(".allMenu").removeClass('active');
     $(".logFileMenu").addClass('active');
+  } else if (splitsUrl == 'reset-password.php') {
+    $(".manage").addClass('active');
+    $(".allMenu").removeClass('active');
+    $(".resetPasswordMenu").addClass('active');
   } else {
     $(".allMenu").removeClass('active');
     $(".dashboardMenu").addClass('active');
