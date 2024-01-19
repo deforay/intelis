@@ -21,8 +21,8 @@ if(isset($userId) && $userId != ''){
 $userInfo = $db->rawQuery($sQuery);
 ?>
     <?php if($userInfo != null){ ?>
-        <form class="form-horizontal" method='post' name='resetPasswordForm' id='resetPasswordForm' autocomplete="off" action="resetPasswordProcess.php">
-          <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode((string) $userInfo[0]['user_id']); ?>" />
+        <form class="form-horizontal" method='post' name='resetPasswordForm' id='resetPasswordForm' autocomplete="off" action="resetPasswordProcess.php" style="margin-top:20px;"> 
+            <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode((string) $userInfo[0]['user_id']); ?>" />
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
@@ -46,12 +46,12 @@ $userInfo = $db->rawQuery($sQuery);
             <div class="row">
                 <div class="col-md-6">
                 <div class="form-group">
-                  <label for="status" class="col-lg-4 control-label"><?php echo _translate("status"); ?> <span class="mandatory">*</span></label>
+                  <label for="status" class="col-lg-4 control-label"><?php echo _translate("Status"); ?> <span class="mandatory">*</span></label>
                   <div class="col-lg-7">
                     <select class="form-control isRequired" name='status' id='status' title="<?php echo _translate('Please select the status'); ?>">
                         <option value=""><?php echo _translate("-- Select --"); ?></option>
-                        <option value="active"><?php echo _translate("Active"); ?></option>
-                        <option value="inactive"><?php echo _translate("Inactive"); ?></option>
+                        <option value="active" <?php echo ($userInfo[0]['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _translate("Active"); ?></option>
+                        <option value="inactive" <?php echo ($userInfo[0]['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _translate("Inactive"); ?></option>
                     </select>
                   </div>
                 </div>

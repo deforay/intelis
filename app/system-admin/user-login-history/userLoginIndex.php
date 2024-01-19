@@ -33,7 +33,7 @@ $sResult = $db->rawQuery($sQuery);
 
               <td><strong><?php echo _translate("Login ID"); ?>&nbsp;:</strong></td>
               <td>
-                <select style="width:220px;" class="form-control" id="loginId" name="loginId" title="<?php echo _translate('Please select login id'); ?>">
+                <select style="width:220px;" class="form-control select2" id="loginId" name="loginId" title="<?php echo _translate('Please select login id'); ?>">
                   <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                   <?php
                   foreach ($sResult as $type) {
@@ -196,7 +196,7 @@ $sResult = $db->rawQuery($sQuery);
     });
 
     $('#userDate').val("");
-
+		$(".select2").select2();
     loadUserLoginRequestData();
 
   });
