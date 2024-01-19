@@ -34,7 +34,7 @@ $sResult = $db->rawQuery($sQuery);
 						<tr>
 							<td><strong><?php echo _translate("User"); ?>&nbsp;:</strong></td>
 							<td>
-								<select class="form-control" name="userId" id="userId" placeholder="<?php echo _translate('User'); ?>">
+								<select class="form-control select2" name="userId" id="userId" placeholder="<?php echo _translate('User'); ?>">
 									<option value="">--Select--</option>
 									<?php foreach($sResult as $data) { ?>
 										<option value="<?php echo $data['user_id']?>"><?php echo $data['user_name']?></option>
@@ -42,20 +42,22 @@ $sResult = $db->rawQuery($sQuery);
 								</select>
 							</td>
 							<td>
-								&nbsp;<button onclick="viewUser();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
-
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Clear Search"); ?></span></button>
+								<button onclick="viewUser();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
+							</td>
+							<td>
+								<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Clear Search"); ?></span></button>
 							</td>
 						</tr>
 
 					</table>
-					<!-- /.box-header -->
-					<div class="box-body">
-						<!-- <span><i class="fa fa-trash" style="color: red; background"></i></span> -->
-						<div class="viewUser hide" id="viewUser" ></div>
 					</div>
+					<!-- /.box-header -->
+					
+						<!-- <span><i class="fa fa-trash" style="color: red; background"></i></span> -->
+						<div class="box viewUser hide" id="viewUser"></div>
+					
 					<!-- /.box-body -->
-				</div>
+					
 				<!-- /.box -->
 			</div>
 			<!-- /.col -->
@@ -67,7 +69,9 @@ $sResult = $db->rawQuery($sQuery);
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script>
-
+	$(document).ready(function() {
+		$(".select2").select2();
+	});
 	function viewUser() {
 		if ($('#userId').val() != "") {
 			$.ajax({
