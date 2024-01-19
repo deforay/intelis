@@ -373,6 +373,8 @@ try {
 		'reason_for_repeat_pcr_other' => $_POST['reasonForRepeatPcrOther'] ?? null,
 		'sample_requestor_name' => $_POST['sampleRequestorName'] ?? null,
 		'sample_requestor_phone' => $_POST['sampleRequestorPhone'] ?? null,
+		'sample_dispatcher_phone' => $_POST['sampleDispatcherPhone'] ?? null,
+		'sample_dispatcher_name' => $_POST['sampleDispatcherName'] ?? null,
 		'has_infant_stopped_breastfeeding' => $_POST['hasInfantStoppedBreastfeeding'] ?? null,
 		'infant_on_pmtct_prophylaxis' => $_POST['infantOnPMTCTProphylaxis'] ?? null,
 		'infant_on_ctx_prophylaxis' => $_POST['infantOnCTXProphylaxis'] ?? null,
