@@ -340,7 +340,9 @@ $state = $geolocationService->getProvinces("yes");
 					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
 					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
 					'Last 18 Months': [moment().subtract('month', 18).startOf('month'), moment().endOf('month')],
-					'Last 24 Months': [moment().subtract('month', 24).startOf('month'), moment().endOf('month')]
+					'Last 24 Months': [moment().subtract('month', 24).startOf('month'), moment().endOf('month')],
+					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+					'Current Year To Date': [moment().startOf('year'), moment()]
 				}
 			},
 			function(start, end) {

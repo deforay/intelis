@@ -74,7 +74,7 @@ foreach ($instrumentResult as $row) {
 $data = [
     'script_name' => $scriptName,
     'execution_date' => DateUtility::getCurrentDateTime(),
-    'status' => 'Completed'
+    'status' => 'executed'
 ];
 
 $db->insert('s_run_once_scripts_log', $data);

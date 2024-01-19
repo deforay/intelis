@@ -12,7 +12,7 @@ use App\Registries\ContainerRegistry;
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$machineImportScript = ($_POST['fileName']);
+$machineImportScript = $_POST['fileName'];
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -40,7 +40,7 @@ if (isset($directoryMap[$type])) {
 
 
 
-if (file_exists($machineImportScript)) {
+if (file_exists($machineImportScript) && !is_dir($machineImportScript)) {
     MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results");
     require_once($machineImportScript);
 } else {

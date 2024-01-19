@@ -1,16 +1,11 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 $importMachineTable = "instrument_machines";
 // Sanitized values from $request object
@@ -18,29 +13,38 @@ $importMachineTable = "instrument_machines";
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$configId = base64_decode((string) $_POST['configId']);
-$iQuery = "SELECT instrument_id,machine_name,import_machine_file_name FROM instruments where import_machine_file_name='$configId'";
-$iResult = $db->rawQuery($iQuery);
+$configId = base64_decode($_POST['configId']);
+$iQuery = "SELECT instrument_id,
+                machine_name
+                import_machine_file_name
+            FROM instruments
+            WHERE instrument_id= ?";
+$iResult = $db->rawQueryOne($iQuery, [$configId]);
 
-$configMachineQuery = "SELECT config_machine_id,config_machine_name,file_name,date_format  from instrument_machines where instrument_id=" . $iResult[0]['instrument_id'];
-$configMachineInfo = $db->query($configMachineQuery);
-$configMachine = '';
+$configMachineQuery = "SELECT config_machine_id,
+                                config_machine_name,
+                                file_name,
+                                `date_format`
+                        FROM instrument_machines
+                        WHERE instrument_id= ?";
+$configMachineInfo = $db->rawQuery($configMachineQuery, [$iResult['instrument_id']]);
+$configMachine = '<option value"">' . _translate('-- Select --', true) . '</option>';
 if (!empty($configMachineInfo)) {
-    $configMachine .= '<option value"">-- Select --</option>';
-    $selected = '';
-    if (count($configMachineInfo) == 1) {
-        $selected = "selected";
-    }
+
+    $selected = count($configMachineInfo) == 1 ? "selected" : '';
+
     foreach ($configMachineInfo as $machine) {
-        $configMachine .= '<option value="' . $machine['config_machine_id'] . '" data-filename="' . $machine['file_name'] . '" data-dateformat="' . $machine['date_format'] . '" selected=' . $selected . '>' . ($machine['config_machine_name']) . '</option>';
+        $fileName = $machine['file_name'] ?? $iResult['import_machine_file_name'] ?? '';
+        $configMachine .= '<option value="' . $machine['config_machine_id'] . '" data-filename="' . $fileName . '" data-dateformat="' . $machine['date_format'] . '" selected=' . $selected . '>' . ($machine['config_machine_name']) . '</option>';
     }
 } else {
-    $configMachineData = array('instrument_id' => $iResult[0]['instrument_id'], 'config_machine_name' => $iResult[0]['machine_name'] . " 1");
+    $configMachineData = array('instrument_id' => $iResult['instrument_id'], 'config_machine_name' => $iResult['machine_name'] . " 1");
     $db->insert($importMachineTable, $configMachineData);
-    $configMachineInfo = $db->query($configMachineQuery);
-    $configMachine .= '<option value"">-- Select --</option>';
+    //$configMachineInfo = $db->rawQuery($configMachineQuery, [$iResult['instrument_id']]);
+
     foreach ($configMachineInfo as $machine) {
-        $configMachine .= '<option value="' . $machine['config_machine_id'] . '" data-filename="' . $machine['file_name'] . '" data-dateformat="' . $machine['date_format'] . '" selected="selected">' . ($machine['config_machine_name']) . '</option>';
+        $fileName = $machine['file_name'] ?? $iResult['import_machine_file_name'] ?? '';
+        $configMachine .= '<option value="' . $machine['config_machine_id'] . '" data-filename="' . $fileName . '" data-dateformat="' . $machine['date_format'] . '" selected="selected">' . ($machine['config_machine_name']) . '</option>';
     }
 }
 echo $configMachine;
