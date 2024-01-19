@@ -15,12 +15,11 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 $configId = base64_decode($_POST['configId']);
 $iQuery = "SELECT instrument_id,
-                machine_name
+                machine_name,
                 import_machine_file_name
             FROM instruments
             WHERE instrument_id= ?";
 $iResult = $db->rawQueryOne($iQuery, [$configId]);
-
 $configMachineQuery = "SELECT config_machine_id,
                                 config_machine_name,
                                 file_name,
