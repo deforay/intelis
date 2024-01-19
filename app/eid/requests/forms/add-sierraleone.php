@@ -219,17 +219,8 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" class="labels">Infant Age (months) <span class="mandatory">*</span></th>
                                         <td><input type="number" step=".1" max="60" maxlength="4" class="form-control isRequired" id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" /></td>
-                                        <th scope="row" class="labels">Mother ART Number<span class="mandatory">*</span>
-                                        </th>
-                                        <td><input type="text" class="form-control isRequired" id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" onchange="" /></td>
-                                    </tr>
-                                    <tr>
                                         <th scope="row" class="labels">Caretaker phone number<span class="mandatory">*</span></th>
                                         <td><input type="text" class="form-control isRequired phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" onchange="" /></td>
-
-                                        <th scope="row" class="labels">Infant caretaker address<span class="mandatory">*</span></th>
-                                        <td><textarea class="form-control isRequired" id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""></textarea>
-                                        </td>
 
                                     </tr>
                                 </table>
@@ -241,17 +232,6 @@ $aResult = $db->query($aQuery);
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15% !important" class="labels">Mother's HIV
-                                            Status:<span class="mandatory">*</span></th>
-                                        <td style="width:35% !important">
-                                            <select class="form-control isRequired" name="mothersHIVStatus" id="mothersHIVStatus">
-                                                <option value=''> -- Select -- </option>
-                                                <option value="positive"> Positive </option>
-                                                <option value="negative"> Negative </option>
-                                                <option value="unknown"> Unknown </option>
-                                            </select>
-                                        </td>
-
                                         <th scope="row" style="width:15% !important" class="labels">Is Mother on ART?
                                             <span class="mandatory">*</span>
                                         </th>
@@ -261,17 +241,9 @@ $aResult = $db->query($aQuery);
                                                 <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
                                             </select>
-                                            <!--<input type="checkbox" name="motherTreatment[]" value="No ART given" /> No ART given <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Pregnancy" /> Pregnancy <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Labour/Delivery" /> Labour/Delivery <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Postnatal" /> Postnatal <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Other" onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" /> Other (Please specify): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Other" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Unknown" /> Unknown-->
                                         </td>
-                                    </tr>
-                                    <tr class="motherRegimen" style="display:none;">
-                                        <th scope="row" class="labels">Mother's Regimen</th>
-                                        <td>
+                                        <th scope="row" class="labels motherRegimen" style="display:none;">Mother's Regimen</th>
+                                        <td class="motherRegimen" style="display:none;">
                                             <select class="form-control" id="motherRegimen" name="motherRegimen" title="Please choose Mother's ART Regimen" style="width:100%;" onchange="checkMotherARTRegimenValue();">
                                                 <option value="">-- Select --</option>
                                                 <?php foreach ($artRegimenResult as $heading) { ?>
@@ -440,7 +412,7 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" class="labels">Sample Requestor Phone<span class="mandatory">*</span></th>
                                         <td>
-                                            <input class="form-control isRequired" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
+                                            <input class="form-control isRequired phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
                                         </td>
                                         <?php if (_isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row" class="labels">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
@@ -448,6 +420,16 @@ $aResult = $db->query($aQuery);
                                                 <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample received date" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
                                         <?php } ?>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="labels">Sample Dispatcher Name</th>
+                                        <td>
+                                            <input class="form-control" type="text" name="sampleDispatcherName" id="sampleDispatcherName" placeholder="Sample Dispatcher Name" />
+                                        </td>
+                                        <th scope="row" class="labels">Sample Dispatcher Phone</th>
+                                        <td>
+                                            <input class="form-control phone-number" type="text" name="sampleDispatcherPhone" id="sampleDispatcherPhone" placeholder="Sample Dispatcher Phone" />
+                                        </td>
                                     </tr>
                                 </table>
                             </div>

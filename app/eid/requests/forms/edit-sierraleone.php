@@ -218,22 +218,10 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" class="labels">Infant Age (months) <span class="mandatory">*</span></th>
                                         <td><input type="number" step=".1" max="60" maxlength="4" class="form-control isRequired" id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" /></td>
-                                        <th scope="row" class="labels">Mother ART Number<span class="mandatory">*</span></th>
-                                        <td><input type="text" class="form-control isRequired" id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['mother_id']); ?>" onchange="" /></td>
-                                    </tr>
-                                    <tr>
                                         <th scope="row" class="labels">Caretaker phone number<span class="mandatory">*</span></th>
                                         <td><input type="text" class="form-control isRequired phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
-
-                                        <th scope="row" class="labels">Infant caretaker address<span class="mandatory">*</span></th>
-                                        <td><textarea class="form-control isRequired" id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?= htmlspecialchars((string) $eidInfo['caretaker_address']); ?></textarea></td>
-
                                     </tr>
-
-
                                 </table>
-
-
 
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
@@ -243,27 +231,15 @@ $aResult = $db->query($aQuery);
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15% !important" class="labels">Mother's HIV Status:<span class="mandatory">*</span> </th>
-                                        <td style="width:35% !important">
-                                            <select class="form-control isRequired" name="mothersHIVStatus" id="mothersHIVStatus">
-                                                <option value=''> -- Select -- </option>
-                                                <option value="positive" <?php echo ($eidInfo['mother_hiv_status'] == 'positive') ? "selected='selected'" : ""; ?>> Positive </option>
-                                                <option value="negative" <?php echo ($eidInfo['mother_hiv_status'] == 'negative') ? "selected='selected'" : ""; ?>> Negative </option>
-                                                <option value="unknown" <?php echo ($eidInfo['mother_hiv_status'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
-                                            </select>
-                                        </td>
-
                                         <th scope="row" style="width:15% !important" class="labels">Is Mother on ART? <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important">
                                             <select class="form-control isRequired" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes" <?php echo ($eidInfo['mother_treatment'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value="no" <?php echo ($eidInfo['mother_treatment'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
-                                            </select>
-                                    </tr>
-                                    <tr class="motherRegimen" style="display:none;">
-                                        <th scope="row" class="labels">Mother's Regimen</th>
-                                        <td>
+                                            </select></td>
+                                            <th scope="row" class="labels motherRegimen" style="display:none;">Mother's Regimen</th>
+                                        <td class="motherRegimen" style="display:none;">
                                             <select class="form-control" id="motherRegimen" name="motherRegimen" title="Please choose Mother's ART Regimen" style="width:100%;" onchange="checkMotherARTRegimenValue();">
                                                 <option value="">-- Select --</option>
                                                 <?php foreach ($artRegimenResult as $heading) { ?>
@@ -285,6 +261,7 @@ $aResult = $db->query($aQuery);
                                             </select>
                                             <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
                                         </td>
+
                                     </tr>
                                     <tr>
                                         <th scope="row" class="labels">Infant Rapid HIV Test Done<span class="mandatory">*</span> </th>
@@ -432,6 +409,18 @@ $aResult = $db->query($aQuery);
                                                 <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" style="width:100%;" />
                                             </td>
                                         <?php } ?>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="row" class="labels">Sample Dispatcher Name</th>
+                                        <td>
+                                            <input class="form-control" type="text" name="sampleDispatcherName" id="sampleDispatcherName" placeholder="Sample Dispatcher Name" value="<?= htmlspecialchars((string) $eidInfo['sample_dispatcher_name']); ?>"/>
+                                        </td>
+                                        <th scope="row" class="labels">Sample Dispatcher Phone</th>
+                                        <td>
+                                            <input class="form-control phone-number" type="text" name="sampleDispatcherPhone" id="sampleDispatcherPhone" placeholder="Sample Dispatcher Phone" value="<?= htmlspecialchars((string) $eidInfo['sample_dispatcher_phone']); ?>"/>
+                                        </td>
+
                                     </tr>
 
                                 </table>
