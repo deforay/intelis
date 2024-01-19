@@ -46,7 +46,7 @@ $userInfo = $db->rawQuery($sQuery);
             <div class="row">
                 <div class="col-md-6">
                 <div class="form-group">
-                  <label for="status" class="col-lg-4 control-label"><?php echo _translate("status"); ?> <span class="mandatory">*</span></label>
+                  <label for="status" class="col-lg-4 control-label"><?php echo _translate("Status"); ?> <span class="mandatory">*</span></label>
                   <div class="col-lg-7">
                     <select class="form-control isRequired" name='status' id='status' title="<?php echo _translate('Please select the status'); ?>">
                         <option value=""><?php echo _translate("-- Select --"); ?></option>

@@ -34,18 +34,12 @@ $sResult = $db->rawQuery($sQuery);
 						<tr>
 							<td><strong><?php echo _translate("User"); ?>&nbsp;:</strong></td>
 							<td>
-								<select class="form-control select2" name="userId" id="userId" placeholder="<?php echo _translate('User'); ?>">
+								<select style="width:100%" class="form-control select2" name="userId" id="userId" placeholder="<?php echo _translate('User'); ?>" onchange="viewUser()">
 									<option value="">--Select--</option>
 									<?php foreach($sResult as $data) { ?>
 										<option value="<?php echo $data['user_id']?>"><?php echo $data['user_name']?></option>
 									<?php } ?>
 								</select>
-							</td>
-							<td>
-								<button onclick="viewUser();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
-							</td>
-							<td>
-								<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Clear Search"); ?></span></button>
 							</td>
 						</tr>
 
