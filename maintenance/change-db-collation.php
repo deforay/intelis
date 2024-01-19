@@ -3,7 +3,6 @@
 
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use mysqli_sql_exception;
 
 require_once(__DIR__ . '/../bootstrap.php');
 

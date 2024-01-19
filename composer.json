@@ -71,6 +71,7 @@
     },
     "scripts": {
         "cleanup": "php app/scheduled-jobs/cleanup.php 60",
+        "fix-collation": "php maintenance/change-db-collation.php",
         "db-backup": "php app/scheduled-jobs/db-backups.php",
         "interface": "php app/scheduled-jobs/interface.php",
         "fix-privileges": "php maintenance/update-privileges.php",
@@ -78,7 +79,7 @@
         "migrate": "php app/system/migrate.php -yq",
         "metadata-sync": "php app/scheduled-jobs/remote/commonDataSync.php",
         "generate-translation-strings": "php app/system/generate-translation-strings.php",
-        "post-install": "php app/system/migrate.php -yq && php maintenance/update-privileges.php && php app/scheduled-jobs/remote/commonDataSync.php",
-        "post-update": "php app/system/migrate.php -yq && php maintenance/update-privileges.php"
+        "post-install": "php app/system/migrate.php -yq && php maintenance/update-privileges.php && php app/scheduled-jobs/remote/commonDataSync.php && php maintenance/change-db-collation.php",
+        "post-update": "php app/system/migrate.php -yq && php maintenance/update-privileges.php && php maintenance/change-db-collation.php"
     }
 }
