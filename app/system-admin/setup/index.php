@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -18,8 +19,14 @@ $path = '/assets/img/remote-bg.jpg';
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-$myfile = fopen(APPLICATION_PATH . "/system-admin/secretKey.txt", "w+") or die("No permission to write file");
+try {
+  $myfile = fopen(APPLICATION_PATH . "/system-admin/secretKey.txt", "w+");
+  if ($myfile === false) {
+    throw new Exception("No permission to write file");
+  }
+} catch (Exception $e) {
+  throw new SystemException($e->getMessage(), $e->getCode(), $e);
+}
 
 $randomString = $general->generateRandomString();
 fwrite($myfile, $randomString);

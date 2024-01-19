@@ -34,7 +34,7 @@ class ErrorResponseGenerator
             return $this->handleDebugMode($exception, $response);
         }
 
-        [$httpCode, $originalExceptionCode]  = $this->determineHttpCode($exception);
+        $httpCode  = $this->determineHttpCode($exception);
         $this->logError($exception, $request);
 
         if (
@@ -44,10 +44,10 @@ class ErrorResponseGenerator
             return $this->handleApiErrorResponse($exception, $response, $httpCode);
         }
 
-        return $this->handleGenericErrorResponse($response, $httpCode, $exception);
+        return $this->handleGenericErrorResponse($exception, $response, $httpCode);
     }
 
-    private function determineHttpCode(Throwable $exception): array
+    private function determineHttpCode(Throwable $exception): int
     {
         $originalExceptionCode = $exception->getCode();
         $httpCode = $originalExceptionCode ?: 500;
@@ -56,10 +56,7 @@ class ErrorResponseGenerator
             $httpCode = 500;
         }
 
-        return [
-            $httpCode,
-            $originalExceptionCode
-        ];
+        return $httpCode;
     }
 
     private function handleDebugMode(Throwable $exception, ResponseInterface $response): ResponseInterface
@@ -70,15 +67,15 @@ class ErrorResponseGenerator
         $whoops->pushHandler(new PrettyPageHandler());
         $responseBody = $whoops->handleException($exception);
         $response->getBody()->write($responseBody);
-        [$httpCode, $originalExceptionCode]  = $this->determineHttpCode($exception);
+        $httpCode  = $this->determineHttpCode($exception);
         return $response->withStatus($httpCode);
     }
 
     private function logError(Throwable $exception, ServerRequestInterface $request): void
     {
-        [$httpCode, $originalExceptionCode]  = $this->determineHttpCode($exception);
+        $httpCode  = $this->determineHttpCode($exception);
         $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error');
-        LoggerUtility::log('error', $errorReason . ' : ' . $originalExceptionCode . ' : ' . $request->getUri() . ': ' . $exception->getMessage(), [
+        LoggerUtility::log('error', $errorReason . ' : ' . $exception->getCode() . ' : ' . $request->getUri() . ': ' . $exception->getMessage(), [
             'exception' => $exception,
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
@@ -89,7 +86,7 @@ class ErrorResponseGenerator
     private function handleApiErrorResponse(Throwable $exception, ResponseInterface $response, int $httpCode): ResponseInterface
     {
         $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error');
-        $errorMessage = APPLICATION_ENV === 'production'
+        $errorMessage = (APPLICATION_ENV === 'production')
             ? _translate('Sorry, something went wrong. Please try again later.')
             : $exception->getMessage();
 
@@ -97,7 +94,7 @@ class ErrorResponseGenerator
             'error' => [
                 'code' => $httpCode,
                 'timestamp' => time(),
-                'message' => $errorReason . " " . $errorMessage,
+                'message' => $errorReason . " | " . $errorMessage,
             ],
         ]);
 
@@ -105,13 +102,14 @@ class ErrorResponseGenerator
         return $response->withHeader('Content-Type', 'application/json')->withStatus($httpCode);
     }
 
-    private function handleGenericErrorResponse(ResponseInterface $response, int $httpCode, $exception): ResponseInterface
+    private function handleGenericErrorResponse(Throwable $exception, ResponseInterface $response, int $httpCode): ResponseInterface
     {
         ob_start();
         // $errorReason and $errorMessage are used in error.php so retain them here
         $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error');
-        $errorMessage = $exception->getMessage() ??
-            _translate('Sorry, something went wrong. Please try again later.');
+        $errorMessage = (APPLICATION_ENV === 'production')
+            ? _translate('Sorry, something went wrong. Please try again later.')
+            : $exception->getMessage();
         require_once(APPLICATION_PATH . '/error/error.php');
         $responseBody = ob_get_clean();
 

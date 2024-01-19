@@ -21,20 +21,24 @@ $general = ContainerRegistry::get(CommonService::class);
 $systemConfig = $general->getSystemConfig();
 
 if ($systemConfig['sc_user_type'] == 'remoteuser') {
-    exit("Script not required for STS instance");
+    exit("Script not required for STS instance" . PHP_EOL);
 }
 
 $scriptName = basename(__FILE__);
 
-// Check if the script has already been run
-$db->where('script_name', $scriptName);
-$executed = $db->getOne('s_run_once_scripts_log');
+// Check for force flag (-f or --force)
+$forceRun = in_array('-f', $argv) || in_array('--force', $argv);
 
-if ($executed) {
-    // Script has already been run
-    exit("Script $scriptName has already been executed. Exiting...");
+if (!$forceRun) {
+    // Check if the script has already been run
+    $db->where('script_name', $scriptName);
+    $executed = $db->getOne('s_run_once_scripts_log');
+
+    if ($executed) {
+        // Script has already been run
+        exit("Script $scriptName has already been executed. Exiting...");
+    }
 }
-
 
 /* Save Province / State details to geolocation table */
 $query = "SELECT * FROM instruments";
@@ -42,7 +46,7 @@ $instrumentResult = $db->rawQuery($query);
 
 foreach ($instrumentResult as $row) {
 
-    if (!is_int($row['instrument_id'])) {
+    if (is_int($row['instrument_id'])) {
         $instrumentId = $general->generateUUID();
         $db->where("instrument_id", $row['instrument_id']);
         $db->update('instruments', array('instrument_id' => $instrumentId));
@@ -70,8 +74,9 @@ foreach ($instrumentResult as $row) {
 $data = [
     'script_name' => $scriptName,
     'execution_date' => DateUtility::getCurrentDateTime(),
-    'status' => 'Completed'
+    'status' => 'executed'
 ];
+
 $db->insert('s_run_once_scripts_log', $data);
 
-echo "$scriptName executed and logged successfully";
+echo "$scriptName executed and logged successfully" . PHP_EOL;

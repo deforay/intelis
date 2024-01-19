@@ -42,7 +42,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
         } catch (Throwable $e) {
             ob_end_clean();
             // Log the error here if needed
-            throw new SystemException("Error in legacy code: " . $e->getMessage(), 500, $e);
+            throw new SystemException("API Error : " . $e->getMessage(), 500, $e);
         }
     }
 

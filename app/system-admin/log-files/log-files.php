@@ -36,9 +36,10 @@ $sResult = $db->rawQuery($sQuery);
 								<input type="text" id="userDate" name="userDate" class="form-control date" placeholder="<?php echo _translate('Select User Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 							<td>
-								&nbsp;<button onclick="viewLogFiles();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
-
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Clear Search"); ?></span></button>
+								<button onclick="viewLogFiles();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
+							</td>
+							<td>
+								<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Clear Search"); ?></span></button>
 							</td>
 						</tr>
 
