@@ -37,13 +37,15 @@ if (!empty($configMachineInfo)) {
         $configMachine .= '<option value="' . $machine['config_machine_id'] . '" data-filename="' . $fileName . '" data-dateformat="' . $machine['date_format'] . '" selected=' . $selected . '>' . ($machine['config_machine_name']) . '</option>';
     }
 } else {
-    $configMachineData = array('instrument_id' => $iResult['instrument_id'], 'config_machine_name' => $iResult['machine_name'] . " 1");
+    $deviceName = $iResult['machine_name'] . "- 1";
+    $configMachineData = array(
+        'instrument_id' => $iResult['instrument_id'],
+        'file_name' => $iResult['import_machine_file_name'],
+        'config_machine_name' => $deviceName
+    );
     $db->insert($importMachineTable, $configMachineData);
-    //$configMachineInfo = $db->rawQuery($configMachineQuery, [$iResult['instrument_id']]);
+    $deviceId = $db->getInsertId();
 
-    foreach ($configMachineInfo as $machine) {
-        $fileName = $machine['file_name'] ?? $iResult['import_machine_file_name'] ?? '';
-        $configMachine .= '<option value="' . $machine['config_machine_id'] . '" data-filename="' . $fileName . '" data-dateformat="' . $machine['date_format'] . '" selected="selected">' . ($machine['config_machine_name']) . '</option>';
-    }
+    $configMachine .= '<option value="' . $deviceId . '" data-filename="' . $iResult['import_machine_file_name'] . '" data-dateformat="" selected="selected">' . $deviceName . '</option>';
 }
 echo $configMachine;
