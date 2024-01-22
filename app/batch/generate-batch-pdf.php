@@ -1,10 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\BatchService;
+use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Helpers\BatchPdfHelper;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -23,71 +24,35 @@ $batchService = ContainerRegistry::get(BatchService::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
+
+if (empty($_GET['type'])) {
+    throw new SystemException(_translate('Invalid test type') . ' - ' . ($_GET['type'] ?? _translate("Unspecified")), 500);
+} elseif (empty($_GET['id'])) {
+    throw new SystemException(_translate('Invalid Batch'), 500);
+}
+
+$id = base64_decode((string) $_GET['id']);
+
+$testTableData = TestsService::getAllData($_GET['type']);
+
+$testName = $testTableData['testName'];
+$table = $testTableData['tableName'];
+$patientIdColumn = $testTableData['patientId'];
+$primaryKey = $testTableData['primaryKey'];
+$patientFirstName = $testTableData['patientFirstName'];
+$patientLastName = $testTableData['patientLastName'];
+
+$worksheetName = $testName . " " . _translate('Test Worksheet');
 
 $showPatientName = false;
-if (isset($_GET['type'])) {
-    switch ($_GET['type']) {
-        case 'vl':
-            $refTable = "form_vl";
-            $refPrimaryColumn = "vl_sample_id";
-            $patientIdColumn = 'patient_art_no';
-            $patientFirstName = 'patient_first_name';
-            $patientLastName = 'patient_last_name';
-            $worksheetName = _translate('Viral Load Test Worksheet');
-            break;
-        case 'eid':
-            $refTable = "form_eid";
-            $refPrimaryColumn = "eid_id";
-            $patientIdColumn = 'child_id';
-            $patientFirstName = 'child_name';
-            $patientLastName = 'child_surname';
-            $worksheetName = _translate('EID Test Worksheet');
-            break;
-        case 'covid19':
-            $refTable = "form_covid19";
-            $refPrimaryColumn = "covid19_id";
-            $patientIdColumn = 'patient_id';
-            $patientFirstName = 'patient_name';
-            $patientLastName = 'patient_surname';
-            $worksheetName = _translate('Covid-19 Test Worksheet');
-            break;
-        case 'hepatitis':
-            $refTable = "form_hepatitis";
-            $refPrimaryColumn = "hepatitis_id";
-            $patientIdColumn = 'patient_id';
-            $patientFirstName = 'patient_name';
-            $patientLastName = 'patient_surname';
-            $worksheetName = _translate('Hepatitis Test Worksheet');
-            $showPatientName = true;
-            break;
-        case 'tb':
-            $refTable = "form_tb";
-            $refPrimaryColumn = "tb_id";
-            $patientIdColumn = 'patient_id';
-            $patientFirstName = 'patient_name';
-            $patientLastName = 'patient_surname';
-            $worksheetName = _translate('TB Test Worksheet');
-            $showPatientName = true;
-            break;
-        case 'generic-tests':
-            $refTable = "form_generic";
-            $refPrimaryColumn = "sample_id";
-            $patientIdColumn = 'patient_id';
-            $patientFirstName = 'patient_first_name';
-            $patientLastName = 'patient_last_name';
-            $worksheetName = _translate('Lab Test Worksheet');
-            $showPatientName = true;
-            break;
-        default:
-            throw new SystemException('Invalid test type - ' . $_GET['type'], 500);
-    }
+
+if (in_array($_GET['type'], ['hepatitis', 'tb', 'generic-tests'])) {
+    $showPatientName = true;
 }
 
 $globalConfig = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
-
 
 $barcodeFormat = $globalConfig['barcode_format'] ?? 'C39';
 
@@ -124,7 +89,7 @@ if (!empty($id)) {
     } else {
         $dateQuery = "SELECT sample_tested_datetime,
                         result_reviewed_datetime
-                        FROM $refTable
+                        FROM $table
                         WHERE sample_batch_id= ?";
     }
     // die($dateQuery);
@@ -234,13 +199,15 @@ if (!empty($id)) {
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
                             $sampleQuery = "SELECT sample_code,
-                                                    remote_sample_code,result,is_encrypted,
+                                                    remote_sample_code,
+                                                    result,
+                                                    is_encrypted,
                                                     $patientIdColumn,
                                                     $patientFirstName,
                                                     $patientLastName
                                                     FROM
-                                                    $refTable
-                                                    WHERE $refPrimaryColumn = ?";
+                                                    $table
+                                                    WHERE $primaryKey = ?";
                         } else {
                             $sampleQuery = "SELECT sample_code,
                                                     remote_sample_code,
@@ -254,8 +221,8 @@ if (!empty($id)) {
                                                     $patientFirstName,
                                                     $patientLastName
                                                     FROM
-                                                    $refTable
-                                                    WHERE $refPrimaryColumn =?";
+                                                    $table
+                                                    WHERE $primaryKey =?";
                         }
 
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
@@ -323,8 +290,8 @@ if (!empty($id)) {
                                             $patientIdColumn,
                                             $patientFirstName,
                                             $patientLastName
-                                            FROM $refTable
-                                            WHERE $refPrimaryColumn =?";
+                                            FROM $table
+                                            WHERE $primaryKey =?";
                         } else {
                             $sampleQuery = "SELECT sample_code,
                                                 remote_sample_code,
@@ -337,8 +304,8 @@ if (!empty($id)) {
                                                 $patientIdColumn,
                                                 $patientFirstName,
                                                 $patientLastName
-                                                FROM $refTable
-                                                WHERE $refPrimaryColumn =?";
+                                                FROM $table
+                                                WHERE $primaryKey =?";
                         }
 
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
@@ -456,7 +423,7 @@ if (!empty($id)) {
                             END AS lot_expiration_date,
                             result,
                             $patientIdColumn
-                            FROM $refTable
+                            FROM $table
                             WHERE sample_batch_id=$id";
             $result = $db->query($sQuery);
             $sampleCounter = 1;

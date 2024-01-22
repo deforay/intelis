@@ -15,37 +15,43 @@ require_once APPLICATION_PATH . '/header.php';
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
-$testType = $_GET['type'] ?? 'vl';
+
+if (empty($_GET['type'])) {
+	header("Location: /batch/batches.php");
+}
+
+
+$testType = $_GET['type'];
 $genericTestType = null;
 $title = "Viral Load";
 $refTable = "form_vl";
 $refPrimaryColumn = "vl_sample_id";
-if (isset($testType) && $testType == 'vl') {
+if ($testType == 'vl') {
 	$title = "Viral Load";
 	$refTable = "form_vl";
 	$refPrimaryColumn = "vl_sample_id";
 	$sampleTypeTable = "r_vl_sample_type";
-} elseif (isset($testType) && $testType == 'eid') {
+} elseif ($testType == 'eid') {
 	$title = "Early Infant Diagnosis";
 	$refTable = "form_eid";
 	$refPrimaryColumn = "eid_id";
 	$sampleTypeTable = "r_eid_sample_type";
-} elseif (isset($testType) && $testType == 'covid19') {
+} elseif ($testType == 'covid19') {
 	$title = "Covid-19";
 	$refTable = "form_covid19";
 	$refPrimaryColumn = "covid19_id";
 	$sampleTypeTable = "r_covid19_sample_type";
-} elseif (isset($testType) && $testType == 'hepatitis') {
+} elseif ($testType == 'hepatitis') {
 	$title = "Hepatitis";
 	$refTable = "form_hepatitis";
 	$refPrimaryColumn = "hepatitis_id";
 	$sampleTypeTable = "r_hepatitis_sample_type";
-} elseif (isset($testType) && $testType == 'tb') {
+} elseif ($testType == 'tb') {
 	$title = "TB";
 	$refTable = "form_tb";
 	$refPrimaryColumn = "tb_id";
 	$sampleTypeTable = "r_tb_sample_type";
-} elseif (isset($testType) && $testType == 'generic-tests') {
+} elseif ($testType == 'generic-tests') {
 	$title = "Other Lab Tests";
 	$refTable = "form_generic";
 	$refPrimaryColumn = "sample_id";
@@ -91,7 +97,7 @@ $bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
                     AND vl.sample_code NOT LIKE ''
                     AND vl.sample_batch_id = ?";
 
-/* if (isset($testType) && $testType == 'generic-tests') {
+/* if ($testType == 'generic-tests') {
 	$bQuery .= " AND vl.test_type = ?";
 } */
 
@@ -418,7 +424,7 @@ $fundingSourceList = $general->getFundingSources();
 		$.blockUI();
 		var facilityId = $("#facilityName").val();
 
-		$.post("get-samples-batch.php", {
+		$.post("/batch/get-samples-batch.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
 				type: '<?php echo $testType; ?>',

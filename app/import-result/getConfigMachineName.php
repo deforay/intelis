@@ -27,7 +27,13 @@ $configMachineQuery = "SELECT config_machine_id,
                         FROM instrument_machines
                         WHERE instrument_id= ?";
 $configMachineInfo = $db->rawQuery($configMachineQuery, [$iResult['instrument_id']]);
+
+
 $configMachine = '<option value"">' . _translate('-- Select --', true) . '</option>';
+
+// If there are devices already configured for this instrument, show them in the dropdown
+// If not then create a new device with the name of the instrument
+
 if (!empty($configMachineInfo)) {
 
     $selected = count($configMachineInfo) == 1 ? "selected" : '';
@@ -48,4 +54,6 @@ if (!empty($configMachineInfo)) {
 
     $configMachine .= '<option value="' . $deviceId . '" data-filename="' . $iResult['import_machine_file_name'] . '" data-dateformat="" selected="selected">' . $deviceName . '</option>';
 }
+
+
 echo $configMachine;

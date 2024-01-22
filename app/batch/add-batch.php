@@ -1,7 +1,7 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\BatchService;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
@@ -11,6 +11,12 @@ use App\Registries\ContainerRegistry;
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
+
+if (empty($_GET['type'])) {
+    header("Location: /batch/batches.php");
+}
+
+
 $sampleTypeStatus = "status";
 $genericHide = "";
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
@@ -56,8 +62,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 //Get active machines
 $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
-$start_date = date('Y-m-d');
-$end_date = date('Y-m-d');
+
 [$maxId, $batchCode] = $batchService->createBatchCode();
 //Set last machine label order
 $machinesLabelOrder = [];
@@ -229,14 +234,14 @@ $fundingSourceList = $general->getFundingSources();
                     </td>
                 </tr>
                 <tr>
-                    <td><label for="fundingSource">Funding Partner</label></td>
+                    <td><label for="fundingSource"><?= _translate("Funding Source"); ?></label></td>
                     <td>
                         <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
                             <option value=""> -- Select -- </option>
                             <?php
                             foreach ($fundingSourceList as $fundingSource) {
                             ?>
-                                <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                <option value="<?php echo $fundingSource['funding_source_id']; ?>"><?= $fundingSource['funding_source_name']; ?></option>
                             <?php } ?>
                         </select>
                     </td>
@@ -301,6 +306,7 @@ $fundingSourceList = $general->getFundingSources();
     var endDate = "";
     noOfSamples = 0;
     sortedTitle = [];
+    let batchXhr = null;
     $(document).ready(function() {
         $("#testType").select2({
             width: '100%',
@@ -388,6 +394,12 @@ $fundingSourceList = $general->getFundingSources();
 
     function getSampleCodeDetails() {
 
+        if (batchXhr) {
+            batchXhr.abort();
+        }
+
+        $.blockUI();
+
         var machine = $("#machine").val();
         if (machine == null || machine == '') {
             $.unblockUI();
@@ -396,8 +408,8 @@ $fundingSourceList = $general->getFundingSources();
         }
         var facilityId = $("#facilityName").val();
 
-        $.blockUI();
-        $.post("get-samples-batch.php", {
+
+        batchXhr = $.post("/batch/get-samples-batch.php", {
                 sampleCollectionDate: $("#sampleCollectionDate").val(),
                 sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
                 type: '<?= $_GET['type']; ?>',

@@ -47,7 +47,7 @@ $authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserByToken($authToken);
 
 $tableName = TestsService::getTestTableName($input['testType']);
-$primaryKeyName = TestsService::getTestPrimaryKeyName($input['testType']);
+$primaryKeyName = TestsService::getTestPrimaryKeyColumn($input['testType']);
 
 $packageCode = strtoupper(str_replace("-", "", $input['testType']) . date('ymd') .  $general->generateRandomString(6));
 try {
