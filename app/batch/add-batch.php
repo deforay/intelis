@@ -268,7 +268,7 @@ $fundingSourceList = $general->getFundingSources();
                                     <div class="col-lg-7" style="margin-left:3%;">
                                         <input type="text" readonly="readonly" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _translate('Batch Code'); ?>" title="<?php echo _translate('Please enter batch code'); ?>" value="<?= $batchCode; ?>" onblur='checkNameValidation("batch_details","batch_code",this,null,"<?php echo _translate("This batch code already exists.Try another batch code"); ?>",null)' />
                                         <input type="hidden" name="batchCodeKey" id="batchCodeKey" value="<?php echo $maxId; ?>" />
-                                        <input type="text" name="platform" id="platform" value="" />
+                                        <input type="hidden" name="platform" id="platform" value="" />
                                         <input type="hidden" name="positions" id="positions" value="" />
                                     </div>
                                 </div>
