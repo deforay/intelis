@@ -36,9 +36,9 @@ function convertTableAndColumns($db, $tableName)
     // Convert table if necessary
     if (needsTableConversion($db, $tableName)) {
         $db->rawQuery("ALTER TABLE `$tableName` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
-        echo "Converted table $tableName to utf8mb4 and utf8mb4_general_ci.\n";
+        //echo "Converted table $tableName to utf8mb4 and utf8mb4_general_ci.\n";
     } else {
-        echo "Table $tableName already has the desired collation and character set.\n";
+        //echo "Table $tableName already has the desired collation and character set.\n";
     }
 
     // Convert individual columns if necessary
@@ -46,7 +46,7 @@ function convertTableAndColumns($db, $tableName)
     foreach ($columns as $column) {
         if (needsColumnConversion($db, $tableName, $column['Field'], $column['Type'])) {
             $db->rawQuery("ALTER TABLE `$tableName` MODIFY `{$column['Field']}` {$column['Type']} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
-            echo "Converted column {$column['Field']} in table $tableName to utf8mb4 and utf8mb4_general_ci.\n";
+            //echo "Converted column {$column['Field']} in table $tableName to utf8mb4 and utf8mb4_general_ci.\n";
         }
     }
 

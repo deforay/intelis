@@ -1,8 +1,9 @@
 <?php
 
+use App\Services\TestsService;
+use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
-use App\Services\UsersService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -17,64 +18,13 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
 
-$showPatientName = false;
-$genericHide = '';
-if (isset($_GET['type']) && $_GET['type'] == 'vl') {
-	$_title = _translate("HIV Viral Load");
-	$refTable = "form_vl";
-	$refPrimaryColumn = "vl_sample_id";
-	$patientIdColumn = 'patient_art_no';
-	$patientFirstName = 'patient_first_name';
-	$patientLastName = 'patient_last_name';
-	$worksheetName = _translate("Viral Load Test Worksheet");
-} elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
-	$_title = _translate("Early Infant Diagnosis");
-	$refTable = "form_eid";
-	$refPrimaryColumn = "eid_id";
-	$patientIdColumn = 'child_id';
-	$patientFirstName = 'child_name';
-	$patientLastName = 'child_surname';
-	$worksheetName = _translate("EID Test Worksheet");
-} elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-	$_title = _translate("Covid-19");
-	$refTable = "form_covid19";
-	$refPrimaryColumn = "covid19_id";
-	$patientIdColumn = 'patient_id';
-	$patientFirstName = 'patient_name';
-	$patientLastName = 'patient_surname';
-	$worksheetName = _translate('Covid-19 Test Worksheet');
-} elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
-	$_title = _translate("Hepatitis");
-	$refTable = "form_hepatitis";
-	$refPrimaryColumn = "hepatitis_id";
-	$patientIdColumn = 'patient_id';
-	$patientFirstName = 'patient_name';
-	$patientLastName = 'patient_surname';
-	$worksheetName = _translate('Hepatitis Test Worksheet');
-	$showPatientName = true;
-} elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
-	$_title = _translate("Tuberculosis");
-	$refTable = "form_tb";
-	$refPrimaryColumn = "tb_id";
-	$patientIdColumn = 'patient_id';
-	$patientFirstName = 'patient_name';
-	$patientLastName = 'patient_surname';
-	$worksheetName = _translate('TB Test Worksheet');
-	$showPatientName = true;
-} elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-	$_title = _translate("Other Lab Tests");
-	$refTable = "form_generic";
-	$refPrimaryColumn = "sample_id";
-	$patientIdColumn = 'patient_id';
-	$patientFirstName = 'patient_first_name';
-	$patientLastName = 'patient_last_name';
-	$worksheetName = _translate('Lab Test Worksheet');
-	$showPatientName = true;
-	$genericHide = "style='display:none;'";
-} else {
-	throw new SystemException(_translate('Invalid test type') . ' - ' . $_GET['type'], 500);
+if (empty($_GET['type'])) {
+	throw new SystemException(_translate('Invalid test type') . ' - ' . ($_GET['type'] ?? _translate("Unspecified")), 500);
 }
-$title = _translate("Manage Batches for") . " " . $_title;
+
+$testName = TestsService::getTestName($_GET['type']);
+
+$title = _translate("Testing Batches") . " | " . $testName;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -92,7 +42,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> <?= _translate("Manage Batches for") . " " . $_title; ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?= $title; ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
 			<li class="active"><?php echo _translate("Manage Batches"); ?></li>

@@ -1,59 +1,50 @@
 <?php
 
 
+use App\Services\TestsService;
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
+
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (isset($_POST['type']) && $_POST['type'] == 'vl') {
-    $refTable = "form_vl";
-    $refPrimaryColumn = "vl_sample_id";
-    $sampleTypeColumn = "sample_type";
-} elseif (isset($_POST['type']) && $_POST['type'] == 'eid') {
-    $refTable = "form_eid";
-    $refPrimaryColumn = "eid_id";
-    $sampleTypeColumn = "specimen_type";
-} elseif (isset($_POST['type']) && $_POST['type'] == 'covid19') {
-    $refTable = "form_covid19";
-    $refPrimaryColumn = "covid19_id";
-    $sampleTypeColumn = "specimen_type";
-} elseif (isset($_POST['type']) && $_POST['type'] == 'hepatitis') {
-    $refTable = "form_hepatitis";
-    $refPrimaryColumn = "hepatitis_id";
-    $showPatientName = true;
-    $sampleTypeColumn = "specimen_type";
-} elseif (isset($_POST['type']) && $_POST['type'] == 'tb') {
-    $refTable = "form_tb";
-    $refPrimaryColumn = "tb_id";
-    $sampleTypeColumn = "specimen_type";
-} elseif (isset($_POST['type']) && $_POST['type'] == 'generic-tests') {
-    $refTable = "form_generic";
-    $refPrimaryColumn = "sample_id";
-    $sampleTypeColumn = "sample_type";
+if (empty($_POST['type'])) {
+    echo "";
+    exit;
 }
 
-$request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
+$table = TestsService::getTestTableName($_POST['type']);
+$primaryKeyColumn = TestsService::getTestPrimaryKeyColumn($_POST['type']);
+$sampleTypeColumn = TestsService::getSpecimenTypeColumn($_POST['type']);
+$patientIdColumn = TestsService::getPatientIdColumn($_POST['type']);
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$sampleReceivedStartDate, $sampleReceivedEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedAtLab'] ?? '');
 
-$query = "(SELECT vl.sample_code,vl.$refPrimaryColumn,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code FROM $refTable as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
+$query = "(SELECT vl.sample_code,
+                    vl.$primaryKeyColumn,
+                    vl.$patientIdColumn,
+                    vl.facility_id,
+                    vl.result_status,
+                    vl.sample_batch_id,
+                    f.facility_name,
+                    f.facility_code
+                    FROM $table as vl
+                    INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
 
-$where[] = " (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!=''";
-
-$sample = $_POST['sName'];
+$where[] = " (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND (vl.sample_code NOT LIKE '' AND vl.sample_code IS NOT NULL)";
 
 if (isset($_POST['batchId'])) {
     $where[] = " (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
@@ -62,11 +53,11 @@ if (isset($_POST['batchId'])) {
 }
 
 if (!empty($_POST['facilityId']) && is_array($_POST['facilityId'])) {
-    $swhere[] = " vl.facility_id IN (" . implode(',', $_POST['facilityId']) . ")";
+    $where[] = $swhere[] = " vl.facility_id IN (" . implode(',', $_POST['facilityId']) . ")";
 }
 
-if (trim((string) $sample) != '') {
-    $swhere[] = $where[] = " vl.$sampleTypeColumn='" . $sample . "'";
+if (!empty($_POST['sName'])) {
+    $swhere[] = $where[] = " vl.$sampleTypeColumn='" . $_POST['sName'] . "'";
 }
 
 if (!empty($_POST['genericTestType'])) {
@@ -74,10 +65,10 @@ if (!empty($_POST['genericTestType'])) {
 }
 
 if (!empty($_POST['sampleCollectionDate'])) {
-    if (trim((string) $start_date) == trim((string) $end_date)) {
-        $swhere[] = $where[] = ' DATE(sample_collection_date) = "' . $start_date . '"';
+    if (trim((string) $startDate) == trim((string) $endDate)) {
+        $swhere[] = $where[] = ' DATE(sample_collection_date) = "' . $startDate . '"';
     } else {
-        $swhere[] = $where[] = ' DATE(sample_collection_date) >= "' . $start_date . '" AND DATE(sample_collection_date) <= "' . $end_date . '"';
+        $swhere[] = $where[] = ' DATE(sample_collection_date) BETWEEN "' . $startDate . '" AND "' . $endDate . '"';
     }
 }
 
@@ -85,7 +76,7 @@ if (!empty($_POST['sampleReceivedAtLab']) && trim((string) $_POST['sampleReceive
     if (trim((string) $sampleReceivedStartDate) == trim((string) $sampleReceivedEndDate)) {
         $swhere[] = $where[] = ' DATE(sample_received_at_lab_datetime) = "' . $sampleReceivedStartDate . '"';
     } else {
-        $swhere[] = $where[] = ' DATE(sample_received_at_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
+        $swhere[] = $where[] = ' DATE(sample_received_at_lab_datetime) BETWEEN "' . $sampleReceivedStartDate . '" AND "' . $sampleReceivedEndDate . '"';
     }
 }
 
@@ -97,12 +88,20 @@ if (!empty($where)) {
     $query = $query . ' WHERE ' . implode(" AND ", $where);
 }
 $query .= ")";
-// $query = $query . " ORDER BY vl.sample_code ASC";
+
 if (isset($_POST['batchId'])) {
     $squery = " UNION
-        (SELECT vl.sample_code,vl.$refPrimaryColumn,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code
-        FROM $refTable as vl
-    INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
+        (SELECT
+        vl.sample_code,
+        vl.$primaryKeyColumn,
+        vl.$patientIdColumn,
+        vl.facility_id,
+        vl.result_status,
+        vl.sample_batch_id,
+        f.facility_name,
+        f.facility_code
+        FROM $table as vl
+        INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
     $swhere[] = " (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '')
         AND (vl.is_sample_rejected IS NULL
         OR vl.is_sample_rejected like ''
@@ -111,28 +110,27 @@ if (isset($_POST['batchId'])) {
         OR vl.reason_for_sample_rejection like ''
         OR vl.reason_for_sample_rejection = 0)
         AND (vl.result is NULL or vl.result = '')
-        AND vl.sample_code!=''";
+        AND (vl.sample_code NOT LIKE '' AND vl.sample_code IS NOT NULL)";
     if (!empty($swhere)) {
         $squery = $squery . ' WHERE ' . implode(" AND ", $swhere);
     }
     $query .= $squery . " ORDER BY vl.last_modified_datetime ASC)";
 }
-// die($query);
+
 $result = $db->rawQuery($query);
 if (isset($_POST['batchId'])) {
     foreach ($result as $sample) {
         if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
-            <option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+            <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name']; ?></option>
     <?php }
     }
 } else { ?>
-    <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
-    <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+
     <div class="col-md-5">
         <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
             <?php foreach ($result as $sample) {
                 if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
-                    <option value="<?php echo $sample[$refPrimaryColumn]; ?>" <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . ($sample['facility_name']); ?></option>
             <?php }
             } ?>
         </select>
@@ -150,7 +148,7 @@ if (isset($_POST['batchId'])) {
         <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
             <?php foreach ($result as $sample) {
                 if (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) { ?>
-                    <option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name']; ?></option>
             <?php }
             } ?>
         </select>

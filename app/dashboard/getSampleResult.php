@@ -21,7 +21,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $testType = (string) $_POST['type'];
 $table = TestsService::getTestTableName($testType);
-$primaryKey = TestsService::getTestPrimaryKeyName($testType);
+$primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
 
 $waitingTotal = 0;
 $rejectedTotal = 0;
@@ -88,6 +88,7 @@ try {
     }
 
     if (!empty($_POST['sampleCollectionDate'])) {
+        $selectedRange = $_POST['sampleCollectionDate'];
         [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
     } else {
         $startDate = date('Y-m-d', strtotime('-7 days'));
@@ -308,14 +309,14 @@ try {
                     <?= _translate("SAMPLES REGISTERED"); ?>
                 </small><br>
                 <small class="font-green-sharp" style="font-size:0.75em;">
-                    <?php echo _translate("In Selected Range"); ?>
+                    <?php echo _translate("In Selected Range") . " - " . $selectedRange; ?>
                 </small>
             </div>
             <div class="icon font-green-sharp">
                 <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
-        <div id="<?= $samplesReceivedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
+        <div id="<?= $samplesReceivedChart; ?>" width="210" height="200" style="min-height:200px;"></div>
     </div>
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
@@ -329,14 +330,14 @@ try {
                     <?php echo _translate("SAMPLES TESTED"); ?>
                 </small><br>
                 <small class="font-blue-sharp" style="font-size:0.75em;">
-                    <?php echo _translate("In Selected Range"); ?>
+                    <?php echo _translate("In Selected Range") . " - " . $selectedRange;; ?>
                 </small>
             </div>
             <div class="icon">
                 <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
-        <div id="<?php echo $samplesTestedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
+        <div id="<?php echo $samplesTestedChart; ?>" width="210" height="200" style="min-height:200px;"></div>
     </div>
 </div>
 
@@ -351,14 +352,14 @@ try {
                     <?php echo _translate("SAMPLES REJECTED"); ?>
                 </small><br>
                 <small class="font-red-haze" style="font-size:0.75em;">
-                    <?php echo _translate("In Selected Range"); ?>
+                    <?php echo _translate("In Selected Range") . " - " . $selectedRange;; ?>
                 </small>
             </div>
             <div class="icon">
                 <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
-        <div id="<?php echo $samplesRejectedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
+        <div id="<?php echo $samplesRejectedChart; ?>" width="210" height="200" style="min-height:200px;"></div>
     </div>
 </div>
 
@@ -381,7 +382,7 @@ try {
                 <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
-        <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="150" style="min-height:150px;"></div>
+        <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="200" style="min-height:200px;"></div>
     </div>
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
@@ -389,7 +390,7 @@ try {
         <div class="display font-purple-soft">
             <div class="number">
                 <h4 class="font-purple-soft" style="font-weight:600;">
-                    <?= _translate("OVERALL SAMPLE STATUS"); ?>
+                    <?= _translate("CURRENT SAMPLES STATUS - OVERALL"); ?>
                 </h4>
                 <small class="font-purple-soft" style="font-size:0.75em;">
                     <?= _translate("(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"); ?>
@@ -399,7 +400,7 @@ try {
                 <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
-        <div id="<?php echo $samplesOverviewChart; ?>" width="210" height="150" style="min-height:240px;"></div>
+        <div id="<?php echo $samplesOverviewChart; ?>" width="210" height="200" style="min-height:200px;"></div>
     </div>
 </div>
 <script>
@@ -408,7 +409,7 @@ try {
         $('#<?php echo $samplesReceivedChart; ?>').highcharts({
             chart: {
                 type: 'column',
-                height: 150
+                height: 200
             },
             title: {
                 text: ''
@@ -478,7 +479,7 @@ try {
         $('#<?php echo $samplesWaitingChart; ?>').highcharts({
             chart: {
                 type: 'column',
-                height: 150
+                height: 200
             },
             title: {
                 text: ''
@@ -532,7 +533,7 @@ try {
         $('#<?php echo $samplesTestedChart; ?>').highcharts({
             chart: {
                 type: 'column',
-                height: 150
+                height: 200
             },
             title: {
                 text: ''
@@ -593,7 +594,7 @@ try {
         $('#<?php echo $samplesRejectedChart; ?>').highcharts({
             chart: {
                 type: 'column',
-                height: 150
+                height: 200
             },
             title: {
                 text: ''
@@ -655,7 +656,8 @@ try {
     <?php if (!empty($aggregateResult)) { ?>
         $('#<?php echo $samplesOverviewChart; ?>').highcharts({
             chart: {
-                type: 'column'
+                type: 'column',
+                height: 250
             },
 
             title: {
@@ -678,7 +680,7 @@ try {
                     "<?= _translate("Samples on Hold"); ?>",
                     "<?= _translate("Samples Registered at Testing Lab"); ?>",
                     "<?= _translate("Samples Awaiting Approval"); ?>",
-                    "<?= _translate("Samples Registered at Collection Site"); ?>"
+                    "<?= _translate("Samples Registered at Collection Sites"); ?>"
                 ]
             },
 

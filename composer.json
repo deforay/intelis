@@ -31,7 +31,7 @@
         "thingengineer/mysqli-database-class": "dev-master",
         "guzzlehttp/guzzle": "^7.5",
         "halaxa/json-machine": "^1.1",
-        "crunzphp/crunz": "^3.4",
+        "crunzphp/crunz": "^3.6",
         "ramsey/uuid": "^4.2",
         "hackzilla/password-generator": "^1.6",
         "laminas/laminas-filter": "^2.33",
