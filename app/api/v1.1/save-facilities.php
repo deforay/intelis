@@ -190,7 +190,7 @@ try {
             $id = $db->insert('facility_details', $facilityFulldata);
             error_log($db->getLastError());
 
-        if ($id === true) {
+        if ($id) {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'status' => 'success'
@@ -199,8 +199,8 @@ try {
             $payload = [
                 'status' => 'success',
                 'timestamp' => time(),
+                'transactionId' => $transactionId,
             ];
-    
             
         } else {
             $responseData[$rootKey] = [
