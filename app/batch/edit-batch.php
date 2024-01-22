@@ -202,10 +202,10 @@ $fundingSourceList = $general->getFundingSources();
 					</td>
 				</tr>
 				<tr>
-					<th scope="col"><?php echo _("Sample Type"); ?></th>
+					<th scope="col"><?php echo _translate("Sample Type"); ?></th>
 					<td>
-						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-							<option value=""> <?php echo _("-- Select --"); ?> </option>
+						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+							<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 							<?php
 							foreach ($sResult as $type) {
 							?>

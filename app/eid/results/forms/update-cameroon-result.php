@@ -576,7 +576,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <th scope="row"><?= _translate('Approved By'); ?><span class="mandatory">*</span></th>
                                         <td>
                                             <select name="approvedBy" id="approvedBy" class="select2 form-control isRequired" title="<?= _translate('Please choose approved by'); ?>" style="width: 100%;">
-                                                <?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '<?= _("-- Select --"); ?>'); ?>
+                                                <?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '<?= _translate("-- Select --"); ?>'); ?>
                                             </select>
                                         </td>
                                     </tr>
