@@ -5,6 +5,7 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\TestsService;
 
 $title = _translate("Edit Batch");
 
@@ -78,12 +79,15 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
+$patientIdColumn = TestsService::getPatientIdColumn($_GET['type']);
+
+
 $batchQuery = "SELECT * from batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
                     WHERE batch_id=?";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
 $bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
-                    vl.$refPrimaryColumn,vl.facility_id,
+                    vl.$refPrimaryColumn,vl.$patientIdColumn,vl.facility_id,
                     vl.result,vl.result_status,
                     f.facility_name,f.facility_code
                     FROM $refTable as vl
@@ -104,7 +108,7 @@ $bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
 $bQuery .= ") UNION
 
                     (SELECT vl.sample_code,vl.sample_batch_id,
-                        vl.$refPrimaryColumn,vl.facility_id,
+                        vl.$refPrimaryColumn,vl.$patientIdColumn ,vl.facility_id,
                         vl.result,vl.result_status,
                         f.facility_name,f.facility_code
                         FROM $refTable as vl
@@ -281,7 +285,7 @@ $fundingSourceList = $general->getFundingSources();
 								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 									<?php foreach ($result as $key => $sample) {
 										if (trim((string) $sample['sample_batch_id']) == $id) { ?>
-											<option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
+											<option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " .  ($sample['facility_name']); ?></option>
 									<?php }
 									} ?>
 								</select>

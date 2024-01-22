@@ -132,3 +132,7 @@ CREATE TABLE IF NOT EXISTS s_run_once_scripts_log (
 
 ALTER TABLE `form_eid` ADD `sample_dispatcher_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `sample_dispatched_datetime`, ADD `sample_dispatcher_phone` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `sample_dispatcher_name`;
 ALTER TABLE `audit_form_eid` ADD `sample_dispatcher_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `sample_dispatched_datetime`, ADD `sample_dispatcher_phone` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `sample_dispatcher_name`;
+
+-- Jeyabanu 22-Jan-2024
+
+ALTER TABLE `batch_details` CHANGE `machine` `machine` VARCHAR(50) NOT NULL;
