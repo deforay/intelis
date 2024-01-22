@@ -208,17 +208,18 @@ foreach ($sources as $list) {
                                         <?php echo _translate("LIS Sample ID"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _translate("Name of the Clinic"); ?>
+                                        <?php echo _translate("STS Sample ID"); ?>
                                     </th>
                                     <th>
                                         <?php echo _translate("External ID"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _translate("Electronic Test request Date and Time"); ?>
+                                        <?php echo _translate("Name of the Clinic"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _translate("STS Sample ID"); ?>
+                                        <?php echo _translate("Electronic Test request Date and Time"); ?>
                                     </th>
+                                   
                                     <th>
                                         <?php echo _translate("Request Acknowledged Date Time"); ?>
                                     </th>
@@ -227,6 +228,9 @@ foreach ($sources as $list) {
                                     </th>
                                     <th>
                                         <?php echo _translate("Sample added to Batch on"); ?>
+                                    </th>
+                                    <th>
+                                        <?php echo _translate("Sample Status"); ?>
                                     </th>
                                     <th>
                                         <?php echo _translate("Test Result"); ?>

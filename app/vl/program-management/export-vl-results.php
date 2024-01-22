@@ -172,8 +172,10 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = $aRow['facility_code'];
 			$row[] = $aRow['facility_district'];
 			$row[] = $aRow['facility_state'];
-			$row[] = $aRow['patient_art_no'];
-			$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+			if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+				$row[] = $aRow['patient_art_no'];
+				$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+			}
 			$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
 			$row[] = $aRow['patient_age_in_years'];
 			$row[] = $gender;
