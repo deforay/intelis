@@ -519,6 +519,10 @@ $state = $geolocationService->getProvinces("yes");
 					"value": $("#implementingPartner").val()
 				});
 				aoData.push({
+					"name": "patientInfo",
+					"value": $("#patientInfo").val()
+				});
+				aoData.push({
 					"name": "patientId",
 					"value": $("#patientId").val()
 				});
