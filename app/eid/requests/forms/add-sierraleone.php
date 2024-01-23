@@ -195,10 +195,10 @@ $aResult = $db->query($aQuery);
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired patientId" id="childId" name="childId" placeholder="Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" oninput="showPatientList($(this).val(), 1500);" />
                                         </td>
-                                        <th scope="row" style="width:15% !important" class="labels"><label for="childName">Infant name <span class="mandatory">*</span></label>
+                                        <th scope="row" style="width:15% !important" class="labels"><label for="childName">Infant name </label>
                                         </th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control isRequired" id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" onchange="" />
+                                            <input type="text" class="form-control" id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -267,9 +267,9 @@ $aResult = $db->query($aQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Infant Rapid HIV Test Done<span class="mandatory">*</span></th>
+                                        <th scope="row" class="labels">Infant Rapid HIV Test Done</th>
                                         <td>
-                                            <select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed">
+                                            <select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
@@ -283,10 +283,10 @@ $aResult = $db->query($aQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Rapid Test Result<span class="mandatory">*</span>
+                                        <th scope="row" class="labels">Rapid Test Result
                                         </th>
                                         <td>
-                                            <select class="form-control isRequired" name="rapidTestResult" id="rapidTestResult">
+                                            <select class="form-control" name="rapidTestResult" id="rapidTestResult">
                                                 <option value=''> -- Select -- </option>
                                                 <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                     <option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>
