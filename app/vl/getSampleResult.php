@@ -21,7 +21,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $testType = (string) $_POST['type'];
 $table = TestsService::getTestTableName($testType);
-$primaryKey = TestsService::getTestPrimaryKeyName($testType);
+$primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
 
 if ($testType == 'vl') {
     $recencyWhere = " AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
