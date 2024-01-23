@@ -123,6 +123,7 @@ try {
                     f.facility_name,
                     l.facility_name as 'labname',
                     vl.sample_code,
+                    ts.status_name,
                     vl.external_sample_code,
                     vl.app_sample_code,
                     vl.sample_tested_datetime,
@@ -138,6 +139,7 @@ try {
                 FROM $table as vl
                 LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
                 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                 LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
 
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
@@ -228,13 +230,14 @@ try {
         $row = [];
         //$row[] = $aRow['f.facility_name'];
         $row[] = $aRow['sample_code'];
-        $row[] = $aRow['labname'];
-        $row[] = $aRow['external_sample_code'] ?? $aRow['app_sample_code'];
-        $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
         $row[] = $aRow['remote_sample_code'];
+        $row[] = $aRow['external_sample_code'] ?? $aRow['app_sample_code'];
+        $row[] = $aRow['labname'];
+        $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created'], true);
+        $row[] = $aRow['status_name'];
         $row[] = $aRow['result'];
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
         $row[] = (!empty($aRow['sample_tested_datetime']) && !empty($aRow['result_approved_datetime'])) ? DateUtility::humanReadableDateFormat($aRow['result_approved_datetime'], true) : "";

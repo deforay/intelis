@@ -373,6 +373,8 @@ try {
 		'sample_dispatched_datetime' => $_POST['sampleDispatchedDate'] ?? null,
 		'sample_requestor_phone' => $_POST['sampleRequestorPhone'] ?? null,
 		'sample_requestor_name' => $_POST['sampleRequestorName'] ?? null,
+		'sample_dispatcher_phone' => $_POST['sampleDispatcherPhone'] ?? null,
+		'sample_dispatcher_name' => $_POST['sampleDispatcherName'] ?? null,
 		'rapid_test_performed' => $_POST['rapidTestPerformed'] ?? null,
 		'rapid_test_date' => $_POST['rapidtestDate'] ?? null,
 		'rapid_test_result' => $_POST['rapidTestResult'] ?? null,

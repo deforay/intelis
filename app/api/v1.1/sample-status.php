@@ -45,10 +45,10 @@ $authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserByToken($authToken);
 
 $tableName = TestsService::getTestTableName($input['testType']);
-$primaryKeyName = TestsService::getTestPrimaryKeyName($input['testType']);
+$primaryKeyName = TestsService::getTestPrimaryKeyColumn($input['testType']);
 
 try {
-    $sQuery = "SELECT ts.status_name as resultStatus, sample_code as sampleCode, remote_sample_code as remoteSampleCode, app_sample_code as appSampleCode, unique_id as uniqueId, '".$transactionId."' as transactionId  FROM $tableName as vl
+    $sQuery = "SELECT ts.status_name as resultStatus, sample_code as sampleCode, remote_sample_code as remoteSampleCode, app_sample_code as appSampleCode, unique_id as uniqueId, '" . $transactionId . "' as transactionId  FROM $tableName as vl
     LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
     $where = [];

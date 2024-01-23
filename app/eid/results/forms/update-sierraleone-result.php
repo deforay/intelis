@@ -194,15 +194,9 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 <tr>
                                     <th class="labels" scope="row">Infant Age (months)</th>
                                     <td><input type="number" max=9 maxlength="1" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" /></td>
-                                    <th class="labels" scope="row">Mother ART Number</th>
-                                    <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['mother_id']); ?>" onchange="" /></td>
-                                </tr>
-                                <tr>
                                     <th class="labels" scope="row">Caretaker phone number</th>
                                     <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
 
-                                    <th class="labels" scope="row">Infant caretaker address</th>
-                                    <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?= htmlspecialchars((string) $eidInfo['caretaker_address']); ?></textarea></td>
                                 </tr>
                             </table>
 
@@ -214,25 +208,38 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="labels" style="width:15% !important">Mother's HIV Status:</th>
-                                    <td style="width:35% !important">
-                                        <select class="form-control" name="mothersHIVStatus" id="mothersHIVStatus">
-                                            <option value=''> -- Select -- </option>
-                                            <option value="positive" <?php echo ($eidInfo['mother_hiv_status'] == 'positive') ? "selected='selected'" : ""; ?>> Positive </option>
-                                            <option value="negative" <?php echo ($eidInfo['mother_hiv_status'] == 'negative') ? "selected='selected'" : ""; ?>> Negative </option>
-                                            <option value="unknown" <?php echo ($eidInfo['mother_hiv_status'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
-                                        </select>
-                                    </td>
 
-                                    <th scope="row" class="labels" style="width:15% !important">ART given to the Mother during:</th>
-                                    <td style="width:35% !important">
-                                        <input type="checkbox" name="motherTreatment[]" value="No ART given" <?php echo in_array('No ART given', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> No ART given <br>
-                                        <input type="checkbox" name="motherTreatment[]" value="Pregnancy" <?php echo in_array('Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Pregnancy <br>
-                                        <input type="checkbox" name="motherTreatment[]" value="Labour/Delivery" <?php echo in_array('Labour/Delivery', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Labour/Delivery <br>
-                                        <input type="checkbox" name="motherTreatment[]" value="Postnatal" <?php echo in_array('Postnatal', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Postnatal <br>
-                                        <!-- <input type="checkbox" name="motherTreatment[]" value="Other" <?php echo in_array('Other', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?>  onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" /> Other (Please specify): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Other" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> <br> -->
-                                        <input type="checkbox" name="motherTreatment[]" value="Unknown" <?php echo in_array('Unknown', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Unknown
-                                    </td>
+                                <th scope="row" style="width:15% !important" class="labels">Is Mother on ART? <span class="mandatory">*</span> </th>
+                                        <td style="width:35% !important">
+                                            <select class="form-control isRequired" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes" <?php echo ($eidInfo['mother_treatment'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                <option value="no" <?php echo ($eidInfo['mother_treatment'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                            </select></td>
+                                            <th scope="row" class="labels motherRegimen" style="display:none;">Mother's Regimen</th>
+                                        <td class="motherRegimen" style="display:none;">
+                                            <select class="form-control" id="motherRegimen" name="motherRegimen" title="Please choose Mother's ART Regimen" style="width:100%;" onchange="checkMotherARTRegimenValue();">
+                                                <option value="">-- Select --</option>
+                                                <?php foreach ($artRegimenResult as $heading) { ?>
+                                                    <optgroup label="<?= $heading['headings']; ?>">
+                                                        <?php
+                                                        foreach ($aResult as $regimen) {
+                                                            if ($heading['headings'] == $regimen['headings']) {
+                                                        ?>
+                                                                <option value="<?php echo $regimen['art_code']; ?>" <?php echo ($eidInfo['mother_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </optgroup>
+                                                <?php }
+                                                if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                    <option value="other">Other</option>
+                                                <?php } ?>
+                                            </select>
+                                            <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
+                                        </td>
+
                                 </tr>
 
                                 <tr>
@@ -357,6 +364,17 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <th scope="row"></th>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                        <th scope="row" class="labels">Sample Dispatcher Name</th>
+                                        <td>
+                                            <input class="form-control" type="text" name="sampleDispatcherName" id="sampleDispatcherName" placeholder="Sample Dispatcher Name" value="<?= htmlspecialchars((string) $eidInfo['sample_dispatcher_name']); ?>"/>
+                                        </td>
+                                        <th scope="row" class="labels">Sample Dispatcher Phone</th>
+                                        <td>
+                                            <input class="form-control phone-number" type="text" name="sampleDispatcherPhone" id="sampleDispatcherPhone" placeholder="Sample Dispatcher Phone" value="<?= htmlspecialchars((string) $eidInfo['sample_dispatcher_phone']); ?>"/>
+                                        </td>
+
+                                    </tr>
                             </table>
                         </div>
                     </div>

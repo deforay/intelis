@@ -101,7 +101,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 															<select name="machineName" id="machineName" class="form-control isRequired" title="<?php echo _translate('Please select the import machine type'); ?>" onchange="getConfigMachineName();">
 																<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 																<?php foreach ($iResult as $val) { ?>
-																	<option value="<?php echo base64_encode((string) $val['import_machine_file_name']); ?>"><?php echo ($val['machine_name']); ?></option>
+																	<option value="<?php echo base64_encode((string) $val['instrument_id']); ?>"><?php echo ($val['machine_name']); ?></option>
 																<?php } ?>
 															</select>
 														</div>

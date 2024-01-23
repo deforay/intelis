@@ -95,7 +95,7 @@ if (!empty($interfaceData)) {
     $activeModules = SystemService::getActiveModules(true);
 
     foreach ($activeModules as $module) {
-        $primaryKey = TestsService::getTestPrimaryKeyName($module);
+        $primaryKey = TestsService::getTestPrimaryKeyColumn($module);
         $availableModules[$primaryKey] = TestsService::getTestTableName($module);
     }
 

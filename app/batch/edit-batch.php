@@ -5,6 +5,7 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\TestsService;
 
 $title = _translate("Edit Batch");
 
@@ -15,37 +16,43 @@ require_once APPLICATION_PATH . '/header.php';
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
-$testType = $_GET['type'] ?? 'vl';
+
+if (empty($_GET['type'])) {
+	header("Location: /batch/batches.php");
+}
+
+
+$testType = $_GET['type'];
 $genericTestType = null;
 $title = "Viral Load";
 $refTable = "form_vl";
 $refPrimaryColumn = "vl_sample_id";
-if (isset($testType) && $testType == 'vl') {
+if ($testType == 'vl') {
 	$title = "Viral Load";
 	$refTable = "form_vl";
 	$refPrimaryColumn = "vl_sample_id";
 	$sampleTypeTable = "r_vl_sample_type";
-} elseif (isset($testType) && $testType == 'eid') {
+} elseif ($testType == 'eid') {
 	$title = "Early Infant Diagnosis";
 	$refTable = "form_eid";
 	$refPrimaryColumn = "eid_id";
 	$sampleTypeTable = "r_eid_sample_type";
-} elseif (isset($testType) && $testType == 'covid19') {
+} elseif ($testType == 'covid19') {
 	$title = "Covid-19";
 	$refTable = "form_covid19";
 	$refPrimaryColumn = "covid19_id";
 	$sampleTypeTable = "r_covid19_sample_type";
-} elseif (isset($testType) && $testType == 'hepatitis') {
+} elseif ($testType == 'hepatitis') {
 	$title = "Hepatitis";
 	$refTable = "form_hepatitis";
 	$refPrimaryColumn = "hepatitis_id";
 	$sampleTypeTable = "r_hepatitis_sample_type";
-} elseif (isset($testType) && $testType == 'tb') {
+} elseif ($testType == 'tb') {
 	$title = "TB";
 	$refTable = "form_tb";
 	$refPrimaryColumn = "tb_id";
 	$sampleTypeTable = "r_tb_sample_type";
-} elseif (isset($testType) && $testType == 'generic-tests') {
+} elseif ($testType == 'generic-tests') {
 	$title = "Other Lab Tests";
 	$refTable = "form_generic";
 	$refPrimaryColumn = "sample_id";
@@ -72,12 +79,15 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
+$patientIdColumn = TestsService::getPatientIdColumn($_GET['type']);
+
+
 $batchQuery = "SELECT * from batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
                     WHERE batch_id=?";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
 $bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
-                    vl.$refPrimaryColumn,vl.facility_id,
+                    vl.$refPrimaryColumn,vl.$patientIdColumn,vl.facility_id,
                     vl.result,vl.result_status,
                     f.facility_name,f.facility_code
                     FROM $refTable as vl
@@ -91,14 +101,14 @@ $bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
                     AND vl.sample_code NOT LIKE ''
                     AND vl.sample_batch_id = ?";
 
-/* if (isset($testType) && $testType == 'generic-tests') {
+/* if ($testType == 'generic-tests') {
 	$bQuery .= " AND vl.test_type = ?";
 } */
 
 $bQuery .= ") UNION
 
                     (SELECT vl.sample_code,vl.sample_batch_id,
-                        vl.$refPrimaryColumn,vl.facility_id,
+                        vl.$refPrimaryColumn,vl.$patientIdColumn ,vl.facility_id,
                         vl.result,vl.result_status,
                         f.facility_name,f.facility_code
                         FROM $refTable as vl
@@ -192,10 +202,10 @@ $fundingSourceList = $general->getFundingSources();
 					</td>
 				</tr>
 				<tr>
-					<th scope="col"><?php echo _("Sample Type"); ?></th>
+					<th scope="col"><?php echo _translate("Sample Type"); ?></th>
 					<td>
-						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-							<option value=""> <?php echo _("-- Select --"); ?> </option>
+						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+							<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 							<?php
 							foreach ($sResult as $type) {
 							?>
@@ -275,7 +285,7 @@ $fundingSourceList = $general->getFundingSources();
 								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 									<?php foreach ($result as $key => $sample) {
 										if (trim((string) $sample['sample_batch_id']) == $id) { ?>
-											<option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
+											<option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " .  ($sample['facility_name']); ?></option>
 									<?php }
 									} ?>
 								</select>
@@ -418,7 +428,7 @@ $fundingSourceList = $general->getFundingSources();
 		$.blockUI();
 		var facilityId = $("#facilityName").val();
 
-		$.post("get-samples-batch.php", {
+		$.post("/batch/get-samples-batch.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
 				type: '<?php echo $testType; ?>',

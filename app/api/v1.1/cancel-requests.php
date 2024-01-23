@@ -46,7 +46,7 @@ $authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserByToken($authToken);
 
 $tableName = TestsService::getTestTableName($input['testType']);
-$primaryKeyName = TestsService::getTestPrimaryKeyName($input['testType']);
+$primaryKeyName = TestsService::getTestPrimaryKeyColumn($input['testType']);
 
 try {
     $sQuery = "SELECT * FROM $tableName as vl

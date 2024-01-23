@@ -609,7 +609,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
 					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
 					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+					'Current Year To Date': [moment().startOf('year'), moment()]
 				}
 			},
 			function(start, end) {

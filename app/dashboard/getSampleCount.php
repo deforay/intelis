@@ -21,7 +21,7 @@ $facilityInfo = $facilitiesService->getAllFacilities();
 
 $testType = (string) $_POST['type'];
 $table = TestsService::getTestTableName($testType);
-$primaryKey = TestsService::getTestPrimaryKeyName($testType);
+$primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
 
 $recencyWhere = "";
 if ($testType == 'eid') {
@@ -186,7 +186,7 @@ $tableResult = $db->rawQuery($sQuery);
             </div>
         </div>
         <div id="collectionSite<?php echo $testType; ?>">
-            <div id="<?php echo $samplesCollectionChart; ?>" style="min-height:250px;"></div>
+            <div id="<?php echo $samplesCollectionChart; ?>" style="min-height:300px;"></div>
         </div>
     </div>
 </div>
@@ -358,7 +358,7 @@ $tableResult = $db->rawQuery($sQuery);
         $('#<?php echo $samplesCollectionChart; ?>').highcharts({
             chart: {
                 type: 'column',
-                height: 350
+                height: 400
             },
             title: {
                 text: ''

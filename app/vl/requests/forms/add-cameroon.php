@@ -393,7 +393,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for=""> <?= _translate('Current ARV Protocol'); ?></label>
-                                                                 <select class="form-control" id="artRegimen" name="artRegimen" title="<?= _translate('Please choose ART Regimen'); ?>" style="width:100%;" onchange="checkARTRegimenValue();">
+                                                                 <select class="select2 form-control" id="artRegimen" name="artRegimen" title="<?= _translate('Please choose ART Regimen'); ?>" style="width:100%;" onchange="checkARTRegimenValue();">
                                                                       <option value=""><?= _translate('-- Select --'); ?></option>
                                                                       <?php foreach ($artRegimenResult as $heading) { ?>
                                                                            <optgroup label="<?= $heading['headings']; ?>">
@@ -810,6 +810,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
           $('#testedBy').select2({
                placeholder: "<?= _translate('Select Tested By'); ?>"
+          });
+          $('#artRegimen').select2({
+               placeholder: "<?= _translate('Select Current ARV Protocol'); ?>"
           });
           // BARCODESTUFF START
           <?php
