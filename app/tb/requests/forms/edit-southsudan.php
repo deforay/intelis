@@ -238,11 +238,11 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										<td>
 											<select class="select2 form-control isRequired" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" onchange="showOther(this.value,'typeOfPatientOther');" multiple>
 												<option value=''> -- Select -- </option>
-												<option value='new' <?php echo (isset($typeOfPatient) && in_array("new", $typeOfPatient)) ? "selected='selected'" : ""; ?>> New </option>
-												<option value='loss-to-follow-up' <?php echo (isset($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
-												<option value='treatment-failure' <?php echo (isset($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Treatment Failure </option>
-												<option value='relapse' <?php echo (isset($typeOfPatient) && in_array("relapse", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Relapse </option>
-												<option value='other' <?php echo (isset($typeOfPatient) && in_array("other", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Other </option>
+												<option value='new' <?php echo (is_array($typeOfPatient) && in_array("new", $typeOfPatient)) ? "selected='selected'" : ""; ?>> New </option>
+												<option value='loss-to-follow-up' <?php echo (is_array($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
+												<option value='treatment-failure' <?php echo (is_array($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Treatment Failure </option>
+												<option value='relapse' <?php echo (is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Relapse </option>
+												<option value='other' <?php echo (is_array($typeOfPatient) && in_array("other", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Other </option>
 											</select>
 										</td>
 										<td>
@@ -336,13 +336,13 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										<td>
 											<select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
 												<optgroup label="Microscopy">
-													<option value="ZN" <?php echo (isset($testTypeRequested) && in_array("ZN", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>ZN</option>
-													<option value="FM" <?php echo (isset($testTypeRequested) && in_array("FM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>FM</option>
+													<option value="ZN" <?php echo (is_array($testTypeRequested) && in_array("ZN", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>ZN</option>
+													<option value="FM" <?php echo (is_array($testTypeRequested) && in_array("FM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>FM</option>
 												</optgroup>
 												<optgroup label="Xpert MTB">
-													<option value="MTB/RIF" <?php echo (isset($testTypeRequested) && in_array("MTB/RIF", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF</option>
-													<option value="MTB/RIF ULTRA" <?php echo (isset($tbInfo['tests_requested']) && in_array("MTB/RIF ULTRA", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF ULTRA</option>
-													<option value="TB LAM" <?php echo (isset($tbInfo['tests_requested']) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
+													<option value="MTB/RIF" <?php echo (is_array($testTypeRequested) && in_array("MTB/RIF", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF</option>
+													<option value="MTB/RIF ULTRA" <?php echo (is_array($tbInfo['tests_requested']) && in_array("MTB/RIF ULTRA", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF ULTRA</option>
+													<option value="TB LAM" <?php echo (is_array($tbInfo['tests_requested']) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
 												</optgroup>
 											</select>
 										</td>
