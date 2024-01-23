@@ -146,7 +146,6 @@ try {
 		'implementing_partner' => $_POST['implementingPartner'] ?? null,
 		'funding_source' => $_POST['fundingSource'] ?? null,
 		'patient_id' => $_POST['patientId'] ?? null,
-		'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
 		'patient_name' => $_POST['firstName'] ?? null,
 		'patient_surname' => $_POST['lastName'] ?? null,
 		'patient_dob' => isset($_POST['dob']) ? DateUtility::isoDateFormat($_POST['dob']) : null,
