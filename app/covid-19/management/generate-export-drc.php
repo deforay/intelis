@@ -101,6 +101,10 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
         unset($headings[$key]);
     }
 
+    if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
+		$headings = array_values(array_diff($headings, [_translate("EPID Number"),_translate("Patient Name")]));
+	}
+
     $no = 1;
     $resultSet = $db->rawQueryGenerator($_SESSION['covid19ResultQuery']);
     foreach ($resultSet as $aRow) {
@@ -201,8 +205,10 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
         $row[] = $aRow['facility_district'];
         $row[] = $aRow['facility_state'];
         $row[] = $aRow['facility_name'];
-        $row[] = $aRow['patient_id'];
-        $row[] = $patientFname . " " . $patientLname;
+        if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+            $row[] = $aRow['patient_id'];
+            $row[] = $patientFname . " " . $patientLname;
+        }
         $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
         $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
         $row[] = $aRow['patient_gender'];
