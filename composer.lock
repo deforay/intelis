@@ -814,16 +814,16 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "8.13.27",
+            "version": "8.13.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "033bea996defd39bddca9de22b9e9dbda419431c"
+                "reference": "f508ab946a60c1470c92e33cfc0393a0d580b9a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/033bea996defd39bddca9de22b9e9dbda419431c",
-                "reference": "033bea996defd39bddca9de22b9e9dbda419431c",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/f508ab946a60c1470c92e33cfc0393a0d580b9a1",
+                "reference": "f508ab946a60c1470c92e33cfc0393a0d580b9a1",
                 "shasum": ""
             },
             "require": {
@@ -882,7 +882,7 @@
                 "issues": "https://github.com/giggsey/libphonenumber-for-php/issues",
                 "source": "https://github.com/giggsey/libphonenumber-for-php"
             },
-            "time": "2023-12-19T08:19:08+00:00"
+            "time": "2024-01-17T08:09:20+00:00"
         },
         {
             "name": "giggsey/locale",
@@ -1890,16 +1890,16 @@
         },
         {
             "name": "laminas/laminas-stdlib",
-            "version": "3.18.0",
+            "version": "3.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-stdlib.git",
-                "reference": "e85b29076c6216e7fc98e72b42dbe1bbc3b95ecf"
+                "reference": "6a192dd0882b514e45506f533b833b623b78fff3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/e85b29076c6216e7fc98e72b42dbe1bbc3b95ecf",
-                "reference": "e85b29076c6216e7fc98e72b42dbe1bbc3b95ecf",
+                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/6a192dd0882b514e45506f533b833b623b78fff3",
+                "reference": "6a192dd0882b514e45506f533b833b623b78fff3",
                 "shasum": ""
             },
             "require": {
@@ -1910,10 +1910,10 @@
             },
             "require-dev": {
                 "laminas/laminas-coding-standard": "^2.5",
-                "phpbench/phpbench": "^1.2.14",
-                "phpunit/phpunit": "^10.3.3",
+                "phpbench/phpbench": "^1.2.15",
+                "phpunit/phpunit": "^10.5.8",
                 "psalm/plugin-phpunit": "^0.18.4",
-                "vimeo/psalm": "^5.15.0"
+                "vimeo/psalm": "^5.20.0"
             },
             "type": "library",
             "autoload": {
@@ -1945,7 +1945,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2023-09-19T10:15:21+00:00"
+            "time": "2024-01-19T12:39:49+00:00"
         },
         {
             "name": "laminas/laminas-stratigility",
@@ -2528,16 +2528,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.72.1",
+            "version": "2.72.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "2b3b3db0a2d0556a177392ff1a3bf5608fa09f78"
+                "reference": "3e7edc41b58d65509baeb0d4a14c8fa41d627130"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/2b3b3db0a2d0556a177392ff1a3bf5608fa09f78",
-                "reference": "2b3b3db0a2d0556a177392ff1a3bf5608fa09f78",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/3e7edc41b58d65509baeb0d4a14c8fa41d627130",
+                "reference": "3e7edc41b58d65509baeb0d4a14c8fa41d627130",
                 "shasum": ""
             },
             "require": {
@@ -2631,7 +2631,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-08T23:47:49+00:00"
+            "time": "2024-01-19T00:21:53+00:00"
         },
         {
             "name": "nikic/fast-route",
@@ -2991,16 +2991,16 @@
         },
         {
             "name": "phpmyadmin/sql-parser",
-            "version": "5.8.2",
+            "version": "5.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpmyadmin/sql-parser.git",
-                "reference": "f1720ae19abe6294cb5599594a8a57bc3c8cc287"
+                "reference": "011fa18a4e55591fac6545a821921dd1d61c6984"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpmyadmin/sql-parser/zipball/f1720ae19abe6294cb5599594a8a57bc3c8cc287",
-                "reference": "f1720ae19abe6294cb5599594a8a57bc3c8cc287",
+                "url": "https://api.github.com/repos/phpmyadmin/sql-parser/zipball/011fa18a4e55591fac6545a821921dd1d61c6984",
+                "reference": "011fa18a4e55591fac6545a821921dd1d61c6984",
                 "shasum": ""
             },
             "require": {
@@ -3031,6 +3031,7 @@
             "bin": [
                 "bin/highlight-query",
                 "bin/lint-query",
+                "bin/sql-parser",
                 "bin/tokenize-query"
             ],
             "type": "library",
@@ -3074,7 +3075,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2023-09-19T12:34:29+00:00"
+            "time": "2024-01-20T20:34:02+00:00"
         },
         {
             "name": "phpoffice/phpspreadsheet",
