@@ -195,8 +195,8 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<td>
 											<select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt PII'); ?>">
 												<option value=""><?= _translate('--Select--'); ?></option>
-												<option value="no" <?php echo ($eidInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>>Non</option>
-												<option value="yes" <?php echo ($eidInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>>Oui</option>
+												<option value="no" <?php echo ($eidInfo['is_encrypted'] == "no") ? "selected='selected'" : ""; ?>>Non</option>
+												<option value="yes" <?php echo ($eidInfo['is_encrypted'] == "yes") ? "selected='selected'" : ""; ?>>Oui</option>
 											</select>
 										</td>
 									</tr>

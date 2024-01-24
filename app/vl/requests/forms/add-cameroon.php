@@ -1266,8 +1266,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           }
 
-          if ($.trim(patientArray['sync_patient_identifiers']) != '') {
-               if (patientArray['sync_patient_identifiers'] == 'yes') {
+          if ($.trim(patientArray['is_encrypted']) != '') {
+               if (patientArray['is_encrypted'] == 'yes') {
                     $("#encryptPII").val('yes');
                } else {
                     $("#encryptPII").val('no');

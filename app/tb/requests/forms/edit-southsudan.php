@@ -195,8 +195,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										<td>
 											<select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt PII'); ?>">
 												<option value=""><?= _translate('--Select--'); ?></option>
-												<option value="no" <?php echo ($tbInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
-												<option value="yes" <?php echo ($tbInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
+												<option value="no" <?php echo ($tbInfo['is_encrypted'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
+												<option value="yes" <?php echo ($tbInfo['is_encrypted'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
 											</select>
 										</td>
 									</tr>

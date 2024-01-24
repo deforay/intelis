@@ -223,7 +223,6 @@ try {
           'patient_has_active_tb' => $_POST['activeTB'] ?? null,
           'patient_active_tb_phase' => $_POST['tbPhase'] ?? null,
           'patient_art_no' => $_POST['artNo'] ?? null,
-          'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
           'is_patient_new' => $_POST['isPatientNew'] ?? null,
           'treatment_duration' => $_POST['treatmentDuration'] ?? null,
           'treatment_indication' => $_POST['treatmentIndication'] ?? null,

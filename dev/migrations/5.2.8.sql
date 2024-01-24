@@ -136,3 +136,20 @@ ALTER TABLE `audit_form_eid` ADD `sample_dispatcher_name` TEXT CHARACTER SET utf
 -- Jeyabanu 22-Jan-2024
 
 ALTER TABLE `batch_details` CHANGE `machine` `machine` VARCHAR(50) NOT NULL;
+
+-- Jeyabanu 23-Jan-2024
+ALTER TABLE `form_vl` DROP Column `sync_patient_identifiers`;
+ALTER TABLE `audit_form_vl` DROP Column `sync_patient_identifiers`;
+
+ALTER TABLE `form_eid` DROP Column `sync_patient_identifiers`;
+ALTER TABLE `audit_form_eid` DROP Column `sync_patient_identifiers`;
+
+ALTER TABLE `form_covid19` DROP Column `sync_patient_identifiers`;
+ALTER TABLE `audit_form_covid19` DROP Column `sync_patient_identifiers`;
+
+ALTER TABLE `form_hepatitis` DROP Column `sync_patient_identifiers`;
+ALTER TABLE `audit_form_hepatitis` DROP Column `sync_patient_identifiers`;
+
+ALTER TABLE `form_tb` DROP Column `sync_patient_identifiers`;
+ALTER TABLE `audit_form_tb` DROP Column `sync_patient_identifiers`;
+

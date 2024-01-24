@@ -116,7 +116,6 @@ try {
 		'lab_id' => $_POST['labId'] ?? null,
 		'implementing_partner' => $_POST['implementingPartner'] ?? null,
 		'funding_source' => $_POST['fundingSource'] ?? null,
-		'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
 		'patient_id' => $_POST['patientId'] ?? null,
 		'patient_name' => $_POST['firstName'] ?? null,
 		'patient_surname' => $_POST['lastName'] ?? null,
