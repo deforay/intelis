@@ -12,9 +12,9 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $mappingType = $_GET['type'] ?? 'health-facilities';
 $testType = $_GET['test'] ?? null;
 if ($mappingType == 'health-facilities') {
-	$title = "Manage Health Facilities";
+	$title = "Health Facilities";
 } elseif ($mappingType == 'testing-labs') {
-	$title = "Manage Testing Labs";
+	$title = "Testing Labs";
 }
 
 require_once APPLICATION_PATH . '/header.php';
@@ -211,15 +211,16 @@ require_once APPLICATION_PATH . '/header.php';
 				testType: $('#testType').val()
 			},
 			function(toAppend) {
-				if (toAppend != "") {
-					if (toAppend != null && toAppend != undefined) {
-						$('#search').html(toAppend)
-						setTimeout(function() {
-							$("#search_rightSelected").trigger('click');
-						}, 10);
-						$.unblockUI();
-					}
+				if (toAppend != "" && toAppend != null && toAppend != undefined) {
+					$('#search').html(toAppend)
+					setTimeout(function() {
+						$("#search_rightSelected").trigger('click');
+					}, 10);
+				} else {
+					$('#search').html("");
+					alert("<?= _translate("No facilities found for the selected facility type. Please add a new facility or edit an existing facility.", true); ?>");
 				}
+				$.unblockUI();
 			});
 	}
 </script>

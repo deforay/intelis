@@ -84,7 +84,7 @@ $sResult = $db->rawQuery($sQuery);
 		if ($('#userDate').val() != "") {
 			$.ajax({
 				async: false,
-				url: 'get-log-files.php?date=' + $('#userDate').val(),
+				url: '/system-admin/log-files/get-log-files.php?date=' + $('#userDate').val(),
 				dataType: 'text',
 				success: function(data) {
 					$('#logViewer').html(data);

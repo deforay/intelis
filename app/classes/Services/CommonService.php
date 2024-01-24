@@ -16,6 +16,9 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 
 class CommonService
@@ -1274,5 +1277,57 @@ class CommonService
             $options,
             $decryption_iv
         );
+    }
+
+    public function applyBordersToSheet(Worksheet $sheet)
+    {
+        // Retrieve the highest row and highest column
+        $highestRow = $sheet->getHighestRow();
+        $highestColumn = $sheet->getHighestColumn();
+
+        // Define border style
+        $borderStyle = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ];
+
+        // Calculate the range that covers all your data
+        $range = "A1:{$highestColumn}{$highestRow}";
+
+        // Apply border style to the range
+        $sheet->getStyle($range)->applyFromArray($borderStyle);
+
+        return $sheet;
+    }
+
+    public function setAllColumnWidths(Worksheet $sheet, $width = 20)
+    {
+        // Set the default width for all columns in the sheet
+        $sheet->getDefaultColumnDimension()->setWidth($width);
+
+        return $sheet;
+    }
+
+    public function centerAndBoldRowInSheet(Worksheet $sheet, $startCell = 'A1')
+    {
+        // Extract the row number from the start cell
+        $startRow = preg_replace('/[^0-9]/', '', $startCell);
+
+        // Retrieve the highest column
+        $highestColumn = $sheet->getHighestColumn();
+
+        // Calculate the range for the entire row
+        $range = $startCell . ':' . $highestColumn . $startRow;
+
+        // Set alignment to center and font to bold for the range
+        $sheet->getStyle($range)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle($range)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle($range)->getFont()->setBold(true);
+
+        return $sheet;
     }
 }

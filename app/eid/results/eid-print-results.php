@@ -412,14 +412,14 @@ $state = $geolocationService->getProvinces("yes");
         var i = '<?php echo $i; ?>';
         $(".printedData").click(function() {
             loadPrintedVlRequestData();
-           
+
             /*Hide Province, District Columns */
             //var bVisCol = opTable.fnSettings().aoColumns[9].bVisible;
-          //  opTable.fnSetColumnVis(9, false);
+            //  opTable.fnSetColumnVis(9, false);
             //var bVisCol = opTable.fnSettings().aoColumns[10].bVisible;
-          //  opTable.fnSetColumnVis(10, false);
+            //  opTable.fnSetColumnVis(10, false);
             //var bVisCol = opTable.fnSettings().aoColumns[13].bVisible;
-           // opTable.fnSetColumnVis(13, false);
+            // opTable.fnSetColumnVis(13, false);
 
             for (colNo = 0; colNo <= i; colNo++) {
                 $("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
@@ -465,9 +465,9 @@ $state = $geolocationService->getProvinces("yes");
                 endDate = end.format('YYYY-MM-DD');
             });
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
-        //loadVlRequestData();
+        loadVlRequestData();
 
-    
+
         // loadPrintedVlRequestData();
         $(".checkRows").change(function() {
             console.log("CHECK");

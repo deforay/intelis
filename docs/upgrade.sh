@@ -363,7 +363,7 @@ rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
 
 # Set proper permissions
-chown -R www-data:www-data "${vlsm_path}"
+setfacl -R -m u:$USER:rwx,u:www-data:rwx "${vlsm_path}"
 
 # Run Composer Update as www-data
 echo "Running composer update as www-data user..."
