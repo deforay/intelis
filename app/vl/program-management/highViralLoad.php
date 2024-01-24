@@ -1066,9 +1066,9 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Sample Collection Date "); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23%;">
-														<input type="text" id="vlSampleCollectionDate" name="vlSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="width:220px;background:#fff;" />
+														<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="width:220px;background:#fff;" />
 													</td>
-													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport('vl');" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('stReportFilter');"><span>
 															<?= _translate("Reset"); ?>
 														</span></button>
@@ -1077,7 +1077,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 											<figure class="highcharts-figure">
 												<div id="container"></div>
-												<div class="searchVlRequestDataDiv" id="vlSampleResultDetails">
+												<div id="sampleTestingResultDetails">
 												<p class="highcharts-description">
 												</p>
 											</figure>
@@ -1108,15 +1108,15 @@ $state = $geolocationService->getProvinces("yes");
 	let currentXHR = null;
 	let currentRequestType = null;
 	$(document).ready(function() {
-		$("#state,#rjtState,#noResultState").select2({
+		$("#state,#rjtState,#noResultState,#stState").select2({
 			width: '100%',
 			placeholder: "<?php echo _translate("Select Province"); ?>"
 		});
-		$("#district,#rjtDistrict,#noResultDistrict").select2({
+		$("#district,#rjtDistrict,#noResultDistrict,#stDistrict").select2({
 			width: '100%',
 			placeholder: "<?php echo _translate("Select District"); ?>"
 		});
-		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
+		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName,#stfacilityName").select2({
 			width: '100%',
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
@@ -1133,7 +1133,7 @@ $state = $geolocationService->getProvinces("yes");
 			width: '100%',
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#vlSampleCollectionDate').daterangepicker({
+		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#stSampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
@@ -1193,7 +1193,7 @@ $state = $geolocationService->getProvinces("yes");
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#vlSampleCollectionDate').on('cancel.daterangepicker', function(ev, picker) {
+		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#stSampleCollectionDate').on('cancel.daterangepicker', function(ev, picker) {
 			$(this).val('');
 		});
 		$('#vfVlnsSampleTestDate').val('');
@@ -1201,7 +1201,7 @@ $state = $geolocationService->getProvinces("yes");
 		sampleRjtReport();
 		notAvailReport();
 		incompleteForm();
-		getSampleResult('vl');
+		getSampleResult();
 		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select").on("change", function() {
 			searchExecuted = false;
 		});
@@ -1798,11 +1798,10 @@ $state = $geolocationService->getProvinces("yes");
 		$('.' + filtersClass).val('');
 		$('.' + filtersClass).val(null).trigger('change');
 	}
-	function sampleTestingReport(requestType) {
-		currentRequestType = requestType;
+	function sampleTestingReport() {
 		
 		$.when(
-			getSampleResult(currentRequestType)
+			getSampleResult()
 		)
 		.done(function() {
 			$.unblockUI();
@@ -1816,17 +1815,16 @@ $state = $geolocationService->getProvinces("yes");
 		});
 	}
 
-	function getSampleResult(requestType) {
-		currentXHR = $.post("/vl/getSampleResult.php", {
-					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
-					type: 'vl',
+	function getSampleResult() {
+		currentXHR = $.post("/vl/program-management/getSampleTestingReport.php", {
+					sampleCollectionDate: $("#stSampleCollectionDate").val(),
 					state: $('#stState').val(),
 					district: $('#stDistrict').val(),
 					facilityName: $('#stfacilityName').val(),
 				},
 				function(data) {
 					if (data != '') {
-						$("#vlSampleResultDetails").html(data);
+						$("#sampleTestingResultDetails").html(data);
 					}
 				});
 		return currentXHR;

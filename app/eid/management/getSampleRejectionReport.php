@@ -170,12 +170,11 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 
 if (!empty($sWhere)) {
-    $sWhere = ' AND ' . implode(' AND ', $sWhere);
+    $sWhereClause = ' AND ' . implode(' AND ', $sWhere);
 } else {
-    $sWhere = "";
+    $sWhereClause = "";
 }
-$sQuery = $sQuery . ' ' . $sWhere;
-$sQuery = $sQuery . ' group by vl.eid_id';
+$sQuery = $sQuery . $sWhereClause . ' group by vl.eid_id';
 if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
