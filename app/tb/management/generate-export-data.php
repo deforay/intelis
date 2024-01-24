@@ -36,16 +36,14 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 
 	$output = [];
 
-	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 		$headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
-	} else {
-		$headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
-	}
 	if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
 		unset($headings[$key]);
 	}
 
-
+	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
+		$headings = array_values(array_diff($headings, ["Case ID","Patient Name"]));
+	}
 
 	$no = 1;
 	$resultSet = $db->rawQuery($_SESSION['tbResultQuery']);

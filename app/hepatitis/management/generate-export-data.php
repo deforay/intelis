@@ -32,6 +32,10 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 	$headings = array("S.No.", "Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
 	$output = [];
 
+	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
+		$headings = array_values(array_diff($headings, ["Patient ID","Patient Name"]));
+	}
+
 	$no = 1;
 	$resultSet = $db->rawQuery($_SESSION['hepatitisResultQuery']);
 	foreach ($resultSet as $aRow) {
@@ -77,8 +81,10 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 		$row[] = $aRow['facility_code'];
 		$row[] = ($aRow['facility_district']);
 		$row[] = ($aRow['facility_state']);
-		$row[] = $aRow['patient_id'];
-		$row[] = $patientFname . " " . $patientLname;
+		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+			$row[] = $aRow['patient_id'];
+			$row[] = $patientFname . " " . $patientLname;
+		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
 		$aRow['patient_age'] ??= 0;
 		$row[] = ($aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;

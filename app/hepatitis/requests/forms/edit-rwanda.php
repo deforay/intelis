@@ -108,8 +108,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt PII'); ?>">
                                                 <option value=""><?= _translate('--Select--'); ?></option>
-                                                <option value="no" <?php echo ($hepatitisInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
-                                                <option value="yes" <?php echo ($hepatitisInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
+                                                <option value="no" <?php echo ($hepatitisInfo['is_encrypted'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
+                                                <option value="yes" <?php echo ($hepatitisInfo['is_encrypted'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
                                             </select>
                                         </td>
                                     </tr>
