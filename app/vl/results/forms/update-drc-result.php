@@ -212,6 +212,10 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="genderFemale" name="gender" <?php echo $disable; ?> value="female" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
 											</label>
+											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">KP</label>
+											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
+												<input type="radio" class="" id="genderKp" name="gender" <?php echo $disable; ?> value="kp" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "kp") ? 'checked="checked"' : ''; ?>>
+											</label>
 										</td>
 										<td style="width:15%;"><label>Régime ARV en cours </label></td>
 										<td style="width:35%;">

@@ -99,13 +99,11 @@ if (!empty($_POST['pkgId'])) {
 } else {
 	$where[] = "(vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
 }
-if (!empty($_POST['sampleType']) && ($module == 'vl' || $module == 'generic-tests')) {
-	$where[] = " (sample_type IN(" . $_POST['sampleType'] . ")  OR (sample_type like '' OR sample_type is null OR sample_type = 0))";
-} else if (isset($_POST['sampleType']) && $_POST['sampleType'] != "" && $module != 'vl') {
+if (!empty($_POST['sampleType'])) {
 	$where[] = " (specimen_type IN(" . $_POST['sampleType'] . ")  OR (specimen_type like '' OR specimen_type is null OR specimen_type = 0))";
 }
 if (!empty($where)) {
-	$query .= " where " . implode(" AND ", $where);
+	$query .= " WHERE " . implode(" AND ", $where);
 }
 $query .= " ORDER BY vl.request_created_datetime ASC";
 // die($query);
