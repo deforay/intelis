@@ -79,7 +79,7 @@ try {
             WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
             $whereCondition 
             $recencyWhere
-            GROUP BY vl.facility_id ORDER BY f.facility_name ASC";
+            GROUP BY vl.facility_id ORDER BY totalCount DESC";
     $sampleTestingResult = $db->rawQuery($sQuery);
 
 } catch (Exception $e) {
