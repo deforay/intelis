@@ -26,7 +26,7 @@ try {
     } else {
         $whereCondition = "";
         if (!empty($_SESSION['facilityMap'])) {
-            $whereCondition = " AND eid.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+            $whereCondition = " AND hepatitis.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
         }
     }
     
@@ -51,7 +51,7 @@ try {
     }
 
     $sQuery = "SELECT
-                eid.facility_id,
+                hepatitis.facility_id,
                 f.facility_code,
                 f.facility_state,
                 f.facility_district,
@@ -74,11 +74,12 @@ try {
                         ELSE 0
                     END) AS rejectCount
                 
-                FROM form_eid as eid JOIN facility_details as f ON f.facility_id=eid.facility_id
-                WHERE DATE(eid.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
+                FROM form_hepatitis as hepatitis JOIN facility_details as f ON f.facility_id=hepatitis.facility_id
+                WHERE DATE(hepatitis.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
                 $whereCondition 
-                GROUP BY eid.facility_id ORDER BY totalCount DESC";
+                GROUP BY hepatitis.facility_id ORDER BY totalCount DESC";
         $sampleTestingResult = $db->rawQuery($sQuery);
+        
 
 } catch (Exception $e) {
     error_log($e->getMessage());

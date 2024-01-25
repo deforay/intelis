@@ -472,7 +472,7 @@ class VlService extends AbstractTestService
                     'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,
                     'patient_art_no' => $params['artNo'] ?? null,
-                    'sample_type' => $params['specimenType'] ?? null,
+                    'specimen_type' => $params['specimenType'] ?? null,
                     'app_sample_code' => $params['appSampleCode'] ?? null,
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,

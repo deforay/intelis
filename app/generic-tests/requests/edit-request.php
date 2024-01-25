@@ -686,7 +686,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
 													<option value=""> -- Select -- </option>
 													<?php foreach ($sResult as $name) { ?>
-														<option value="<?php echo $name['sample_type_id']; ?>" <?php echo ($genericResultInfo['sample_type'] == $name['sample_type_id']) ? "selected='selected'" : "" ?>>
+														<option value="<?php echo $name['sample_type_id']; ?>" <?php echo ($genericResultInfo['specimen_type'] == $name['sample_type_id']) ? "selected='selected'" : "" ?>>
 															<?php echo ($name['sample_type_name']); ?></option>
 													<?php } ?>
 												</select>
@@ -1731,7 +1731,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 
 		$.post("/includes/get-test-type-config.php", {
 				testTypeId: testTypeId,
-				sampleTypeId: '<?php echo $genericResultInfo['sample_type']; ?>',
+				sampleTypeId: '<?php echo $genericResultInfo['specimen_type']; ?>',
 				testReasonId: '<?php echo $genericResultInfo['reason_for_testing']; ?>',
 				//testMethodId: '< ?php echo $genericResultInfo['reason_for_testing']; ?>'
 			},

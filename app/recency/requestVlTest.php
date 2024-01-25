@@ -85,7 +85,7 @@ try {
         $data['patient_district'] = $facilityResult[0]['facility_district'];
         $data['sample_collection_date'] = date('Y-m-d', strtotime($result[5]));
         // $data['sample_type']= $result[6];
-        $data['sample_type'] = 2;
+        $data['specimen_type'] = 2;
         $data['request_created_by'] = $result[8];
         $data['lab_id'] = $result[7];
         $data['request_created_datetime'] = DateUtility::getCurrentDateTime();

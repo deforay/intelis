@@ -156,7 +156,7 @@ try {
         }
     }
     if (isset($_POST['hvlSampleType']) && $_POST['hvlSampleType'] != '') {
-        $sWhere[] =  ' vl.sample_type = "' . $_POST['hvlSampleType'] . '"';
+        $sWhere[] =  ' vl.specimen_type = "' . $_POST['hvlSampleType'] . '"';
     }
 
     if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {

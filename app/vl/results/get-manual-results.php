@@ -146,7 +146,7 @@ try {
                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
                LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
-               LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+               LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
                INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 

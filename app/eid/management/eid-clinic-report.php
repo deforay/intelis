@@ -480,10 +480,7 @@ foreach ($rejectionTypeResult as $type) {
 													<td style="width: 14%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
 													<td style="width: 23%;">
 														<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
-															<option value=""><?php echo _translate('-- Select --'); ?></option>
-															<?php foreach ($fResult as $name) { ?>
-																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?></option>
-															<?php } ?>
+															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
 												<tr>

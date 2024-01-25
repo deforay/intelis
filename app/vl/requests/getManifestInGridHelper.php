@@ -67,7 +67,7 @@ $sQuery = "SELECT vl.sample_collection_date,
                     vl.patient_last_name,
                     vl.patient_art_no,
                     vl.facility_id,
-                    vl.sample_type,
+                    vl.specimen_type,
                     vl.result_status,
                     f.facility_name,
                     f.facility_state,
@@ -75,7 +75,7 @@ $sQuery = "SELECT vl.sample_collection_date,
                     s.sample_name,
                     ts.status_name FROM form_vl as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 

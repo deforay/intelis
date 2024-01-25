@@ -132,7 +132,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     FROM form_vl as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
-                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                     LEFT JOIN r_vl_art_regimen as acd ON acd.art_id=vl.current_regimen
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id

@@ -56,14 +56,14 @@ $state = $geolocationService->getProvinces("yes");
 		color: #000000 !important;
 	}
 	#container {
-		height: 400px;
+		height: 600px;
 	}
 
 	.highcharts-figure,
 	.highcharts-data-table table {
 		min-width: 310px;
-		max-width: 800px;
-		margin: 1em auto;
+		max-width: 1000px;
+		
 	}
 
 	.highcharts-data-table table {

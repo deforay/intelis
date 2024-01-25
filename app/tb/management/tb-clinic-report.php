@@ -85,6 +85,7 @@ $state = $geolocationService->getProvinces("yes");
 										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _translate("Sample Rejection Report"); ?></a></li>
 										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _translate("Results Not Available Report"); ?></a></li>
 										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _translate("Data Quality Check"); ?></a></li>
+										<li><a href="#sampleTestingReport" data-toggle="tab"><?php echo _translate("Sample Testing Report"); ?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active">
@@ -450,6 +451,52 @@ $state = $geolocationService->getProvinces("yes");
 												</tbody>
 											</table>
 										</div>
+										<div class="tab-pane fade" id="sampleTestingReport">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+												<tr>
+													<td style="width: 14%;"><strong>
+															<?php echo _translate("Province/State"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23%;">
+														<select class="form-control stReportFilter select2 select2-element" id="stState" onchange="getByProvince('stDistrict','stfacilityName',this.value)" name="stState" title="<?php echo _translate('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
+														</select>
+													</td>
+
+													<td style="width: 14%;"><strong>
+															<?php echo _translate("District/County"); ?> :
+														</strong></td>
+													<td style="width: 23%;">
+														<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
+														</select>
+													</td>
+													<td style="width: 14%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
+													<td style="width: 23%;">
+														<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
+															<?= $facilitiesDropdown; ?>
+														</select>
+													</td>
+												<tr>
+													<td style="width: 14%;"><strong>
+															<?php echo _translate("Sample Collection Date "); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23%;">
+														<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="width:220px;background:#fff;" />
+													</td>
+													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('stReportFilter');"><span>
+															<?= _translate("Reset"); ?>
+														</span></button>
+													</td>
+												</tr>
+											</table>
+											<figure class="highcharts-figure">
+												<div id="container"></div>
+												<div id="sampleTestingResultDetails">
+												<p class="highcharts-description">
+												</p>
+											</figure>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -464,6 +511,9 @@ $state = $geolocationService->getProvinces("yes");
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="/assets/js/highcharts.js"></script>
+<script src="/assets/js/exporting.js"></script>
+<script src="/assets/js/accessibility.js"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	var oTableViralLoad = null;
@@ -471,19 +521,19 @@ $state = $geolocationService->getProvinces("yes");
 	var oTablenotAvailReport = null;
 	var oTableincompleteReport = null;
 	$(document).ready(function() {
-		$("#state,#rjtState,#noResultState").select2({
+		$("#state,#rjtState,#noResultState,#stState").select2({
 			placeholder: "<?php echo _translate("Select Province"); ?>"
 		});
-		$("#district,#rjtDistrict,#noResultDistrict").select2({
+		$("#district,#rjtDistrict,#noResultDistrict,#stDistrict").select2({
 			placeholder: "<?php echo _translate("Select District"); ?>"
 		});
-		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
+		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName,#stfacilityName").select2({
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#formField").select2({
 			placeholder: "<?php echo _translate("Select Fields"); ?>"
 		});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').daterangepicker({
+		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#stSampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
@@ -512,6 +562,7 @@ $state = $geolocationService->getProvinces("yes");
 		sampleRjtReport();
 		notAvailReport();
 		incompleteForm();
+		getSampleTestingResult();
 		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select").on("change", function() {
 			searchExecuted = false;
 		});
@@ -1002,6 +1053,42 @@ $state = $geolocationService->getProvinces("yes");
 				Obj = $.parseJSON(data);
 				$("#" + facilityId).html(Obj['facilities']);
 			});
+	}
+
+	function resetFilters(filtersClass) {
+		$('.' + filtersClass).val('');
+		$('.' + filtersClass).val(null).trigger('change');
+	}
+
+	function sampleTestingReport() {
+		$.when(
+			getSampleTestingResult()
+		)
+		.done(function() {
+			$.unblockUI();
+			$(window).scroll();
+		});
+
+		$(window).on('beforeunload', function() {
+			if (currentXHR !== null && currentXHR !== undefined) {
+				currentXHR.abort();
+			}
+		});
+	}
+
+	function getSampleTestingResult() {
+		currentXHR = $.post("/tb/management/tb-sample-testing-report.php", {
+					sampleCollectionDate: $("#stSampleCollectionDate").val(),
+					state: $('#stState').val(),
+					district: $('#stDistrict').val(),
+					facilityName: $('#stfacilityName').val(),
+				},
+				function(data) {
+					if (data != '') {
+						$("#sampleTestingResultDetails").html(data);
+					}
+				});
+		return currentXHR;
 	}
 </script>
 <?php

@@ -124,7 +124,7 @@ try {
 
                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
-               LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+               LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
                LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
                LEFT JOIN user_details as c_u_d ON c_u_d.user_id=vl.request_created_by
@@ -143,7 +143,7 @@ try {
      [$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
      /* Sample type filter */
      if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
-          $sWhere[] =  ' vl.sample_type IN (' . $_POST['sampleType'] . ')';
+          $sWhere[] =  ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';
      }
      if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
           $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";

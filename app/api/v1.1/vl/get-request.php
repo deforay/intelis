@@ -82,7 +82,7 @@ try {
             vl.date_of_initiation_of_current_regimen             as regimenInitiatedOn,
             vl.patient_mobile_number                             as patientPhoneNumber,
             vl.consent_to_receive_sms                            as receiveSms,
-            vl.sample_type                                       as specimenType,
+            vl.specimen_type                                     as specimenType,
             vl.arv_adherance_percentage                          as arvAdherence,
             vl.reason_for_vl_testing                             as reasonForVLTesting,
             vl.community_sample                                  as communitySample,
@@ -165,7 +165,7 @@ try {
             LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_technician
             LEFT JOIN user_details as t_b ON t_b.user_id=vl.tested_by
             LEFT JOIN r_vl_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_vl_testing
-            LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.sample_type
+            LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.specimen_type
             LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
             LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
             LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";

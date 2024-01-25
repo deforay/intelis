@@ -118,7 +118,7 @@ $tatSampleQuery = "SELECT
         FROM `$table` as vl
         INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
         INNER JOIN facility_details as f ON vl.lab_id=f.facility_id
-        LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
+        LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.specimen_type
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
         WHERE
         vl.result is not null
