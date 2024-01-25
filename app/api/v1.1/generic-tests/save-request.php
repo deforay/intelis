@@ -355,7 +355,7 @@ try {
             'patient_address' => !empty($data['patientAddress']) ? $data['patientAddress'] : null,
             'reason_for_testing' => !empty($data['reasonForTest']) ? json_encode($data['reasonForTest']) : null,
             'test_urgency' => !empty($data['testUrgency']) ? $data['testUrgency'] : null,
-            'sample_type' => !empty($data['specimenType']) ? $data['specimenType'] : null,
+            'specimen_type' => !empty($data['specimenType']) ? $data['specimenType'] : null,
             'sample_collection_date' => $data['sampleCollectionDate'],
             'sample_dispatched_datetime' => $data['sampleDispatchedOn'],
             'result_dispatched_datetime' => $data['resultDispatchedOn'],

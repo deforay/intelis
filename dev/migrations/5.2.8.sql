@@ -153,3 +153,8 @@ ALTER TABLE `audit_form_hepatitis` DROP Column `sync_patient_identifiers`;
 ALTER TABLE `form_tb` DROP Column `sync_patient_identifiers`;
 ALTER TABLE `audit_form_tb` DROP Column `sync_patient_identifiers`;
 
+ALTER TABLE `form_vl` CHANGE `sample_type` `specimen_type` INT NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `sample_type` `specimen_type` INT NULL DEFAULT NULL;
+
+ALTER TABLE `form_generic` CHANGE `sample_type` `specimen_type` INT NULL DEFAULT NULL;
+ALTER TABLE `audit_form_generic` CHANGE `sample_type` `specimen_type` INT NULL DEFAULT NULL;

@@ -39,7 +39,7 @@ vl.sample_code
 from form_generic as vl
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
+LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.specimen_type
 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
 WHERE
 (vl.sample_collection_date is not null AND vl.sample_collection_date > '0000-00-00') AND

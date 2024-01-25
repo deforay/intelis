@@ -39,7 +39,7 @@ if (isset($facility) && !empty(array_filter($facility))) {
   $query = $query . " AND vl.facility_id IN (" . implode(',', $facility) . ")";
 }
 if (trim((string) $sampleType) != '') {
-  $query = $query . " AND vl.sample_type='" . $sampleType . "'";
+  $query = $query . " AND vl.specimen_type='" . $sampleType . "'";
 }
 if (trim((string) $gender) != '') {
   $query = $query . " AND vl.patient_gender='" . $gender . "'";

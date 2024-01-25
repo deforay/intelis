@@ -48,7 +48,7 @@ if (!empty($id)) {
                 LEFT JOIN form_vl as vl ON vl.sample_package_id=pd.package_id
                 LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
-                LEFT JOIN r_vl_sample_type as st ON st.sample_id=vl.sample_type
+                LEFT JOIN r_vl_sample_type as st ON st.sample_id=vl.specimen_type
                 LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by
                 WHERE pd.package_id IN($id)";
 

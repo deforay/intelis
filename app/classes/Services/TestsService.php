@@ -17,7 +17,7 @@ class TestsService
                 'patientId' => 'patient_art_no',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
-                'specimenType' => 'sample_type'
+                'specimenType' => 'specimen_type'
             ],
             'recency' => [
                 'testName' => _translate('HIV Recency'),
@@ -77,7 +77,7 @@ class TestsService
                 'patientId' => 'patient_id',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
-                'specimenType' => 'sample_type'
+                'specimenType' => 'specimen_type'
             ]
         ];
     }

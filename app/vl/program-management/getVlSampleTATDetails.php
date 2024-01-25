@@ -106,7 +106,7 @@ $sQuery = "SELECT vl.sample_code,
 				vl.sample_dispatched_datetime,
 				vl.request_created_by,
 				vl.result_printed_on_lis_datetime,
-				vl.result_printed_on_sts_datetime from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is NOT NULL AND DATE(vl.sample_collection_date) > '0000-00-00')
+				vl.result_printed_on_sts_datetime from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is NOT NULL AND DATE(vl.sample_collection_date) > '0000-00-00')
                         AND (vl.sample_tested_datetime IS NOT NULL AND vl.sample_tested_datetime > '0000-00-00' )
                         AND vl.result is not null
                         AND vl.result != '' ";

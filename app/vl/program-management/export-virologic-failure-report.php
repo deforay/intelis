@@ -66,7 +66,7 @@ $sQuery = "SELECT
                vl.result
           FROM form_vl as vl
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-          LEFT JOIN r_vl_sample_type as s ON vl.sample_type=s.sample_id
+          LEFT JOIN r_vl_sample_type as s ON vl.specimen_type=s.sample_id
           LEFT JOIN instruments as i ON vl.vl_test_platform=i.machine_name
           INNER JOIN facility_details as l ON vl.lab_id=l.facility_id";
 

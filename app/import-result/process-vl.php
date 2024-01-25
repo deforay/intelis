@@ -133,7 +133,7 @@ try {
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
                     $data['batch_code'] = $rResult['batch_code'];
-                    $data['sample_type'] = $rResult['sample_type'];
+                    $data['specimen_type'] = $rResult['sample_type'];
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
                     $data['status'] = $status[$i];
                     $data['import_batch_tracking'] = $_SESSION['controllertrack'];

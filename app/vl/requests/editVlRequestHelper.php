@@ -236,7 +236,7 @@ try {
           'date_of_initiation_of_current_regimen' => DateUtility::isoDateFormat($_POST['regimenInitiatedOn'] ?? ''),
           'patient_mobile_number' => $_POST['patientPhoneNumber'] ?? null,
           'consent_to_receive_sms' => $_POST['receiveSms'] ?? 'no',
-          'sample_type' => $_POST['specimenType'] ?? null,
+          'specimen_type' => $_POST['specimenType'] ?? null,
           'plasma_conservation_temperature' => $_POST['conservationTemperature'] ?? null,
           'plasma_conservation_duration' => $_POST['durationOfConservation'] ?? null,
           'arv_adherance_percentage' => $_POST['arvAdherence'] ?? null,

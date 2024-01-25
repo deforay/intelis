@@ -432,7 +432,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
 													<option value=""> -- Select -- </option>
 													<?php foreach ($sResult as $name) { ?>
-														<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
+														<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['specimen_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -1080,7 +1080,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 				$.post("/includes/get-sample-type.php", {
 						facilityId: $('#labId').val(),
 						testType: 'vl',
-						sampleId: '<?php echo $vlQueryInfo['sample_type']; ?>'
+						sampleId: '<?php echo $vlQueryInfo['specimen_type']; ?>'
 					},
 					function(data) {
 						if (data != "") {

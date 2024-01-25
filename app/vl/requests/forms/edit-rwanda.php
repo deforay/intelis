@@ -296,7 +296,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                  <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose a sample type">
                                                                       <option value=""> -- Select -- </option>
                                                                       <?php foreach ($sResult as $name) { ?>
-                                                                           <option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
+                                                                           <option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['specimen_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
                                                                       <?php } ?>
                                                                  </select>
                                                             </div>

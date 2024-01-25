@@ -287,7 +287,7 @@ try {
             'date_of_initiation_of_current_regimen' => DateUtility::isoDateFormat($data['regimenInitiatedOn'] ?? '', true),
             'patient_mobile_number' => $data['patientPhoneNumber'] ?? null,
             'consent_to_receive_sms' => $data['receiveSms'] ?? 'no',
-            'sample_type' => $data['specimenType'] ?? null,
+            'specimen_type' => $data['specimenType'] ?? null,
             'arv_adherance_percentage' => $data['arvAdherence'] ?? null,
             'reason_for_vl_testing' => $data['reasonForVLTesting'] ?? $data['vlTestReason'] ?? null,
             'community_sample' => $data['communitySample'] ?? null,

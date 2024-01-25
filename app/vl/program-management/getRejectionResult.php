@@ -43,7 +43,7 @@ if (!empty($_POST['sampleCollectionDate'])) {
     $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
 
     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
-        $sWhere[] = ' vl.sample_type = "' . $_POST['sampleType'] . '"';
+        $sWhere[] = ' vl.specimen_type = "' . $_POST['sampleType'] . '"';
     }
     if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
         $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
