@@ -29,5 +29,5 @@ try {
         echo $tbService->getSampleCode($sampleCodeParams);
     }
 } catch (Exception | SystemException $exception) {
-    error_log("Error while generating Sample Code : " . $exception->getMessage());
+    error_log("Error while generating Sample ID : " . $exception->getMessage());
 }
