@@ -59,10 +59,6 @@ $state = $geolocationService->getProvinces("yes");
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
-
-	.center {
-		/*text-align:left;*/
-	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">

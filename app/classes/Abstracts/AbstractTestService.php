@@ -18,7 +18,7 @@ abstract class AbstractTestService
     protected DatabaseService $db;
     protected CommonService $commonService;
     protected GeoLocationsService $geoLocationsService;
-    protected int $maxTries = 5; // Max tries for generating sample code
+    protected int $maxTries = 5; // Max tries for generating Sample ID
     protected string $table;
     protected string $testType;
 
@@ -40,7 +40,7 @@ abstract class AbstractTestService
         try {
 
             $sampleCodeGenerator = [];
-            // We use this flag to determine if we generating sample code for inserting
+            // We use this flag to determine if we generating Sample ID for inserting
             // or just displaging on the form
             $insertOperation = $params['insertOperation'] ?? true;
 
@@ -50,7 +50,7 @@ abstract class AbstractTestService
                 $this->db->beginTransaction();
 
                 if ($tryCount >= $this->maxTries) {
-                    throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating sample code");
+                    throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating Sample ID");
                 }
             }
 
@@ -188,7 +188,7 @@ abstract class AbstractTestService
         } catch (Exception | SystemException $exception) {
             // Rollback the current transaction to release locks and undo changes
             $this->db->rollbackTransaction();
-            throw new SystemException("Error while generating Sample Code for $testTable : " . $exception->getMessage(), $exception->getCode(), $exception);
+            throw new SystemException("Error while generating Sample ID for $testTable : " . $exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return json_encode($sampleCodeGenerator);

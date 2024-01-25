@@ -78,6 +78,6 @@ try {
     $db->commitTransaction();
 } catch (Exception | SystemException $exception) {
     $db->rollbackTransaction();
-    error_log("Error while generating Sample Codes : " . $exception->getMessage());
+    error_log("Error while generating Sample IDs : " . $exception->getMessage());
 }
 echo $status;

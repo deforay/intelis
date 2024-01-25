@@ -30,7 +30,7 @@ class EidService extends AbstractTestService
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (SystemException $e) {
-                LoggerUtility::log('error', 'Generate Sample Code : ' . $e->getMessage(), [
+                LoggerUtility::log('error', 'Generate Sample ID : ' . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error
@@ -164,7 +164,7 @@ class EidService extends AbstractTestService
                 $id = $this->db->getInsertId();
             } else {
 
-                LoggerUtility::log('info', 'Sample Code Exists. Trying to regenerate sample code', [
+                LoggerUtility::log('info', 'Sample ID exists already. Trying to regenerate Sample ID', [
                     'file' => __FILE__,
                     'line' => __LINE__,
                 ]);

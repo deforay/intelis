@@ -52,7 +52,7 @@ class VlService extends AbstractTestService
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (SystemException $e) {
-                LoggerUtility::log('error', 'Generate Sample Code : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
+                LoggerUtility::log('error', 'Generate Sample ID : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error
@@ -523,7 +523,7 @@ class VlService extends AbstractTestService
                 }
             } else {
 
-                LoggerUtility::log('info', 'Sample Code Exists. Trying to regenerate sample code', [
+                LoggerUtility::log('info', 'Sample ID exists already. Trying to regenerate Sample ID', [
                     'file' => __FILE__,
                     'line' => __LINE__,
                 ]);
