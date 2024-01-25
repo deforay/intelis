@@ -46,50 +46,31 @@ try {
 
   $counter = 0;
 
-
   $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
   $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
   if (!empty($fMapResult)) {
     $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";
   } else {
-    $condition = "lab_id =" . $labId;
+    $condition = "lab_id = " . $labId;
   }
 
-
-  $removeKeys = [
-    'sample_code',
-    'sample_code_key',
-    'sample_code_format',
-    'sample_batch_id',
-    'sample_received_at_lab_datetime',
-    'eid_test_platform',
-    'import_machine_name',
-    'sample_tested_datetime',
-    'is_sample_rejected',
-    'lab_id',
-    'result',
-    'tested_by',
-    'lab_tech_comments',
-    'result_approved_by',
-    'result_approved_datetime',
-    'revised_by',
-    'revised_on',
-    'result_reviewed_by',
-    'result_reviewed_datetime',
-    'result_dispatched_datetime',
-    'reason_for_changing',
-    'result_status',
-    'data_sync',
-    'reason_for_sample_rejection',
-    'rejection_on',
-    'last_modified_by',
-    'result_printed_datetime',
-    'last_modified_datetime'
+  // oldName => newName
+  $aliasColumns = [
+    'sample_type' => 'specimen_type',
+    'patient_art_no' => 'patient_id'
   ];
 
-  $vlQuery = "SELECT * FROM form_vl
-                    WHERE $condition ";
+  // Start with selecting all columns
+  $columnSelection = "*";
+
+  // Add each new column with its alias
+  foreach ($aliasColumns as $oldName => $newName) {
+    $columnSelection .= ", $newName AS $oldName";
+  }
+
+  // Construct the final SQL query
+  $vlQuery = "SELECT $columnSelection FROM form_vl WHERE $condition";
 
   if (!empty($data['manifestCode'])) {
     $vlQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
@@ -113,11 +94,9 @@ try {
     $payload = json_encode([]);
   }
 
-
   $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', $_SERVER['REQUEST_URI'], MiscUtility::convertToUtf8AndEncode($data), $payload, 'json', $labId);
-
-
   $general->updateTestRequestsSyncDateTime('vl', $facilityIds, $labId);
+
   $db->commitTransaction();
 } catch (Exception | SystemException $e) {
   $db->rollbackTransaction();
