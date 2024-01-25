@@ -56,7 +56,6 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 	.du {
 		visibility: <?php echo $duVisibility; ?>;
 	}
-
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -278,7 +277,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 									<tr class="femaleSection">
 										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
 										<td style="width:20% !important;">
-										<label for="breastfeeding">Allaitante ?</label>
+											<label for="breastfeeding">Allaitante ?</label>
 											<select class="form-control" id="breastfeeding" name="breastfeeding" title="Please check Si allaitante">
 												<option value=""> -- Select -- </option>
 												<option id="breastfeedingYes" <?php echo (trim((string) $vlQueryInfo['is_patient_breastfeeding']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
@@ -534,7 +533,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 											</td>
 										</tr>
 										<?php if (count($reasonForFailure) > 0) { ?>
-											<tr class="reasonForFailure" style="<?php echo ( strtolower(trim($vlQueryInfo['result'])) != 'failed') ? 'display: none;' : ''; ?>">
+											<tr class="reasonForFailure" style="<?php echo (strtolower(trim($vlQueryInfo['result'])) != 'failed') ? 'display: none;' : ''; ?>">
 												<th scope="row" class="reasonForFailure">
 													<?php echo _translate("Reason for Failure"); ?>
 												</th>
@@ -703,25 +702,21 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 		checkreasonForVLTesting();
 	});
 
-		function showFemaleSection(genderProp){
-			if(genderProp=="none")
-			{
-				$(".femaleSection").hide();
-			}
-			else{
-				$(".femaleSection").show();
-			}
+	function showFemaleSection(genderProp) {
+		if (genderProp == "none") {
+			$(".femaleSection").hide();
+		} else {
+			$(".femaleSection").show();
 		}
+	}
 
-		function showTrimesterSection(trimesterProp){
-			if(trimesterProp=="none")
-			{
-				$(".trimesterSection").hide();
-			}
-			else{
-				$(".trimesterSection").show();
-			}
+	function showTrimesterSection(trimesterProp) {
+		if (trimesterProp == "none") {
+			$(".trimesterSection").hide();
+		} else {
+			$(".trimesterSection").show();
 		}
+	}
 
 
 	//$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
@@ -795,7 +790,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 				if ($.trim(patientArray['is_pregnant']) != '') {
 					$("#pregnant").val($.trim(patientArray['is_pregnant']));
 					$('#pregnant').trigger('change');
-					if($.trim(patientArray['is_pregnant']) == 'yes'){
+					if ($.trim(patientArray['is_pregnant']) == 'yes') {
 						if ($.trim(patientArray['trimester']) != '') {
 							$("#trimester").val($.trim(patientArray['trimester']));
 						}
@@ -844,12 +839,12 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 	});
 
 	$("#pregnant").change(function() {
-        if ($(this).val() == 'yes') {
-            $(".trimesterSection").show();
-        }else{
+		if ($(this).val() == 'yes') {
+			$(".trimesterSection").show();
+		} else {
 			$(".trimesterSection").hide();
 		}
-    });
+	});
 
 	function checkreasonForVLTesting() {
 		var reasonForVLTesting = $("#reasonForVLTesting").val();
