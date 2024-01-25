@@ -570,7 +570,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 											<select name="specimenType" id="specimenType" class="form-control" title="Please choose Specimen type" style="width:100%;">
 												<option value=""> -- Select -- </option>
 												<?php foreach ($sResult as $name) { ?>
-													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
+													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['specimen_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
 												<?php } ?>
 											</select>
 										</td>

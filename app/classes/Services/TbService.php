@@ -255,7 +255,7 @@ class TbService extends AbstractTestService
                 }
             } else {
 
-                LoggerUtility::log('info', 'Sample Code Exists. Trying to regenerate sample code', [
+                LoggerUtility::log('info', 'Sample ID exists already. Trying to regenerate Sample ID', [
                     'file' => __FILE__,
                     'line' => __LINE__,
                 ]);

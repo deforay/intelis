@@ -415,7 +415,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose type d'échantillon" onchange="checkSpecimenType();" style="width:100%;">
 													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($sResult as $type) { ?>
-														<option value="<?php echo $type['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $type['sample_id']) ? 'selected="selected"' : ''; ?>><?= $type['sample_name']; ?></option>
+														<option value="<?php echo $type['sample_id']; ?>" <?php echo ($vlQueryInfo['specimen_type'] == $type['sample_id']) ? 'selected="selected"' : ''; ?>><?= $type['sample_name']; ?></option>
 													<?php } ?>
 												</select>
 											</td>
@@ -424,7 +424,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 										</tr>
 									<?php }
 									?>
-									<tr class="plasmaElement" style="display:<?php echo ($vlQueryInfo['sample_type'] == 2) ? '' : 'none'; ?>;">
+									<tr class="plasmaElement" style="display:<?php echo ($vlQueryInfo['specimen_type'] == 2) ? '' : 'none'; ?>;">
 										<td><label for="conservationTemperature">Si
 												plasma,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Température de conservation
 											</label></td>

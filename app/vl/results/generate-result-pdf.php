@@ -63,7 +63,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					FROM form_vl as vl
 					LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id
 					LEFT JOIN facility_details as f ON vl.facility_id = f.facility_id
-					LEFT JOIN r_vl_sample_type as rst ON rst.sample_id = vl.sample_type
+					LEFT JOIN r_vl_sample_type as rst ON rst.sample_id = vl.specimen_type
 					LEFT JOIN user_details as u_d ON u_d.user_id = vl.result_reviewed_by
 					LEFT JOIN user_details as a_u_d ON a_u_d.user_id = vl.result_approved_by
 					LEFT JOIN user_details as r_r_b ON r_r_b.user_id = vl.revised_by

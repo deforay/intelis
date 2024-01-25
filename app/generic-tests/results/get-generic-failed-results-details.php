@@ -120,7 +120,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
     b.batch_code
     FROM form_generic as vl
     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-    LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
+    LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.specimen_type
     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
     LEFT JOIN r_generic_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
     LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner

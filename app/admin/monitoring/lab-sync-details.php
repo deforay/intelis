@@ -51,7 +51,7 @@ $sQuery = "SELECT f.facility_id, f.facility_name,
 $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
 ?>
 <style>
-    ˝ .select2-selection__choice {
+    .select2-selection__choice {
         color: black !important;
     }
 

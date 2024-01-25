@@ -73,7 +73,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 			<div class="box-body">
 				<!-- form start -->
 				<div style="font-size:1.1em;padding:1em;">
-					<p style="color:red;"><?php echo _translate("Please ensure that the Sample IDs in the import file match the Sample IDs in VLSM."); ?> </p>
+					<h3 style="color:red;"><?php echo _translate("Please ensure that the Sample IDs in the import file match the Sample IDs in the LIS."); ?> </h3>
 
 					<p>
 						<?php echo _translate("To ensure proper result import :") ?>

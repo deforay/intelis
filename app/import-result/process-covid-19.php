@@ -137,7 +137,7 @@ try {
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
                     $data['batch_code'] = $rResult['batch_code'];
-                    $data['sample_type'] = $rResult['sample_type'];
+                    $data['specimen_type'] = $rResult['sample_type'];
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
                     $data['status'] = $status[$i];
                     $data['import_batch_tracking'] = $_SESSION['controllertrack'];
@@ -308,7 +308,7 @@ try {
                             FROM form_covid19 as vl
                             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                             LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
-                            LEFT JOIN r_covid19_sample_type as s ON s.sample_id=vl.sample_type
+                            LEFT JOIN r_covid19_sample_type as s ON s.sample_id=vl.specimen_type
                             LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
                             LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by

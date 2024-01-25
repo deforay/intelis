@@ -78,7 +78,7 @@ foreach ($rejectionTypeResult as $type) {
 
 $testPlatformResult = $general->getTestingPlatforms('eid');
 foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name'].'##'.$row['instrument_id']] = $row['machine_name'];
+    $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
 $iResultQuery = "select * from  instrument_machines";
@@ -262,7 +262,7 @@ require_once($fileArray[$arr['vl_form']]);
                 function(data) {
                     if (data != 0) {
                         // Toastify({
-                        //     text: "<?= _translate('This Sample Code already exists', true) ?>",
+                        //     text: "<?= _translate('This Sample ID already exists', true) ?>",
                         //     duration: 3000,
                         //     style: {
                         //         background: 'red',

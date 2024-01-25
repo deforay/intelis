@@ -49,7 +49,7 @@ if ((isset($_POST['id']) && !empty(trim((string) $_POST['id']))) || (isset($_POS
                   INNER JOIN r_test_types as rtt ON rtt.test_type_id = vl.test_type
                   LEFT JOIN r_generic_test_reasons as vltr ON vl.reason_for_testing = vltr.test_reason_id
                   LEFT JOIN facility_details as f ON vl.facility_id = f.facility_id
-                  LEFT JOIN r_generic_sample_types as rst ON rst.sample_type_id = vl.sample_type
+                  LEFT JOIN r_generic_sample_types as rst ON rst.sample_type_id = vl.specimen_type
                   LEFT JOIN user_details as u_d ON u_d.user_id = vl.result_reviewed_by
                   LEFT JOIN user_details as a_u_d ON a_u_d.user_id = vl.result_approved_by
                   LEFT JOIN user_details as r_r_b ON r_r_b.user_id = vl.revised_by

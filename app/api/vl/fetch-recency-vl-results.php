@@ -64,7 +64,7 @@ try {
                     FROM form_vl as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     LEFT JOIN facility_details as lab ON vl.lab_id=lab.facility_id
-                    LEFT JOIN r_vl_sample_type as samptype ON samptype.sample_id=vl.sample_type
+                    LEFT JOIN r_vl_sample_type as samptype ON samptype.sample_id=vl.specimen_type
                     INNER JOIN r_sample_status as sampstatus ON sampstatus.status_id=vl.result_status
                     LEFT JOIN r_vl_test_reasons as testreason ON testreason.test_reason_id=vl.reason_for_vl_testing
                     LEFT JOIN r_vl_sample_rejection_reasons as rejreason ON rejreason.rejection_reason_id=vl.reason_for_sample_rejection

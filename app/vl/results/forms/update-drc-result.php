@@ -36,7 +36,7 @@ $aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER b
 $aResult = $db->query($aQuery);
 
 //Set plasma storage temp.
-if (isset($vlQueryInfo['sample_type']) && $vlQueryInfo['sample_type'] != 2) {
+if (isset($vlQueryInfo['specimen_type']) && $vlQueryInfo['specimen_type'] != 2) {
 	$vlQueryInfo['plasma_storage_temperature'] = '';
 }
 
@@ -369,7 +369,7 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 													<?php
 													foreach ($sResult as $type) {
 													?>
-														<option value="<?php echo $type['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $type['sample_id']) ? 'selected="selected"' : ''; ?>><?= $type['sample_name']; ?></option>
+														<option value="<?php echo $type['sample_id']; ?>" <?php echo ($vlQueryInfo['specimen_type'] == $type['sample_id']) ? 'selected="selected"' : ''; ?>><?= $type['sample_name']; ?></option>
 													<?php
 													}
 													?>
@@ -380,7 +380,7 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 										</tr>
 									<?php }
 									?>
-									<tr class="plasmaElement" style="display:<?php echo ($vlQueryInfo['sample_type'] == 2) ? '' : 'none'; ?>;">
+									<tr class="plasmaElement" style="display:<?php echo ($vlQueryInfo['specimen_type'] == 2) ? '' : 'none'; ?>;">
 										<td><label for="conservationTemperature">Si
 												plasma,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Température de conservation
 											</label></td>

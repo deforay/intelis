@@ -36,9 +36,9 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 $output = [];
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results","Reason For PCR Test", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 } else {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 }
 
 
@@ -65,22 +65,6 @@ foreach ($resultSet as $aRow) {
     $sampleRejection = 'No';
     if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
         $sampleRejection = 'Yes';
-    }
-
-    if (!empty($aRow['patient_first_name'])) {
-        $patientFname = $aRow['patient_first_name'];
-    } else {
-        $patientFname = '';
-    }
-    if (!empty($aRow['patient_middle_name'])) {
-        $patientMname = $aRow['patient_middle_name'];
-    } else {
-        $patientMname = '';
-    }
-    if (!empty($aRow['patient_last_name'])) {
-        $patientLname = $aRow['patient_last_name'];
-    } else {
-        $patientLname = '';
     }
 
     $row[] = $no;
@@ -113,6 +97,7 @@ foreach ($resultSet as $aRow) {
     $row[] = $aRow['has_infant_stopped_breastfeeding'];
     $row[] = $aRow['pcr_test_performed_before'];
     $row[] = $aRow['previous_pcr_result'];
+    $row[] = $aRow['reason_for_pcr'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     $row[] = $sampleRejection;
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');

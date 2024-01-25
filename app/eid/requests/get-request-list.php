@@ -262,7 +262,7 @@ try {
      }
      $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 
-     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, 10, $sOffset, true);
 
      $_SESSION['eidRequestSearchResultQueryCount'] = $resultCount;
 

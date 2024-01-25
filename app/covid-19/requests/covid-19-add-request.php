@@ -105,7 +105,7 @@ if (isset($arr['covid19_min_patient_id_length']) && $arr['covid19_min_patient_id
 /* To get testing platform names */
 $testPlatformResult = $general->getTestingPlatforms('covid19');
 foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name'].'##'.$row['instrument_id']] = $row['machine_name'];
+    $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
 $fileArray = array(
@@ -306,7 +306,7 @@ require_once($fileArray[$arr['vl_form']]);
                 function(data) {
                     if (data != 0) {
                         // Toastify({
-                        //     text: "<?= _translate('This Sample Code already exists', true) ?>",
+                        //     text: "<?= _translate('This Sample ID already exists', true) ?>",
                         //     duration: 3000,
                         //     style: {
                         //         background: 'red',

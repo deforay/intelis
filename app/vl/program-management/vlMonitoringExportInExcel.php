@@ -117,7 +117,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
         $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
     }
 
-    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.sample_tested_datetime IS NULL AND vl.sample_type!="" AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
+    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.sample_tested_datetime IS NULL AND vl.specimen_type!="" AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
     $checkEmptyResult = $db->rawQuery($checkEmptyResultQuery);
     //get all sample type
     $sampleType = "Select * from r_vl_sample_type where status='active'";
@@ -135,7 +135,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
                                                 FROM form_vl as vl
                                                 JOIN facility_details as f ON vl.facility_id=f.facility_id
                                                 WHERE vl.sample_tested_datetime IS NULL
-                                                AND vl.sample_type="' . $sample['sample_id'] . '"
+                                                AND vl.specimen_type="' . $sample['sample_id'] . '"
                                                 AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH
                                                 AND IFNULL(reason_for_vl_testing, 0)  != 9999';
 
