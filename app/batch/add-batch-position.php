@@ -1,8 +1,9 @@
 <?php
 
+use App\Services\TestsService;
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -12,37 +13,21 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
-$title = "Viral Load";
-$refTable = "form_vl";
-$refPrimaryColumn = "vl_sample_id";
-if (isset($_GET['type']) && $_GET['type'] == 'vl') {
-	$title = "Viral Load";
-	$refTable = "form_vl";
-	$refPrimaryColumn = "vl_sample_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
-	$title = "Early Infant Diagnosis";
-	$refTable = "form_eid";
-	$refPrimaryColumn = "eid_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-	$title = "Covid-19";
-	$refTable = "form_covid19";
-	$refPrimaryColumn = "covid19_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
-	$title = "Hepatitis";
-	$refTable = "form_hepatitis";
-	$refPrimaryColumn = "hepatitis_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
-	$title = "TB";
-	$refTable = "form_tb";
-	$refPrimaryColumn = "tb_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-	$title = "Other Lab Tests";
-	$refTable = "form_generic";
-	$refPrimaryColumn = "sample_id";
-}
+
+
+$testTableData = TestsService::getAllData($_GET['type']);
+
+$testName = $testTableData['testName'];
+$table = $testTableData['tableName'];
+$patientIdColumn = $testTableData['patientId'];
+$primaryKeyColumn = $testTableData['primaryKey'];
+$patientFirstName = $testTableData['patientFirstName'];
+$patientLastName = $testTableData['patientLastName'];
+
+
 $testType = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
 
-$title = _translate($title . " | Add Batch Position");
+$title = _translate($testName . " | Add Batch Position");
 require_once APPLICATION_PATH . '/header.php';
 
 
@@ -51,13 +36,18 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 if (!isset($id) || trim($id) == '') {
 	header("Location:batches.php?type=" . $_GET['type']);
 }
+
+
+
 $content = '';
 $newContent = '';
 $displayOrder = [];
-$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.instrument_id=b_d.machine where batch_id= ? ";
+$batchQuery = "SELECT * FROM batch_details as b_d
+				INNER JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
+				WHERE batch_id= ? ";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
 // Config control
-$configControlQuery = "SELECT * from instrument_controls where instrument_id= ? ";
+$configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id= ? ";
 $configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['instrument_id']]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
@@ -101,10 +91,13 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 	}
 	//Get display sample only
 	$displaySampleOrderArray = [];
-	$samplesQuery = "SELECT $refPrimaryColumn, sample_code FROM $refTable WHERE sample_batch_id= ? ORDER BY sample_code ASC";
+	$samplesQuery = "SELECT $primaryKeyColumn, $patientIdColumn, sample_code
+						FROM $table
+						WHERE sample_batch_id= ?
+						ORDER BY sample_code ASC";
 	$samplesInfo = $db->rawQuery($samplesQuery, [$id]);
 	foreach ($samplesInfo as $sample) {
-		$displaySampleOrderArray[] = $sample[$refPrimaryColumn];
+		$displaySampleOrderArray[] = $sample[$primaryKeyColumn];
 	}
 	//Set content
 	$sCount = 0;
@@ -117,9 +110,9 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 				if ($sCount <= $prevDisplaySampleArray) {
 					$displayOrder[] = 's_' . $displaySampleOrderArray[$sCount];
 					$displaySampleArray[] = $displaySampleOrderArray[$sCount];
-					$sampleQuery = "SELECT sample_code from $refTable WHERE $refPrimaryColumn = ?";
+					$sampleQuery = "SELECT sample_code, $patientIdColumn from $table WHERE $primaryKeyColumn = ?";
 					$sampleResult = $db->rawQuery($sampleQuery, [$displaySampleOrderArray[$sCount]]);
-					$label = $sampleResult[0]['sample_code'];
+					$label = $sampleResult[0]['sample_code'] . ' - ' . $sampleResult[0][$patientIdColumn];
 					$content .= '<li class="ui-state-default" id="s_' . $displaySampleOrderArray[$sCount] . '">' . $label . '</li>';
 					$sCount++;
 				}
@@ -149,9 +142,9 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 	//For new samples
 	for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
 		$displayOrder[] = 's_' . $remainSampleNewArray[$ns];
-		$sampleQuery = "SELECT sample_code from " . $refTable . " where " . $refPrimaryColumn . "=$remainSampleNewArray[$ns]";
-		$sampleResult = $db->query($sampleQuery);
-		$label = $sampleResult[0]['sample_code'];
+		$sampleQuery = "SELECT sample_code, $patientIdColumn from $table WHERE $primaryKeyColumn = ?";
+		$sampleResult = $db->rawQuery($sampleQuery, [$remainSampleNewArray[$ns]]);
+		$label = $sampleResult[0]['sample_code'] . ' - ' . $sampleResult[0][$patientIdColumn];
 		$newContent .= '<li class="ui-state-default" id="s_' . $remainSampleNewArray[$ns] . '">' . $label . '</li>';
 	}
 } else {
@@ -173,11 +166,14 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
-	$samplesQuery = "SELECT " . $refPrimaryColumn . ",sample_code from " . $refTable . " where sample_batch_id=$id ORDER BY sample_code ASC";
+	$samplesQuery = "SELECT $primaryKeyColumn, $patientIdColumn, sample_code
+					FROM  $table
+					WHERE sample_batch_id=$id
+					ORDER BY sample_code ASC";
 	$samplesInfo = $db->query($samplesQuery);
 	foreach ($samplesInfo as $sample) {
-		$displayOrder[] = "s_" . $sample[$refPrimaryColumn];
-		$content .= '<li class="ui-state-default" id="s_' . $sample[$refPrimaryColumn] . '">' . $sample['sample_code'] . '</li>';
+		$displayOrder[] = "s_" . $sample[$primaryKeyColumn];
+		$content .= '<li class="ui-state-default" id="s_' . $sample[$primaryKeyColumn] . '">' . $sample['sample_code'] . ' - ' . $sample[$patientIdColumn] . '</li>';
 	}
 }
 ?>
@@ -237,7 +233,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
 						<input type="hidden" name="positions" id="positions" value="<?php echo htmlspecialchars((string) $_GET['position']); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-						<a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> Cancel</a>
+						<a href="/batch/batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

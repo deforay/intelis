@@ -5,24 +5,16 @@ require_once(__DIR__ . "/../../../bootstrap.php");
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
-use PhpMyAdmin\SqlParser\Utils\Misc;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
-
-$systemConfig = SYSTEM_CONFIG;
-
-
-if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
-    error_log("Please check if STS URL is set");
-    exit(0);
-}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -30,10 +22,22 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
+
+$systemConfig = SYSTEM_CONFIG;
+
+$systemType = $general->getSystemConfig('sc_user_type');
+
+if ($systemType !== 'vluser') {
+    exit(0);
+}
+
+if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
+    LoggerUtility::log('error', "Please check if STS URL is set");
+    exit(0);
+}
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
@@ -42,7 +46,7 @@ $version = VERSION;
 $remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
 
 if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
-    error_log("No internet connectivity while trying remote sync.");
+    LoggerUtility::log('error', "No internet connectivity while trying remote sync.");
     exit();
 }
 

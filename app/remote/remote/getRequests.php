@@ -55,19 +55,35 @@ try {
     $condition = "lab_id = " . $labId;
   }
 
-  // oldName => newName
+  // oldName => newName for existing columns
   $aliasColumns = [
     'specimen_type' => 'specimen_type',
     'patient_art_no' => 'patient_id'
   ];
 
+  // columnName => constantValue for non-existent columns
+  $constantColumns = [
+    'sample_code_title' => "'auto'"
+  ];
+
   // Start with selecting all columns
   $columnSelection = "*";
 
-  // Add each new column with its alias
+  // Add each new column with its alias for existing columns
   foreach ($aliasColumns as $oldName => $newName) {
     $columnSelection .= ", $newName AS $oldName";
   }
+
+  // Add constant columns
+  foreach ($constantColumns as $columnName => $constantValue) {
+    $columnSelection .= ", $constantValue AS $columnName";
+  }
+
+  // Construct the final SQL query
+  $vlQuery = "SELECT $columnSelection FROM form_vl WHERE $condition";
+
+  // Now $vlQuery contains your complete SQL statement
+
 
   // Construct the final SQL query
   $vlQuery = "SELECT $columnSelection FROM form_vl WHERE $condition";

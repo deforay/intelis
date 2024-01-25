@@ -694,12 +694,12 @@ $sFormat = '';
 		}
 	});
 	$("#pregnant").change(function() {
-        if ($(this).val() == 'yes') {
-            $(".trimesterSection").show();
-        }else{
+		if ($(this).val() == 'yes') {
+			$(".trimesterSection").show();
+		} else {
 			$(".trimesterSection").hide();
 		}
-    });
+	});
 	$("input:radio[name=hasChangedRegimen]").click(function() {
 		if ($(this).val() == 'yes') {
 			$(".arvChangedElement").show();
@@ -856,7 +856,7 @@ $sFormat = '';
 				if ($.trim(patientArray['is_pregnant']) != '') {
 					$("#pregnant").val($.trim(patientArray['is_pregnant']));
 					$('#pregnant').trigger('change');
-					if($.trim(patientArray['is_pregnant']) == 'yes'){
+					if ($.trim(patientArray['is_pregnant']) == 'yes') {
 						if ($.trim(patientArray['trimester']) != '') {
 							$("#trimester").val($.trim(patientArray['trimester']));
 						}

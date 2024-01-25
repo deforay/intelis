@@ -1,11 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\BatchService;
+use App\Services\TestsService;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Services\DatabaseService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -13,73 +14,48 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-
 /** @var BatchService $batchService */
 $batchService = ContainerRegistry::get(BatchService::class);
+
+
+$testTableData = TestsService::getAllData($_GET['type']);
+
+$testName = $testTableData['testName'];
+$table = $testTableData['tableName'];
+$patientIdColumn = $testTableData['patientId'];
+$primaryKeyColumn = $testTableData['primaryKey'];
+$patientFirstName = $testTableData['patientFirstName'];
+$patientLastName = $testTableData['patientLastName'];
+
+
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$title = "Viral Load";
-$refTable = "form_vl";
-$refPrimaryColumn = "vl_sample_id";
-if (isset($_GET['type'])) {
-	switch ($_GET['type']) {
-		case 'vl':
-			$title = "Viral Load";
-			$refTable = "form_vl";
-			$refPrimaryColumn = "vl_sample_id";
-			break;
-		case 'eid':
-			$title = "Early Infant Diagnosis";
-			$refTable = "form_eid";
-			$refPrimaryColumn = "eid_id";
-			break;
-		case 'covid19':
-			$title = "Covid-19";
-			$refTable = "form_covid19";
-			$refPrimaryColumn = "covid19_id";
-			break;
-		case 'hepatitis':
-			$title = "Hepatitis";
-			$refTable = "form_hepatitis";
-			$refPrimaryColumn = "hepatitis_id";
-			break;
-		case 'tb':
-			$title = "TB";
-			$refTable = "form_tb";
-			$refPrimaryColumn = "tb_id";
-			break;
-		case 'generic-tests':
-			$title = "Other Lab Tests";
-			$refTable = "form_generic";
-			$refPrimaryColumn = "sample_id";
-			break;
-		default:
-			throw new SystemException('Invalid test type - ' . $_GET['type'], 500);
-	}
-}
+
 $_GET['type'] = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
-$title = _translate($title . " | Edit Batch Position");
+$title = _translate($testName . " | Edit Batch Position");
 $testType = (isset($_GET['testType'])) ? base64_decode((string) $_GET['testType']) : null;
-
-
 
 require_once APPLICATION_PATH . '/header.php';
 
 
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
+
 if (!isset($id) || trim($id) == '') {
 	header("Location:batches.php?type=" . $_GET['type']);
 }
 $content = '';
 $displayOrder = [];
-$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.instrument_id=b_d.machine where batch_id= ? ";
+$batchQuery = "SELECT * FROM batch_details as b_d
+				INNER JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
+				WHERE batch_id= ?";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
+
 // Config control
-$configControlQuery = "SELECT * from instrument_controls where instrument_id= ? ";
+$configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id= ? ";
 $configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['instrument_id']]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
@@ -87,6 +63,7 @@ foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noManufacturerCtrl'] = $info['number_of_manufacturer_controls'];
 	$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
 }
+
 
 if (empty($batchInfo)) {
 	header("Location:batches.php?type=" . $_GET['type']);
@@ -109,12 +86,12 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 		$displayOrder[] = $jsonToArray[$index];
 		$xplodJsonToArray = explode("_", (string) $jsonToArray[$index]);
 		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-			$sampleQuery = "SELECT sample_code from " . $refTable . " where " . $refPrimaryColumn . "= $xplodJsonToArray[1]";
+			$sampleQuery = "SELECT sample_code, $patientIdColumn FROM $table WHERE  $primaryKeyColumn = ?";
 			if (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
 				$sampleQuery .= " AND test_type = $testType";
 			}
-			$sampleResult = $db->query($sampleQuery);
-			$label = $sampleResult[0]['sample_code'];
+			$sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
+			$label = $sampleResult[0]['sample_code'] . " - " . $sampleResult[0][$patientIdColumn];
 		} else {
 			$label = str_replace("_", " ", (string) $jsonToArray[$index]);
 			$label = str_replace("in house", "In-House", $label);
@@ -141,11 +118,11 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
-	$samplesQuery = "SELECT " . $refPrimaryColumn . ",sample_code from " . $refTable . " where sample_batch_id=$id ORDER BY sample_code ASC";
+	$samplesQuery = "SELECT $primaryKeyColumn ,$patientIdColumn, sample_code from " . $table . " where sample_batch_id=$id ORDER BY sample_code ASC";
 	$samplesInfo = $db->query($samplesQuery);
 	foreach ($samplesInfo as $sample) {
-		$displayOrder[] = "s_" . $sample[$refPrimaryColumn];
-		$content .= '<li class="ui-state-default" id="s_' . $sample[$refPrimaryColumn] . '">' . $sample['sample_code'] . '</li>';
+		$displayOrder[] = "s_" . $sample[$primaryKeyColumn];
+		$content .= '<li class="ui-state-default" id="s_' . $sample[$primaryKeyColumn] . '">' . $sample['sample_code'] . ' - ' . $sample[$patientIdColumn] . '</li>';
 	}
 }
 ?>
