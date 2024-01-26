@@ -220,6 +220,10 @@ $sFormat = '';
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _translate("Please select a gender"); ?>">
 											</label>
+											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">KP</label>
+											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
+												<input type="radio" class="" id="genderKp" name="gender" value="kp" title="<?= _translate("Please select a gender"); ?>">
+											</label>
 										</td>
 										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
 										<td style="width: 35% !important;">

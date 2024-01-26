@@ -95,7 +95,8 @@ try {
         $mandatoryFields = [
             'sampleCollectionDate',
             'facilityId',
-            'appSampleCode'
+            'appSampleCode',
+            'labId'
         ];
         $cantBeFutureDates = [
             'sampleCollectionDate',
@@ -176,12 +177,12 @@ try {
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
             }
 
-            if (!empty($data['appSampleCode'])) {
-                $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
+            if (!empty($data['appSampleCode']) && !empty($data['labId'])) {
+                $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
             }
 
             if (!empty($sQueryWhere)) {
-                $sQuery .= " WHERE " . implode(" AND ", $sQueryWhere);
+                $sQuery .= " WHERE " . implode(" OR ", $sQueryWhere);
             }
             $rowData = $db->rawQueryOne($sQuery);
             if (!empty($rowData)) {
@@ -438,9 +439,9 @@ try {
             $responseData[$rootKey] = [
                 'status' => 'success',
                 'action' => $currentSampleData['action'] ?? null,
-                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
+                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? $currentSampleData['id']['remoteSampleCode'] ?? $currentSampleData['id']['sampleCode'] ?? null,
                 'transactionId' => $transactionId,
-                'uniqueId' => $uniqueId,
+                'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? $currentSampleData['id']['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
         } else {
