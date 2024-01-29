@@ -193,7 +193,7 @@ if (!empty($requestResult)) {
 		if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
 			$selectedReportFormats = json_decode((string) $result['reportFormat'], true);
 		}
-		if (!empty($selectedReportFormats) && !empty($selectedReportFormats['covid19']) && file_exists($selectedReportFormats['covid19'])) {
+		if (!empty($selectedReportFormats) && !empty($selectedReportFormats['covid19']) && file_exists(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['covid19'])) {
 			require($selectedReportFormats['covid19']);
 		} else {
 			require($fileArray[$countryFormId]);

@@ -225,11 +225,12 @@ $sFormat = '';
 												<input type="radio" class="" id="genderKp" name="gender" value="kp" title="<?= _translate("Please select a gender"); ?>">
 											</label> -->
 											<select name="gender" id="gender" class="form-control" title="Please choose gender">
-												<option value ="male">Male</option>
-												<option value ="female">Female</option>
+												<option value=""><?= _translate("-- Select --"); ?></option>
+												<option value="male"><?= _translate("Male"); ?></option>
+												<option value="female"><?= _translate("Female"); ?></option>
 												<optgroup label="KP">
-													<option value="cps">CPS</option>
-													<option value="ps">PS</option>
+													<option value="cps"><?= _translate("CPS"); ?></option>
+													<option value="ps"><?= _translate("PS"); ?></option>
 												</optgroup>
 											</select>
 										</td>
