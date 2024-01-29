@@ -248,18 +248,15 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 									<tr>
 										<td style="width: 15% !important;"><label for="sex">Sexe </label></td>
 										<td style="width: 35% !important;">
-											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">&nbsp;&nbsp;M</label>
-											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'checked="checked"' : ''; ?>>
-											</label>
-											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">F</label>
-											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
-											</label>
-											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">KP</label>
-											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderKp" name="gender" value="kp" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "kp") ? 'checked="checked"' : ''; ?>>
-											</label>
+											
+											<select name="gender" id="gender" class="form-control" title="Please choose gender">
+												<option value ="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>>Male</option>
+												<option value ="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>>Female</option>
+												<optgroup label="KP">
+													<option value="cps" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "cps") ? 'selected="selected"' : ''; ?>>CPS</option>
+													<option value="ps" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "ps") ? 'selected="selected"' : ''; ?>>PS</option>
+												</optgroup>
+											</select>
 										</td>
 										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
 										<td style="width: 35% !important;">

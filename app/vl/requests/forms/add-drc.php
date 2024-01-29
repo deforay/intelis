@@ -212,7 +212,7 @@ $sFormat = '';
 										<td style="width: 15% !important;"><label for="sex">Sexe
 											</label></td>
 										<td style="width: 35% !important;">
-											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">M</label>
+											<!--<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">M</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _translate("Please select a gender"); ?>">
 											</label>
@@ -223,7 +223,15 @@ $sFormat = '';
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">KP</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="genderKp" name="gender" value="kp" title="<?= _translate("Please select a gender"); ?>">
-											</label>
+											</label> -->
+											<select name="gender" id="gender" class="form-control" title="Please choose gender">
+												<option value ="male">Male</option>
+												<option value ="female">Female</option>
+												<optgroup label="KP">
+													<option value="cps">CPS</option>
+													<option value="ps">PS</option>
+												</optgroup>
+											</select>
 										</td>
 										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
 										<td style="width: 35% !important;">

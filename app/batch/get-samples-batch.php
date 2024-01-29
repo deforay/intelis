@@ -84,6 +84,10 @@ if (!empty($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !=
     $swhere[] = $where[] = ' funding_source = "' . $_POST['fundingSource'] . '"';
 }
 
+if (!empty($_POST['userId']) && trim((string) $_POST['userId']) != '') {
+    $swhere[] = $where[] = ' vl.request_created_by = "' . $_POST['userId'] . '"';
+}
+
 if (!empty($where)) {
     $query = $query . ' WHERE ' . implode(" AND ", $where);
 }

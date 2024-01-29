@@ -204,18 +204,26 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 									<tr>
 										<td style="width:15%;"><label for="sex">Sexe </label></td>
 										<td style="width:35%;">
-											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">&nbsp;M</label>
+											<!--<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">&nbsp;M</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderMale" name="gender" <?php echo $disable; ?> value="male" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="genderMale" name="gender" < ?php echo $disable; ?> value="male" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'checked="checked"' : ''; ?>>
 											</label>
 											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">F</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderFemale" name="gender" <?php echo $disable; ?> value="female" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="genderFemale" name="gender" < ?php echo $disable; ?> value="female" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">KP</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderKp" name="gender" <?php echo $disable; ?> value="kp" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "kp") ? 'checked="checked"' : ''; ?>>
-											</label>
+												<input type="radio" class="" id="genderKp" name="gender" < ?php echo $disable; ?> value="kp" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "kp") ? 'checked="checked"' : ''; ?>>
+											</label>-->
+											<select name="gender" id="gender" class="form-control" title="Please choose gender" <?php echo $disable; ?>>
+												<option value ="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>>Male</option>
+												<option value ="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>>Female</option>
+												<optgroup label="KP">
+													<option value="cps" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "cps") ? 'selected="selected"' : ''; ?>>CPS</option>
+													<option value="ps" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "ps") ? 'selected="selected"' : ''; ?>>PS</option>
+												</optgroup>
+											</select>
 										</td>
 										<td style="width:15%;"><label>Régime ARV en cours </label></td>
 										<td style="width:35%;">
