@@ -250,6 +250,6 @@ try {
     echo MiscUtility::convertToUtf8AndEncode($output);
 
     $db->commitTransaction();
-    } catch (Exception $exc) {
-        LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Exception $exc) {
+    LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }
