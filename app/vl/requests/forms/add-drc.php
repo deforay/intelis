@@ -220,6 +220,10 @@ $sFormat = '';
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _translate("Please select a gender"); ?>">
 											</label>
+											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">KP</label>
+											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
+												<input type="radio" class="" id="genderKp" name="gender" value="kp" title="<?= _translate("Please select a gender"); ?>">
+											</label>
 										</td>
 										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
 										<td style="width: 35% !important;">
@@ -690,12 +694,12 @@ $sFormat = '';
 		}
 	});
 	$("#pregnant").change(function() {
-        if ($(this).val() == 'yes') {
-            $(".trimesterSection").show();
-        }else{
+		if ($(this).val() == 'yes') {
+			$(".trimesterSection").show();
+		} else {
 			$(".trimesterSection").hide();
 		}
-    });
+	});
 	$("input:radio[name=hasChangedRegimen]").click(function() {
 		if ($(this).val() == 'yes') {
 			$(".arvChangedElement").show();
@@ -852,7 +856,7 @@ $sFormat = '';
 				if ($.trim(patientArray['is_pregnant']) != '') {
 					$("#pregnant").val($.trim(patientArray['is_pregnant']));
 					$('#pregnant').trigger('change');
-					if($.trim(patientArray['is_pregnant']) == 'yes'){
+					if ($.trim(patientArray['is_pregnant']) == 'yes') {
 						if ($.trim(patientArray['trimester']) != '') {
 							$("#trimester").val($.trim(patientArray['trimester']));
 						}

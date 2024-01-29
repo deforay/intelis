@@ -64,7 +64,7 @@ try {
     } catch (PathNotFoundException $ex) {
         throw new SystemException("Invalid request");
     }
-
+    $primaryKey = 'covid19_id';
     $tableName = "form_covid19";
     $tableName1 = "activity_log";
     $testTableName = 'covid19_tests';
@@ -95,7 +95,8 @@ try {
         $mandatoryFields = [
             'sampleCollectionDate',
             'facilityId',
-            'appSampleCode'
+            'appSampleCode',
+            'labId'
         ];
         $cantBeFutureDates = [
             'sampleCollectionDate',
@@ -185,12 +186,12 @@ try {
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
             }
 
-            if (!empty($data['appSampleCode'])) {
-                $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
+            if (!empty($data['appSampleCode']) && !empty($data['labId'])) {
+                $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
             }
 
             if (!empty($sQueryWhere)) {
-                $sQuery .= " WHERE " . implode(" AND ", $sQueryWhere);
+                $sQuery .= " WHERE " . implode(" OR ", $sQueryWhere);
             }
 
             $rowData = $db->rawQueryOne($sQuery);
@@ -250,7 +251,6 @@ try {
                 continue;
             }
         }
-
         $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
         if ($roleUser['access_type'] != 'testing-lab') {
             $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -502,9 +502,9 @@ try {
             $responseData[$rootKey] = [
                 'status' => 'success',
                 'action' => $currentSampleData['action'] ?? null,
-                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
+                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? $currentSampleData['id']['remoteSampleCode'] ?? $currentSampleData['id']['sampleCode'] ?? null,
                 'transactionId' => $transactionId,
-                'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
+                'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? $currentSampleData['id']['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
         } else {
