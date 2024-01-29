@@ -129,17 +129,25 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 <style>
 	#sortableRow {
 		list-style-type: none;
-		margin: 0px 0px 30px 0px;
+		margin: 0 auto;
 		padding: 0;
-		width: 100%;
+		width: 50%;
 		text-align: center;
 	}
 
 	#sortableRow li {
 		color: #333 !important;
+		font-weight: bold;
+		padding: 0.2em;
 		font-size: 16px;
 		border-radius: 10px;
 		margin-bottom: 4px;
+		cursor: move;
+	}
+
+	#sortableRow li:hover,
+	#sortableRow li:active {
+		background-color: skyblue;
 	}
 </style>
 <!-- Content Wrapper. Contains page content -->
@@ -159,7 +167,9 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 			<div class="box-header with-border">
 				<h4><strong><?= _translate("Batch Code"); ?> :
 						<?php echo (isset($batchInfo[0]['batch_code'])) ? $batchInfo[0]['batch_code'] : ''; ?>
-					</strong></h4>
+					</strong>
+					<button type="button" id="updateSerialNumbersButton" class="btn btn-primary pull-right" onclick="updateSerialNumbers();return false;">Update Serial Numbers</button>
+				</h4>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -168,7 +178,7 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 				<form class="form-horizontal" method='post' name='editBatchControlsPosition' id='editBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
 					<div class="box-body">
 						<div class="row" id="displayOrderDetails">
-							<div class="col-md-8">
+							<div class="col-lg-12">
 								<ul id="sortableRow">
 									<?php
 									echo $content;
@@ -208,7 +218,7 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 			}
 			return newArray;
 		}
-
+		updateSerialNumbers();
 		$("#sortableRow").sortable({
 			opacity: 0.6,
 			cursor: 'move',
@@ -216,6 +226,7 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 				sortedTitle = cleanArray($(this).sortable("toArray"));
 				$("#sortOrders").val("");
 				$("#sortOrders").val(sortedTitle);
+				$("#updateSerialNumbersButton").show();
 			}
 		}).disableSelection();
 	});
@@ -229,6 +240,16 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 			$.blockUI();
 			document.getElementById('editBatchControlsPosition').submit();
 		}
+	}
+
+	function updateSerialNumbers() {
+		$('#sortableRow li').each(function(index) {
+			// Extract and update the existing item text
+			var existingText = $(this).text();
+			var updatedText = (index + 1) + '. ' + existingText.replace(/^\d+\. /, ''); // Replace existing serial number if present
+			$(this).text(updatedText);
+		});
+		$("#updateSerialNumbersButton").hide();
 	}
 </script>
 <?php

@@ -512,7 +512,7 @@ class VlService extends AbstractTestService
                     'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address' => $this->commonService->getClientIpAddress()
                 ];
-
+                
                 $formAttributes = $this->commonService->jsonToSetString(json_encode($formAttributes), 'form_attributes');
                 $tesRequestData['form_attributes'] = $this->db->func($formAttributes);
                 $this->db->insert("form_vl", $tesRequestData);

@@ -158,3 +158,9 @@ ALTER TABLE `audit_form_vl` CHANGE `sample_type` `specimen_type` INT NULL DEFAUL
 
 ALTER TABLE `form_generic` CHANGE `sample_type` `specimen_type` INT NULL DEFAULT NULL;
 ALTER TABLE `audit_form_generic` CHANGE `sample_type` `specimen_type` INT NULL DEFAULT NULL;
+
+-- Brindha 29-Jan-2024uuutt
+INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES 
+(NULL, 'generic-tests', 'no', 'Clinic Reports', '/generic-tests/program-management/generic-tests-clinic-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericClinicReport', '63', '92', 'active', NULL);
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-management', 'generic-tests-clinic-report.php', 'Clinic Report');

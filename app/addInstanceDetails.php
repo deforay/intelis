@@ -144,14 +144,14 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 	$(document).ready(function() {
 		$('#labId').select2({
 			width: '100%',
-			placeholder: "<?= _translate("Select Lab", true); ?>"
+			placeholder: "<?= _translate("Select Lab", escapeText: true); ?>"
 		});
 		<?php if (!empty(trim((string) SYSTEM_CONFIG['remoteURL'])) && isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser' && empty($labResults)) { ?>
 
 			window.parent.remoteSync = true;
 			async function syncData() {
 				$.blockUI({
-					message: "<h3><?= _translate("Trying to sync Lab Details", true); ?><br><?= _translate("Please wait..."); ?></h3>"
+					message: "<h3><?= _translate("Trying to sync Lab Details", escapeText: true); ?><br><?= _translate("Please wait..."); ?></h3>"
 				});
 				window.parent.syncRemoteData();
 			}

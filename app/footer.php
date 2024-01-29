@@ -116,13 +116,13 @@ if (empty($syncLatestTime)) {
 
 		function syncRemoteData() {
 			if (!navigator.onLine) {
-				alert("<?= _translate("Please connect to internet to sync with STS", true); ?>");
+				alert("<?= _translate("Please connect to internet to sync with STS", escapeText: true); ?>");
 				return false;
 			}
 
 			if (remoteSync) {
 				$.blockUI({
-					message: "<h3><?= _translate("Preparing for STS sync.", true); ?><br><?= _translate("Please wait..."); ?></h3>"
+					message: "<h3><?= _translate("Preparing for STS sync.", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
 				});
 				$.ajax({
 						url: "/scheduled-jobs/remote/commonDataSync.php",
@@ -133,7 +133,7 @@ if (empty($syncLatestTime)) {
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", true); ?>");
+						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeText: true); ?>");
 					})
 					.always(function() {
 						syncResults();
@@ -144,7 +144,7 @@ if (empty($syncLatestTime)) {
 		function syncResults() {
 
 			$.blockUI({
-				message: "<h3><?= _translate("Trying to sync Test Results", true); ?><br><?= _translate("Please wait..."); ?></h3>"
+				message: "<h3><?= _translate("Trying to sync Test Results", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
 			});
 
 			if (remoteSync) {
@@ -157,7 +157,7 @@ if (empty($syncLatestTime)) {
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", true); ?>");
+						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeText: true); ?>");
 					})
 					.always(function() {
 						syncRequests();
@@ -168,7 +168,7 @@ if (empty($syncLatestTime)) {
 
 		function syncRequests() {
 			$.blockUI({
-				message: "<h3><?= _translate("Trying to sync Test Requests", true); ?><br><?= _translate("Please wait..."); ?></h3>"
+				message: "<h3><?= _translate("Trying to sync Test Requests", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
 			});
 
 			if (remoteSync) {
@@ -181,7 +181,7 @@ if (empty($syncLatestTime)) {
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
+						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeText: true); ?>");
 					});
 			}
 		}
@@ -201,7 +201,7 @@ if (empty($syncLatestTime)) {
 					},
 					function(data) {
 						$.unblockUI();
-						alert("<?= _translate("Thank you.Your message has been submitted."); ?>");
+						alert("<?= _translate("Thank you.Your message has been submitted.", escapeText: true); ?>");
 					});
 			});
 		} else {
@@ -212,7 +212,7 @@ if (empty($syncLatestTime)) {
 				},
 				function(data) {
 					$.unblockUI();
-					alert("<?= _translate("Thank you.Your message has been submitted.", true); ?>");
+					alert("<?= _translate("Thank you.Your message has been submitted.", escapeText: true); ?>");
 				});
 		}
 	}
@@ -328,7 +328,7 @@ if (empty($syncLatestTime)) {
 					success: function(response) {
 						if (!response.isValid) {
 							Toastify({
-								text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+								text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', escapeText: true) ?>",
 								duration: 3000,
 								style: {
 									background: 'red'
@@ -364,7 +364,7 @@ if (empty($syncLatestTime)) {
 
 			if (patientId.length < minLength) {
 				$(".lengthErr").remove();
-				var txt = "<?= _translate('Please enter minimum length for Patient Id : ', true); ?>" + minLength;
+				var txt = "<?= _translate('Please enter minimum length for Patient Id : ', escapeText: true); ?>" + minLength;
 				$(this).parent().append('<span class="lengthErr" style="color:red;">' + txt + '</span>');
 			} else {
 				$(".lengthErr").remove();
@@ -384,7 +384,7 @@ if (empty($syncLatestTime)) {
 				return bond._id;
 			},
 			ajax: {
-				placeholder: "<?= _translate("Type one or more character to search", true); ?>",
+				placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
 				url: "/includes/get-data-list-for-generic.php",
 				dataType: 'json',
 				delay: 250,
@@ -439,7 +439,7 @@ if (empty($syncLatestTime)) {
 			cache: false,
 			success: function(data) {
 				Toastify({
-					text: "<?= _translate('Cache cleared successfully', true) ?>",
+					text: "<?= _translate('Cache cleared successfully', escapeText: true) ?>",
 					duration: 3000,
 					style: {
 						background: 'green'

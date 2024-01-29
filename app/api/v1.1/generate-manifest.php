@@ -101,6 +101,7 @@ try {
         }
     }
     $missiedSamples = array_values(array_diff($input['sampleCode'], $avilableSamples));
+    // print_r($sQuery);die;
     // error_log($db->getLastQuery());
     $payload = [
         'status' => 'success',
