@@ -250,8 +250,8 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 										<td style="width: 35% !important;">
 
 											<select name="gender" id="gender" class="form-control" title="Please choose gender">
-												<option value="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>><?= _translate("Male"); ?></option>
-												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("Female"); ?></option>
+												<option value="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>><?= _translate("M"); ?></option>
+												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option>
 												<optgroup label="KP">
 													<option value="cps" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?></option>
 													<option value="ps" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?></option>

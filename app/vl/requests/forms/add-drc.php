@@ -226,8 +226,8 @@ $sFormat = '';
 											</label> -->
 											<select name="gender" id="gender" class="form-control" title="Please choose gender">
 												<option value=""><?= _translate("-- Select --"); ?></option>
-												<option value="male"><?= _translate("Male"); ?></option>
-												<option value="female"><?= _translate("Female"); ?></option>
+												<option value="male"><?= _translate("M"); ?></option>
+												<option value="female"><?= _translate("F"); ?></option>
 												<optgroup label="KP">
 													<option value="cps"><?= _translate("CPS"); ?></option>
 													<option value="ps"><?= _translate("PS"); ?></option>
