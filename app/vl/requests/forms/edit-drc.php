@@ -252,10 +252,6 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 											<select name="gender" id="gender" class="form-control" title="Please choose gender">
 												<option value="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>><?= _translate("M"); ?></option>
 												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option>
-												<optgroup label="KP">
-													<option value="cps" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?></option>
-													<option value="ps" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?></option>
-												</optgroup>
 											</select>
 										</td>
 										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
@@ -831,7 +827,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 			$(".du").css("visibility", "hidden");
 		}
 	});
-	$("input:radio[name=gender]").click(function() {
+	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
 			$(".femaleSection").show();
 		} else if ($(this).val() == 'male') {

@@ -228,10 +228,6 @@ $sFormat = '';
 												<option value=""><?= _translate("-- Select --"); ?></option>
 												<option value="male"><?= _translate("M"); ?></option>
 												<option value="female"><?= _translate("F"); ?></option>
-												<optgroup label="KP">
-													<option value="cps"><?= _translate("CPS"); ?></option>
-													<option value="ps"><?= _translate("PS"); ?></option>
-												</optgroup>
 											</select>
 										</td>
 										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
@@ -695,7 +691,7 @@ $sFormat = '';
 			$(".du").hide();
 		}
 	});
-	$("input:radio[name=gender]").click(function() {
+	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
 			$(".femaleSection").show();
 		} else if ($(this).val() == 'male') {

@@ -217,12 +217,7 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 											</label>-->
 											<select name="gender" id="gender" class="form-control" title="Please choose gender" <?php echo $disable; ?>>
 												<option value="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>><?= _translate("M"); ?></option>
-												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option>
-												<optgroup label="KP">
-													<option value="cps" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?></option>
-													<option value="ps" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?></option>
-												</optgroup>
-											</select>
+												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option </select>
 										</td>
 										<td style="width:15%;"><label>Régime ARV en cours </label></td>
 										<td style="width:35%;">
