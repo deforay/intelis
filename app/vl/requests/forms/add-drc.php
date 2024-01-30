@@ -230,9 +230,9 @@ $sFormat = '';
 												<option value="female"><?= _translate("F"); ?></option>
 											</select>
 										</td>
-										<td style="width: 15% !important;"><label>Key Population </label></td>
+										<td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<? _translate('Please choose key Population'); ?>">
+											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<? _translate('Please choose KP'); ?>">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<option value="ps"><?= _translate("PS"); ?> </option>
 												<option value="cps"><?= _translate("CPS"); ?> </option>
