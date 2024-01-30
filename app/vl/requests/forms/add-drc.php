@@ -236,6 +236,7 @@ $sFormat = '';
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<option value="ps"><?= _translate("PS"); ?> </option>
 												<option value="cps"><?= _translate("CPS"); ?> </option>
+												<option value="msm"><?= _translate("MSM"); ?> </option>
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
 										</td>
