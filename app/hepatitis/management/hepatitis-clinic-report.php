@@ -137,7 +137,7 @@ $state = $geolocationService->getProvinces("yes");
 														<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
 														</select>
 													</td>
-													<td>&nbsp;<strong><?php echo _translate("Facility Name & Code"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
@@ -246,7 +246,7 @@ $state = $geolocationService->getProvinces("yes");
 														<select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
 														</select>
 													</td>
-													<td>&nbsp;<strong><?php echo _translate("Facility Name & Code"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
@@ -348,7 +348,7 @@ $state = $geolocationService->getProvinces("yes");
 														<select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
 														</select>
 													</td>
-													<td>&nbsp;<strong><?php echo _translate("Facility Name & Code"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
@@ -474,9 +474,9 @@ $state = $geolocationService->getProvinces("yes");
 														<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
 														</select>
 													</td>
-													<td style="width: 14%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
+													<td style="width: 14%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
 													<td style="width: 23%;">
-														<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
+														<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>

@@ -73,7 +73,7 @@ $batResult = $db->rawQuery($batQuery);
                 </select>
               </td>
 
-              <td>&nbsp;<strong>Facility Name & Code&nbsp;:</strong></td>
+              <td>&nbsp;<strong>Facility&nbsp;:</strong></td>
               <td>
                 <select class="form-control" id="facilityName" name="facilityName" title="Please select facility name">
                   <option value=""> -- Select -- </option>
