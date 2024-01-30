@@ -26,18 +26,13 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 $output = [];
 
 $headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate('Key Population'),_translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
-if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
-	$remove = [_translate("Unique ART No."), _translate("Patient Name")];
-	$headings = array_values(array_diff($headings, [_translate("Unique ART No."), _translate("Patient Name")]));
-}
+
 if ($_SESSION['instanceType'] == 'standalone') {
-	$headings = array_values(array_diff($headings, [_translate("Remote Sample ID")]));
+	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
 }
 
 if($formId != COUNTRY\DRC){
-	if (($key = array_search("Key Population", $headings)) !== false) {
-				 unset($headings[$key]);
-	}
+	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Key Population")]);
 }
 
 $no = 1;
