@@ -316,13 +316,13 @@ if (!empty($result)) {
      $html .= '<td width="40%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by') . ' : ' . $resultApprovedBy . '</td></tr>';
 
      if (!empty($reviewedSignaturePath) && $pdf->imageExists($reviewedSignaturePath)) {
-          $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:120px;" />';
+          $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:100px;" />';
      } else {
           $signImg = '';
      }
 
      if (!empty($userSignaturePath) && $pdf->imageExists($userSignaturePath)) {
-          $signImgApproved = '<img src="' . $reviewedSignaturePath . '" style="width:120px;" />';
+          $signImgApproved = '<img src="' . $reviewedSignaturePath . '" style="width:100px;" />';
      } else {
           $signImgApproved = '';
      }
