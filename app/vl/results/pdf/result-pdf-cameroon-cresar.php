@@ -316,34 +316,27 @@ if (!empty($result)) {
      $html .= '<td width="40%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by') . ' : ' . $resultApprovedBy . '</td></tr>';
 
      if (!empty($reviewedSignaturePath) && $pdf->imageExists($reviewedSignaturePath)) {
-          $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:50px;" />';
+          $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:120px;" />';
      } else {
           $signImg = '';
      }
 
      if (!empty($userSignaturePath) && $pdf->imageExists($userSignaturePath)) {
-          $signImgApproved = '<img src="' . $reviewedSignaturePath . '" style="width:50px;" />';
+          $signImgApproved = '<img src="' . $reviewedSignaturePath . '" style="width:120px;" />';
      } else {
           $signImgApproved = '';
      }
 
      $html .= '<tr><td></td></tr>';
      $html .= '<tr>';
-     if ($reviewedBy != $resultApprovedBy) {
-
-          if (!empty($signImg)) {
-               $html .= '<td style="text-align:left;">' . _translate('Signature') . ' : ' . $signImg  . '</td>';
-          } else {
-               $html .= '<td style="text-align:left;"></td>';
-          }
-
-          $html .= '<td style="text-align:right;">' . _translate('Signature') . ' : ' . $signImgApproved  . '</td>';
+     if (!empty($signImg)) {
+          $html .= '<td style="text-align:left;">' . _translate('Signature') . ' : ' . $signImg  . '</td>';
      } else {
-          if (!empty($signImg)) {
-               $html .= '<td style="text-align:left;">' . _translate('Signature') . ' : ' . $signImg  . '</td>';
-          } else {
-               $html .= '<td style="text-align:left;"></td>';
-          }
+          $html .= '<td style="text-align:left;"></td>';
+     }
+
+     if ($reviewedBy != $resultApprovedBy) {
+          $html .= '<td style="text-align:right;">' . _translate('Signature') . ' : ' . $signImgApproved  . '</td>';
      }
      $html .= '</tr>';
 

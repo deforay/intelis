@@ -57,8 +57,8 @@ try {
 
   // oldName => newName for existing columns
   $aliasColumns = [
-    'specimen_type' => 'specimen_type',
-    'patient_art_no' => 'patient_id'
+    'sample_type' => 'specimen_type',
+    //'patient_art_no' => 'patient_id'
   ];
 
   // columnName => constantValue for non-existent columns
