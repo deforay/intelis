@@ -44,9 +44,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART no.", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($_SESSION['instanceType'] == 'standalone') {
-          if (($key = array_search("Remote Sample ID", $headings)) !== false) {
-               unset($headings[$key]);
-          }
+          $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
      $styleArray = array(

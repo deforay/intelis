@@ -23,15 +23,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-
 $arr = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 
@@ -44,10 +35,8 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
     $output = [];
 
     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient Id.", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status");
-    if ($sarr['sc_user_type'] == 'standalone') {
-        if (($key = array_search("Remote Sample ID", $headings)) !== false) {
-            unset($headings[$key]);
-        }
+    if ($_SESSION['instanceType'] == 'standalone') {
+        $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
     }
 
 

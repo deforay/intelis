@@ -34,9 +34,7 @@ if (isset($_SESSION['highTbResult']) && trim((string) $_SESSION['highTbResult'])
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART no.", "Patient's Name", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($sarr['sc_user_type'] == 'standalone') {
-          if (($key = array_search("Remote Sample ID", $headings)) !== false) {
-               unset($headings[$key]);
-          }
+          $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
      $vlSampleId = [];

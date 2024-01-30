@@ -13,13 +13,13 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$sarr = $general->getSystemConfig();
 
-$arr = $general->getGlobalConfig();
+
+$globalConfig = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
+$delimiter = $globalConfig['default_csv_delimiter'] ?? ',';
+$enclosure = $globalConfig['default_csv_enclosure'] ?? '"';
 
 
 if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['rejectedViralLoadResult']) != "") {
@@ -27,15 +27,11 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
 
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART no.", "Patient Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action");
-     if ($sarr['sc_user_type'] == 'standalone') {
-          if (($key = array_search("Remote Sample ID", $headings)) !== false) {
-               unset($headings[$key]);
-          }
+     if ($_SESSION['instanceType'] == 'standalone') {
+          $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
      if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
-          if (($key = array_search("Patient Name", $headings)) !== false) {
-               unset($headings[$key]);
-          }
+          $headings = MiscUtility::removeMatchingElements($headings, ['Patient Name']);
      }
 
      $resultSet = $db->rawQuery($_SESSION['rejectedViralLoadResult']);
@@ -64,7 +60,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
                $patientLname = '';
           }
           $row[] = $aRow['sample_code'];
-          if ($sarr['sc_user_type'] != 'standalone') {
+          if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
