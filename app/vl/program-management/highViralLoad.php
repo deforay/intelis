@@ -102,6 +102,12 @@ $state = $geolocationService->getProvinces("yes");
 		background: #f1f7ff;
 	}
 
+	.bs-example-tabs .nav>li>a {
+        position: relative;
+        display: block;
+        padding: 10px 7px;
+    }
+
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -130,25 +136,12 @@ $state = $geolocationService->getProvinces("yes");
 							<div class="widget-content">
 								<div class="bs-example bs-example-tabs">
 									<ul id="myTab" class="nav nav-tabs">
-										<li class="active"><a href="#highViralLoadReport" data-toggle="tab">
-												<?php echo _translate("High Viral Load Report"); ?>
-											</a></li>
-										<li><a href="#highVlVirologicFailureReport" data-toggle="tab">
-												<?php echo _translate("High VL and Virologic Failure Report"); ?>
-											</a></li>
-										<li><a href="#sampleRjtReport" data-toggle="tab">
-												<?php echo _translate("Sample Rejection Report"); ?>
-											</a></li>
-										<li><a href="#notAvailReport" data-toggle="tab">
-												<?php echo _translate("Results Not Available Report"); ?>
-											</a></li>
-										<li><a href="#incompleteFormReport" data-toggle="tab">
-												<?php echo _translate("Data Quality Check"); ?>
-											</a></li>
-										<li><a href="#sampleTestingReport" data-toggle="tab">
-												<?php echo _translate("Sample Testing Report"); ?>
-											</a></li>
-
+										<li class="active"><a href="#highViralLoadReport" data-toggle="tab"><?php echo _translate("High Viral Load Report"); ?></a></li>
+										<li><a href="#highVlVirologicFailureReport" data-toggle="tab"><?php echo _translate("High VL and Virologic Failure Report"); ?></a></li>
+										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _translate("Sample Rejection Report"); ?></a></li>
+										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _translate("Results Not Available Report"); ?></a></li>
+										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _translate("Data Quality Check"); ?></a></li>
+										<li><a href="#sampleTestingReport" data-toggle="tab"><?php echo _translate("Sample Testing Report"); ?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
@@ -1085,12 +1078,11 @@ $state = $geolocationService->getProvinces("yes");
 									</div>
 								</div>
 							</div>
-						</div><!-- /.box-body -->
-						<!-- /.box -->
-					</div>
-					<!-- /.col -->
-				</div>
-				<!-- /.row -->
+						</div>
+					</div><!-- /.box-body -->
+				</div><!-- /.box -->
+			</div><!-- /.col -->
+		</div><!-- /.row -->	
 	</section>
 	<!-- /.content -->
 </div>
