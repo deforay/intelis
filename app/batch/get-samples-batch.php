@@ -123,11 +123,18 @@ if (isset($_POST['batchId'])) {
 
 $result = $db->rawQuery($query);
 if (isset($_POST['batchId'])) {
+    ?>
+    <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+    <?php
     foreach ($result as $sample) {
         if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
             <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name']; ?></option>
     <?php }
     }
+    ?>
+    </select>
+    <div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
+    <?php
 } else { ?>
 
     <div class="col-md-5">

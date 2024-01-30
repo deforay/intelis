@@ -219,22 +219,37 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 												<option value="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>><?= _translate("M"); ?></option>
 												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option </select>
 										</td>
-										<td style="width:15%;"><label>Régime ARV en cours </label></td>
-										<td style="width:35%;">
-											<select class="form-control" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" <?php echo $disable; ?> style="width:100%;">
+										<td style="width: 15% !important;"><label>Key Population </label></td>
+										<td style="width: 35% !important;">
+											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<? _translate('Please choose key Population'); ?>" <?php echo $disable; ?>>
 												<option value=""><?= _translate("-- Select --"); ?> </option>
-												<?php
-												foreach ($aResult as $arv) {
-												?>
+												<option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>
+												<option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option>
+											</select>
+											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
+										</td>
+
+									</tr>
+									<tr>
+										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
+										<td style="width: 35% !important;">
+											<select class="form-control" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" <?php echo $disable; ?> onchange="checkARTRegimenValue();" style="width:100%;">
+												<option value=""><?= _translate("-- Select --"); ?> </option>
+												<?php foreach ($aResult as $arv) { ?>
 													<option value="<?php echo $arv['art_code']; ?>" <?php echo ($arv['art_code'] == $vlQueryInfo['current_regimen']) ? 'selected="selected"' : ''; ?>><?php echo $arv['art_code']; ?>
 													</option>
-												<?php
-												}
-												?>
-												<option value="other">Autre</option>
+												<?php }
+												if ($sarr['sc_user_type'] != 'vluser') { ?>
+													<option value="other">Autre</option>
+												<?php } ?>
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="width:100%;margin-top:1vh;display:none;">
 										</td>
+										<td><label for="patientPhoneNumber">Numéro de portable du patient </label></td>
+										<td>
+											<input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['patient_mobile_number']; ?>" style="width:100%;" <?php echo $disable; ?>/>
+										</td>
+										
 									</tr>
 									<tr>
 										<td style="width:15%;">

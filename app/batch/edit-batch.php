@@ -278,11 +278,8 @@ $fundingSourceList = $general->getFundingSources();
 							<div class="col-md-6"></div>
 						</div>
 						<div class="row" id="sampleDetails">
-							<div class="col-md-5">
-								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-
-								</select>
-								<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
+							<div class="col-md-5" id="search">
+								
 							</div>
 
 							<div class="col-md-2">
@@ -436,6 +433,8 @@ $fundingSourceList = $general->getFundingSources();
 	}
 
 	function getSampleCodeDetails() {
+
+		
 		$.blockUI();
 		var facilityId = $("#facilityName").val();
 
