@@ -3,16 +3,14 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -20,15 +18,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $key = (string) $general->getGlobalConfig('key');
-
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
 
 $arr = $general->getGlobalConfig();
 
@@ -39,10 +28,8 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
 
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient's ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action");
-     if ($sarr['sc_user_type'] == 'standalone') {
-          if (($key = array_search("Remote Sample ID", $headings)) !== false) {
-               unset($headings[$key]);
-          }
+     if ($_SESSION['instanceType'] == 'standalone') {
+          $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
      $resultSet = $db->rawQuery($_SESSION['rejectedViralLoadResult']);

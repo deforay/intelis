@@ -43,9 +43,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
     $output = [];
     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient Id.", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status");
     if ($sarr['sc_user_type'] == 'standalone') {
-        if (($key = array_search("Remote Sample ID", $headings)) !== false) {
-            unset($headings[$key]);
-        }
+        $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
     }
 
     $resultSet = $db->rawQuery($_SESSION['resultNotAvailable']);

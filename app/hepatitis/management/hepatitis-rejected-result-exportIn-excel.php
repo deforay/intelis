@@ -41,9 +41,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient's ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason");
      if ($_SESSION['instanceType'] == 'standalone') {
-          if (($key = array_search("Remote Sample ID", $headings)) !== false) {
-               unset($headings[$key]);
-          }
+          $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
      $resultSet = $db->rawQuery($_SESSION['rejectedViralLoadResult']);

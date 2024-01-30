@@ -35,14 +35,10 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
 
      $headings = array('Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Unique ART No.", "Patient's Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
      if ($sarr['sc_user_type'] == 'standalone') {
-          if (($key = array_search("Remote Sample ID", $headings)) !== false) {
-               unset($headings[$key]);
-          }
+          $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
      if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
-          if (($key = array_search("Patient's Name", $headings)) !== false) {
-               unset($headings[$key]);
-          }
+          $headings = MiscUtility::removeMatchingElements($headings, ["Patient's Name"]);
      }
 
      $resultSet = $db->rawQuery($_SESSION['vlIncompleteForm']);

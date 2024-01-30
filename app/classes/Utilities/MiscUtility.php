@@ -363,4 +363,9 @@ class MiscUtility
             yield $item;
         }
     }
+
+    public static function removeMatchingElements($array, $removeArray)
+    {
+        return array_values(array_diff($array, $removeArray));
+    }
 }

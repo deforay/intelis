@@ -41,9 +41,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
     $output = [];
     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART no.", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status");
     if ($sarr['sc_user_type'] == 'standalone') {
-        if (($key = array_search("Remote Sample ID", $headings)) !== false) {
-            unset($headings[$key]);
-        }
+        $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
     }
     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
         if (($key = array_search("Patient Name", $headings)) !== false) {

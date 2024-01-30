@@ -1,25 +1,19 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$sarr = $general->getSystemConfig();
 
 $arr = $general->getGlobalConfig();
 
@@ -32,10 +26,8 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
      $output = [];
 
      $headings = array('Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Child Id.", "Child's Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
-     if ($sarr['sc_user_type'] == 'standalone') {
-          if (($key = array_search("Remote Sample ID", $headings)) !== false) {
-               unset($headings[$key]);
-          }
+     if ($_SESSION['instanceType'] == 'standalone') {
+          $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
      $resultSet = $db->rawQuery($_SESSION['vlIncompleteForm']);
@@ -57,7 +49,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           $childName = ($general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
-          if ($sarr['sc_user_type'] != 'standalone') {
+          if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = $sampleCollectionDate;
