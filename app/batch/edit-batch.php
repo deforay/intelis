@@ -6,6 +6,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\TestsService;
+use App\Services\UsersService;
 
 $title = _translate("Edit Batch");
 
@@ -72,6 +73,10 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities($testType);
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+$userNameList = $usersService->getAllUsers(null, null, 'drop-down');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -228,6 +233,12 @@ $fundingSourceList = $general->getFundingSources();
 							<?php } ?>
 						</select>
 					</td>
+					<td><label for="fundingSource"><?= _translate("Samples Entered By"); ?></label></td>
+                    <td>
+                        <select class="form-control" name="userId" id="userId" title="Please choose source de financement" style="width:100%;">
+                            <?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
+                        </select>
+                    </td>
 				</tr>
 				<tr>
 					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
@@ -267,11 +278,8 @@ $fundingSourceList = $general->getFundingSources();
 							<div class="col-md-6"></div>
 						</div>
 						<div class="row" id="sampleDetails">
-							<div class="col-md-5">
-								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-
-								</select>
-								<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
+							<div class="col-md-5" id="search">
+								
 							</div>
 
 							<div class="col-md-2">
@@ -425,6 +433,8 @@ $fundingSourceList = $general->getFundingSources();
 	}
 
 	function getSampleCodeDetails() {
+
+		
 		$.blockUI();
 		var facilityId = $("#facilityName").val();
 
@@ -437,6 +447,7 @@ $fundingSourceList = $general->getFundingSources();
 				facilityId: facilityId,
 				sName: $("#sampleType").val(),
 				fundingSource: $("#fundingSource").val(),
+				userId: $("#userId").val(),
 			},
 			function(data) {
 				if (data != "") {

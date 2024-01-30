@@ -248,35 +248,21 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 									<tr>
 										<td style="width: 15% !important;"><label for="sex">Sexe </label></td>
 										<td style="width: 35% !important;">
-											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">&nbsp;&nbsp;M</label>
-											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'checked="checked"' : ''; ?>>
-											</label>
-											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">F</label>
-											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
-											</label>
-											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">KP</label>
-											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderKp" name="gender" value="kp" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "kp") ? 'checked="checked"' : ''; ?>>
-											</label>
-										</td>
-										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
-										<td style="width: 35% !important;">
-											<select class="form-control" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" onchange="checkARTRegimenValue();" style="width:100%;">
-												<option value=""><?= _translate("-- Select --"); ?> </option>
-												<?php foreach ($aResult as $arv) { ?>
-													<option value="<?php echo $arv['art_code']; ?>" <?php echo ($arv['art_code'] == $vlQueryInfo['current_regimen']) ? 'selected="selected"' : ''; ?>><?php echo $arv['art_code']; ?>
-													</option>
-												<?php }
-												if ($sarr['sc_user_type'] != 'vluser') { ?>
-													<option value="other">Autre</option>
-												<?php } ?>
+
+											<select name="gender" id="gender" class="form-control" title="Please choose gender">
+												<option value="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>><?= _translate("M"); ?></option>
+												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option>
 											</select>
-											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="width:100%;margin-top:1vh;display:none;">
 										</td>
-
-
+										<td style="width: 15% !important;"><label>Key Population </label></td>
+										<td style="width: 35% !important;">
+											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<? _translate('Please choose key Population'); ?>">
+												<option value=""><?= _translate("-- Select --"); ?> </option>
+												<option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>
+												<option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option>
+											</select>
+											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
+										</td>
 									</tr>
 									<tr class="femaleSection">
 										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
@@ -307,10 +293,25 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 										</td>
 									</tr>
 									<tr>
+										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
+										<td style="width: 35% !important;">
+											<select class="form-control" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" onchange="checkARTRegimenValue();" style="width:100%;">
+												<option value=""><?= _translate("-- Select --"); ?> </option>
+												<?php foreach ($aResult as $arv) { ?>
+													<option value="<?php echo $arv['art_code']; ?>" <?php echo ($arv['art_code'] == $vlQueryInfo['current_regimen']) ? 'selected="selected"' : ''; ?>><?php echo $arv['art_code']; ?>
+													</option>
+												<?php }
+												if ($sarr['sc_user_type'] != 'vluser') { ?>
+													<option value="other">Autre</option>
+												<?php } ?>
+											</select>
+											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="width:100%;margin-top:1vh;display:none;">
+										</td>
 										<td><label for="patientPhoneNumber">Numéro de portable du patient </label></td>
 										<td>
 											<input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['patient_mobile_number']; ?>" style="width:100%;" />
 										</td>
+										
 									</tr>
 									<tr>
 										<td style="width: 15% !important;"><label for="isPatientNew">Si S/ARV </label></td>
@@ -834,7 +835,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 			$(".du").css("visibility", "hidden");
 		}
 	});
-	$("input:radio[name=gender]").click(function() {
+	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
 			$(".femaleSection").show();
 		} else if ($(this).val() == 'male') {

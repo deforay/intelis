@@ -94,7 +94,8 @@ class Utilities {
 
         const dobDate = dayjs(dob, format);
         const currentDate = dayjs();
-        if (dobDate.isAfter(currentDate)==false) {
+
+        if (dobDate.isAfter(currentDate)) {
             console.error("Date of birth is in the future");
             return { years: 0, months: 0 };
         }

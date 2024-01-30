@@ -211,6 +211,7 @@ try {
           'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),
           'sample_dispatched_datetime' => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
           'patient_gender' => $_POST['gender'] ?? null,
+          'key_population' => $_POST['keyPopulation'] ?? null,
           'patient_dob' => DateUtility::isoDateFormat($_POST['dob'] ?? ''),
           'patient_last_name' => $_POST['patientLastName'] ?? null,
           'patient_age_in_years' => $_POST['ageInYears'] ?? null,

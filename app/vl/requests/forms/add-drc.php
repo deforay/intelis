@@ -212,7 +212,7 @@ $sFormat = '';
 										<td style="width: 15% !important;"><label for="sex">Sexe
 											</label></td>
 										<td style="width: 35% !important;">
-											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">M</label>
+											<!--<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">M</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _translate("Please select a gender"); ?>">
 											</label>
@@ -223,24 +223,24 @@ $sFormat = '';
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">KP</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="genderKp" name="gender" value="kp" title="<?= _translate("Please select a gender"); ?>">
-											</label>
+											</label> -->
+											<select name="gender" id="gender" class="form-control" title="Please choose gender">
+												<option value=""><?= _translate("-- Select --"); ?></option>
+												<option value="male"><?= _translate("M"); ?></option>
+												<option value="female"><?= _translate("F"); ?></option>
+											</select>
 										</td>
-										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
+										<td style="width: 15% !important;"><label>Key Population </label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" onchange="checkARTRegimenValue();">
+											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<? _translate('Please choose key Population'); ?>">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
-												<?php foreach ($aResult as $arv) { ?>
-													<option value="<?php echo $arv['art_code']; ?>"><?php echo $arv['art_code']; ?></option>
-												<?php }
-												if ($sarr['sc_user_type'] != 'vluser') { ?>
-													<option value="other">Autre</option>
-												<?php } ?>
+												<option value="ps"><?= _translate("PS"); ?> </option>
+												<option value="cps"><?= _translate("CPS"); ?> </option>
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
 										</td>
 									</tr>
 									<tr class="femaleSection" style="display:none;">
-
 										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
 										<td style="width:20% !important;">
 											<label for="breastfeeding">Allaitante ?</label>
@@ -269,6 +269,19 @@ $sFormat = '';
 										</td>
 									</tr>
 									<tr>
+										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
+										<td style="width: 35% !important;">
+											<select class="form-control" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" onchange="checkARTRegimenValue();">
+												<option value=""><?= _translate("-- Select --"); ?> </option>
+												<?php foreach ($aResult as $arv) { ?>
+													<option value="<?php echo $arv['art_code']; ?>"><?php echo $arv['art_code']; ?></option>
+												<?php }
+												if ($sarr['sc_user_type'] != 'vluser') { ?>
+													<option value="other">Autre</option>
+												<?php } ?>
+											</select>
+											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
+										</td>
 										<td><label for="patientPhoneNumber">Numéro de portable du patient </label></td>
 										<td>
 											<input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" style="width:100%;" />
@@ -686,7 +699,7 @@ $sFormat = '';
 			$(".du").hide();
 		}
 	});
-	$("input:radio[name=gender]").click(function() {
+	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
 			$(".femaleSection").show();
 		} else if ($(this).val() == 'male') {

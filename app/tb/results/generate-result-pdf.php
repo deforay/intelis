@@ -185,7 +185,7 @@ if (!empty($requestResult)) {
             $selectedReportFormats = json_decode((string) $result['reportFormat'], true);
         }
 
-        if (!empty($selectedReportFormats) && !empty($selectedReportFormats['tb']) && file_exists($selectedReportFormats['tb'])) {
+        if (!empty($selectedReportFormats) && !empty($selectedReportFormats['tb']) && file_exists(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['tb'])) {
             require_once($selectedReportFormats['tb']);
         } else {
             require_once($fileArray[$formId]);
