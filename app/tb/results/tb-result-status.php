@@ -106,7 +106,7 @@ foreach ($rejectionTypeResult as $type) {
                         </tr>
                         <tr>
 
-                            <td>&nbsp;<strong><?php echo _translate("Facility Name & Code"); ?>&nbsp;:</strong></td>
+                            <td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
                                     <option value=""> <?php echo _translate("-- Select --"); ?> </option>

@@ -198,7 +198,7 @@ $state = $geolocationService->getProvinces("yes");
 														</select>
 													</td>
 													<td style="width: 10%;"><strong>
-															<?php echo _translate("Facility Name & Code"); ?>&nbsp;:
+															<?php echo _translate("Facility"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
 														<select class="form-control highViralLoadReportFilter" id="hvlFacilityName" name="hvlFacilityName" multiple="multiple" title="<?php echo _translate('Please select facility name'); ?>" style="width:100%;">
@@ -379,7 +379,7 @@ $state = $geolocationService->getProvinces("yes");
 														<select class="form-control vfvlnsfilters select2 select2-element" id="vfVlnsDistrict" name="vfVlnsDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('vfVlnsfacilityName',this.value)">
 														</select>
 													</td>
-													<td style="width: 10%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
+													<td style="width: 10%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
 													<td style="width: 23.33%;">
 														<select class="form-control vfvlnsfilters" id="vfVlnsfacilityName" name="vfVlnsfacilityName" multiple="multiple" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
 															<option value=""><?php echo _translate('-- Select --'); ?></option>
@@ -534,7 +534,7 @@ $state = $geolocationService->getProvinces("yes");
 														</select>
 													</td>
 													<td style="width: 10%;"><strong>
-															<?php echo _translate("Facility Name & Code"); ?>&nbsp;:
+															<?php echo _translate("Facility"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
 														<select class="form-control sampleRjtReportFilter" id="rjtFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:100%;">
@@ -759,7 +759,7 @@ $state = $geolocationService->getProvinces("yes");
 														</select>
 													</td>
 													<td style="width: 10%;"><strong>
-															<?php echo _translate("Facility Name & Code"); ?>&nbsp;:
+															<?php echo _translate("Facility"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
 														<select class="form-control notAvailReportFilter" id="noResultFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:100%;">
@@ -1045,7 +1045,7 @@ $state = $geolocationService->getProvinces("yes");
 														<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
 														</select>
 													</td>
-													<td style="width: 14%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
+													<td style="width: 14%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
 													<td style="width: 24%;">
 														<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" multiple="multiple" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
 															<option value=""><?php echo _translate('-- Select --'); ?></option>

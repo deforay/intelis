@@ -69,9 +69,9 @@ $state = $geolocationService->getProvinces("yes");
 														<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
 														</select>
 													</td>
-													<td style="width: 14%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
+													<td style="width: 14%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
 													<td style="width: 23%;">
-														<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
+														<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
