@@ -66,6 +66,7 @@ try {
                vl.patient_last_name,
                vl.patient_dob,
                vl.patient_gender,
+               vl.key_population,
                vl.patient_age_in_years,
                vl.sample_collection_date,
                vl.treatment_initiated_date,
