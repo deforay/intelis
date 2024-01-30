@@ -257,10 +257,6 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 										<td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
 											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<? _translate('Please choose KP'); ?>">
-												<option value=""><?= _translate("-- Select --"); ?> </option>
-												<option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>
-												<option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option>
-												<option value="msm" <?php echo (trim((string) $vlQueryInfo['key_population']) == "msm") ? 'selected="selected"' : ''; ?>><?= _translate("MSM"); ?> </option>
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
 										</td>
@@ -628,6 +624,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 
 		showTrimesterSection('<?php echo $trimsterDisplay; ?>');
 
+		$("#gender").trigger('change');
 
 		getVlResults($("#testingPlatform").val());
 		if ($("#status").val() == 4) {
@@ -838,8 +835,11 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 	});
 	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
+													
+			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>');
 			$(".femaleSection").show();
 		} else if ($(this).val() == 'male') {
+			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option><option value="msm" <?php echo (trim((string) $vlQueryInfo['key_population']) == "msm") ? 'selected="selected"' : ''; ?>><?= _translate("MSM"); ?> </option>');
 			$(".femaleSection").hide();
 		}
 	});
