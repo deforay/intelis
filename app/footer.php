@@ -38,7 +38,7 @@ if (empty($syncLatestTime)) {
 		Centers for Disease Control and Prevention (CDC)."); ?>
 			</small>
 			<br>
-			<small class="text-muted"><a href="javascript:void(0);" onclick="clearCache();" style="font-size:0.8em;">Clear Cache</a></small>
+			<small class="text-muted"><a href="javascript:void(0);" onclick="clearCache();" style="font-size:0.8em;"><?= _translate("Clear Cache"); ?></a></small>
 		</div>
 		<div class=" col-lg-4 col-sm-4">
 

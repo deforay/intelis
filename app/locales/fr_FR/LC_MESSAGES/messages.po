@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-01-29 18:57+0530\n"
-"PO-Revision-Date: 2024-01-29 18:57+0530\n"
+"POT-Creation-Date: 2024-01-31 11:51+0530\n"
+"PO-Revision-Date: 2024-01-31 11:51+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -175,7 +175,7 @@ msgstr "Sélectionner un laboratoire"
 msgid "Trying to sync Lab Details"
 msgstr "Essayer de synchroniser les détails du laboratoire"
 
-#: addInstanceDetails.php:154 footer.php:125 footer.php:147 footer.php:171
+#: addInstanceDetails.php:154 footer.php:138 footer.php:160 footer.php:184
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
@@ -351,9 +351,9 @@ msgstr "Bienvenue sur la page d’administration"
 #: tb/results/tb-failed-results.php:58 tb/results/tb-manual-results.php:77
 #: tb/results/tb-print-results.php:43 tb/results/tb-result-status.php:65
 #: users/addUser.php:54 users/editProfile.php:39 users/editUser.php:101
-#: users/users.php:13 vl/program-management/highViralLoad.php:115
+#: users/users.php:13 vl/program-management/highViralLoad.php:121
 #: vl/program-management/sampleRejectionReport.php:50
-#: vl/program-management/vl-sample-status.php:58
+#: vl/program-management/vl-sample-status.php:55
 #: vl/program-management/vlControlReport.php:26
 #: vl/reference/add-vl-art-code-details.php:25
 #: vl/reference/add-vl-results.php:34
@@ -429,8 +429,8 @@ msgstr "Action"
 #: admin/monitoring/api-sync-history.php:107
 #: admin/monitoring/lab-sync-details.php:173
 #: admin/monitoring/sources-of-requests.php:175
-#: admin/monitoring/sync-status.php:143 batch/get-samples-batch.php:177
-#: batch/get-samples-batch.php:178
+#: admin/monitoring/sync-status.php:143 batch/get-samples-batch.php:184
+#: batch/get-samples-batch.php:185
 #: covid-19/management/covid-19-clinic-report.php:168
 #: covid-19/management/covid-19-clinic-report.php:273
 #: covid-19/management/covid-19-clinic-report.php:372
@@ -508,14 +508,14 @@ msgstr "Action"
 #: tb/results/tb-manual-results.php:122 tb/results/tb-print-results.php:128
 #: tb/results/tb-print-results.php:277 tb/results/tb-result-status.php:131
 #: users/addUser.php:308 users/addUser.php:309 users/editUser.php:397
-#: users/editUser.php:398 vl/program-management/highViralLoad.php:310
-#: vl/program-management/highViralLoad.php:654
-#: vl/program-management/highViralLoad.php:856
-#: vl/program-management/highViralLoad.php:974
-#: vl/program-management/highViralLoad.php:1071
+#: users/editUser.php:398 vl/program-management/highViralLoad.php:303
+#: vl/program-management/highViralLoad.php:647
+#: vl/program-management/highViralLoad.php:849
+#: vl/program-management/highViralLoad.php:967
+#: vl/program-management/highViralLoad.php:1064
 #: vl/program-management/sampleRejectionReport.php:111
 #: vl/program-management/vl-export-data.php:392
-#: vl/program-management/vl-sample-status.php:132
+#: vl/program-management/vl-sample-status.php:129
 #: vl/program-management/vlControlReport.php:64
 #: vl/program-management/vlMonitoringReport.php:241
 #: vl/program-management/vlWeeklyReport.php:88
@@ -531,11 +531,11 @@ msgstr "Rechercher"
 #: admin/monitoring/activity-log.php:91 admin/monitoring/activity-log.php:149
 #: admin/monitoring/api-sync-history.php:165
 #: admin/monitoring/sources-of-requests.php:300 batch/add-batch.php:332
-#: batch/edit-batch.php:373 covid-19/mail/mail-covid-19-results.php:281
-#: covid-19/management/covid-19-clinic-report.php:542
+#: batch/edit-batch.php:370 covid-19/mail/mail-covid-19-results.php:281
+#: covid-19/management/covid-19-clinic-report.php:543
 #: covid-19/management/covid-19-export-data.php:342
 #: covid-19/management/covid-19-sample-rejection-report.php:106
-#: covid-19/management/covid-19-sample-status.php:151
+#: covid-19/management/covid-19-sample-status.php:152
 #: covid-19/management/covid19TestingTargetReport.php:268
 #: covid-19/requests/covid-19-dhis2.php:269
 #: covid-19/requests/covid-19-requests.php:580
@@ -544,13 +544,13 @@ msgstr "Rechercher"
 #: covid-19/results/covid-19-manual-results.php:226
 #: covid-19/results/covid-19-print-results.php:427
 #: covid-19/results/covid-19-result-status.php:213
-#: covid-19/results/email-results.php:372 dashboard/index.php:472
-#: dashboard/index.php:781 dashboard/vlTestResultStatus.php:189
-#: eid/management/eid-clinic-report.php:545
+#: covid-19/results/email-results.php:372 dashboard/index.php:465
+#: dashboard/index.php:774 dashboard/vlTestResultStatus.php:189
+#: eid/management/eid-clinic-report.php:546
 #: eid/management/eid-export-data.php:360
 #: eid/management/eid-export-data.php:391
 #: eid/management/eid-sample-rejection-report.php:103
-#: eid/management/eid-sample-status.php:164
+#: eid/management/eid-sample-status.php:165
 #: eid/management/eidTestingTargetReport.php:266
 #: eid/requests/eid-requests.php:593 eid/results/eid-failed-results.php:362
 #: eid/results/eid-manual-results.php:268 eid/results/eid-print-results.php:445
@@ -558,8 +558,8 @@ msgstr "Rechercher"
 #: facilities/editFacility.php:527
 #: generic-tests/mail/mail-generic-tests-results.php:326
 #: generic-tests/program-management/generic-export-data.php:384
-#: generic-tests/program-management/generic-sample-status.php:208
-#: generic-tests/program-management/generic-tests-clinic-report.php:130
+#: generic-tests/program-management/generic-sample-status.php:209
+#: generic-tests/program-management/generic-tests-clinic-report.php:131
 #: generic-tests/program-management/sample-rejection-report.php:129
 #: generic-tests/requests/view-requests.php:306
 #: generic-tests/results/email-results.php:372
@@ -570,10 +570,10 @@ msgstr "Rechercher"
 #: global-config/editGlobalConfig.php:141
 #: global-config/editGlobalConfig.php:271
 #: hepatitis/mail/mail-hepatitis-results.php:276
-#: hepatitis/management/hepatitis-clinic-report.php:542
+#: hepatitis/management/hepatitis-clinic-report.php:543
 #: hepatitis/management/hepatitis-export-data.php:323
 #: hepatitis/management/hepatitis-sample-rejection-report.php:107
-#: hepatitis/management/hepatitis-sample-status.php:153
+#: hepatitis/management/hepatitis-sample-status.php:154
 #: hepatitis/management/hepatitis-testing-target-report.php:267
 #: hepatitis/requests/hepatitis-dhis2.php:450
 #: hepatitis/requests/hepatitis-requests.php:559
@@ -587,20 +587,20 @@ msgstr "Rechercher"
 #: specimen-referral-manifest/edit-manifest.php:356
 #: specimen-referral-manifest/move-manifest.php:308
 #: system-admin/user-login-history/userLoginIndex.php:165
-#: tb/management/tb-clinic-report.php:538 tb/management/tb-export-data.php:336
+#: tb/management/tb-clinic-report.php:539 tb/management/tb-export-data.php:336
 #: tb/management/tb-sample-rejection-report.php:105
-#: tb/management/tb-sample-status.php:152 tb/requests/tb-requests.php:426
+#: tb/management/tb-sample-status.php:153 tb/requests/tb-requests.php:426
 #: tb/results/email-results.php:372 tb/results/tb-failed-results.php:336
 #: tb/results/tb-manual-results.php:233 tb/results/tb-print-results.php:408
 #: tb/results/tb-result-status.php:210 users/editUser.php:221
-#: vl/program-management/highViralLoad.php:1133
-#: vl/program-management/highViralLoad.php:1163
+#: vl/program-management/highViralLoad.php:1126
+#: vl/program-management/highViralLoad.php:1156
 #: vl/program-management/sampleRejectionReport.php:146
 #: vl/program-management/vl-export-data.php:575
-#: vl/program-management/vl-sample-status.php:218
-#: vl/program-management/vlControlReport.php:96
+#: vl/program-management/vl-sample-status.php:213
+#: vl/program-management/vlControlReport.php:97
 #: vl/program-management/vlMonitoringReport.php:327
-#: vl/program-management/vlSuppressedTargetReport.php:260
+#: vl/program-management/vlSuppressedTargetReport.php:261
 #: vl/program-management/vlTestingTargetReport.php:267
 #: vl/program-management/vlWeeklyReport.php:315 vl/requests/vl-requests.php:763
 #: vl/results/email-results.php:372 vl/results/vl-failed-results.php:310
@@ -714,12 +714,12 @@ msgstr "Pas enregistré"
 #: tb/requests/tb-requests.php:339 tb/results/tb-failed-results.php:245
 #: tb/results/tb-manual-results.php:201 tb/results/tb-print-results.php:205
 #: tb/results/tb-print-results.php:353 tb/results/tb-result-status.php:181
-#: users/users.php:69 vl/program-management/highViralLoad.php:364
-#: vl/program-management/highViralLoad.php:701
-#: vl/program-management/highViralLoad.php:900
-#: vl/program-management/highViralLoad.php:1030
+#: users/users.php:69 vl/program-management/highViralLoad.php:357
+#: vl/program-management/highViralLoad.php:694
+#: vl/program-management/highViralLoad.php:893
+#: vl/program-management/highViralLoad.php:1023
 #: vl/program-management/vl-export-data.php:532
-#: vl/program-management/vl-sample-status.php:189
+#: vl/program-management/vl-sample-status.php:186
 #: vl/program-management/vlMonitoringReport.php:292
 #: vl/program-management/vlWeeklyReport.php:181
 #: vl/program-management/vlWeeklyReport.php:276
@@ -776,7 +776,7 @@ msgstr "Veuillez sélectionner le projet"
 #: admin/monitoring/sources-of-requests.php:96
 #: admin/monitoring/sync-status.php:90 batch/add-batch.php:182
 #: batch/add-batch.php:230 batch/edit-batch.php:213 batch/edit-batch.php:270
-#: classes/Services/CommonService.php:382
+#: classes/Services/CommonService.php:386
 #: common/reference/add-geographical-divisions.php:74
 #: common/reference/edit-geographical-divisions.php:76
 #: covid-19/management/covid-19-clinic-report.php:100
@@ -1181,36 +1181,36 @@ msgstr "Veuillez sélectionner le projet"
 #: users/addUser.php:222 users/addUser.php:232 users/editUser.php:270
 #: users/editUser.php:301 users/editUser.php:311
 #: vl/program-management/getHighVlResultDetails.php:249
-#: vl/program-management/highViralLoad.php:169
-#: vl/program-management/highViralLoad.php:182
-#: vl/program-management/highViralLoad.php:196
-#: vl/program-management/highViralLoad.php:213
-#: vl/program-management/highViralLoad.php:228
-#: vl/program-management/highViralLoad.php:247
-#: vl/program-management/highViralLoad.php:266
-#: vl/program-management/highViralLoad.php:285
-#: vl/program-management/highViralLoad.php:378
-#: vl/program-management/highViralLoad.php:392
-#: vl/program-management/highViralLoad.php:414
-#: vl/program-management/highViralLoad.php:436
-#: vl/program-management/highViralLoad.php:452
-#: vl/program-management/highViralLoad.php:497
-#: vl/program-management/highViralLoad.php:514
-#: vl/program-management/highViralLoad.php:532
-#: vl/program-management/highViralLoad.php:549
-#: vl/program-management/highViralLoad.php:569
-#: vl/program-management/highViralLoad.php:588
-#: vl/program-management/highViralLoad.php:604
-#: vl/program-management/highViralLoad.php:722
-#: vl/program-management/highViralLoad.php:739
-#: vl/program-management/highViralLoad.php:757
-#: vl/program-management/highViralLoad.php:774
-#: vl/program-management/highViralLoad.php:794
-#: vl/program-management/highViralLoad.php:813
-#: vl/program-management/highViralLoad.php:829
-#: vl/program-management/highViralLoad.php:921
-#: vl/program-management/highViralLoad.php:1044
-#: vl/program-management/highViralLoad.php:1058
+#: vl/program-management/highViralLoad.php:162
+#: vl/program-management/highViralLoad.php:175
+#: vl/program-management/highViralLoad.php:189
+#: vl/program-management/highViralLoad.php:206
+#: vl/program-management/highViralLoad.php:221
+#: vl/program-management/highViralLoad.php:240
+#: vl/program-management/highViralLoad.php:259
+#: vl/program-management/highViralLoad.php:278
+#: vl/program-management/highViralLoad.php:371
+#: vl/program-management/highViralLoad.php:385
+#: vl/program-management/highViralLoad.php:407
+#: vl/program-management/highViralLoad.php:429
+#: vl/program-management/highViralLoad.php:445
+#: vl/program-management/highViralLoad.php:490
+#: vl/program-management/highViralLoad.php:507
+#: vl/program-management/highViralLoad.php:525
+#: vl/program-management/highViralLoad.php:542
+#: vl/program-management/highViralLoad.php:562
+#: vl/program-management/highViralLoad.php:581
+#: vl/program-management/highViralLoad.php:597
+#: vl/program-management/highViralLoad.php:715
+#: vl/program-management/highViralLoad.php:732
+#: vl/program-management/highViralLoad.php:750
+#: vl/program-management/highViralLoad.php:767
+#: vl/program-management/highViralLoad.php:787
+#: vl/program-management/highViralLoad.php:806
+#: vl/program-management/highViralLoad.php:822
+#: vl/program-management/highViralLoad.php:914
+#: vl/program-management/highViralLoad.php:1037
+#: vl/program-management/highViralLoad.php:1051
 #: vl/program-management/sampleRejectionReport.php:87
 #: vl/program-management/vl-export-data.php:99
 #: vl/program-management/vl-export-data.php:118
@@ -1223,8 +1223,8 @@ msgstr "Veuillez sélectionner le projet"
 #: vl/program-management/vl-export-data.php:307
 #: vl/program-management/vl-export-data.php:322
 #: vl/program-management/vl-export-data.php:347
-#: vl/program-management/vl-sample-status.php:85
-#: vl/program-management/vl-sample-status.php:100
+#: vl/program-management/vl-sample-status.php:82
+#: vl/program-management/vl-sample-status.php:97
 #: vl/program-management/vlControlReport.php:51
 #: vl/program-management/vlMonitoringReport.php:211
 #: vl/program-management/vlWeeklyReport.php:74
@@ -1244,9 +1244,10 @@ msgstr "Veuillez sélectionner le projet"
 #: vl/requests/forms/add-cameroon.php:660 vl/requests/forms/add-drc.php:23
 #: vl/requests/forms/add-drc.php:104 vl/requests/forms/add-drc.php:128
 #: vl/requests/forms/add-drc.php:146 vl/requests/forms/add-drc.php:228
-#: vl/requests/forms/add-drc.php:240 vl/requests/forms/add-drc.php:332
-#: vl/requests/forms/add-drc.php:387 vl/requests/forms/add-drc.php:455
-#: vl/requests/forms/add-drc.php:467 vl/requests/forms/add-drc.php:475
+#: vl/requests/forms/add-drc.php:273 vl/requests/forms/add-drc.php:334
+#: vl/requests/forms/add-drc.php:389 vl/requests/forms/add-drc.php:457
+#: vl/requests/forms/add-drc.php:469 vl/requests/forms/add-drc.php:477
+#: vl/requests/forms/add-drc.php:702 vl/requests/forms/add-drc.php:705
 #: vl/requests/forms/edit-cameroon.php:181
 #: vl/requests/forms/edit-cameroon.php:189
 #: vl/requests/forms/edit-cameroon.php:220
@@ -1263,10 +1264,11 @@ msgstr "Veuillez sélectionner le projet"
 #: vl/requests/forms/edit-cameroon.php:977 vl/requests/forms/edit-drc.php:22
 #: vl/requests/forms/edit-drc.php:126 vl/requests/forms/edit-drc.php:136
 #: vl/requests/forms/edit-drc.php:163 vl/requests/forms/edit-drc.php:180
-#: vl/requests/forms/edit-drc.php:199 vl/requests/forms/edit-drc.php:264
-#: vl/requests/forms/edit-drc.php:360 vl/requests/forms/edit-drc.php:416
-#: vl/requests/forms/edit-drc.php:482 vl/requests/forms/edit-drc.php:494
-#: vl/requests/forms/edit-drc.php:502 vl/requests/vl-requests.php:151
+#: vl/requests/forms/edit-drc.php:199 vl/requests/forms/edit-drc.php:296
+#: vl/requests/forms/edit-drc.php:361 vl/requests/forms/edit-drc.php:417
+#: vl/requests/forms/edit-drc.php:483 vl/requests/forms/edit-drc.php:495
+#: vl/requests/forms/edit-drc.php:503 vl/requests/forms/edit-drc.php:839
+#: vl/requests/forms/edit-drc.php:842 vl/requests/vl-requests.php:151
 #: vl/requests/vl-requests.php:178 vl/requests/vl-requests.php:224
 #: vl/requests/vl-requests.php:243 vl/requests/vl-requests.php:259
 #: vl/requests/vl-requests.php:277 vl/requests/vl-requests.php:294
@@ -1294,12 +1296,13 @@ msgstr "Veuillez sélectionner le projet"
 #: vl/results/forms/update-drc-result.php:122
 #: vl/results/forms/update-drc-result.php:152
 #: vl/results/forms/update-drc-result.php:169
-#: vl/results/forms/update-drc-result.php:230
-#: vl/results/forms/update-drc-result.php:294
-#: vl/results/forms/update-drc-result.php:379
-#: vl/results/forms/update-drc-result.php:448
-#: vl/results/forms/update-drc-result.php:460
-#: vl/results/forms/update-drc-result.php:470
+#: vl/results/forms/update-drc-result.php:225
+#: vl/results/forms/update-drc-result.php:238
+#: vl/results/forms/update-drc-result.php:305
+#: vl/results/forms/update-drc-result.php:390
+#: vl/results/forms/update-drc-result.php:459
+#: vl/results/forms/update-drc-result.php:471
+#: vl/results/forms/update-drc-result.php:481
 #: vl/results/getVlResultsForApproval.php:169
 #: vl/results/vl-failed-results.php:68 vl/results/vl-failed-results.php:94
 #: vl/results/vlPrintResult.php:92 vl/results/vlPrintResult.php:108
@@ -1573,17 +1576,17 @@ msgstr "Action"
 #: tb/results/tb-print-results.php:334 tb/results/tb-result-status.php:162
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
-#: vl/program-management/highViralLoad.php:325
-#: vl/program-management/highViralLoad.php:668
-#: vl/program-management/highViralLoad.php:870
-#: vl/program-management/highViralLoad.php:924
-#: vl/program-management/highViralLoad.php:988
+#: vl/program-management/highViralLoad.php:318
+#: vl/program-management/highViralLoad.php:661
+#: vl/program-management/highViralLoad.php:863
+#: vl/program-management/highViralLoad.php:917
+#: vl/program-management/highViralLoad.php:981
 #: vl/program-management/vl-export-data.php:415
 #: vl/program-management/vl-export-data.php:478
-#: vl/program-management/vl-sample-status.php:155
+#: vl/program-management/vl-sample-status.php:152
 #: vl/program-management/vlMonitoringReport.php:258
 #: vl/requests/addSamplesFromManifest.php:67
-#: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:90
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:90
 #: vl/requests/forms/add-cameroon.php:94
 #: vl/requests/forms/edit-cameroon.php:141
 #: vl/requests/forms/edit-cameroon.php:145 vl/requests/vl-requests.php:553
@@ -1598,7 +1601,7 @@ msgstr "Action"
 msgid "Sample ID"
 msgstr "ID de l'échantillon"
 
-#: admin/monitoring/audit-trail.php:160 batch/edit-batch.php:314
+#: admin/monitoring/audit-trail.php:160 batch/edit-batch.php:311
 #: common/reference/add-funding-sources.php:56
 #: common/reference/add-geographical-divisions.php:98
 #: common/reference/add-implementation-partners.php:56
@@ -1743,14 +1746,14 @@ msgstr "Envoyer"
 #: tb/results/email-results.php:288 tb/results/tb-failed-results.php:170
 #: tb/results/tb-manual-results.php:123 tb/results/tb-print-results.php:129
 #: tb/results/tb-print-results.php:278 tb/results/tb-result-status.php:132
-#: vl/program-management/highViralLoad.php:312
-#: vl/program-management/highViralLoad.php:477
-#: vl/program-management/highViralLoad.php:656
-#: vl/program-management/highViralLoad.php:858
-#: vl/program-management/highViralLoad.php:976
-#: vl/program-management/highViralLoad.php:1073
+#: vl/program-management/highViralLoad.php:305
+#: vl/program-management/highViralLoad.php:470
+#: vl/program-management/highViralLoad.php:649
+#: vl/program-management/highViralLoad.php:851
+#: vl/program-management/highViralLoad.php:969
+#: vl/program-management/highViralLoad.php:1066
 #: vl/program-management/sampleRejectionReport.php:113
-#: vl/program-management/vl-sample-status.php:134
+#: vl/program-management/vl-sample-status.php:131
 #: vl/program-management/vlControlReport.php:66
 #: vl/program-management/vlMonitoringReport.php:243
 #: vl/program-management/vlWeeklyReport.php:90
@@ -1863,17 +1866,17 @@ msgstr "Détails de la synchronisation des laboratoires"
 #: tb/results/tb-print-results.php:195 tb/results/tb-print-results.php:232
 #: tb/results/tb-print-results.php:312 tb/results/tb-print-results.php:343
 #: vl/program-management/export-vl-results.php:36
-#: vl/program-management/highViralLoad.php:192
-#: vl/program-management/highViralLoad.php:374
-#: vl/program-management/highViralLoad.php:528
-#: vl/program-management/highViralLoad.php:753
-#: vl/program-management/highViralLoad.php:1011
-#: vl/program-management/highViralLoad.php:1040
+#: vl/program-management/highViralLoad.php:185
+#: vl/program-management/highViralLoad.php:367
+#: vl/program-management/highViralLoad.php:521
+#: vl/program-management/highViralLoad.php:746
+#: vl/program-management/highViralLoad.php:1004
+#: vl/program-management/highViralLoad.php:1033
 #: vl/program-management/vl-export-data.php:114
 #: vl/program-management/vlWeeklyReport.php:102
 #: vl/program-management/vlWeeklyReport.php:230
 #: vl/requests/addSamplesFromManifest.php:90
-#: vl/requests/export-vl-requests.php:27 vl/requests/vl-requests.php:389
+#: vl/requests/export-vl-requests.php:28 vl/requests/vl-requests.php:389
 #: vl/requests/vl-requests.php:580 vl/requests/vl-requests.php:633
 #: vl/result-mail/editTestResultEmailConfig.php:83
 #: vl/results/email-results.php:208 vl/results/vl-failed-results.php:65
@@ -1980,19 +1983,19 @@ msgstr "Veuillez choisir Province/État/Région"
 #: tb/results/tb-print-results.php:196 tb/results/tb-print-results.php:239
 #: tb/results/tb-print-results.php:315 tb/results/tb-print-results.php:344
 #: vl/program-management/export-vl-results.php:36
-#: vl/program-management/highViralLoad.php:201
-#: vl/program-management/highViralLoad.php:383
-#: vl/program-management/highViralLoad.php:537
-#: vl/program-management/highViralLoad.php:762
-#: vl/program-management/highViralLoad.php:1014
-#: vl/program-management/highViralLoad.php:1049
+#: vl/program-management/highViralLoad.php:194
+#: vl/program-management/highViralLoad.php:376
+#: vl/program-management/highViralLoad.php:530
+#: vl/program-management/highViralLoad.php:755
+#: vl/program-management/highViralLoad.php:1007
+#: vl/program-management/highViralLoad.php:1042
 #: vl/program-management/vl-export-data.php:123
 #: vl/program-management/vlMonitoringReport.php:219
 #: vl/program-management/vlMonitoringReport.php:276
 #: vl/program-management/vlWeeklyReport.php:105
 #: vl/program-management/vlWeeklyReport.php:233
 #: vl/requests/addSamplesFromManifest.php:93
-#: vl/requests/export-vl-requests.php:27 vl/requests/vl-requests.php:400
+#: vl/requests/export-vl-requests.php:28 vl/requests/vl-requests.php:400
 #: vl/requests/vl-requests.php:583 vl/requests/vl-requests.php:636
 #: vl/result-mail/editTestResultEmailConfig.php:84
 #: vl/results/email-results.php:223 vl/results/vl-failed-results.php:71
@@ -2078,17 +2081,17 @@ msgstr "District"
 #: tb/results/tb-failed-results.php:83 tb/results/tb-failed-results.php:91
 #: tb/results/tb-print-results.php:84 tb/results/tb-print-results.php:91
 #: tb/results/tb-print-results.php:234 tb/results/tb-print-results.php:241
-#: vl/program-management/highViralLoad.php:195
-#: vl/program-management/highViralLoad.php:204
-#: vl/program-management/highViralLoad.php:377
-#: vl/program-management/highViralLoad.php:386
-#: vl/program-management/highViralLoad.php:450
-#: vl/program-management/highViralLoad.php:531
-#: vl/program-management/highViralLoad.php:540
-#: vl/program-management/highViralLoad.php:756
-#: vl/program-management/highViralLoad.php:765
-#: vl/program-management/highViralLoad.php:1043
-#: vl/program-management/highViralLoad.php:1052
+#: vl/program-management/highViralLoad.php:188
+#: vl/program-management/highViralLoad.php:197
+#: vl/program-management/highViralLoad.php:370
+#: vl/program-management/highViralLoad.php:379
+#: vl/program-management/highViralLoad.php:443
+#: vl/program-management/highViralLoad.php:524
+#: vl/program-management/highViralLoad.php:533
+#: vl/program-management/highViralLoad.php:749
+#: vl/program-management/highViralLoad.php:758
+#: vl/program-management/highViralLoad.php:1036
+#: vl/program-management/highViralLoad.php:1045
 #: vl/program-management/vl-export-data.php:117
 #: vl/program-management/vl-export-data.php:126 vl/requests/vl-requests.php:403
 #: vl/results/vl-failed-results.php:67 vl/results/vl-failed-results.php:73
@@ -2104,7 +2107,6 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: covid-19/management/covid-19-clinic-report.php:385
 #: covid-19/management/covid-19-clinic-report.php:416
 #: covid-19/management/covid-19-clinic-report.php:443
-#: covid-19/management/covid-19-clinic-report.php:477
 #: covid-19/management/covid-19-export-data.php:112
 #: covid-19/management/covid-19-export-data.php:253
 #: covid-19/management/covid-19-export-data.php:286
@@ -2162,7 +2164,6 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: generic-tests/program-management/generic-export-data.php:102
 #: generic-tests/program-management/generic-export-data.php:279
 #: generic-tests/program-management/generic-export-data.php:327
-#: generic-tests/program-management/generic-tests-clinic-report.php:72
 #: generic-tests/program-management/get-rejection-result.php:92
 #: generic-tests/requests/add-samples-from-manifest.php:85
 #: generic-tests/requests/patientModal.php:112
@@ -2189,7 +2190,6 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: hepatitis/management/hepatitis-clinic-report.php:385
 #: hepatitis/management/hepatitis-clinic-report.php:417
 #: hepatitis/management/hepatitis-clinic-report.php:442
-#: hepatitis/management/hepatitis-clinic-report.php:477
 #: hepatitis/management/hepatitis-export-data.php:103
 #: hepatitis/management/hepatitis-export-data.php:237
 #: hepatitis/management/hepatitis-export-data.php:270
@@ -2218,8 +2218,7 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: tb/management/tb-clinic-report.php:286
 #: tb/management/tb-clinic-report.php:383
 #: tb/management/tb-clinic-report.php:414
-#: tb/management/tb-clinic-report.php:439
-#: tb/management/tb-clinic-report.php:473 tb/management/tb-export-data.php:107
+#: tb/management/tb-clinic-report.php:439 tb/management/tb-export-data.php:107
 #: tb/management/tb-export-data.php:248 tb/management/tb-export-data.php:281
 #: tb/reference/tb-sample-type.php:33 tb/requests/addSamplesFromManifest.php:60
 #: tb/requests/patientModal.php:88 tb/requests/tb-requests.php:235
@@ -2231,13 +2230,11 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: tb/results/tb-print-results.php:252 tb/results/tb-print-results.php:306
 #: tb/results/tb-print-results.php:341 tb/results/tb-result-status.php:170
 #: vl/program-management/getRejectionResult.php:93
-#: vl/program-management/highViralLoad.php:333
-#: vl/program-management/highViralLoad.php:389
-#: vl/program-management/highViralLoad.php:676
-#: vl/program-management/highViralLoad.php:878
-#: vl/program-management/highViralLoad.php:939
-#: vl/program-management/highViralLoad.php:1008
-#: vl/program-management/highViralLoad.php:1055
+#: vl/program-management/highViralLoad.php:326
+#: vl/program-management/highViralLoad.php:669
+#: vl/program-management/highViralLoad.php:871
+#: vl/program-management/highViralLoad.php:932
+#: vl/program-management/highViralLoad.php:1001
 #: vl/program-management/vl-export-data.php:130
 #: vl/program-management/vl-export-data.php:435
 #: vl/program-management/vl-export-data.php:495
@@ -2283,7 +2280,7 @@ msgstr "Exporter vers Excel"
 #: eid/results/forms/update-cameroon-result.php:111
 #: facilities/facilities.php:170 patients/add-patient.php:57
 #: patients/edit-patient.php:74 users/addUser.php:209 users/editUser.php:288
-#: vl/program-management/highViralLoad.php:942
+#: vl/program-management/highViralLoad.php:935
 #: vl/requests/forms/add-cameroon.php:120 vl/requests/forms/add-drc.php:94
 #: vl/requests/forms/edit-cameroon.php:171
 msgid "Province"
@@ -2317,34 +2314,34 @@ msgstr "Pas de données disponibles"
 #: admin/monitoring/lab-sync-details.php:301
 #: admin/monitoring/sources-of-requests.php:477
 #: admin/monitoring/sync-status.php:254
-#: covid-19/management/covid-19-clinic-report.php:956
-#: covid-19/management/covid-19-clinic-report.php:979
-#: covid-19/management/covid-19-clinic-report.php:1002
-#: covid-19/management/covid-19-clinic-report.php:1022
-#: covid-19/management/covid-19-sample-status.php:298
+#: covid-19/management/covid-19-clinic-report.php:957
+#: covid-19/management/covid-19-clinic-report.php:980
+#: covid-19/management/covid-19-clinic-report.php:1003
+#: covid-19/management/covid-19-clinic-report.php:1023
+#: covid-19/management/covid-19-sample-status.php:299
 #: covid-19/requests/covid-19-requests.php:885
-#: eid/management/eid-clinic-report.php:956
-#: eid/management/eid-clinic-report.php:980
-#: eid/management/eid-clinic-report.php:1003
-#: eid/management/eid-clinic-report.php:1023
-#: eid/management/eid-sample-status.php:321 eid/requests/eid-requests.php:913
+#: eid/management/eid-clinic-report.php:957
+#: eid/management/eid-clinic-report.php:981
+#: eid/management/eid-clinic-report.php:1004
+#: eid/management/eid-clinic-report.php:1024
+#: eid/management/eid-sample-status.php:322 eid/requests/eid-requests.php:913
 #: generic-tests/results/generic-failed-results.php:557
-#: hepatitis/management/hepatitis-clinic-report.php:953
-#: hepatitis/management/hepatitis-clinic-report.php:976
-#: hepatitis/management/hepatitis-clinic-report.php:999
-#: hepatitis/management/hepatitis-clinic-report.php:1019
-#: hepatitis/management/hepatitis-sample-status.php:294
+#: hepatitis/management/hepatitis-clinic-report.php:954
+#: hepatitis/management/hepatitis-clinic-report.php:977
+#: hepatitis/management/hepatitis-clinic-report.php:1000
+#: hepatitis/management/hepatitis-clinic-report.php:1020
+#: hepatitis/management/hepatitis-sample-status.php:295
 #: hepatitis/requests/hepatitis-dhis2.php:794
 #: hepatitis/requests/hepatitis-requests.php:868
-#: tb/management/tb-clinic-report.php:948
-#: tb/management/tb-clinic-report.php:971
-#: tb/management/tb-clinic-report.php:994
-#: tb/management/tb-clinic-report.php:1014
-#: tb/management/tb-sample-status.php:293 tb/requests/tb-requests.php:695
-#: vl/program-management/highViralLoad.php:1659
-#: vl/program-management/highViralLoad.php:1688
-#: vl/program-management/highViralLoad.php:1714
-#: vl/program-management/highViralLoad.php:1736
+#: tb/management/tb-clinic-report.php:949
+#: tb/management/tb-clinic-report.php:972
+#: tb/management/tb-clinic-report.php:995
+#: tb/management/tb-clinic-report.php:1015
+#: tb/management/tb-sample-status.php:294 tb/requests/tb-requests.php:695
+#: vl/program-management/highViralLoad.php:1652
+#: vl/program-management/highViralLoad.php:1681
+#: vl/program-management/highViralLoad.php:1707
+#: vl/program-management/highViralLoad.php:1729
 #: vl/program-management/vlWeeklyReport.php:573
 #: vl/program-management/vlWeeklyReport.php:597
 #: vl/requests/vl-requests.php:1142 vl/results/vl-failed-results.php:573
@@ -2442,7 +2439,7 @@ msgstr "Échantillon ajouté au lot le"
 #: tb/management/tb-clinic-report.php:388
 #: tb/reference/add-tb-sample-type.php:40
 #: tb/reference/add-tb-sample-type.php:42 tb/reference/tb-sample-type.php:56
-#: tb/results/email-results.php:250 vl/program-management/highViralLoad.php:893
+#: tb/results/email-results.php:250 vl/program-management/highViralLoad.php:886
 #: vl/reference/add-vl-sample-type.php:40
 #: vl/reference/add-vl-sample-type.php:42 vl/reference/vl-sample-type.php:34
 #: vl/results/email-results.php:250 vl/results/vlResultMail.php:250
@@ -2811,15 +2808,15 @@ msgstr "Lot"
 #: tb/results/tb-print-results.php:190 tb/results/tb-print-results.php:219
 #: tb/results/tb-print-results.php:338 tb/results/tb-result-status.php:93
 #: tb/results/tb-result-status.php:167
-#: vl/program-management/highViralLoad.php:164
-#: vl/program-management/highViralLoad.php:492
-#: vl/program-management/highViralLoad.php:717
-#: vl/program-management/highViralLoad.php:930
-#: vl/program-management/highViralLoad.php:999
+#: vl/program-management/highViralLoad.php:157
+#: vl/program-management/highViralLoad.php:485
+#: vl/program-management/highViralLoad.php:710
+#: vl/program-management/highViralLoad.php:923
+#: vl/program-management/highViralLoad.php:992
 #: vl/program-management/vl-export-data.php:265
 #: vl/program-management/vl-export-data.php:426
 #: vl/program-management/vl-export-data.php:486
-#: vl/program-management/vl-sample-status.php:80
+#: vl/program-management/vl-sample-status.php:77
 #: vl/program-management/vlMonitoringReport.php:261
 #: vl/requests/addSamplesFromManifest.php:78 vl/requests/vl-requests.php:272
 #: vl/requests/vl-requests.php:568 vl/requests/vl-requests.php:618
@@ -2855,6 +2852,11 @@ msgid "Please choose machine"
 msgstr "Veuillez choisir la machine"
 
 #: batch/add-batch.php:191 batch/edit-batch.php:185
+#: covid-19/management/covid-19-clinic-report.php:138
+#: covid-19/management/covid-19-clinic-report.php:246
+#: covid-19/management/covid-19-clinic-report.php:349
+#: covid-19/management/covid-19-clinic-report.php:477
+#: covid-19/results/covid-19-result-status.php:115
 #: generic-tests/configuration/add-test-type.php:257
 #: generic-tests/configuration/add-test-type.php:589
 #: generic-tests/configuration/clone-test-type.php:312
@@ -2865,6 +2867,21 @@ msgstr "Veuillez choisir la machine"
 #: generic-tests/configuration/edit-test-type.php:374
 #: generic-tests/configuration/edit-test-type.php:430
 #: generic-tests/configuration/edit-test-type.php:832
+#: generic-tests/program-management/generic-tests-clinic-report.php:72
+#: hepatitis/management/hepatitis-clinic-report.php:140
+#: hepatitis/management/hepatitis-clinic-report.php:249
+#: hepatitis/management/hepatitis-clinic-report.php:351
+#: hepatitis/management/hepatitis-clinic-report.php:477
+#: hepatitis/results/hepatitis-result-status.php:109
+#: tb/management/tb-clinic-report.php:138
+#: tb/management/tb-clinic-report.php:246
+#: tb/management/tb-clinic-report.php:350
+#: tb/management/tb-clinic-report.php:473 tb/results/tb-result-status.php:109
+#: vl/program-management/highViralLoad.php:201
+#: vl/program-management/highViralLoad.php:382
+#: vl/program-management/highViralLoad.php:537
+#: vl/program-management/highViralLoad.php:762
+#: vl/program-management/highViralLoad.php:1048
 msgid "Facility"
 msgstr "Établissement"
 
@@ -2930,13 +2947,13 @@ msgstr "Établissement"
 #: tb/results/tb-failed-results.php:101 tb/results/tb-manual-results.php:105
 #: tb/results/tb-print-results.php:105 tb/results/tb-print-results.php:254
 #: tb/results/tb-result-status.php:111
-#: vl/program-management/highViralLoad.php:211
-#: vl/program-management/highViralLoad.php:391
-#: vl/program-management/highViralLoad.php:547
-#: vl/program-management/highViralLoad.php:772
-#: vl/program-management/highViralLoad.php:1057
+#: vl/program-management/highViralLoad.php:204
+#: vl/program-management/highViralLoad.php:384
+#: vl/program-management/highViralLoad.php:540
+#: vl/program-management/highViralLoad.php:765
+#: vl/program-management/highViralLoad.php:1050
 #: vl/program-management/vl-export-data.php:133
-#: vl/program-management/vl-sample-status.php:112
+#: vl/program-management/vl-sample-status.php:109
 #: vl/program-management/vlMonitoringReport.php:229
 #: vl/requests/vl-requests.php:410 vl/results/email-results.php:102
 #: vl/results/email-results.php:168 vl/results/vl-failed-results.php:81
@@ -3059,20 +3076,20 @@ msgstr "Veuillez sélectionner le nom de l'établissement"
 #: tb/results/tb-manual-results.php:88 tb/results/tb-print-results.php:65
 #: tb/results/tb-print-results.php:215 tb/results/tb-result-status.php:89
 #: tb/results/tb-result-status.php:166
-#: vl/program-management/highViralLoad.php:345
-#: vl/program-management/highViralLoad.php:400
-#: vl/program-management/highViralLoad.php:685
-#: vl/program-management/highViralLoad.php:711
-#: vl/program-management/highViralLoad.php:887
-#: vl/program-management/highViralLoad.php:910
-#: vl/program-management/highViralLoad.php:927
-#: vl/program-management/highViralLoad.php:996
+#: vl/program-management/highViralLoad.php:338
+#: vl/program-management/highViralLoad.php:393
+#: vl/program-management/highViralLoad.php:678
+#: vl/program-management/highViralLoad.php:704
+#: vl/program-management/highViralLoad.php:880
+#: vl/program-management/highViralLoad.php:903
+#: vl/program-management/highViralLoad.php:920
+#: vl/program-management/highViralLoad.php:989
 #: vl/program-management/sampleRejectionReport.php:66
 #: vl/program-management/vl-export-data.php:81
 #: vl/program-management/vl-export-data.php:441
 #: vl/program-management/vl-export-data.php:501
-#: vl/program-management/vl-sample-status.php:74
-#: vl/program-management/vl-sample-status.php:164
+#: vl/program-management/vl-sample-status.php:71
+#: vl/program-management/vl-sample-status.php:161
 #: vl/program-management/vlMonitoringReport.php:192
 #: vl/requests/addSamplesFromManifest.php:75
 #: vl/requests/forms/add-cameroon.php:333
@@ -3130,10 +3147,10 @@ msgstr "Date de prélèvement de l'échantillon"
 #: tb/results/email-results.php:143 tb/results/tb-failed-results.php:77
 #: tb/results/tb-manual-results.php:90 tb/results/tb-print-results.php:67
 #: tb/results/tb-print-results.php:217 tb/results/tb-result-status.php:91
-#: vl/program-management/highViralLoad.php:402
+#: vl/program-management/highViralLoad.php:395
 #: vl/program-management/sampleRejectionReport.php:69
 #: vl/program-management/vl-export-data.php:84
-#: vl/program-management/vl-sample-status.php:77
+#: vl/program-management/vl-sample-status.php:74
 #: vl/requests/vl-requests.php:136 vl/results/email-results.php:143
 #: vl/results/vl-failed-results.php:63 vl/results/vlPrintResult.php:87
 #: vl/results/vlPrintResult.php:332 vl/results/vlResultApproval.php:120
@@ -3242,19 +3259,19 @@ msgstr "Alphanumérique"
 #: tb/results/tb-failed-results.php:114 tb/results/tb-manual-results.php:154
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
-#: vl/program-management/highViralLoad.php:177
-#: vl/program-management/highViralLoad.php:509
-#: vl/program-management/highViralLoad.php:734
-#: vl/program-management/highViralLoad.php:948
-#: vl/program-management/highViralLoad.php:1017
+#: vl/program-management/highViralLoad.php:170
+#: vl/program-management/highViralLoad.php:502
+#: vl/program-management/highViralLoad.php:727
+#: vl/program-management/highViralLoad.php:941
+#: vl/program-management/highViralLoad.php:1010
 #: vl/program-management/sampleRejectionReport.php:82
 #: vl/program-management/vl-export-data.php:94
 #: vl/program-management/vl-export-data.php:445
 #: vl/program-management/vl-export-data.php:504
-#: vl/program-management/vl-sample-status.php:95
+#: vl/program-management/vl-sample-status.php:92
 #: vl/program-management/vlMonitoringReport.php:279
 #: vl/requests/addSamplesFromManifest.php:96
-#: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:338
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:338
 #: vl/requests/forms/edit-cameroon.php:388 vl/requests/vl-requests.php:146
 #: vl/requests/vl-requests.php:345 vl/requests/vl-requests.php:586
 #: vl/requests/vl-requests.php:639 vl/results/email-results.php:146
@@ -3299,12 +3316,12 @@ msgstr "Type d'échantillon"
 #: tb/management/tb-clinic-report.php:221
 #: tb/management/tb-clinic-report.php:325 tb/results/email-results.php:149
 #: tb/results/tb-failed-results.php:117
-#: vl/program-management/highViralLoad.php:180
-#: vl/program-management/highViralLoad.php:512
-#: vl/program-management/highViralLoad.php:737
+#: vl/program-management/highViralLoad.php:173
+#: vl/program-management/highViralLoad.php:505
+#: vl/program-management/highViralLoad.php:730
 #: vl/program-management/sampleRejectionReport.php:85
 #: vl/program-management/vl-export-data.php:97
-#: vl/program-management/vl-sample-status.php:98
+#: vl/program-management/vl-sample-status.php:95
 #: vl/requests/vl-requests.php:149 vl/results/email-results.php:149
 #: vl/results/vl-failed-results.php:93 vl/results/vlPrintResult.php:126
 #: vl/results/vlPrintResult.php:370 vl/results/vlResultApproval.php:145
@@ -3328,7 +3345,7 @@ msgstr "Veuillez sélectionner le type d'échantillon"
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/vl-export-data.php:457
 #: vl/program-management/vl-export-data.php:516
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Funding Source"
 msgstr "Sources de financement"
 
@@ -3361,7 +3378,7 @@ msgstr "Veuillez sélectionner une machine"
 msgid "Save and Next"
 msgstr "Sauvegarder et Suivant"
 
-#: batch/add-batch.php:298 batch/edit-batch.php:315
+#: batch/add-batch.php:298 batch/edit-batch.php:312
 #: common/reference/add-funding-sources.php:57
 #: common/reference/add-geographical-divisions.php:99
 #: common/reference/add-implementation-partners.php:57
@@ -3448,8 +3465,8 @@ msgstr "Annuler"
 msgid "Select Test Type"
 msgstr "Sélectionnez le Type"
 
-#: batch/add-batch.php:327 batch/edit-batch.php:366
-#: covid-19/management/covid-19-clinic-report.php:535
+#: batch/add-batch.php:327 batch/edit-batch.php:363
+#: covid-19/management/covid-19-clinic-report.php:536
 #: covid-19/management/covid-19-export-data.php:329
 #: covid-19/management/covid-19-export-data.php:332
 #: covid-19/requests/covid-19-requests.php:569
@@ -3458,20 +3475,20 @@ msgstr "Sélectionnez le Type"
 #: covid-19/results/covid-19-print-results.php:423
 #: covid-19/results/covid-19-result-status.php:209
 #: covid-19/results/email-results.php:365
-#: eid/management/eid-clinic-report.php:538
+#: eid/management/eid-clinic-report.php:539
 #: eid/management/eid-export-data.php:353 eid/requests/eid-requests.php:582
 #: eid/results/eid-failed-results.php:352
 #: eid/results/eid-manual-results.php:261 eid/results/eid-print-results.php:441
 #: eid/results/eid-result-status.php:214 eid/results/email-results.php:362
 #: generic-tests/program-management/generic-export-data.php:374
-#: generic-tests/program-management/generic-tests-clinic-report.php:126
+#: generic-tests/program-management/generic-tests-clinic-report.php:127
 #: generic-tests/requests/view-requests.php:295
 #: generic-tests/results/email-results.php:365
 #: generic-tests/results/generic-failed-results.php:283
 #: generic-tests/results/generic-print-result.php:567
 #: generic-tests/results/generic-result-approval.php:282
 #: generic-tests/results/generic-test-results.php:293
-#: hepatitis/management/hepatitis-clinic-report.php:535
+#: hepatitis/management/hepatitis-clinic-report.php:536
 #: hepatitis/management/hepatitis-export-data.php:315
 #: hepatitis/requests/hepatitis-dhis2.php:439
 #: hepatitis/requests/hepatitis-requests.php:548
@@ -3481,11 +3498,11 @@ msgstr "Sélectionnez le Type"
 #: hepatitis/results/hepatitis-print-results.php:422
 #: hepatitis/results/hepatitis-result-status.php:204 mail/vlResultMail.php:365
 #: move-samples/select-samples-to-move.php:225
-#: tb/management/tb-clinic-report.php:531 tb/management/tb-export-data.php:324
+#: tb/management/tb-clinic-report.php:532 tb/management/tb-export-data.php:324
 #: tb/requests/tb-requests.php:415 tb/results/email-results.php:365
 #: tb/results/tb-failed-results.php:325 tb/results/tb-manual-results.php:226
 #: tb/results/tb-print-results.php:404 tb/results/tb-result-status.php:206
-#: vl/program-management/highViralLoad.php:1121
+#: vl/program-management/highViralLoad.php:1114
 #: vl/program-management/vl-export-data.php:565 vl/requests/vl-requests.php:752
 #: vl/results/email-results.php:365 vl/results/vl-failed-results.php:299
 #: vl/results/vlPrintResult.php:611 vl/results/vlResultApproval.php:288
@@ -3493,12 +3510,12 @@ msgstr "Sélectionnez le Type"
 msgid "Select Facilities"
 msgstr "Sélectionnez les structures"
 
-#: batch/add-batch.php:366 batch/edit-batch.php:346
+#: batch/add-batch.php:366 batch/edit-batch.php:343
 msgid "You have selected more than allowed number of samples"
 msgstr ""
 "Vous avez sélectionné un nombre d'échantillons supérieur au nombre autorisé"
 
-#: batch/add-batch.php:371 batch/edit-batch.php:351
+#: batch/add-batch.php:371 batch/edit-batch.php:348
 #: specimen-referral-manifest/add-manifest.php:261
 #: specimen-referral-manifest/edit-manifest.php:338
 msgid "Please select one or more samples"
@@ -3508,8 +3525,8 @@ msgstr "Veuillez sélectionner un ou plusieurs échantillons"
 msgid "You have to choose a testing platform to proceed"
 msgstr "Vous devez choisir une plateforme de test pour procéder"
 
-#: batch/add-batch.php:449 batch/edit-batch.php:482
-#: batch/get-samples-batch.php:170
+#: batch/add-batch.php:449 batch/edit-batch.php:481
+#: batch/get-samples-batch.php:177
 msgid "Maximum number of samples allowed for the selected platform"
 msgstr ""
 "Nombre maximum d'échantillons autorisés pour la plate-forme sélectionnée"
@@ -3537,6 +3554,7 @@ msgstr "Créer un nouveau batch"
 #: batch/batches.php:96
 #: covid-19/management/covid-19-sample-testing-report.php:115
 #: covid-19/management/get-rejected-samples.php:89
+#: dashboard/getSampleResult.php:699
 #: eid/management/eid-sample-testing-report.php:114
 #: eid/management/get-rejected-samples.php:95
 #: generic-tests/program-management/generic-tests-sample-testing-report.php:115
@@ -3555,7 +3573,7 @@ msgstr "Nombre d'échantillons"
 #: generic-tests/program-management/get-sample-status.php:335
 #: hepatitis/management/get-sample-status.php:511
 #: tb/management/getSampleStatus.php:450
-#: vl/program-management/getSampleStatus.php:551
+#: vl/program-management/getSampleStatus.php:537
 msgid "No. of Samples Tested"
 msgstr "Nombre d'échantillons testés"
 
@@ -3592,12 +3610,7 @@ msgstr "Éditer un lot"
 msgid "This batch code already exists.Try another code"
 msgstr "Ce code de lot existe déjà, essayez un autre code"
 
-#: batch/edit-batch.php:285 batch/get-samples-batch.php:141
-#: specimen-referral-manifest/get-samples-for-manifest.php:129
-msgid "Number of unselected samples"
-msgstr "Nombre d'échantillons non sélectionnés"
-
-#: batch/edit-batch.php:303 batch/get-samples-batch.php:159
+#: batch/edit-batch.php:300 batch/get-samples-batch.php:166
 #: specimen-referral-manifest/get-samples-for-manifest.php:152
 msgid "Number of selected samples"
 msgstr "Nombre d'échantillons sélectionnés"
@@ -3727,16 +3740,16 @@ msgstr "BARCODE"
 #: tb/results/tb-print-results.php:188 tb/results/tb-print-results.php:295
 #: tb/results/tb-print-results.php:336 tb/results/tb-result-status.php:164
 #: vl/program-management/export-vl-results.php:36
-#: vl/program-management/export-vl-results.php:44
-#: vl/program-management/highViralLoad.php:329
-#: vl/program-management/highViralLoad.php:672
-#: vl/program-management/highViralLoad.php:874
-#: vl/program-management/highViralLoad.php:992
+#: vl/program-management/export-vl-results.php:46
+#: vl/program-management/highViralLoad.php:322
+#: vl/program-management/highViralLoad.php:665
+#: vl/program-management/highViralLoad.php:867
+#: vl/program-management/highViralLoad.php:985
 #: vl/program-management/vl-export-data.php:422
 #: vl/program-management/vl-export-data.php:482
-#: vl/program-management/vl-sample-status.php:158
+#: vl/program-management/vl-sample-status.php:155
 #: vl/requests/addSamplesFromManifest.php:71
-#: vl/requests/export-vl-requests.php:27 vl/requests/export-vl-requests.php:33
+#: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:31
 #: vl/requests/vl-requests.php:560 vl/requests/vl-requests.php:611
 #: vl/results/vl-failed-results.php:152 vl/results/vl-failed-results.php:200
 #: vl/results/vlPrintResult.php:227 vl/results/vlPrintResult.php:275
@@ -3791,7 +3804,7 @@ msgstr "Calibrateurs"
 #: tb/requests/get-request-list.php:280 users/getUserDetails.php:140
 #: vl/reference/get-vl-results-helper.php:133
 #: vl/reference/get-vl-test-failure-reasons-helper.php:140
-#: vl/requests/get-request-list.php:350
+#: vl/requests/get-request-list.php:351
 #: vl/result-mail/testResultEmailConfig.php:23
 msgid "Edit"
 msgstr "Modifier"
@@ -3808,7 +3821,12 @@ msgstr "Imprimer des PDF par lots"
 msgid "Delete"
 msgstr "Supprimer"
 
-#: batch/get-samples-batch.php:169
+#: batch/get-samples-batch.php:136 batch/get-samples-batch.php:148
+#: specimen-referral-manifest/get-samples-for-manifest.php:129
+msgid "Number of unselected samples"
+msgstr "Nombre d'échantillons non sélectionnés"
+
+#: batch/get-samples-batch.php:176
 msgid ""
 "Number of samples selected out of maximum number of samples allowed for the "
 "selected platform"
@@ -4341,9 +4359,9 @@ msgstr "Veuillez sélectionner la division des parents"
 #: tb/results/tb-print-results.php:175 tb/results/tb-print-results.php:199
 #: tb/results/tb-print-results.php:324 tb/results/tb-print-results.php:347
 #: tb/results/tb-result-status.php:173 users/users.php:39 users/users.php:61
-#: vl/program-management/highViralLoad.php:357
-#: vl/program-management/highViralLoad.php:954
-#: vl/program-management/highViralLoad.php:1023
+#: vl/program-management/highViralLoad.php:350
+#: vl/program-management/highViralLoad.php:947
+#: vl/program-management/highViralLoad.php:1016
 #: vl/program-management/vl-export-data.php:187
 #: vl/program-management/vl-export-data.php:454
 #: vl/program-management/vl-export-data.php:513
@@ -4463,7 +4481,7 @@ msgstr "Veuillez sélectionner le statut de partenaire"
 #: tb/management/tb-clinic-report.php:292
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/getRejectionResult.php:102
-#: vl/program-management/highViralLoad.php:694
+#: vl/program-management/highViralLoad.php:687
 msgid "Recommended Corrective Action"
 msgstr "Mesures correctives recommandées"
 
@@ -4650,8 +4668,8 @@ msgstr "Rapport sur les cliniques Covid-19"
 #: hepatitis/management/hepatitis-clinic-report.php:72
 #: system/translate-strings.php:71 tb/management/tb-clinic-report.php:67
 #: tb/management/tb-clinic-report.php:70
-#: vl/program-management/highViralLoad.php:111
-#: vl/program-management/highViralLoad.php:118
+#: vl/program-management/highViralLoad.php:117
+#: vl/program-management/highViralLoad.php:124
 msgid "Clinic Reports"
 msgstr "Rapports cliniques"
 
@@ -4672,7 +4690,7 @@ msgstr "Rapport de positivité"
 #: hepatitis/management/hepatitis-sample-rejection-report.php:34
 #: system/translate-strings.php:67 tb/management/tb-clinic-report.php:85
 #: tb/management/tb-sample-rejection-report.php:34
-#: vl/program-management/highViralLoad.php:140
+#: vl/program-management/highViralLoad.php:141
 #: vl/program-management/sampleRejectionReport.php:6
 #: vl/program-management/sampleRejectionReport.php:46
 msgid "Sample Rejection Report"
@@ -4682,7 +4700,7 @@ msgstr "Rapport de rejet d'échantillons"
 #: eid/management/eid-clinic-report.php:87
 #: hepatitis/management/hepatitis-clinic-report.php:88
 #: tb/management/tb-clinic-report.php:86
-#: vl/program-management/highViralLoad.php:143
+#: vl/program-management/highViralLoad.php:142
 msgid "Results Not Available Report"
 msgstr "Rapport sur les résultats non disponible"
 
@@ -4690,7 +4708,7 @@ msgstr "Rapport sur les résultats non disponible"
 #: eid/management/eid-clinic-report.php:88
 #: hepatitis/management/hepatitis-clinic-report.php:89
 #: tb/management/tb-clinic-report.php:87
-#: vl/program-management/highViralLoad.php:146
+#: vl/program-management/highViralLoad.php:143
 msgid "Data Quality Check"
 msgstr "Vérification de la qualité des données"
 
@@ -4699,7 +4717,7 @@ msgstr "Vérification de la qualité des données"
 #: generic-tests/program-management/generic-tests-clinic-report.php:50
 #: hepatitis/management/hepatitis-clinic-report.php:90
 #: tb/management/tb-clinic-report.php:88
-#: vl/program-management/highViralLoad.php:149
+#: vl/program-management/highViralLoad.php:144
 msgid "Sample Testing Report"
 msgstr "Exemple de rapport d'essai"
 
@@ -4735,10 +4753,10 @@ msgstr "Exemple de rapport d'essai"
 #: tb/management/tb-clinic-report.php:202 tb/management/tb-export-data.php:122
 #: tb/management/tb-sample-status.php:118 tb/results/tb-print-results.php:99
 #: tb/results/tb-print-results.php:248
-#: vl/program-management/highViralLoad.php:158
-#: vl/program-management/highViralLoad.php:486
+#: vl/program-management/highViralLoad.php:151
+#: vl/program-management/highViralLoad.php:479
 #: vl/program-management/vl-export-data.php:149
-#: vl/program-management/vl-sample-status.php:173
+#: vl/program-management/vl-sample-status.php:170
 #: vl/requests/vl-requests.php:167 vl/results/vlPrintResult.php:179
 #: vl/results/vlPrintResult.php:423
 msgid "Sample Test Date"
@@ -4767,8 +4785,8 @@ msgstr "Date du test de l'échantillon"
 #: tb/management/tb-clinic-report.php:96 tb/management/tb-clinic-report.php:204
 #: tb/management/tb-export-data.php:124 tb/results/tb-print-results.php:101
 #: tb/results/tb-print-results.php:250
-#: vl/program-management/highViralLoad.php:161
-#: vl/program-management/highViralLoad.php:489
+#: vl/program-management/highViralLoad.php:154
+#: vl/program-management/highViralLoad.php:482
 #: vl/program-management/vl-export-data.php:152
 #: vl/results/vlPrintResult.php:182 vl/results/vlPrintResult.php:426
 msgid "Select Sample Test Date"
@@ -4816,39 +4834,22 @@ msgstr "Sélectionner la date du test de l'échantillon"
 #: tb/requests/tb-requests.php:144 tb/results/tb-manual-results.php:94
 #: tb/results/tb-print-results.php:71 tb/results/tb-print-results.php:221
 #: tb/results/tb-result-status.php:95
-#: vl/program-management/highViralLoad.php:167
-#: vl/program-management/highViralLoad.php:495
-#: vl/program-management/highViralLoad.php:720
+#: vl/program-management/highViralLoad.php:160
+#: vl/program-management/highViralLoad.php:488
+#: vl/program-management/highViralLoad.php:713
 #: vl/program-management/vl-export-data.php:268
-#: vl/program-management/vl-sample-status.php:83
+#: vl/program-management/vl-sample-status.php:80
 #: vl/requests/vl-requests.php:275 vl/results/vlPrintResult.php:91
 #: vl/results/vlPrintResult.php:336 vl/results/vlResultApproval.php:126
 #: vl/results/vlTestResult.php:104
 msgid "Please select batch code"
 msgstr "Veuillez sélectionner le code du lot"
 
-#: covid-19/management/covid-19-clinic-report.php:138
-#: covid-19/management/covid-19-clinic-report.php:246
-#: covid-19/management/covid-19-clinic-report.php:349
-#: covid-19/results/covid-19-result-status.php:115
-#: hepatitis/management/hepatitis-clinic-report.php:140
-#: hepatitis/management/hepatitis-clinic-report.php:249
-#: hepatitis/management/hepatitis-clinic-report.php:351
-#: hepatitis/results/hepatitis-result-status.php:109
-#: tb/management/tb-clinic-report.php:138
-#: tb/management/tb-clinic-report.php:246
-#: tb/management/tb-clinic-report.php:350 tb/results/tb-result-status.php:109
-#: vl/program-management/highViralLoad.php:208
-#: vl/program-management/highViralLoad.php:544
-#: vl/program-management/highViralLoad.php:769
-msgid "Facility Name & Code"
-msgstr "Nom et code de la structure"
-
 #: covid-19/management/covid-19-clinic-report.php:147
 #: eid/management/eid-clinic-report.php:148
 #: hepatitis/management/hepatitis-clinic-report.php:149
 #: tb/management/tb-clinic-report.php:147
-#: vl/program-management/highViralLoad.php:223
+#: vl/program-management/highViralLoad.php:216
 msgid "Contact Status"
 msgstr "Statut des contacts"
 
@@ -4856,7 +4857,7 @@ msgstr "Statut des contacts"
 #: eid/management/eid-clinic-report.php:150
 #: hepatitis/management/hepatitis-clinic-report.php:151
 #: tb/management/tb-clinic-report.php:149
-#: vl/program-management/highViralLoad.php:226
+#: vl/program-management/highViralLoad.php:219
 msgid "Please select contact status"
 msgstr "Veuillez sélectionner le statut du contact"
 
@@ -4864,7 +4865,7 @@ msgstr "Veuillez sélectionner le statut du contact"
 #: eid/management/eid-clinic-report.php:152
 #: hepatitis/management/hepatitis-clinic-report.php:153
 #: tb/management/tb-clinic-report.php:151
-#: vl/program-management/highViralLoad.php:231
+#: vl/program-management/highViralLoad.php:224
 msgid "Completed"
 msgstr "Terminé"
 
@@ -4872,7 +4873,7 @@ msgstr "Terminé"
 #: eid/management/eid-clinic-report.php:153
 #: hepatitis/management/hepatitis-clinic-report.php:154
 #: tb/management/tb-clinic-report.php:152
-#: vl/program-management/highViralLoad.php:234
+#: vl/program-management/highViralLoad.php:227
 msgid "Not Completed"
 msgstr "Incomplet"
 
@@ -4883,7 +4884,7 @@ msgstr "Incomplet"
 #: hepatitis/requests/hepatitis-dhis2.php:104
 #: hepatitis/requests/hepatitis-requests.php:177 roles/addRole.php:327
 #: roles/editRole.php:307 tb/management/tb-clinic-report.php:153
-#: tb/requests/tb-requests.php:183 vl/program-management/highViralLoad.php:237
+#: tb/requests/tb-requests.php:183 vl/program-management/highViralLoad.php:230
 #: vl/requests/vl-requests.php:350
 msgid "All"
 msgstr "Tout"
@@ -4920,12 +4921,12 @@ msgstr "Tout"
 #: tb/requests/tb-requests.php:188
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
-#: vl/program-management/highViralLoad.php:242
-#: vl/program-management/highViralLoad.php:409
-#: vl/program-management/highViralLoad.php:564
-#: vl/program-management/highViralLoad.php:789
+#: vl/program-management/highViralLoad.php:235
+#: vl/program-management/highViralLoad.php:402
+#: vl/program-management/highViralLoad.php:557
+#: vl/program-management/highViralLoad.php:782
 #: vl/program-management/vl-export-data.php:318
-#: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:267
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:267
 #: vl/requests/forms/edit-cameroon.php:317 vl/requests/patientModal.php:110
 #: vl/requests/vl-requests.php:326
 #: vl/result-mail/editTestResultEmailConfig.php:90
@@ -4953,10 +4954,10 @@ msgstr "Sexe"
 #: tb/management/tb-clinic-report.php:158
 #: tb/management/tb-clinic-report.php:257
 #: tb/management/tb-clinic-report.php:361 tb/requests/tb-requests.php:190
-#: vl/program-management/highViralLoad.php:245
-#: vl/program-management/highViralLoad.php:412
-#: vl/program-management/highViralLoad.php:567
-#: vl/program-management/highViralLoad.php:792
+#: vl/program-management/highViralLoad.php:238
+#: vl/program-management/highViralLoad.php:405
+#: vl/program-management/highViralLoad.php:560
+#: vl/program-management/highViralLoad.php:785
 #: vl/program-management/vl-export-data.php:320
 #: vl/requests/forms/add-cameroon.php:269
 #: vl/requests/forms/add-cameroon.php:272
@@ -4994,18 +4995,17 @@ msgstr "Veuillez choisir le sexe"
 #: tb/management/tb-clinic-report.php:160
 #: tb/management/tb-clinic-report.php:259
 #: tb/management/tb-clinic-report.php:363 tb/requests/tb-requests.php:192
-#: tb/results/email-results.php:179 vl/program-management/highViralLoad.php:250
-#: vl/program-management/highViralLoad.php:417
-#: vl/program-management/highViralLoad.php:572
-#: vl/program-management/highViralLoad.php:797
+#: tb/results/email-results.php:179 vl/program-management/highViralLoad.php:243
+#: vl/program-management/highViralLoad.php:410
+#: vl/program-management/highViralLoad.php:565
+#: vl/program-management/highViralLoad.php:790
 #: vl/program-management/vl-export-data.php:325
-#: vl/requests/forms/add-cameroon.php:269 vl/requests/forms/add-drc.php:229
-#: vl/requests/forms/edit-cameroon.php:319 vl/requests/forms/edit-drc.php:253
-#: vl/requests/vl-requests.php:334 vl/results/email-results.php:179
+#: vl/requests/forms/add-cameroon.php:269
+#: vl/requests/forms/edit-cameroon.php:319 vl/requests/vl-requests.php:334
+#: vl/results/email-results.php:179
 #: vl/results/forms/update-cameroon-result.php:347
-#: vl/results/forms/update-drc-result.php:219 vl/results/vlPrintResult.php:167
-#: vl/results/vlPrintResult.php:411 vl/results/vlResultMail.php:179
-#: vl/results/vlTestResult.php:162
+#: vl/results/vlPrintResult.php:167 vl/results/vlPrintResult.php:411
+#: vl/results/vlResultMail.php:179 vl/results/vlTestResult.php:162
 msgid "Male"
 msgstr "Homme"
 
@@ -5037,18 +5037,17 @@ msgstr "Homme"
 #: tb/management/tb-clinic-report.php:161
 #: tb/management/tb-clinic-report.php:260
 #: tb/management/tb-clinic-report.php:364 tb/requests/tb-requests.php:193
-#: tb/results/email-results.php:182 vl/program-management/highViralLoad.php:253
-#: vl/program-management/highViralLoad.php:420
-#: vl/program-management/highViralLoad.php:575
-#: vl/program-management/highViralLoad.php:800
+#: tb/results/email-results.php:182 vl/program-management/highViralLoad.php:246
+#: vl/program-management/highViralLoad.php:413
+#: vl/program-management/highViralLoad.php:568
+#: vl/program-management/highViralLoad.php:793
 #: vl/program-management/vl-export-data.php:328
-#: vl/requests/forms/add-cameroon.php:272 vl/requests/forms/add-drc.php:230
-#: vl/requests/forms/edit-cameroon.php:322 vl/requests/forms/edit-drc.php:254
-#: vl/requests/vl-requests.php:337 vl/results/email-results.php:182
+#: vl/requests/forms/add-cameroon.php:272
+#: vl/requests/forms/edit-cameroon.php:322 vl/requests/vl-requests.php:337
+#: vl/results/email-results.php:182
 #: vl/results/forms/update-cameroon-result.php:350
-#: vl/results/forms/update-drc-result.php:220 vl/results/vlPrintResult.php:170
-#: vl/results/vlPrintResult.php:414 vl/results/vlResultMail.php:182
-#: vl/results/vlTestResult.php:163
+#: vl/results/vlPrintResult.php:170 vl/results/vlPrintResult.php:414
+#: vl/results/vlResultMail.php:182 vl/results/vlTestResult.php:163
 msgid "Female"
 msgstr "Femme"
 
@@ -5075,10 +5074,10 @@ msgstr "Femme"
 #: tb/management/tb-clinic-report.php:162
 #: tb/management/tb-clinic-report.php:261
 #: tb/management/tb-clinic-report.php:365 tb/requests/tb-requests.php:194
-#: tb/results/email-results.php:185 vl/program-management/highViralLoad.php:256
-#: vl/program-management/highViralLoad.php:423
-#: vl/program-management/highViralLoad.php:578
-#: vl/program-management/highViralLoad.php:803
+#: tb/results/email-results.php:185 vl/program-management/highViralLoad.php:249
+#: vl/program-management/highViralLoad.php:416
+#: vl/program-management/highViralLoad.php:571
+#: vl/program-management/highViralLoad.php:796
 #: vl/program-management/vl-export-data.php:331 vl/requests/vl-requests.php:340
 #: vl/results/email-results.php:185
 #: vl/results/forms/update-cameroon-result.php:353
@@ -5110,10 +5109,10 @@ msgstr "Pas enregistré"
 #: tb/management/tb-clinic-report.php:372
 #: tb/management/tb-clinic-report.php:425
 #: tb/management/tb-sample-status.php:111
-#: vl/program-management/highViralLoad.php:315
-#: vl/program-management/highViralLoad.php:659
-#: vl/program-management/highViralLoad.php:861
-#: vl/program-management/highViralLoad.php:979
+#: vl/program-management/highViralLoad.php:308
+#: vl/program-management/highViralLoad.php:652
+#: vl/program-management/highViralLoad.php:854
+#: vl/program-management/highViralLoad.php:972
 #: vl/program-management/vlMonitoringReport.php:247
 msgid "Export to excel"
 msgstr "Exporter vers Excel"
@@ -5168,8 +5167,8 @@ msgstr "No Patient"
 #: tb/management/tb-clinic-report.php:413
 #: tb/management/tb-clinic-report.php:438 tb/results/tb-manual-results.php:148
 #: tb/results/tb-print-results.php:154 tb/results/tb-print-results.php:303
-#: vl/program-management/highViralLoad.php:339
-#: vl/program-management/highViralLoad.php:1005
+#: vl/program-management/highViralLoad.php:332
+#: vl/program-management/highViralLoad.php:998
 #: vl/program-management/vl-export-data.php:432
 #: vl/program-management/vl-export-data.php:492
 #: vl/program-management/vlMonitoringReport.php:267
@@ -5197,9 +5196,9 @@ msgstr "Noms du patient"
 #: hepatitis/requests/hepatitis-dhis2.php:233
 #: hepatitis/requests/hepatitis-requests.php:130
 #: tb/management/tb-clinic-report.php:186 tb/management/tb-sample-status.php:87
-#: tb/requests/tb-requests.php:138 vl/program-management/highViralLoad.php:348
-#: vl/program-management/highViralLoad.php:404
-#: vl/program-management/vl-sample-status.php:125
+#: tb/requests/tb-requests.php:138 vl/program-management/highViralLoad.php:341
+#: vl/program-management/highViralLoad.php:397
+#: vl/program-management/vl-sample-status.php:122
 #: vl/program-management/vlControlReport.php:41
 msgid "Sample Tested Date"
 msgstr "Date de test de l'échantillon"
@@ -5254,8 +5253,8 @@ msgstr "Date de test de l'échantillon"
 #: tb/results/tb-manual-results.php:114
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/vl-export-data.php:141
-#: vl/program-management/vl-sample-status.php:109
-#: vl/requests/export-vl-requests.php:27 vl/requests/vl-requests.php:415
+#: vl/program-management/vl-sample-status.php:106
+#: vl/requests/export-vl-requests.php:28 vl/requests/vl-requests.php:415
 #: vl/requests/vl-requests.php:627
 #: vl/results/forms/update-cameroon-result.php:293
 #: vl/results/vl-failed-results.php:85 vl/results/vlPrintResult.php:241
@@ -5331,8 +5330,8 @@ msgstr "Labo de test"
 #: tb/results/tb-print-results.php:197 tb/results/tb-print-results.php:318
 #: tb/results/tb-print-results.php:345 tb/results/tb-result-status.php:171
 #: tb/results/tb-samples-for-manual-result-entry.php:228
-#: vl/program-management/highViralLoad.php:951
-#: vl/program-management/highViralLoad.php:1020
+#: vl/program-management/highViralLoad.php:944
+#: vl/program-management/highViralLoad.php:1013
 #: vl/program-management/vl-export-data.php:451
 #: vl/program-management/vl-export-data.php:510
 #: vl/program-management/vlMonitoringReport.php:282
@@ -5369,8 +5368,8 @@ msgstr "Résultat"
 #: tb/reference/tb-sample-rejection-reasons.php:37
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/getRejectionResult.php:96
-#: vl/program-management/highViralLoad.php:618
-#: vl/program-management/highViralLoad.php:691
+#: vl/program-management/highViralLoad.php:611
+#: vl/program-management/highViralLoad.php:684
 #: vl/reference/vl-sample-rejection-reasons.php:34
 #: vl/requests/forms/add-cameroon.php:580
 #: vl/requests/forms/edit-cameroon.php:684
@@ -5391,8 +5390,8 @@ msgstr "Motif de rejet"
 #: hepatitis/management/hepatitis-clinic-report.php:389
 #: tb/management/tb-clinic-report.php:290
 #: tb/management/tb-clinic-report.php:387
-#: vl/program-management/highViralLoad.php:688
-#: vl/program-management/highViralLoad.php:890
+#: vl/program-management/highViralLoad.php:681
+#: vl/program-management/highViralLoad.php:883
 msgid "Testing Lab Name"
 msgstr "Nom du laboratoire d'essai"
 
@@ -5404,15 +5403,15 @@ msgstr "Nom du laboratoire d'essai"
 #: hepatitis/management/hepatitis-clinic-report.php:406
 #: tb/management/tb-clinic-report.php:308
 #: tb/management/tb-clinic-report.php:403
-#: vl/program-management/highViralLoad.php:714
-#: vl/program-management/highViralLoad.php:913
+#: vl/program-management/highViralLoad.php:707
+#: vl/program-management/highViralLoad.php:906
 msgid "Select Sample Collection Date"
 msgstr "Sélectionner la date de prélèvement de l'échantillon"
 
 #: covid-19/management/covid-19-clinic-report.php:407
 #: eid/management/eid-clinic-report.php:410
 #: tb/management/tb-clinic-report.php:405
-#: vl/program-management/highViralLoad.php:916
+#: vl/program-management/highViralLoad.php:909
 msgid "Fields"
 msgstr "Champs"
 
@@ -5420,7 +5419,7 @@ msgstr "Champs"
 #: eid/management/eid-clinic-report.php:412
 #: hepatitis/management/hepatitis-clinic-report.php:410
 #: tb/management/tb-clinic-report.php:407
-#: vl/program-management/highViralLoad.php:919
+#: vl/program-management/highViralLoad.php:912
 msgid "Please fields"
 msgstr "Veuillez remplir les champs"
 
@@ -5492,7 +5491,7 @@ msgstr "No Patient"
 #: covid-19/requests/forms/add-cameroon.php:265
 #: covid-19/results/forms/update-cameroon-result.php:250
 #: eid/management/eid-clinic-report.php:421
-#: vl/program-management/highViralLoad.php:945
+#: vl/program-management/highViralLoad.php:938
 #: vl/results/forms/update-cameroon-result.php:220
 msgid "County"
 msgstr "Pays"
@@ -5502,86 +5501,86 @@ msgstr "Pays"
 #: generic-tests/program-management/generic-tests-clinic-report.php:80
 #: hepatitis/management/hepatitis-clinic-report.php:485
 #: tb/management/tb-clinic-report.php:481
-#: vl/program-management/highViralLoad.php:1066
+#: vl/program-management/highViralLoad.php:1059
 msgid "Sample Collection Date "
-msgstr "Date de prélèvement de l'échantillon"
+msgstr "Date de prélèvement de l'échantillon "
 
 #: covid-19/management/covid-19-clinic-report.php:488
 #: eid/management/eid-clinic-report.php:491
 #: generic-tests/program-management/generic-tests-clinic-report.php:83
 #: hepatitis/management/hepatitis-clinic-report.php:488
 #: tb/management/tb-clinic-report.php:484
-#: vl/program-management/highViralLoad.php:1069
+#: vl/program-management/highViralLoad.php:1062
 msgid "Select Sample Collection date"
 msgstr "Sélectionner la date de prélèvement de l'échantillon"
 
-#: covid-19/management/covid-19-clinic-report.php:529
+#: covid-19/management/covid-19-clinic-report.php:530
 #: covid-19/management/covid-19-export-data.php:323
 #: covid-19/results/covid-19-failed-results.php:276
 #: covid-19/results/covid-19-print-results.php:417
-#: eid/management/eid-clinic-report.php:532
+#: eid/management/eid-clinic-report.php:533
 #: eid/management/eid-export-data.php:347
 #: eid/results/eid-failed-results.php:343 eid/results/eid-print-results.php:435
 #: facilities/addFacility.php:733 facilities/editFacility.php:710
 #: facilities/facilities.php:203
 #: generic-tests/program-management/generic-export-data.php:368
-#: generic-tests/program-management/generic-tests-clinic-report.php:120
+#: generic-tests/program-management/generic-tests-clinic-report.php:121
 #: generic-tests/results/generic-failed-results.php:274
 #: generic-tests/results/generic-print-result.php:559
-#: hepatitis/management/hepatitis-clinic-report.php:529
+#: hepatitis/management/hepatitis-clinic-report.php:530
 #: hepatitis/management/hepatitis-export-data.php:309
 #: hepatitis/results/hepatitis-failed-results.php:313
 #: hepatitis/results/hepatitis-print-results.php:416
 #: move-samples/select-samples-to-move.php:228 patients/add-patient.php:254
-#: patients/edit-patient.php:272 tb/management/tb-clinic-report.php:525
+#: patients/edit-patient.php:272 tb/management/tb-clinic-report.php:526
 #: tb/management/tb-export-data.php:318 tb/results/tb-failed-results.php:316
 #: tb/results/tb-print-results.php:398
-#: vl/program-management/highViralLoad.php:1113
+#: vl/program-management/highViralLoad.php:1106
 #: vl/program-management/vl-export-data.php:559
 #: vl/program-management/vlMonitoringReport.php:317
 #: vl/results/vl-failed-results.php:290 vl/results/vlPrintResult.php:605
 msgid "Select Province"
 msgstr "Sélectionner la province"
 
-#: covid-19/management/covid-19-clinic-report.php:532
+#: covid-19/management/covid-19-clinic-report.php:533
 #: covid-19/management/covid-19-export-data.php:326
 #: covid-19/results/covid-19-failed-results.php:279
 #: covid-19/results/covid-19-print-results.php:420
-#: eid/management/eid-clinic-report.php:535
+#: eid/management/eid-clinic-report.php:536
 #: eid/management/eid-export-data.php:350
 #: eid/results/eid-failed-results.php:346 eid/results/eid-print-results.php:438
 #: facilities/addFacility.php:738 facilities/editFacility.php:715
 #: facilities/facilities.php:206
 #: generic-tests/program-management/generic-export-data.php:371
-#: generic-tests/program-management/generic-tests-clinic-report.php:123
+#: generic-tests/program-management/generic-tests-clinic-report.php:124
 #: generic-tests/results/generic-failed-results.php:277
 #: generic-tests/results/generic-print-result.php:563
-#: hepatitis/management/hepatitis-clinic-report.php:532
+#: hepatitis/management/hepatitis-clinic-report.php:533
 #: hepatitis/management/hepatitis-export-data.php:312
 #: hepatitis/results/hepatitis-failed-results.php:316
 #: hepatitis/results/hepatitis-print-results.php:419
-#: tb/management/tb-clinic-report.php:528 tb/management/tb-export-data.php:321
+#: tb/management/tb-clinic-report.php:529 tb/management/tb-export-data.php:321
 #: tb/results/tb-failed-results.php:319 tb/results/tb-print-results.php:401
-#: vl/program-management/highViralLoad.php:1117
+#: vl/program-management/highViralLoad.php:1110
 #: vl/program-management/vl-export-data.php:562
 #: vl/program-management/vlMonitoringReport.php:320
 #: vl/results/vl-failed-results.php:293 vl/results/vlPrintResult.php:608
 msgid "Select District"
 msgstr "Sélectionner le district"
 
-#: covid-19/management/covid-19-clinic-report.php:538
-#: eid/management/eid-clinic-report.php:541
-#: hepatitis/management/hepatitis-clinic-report.php:538
-#: tb/management/tb-clinic-report.php:534
-#: vl/program-management/highViralLoad.php:1129
+#: covid-19/management/covid-19-clinic-report.php:539
+#: eid/management/eid-clinic-report.php:542
+#: hepatitis/management/hepatitis-clinic-report.php:539
+#: tb/management/tb-clinic-report.php:535
+#: vl/program-management/highViralLoad.php:1122
 msgid "Select Fields"
 msgstr "Sélectionner les champs"
 
-#: covid-19/management/covid-19-clinic-report.php:940
-#: eid/management/eid-clinic-report.php:940
-#: hepatitis/management/hepatitis-clinic-report.php:937
-#: tb/management/tb-clinic-report.php:932
-#: vl/program-management/highViralLoad.php:1640
+#: covid-19/management/covid-19-clinic-report.php:941
+#: eid/management/eid-clinic-report.php:941
+#: hepatitis/management/hepatitis-clinic-report.php:938
+#: tb/management/tb-clinic-report.php:933
+#: vl/program-management/highViralLoad.php:1633
 msgid "Do you want to mark these as complete ?"
 msgstr "Voulez-vous les marquer comme complets ?"
 
@@ -5828,10 +5827,10 @@ msgstr "Exportation avec l'ID et le nom du patient"
 #: hepatitis/management/hepatitis-export-data.php:185
 #: hepatitis/requests/hepatitis-requests.php:324
 #: tb/management/tb-export-data.php:194 tb/requests/tb-requests.php:252
-#: vl/program-management/highViralLoad.php:299
-#: vl/program-management/highViralLoad.php:643
-#: vl/program-management/highViralLoad.php:845
-#: vl/program-management/highViralLoad.php:962
+#: vl/program-management/highViralLoad.php:292
+#: vl/program-management/highViralLoad.php:636
+#: vl/program-management/highViralLoad.php:838
+#: vl/program-management/highViralLoad.php:955
 #: vl/program-management/vl-export-data.php:345
 #: vl/program-management/vl-export-data.php:363 vl/requests/vl-requests.php:375
 #: vl/requests/vl-requests.php:428 vl/requests/vl-requests.php:458
@@ -5945,18 +5944,18 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: tb/requests/tb-requests.php:253 tb/requests/tb-requests.php:271
 #: tb/results/email-results.php:195 users/addUser.php:138
 #: users/editUser.php:190 vl/program-management/getHighVlResultDetails.php:250
-#: vl/program-management/highViralLoad.php:269
-#: vl/program-management/highViralLoad.php:288
-#: vl/program-management/highViralLoad.php:301
-#: vl/program-management/highViralLoad.php:439
-#: vl/program-management/highViralLoad.php:455
-#: vl/program-management/highViralLoad.php:591
-#: vl/program-management/highViralLoad.php:607
-#: vl/program-management/highViralLoad.php:645
-#: vl/program-management/highViralLoad.php:816
-#: vl/program-management/highViralLoad.php:832
-#: vl/program-management/highViralLoad.php:847
-#: vl/program-management/highViralLoad.php:964
+#: vl/program-management/highViralLoad.php:262
+#: vl/program-management/highViralLoad.php:281
+#: vl/program-management/highViralLoad.php:294
+#: vl/program-management/highViralLoad.php:432
+#: vl/program-management/highViralLoad.php:448
+#: vl/program-management/highViralLoad.php:584
+#: vl/program-management/highViralLoad.php:600
+#: vl/program-management/highViralLoad.php:638
+#: vl/program-management/highViralLoad.php:809
+#: vl/program-management/highViralLoad.php:825
+#: vl/program-management/highViralLoad.php:840
+#: vl/program-management/highViralLoad.php:957
 #: vl/program-management/vl-export-data.php:221
 #: vl/program-management/vl-export-data.php:239
 #: vl/program-management/vl-export-data.php:255
@@ -6097,18 +6096,18 @@ msgstr "Oui"
 #: tb/requests/tb-requests.php:254 tb/requests/tb-requests.php:272
 #: tb/results/email-results.php:196 users/addUser.php:139
 #: users/editUser.php:191 vl/program-management/getHighVlResultDetails.php:251
-#: vl/program-management/highViralLoad.php:272
-#: vl/program-management/highViralLoad.php:291
-#: vl/program-management/highViralLoad.php:304
-#: vl/program-management/highViralLoad.php:442
-#: vl/program-management/highViralLoad.php:458
-#: vl/program-management/highViralLoad.php:594
-#: vl/program-management/highViralLoad.php:610
-#: vl/program-management/highViralLoad.php:648
-#: vl/program-management/highViralLoad.php:819
-#: vl/program-management/highViralLoad.php:835
-#: vl/program-management/highViralLoad.php:850
-#: vl/program-management/highViralLoad.php:967
+#: vl/program-management/highViralLoad.php:265
+#: vl/program-management/highViralLoad.php:284
+#: vl/program-management/highViralLoad.php:297
+#: vl/program-management/highViralLoad.php:435
+#: vl/program-management/highViralLoad.php:451
+#: vl/program-management/highViralLoad.php:587
+#: vl/program-management/highViralLoad.php:603
+#: vl/program-management/highViralLoad.php:641
+#: vl/program-management/highViralLoad.php:812
+#: vl/program-management/highViralLoad.php:828
+#: vl/program-management/highViralLoad.php:843
+#: vl/program-management/highViralLoad.php:960
 #: vl/program-management/vl-export-data.php:224
 #: vl/program-management/vl-export-data.php:242
 #: vl/program-management/vl-export-data.php:258
@@ -6195,12 +6194,11 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:39
-#: vl/program-management/highViralLoad.php:682
-#: vl/program-management/highViralLoad.php:884
-#: vl/program-management/highViralLoad.php:936
+#: vl/program-management/highViralLoad.php:675
+#: vl/program-management/highViralLoad.php:877
+#: vl/program-management/highViralLoad.php:929
 #: vl/program-management/vl-export-data.php:383
-#: vl/requests/export-vl-requests.php:27 vl/requests/export-vl-requests.php:29
-#: vl/requests/export-vl-requests.php:30 vl/requests/patientModal.php:104
+#: vl/requests/export-vl-requests.php:28 vl/requests/patientModal.php:104
 #: vl/requests/vl-requests.php:445
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:245
 #: vl/results/vl-failed-results.php:120 vl/results/vlPrintResult.php:195
@@ -6293,7 +6291,7 @@ msgstr "Gérer les colonnes"
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/vl-export-data.php:460
 #: vl/program-management/vl-export-data.php:519
-#: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:180
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:180
 #: vl/requests/forms/edit-cameroon.php:231
 #: vl/results/forms/update-cameroon-result.php:281
 msgid "Implementing Partner"
@@ -6441,7 +6439,7 @@ msgstr "Select Labs"
 #: eid/management/eid-sample-rejection-report.php:152
 #: facilities/facilities.php:312
 #: generic-tests/program-management/generic-export-data.php:658
-#: generic-tests/program-management/generic-sample-status.php:364
+#: generic-tests/program-management/generic-sample-status.php:365
 #: generic-tests/program-management/sample-rejection-report.php:185
 #: hepatitis/management/hepatitis-export-data.php:566
 #: hepatitis/management/hepatitis-sample-rejection-report.php:155
@@ -6449,7 +6447,7 @@ msgstr "Select Labs"
 #: tb/management/tb-sample-rejection-report.php:153
 #: vl/program-management/sampleRejectionReport.php:202
 #: vl/program-management/vl-export-data.php:851
-#: vl/program-management/vl-sample-status.php:381
+#: vl/program-management/vl-sample-status.php:376
 msgid "Unable to generate excel"
 msgstr "Impossible de générer le fichier excel"
 
@@ -6482,8 +6480,8 @@ msgstr "Covid-19-Status d'echantillons"
 #: hepatitis/requests/hepatitis-requests.php:230
 #: tb/management/tb-sample-status.php:82 tb/management/tb-sample-status.php:84
 #: tb/requests/tb-requests.php:124 tb/requests/tb-requests.php:126
+#: vl/program-management/vl-sample-status.php:116
 #: vl/program-management/vl-sample-status.php:119
-#: vl/program-management/vl-sample-status.php:122
 #: vl/requests/vl-requests.php:142
 msgid "Select Sample Received Date At Lab"
 msgstr "Sélectionner la date de réception de l'échantillon au laboratoire"
@@ -6496,8 +6494,8 @@ msgstr "Sélectionner la date de réception de l'échantillon au laboratoire"
 #: hepatitis/requests/hepatitis-dhis2.php:236
 #: hepatitis/requests/hepatitis-requests.php:133
 #: tb/management/tb-sample-status.php:89 tb/requests/tb-requests.php:140
-#: vl/program-management/highViralLoad.php:406
-#: vl/program-management/vl-sample-status.php:128
+#: vl/program-management/highViralLoad.php:399
+#: vl/program-management/vl-sample-status.php:125
 #: vl/program-management/vlControlReport.php:43 vl/requests/vl-requests.php:170
 msgid "Select Tested Date"
 msgstr "Sélectionner la date de l'essai"
@@ -6511,7 +6509,7 @@ msgstr "Covid-19-No Echantillon"
 #: generic-tests/program-management/generic-sample-status.php:166
 #: hepatitis/management/hepatitis-sample-status.php:118
 #: tb/management/tb-sample-status.php:117
-#: vl/program-management/vl-sample-status.php:170
+#: vl/program-management/vl-sample-status.php:167
 msgid "Sample Received Date in Lab"
 msgstr "Date de réception de l'échantillon au labo"
 
@@ -6520,7 +6518,7 @@ msgstr "Date de réception de l'échantillon au labo"
 #: generic-tests/program-management/generic-sample-status.php:172
 #: hepatitis/management/hepatitis-sample-status.php:120
 #: tb/management/tb-sample-status.php:119
-#: vl/program-management/vl-sample-status.php:176
+#: vl/program-management/vl-sample-status.php:173
 msgid "Sample Print Date"
 msgstr "Date d'impression de l'échantillon"
 
@@ -6533,26 +6531,26 @@ msgstr "Echantillon-Date d'envoie de l'email"
 
 #: covid-19/management/covid-19-sample-status.php:117
 #: eid/management/eid-sample-status.php:130
-#: vl/program-management/vl-sample-status.php:179
+#: vl/program-management/vl-sample-status.php:176
 msgid "STS Result Print Date"
 msgstr "Date d'impression des résultats STS"
 
 #: covid-19/management/covid-19-sample-status.php:118
 #: eid/management/eid-sample-status.php:131
-#: vl/program-management/vl-sample-status.php:182
+#: vl/program-management/vl-sample-status.php:179
 msgid "LIS Result Print Date"
 msgstr "Date d'impression des résultats LIS"
 
-#: covid-19/management/covid-19-sample-status.php:147
+#: covid-19/management/covid-19-sample-status.php:148
 #: covid-19/requests/forms/add-cameroon.php:1048
 #: covid-19/requests/forms/edit-cameroon.php:906
 #: eid/management/eid-export-data.php:356
-#: eid/management/eid-sample-status.php:160
+#: eid/management/eid-sample-status.php:161
 #: eid/results/eid-manual-results.php:264
-#: generic-tests/program-management/generic-sample-status.php:204
-#: hepatitis/management/hepatitis-sample-status.php:149
-#: tb/management/tb-sample-status.php:148
-#: vl/program-management/vl-sample-status.php:214
+#: generic-tests/program-management/generic-sample-status.php:205
+#: hepatitis/management/hepatitis-sample-status.php:150
+#: tb/management/tb-sample-status.php:149
+#: vl/program-management/vl-sample-status.php:209
 msgid "Select Testing Lab"
 msgstr "Enregistré au laboratoire de test"
 
@@ -7037,13 +7035,15 @@ msgid "Covid-19 Results"
 msgstr "Covid-19-Imprimer le résultat"
 
 #: covid-19/management/getSampleStatus.php:260
-#: dashboard/getSampleResult.php:642 eid/management/getSampleStatus.php:311
+#: dashboard/getSampleResult.php:474 dashboard/getSampleResult.php:531
+#: dashboard/getSampleResult.php:589 dashboard/getSampleResult.php:650
+#: eid/management/getSampleStatus.php:311
 #: generic-tests/program-management/get-sample-status.php:227
 #: hepatitis/management/get-sample-status.php:351
 #: hepatitis/management/get-sample-status.php:406
 #: tb/management/getSampleStatus.php:341
-#: vl/program-management/getSampleStatus.php:328
-#: vl/program-management/getSampleStatus.php:389
+#: vl/program-management/getSampleStatus.php:312
+#: vl/program-management/getSampleStatus.php:373
 msgid "Samples"
 msgstr "Échantillons"
 
@@ -7077,7 +7077,7 @@ msgstr "COVID-19 Délai d'exécution du laboratoire"
 #: generic-tests/program-management/get-sample-status.php:295
 #: hepatitis/management/get-sample-status.php:471
 #: tb/management/getSampleStatus.php:410
-#: vl/program-management/getSampleStatus.php:511
+#: vl/program-management/getSampleStatus.php:497
 msgid "Average TAT in Days"
 msgstr "TAT moyen en jours"
 
@@ -7086,7 +7086,7 @@ msgstr "TAT moyen en jours"
 #: generic-tests/program-management/get-sample-status.php:305
 #: hepatitis/management/get-sample-status.php:481
 #: tb/management/getSampleStatus.php:420
-#: vl/program-management/getSampleStatus.php:521
+#: vl/program-management/getSampleStatus.php:507
 msgid "No. of Tests"
 msgstr "Nombre de tests"
 
@@ -7095,7 +7095,7 @@ msgstr "Nombre de tests"
 #: generic-tests/program-management/get-sample-status.php:345
 #: hepatitis/management/get-sample-status.php:521
 #: tb/management/getSampleStatus.php:460
-#: vl/program-management/getSampleStatus.php:561
+#: vl/program-management/getSampleStatus.php:547
 msgid "Result - Printed"
 msgstr "Résultat - Imprimé"
 
@@ -7104,7 +7104,7 @@ msgstr "Résultat - Imprimé"
 #: generic-tests/program-management/get-sample-status.php:355
 #: hepatitis/management/get-sample-status.php:531
 #: tb/management/getSampleStatus.php:470
-#: vl/program-management/getSampleStatus.php:571
+#: vl/program-management/getSampleStatus.php:557
 msgid "Collected - Received at Lab"
 msgstr "Collecté - Reçu au laboratoire"
 
@@ -7113,7 +7113,7 @@ msgstr "Collecté - Reçu au laboratoire"
 #: generic-tests/program-management/get-sample-status.php:365
 #: hepatitis/management/get-sample-status.php:541
 #: tb/management/getSampleStatus.php:480
-#: vl/program-management/getSampleStatus.php:581
+#: vl/program-management/getSampleStatus.php:567
 msgid "Received - Tested"
 msgstr "Reçu - Testé"
 
@@ -7122,7 +7122,7 @@ msgstr "Reçu - Testé"
 #: generic-tests/program-management/get-sample-status.php:375
 #: hepatitis/management/get-sample-status.php:551
 #: tb/management/getSampleStatus.php:490
-#: vl/program-management/getSampleStatus.php:591
+#: vl/program-management/getSampleStatus.php:577
 msgid "Collected - Tested"
 msgstr "Collecté - Testé"
 
@@ -7131,7 +7131,7 @@ msgstr "Collecté - Testé"
 #: generic-tests/program-management/get-sample-status.php:385
 #: hepatitis/management/get-sample-status.php:561
 #: tb/management/getSampleStatus.php:500
-#: vl/program-management/getSampleStatus.php:601
+#: vl/program-management/getSampleStatus.php:587
 msgid "Collected - Printed"
 msgstr "Collecté - Imprimé"
 
@@ -7956,8 +7956,8 @@ msgstr "La demande de Covid-19 a été mise à jour avec succès"
 #: generic-tests/results/update-generic-test-result-helper.php:206
 #: hepatitis/requests/hepatitis-edit-request-helper.php:272
 #: hepatitis/results/hepatitis-update-result-helper.php:105
-#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:426
-#: vl/requests/editVlRequestHelper.php:395
+#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:427
+#: vl/requests/editVlRequestHelper.php:396
 #: vl/results/updateVlTestResultHelper.php:213
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
@@ -8521,7 +8521,7 @@ msgstr "Nom"
 #: eid/results/forms/update-cameroon-result.php:246
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:235
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:235
 #: vl/requests/forms/edit-cameroon.php:285
 #: vl/results/forms/update-cameroon-result.php:319
 msgid "Date of Birth"
@@ -8916,27 +8916,27 @@ msgstr "Date de réception de l'échantillon"
 #: tb/results/forms/update-southsudan.php:311
 #: tb/results/forms/update-southsudan.php:375
 #: tb/results/forms/update-southsudan.php:381 vl/requests/forms/add-drc.php:141
-#: vl/requests/forms/add-drc.php:300 vl/requests/forms/add-drc.php:325
-#: vl/requests/forms/add-drc.php:350 vl/requests/forms/add-drc.php:377
-#: vl/requests/forms/add-drc.php:413 vl/requests/forms/add-drc.php:436
-#: vl/requests/forms/add-drc.php:449 vl/requests/forms/add-sierraleone.php:828
+#: vl/requests/forms/add-drc.php:302 vl/requests/forms/add-drc.php:327
+#: vl/requests/forms/add-drc.php:352 vl/requests/forms/add-drc.php:379
+#: vl/requests/forms/add-drc.php:415 vl/requests/forms/add-drc.php:438
+#: vl/requests/forms/add-drc.php:451 vl/requests/forms/add-sierraleone.php:828
 #: vl/requests/forms/add-southsudan.php:718 vl/requests/forms/add-who.php:687
 #: vl/requests/forms/edit-drc.php:117 vl/requests/forms/edit-drc.php:175
-#: vl/requests/forms/edit-drc.php:235 vl/requests/forms/edit-drc.php:326
-#: vl/requests/forms/edit-drc.php:353 vl/requests/forms/edit-drc.php:378
-#: vl/requests/forms/edit-drc.php:405 vl/requests/forms/edit-drc.php:443
-#: vl/requests/forms/edit-drc.php:465 vl/requests/forms/edit-drc.php:477
+#: vl/requests/forms/edit-drc.php:235 vl/requests/forms/edit-drc.php:327
+#: vl/requests/forms/edit-drc.php:354 vl/requests/forms/edit-drc.php:379
+#: vl/requests/forms/edit-drc.php:406 vl/requests/forms/edit-drc.php:444
+#: vl/requests/forms/edit-drc.php:466 vl/requests/forms/edit-drc.php:478
 #: vl/requests/forms/edit-sierraleone.php:975
 #: vl/requests/forms/edit-southsudan.php:835 vl/requests/forms/edit-who.php:826
 #: vl/results/forms/update-drc-result.php:164
 #: vl/results/forms/update-drc-result.php:190
-#: vl/results/forms/update-drc-result.php:260
-#: vl/results/forms/update-drc-result.php:287
-#: vl/results/forms/update-drc-result.php:317
-#: vl/results/forms/update-drc-result.php:367
-#: vl/results/forms/update-drc-result.php:410
-#: vl/results/forms/update-drc-result.php:431
-#: vl/results/forms/update-drc-result.php:443
+#: vl/results/forms/update-drc-result.php:271
+#: vl/results/forms/update-drc-result.php:298
+#: vl/results/forms/update-drc-result.php:328
+#: vl/results/forms/update-drc-result.php:378
+#: vl/results/forms/update-drc-result.php:421
+#: vl/results/forms/update-drc-result.php:442
+#: vl/results/forms/update-drc-result.php:454
 #: vl/results/forms/update-sierraleone-result.php:859
 #: vl/results/forms/update-southsudan-result.php:855
 msgid "Please enter date"
@@ -9000,7 +9000,7 @@ msgstr "Veuillez sélectionner un point de contrôle"
 #: eid/results/forms/update-cameroon-result.php:516
 #: eid/results/forms/update-drc-result.php:471
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:567
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:567
 #: vl/requests/forms/edit-cameroon.php:671
 #: vl/results/forms/update-cameroon-result.php:697
 msgid "Is Sample Rejected?"
@@ -9026,10 +9026,10 @@ msgstr "Veuillez sélectionner le motif du refus"
 #: eid/requests/forms/add-cameroon.php:539
 #: eid/requests/forms/edit-cameroon.php:568
 #: eid/results/forms/update-cameroon-result.php:542
-#: vl/requests/forms/add-cameroon.php:620 vl/requests/forms/add-drc.php:489
-#: vl/requests/forms/edit-cameroon.php:725 vl/requests/forms/edit-drc.php:515
+#: vl/requests/forms/add-cameroon.php:620 vl/requests/forms/add-drc.php:491
+#: vl/requests/forms/edit-cameroon.php:725 vl/requests/forms/edit-drc.php:516
 #: vl/results/forms/update-cameroon-result.php:741
-#: vl/results/forms/update-drc-result.php:479
+#: vl/results/forms/update-drc-result.php:490
 msgid "Rejection Date"
 msgstr "Date de rejet"
 
@@ -9339,7 +9339,7 @@ msgstr "Âge (en années)"
 #: tb/requests/patientModal.php:82
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27 vl/requests/patientModal.php:107
+#: vl/requests/export-vl-requests.php:28 vl/requests/patientModal.php:107
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:246
 msgid "Age"
 msgstr "Age"
@@ -9584,7 +9584,7 @@ msgstr "Mettre à jour la demande"
 #: hepatitis/results/hepatitis-samples-for-manual-result-entry.php:246
 #: tb/requests/get-request-list.php:283
 #: tb/results/tb-samples-for-manual-result-entry.php:231
-#: vl/requests/get-request-list.php:353 vl/results/get-manual-results.php:273
+#: vl/requests/get-request-list.php:354 vl/results/get-manual-results.php:273
 #: vl/results/getVlTestResultDetails.php:223
 msgid "Locked"
 msgstr "Verrouillé"
@@ -9592,21 +9592,21 @@ msgstr "Verrouillé"
 #: covid-19/requests/get-request-list.php:319
 #: eid/requests/get-request-list.php:333
 #: hepatitis/requests/get-request-list.php:286
-#: tb/requests/get-request-list.php:291 vl/requests/get-request-list.php:364
+#: tb/requests/get-request-list.php:291 vl/requests/get-request-list.php:365
 msgid "Sync Sample"
 msgstr "Échantillon de synchronisation"
 
 #: covid-19/requests/get-request-list.php:319
 #: eid/requests/get-request-list.php:333
 #: hepatitis/requests/get-request-list.php:286
-#: tb/requests/get-request-list.php:291 vl/requests/get-request-list.php:364
+#: tb/requests/get-request-list.php:291 vl/requests/get-request-list.php:365
 msgid "Sync"
 msgstr "Synchroniser"
 
 #: covid-19/requests/get-request-list.php:327
 #: eid/requests/get-request-list.php:341
 #: hepatitis/requests/get-request-list.php:291
-#: tb/requests/get-request-list.php:299 vl/requests/get-request-list.php:359
+#: tb/requests/get-request-list.php:299 vl/requests/get-request-list.php:360
 msgid "Barcode"
 msgstr "Code barre"
 
@@ -10227,9 +10227,9 @@ msgstr ""
 #: generic-tests/program-management/generic-export-data.php:159
 #: generic-tests/results/email-results.php:192
 #: hepatitis/results/email-results.php:192 mail/vlResultMail.php:192
-#: tb/results/email-results.php:192 vl/program-management/highViralLoad.php:261
-#: vl/program-management/highViralLoad.php:583
-#: vl/program-management/highViralLoad.php:808
+#: tb/results/email-results.php:192 vl/program-management/highViralLoad.php:254
+#: vl/program-management/highViralLoad.php:576
+#: vl/program-management/highViralLoad.php:801
 #: vl/program-management/vl-export-data.php:232 vl/requests/vl-requests.php:239
 #: vl/results/email-results.php:192 vl/results/vlResultMail.php:192
 msgid "Pregnant"
@@ -10691,7 +10691,7 @@ msgstr "Résultats pas encore imprimés"
 msgid "Samples with Accepted Results"
 msgstr "Accepté"
 
-#: dashboard/getSampleCount.php:217 dashboard/getSampleResult.php:679
+#: dashboard/getSampleCount.php:217 dashboard/getSampleResult.php:687
 msgid "Samples Rejected"
 msgstr "Échantillons rejetés"
 
@@ -10711,63 +10711,67 @@ msgstr "Résultats déjà imprimés"
 msgid "Select Collection Point(s)"
 msgstr "Sélectionner le(s) point(s) de collecte"
 
-#: dashboard/getSampleResult.php:309
+#: dashboard/getSampleResult.php:317
 msgid "SAMPLES REGISTERED"
 msgstr "ÉCHANTILLONS ENREGISTRÉS"
 
-#: dashboard/getSampleResult.php:312 dashboard/getSampleResult.php:333
-#: dashboard/getSampleResult.php:355
+#: dashboard/getSampleResult.php:320 dashboard/getSampleResult.php:341
+#: dashboard/getSampleResult.php:363
 msgid "In Selected Range"
 msgstr "Aucune imprimante sélectionnée"
 
-#: dashboard/getSampleResult.php:330
+#: dashboard/getSampleResult.php:338
 msgid "SAMPLES TESTED"
 msgstr "Nombre d'échantillons testés"
 
-#: dashboard/getSampleResult.php:352
+#: dashboard/getSampleResult.php:360
 msgid "SAMPLES REJECTED"
 msgstr "ÉCHANTILLONS REJETÉS"
 
-#: dashboard/getSampleResult.php:374
+#: dashboard/getSampleResult.php:382
 msgid "SAMPLES WITH NO RESULTS"
 msgstr "Nombre d'échantillons"
 
-#: dashboard/getSampleResult.php:377
+#: dashboard/getSampleResult.php:385
 msgid "(LAST 6 MONTHS)"
 msgstr "(6 DERNIERS MOIS)"
 
-#: dashboard/getSampleResult.php:393
+#: dashboard/getSampleResult.php:401
 msgid "CURRENT SAMPLES STATUS - OVERALL"
 msgstr "ÉTAT ACTUEL DES ÉCHANTILLONS - GÉNÉRAL"
 
-#: dashboard/getSampleResult.php:396
+#: dashboard/getSampleResult.php:404
 msgid "(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"
 msgstr ""
 "(SUR LA BASE DES ÉCHANTILLONS PRÉLEVÉS DANS LA PLAGE DE DATES SÉLECTIONNÉE)"
 
-#: dashboard/getSampleResult.php:669
+#: dashboard/getSampleResult.php:677
 msgid "Overall Sample Status"
 msgstr "Statut global de l'échantillon"
 
-#: dashboard/getSampleResult.php:678
+#: dashboard/getSampleResult.php:686
 msgid "Samples Tested"
 msgstr "Nombre d'échantillons testés"
 
-#: dashboard/getSampleResult.php:680
+#: dashboard/getSampleResult.php:688
 msgid "Samples on Hold"
 msgstr "Échantillons en attente"
 
-#: dashboard/getSampleResult.php:681
+#: dashboard/getSampleResult.php:689
 msgid "Samples Registered at Testing Lab"
 msgstr "Enregistré au laboratoire de test"
 
-#: dashboard/getSampleResult.php:682
+#: dashboard/getSampleResult.php:690
 msgid "Samples Awaiting Approval"
 msgstr "Échantillons en attente d'approbation"
 
-#: dashboard/getSampleResult.php:683
+#: dashboard/getSampleResult.php:691
 msgid "Samples Registered at Collection Sites"
 msgstr "Échantillons enregistrés sur les sites de collecte"
+
+#: dashboard/getSampleResult.php:707
+msgid "Total"
+msgstr "Total"
 
 #: dashboard/index.php:3 roles/addRole.php:168 roles/editRole.php:191
 #: system/translate-strings.php:111
@@ -10811,42 +10815,42 @@ msgstr "Tests de confirmation de la récence"
 msgid "Select Sample Collection daterange"
 msgstr "Date de prélèvement de l'échantillon"
 
-#: dashboard/index.php:825
+#: dashboard/index.php:818
 msgid "EID testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) d'essais de l'EID n'a (n'ont) pas atteint l'objectif "
 "d'essais mensuels"
 
-#: dashboard/index.php:825 dashboard/index.php:849 dashboard/index.php:872
-#: dashboard/index.php:896 dashboard/index.php:920 dashboard/index.php:941
+#: dashboard/index.php:818 dashboard/index.php:842 dashboard/index.php:865
+#: dashboard/index.php:889 dashboard/index.php:913 dashboard/index.php:934
 msgid "more"
 msgstr "plus"
 
-#: dashboard/index.php:849
+#: dashboard/index.php:842
 msgid "VL testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) d'analyse VL n'a (n'ont) pas atteint l'objectif mensuel "
 "d'analyse"
 
-#: dashboard/index.php:872
+#: dashboard/index.php:865
 msgid "VL testing lab(s) did not meet suppression targets"
 msgstr ""
 "Le(s) laboratoire(s) d'analyse VL n'a (n'ont) pas atteint les objectifs de "
 "suppression"
 
-#: dashboard/index.php:896
+#: dashboard/index.php:889
 msgid "Covid-19 testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) d'analyse Covid-19 n'a (n'ont) pas atteint l'objectif "
 "mensuel d'analyse"
 
-#: dashboard/index.php:920
+#: dashboard/index.php:913
 msgid "Hepatitis testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) de dépistage de l'hépatite n'a (n'ont) pas atteint "
 "l'objectif mensuel de dépistage"
 
-#: dashboard/index.php:941
+#: dashboard/index.php:934
 msgid "TB testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) de dépistage de la tuberculose n'a (n'ont) pas atteint "
@@ -12219,9 +12223,8 @@ msgstr "Veuillez saisir la désignation"
 #: facilities/addFacility.php:634 facilities/editFacility.php:604
 #: facilities/editFacility.php:632 facilities/editFacility.php:985
 #: users/addUser.php:149 users/editUser.php:201
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:335
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:340
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:343
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:333
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:339
 msgid "Signature"
 msgstr "Signature"
 
@@ -12436,6 +12439,10 @@ msgstr ""
 "Cliquez ici pour télécharger le format Excel permettant de télécharger des "
 "installations en masse"
 
+#: footer.php:41
+msgid "Clear Cache"
+msgstr "Vider Cache"
+
 #: footer.php:54
 msgid "Force Remote Sync"
 msgstr "Forcer la synchronisation à distance"
@@ -12444,33 +12451,33 @@ msgstr "Forcer la synchronisation à distance"
 msgid "Last synced at"
 msgstr "Dernière synchronisation le"
 
-#: footer.php:119
+#: footer.php:132
 msgid "Please connect to internet to sync with STS"
 msgstr "Veuillez vous connecter à Internet pour synchroniser avec STS"
 
-#: footer.php:125
+#: footer.php:138
 msgid "Preparing for STS sync."
 msgstr "Préparation de la synchronisation STS."
 
-#: footer.php:136 footer.php:160 footer.php:184
+#: footer.php:149 footer.php:173 footer.php:197
 msgid "Unable to do STS Sync. Please contact technical team for assistance."
 msgstr ""
 "Impossible d'effectuer la synchronisation STS. Veuillez contacter l'équipe "
 "technique pour obtenir de l'aide."
 
-#: footer.php:147
+#: footer.php:160
 msgid "Trying to sync Test Results"
 msgstr "Essayer de synchroniser les résultats des tests"
 
-#: footer.php:171
+#: footer.php:184
 msgid "Trying to sync Test Requests"
 msgstr "Essayer de synchroniser les demandes de test"
 
-#: footer.php:204 footer.php:215
+#: footer.php:217 footer.php:228
 msgid "Thank you.Your message has been submitted."
 msgstr "Merci, votre message a été envoyé."
 
-#: footer.php:331
+#: footer.php:344
 msgid ""
 "Invalid phone number. Please enter full phone number with the proper country "
 "code"
@@ -12478,15 +12485,15 @@ msgstr ""
 "Numéro de téléphone non valide. Veuillez saisir le numéro de téléphone "
 "complet avec l'indicatif du pays"
 
-#: footer.php:367
+#: footer.php:380
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identité du patient : "
 
-#: footer.php:387
+#: footer.php:400
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères à rechercher"
 
-#: footer.php:442
+#: footer.php:455
 msgid "Cache cleared successfully"
 msgstr "Le cache a été éliminé avec succès"
 
@@ -13807,9 +13814,9 @@ msgstr "Sélectionner la date de création de la demande"
 
 #: generic-tests/program-management/generic-export-data.php:160
 #: generic-tests/program-management/generic-export-data.php:168
-#: vl/program-management/highViralLoad.php:264
-#: vl/program-management/highViralLoad.php:586
-#: vl/program-management/highViralLoad.php:811
+#: vl/program-management/highViralLoad.php:257
+#: vl/program-management/highViralLoad.php:579
+#: vl/program-management/highViralLoad.php:804
 #: vl/program-management/vl-export-data.php:234
 #: vl/program-management/vl-export-data.php:250 vl/requests/vl-requests.php:241
 #: vl/requests/vl-requests.php:257
@@ -13817,10 +13824,10 @@ msgid "Please choose pregnant option"
 msgstr "Veuillez choisir l'option enceinte"
 
 #: generic-tests/program-management/generic-export-data.php:167
-#: vl/program-management/highViralLoad.php:280
-#: vl/program-management/highViralLoad.php:447
-#: vl/program-management/highViralLoad.php:599
-#: vl/program-management/highViralLoad.php:824
+#: vl/program-management/highViralLoad.php:273
+#: vl/program-management/highViralLoad.php:440
+#: vl/program-management/highViralLoad.php:592
+#: vl/program-management/highViralLoad.php:817
 #: vl/program-management/vl-export-data.php:248 vl/requests/vl-requests.php:255
 msgid "Breastfeeding"
 msgstr "Allaitement"
@@ -13836,7 +13843,7 @@ msgstr "Échantillon communautaire"
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/vl-export-data.php:448
 #: vl/program-management/vl-export-data.php:507
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Sample Tested On"
 msgstr "Échantillon testé sur"
 
@@ -13845,7 +13852,7 @@ msgstr "Échantillon testé sur"
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/vl-export-data.php:463
 #: vl/program-management/vl-export-data.php:522
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Request Created On"
 msgstr "Créé le"
 
@@ -13859,12 +13866,12 @@ msgid "Other Lab Tests Sample Status Report"
 msgstr "Autres tests de laboratoire Rapport sur l'état de l'échantillon"
 
 #: generic-tests/program-management/generic-sample-status.php:157
-#: vl/program-management/vl-sample-status.php:161
+#: vl/program-management/vl-sample-status.php:158
 msgid "External Sample ID"
 msgstr "ID de l'échantillon externe"
 
 #: generic-tests/program-management/generic-sample-status.php:163
-#: vl/program-management/vl-sample-status.php:167
+#: vl/program-management/vl-sample-status.php:164
 msgid "Sample Dispatch Date"
 msgstr "Date d'envoi de l'échantillon"
 
@@ -13873,14 +13880,14 @@ msgid "Other Lab Tests | Clinics Report"
 msgstr "Autres tests de laboratoire | Rapport sur les cliniques"
 
 #: generic-tests/program-management/get-sample-status.php:221
-#: vl/program-management/getSampleStatus.php:322
+#: vl/program-management/getSampleStatus.php:306
 msgid "Samples Status Overview (N = "
 msgstr "Aperçu de l'état des échantillons (N = "
 
 #: generic-tests/program-management/get-sample-status.php:271
 #: generic-tests/program-management/get-sample-status.php:276
-#: vl/program-management/getSampleStatus.php:487
-#: vl/program-management/getSampleStatus.php:492
+#: vl/program-management/getSampleStatus.php:471
+#: vl/program-management/getSampleStatus.php:476
 msgid "Laboratory Turnaround Time"
 msgstr "Délai d'exécution du laboratoire"
 
@@ -14010,8 +14017,8 @@ msgstr "Demandes d'analyses de laboratoire"
 #: generic-tests/requests/view-requests.php:171
 #: generic-tests/results/generic-failed-results.php:202
 #: generic-tests/results/generic-result-approval.php:232
-#: vl/program-management/highViralLoad.php:933
-#: vl/program-management/highViralLoad.php:1002
+#: vl/program-management/highViralLoad.php:926
+#: vl/program-management/highViralLoad.php:995
 #: vl/program-management/vl-export-data.php:489
 #: vl/program-management/vlMonitoringReport.php:264
 #: vl/requests/addSamplesFromManifest.php:81 vl/requests/vl-requests.php:621
@@ -14112,7 +14119,7 @@ msgid "Please select the instance type"
 msgstr "Veuillez sélectionner le type d'instance"
 
 #: global-config/editGlobalConfig.php:112
-#: vl/program-management/highViralLoad.php:351
+#: vl/program-management/highViralLoad.php:344
 msgid "Viral Load Lab"
 msgstr "Laboratoire de charge virale"
 
@@ -15537,7 +15544,7 @@ msgstr "Nom de la clinique/du site"
 
 #: import-result/imported-results.php:247
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Comments"
 msgstr "Commentaires"
 
@@ -16310,7 +16317,7 @@ msgstr "Saisir l'âge en mois"
 
 #: patients/add-patient.php:178 patients/edit-patient.php:195
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:290
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:290
 #: vl/requests/forms/edit-cameroon.php:340
 #: vl/results/forms/update-cameroon-result.php:377
 msgid "Is Patient Pregnant?"
@@ -16325,7 +16332,7 @@ msgstr "Veuillez cocher si la patiente est enceinte"
 
 #: patients/add-patient.php:189 patients/edit-patient.php:206
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:307
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:307
 #: vl/requests/forms/edit-cameroon.php:357
 #: vl/results/forms/update-cameroon-result.php:394
 msgid "Is Patient Breastfeeding?"
@@ -18127,7 +18134,7 @@ msgstr "Mise à jour de l'utilisateur réussie"
 
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "S.No."
 msgstr "S.No."
 
@@ -18150,6 +18157,13 @@ msgstr "Projet"
 #: vl/program-management/export-vl-results.php:33
 msgid "Existing ART Code"
 msgstr "Code ART existant"
+
+#: vl/program-management/export-vl-results.php:33
+#: vl/program-management/export-vl-results.php:36
+#: vl/program-management/export-vl-results.php:50
+#: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
+msgid "KP"
+msgstr "KP"
 
 #: vl/program-management/export-vl-results.php:33
 msgid "Sample Creation Date"
@@ -18223,7 +18237,7 @@ msgstr "Résultat Valeur"
 
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Result Printed Date"
 msgstr "Résultat Date d'impression"
 
@@ -18241,7 +18255,7 @@ msgstr "Nom du laboratoire de référence"
 
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Sample Reception Date"
 msgstr "Exemple de date de réception"
 
@@ -18254,7 +18268,7 @@ msgid "TAT"
 msgstr "TAT"
 
 #: vl/program-management/export-vl-results.php:33
-#: vl/program-management/highViralLoad.php:463
+#: vl/program-management/highViralLoad.php:456
 msgid "Age Range"
 msgstr "Tranche d’âge"
 
@@ -18305,19 +18319,18 @@ msgid "Observations"
 msgstr "Observations"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Health Facility Name"
 msgstr "Nom de l'établissement de santé"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Health Facility Code"
 msgstr "Code de l'établissement de santé"
 
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:39
-#: vl/requests/export-vl-requests.php:27 vl/requests/export-vl-requests.php:29
-#: vl/requests/export-vl-requests.php:30 vl/results/vlPrintResult.php:280
+#: vl/requests/export-vl-requests.php:28 vl/results/vlPrintResult.php:280
 msgid "Unique ART No."
 msgstr "Unique ART No."
 
@@ -18326,7 +18339,7 @@ msgid "Patient Cellphone Number"
 msgstr "Numéro de téléphone portable du patient"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27 vl/requests/forms/add-cameroon.php:332
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:332
 #: vl/requests/forms/edit-cameroon.php:382
 #: vl/results/forms/update-cameroon-result.php:421
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:253
@@ -18334,32 +18347,32 @@ msgid "Date of Sample Collection"
 msgstr "Date de prélèvement de l'échantillon"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Date of Treatment Initiation"
 msgstr "Date de début du traitement"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Current Regimen"
 msgstr "Régime actuel"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Date of Initiation of Current Regimen"
 msgstr "Date d'instauration du régime actuel"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "ARV Adherence"
 msgstr "Adhésion aux ARV"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Indication for Viral Load Testing"
 msgstr "Indications pour l'analyse de la charge virale"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Requesting Clinican"
 msgstr "Clinicien demandeur"
 
@@ -18368,17 +18381,17 @@ msgid "Requesting Clinican Cellphone Number"
 msgstr "Demande de numéro de téléphone portable du clinicien"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Request Date"
 msgstr "Date de la demande"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Result (cp/ml)"
 msgstr "Résultats (cp/ml)"
 
 #: vl/program-management/export-vl-results.php:36
-#: vl/requests/export-vl-requests.php:27
+#: vl/requests/export-vl-requests.php:28
 msgid "Result (log)"
 msgstr "Résultats (log)"
 
@@ -18395,19 +18408,19 @@ msgstr "Moyenne"
 msgid "SD"
 msgstr "SD"
 
-#: vl/program-management/getSampleStatus.php:383
+#: vl/program-management/getSampleStatus.php:367
 msgid "VL Suppression (N = "
 msgstr "Suppression de la VL (N = "
 
-#: vl/program-management/getSampleStatus.php:438
+#: vl/program-management/getSampleStatus.php:422
 msgid "HIV Viral Load Detection (N = "
 msgstr "Tests de charge virale du VIH "
 
-#: vl/program-management/getSampleStatus.php:444
+#: vl/program-management/getSampleStatus.php:428
 msgid "Viral Load Detection"
 msgstr "Tests de charge virale du VIH"
 
-#: vl/program-management/getSampleStatus.php:611
+#: vl/program-management/getSampleStatus.php:597
 msgid "Collected - Printed First Time"
 msgstr "Recueilli - Imprimé pour la première fois"
 
@@ -18424,75 +18437,75 @@ msgstr "Nombre d'objectifs dans le mois %"
 msgid "VL | Clinics Report"
 msgstr "Rapport sur les cliniques VL"
 
-#: vl/program-management/highViralLoad.php:134
+#: vl/program-management/highViralLoad.php:139
 msgid "High Viral Load Report"
 msgstr "Rapport de charge virale élevée"
 
-#: vl/program-management/highViralLoad.php:137
+#: vl/program-management/highViralLoad.php:140
 msgid "High VL and Virologic Failure Report"
 msgstr "Rapport sur les taux élevés de LV et l'échec virologique"
 
-#: vl/program-management/highViralLoad.php:283
-#: vl/program-management/highViralLoad.php:602
-#: vl/program-management/highViralLoad.php:827
+#: vl/program-management/highViralLoad.php:276
+#: vl/program-management/highViralLoad.php:595
+#: vl/program-management/highViralLoad.php:820
 msgid "Please choose option"
 msgstr "Veuillez choisir une option"
 
-#: vl/program-management/highViralLoad.php:296
-#: vl/program-management/highViralLoad.php:640
-#: vl/program-management/highViralLoad.php:842
-#: vl/program-management/highViralLoad.php:959
+#: vl/program-management/highViralLoad.php:289
+#: vl/program-management/highViralLoad.php:633
+#: vl/program-management/highViralLoad.php:835
+#: vl/program-management/highViralLoad.php:952
 msgid "Export with Patient Name"
 msgstr "Noms du patient"
 
-#: vl/program-management/highViralLoad.php:336
-#: vl/program-management/highViralLoad.php:679
-#: vl/program-management/highViralLoad.php:881
+#: vl/program-management/highViralLoad.php:329
+#: vl/program-management/highViralLoad.php:672
+#: vl/program-management/highViralLoad.php:874
 msgid "Patient ART no"
 msgstr "Patient ART no"
 
-#: vl/program-management/highViralLoad.php:342
+#: vl/program-management/highViralLoad.php:335
 msgid "Patient Phone no"
 msgstr "Numéro de téléphone du patient"
 
-#: vl/program-management/highViralLoad.php:354
+#: vl/program-management/highViralLoad.php:347
 msgid "Viral Load (cp/ml)"
 msgstr "Charge virale (cp/ml)"
 
-#: vl/program-management/highViralLoad.php:431
+#: vl/program-management/highViralLoad.php:424
 msgid "Pregnancy"
 msgstr "Grossesse"
 
-#: vl/program-management/highViralLoad.php:434
+#: vl/program-management/highViralLoad.php:427
 msgid "Please select pregnancy"
 msgstr "Veuillez sélectionner la grossesse"
 
-#: vl/program-management/highViralLoad.php:476
+#: vl/program-management/highViralLoad.php:469
 msgid " Generate report"
 msgstr " Générer un rapport"
 
-#: vl/program-management/highViralLoad.php:1125
+#: vl/program-management/highViralLoad.php:1118
 msgid "Select Option"
 msgstr "Choisir une option"
 
-#: vl/program-management/highViralLoad.php:1227
+#: vl/program-management/highViralLoad.php:1220
 msgid "No data found matching the selected parameters"
 msgstr "Aucune donnée trouvée correspondant aux paramètres sélectionnés"
 
-#: vl/program-management/highViralLoad.php:1620
+#: vl/program-management/highViralLoad.php:1613
 msgid "Do you wisht to change the contact completed status?"
 msgstr "Souhaitez-vous modifier le statut du contact terminé ?"
 
-#: vl/program-management/highViralLoad.php:1627
+#: vl/program-management/highViralLoad.php:1620
 msgid "Status updated successfully"
 msgstr "Statut mis à jour avec succès"
 
-#: vl/program-management/vl-sample-status.php:11
+#: vl/program-management/vl-sample-status.php:8
 msgid "VL | Sample Status Report"
 msgstr "VL | Rapport sur l'état de l'échantillon"
 
-#: vl/program-management/vl-sample-status.php:54
-#: vl/program-management/vl-sample-status.php:61
+#: vl/program-management/vl-sample-status.php:51
+#: vl/program-management/vl-sample-status.php:58
 msgid "VL Sample Status Report"
 msgstr "Rapport sur l'état de l'échantillon VL"
 
@@ -18510,7 +18523,7 @@ msgstr "Choisissez le type de contrôle"
 msgid "Choose control type"
 msgstr "Choisissez le type de contrôle"
 
-#: vl/program-management/vlControlReport.php:140
+#: vl/program-management/vlControlReport.php:141
 msgid ""
 "Please choose Sample Test Date Range and Control Type to generate the report"
 msgstr ""
@@ -18903,11 +18916,11 @@ msgstr "Ajouter le motif du test VL"
 msgid "Failure Reason"
 msgstr "Raison de l'échec"
 
-#: vl/requests/addVlRequestHelper.php:396
+#: vl/requests/addVlRequestHelper.php:397
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: vl/requests/editVlRequestHelper.php:387
+#: vl/requests/editVlRequestHelper.php:388
 #: vl/results/updateVlTestResultHelper.php:203
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
@@ -19400,28 +19413,28 @@ msgstr "Commentaires du laboratoire"
 msgid "Loading Printer Details..."
 msgstr "Chargement des détails de l'imprimante..."
 
-#: vl/requests/forms/add-cameroon.php:770 vl/requests/forms/add-drc.php:911
+#: vl/requests/forms/add-cameroon.php:770 vl/requests/forms/add-drc.php:915
 #: vl/requests/forms/add-png.php:659 vl/requests/forms/add-rwanda.php:729
 #: vl/requests/forms/add-sierraleone.php:943
 #: vl/requests/forms/add-southsudan.php:814 vl/requests/forms/add-who.php:783
 msgid "No. of times Test Requested for this Patient"
 msgstr "Nombre de fois où le test a été demandé pour ce patient"
 
-#: vl/requests/forms/add-cameroon.php:773 vl/requests/forms/add-drc.php:914
+#: vl/requests/forms/add-cameroon.php:773 vl/requests/forms/add-drc.php:918
 #: vl/requests/forms/add-png.php:662 vl/requests/forms/add-rwanda.php:732
 #: vl/requests/forms/add-sierraleone.php:946
 #: vl/requests/forms/add-southsudan.php:817 vl/requests/forms/add-who.php:786
 msgid "Last Test Request Added On LIS/STS"
 msgstr "Dernière demande envoyée par LIS/STS"
 
-#: vl/requests/forms/add-cameroon.php:776 vl/requests/forms/add-drc.php:917
+#: vl/requests/forms/add-cameroon.php:776 vl/requests/forms/add-drc.php:921
 #: vl/requests/forms/add-png.php:665 vl/requests/forms/add-rwanda.php:735
 #: vl/requests/forms/add-sierraleone.php:949
 #: vl/requests/forms/add-southsudan.php:820 vl/requests/forms/add-who.php:789
 msgid "Sample Collection Date for Last Request"
 msgstr "Date de prélèvement de l'échantillon pour la dernière demande"
 
-#: vl/requests/forms/add-cameroon.php:779 vl/requests/forms/add-drc.php:920
+#: vl/requests/forms/add-cameroon.php:779 vl/requests/forms/add-drc.php:924
 #: vl/requests/forms/add-png.php:668 vl/requests/forms/add-rwanda.php:738
 #: vl/requests/forms/add-sierraleone.php:952
 #: vl/requests/forms/add-southsudan.php:823 vl/requests/forms/add-who.php:792
@@ -19465,20 +19478,40 @@ msgstr "Veuillez indiquer l'âge du patient"
 msgid "Please select a gender"
 msgstr "Veuillez sélectionner un sexe"
 
-#: vl/requests/forms/add-drc.php:232 vl/requests/forms/edit-drc.php:256
-#: vl/results/forms/update-drc-result.php:222
-msgid "CPS"
-msgstr "CPS"
+#: vl/requests/forms/add-drc.php:229 vl/requests/forms/edit-drc.php:253
+#: vl/results/forms/update-drc-result.php:219
+msgid "M"
+msgstr "M"
 
-#: vl/requests/forms/add-drc.php:233 vl/requests/forms/edit-drc.php:257
-#: vl/results/forms/update-drc-result.php:223
+#: vl/requests/forms/add-drc.php:230 vl/requests/forms/edit-drc.php:254
+#: vl/results/forms/update-drc-result.php:220
+msgid "F"
+msgstr "F"
+
+#: vl/requests/forms/add-drc.php:235 vl/requests/forms/edit-drc.php:259
+#: vl/results/forms/update-drc-result.php:224
+msgid "Please choose KP"
+msgstr "Veuillez choisir KP"
+
+#: vl/requests/forms/add-drc.php:514 vl/requests/forms/edit-drc.php:540
+#: vl/results/forms/update-drc-result.php:511
+msgid "Reason for Failure"
+msgstr "Raison de l'échec"
+
+#: vl/requests/forms/add-drc.php:702 vl/requests/forms/edit-drc.php:839
+#: vl/results/forms/update-drc-result.php:226
 msgid "PS"
 msgstr "PS"
 
-#: vl/requests/forms/add-drc.php:512 vl/requests/forms/edit-drc.php:539
-#: vl/results/forms/update-drc-result.php:500
-msgid "Reason for Failure"
-msgstr "Raison de l'échec"
+#: vl/requests/forms/add-drc.php:705 vl/requests/forms/edit-drc.php:842
+#: vl/results/forms/update-drc-result.php:227
+msgid "CPS"
+msgstr "CPS"
+
+#: vl/requests/forms/add-drc.php:705 vl/requests/forms/edit-drc.php:842
+#: vl/results/forms/update-drc-result.php:228
+msgid "MSM"
+msgstr "MSM"
 
 #: vl/requests/forms/edit-cameroon.php:119
 msgid "Edit VL Request"
@@ -19492,9 +19525,9 @@ msgstr "Unique ART (TRACNET) No."
 msgid "Enter new reason of testing"
 msgstr "Saisir un nouveau motif de contrôle"
 
-#: vl/requests/forms/edit-drc.php:575 vl/requests/forms/edit-drc.php:579
-#: vl/results/forms/update-drc-result.php:539
-#: vl/results/forms/update-drc-result.php:546
+#: vl/requests/forms/edit-drc.php:576 vl/requests/forms/edit-drc.php:580
+#: vl/results/forms/update-drc-result.php:550
+#: vl/results/forms/update-drc-result.php:557
 msgid "Enter reason for changing the result"
 msgstr "Indiquer la raison de la modification du résultat"
 
@@ -19675,11 +19708,11 @@ msgstr "Consentement du patient à recevoir des SMS ?"
 msgid "Patient consent to receive SMS"
 msgstr "Consentement du patient à recevoir des SMS"
 
-#: vl/results/forms/update-drc-result.php:459
+#: vl/results/forms/update-drc-result.php:470
 msgid "Please select if sample is rejected"
 msgstr "Veuillez sélectionner si l'échantillon est rejeté"
 
-#: vl/results/forms/update-drc-result.php:469
+#: vl/results/forms/update-drc-result.php:480
 msgid "Please select reason for rejection"
 msgstr "Veuillez sélectionner la raison du rejet"
 
@@ -19906,6 +19939,9 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Facility Name & Code"
+#~ msgstr "Nom et code de la structure"
 
 #~ msgid "Viral Load Test Worksheet"
 #~ msgstr "Feuille de calcul du test de charge virale"
