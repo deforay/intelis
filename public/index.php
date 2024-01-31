@@ -2,7 +2,6 @@
 
 require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
-
 use App\Registries\ContainerRegistry;
 use Tuupola\Middleware\CorsMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
@@ -22,21 +21,29 @@ $request = ServerRequestFactory::fromGlobals();
 // Instantiate the middleware pipeline
 $middlewarePipe = new MiddlewarePipe();
 
-
 $uri = $request->getUri()->getPath();
+
+$host = $request->getUri()->getHost();
 
 $allowedDomains = [];
 
 if (isset(SYSTEM_CONFIG['remoteURL'])) {
-    $allowedDomains[] = SYSTEM_CONFIG['remoteURL'];
+    $allowedDomains[] = parse_url(SYSTEM_CONFIG['remoteURL'], PHP_URL_HOST);;
 }
+
+$allowedDomains[] = $host;
 
 $csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'";
+
+// Adding 'blob:' to img-src directive
+$imgSrcPolicy = "img-src 'self' data: blob:";
+
 foreach ($allowedDomains as $domain) {
     $csp .= " $domain";
+    $imgSrcPolicy .= " $domain";
 }
 
-$csp .= "; img-src 'self' data:; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
+$csp .= "; $imgSrcPolicy; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
 
 $middlewarePipe->pipe(middleware(function ($request, $handler) use ($csp) {
     $response = $handler->handle($request);

@@ -53,11 +53,13 @@ class CommonService
             $dateFormatArray['dayjsDateFieldFormat'] = 'DD-MM-YYYY';
             $dateFormatArray['jsDateRangeFormat'] = 'DD-MM-YYYY';
             $dateFormatArray['jsDateFormatMask'] = '99-99-9999';
+            $dateFormatArray['mysqlDateFormat'] = '%d-%m-%Y';
         } else {
             $dateFormatArray['jsDateFieldFormat'] = 'dd-M-yy';
             $dateFormatArray['dayjsDateFieldFormat'] = 'DD-MMM-YYYY';
             $dateFormatArray['jsDateRangeFormat'] = 'DD-MMM-YYYY';
             $dateFormatArray['jsDateFormatMask'] = '99-aaa-9999';
+            $dateFormatArray['mysqlDateFormat'] = '%d-%b-%Y';
         }
 
         if (empty($category)) {
@@ -73,6 +75,8 @@ class CommonService
             return $dateFormatArray['jsDateRangeFormat'] ?? 'DD-MM-YYYY';
         } elseif ($category == 'jsMask') {
             return $dateFormatArray['jsDateFormatMask'] ?? '99-99-9999';
+        } elseif ($category == 'mysql') {
+            return $dateFormatArray['mysqlDateFormat'] ?? '%d-%b-%Y';
         } else {
             return null;
         }
