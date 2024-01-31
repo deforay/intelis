@@ -244,13 +244,13 @@ if ($priInfo) {
 								</div>
 							</div>
 							<div class="form-group" style="padding-left:138px;">
-								<div class="privilege-switch">
+								<div class="privilege-switch super-switch">
 
-									<input type="radio" class='layCek' id="allowAllPrivileges" name="allPrivilegesRadio" value="yes" /></a>
+									<input type="radio" class='' id="allowAllPrivileges" name="allPrivilegesRadio" value="yes" /></a>
 									<label for="allowAllPrivileges">
 										<?php echo _translate("Select All"); ?>
 									</label>
-									<input type="radio" class='layCek' name="allPrivilegesRadio" id="denyAllPrivileges" name="switch-one" value="no" /></a>
+									<input type="radio" class='' name="allPrivilegesRadio" id="denyAllPrivileges" name="switch-one" value="no" /></a>
 									<label for="denyAllPrivileges">
 										<?php echo _translate("Unselect All"); ?>
 									</label>
@@ -344,14 +344,14 @@ if ($priInfo) {
 													$allowStyle = "";
 												}
 												echo "<div class='col-lg-3 privilege-div' data-privilegeid='" . $privilege['privilege_id'] . "' id='div" . $privilege['privilege_id'] . "'>
-											<strong class='privilege-label' data-privilegeid='" . $privilege['privilege_id'] . "' id='label" . $privilege['privilege_id'] . "'>" . _translate($privilege['display_name']) . "</strong>
-											<br>
+														<strong class='privilege-label' data-privilegeid='" . $privilege['privilege_id'] . "' id='label" . $privilege['privilege_id'] . "'>" . _translate($privilege['display_name']) . "</strong>
+														<br>
 
-											<div class='privilege-switch' data-privilegeid='" . $privilege['privilege_id'] . "' id='switch" . $privilege['privilege_id'] . "' style='margin: 30px 0 36px 90px;'>
-												<input type='radio' class='cekAll layCek' name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one" . $privilege['privilege_id'] . "' $allowChecked ><label for='radio-one" . $privilege['privilege_id'] . "' class='$allowStyle'>Yes</label>
-												<input type='radio' class='unCekAll layCek' name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two" . $privilege['privilege_id'] . "' $denyChecked > <label for='radio-two" . $privilege['privilege_id'] . "' class='$denyStyle'> No</label>
-											</div>
-											</div>";
+														<div class='privilege-switch' data-privilegeid='" . $privilege['privilege_id'] . "' id='switch" . $privilege['privilege_id'] . "' style='margin: 30px 0 36px 90px;'>
+															<input type='radio' class='selectPrivilege' name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one" . $privilege['privilege_id'] . "' $allowChecked ><label for='radio-one" . $privilege['privilege_id'] . "' class='$allowStyle'>Yes</label>
+															<input type='radio' class='unselectPrivilege' name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two" . $privilege['privilege_id'] . "' $denyChecked > <label for='radio-two" . $privilege['privilege_id'] . "' class='$denyStyle'> No</label>
+														</div>
+														</div>";
 											}
 											echo "</td></tr>";
 											$i++;
@@ -399,29 +399,29 @@ if ($priInfo) {
 	}
 
 	$("#allowAllPrivileges").click(function() {
-		$('.unCekAll').prop('checked', false);
-		$('.cekAll').prop('checked', true);
-		$('.unCekAll').next('label').addClass('normal-label');
-		$('.cekAll').next('label').addClass('allow-label');
+		$('.unselectPrivilege').prop('checked', false);
+		$('.selectPrivilege').prop('checked', true);
+		$('.unselectPrivilege').next('label').addClass('normal-label');
+		$('.selectPrivilege').next('label').addClass('allow-label');
 		$(this).next('label').addClass('allow-label');
 		$("#denyAllPrivileges").next('label').addClass('normal-label');
 
-		$('.unCekAll').next('label').removeClass('deny-label');
-		$('.cekAll').next('label').removeClass('normal-label');
+		$('.unselectPrivilege').next('label').removeClass('deny-label');
+		$('.selectPrivilege').next('label').removeClass('normal-label');
 		$(this).next('label').removeClass('deny-label');
 		$("#allowAllPrivileges").next('label').removeClass('normal-label');
 	});
 
 	$("#denyAllPrivileges").click(function() {
-		$('.cekAll').prop('checked', false);
-		$('.unCekAll').prop('checked', true);
-		$('.unCekAll').next('label').addClass('deny-label');
-		$('.cekAll').next('label').addClass('normal-label');
+		$('.selectPrivilege').prop('checked', false);
+		$('.unselectPrivilege').prop('checked', true);
+		$('.unselectPrivilege').next('label').addClass('deny-label');
+		$('.selectPrivilege').next('label').addClass('normal-label');
 		$(this).next('label').addClass('deny-label');
 		$("#allowAllPrivileges").next('label').addClass('normal-label');
 
-		$('.unCekAll').next('label').removeClass('normal-label');
-		$('.cekAll').next('label').removeClass('allow-label');
+		$('.unselectPrivilege').next('label').removeClass('normal-label');
+		$('.selectPrivilege').next('label').removeClass('allow-label');
 		$(this).next('label').removeClass('allow-label');
 		$("#denyAllPrivileges").next('label').removeClass('normal-label');
 
@@ -431,17 +431,17 @@ if ($priInfo) {
 	$('.privilege-switch input').click(function() {
 		val = $(this).val();
 		if (val == "deny") {
-			$(this).closest('.privilege-switch').find('.unCekAll').next('label').addClass('deny-label');
-			$(this).closest('.privilege-switch').find('.cekAll').next('label').addClass('normal-label');
-			$(this).closest('.privilege-switch').find('.unCekAll').next('label').removeClass('normal-label');
-			$(this).closest('.privilege-switch').find('.cekAll').next('label').removeClass('allow-label');
-			//$(this).closest('.privilege-switch').find('.unCekAll').next('label').css('background-color', '#d9534f');
-			//$(this).closest('.privilege-switch').find('.cekAll').next('label').css('background-color', '#e4e4e4');
+			$(this).closest('.privilege-switch').find('.unselectPrivilege').next('label').addClass('deny-label');
+			$(this).closest('.privilege-switch').find('.selectPrivilege').next('label').addClass('normal-label');
+			$(this).closest('.privilege-switch').find('.unselectPrivilege').next('label').removeClass('normal-label');
+			$(this).closest('.privilege-switch').find('.selectPrivilege').next('label').removeClass('allow-label');
+			//$(this).closest('.privilege-switch').find('.unselectPrivilege').next('label').css('background-color', '#d9534f');
+			//$(this).closest('.privilege-switch').find('.selectPrivilege').next('label').css('background-color', '#e4e4e4');
 		} else if (val == "allow") {
-			$(this).closest('.privilege-switch').find('.unCekAll').next('label').addClass('normal-label');
-			$(this).closest('.privilege-switch').find('.cekAll').next('label').addClass('allow-label');
-			$(this).closest('.privilege-switch').find('.unCekAll').next('label').removeClass('deny-label');
-			$(this).closest('.privilege-switch').find('.cekAll').next('label').removeClass('normal-label');
+			$(this).closest('.privilege-switch').find('.unselectPrivilege').next('label').addClass('normal-label');
+			$(this).closest('.privilege-switch').find('.selectPrivilege').next('label').addClass('allow-label');
+			$(this).closest('.privilege-switch').find('.unselectPrivilege').next('label').removeClass('deny-label');
+			$(this).closest('.privilege-switch').find('.selectPrivilege').next('label').removeClass('normal-label');
 		}
 	});
 
@@ -450,28 +450,28 @@ if ($priInfo) {
 
 	function togglePrivilegesForThisResource(obj, checked) {
 		if (checked == true) {
-			$("#" + obj).find('.cekAll').prop('checked', true);
-			$("#" + obj).find('.unCekAll').prop('checked', false);
-			$("#" + obj).find('.unCekAll').next('label').addClass('normal-label');
-			$("#" + obj).find('.cekAll').next('label').addClass('allow-label');
+			$("#" + obj).find('.selectPrivilege').prop('checked', true);
+			$("#" + obj).find('.unselectPrivilege').prop('checked', false);
+			$("#" + obj).find('.unselectPrivilege').next('label').addClass('normal-label');
+			$("#" + obj).find('.selectPrivilege').next('label').addClass('allow-label');
 			$("#all" + obj).next('label').addClass('allow-label');
 			$("#none" + obj).next('label').addClass('normal-label');
 
-			$("#" + obj).find('.unCekAll').next('label').removeClass('deny-label');
-			$("#" + obj).find('.cekAll').next('label').removeClass('normal-label');
+			$("#" + obj).find('.unselectPrivilege').next('label').removeClass('deny-label');
+			$("#" + obj).find('.selectPrivilege').next('label').removeClass('normal-label');
 			$("#all" + obj).next('label').removeClass('normal-label');
 			$("#none" + obj).next('label').removeClass('deny-label');
 
 		} else if (checked == false) {
-			$("#" + obj).find('.cekAll').prop('checked', false);
-			$("#" + obj).find('.unCekAll').prop('checked', true);
-			$("#" + obj).find('.unCekAll').next('label').addClass('deny-label');
-			$("#" + obj).find('.cekAll').next('label').addClass('normal-label');
+			$("#" + obj).find('.selectPrivilege').prop('checked', false);
+			$("#" + obj).find('.unselectPrivilege').prop('checked', true);
+			$("#" + obj).find('.unselectPrivilege').next('label').addClass('deny-label');
+			$("#" + obj).find('.selectPrivilege').next('label').addClass('normal-label');
 			$("#all" + obj).next('label').addClass('normal-label');
 			$("#none" + obj).next('label').addClass('deny-label');
 
-			$("#" + obj).find('.unCekAll').next('label').removeClass('normal-label');
-			$("#" + obj).find('.cekAll').next('label').removeClass('allow-label');
+			$("#" + obj).find('.unselectPrivilege').next('label').removeClass('normal-label');
+			$("#" + obj).find('.selectPrivilege').next('label').removeClass('allow-label');
 			$("#all" + obj).next('label').removeClass('allow-label');
 			$("#none" + obj).next('label').removeClass('normal-label');
 
