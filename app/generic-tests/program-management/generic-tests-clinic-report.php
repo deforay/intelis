@@ -47,7 +47,7 @@ $state = $geolocationService->getProvinces("yes");
 							<div class="widget-content">
 								<div class="bs-example bs-example-tabs">
 									<ul id="myTab" class="nav nav-tabs">
-									    <li class="active"><a href="#sampleTestingReport" data-toggle="tab"><?php echo _translate("Sample Testing Report"); ?></a></li>
+										<li class="active"><a href="#sampleTestingReport" data-toggle="tab"><?php echo _translate("Sample Testing Report"); ?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="sampleTestingReport">
@@ -84,16 +84,16 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('stReportFilter');"><span>
-															<?= _translate("Reset"); ?>
-														</span></button>
+																<?= _translate("Reset"); ?>
+															</span></button>
 													</td>
 												</tr>
 											</table>
 											<figure class="highcharts-figure">
 												<div id="container"></div>
 												<div id="sampleTestingResultDetails">
-												<p class="highcharts-description">
-												</p>
+													<p class="highcharts-description">
+													</p>
 											</figure>
 										</div>
 									</div>
@@ -111,8 +111,9 @@ $state = $geolocationService->getProvinces("yes");
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/exporting.js"></script>
-<script src="/assets/js/accessibility.js"></script>
+<script src="/assets/js/highcharts-exporting.js"></script>
+<script src="/assets/js/highcharts-offline-exporting.js"></script>
+<script src="/assets/js/highcharts-accessibility.js"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	$(document).ready(function() {
@@ -141,7 +142,7 @@ $state = $geolocationService->getProvinces("yes");
 					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
 					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
 					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'Last 60 Days': [moment().subtract(59, 'days'), moment()],
+					'Last 60 Days': [moment().subtract(59, 'days'), moment()],
 					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
 					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
 					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
@@ -193,12 +194,12 @@ $state = $geolocationService->getProvinces("yes");
 
 	function sampleTestingReport() {
 		$.when(
-			getSampleTestingResult()
-		)
-		.done(function() {
-			$.unblockUI();
-			$(window).scroll();
-		});
+				getSampleTestingResult()
+			)
+			.done(function() {
+				$.unblockUI();
+				$(window).scroll();
+			});
 
 		$(window).on('beforeunload', function() {
 			if (currentXHR !== null && currentXHR !== undefined) {
@@ -209,16 +210,16 @@ $state = $geolocationService->getProvinces("yes");
 
 	function getSampleTestingResult() {
 		currentXHR = $.post("/generic-tests/program-management/generic-tests-sample-testing-report.php", {
-					sampleCollectionDate: $("#stSampleCollectionDate").val(),
-					state: $('#stState').val(),
-					district: $('#stDistrict').val(),
-					facilityName: $('#stfacilityName').val(),
-				},
-				function(data) {
-					if (data != '') {
-						$("#sampleTestingResultDetails").html(data);
-					}
-				});
+				sampleCollectionDate: $("#stSampleCollectionDate").val(),
+				state: $('#stState').val(),
+				district: $('#stDistrict').val(),
+				facilityName: $('#stfacilityName').val(),
+			},
+			function(data) {
+				if (data != '') {
+					$("#sampleTestingResultDetails").html(data);
+				}
+			});
 		return currentXHR;
 	}
 </script>

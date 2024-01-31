@@ -38,7 +38,7 @@ if (empty($syncLatestTime)) {
 		Centers for Disease Control and Prevention (CDC)."); ?>
 			</small>
 			<br>
-			<small class="text-muted"><a href="javascript:void(0);" onclick="clearCache();" style="font-size:0.8em;">Clear Cache</a></small>
+			<small class="text-muted"><a href="javascript:void(0);" onclick="clearCache();" style="font-size:0.8em;"><?= _translate("Clear Cache"); ?></a></small>
 		</div>
 		<div class=" col-lg-4 col-sm-4">
 
@@ -93,9 +93,22 @@ if (empty($syncLatestTime)) {
 <script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
 <script type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
 <script type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
+<script src="/assets/js/highcharts.js"></script>
+<script src="/assets/js/highcharts-exporting.js"></script>
+<script src="/assets/js/highcharts-offline-exporting.js"></script>
+<script src="/assets/js/highcharts-accessibility.js"></script>
 
 
 <script type="text/javascript">
+	Highcharts.setOptions({
+		chart: {
+			style: {
+				fontFamily: 'Arial', // Set global font family (optional)
+				fontSize: '16px' // Set global font size
+			}
+		}
+	});
+
 	let remoteSync = false;
 	let globalDayjsDateFormat = '<?= $general->getDateFormat('dayjs'); ?>';
 

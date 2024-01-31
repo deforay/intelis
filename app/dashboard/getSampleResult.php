@@ -19,6 +19,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$mysqlDateFormat = $general->getDateFormat('mysql');
+
 $testType = (string) $_POST['type'];
 $table = TestsService::getTestTableName($testType);
 $primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
@@ -191,7 +193,8 @@ try {
     if ($table == "form_vl") {
         $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
     }
-    $accessionQuery = "SELECT DATE(vl.sample_collection_date) as `collection_date`,
+    $accessionQuery = "SELECT
+                        DATE_FORMAT(DATE(vl.sample_collection_date), '$mysqlDateFormat') as `collection_date`,
                         COUNT(unique_id) as `count`
                         FROM $table as vl
                         LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
@@ -209,7 +212,8 @@ try {
     if ($table == "form_vl") {
         $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
     }
-    $sampleTestedQuery = "SELECT DATE(vl.sample_tested_datetime) as `test_date`,
+    $sampleTestedQuery = "SELECT
+                            DATE_FORMAT(DATE(vl.sample_tested_datetime), '$mysqlDateFormat') as `test_date`,
                             COUNT(unique_id) as `count`
                             FROM $table as vl
                             LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
@@ -232,7 +236,9 @@ try {
     if ($table == "form_vl") {
         $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
     }
-    $sampleRejectedQuery = "SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(unique_id) as `count`
+    $sampleRejectedQuery = "SELECT
+                            DATE_FORMAT(DATE(vl.sample_collection_date), '$mysqlDateFormat') as `collection_date`,
+                            COUNT(unique_id) as `count`
                             FROM $table as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
                             INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
                             WHERE (result_status = 4) AND $whereCondition DATE(vl.sample_collection_date)
@@ -248,7 +254,9 @@ try {
 
     //Status counts
     if ($table == "form_covid19") {
-        $statusQuery = "SELECT s.status_name, DATE(covid19.sample_collection_date) as `collection_date`, COUNT(covid19_id) as `count`
+        $statusQuery = "SELECT s.status_name,
+                        DATE_FORMAT(DATE(covid19.sample_collection_date), '$mysqlDateFormat') as `collection_date`,
+                        COUNT(covid19_id) as `count`
                         FROM r_sample_status AS s
                         INNER JOIN $table as covid19 ON covid19.result_status=s.status_id
                         WHERE DATE(covid19.sample_collection_date) BETWEEN '$startDate'  AND '$endDate'
@@ -309,7 +317,7 @@ try {
                     <?= _translate("SAMPLES REGISTERED"); ?>
                 </small><br>
                 <small class="font-green-sharp" style="font-size:0.75em;">
-                    <?php echo _translate("In Selected Range") . " - " . $selectedRange; ?>
+                    <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
                 </small>
             </div>
             <div class="icon font-green-sharp">
@@ -330,7 +338,7 @@ try {
                     <?php echo _translate("SAMPLES TESTED"); ?>
                 </small><br>
                 <small class="font-blue-sharp" style="font-size:0.75em;">
-                    <?php echo _translate("In Selected Range") . " - " . $selectedRange;; ?>
+                    <?php echo _translate("In Selected Range") . " : " . $selectedRange;; ?>
                 </small>
             </div>
             <div class="icon">
@@ -463,7 +471,7 @@ try {
             },
             series: [{
                 showInLegend: false,
-                name: 'Samples',
+                name: '<?= _translate("Samples", escapeText: true); ?>',
                 data: [<?php
                         foreach ($tResult as $tRow) {
                             echo ($tRow['total']) . ",";
@@ -471,7 +479,7 @@ try {
                         ?>]
 
             }],
-            colors: ['#2ab4c0'],
+            colors: ['#2ab4c0']
         });
     <?php }
     //waiting result
@@ -520,7 +528,7 @@ try {
             },
             series: [{
                 showInLegend: false,
-                name: 'Samples',
+                name: '<?= _translate("Samples", escapeText: true); ?>',
                 data: [<?= $waitingTotal; ?>]
 
             }],
@@ -578,7 +586,7 @@ try {
             },
             series: [{
                 showInLegend: false,
-                name: 'Samples',
+                name: '<?= _translate("Samples", escapeText: true); ?>',
                 data: [<?php
                         foreach ($acceptedResult as $tRow) {
                             echo ($tRow['total']) . ",";
@@ -639,7 +647,7 @@ try {
             },
             series: [{
                 showInLegend: false,
-                name: "<?php echo _translate("Samples"); ?>",
+                name: "<?php echo _translate("Samples", escapeText: true); ?>",
                 data: [<?php
                         foreach ($rejectedResult as $tRow) {
                             echo ($tRow['total']) . ",";
@@ -666,7 +674,7 @@ try {
             exporting: {
                 chartOptions: {
                     subtitle: {
-                        text: "<?= _translate("Overall Sample Status"); ?>",
+                        text: "<?= _translate("Overall Sample Status", escapeText: true); ?>",
                     }
                 }
             },
@@ -675,12 +683,12 @@ try {
             },
             xAxis: {
                 categories: [
-                    "<?= _translate("Samples Tested"); ?>",
-                    "<?= _translate("Samples Rejected"); ?>",
-                    "<?= _translate("Samples on Hold"); ?>",
-                    "<?= _translate("Samples Registered at Testing Lab"); ?>",
-                    "<?= _translate("Samples Awaiting Approval"); ?>",
-                    "<?= _translate("Samples Registered at Collection Sites"); ?>"
+                    "<?= _translate("Samples Tested", escapeText: true); ?>",
+                    "<?= _translate("Samples Rejected", escapeText: true); ?>",
+                    "<?= _translate("Samples on Hold", escapeText: true); ?>",
+                    "<?= _translate("Samples Registered at Testing Lab", escapeText: true); ?>",
+                    "<?= _translate("Samples Awaiting Approval", escapeText: true); ?>",
+                    "<?= _translate("Samples Registered at Collection Sites", escapeText: true); ?>"
                 ]
             },
 
@@ -688,7 +696,7 @@ try {
                 allowDecimals: false,
                 min: 0,
                 title: {
-                    text: 'No. of Samples'
+                    text: "<?= _translate("No. of Samples", escapeText: true); ?>"
                 }
             },
 
@@ -696,7 +704,7 @@ try {
                 formatter: function() {
                     return '<strong>' + this.x + '</strong><br/>' +
                         this.series.name + ': ' + this.y + '<br/>' +
-                        'Total: ' + this.point.stackTotal;
+                        "<?= _translate("Total", escapeText: true); ?>" + ': ' + this.point.stackTotal;
                 }
             },
 

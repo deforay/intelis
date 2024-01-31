@@ -489,16 +489,16 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('stReportFilter');"><span>
-															<?= _translate("Reset"); ?>
-														</span></button>
+																<?= _translate("Reset"); ?>
+															</span></button>
 													</td>
 												</tr>
 											</table>
 											<figure class="highcharts-figure">
 												<div id="container"></div>
 												<div id="sampleTestingResultDetails">
-												<p class="highcharts-description">
-												</p>
+													<p class="highcharts-description">
+													</p>
 											</figure>
 										</div>
 									</div>
@@ -516,8 +516,9 @@ $state = $geolocationService->getProvinces("yes");
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/exporting.js"></script>
-<script src="/assets/js/accessibility.js"></script>
+<script src="/assets/js/highcharts-exporting.js"></script>
+<script src="/assets/js/highcharts-offline-exporting.js"></script>
+<script src="/assets/js/highcharts-accessibility.js"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	var oTableViralLoad = null;
@@ -1059,6 +1060,7 @@ $state = $geolocationService->getProvinces("yes");
 				$("#" + facilityId).html(Obj['facilities']);
 			});
 	}
+
 	function resetFilters(filtersClass) {
 		$('.' + filtersClass).val('');
 		$('.' + filtersClass).val(null).trigger('change');
@@ -1066,12 +1068,12 @@ $state = $geolocationService->getProvinces("yes");
 
 	function sampleTestingReport() {
 		$.when(
-			getSampleTestingResult()
-		)
-		.done(function() {
-			$.unblockUI();
-			$(window).scroll();
-		});
+				getSampleTestingResult()
+			)
+			.done(function() {
+				$.unblockUI();
+				$(window).scroll();
+			});
 
 		$(window).on('beforeunload', function() {
 			if (currentXHR !== null && currentXHR !== undefined) {
@@ -1082,16 +1084,16 @@ $state = $geolocationService->getProvinces("yes");
 
 	function getSampleTestingResult() {
 		currentXHR = $.post("/hepatitis/management/hepatitis-sample-testing-report.php", {
-					sampleCollectionDate: $("#stSampleCollectionDate").val(),
-					state: $('#stState').val(),
-					district: $('#stDistrict').val(),
-					facilityName: $('#stfacilityName').val(),
-				},
-				function(data) {
-					if (data != '') {
-						$("#sampleTestingResultDetails").html(data);
-					}
-				});
+				sampleCollectionDate: $("#stSampleCollectionDate").val(),
+				state: $('#stState').val(),
+				district: $('#stDistrict').val(),
+				facilityName: $('#stfacilityName').val(),
+			},
+			function(data) {
+				if (data != '') {
+					$("#sampleTestingResultDetails").html(data);
+				}
+			});
 		return currentXHR;
 	}
 </script>

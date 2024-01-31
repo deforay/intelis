@@ -1,13 +1,10 @@
 <?php
 
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
 $title = _translate("VL | Sample Status Report");
 
 require_once APPLICATION_PATH . '/header.php';
@@ -204,9 +201,7 @@ $batResult = $db->rawQuery($batQuery);
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/exporting.js"></script>
-<script src="/assets/js/accessibility.js"></script>
+
 <script>
 	let searchExecuted = false;
 	$(function() {

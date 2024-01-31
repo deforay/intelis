@@ -1,15 +1,10 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -67,21 +62,13 @@ $sampleStatusColors[8] = "#7f22e8"; // Sent to Lab
 $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 
 //date
-$start_date = '';
-$end_date = '';
-if (!empty($_POST['sampleCollectionDate'])) {
-    $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-    //print_r($s_c_date);die;
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+
 [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+
+
 $tQuery = "SELECT COUNT(vl_sample_id) as total,status_id,status_name
     FROM " . $table . " as vl
     JOIN r_sample_status as ts ON ts.status_id=vl.result_status
@@ -197,7 +184,7 @@ if ($start_date == '' && $end_date == '') {
 }
 
 $tatSampleQuery = "SELECT
-        count(*) as 'totalSamples',
+        count(*) AS 'totalSamples',
         DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthDate,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
@@ -206,17 +193,14 @@ $tatSampleQuery = "SELECT
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_on_sts_datetime,vl.result_printed_on_lis_datetime))) AS DECIMAL (10,2)) as AvgResultPrintedFirstTime
 
-
-        FROM `$table` as vl
+        FROM `$table` AS vl
         INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
         INNER JOIN facility_details as f ON vl.lab_id=f.facility_id
         LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
         WHERE
-        vl.result is not null
-        AND vl.result != ''
-        AND DATE(vl.sample_tested_datetime) >= '$start_date'
-        AND DATE(vl.sample_tested_datetime) <= '$end_date'  ";
+        (vl.result IS NOT NULL AND vl.result != '') AND
+        DATE(vl.sample_tested_datetime) BETWEEN '$start_date' AND '$end_date'  ";
 
 $sWhere = [];
 if (!empty($whereCondition)) {
@@ -435,13 +419,13 @@ foreach ($tatResult as $sRow) {
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _translate("HIV Viral Load Detection (N = " . ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) . ")"); ?>"
+                text: "<?php echo _translate("HIV Viral Load Detection (N = " . ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) . ")", escapeText: true); ?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _translate("Viral Load Detection"); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?php echo _translate("Viral Load Detection", escapeText: true); ?> :<strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -484,14 +468,16 @@ foreach ($tatResult as $sRow) {
                 type: 'line'
             },
             title: {
-                text: "<?php echo _translate("Laboratory Turnaround Time"); ?>"
+                text: "<?php echo _translate("Laboratory Turnaround Time", escapeText: true); ?>"
             },
             exporting: {
                 chartOptions: {
                     subtitle: {
-                        text: "<?php echo _translate("Laboratory Turnaround Time"); ?>",
+                        text: "<?php echo _translate("Laboratory Turnaround Time", escapeText: true); ?>",
                     }
-                }
+                },
+                sourceWidth: 1200,
+                sourceHeight: 600
             },
             credits: {
                 enabled: false
@@ -508,7 +494,7 @@ foreach ($tatResult as $sRow) {
             },
             yAxis: [{
                 title: {
-                    text: "<?php echo _translate("Average TAT in Days"); ?>"
+                    text: "<?php echo _translate("Average TAT in Days", escapeText: true); ?>"
                 },
                 labels: {
                     formatter: function() {
@@ -518,7 +504,7 @@ foreach ($tatResult as $sRow) {
             }, { // Secondary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: "<?php echo _translate("No. of Tests"); ?>"
+                    text: "<?php echo _translate("No. of Tests", escapeText: true); ?>"
                 },
                 labels: {
                     format: '{value}'
@@ -548,7 +534,7 @@ foreach ($tatResult as $sRow) {
 
             series: [{
                     type: 'column',
-                    name: "<?php echo _translate("No. of Samples Tested"); ?>",
+                    name: "<?php echo _translate("No. of Samples Tested", escapeText: true); ?>",
                     data: [<?php echo implode(",", $result['totalSamples']); ?>],
                     color: '#7CB5ED',
                     yAxis: 1
@@ -558,7 +544,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Result - Printed"); ?>",
+                        name: "<?php echo _translate("Result - Printed", escapeText: true); ?>",
                         data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
                         color: '#0f3f6e',
                     },
@@ -568,7 +554,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Collected - Received at Lab"); ?>",
+                        name: "<?php echo _translate("Collected - Received at Lab", escapeText: true); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
                         color: '#edb47c',
                     },
@@ -578,7 +564,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Received - Tested"); ?>",
+                        name: "<?php echo _translate("Received - Tested", escapeText: true); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
                         color: '#0f3f6e',
                     },
@@ -588,7 +574,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Collected - Tested"); ?>",
+                        name: "<?php echo _translate("Collected - Tested", escapeText: true); ?>",
                         data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
                         color: '#ed7c7d',
                     },
@@ -598,7 +584,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Collected - Printed"); ?>",
+                        name: "<?php echo _translate("Collected - Printed", escapeText: true); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
                         color: '#000',
                     },
@@ -608,7 +594,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Collected - Printed First Time"); ?>",
+                        name: "<?php echo _translate("Collected - Printed First Time", escapeText: true); ?>",
                         data: [<?php echo implode(",", $result['avgResultPrintedFirstTime']); ?>],
                         color: '#000',
                     },
@@ -616,6 +602,11 @@ foreach ($tatResult as $sRow) {
                 }
                 ?>
             ],
+            exporting: {
+                sourceWidth: 1200,
+                sourceHeight: 600,
+                scale: 10
+            }
         });
     <?php } ?>
 </script>

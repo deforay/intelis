@@ -115,25 +115,27 @@ try {
 
                     if (str_contains((string)$sheetData[$resultCol], 'Log')) {
 
-                        $sheetData[$resultCol] = str_replace(",", ".", (string) $sheetData[$resultCol]); // in case they are using european decimal format
-                        $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
-                        $absDecimalVal = round(pow(10, $logVal), 2);
+                        continue;
+
+                        // $sheetData[$resultCol] = str_replace(",", ".", (string) $sheetData[$resultCol]); // in case they are using european decimal format
+                        // $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
+                        // $absDecimalVal = round(pow(10, $logVal), 2);
 
 
-                        if (str_contains($sheetData[$resultCol], "<")) {
-                            if ($sheetData[$resultCol] == "< INF") {
-                                $txtVal = $absVal = $absDecimalVal = 839;
-                                $logVal = round(log10($absDecimalVal), 2);
-                            } else {
-                                $txtVal = $absVal = "< " . trim($absDecimalVal);
-                                $logVal = $absDecimalVal = $resultFlag = "";
-                            }
-                        } else if (str_contains($sheetData[$resultCol], ">")) {
-                            $txtVal = $absVal = "> " . trim($absDecimalVal);
-                        } else {
-                            $txtVal = null;
-                            $absVal = $absDecimalVal;
-                        }
+                        // if (str_contains($sheetData[$resultCol], "<")) {
+                        //     if ($sheetData[$resultCol] == "< INF") {
+                        //         $txtVal = $absVal = $absDecimalVal = 839;
+                        //         $logVal = round(log10($absDecimalVal), 2);
+                        //     } else {
+                        //         $txtVal = $absVal = "< " . trim($absDecimalVal);
+                        //         $logVal = $absDecimalVal = $resultFlag = "";
+                        //     }
+                        // } else if (str_contains($sheetData[$resultCol], ">")) {
+                        //     $txtVal = $absVal = "> " . trim($absDecimalVal);
+                        // } else {
+                        //     $txtVal = null;
+                        //     $absVal = $absDecimalVal;
+                        // }
                     } else if (str_contains((string)$sheetData[$resultCol], 'Copies')) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                         if (str_contains((string)$sheetData[$resultCol], '<')) {

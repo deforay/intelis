@@ -55,6 +55,7 @@ $state = $geolocationService->getProvinces("yes");
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
+
 	#container {
 		height: 600px;
 	}
@@ -63,7 +64,7 @@ $state = $geolocationService->getProvinces("yes");
 	.highcharts-data-table table {
 		min-width: 310px;
 		max-width: 1000px;
-		
+
 	}
 
 	.highcharts-data-table table {
@@ -103,11 +104,10 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	.bs-example-tabs .nav>li>a {
-        position: relative;
-        display: block;
-        padding: 10px 7px;
-    }
-
+		position: relative;
+		display: block;
+		padding: 10px 7px;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -1063,16 +1063,16 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('stReportFilter');"><span>
-															<?= _translate("Reset"); ?>
-														</span></button>
+																<?= _translate("Reset"); ?>
+															</span></button>
 													</td>
 												</tr>
 											</table>
 											<figure class="highcharts-figure">
 												<div id="container"></div>
 												<div id="sampleTestingResultDetails">
-												<p class="highcharts-description">
-												</p>
+													<p class="highcharts-description">
+													</p>
 											</figure>
 										</div>
 									</div>
@@ -1082,15 +1082,16 @@ $state = $geolocationService->getProvinces("yes");
 					</div><!-- /.box-body -->
 				</div><!-- /.box -->
 			</div><!-- /.col -->
-		</div><!-- /.row -->	
+		</div><!-- /.row -->
 	</section>
 	<!-- /.content -->
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/exporting.js"></script>
-<script src="/assets/js/accessibility.js"></script>
+<script src="/assets/js/highcharts-exporting.js"></script>
+<script src="/assets/js/highcharts-offline-exporting.js"></script>
+<script src="/assets/js/highcharts-accessibility.js"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	var oTableViralLoad = null;
@@ -1785,15 +1786,16 @@ $state = $geolocationService->getProvinces("yes");
 		$('.' + filtersClass).val('');
 		$('.' + filtersClass).val(null).trigger('change');
 	}
+
 	function sampleTestingReport() {
-		
+
 		$.when(
-			getSampleResult()
-		)
-		.done(function() {
-			$.unblockUI();
-			$(window).scroll();
-		});
+				getSampleResult()
+			)
+			.done(function() {
+				$.unblockUI();
+				$(window).scroll();
+			});
 
 		$(window).on('beforeunload', function() {
 			if (currentXHR !== null && currentXHR !== undefined) {
@@ -1804,19 +1806,18 @@ $state = $geolocationService->getProvinces("yes");
 
 	function getSampleResult() {
 		currentXHR = $.post("/vl/program-management/getSampleTestingReport.php", {
-					sampleCollectionDate: $("#stSampleCollectionDate").val(),
-					state: $('#stState').val(),
-					district: $('#stDistrict').val(),
-					facilityName: $('#stfacilityName').val(),
-				},
-				function(data) {
-					if (data != '') {
-						$("#sampleTestingResultDetails").html(data);
-					}
-				});
+				sampleCollectionDate: $("#stSampleCollectionDate").val(),
+				state: $('#stState').val(),
+				district: $('#stDistrict').val(),
+				facilityName: $('#stfacilityName').val(),
+			},
+			function(data) {
+				if (data != '') {
+					$("#sampleTestingResultDetails").html(data);
+				}
+			});
 		return currentXHR;
 	}
-
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';
