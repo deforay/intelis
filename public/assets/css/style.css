@@ -171,3 +171,10 @@ form table tr td>label,
     font-size: 1.5em;
     text-transform: capitalize;
 }
+
+
+.privilege-div {
+    margin-top: 5px;
+    border: 1px solid #eee;
+    padding: 10px;
+}

@@ -50,12 +50,12 @@ if ($priInfo) {
 		font-size: 13px;
 	}
 
-	.switch-field {
+	.privilege-switch {
 		display: flex;
 		overflow: hidden;
 	}
 
-	.switch-field input {
+	.privilege-switch input {
 		position: absolute !important;
 		clip: rect(0, 0, 0, 0);
 		height: 1px;
@@ -64,7 +64,7 @@ if ($priInfo) {
 		overflow: hidden;
 	}
 
-	.switch-field label {
+	.privilege-switch label {
 		background-color: #e4e4e4;
 		color: rgba(0, 0, 0, 0.6);
 		font-size: 14px;
@@ -77,20 +77,20 @@ if ($priInfo) {
 		transition: all 0.1s ease-in-out;
 	}
 
-	.switch-field label:hover {
+	.privilege-switch label:hover {
 		cursor: pointer;
 	}
 
-	.switch-field input:checked+label {
+	.privilege-switch input:checked+label {
 		/*background-color: #87CEFA;*/
 		box-shadow: none;
 	}
 
-	.switch-field label:first-of-type {
+	.privilege-switch label:first-of-type {
 		border-radius: 4px 0 0 4px;
 	}
 
-	.switch-field label:last-of-type {
+	.privilege-switch label:last-of-type {
 		border-radius: 0 4px 4px 0;
 	}
 
@@ -244,7 +244,7 @@ if ($priInfo) {
 								</div>
 							</div>
 							<div class="form-group" style="padding-left:138px;">
-								<div class="switch-field">
+								<div class="privilege-switch">
 
 									<input type="radio" class='layCek' id="allowAllPrivileges" name="allPrivilegesRadio" value="yes" /></a>
 									<label for="allowAllPrivileges">
@@ -256,6 +256,13 @@ if ($priInfo) {
 									</label>
 								</div>
 							</div>
+
+							<div class="row">
+								<div class="col-md-12 col-lg-12">
+									<input type="text" class="form-control " id="searchInput" placeholder="Search Permissions..." onkeyup="searchPermissions()">
+								</div>
+							</div>
+							<br>
 							<div class="bs-example bs-example-tabs">
 								<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
 									<?php
@@ -294,7 +301,7 @@ if ($priInfo) {
 
 											$mRes = explode(",", $mRes);
 
-											echo "<tr>";
+											echo "<tr class ='togglerTr'>";
 											echo "<th>";
 
 									?>
@@ -302,7 +309,7 @@ if ($priInfo) {
 												<h4 style="font-weight: bold;">
 													<?= $mRes[1]; ?>
 												</h4>
-												<div class="switch-field pull-right">
+												<div class="super-switch privilege-switch pull-right">
 													<input type='radio' class='' id='all<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'>
 													<label for='all<?= $mRes[0]; ?>'><?php echo _translate("All"); ?></label>
 													<input type='radio' class='' id='none<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'>
@@ -321,9 +328,9 @@ if ($priInfo) {
 
 											$pQuery = "SELECT * FROM privileges WHERE resource_id= ? $mode ORDER BY display_order ASC";
 											$pInfo = $db->rawQuery($pQuery, [$mRes[0]]);
-											echo "<tr class=''>";
+											echo "<tr class='permissionTr'>";
 											echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
-											$style = "";
+
 											foreach ($pInfo as $privilege) {
 												if (in_array($privilege['privilege_id'], $priId)) {
 													$allowChecked = " checked='' ";
@@ -336,12 +343,11 @@ if ($priInfo) {
 													$denyStyle = "deny-label";
 													$allowStyle = "";
 												}
-												echo $style;
-												echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
-											<strong>" . _translate($privilege['display_name']) . "</strong>
+												echo "<div class='col-lg-3 privilege-div' data-privilegeid='" . $privilege['privilege_id'] . "' id='div" . $privilege['privilege_id'] . "'>
+											<strong class='privilege-label' data-privilegeid='" . $privilege['privilege_id'] . "' id='label" . $privilege['privilege_id'] . "'>" . _translate($privilege['display_name']) . "</strong>
 											<br>
 
-											<div class='switch-field' style='margin: 30px 0 36px 90px;'>
+											<div class='privilege-switch' data-privilegeid='" . $privilege['privilege_id'] . "' id='switch" . $privilege['privilege_id'] . "' style='margin: 30px 0 36px 90px;'>
 												<input type='radio' class='cekAll layCek' name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one" . $privilege['privilege_id'] . "' $allowChecked ><label for='radio-one" . $privilege['privilege_id'] . "' class='$allowStyle'>Yes</label>
 												<input type='radio' class='unCekAll layCek' name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two" . $privilege['privilege_id'] . "' $denyChecked > <label for='radio-two" . $privilege['privilege_id'] . "' class='$denyStyle'> No</label>
 											</div>
@@ -422,20 +428,20 @@ if ($priInfo) {
 	});
 
 
-	$('.switch-field input').click(function() {
+	$('.privilege-switch input').click(function() {
 		val = $(this).val();
 		if (val == "deny") {
-			$(this).closest('.switch-field').find('.unCekAll').next('label').addClass('deny-label');
-			$(this).closest('.switch-field').find('.cekAll').next('label').addClass('normal-label');
-			$(this).closest('.switch-field').find('.unCekAll').next('label').removeClass('normal-label');
-			$(this).closest('.switch-field').find('.cekAll').next('label').removeClass('allow-label');
-			//$(this).closest('.switch-field').find('.unCekAll').next('label').css('background-color', '#d9534f');
-			//$(this).closest('.switch-field').find('.cekAll').next('label').css('background-color', '#e4e4e4');
+			$(this).closest('.privilege-switch').find('.unCekAll').next('label').addClass('deny-label');
+			$(this).closest('.privilege-switch').find('.cekAll').next('label').addClass('normal-label');
+			$(this).closest('.privilege-switch').find('.unCekAll').next('label').removeClass('normal-label');
+			$(this).closest('.privilege-switch').find('.cekAll').next('label').removeClass('allow-label');
+			//$(this).closest('.privilege-switch').find('.unCekAll').next('label').css('background-color', '#d9534f');
+			//$(this).closest('.privilege-switch').find('.cekAll').next('label').css('background-color', '#e4e4e4');
 		} else if (val == "allow") {
-			$(this).closest('.switch-field').find('.unCekAll').next('label').addClass('normal-label');
-			$(this).closest('.switch-field').find('.cekAll').next('label').addClass('allow-label');
-			$(this).closest('.switch-field').find('.unCekAll').next('label').removeClass('deny-label');
-			$(this).closest('.switch-field').find('.cekAll').next('label').removeClass('normal-label');
+			$(this).closest('.privilege-switch').find('.unCekAll').next('label').addClass('normal-label');
+			$(this).closest('.privilege-switch').find('.cekAll').next('label').addClass('allow-label');
+			$(this).closest('.privilege-switch').find('.unCekAll').next('label').removeClass('deny-label');
+			$(this).closest('.privilege-switch').find('.cekAll').next('label').removeClass('normal-label');
 		}
 	});
 
@@ -491,6 +497,89 @@ if ($priInfo) {
 					document.getElementById(obj.id).value = "";
 				}
 			});
+	}
+
+
+	function searchPermissions() {
+		let filter = $('#searchInput').val().toUpperCase();
+
+		// Handle visibility of the super-switch elements
+		if (filter) {
+			$('.super-switch').hide();
+		} else {
+			$('.super-switch').show();
+		}
+
+		// Iterate through each tab
+		$('#myTabContent .tab-pane').each(function() {
+			let $tab = $(this);
+			let $tabLink = $('#myTab a[href="#' + $tab.attr('id') + '"]').closest('li');
+
+			// Remove any previous hiddenTr class
+			$tab.find('.hiddenTr').removeClass('hiddenTr');
+
+			// Iterate through each togglerTr in the current tab
+			$tab.find('.togglerTr').each(function() {
+				let $togglerTr = $(this);
+				let $nextPermissionTr = $togglerTr.next('tr');
+				let togglerText = $togglerTr.find('h4').text().toUpperCase();
+
+				if (togglerText.indexOf(filter) > -1) {
+					$togglerTr.show();
+					$nextPermissionTr.show().removeClass('hiddenTr');
+					$nextPermissionTr.find('.privilege-div').show();
+					$nextPermissionTr.find('.privilege-label').addClass('highlight');
+				} else {
+					let hasVisiblePrivilege = false;
+
+					$nextPermissionTr.find('.privilege-label').each(function() {
+						let $label = $(this);
+						let labelText = $label.text().toUpperCase();
+						let $parentDiv = $label.closest('div.privilege-div');
+
+						if (labelText.indexOf(filter) > -1) {
+							$parentDiv.show();
+							$label.addClass('highlight');
+							hasVisiblePrivilege = true;
+						} else {
+							$parentDiv.hide();
+							$label.removeClass('highlight');
+						}
+					});
+
+					if (hasVisiblePrivilege) {
+						$togglerTr.show();
+						$nextPermissionTr.show().removeClass('hiddenTr');
+					} else {
+						$togglerTr.hide();
+						$nextPermissionTr.hide().addClass('hiddenTr');
+					}
+				}
+			});
+
+			// Adjust tab visibility based on the search result
+			let hiddenTrsCount = $tab.find('.hiddenTr').length;
+			let totalTrsCount = $tab.find('.permissionTr').length;
+
+			if (filter === '') {
+				$tabLink.show();
+				$tab.find('tr').show().removeClass('hiddenTr');
+			} else if (hiddenTrsCount === totalTrsCount) {
+				$tabLink.hide();
+			} else {
+				$tabLink.show();
+			}
+
+			let firstVisibleTabLink = $('#myTab li:visible:first a');
+			if (firstVisibleTabLink.length > 0) {
+				// Deactivate all tabs
+				$('#myTab li').removeClass('active');
+				$('#myTabContent .tab-pane').removeClass('active in');
+
+				// Activate the first visible tab
+				firstVisibleTabLink.tab('show');
+			}
+		});
 	}
 </script>
 
