@@ -475,7 +475,9 @@ foreach ($tatResult as $sRow) {
                     subtitle: {
                         text: "<?php echo _translate("Laboratory Turnaround Time", escapeText: true); ?>",
                     }
-                }
+                },
+                sourceWidth: 1200,
+                sourceHeight: 600
             },
             credits: {
                 enabled: false
