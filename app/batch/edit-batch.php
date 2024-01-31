@@ -278,10 +278,12 @@ $fundingSourceList = $general->getFundingSources();
 							<div class="col-md-6"></div>
 						</div>
 						<div class="row" id="sampleDetails">
-							<div class="col-md-5" id="search">
-								
-							</div>
+							<div class="col-md-5">
+								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 
+								</select>
+								<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
+							</div>
 							<div class="col-md-2">
 								<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
 								<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
@@ -436,6 +438,8 @@ $fundingSourceList = $general->getFundingSources();
 
 		
 		$.blockUI();
+	
+		
 		var facilityId = $("#facilityName").val();
 
 		$.post("/batch/get-samples-batch.php", {
@@ -453,6 +457,8 @@ $fundingSourceList = $general->getFundingSources();
 				if (data != "") {
 					if ($("#batchId").val() > 0) {
 						$("#search").html(data);
+						var count = $('#search option').length;
+						$("#unselectedCount").html(count);
 					} else {
 						//$("#sampleDetails").html(data);
 					}
@@ -460,6 +466,7 @@ $fundingSourceList = $general->getFundingSources();
 			});
 		$.unblockUI();
 	}
+
 
 	function enableFemaleSection(obj) {
 		if (obj.value == "female") {
