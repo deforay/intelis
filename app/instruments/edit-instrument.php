@@ -67,7 +67,7 @@ $lowerText = "";
 if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['supported_tests'])) {
 	$lowerText = "style='display:none;'";
 }
-$userList = $usersService->getAllUsers(null, null, 'drop-down');
+$userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
