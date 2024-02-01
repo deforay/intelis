@@ -354,8 +354,8 @@ $rInfo = $db->query($resourcesQuery);
 														<strong class='privilege-label' data-privilegeid='" . $privilege['privilege_id'] . "' id='label" . $privilege['privilege_id'] . "'>" . _translate($privilege['display_name']) . "</strong>
 														<br>
 														<div class='privilege-switch' data-privilegeid='" . $privilege['privilege_id'] . "' id='switch" . $privilege['privilege_id'] . "' style='margin: 30px 0 36px 90px;'>
-															<input type='radio' class='selectPrivilege'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one" . $privilege['privilege_id'] . "'><label for='radio-one" . $privilege['privilege_id'] . "'>Yes</label>
-															<input type='radio' class='unselectPrivilege'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two" . $privilege['privilege_id'] . "'> <label for='radio-two" . $privilege['privilege_id'] . "'> No</label>
+															<input type='radio' class='selectPrivilege'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='selectPrivilege" . $privilege['privilege_id'] . "'><label for='selectPrivilege" . $privilege['privilege_id'] . "'>Yes</label>
+															<input type='radio' class='unselectPrivilege'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='unselectPrivilege" . $privilege['privilege_id'] . "'> <label for='unselectPrivilege" . $privilege['privilege_id'] . "'> No</label>
 														</div>
 													</div>";
 											}

@@ -348,8 +348,8 @@ if ($priInfo) {
 														<br>
 
 														<div class='privilege-switch' data-privilegeid='" . $privilege['privilege_id'] . "' id='switch" . $privilege['privilege_id'] . "' style='margin: 30px 0 36px 90px;'>
-															<input type='radio' class='selectPrivilege' name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one" . $privilege['privilege_id'] . "' $allowChecked ><label for='radio-one" . $privilege['privilege_id'] . "' class='$allowStyle'>Yes</label>
-															<input type='radio' class='unselectPrivilege' name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two" . $privilege['privilege_id'] . "' $denyChecked > <label for='radio-two" . $privilege['privilege_id'] . "' class='$denyStyle'> No</label>
+															<input type='radio' class='selectPrivilege' name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='selectPrivilege" . $privilege['privilege_id'] . "' $allowChecked ><label for='selectPrivilege" . $privilege['privilege_id'] . "' class='$allowStyle'>Yes</label>
+															<input type='radio' class='unselectPrivilege' name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='unselectPrivilege" . $privilege['privilege_id'] . "' $denyChecked > <label for='unselectPrivilege" . $privilege['privilege_id'] . "' class='$denyStyle'> No</label>
 														</div>
 														</div>";
 											}
