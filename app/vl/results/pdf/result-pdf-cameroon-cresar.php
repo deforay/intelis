@@ -311,10 +311,6 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr><td></td></tr>';
 
-     $html .= '<tr>';
-     $html .= '<td width="40%" style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Validated by') . ' : ' . $reviewedBy  . '</td>';
-     $html .= '<td width="40%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by') . ' : ' . $resultApprovedBy . '</td></tr>';
-
      if (!empty($reviewedSignaturePath) && $pdf->imageExists($reviewedSignaturePath)) {
           $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:100px;" />';
      } else {
@@ -322,23 +318,39 @@ if (!empty($result)) {
      }
 
      if (!empty($userSignaturePath) && $pdf->imageExists($userSignaturePath)) {
-          $signImgApproved = '<img src="' . $reviewedSignaturePath . '" style="width:100px;" />';
+          $signImgApproved = '<img src="' . $userSignaturePath . '" style="width:100px;" />';
      } else {
           $signImgApproved = '';
      }
 
-     $html .= '<tr><td></td></tr>';
-     $html .= '<tr>';
-     if (!empty($signImg)) {
-          $html .= '<td style="text-align:left;">' . _translate('Signature') . ' : ' . $signImg  . '</td>';
-     } else {
-          $html .= '<td style="text-align:left;"></td>';
-     }
-
      if ($reviewedBy != $resultApprovedBy) {
-          $html .= '<td style="text-align:right;">' . _translate('Signature') . ' : ' . $signImgApproved  . '</td>';
+          $html .= '<tr><td width="40%" style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Validated by') . ' : ' . $reviewedBy  . '</td>';
+          $html .= '<td width="40%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by') . ' : ' . $resultApprovedBy . '</td></tr>';
+          $html .= '<tr><td></td></tr>';
+          $html .= '<tr>';
+          if (!empty($signImg)) {
+               $html .= '<td style="text-align:left;">' . _translate('Signature') . ' : ' . $signImg  . '</td>';
+          } else {
+               $html .= '<td style="text-align:left;"></td>';
+          }
+
+          if (!empty($signImgApproved)) {
+               $html .= '<td style="text-align:right;">' . _translate('Signature') . ' : ' . $signImgApproved  . '</td>';
+          } else {
+               $html .= '<td style="text-align:right;"></td>';
+          }
+          $html .= '</tr>';
+     }else{
+          $html .= '<tr><td width="40%" style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Authorized and Validated by') . ' : ' . $reviewedBy  . '</td></tr>';
+          $html .= '<tr><td></td></tr>';
+          $html .= '<tr>';
+          if (!empty($signImg)) {
+               $html .= '<td style="text-align:left;">' . _translate('Signature') . ' : ' . $signImg  . '</td>';
+          } else {
+               $html .= '<td style="text-align:left;"></td>';
+          }
+          $html .= '</tr>';
      }
-     $html .= '</tr>';
 
      $html .= '</table>';
 
