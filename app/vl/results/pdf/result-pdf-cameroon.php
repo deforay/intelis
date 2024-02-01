@@ -556,6 +556,7 @@ if (!empty($result)) {
                $watermark->Output($filename, "F");
           }
           $pages[] = $filename;
+          $page++;
      }
      if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
           //Add event log
