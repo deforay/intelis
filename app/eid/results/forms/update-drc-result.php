@@ -697,6 +697,14 @@ if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['resul
 		$('#province').select2({
 			placeholder: "Province"
 		});
+		$('#reviewedBy').select2({
+            width: '100%',
+            placeholder: "Select Reviewed By"
+        });
+        $('#approvedBy').select2({
+            width: '100%',
+            placeholder: "Select Approved By"
+        });
 		getfacilityProvinceDetails($("#facilityId").val());
 		<?php if (isset($eidInfo['mother_treatment']) && in_array('Other', $eidInfo['mother_treatment'])) { ?>
 			$('#motherTreatmentOther').prop('disabled', false);

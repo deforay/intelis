@@ -24,7 +24,7 @@ $labNameList = $facilitiesService->getTestingLabs();
 
 $activeModules = SystemService::getActiveModules();
 
-$userList = $usersService->getAllUsers(null, null, 'drop-down');
+$userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 ?>
 <style>
 	.tooltip-inner {

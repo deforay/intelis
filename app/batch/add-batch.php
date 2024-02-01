@@ -62,7 +62,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
-$userNameList = $usersService->getAllUsers(null, null, 'drop-down');
+$userNameList = $usersService->getAllUsers(null, 'active', 'drop-down');
 
 
 //Get active machines
@@ -252,7 +252,7 @@ $fundingSourceList = $general->getFundingSources();
                     </td>
                     <td><label for="fundingSource"><?= _translate("Samples Entered By"); ?></label></td>
                     <td>
-                        <select class="form-control" name="userId" id="userId" title="Please choose source de financement" style="width:100%;">
+                        <select class="form-control select2" name="userId" id="userId" title="Please choose source de financement" style="width:100%;">
                             <?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
                         </select>
                     </td>
@@ -326,6 +326,10 @@ $fundingSourceList = $general->getFundingSources();
         $("#facilityName").select2({
             placeholder: "<?php echo _translate("Select Facilities"); ?>"
         });
+
+        $("#userId").select2({
+			placeholder: "<?= _translate('Select User', true); ?>"
+		});
 
         $('.daterange').daterangepicker({
                 locale: {

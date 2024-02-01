@@ -17,10 +17,32 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
-// Ensure the script only runs for VLSM APP VERSION >= 4.5.3
-if (version_compare(VERSION, '4.5.3', '<')) {
-    exit("This script requires VERSION 4.5.3 or higher. Current version: " . VERSION . "\n");
+// Ensure the script only runs for VLSM APP VERSION >= 4.4.3
+if (version_compare(VERSION, '4.4.3', '<')) {
+    exit("This script requires VERSION 4.4.3 or higher. Current version: " . VERSION . "\n");
 }
+
+// Define the logs directory path
+$logsDir = ROOT_PATH . "/logs";
+
+// Initialize a flag to determine if logging is possible
+$canLog = false;
+
+// Check if the directory exists
+if (!file_exists($logsDir)) {
+    // Attempt to create the directory
+    if (!mkdir($logsDir, 0755, true)) {
+        echo "Failed to create directory: $logsDir\n";
+    } else {
+        echo "Directory created: $logsDir\n";
+        $canLog = is_readable($logsDir) && is_writable($logsDir);
+    }
+} else {
+    // Check if the directory is readable and writable
+    $canLog = is_readable($logsDir) && is_writable($logsDir);
+}
+
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -34,7 +56,7 @@ if ($db->isConnected() === false) {
 
 $db->where('name', 'sc_version');
 $currentVersion = $db->getValue('system_config', 'value');
-$migrationFiles = glob(APPLICATION_PATH . '/../dev/migrations/*.sql');
+$migrationFiles = glob(ROOT_PATH . '/dev/migrations/*.sql');
 
 // Extract version numbers and map them to files
 $versions = array_map(function ($file) {
@@ -80,7 +102,9 @@ foreach ($versions as $version) {
 
                 $errorOccurred = true;
                 if (!$quietMode) {
-                    LoggerUtility::log('error', $message);
+                    if ($canLog) {
+                        LoggerUtility::log('error', $message);
+                    }
                     echo $message;
                 }
             }
@@ -88,7 +112,9 @@ foreach ($versions as $version) {
                 $dbMessage = "Error executing query: " . $db->getLastErrno() . ":" . $db->getLastError() . PHP_EOL . $db->getLastQuery() . PHP_EOL;
                 if (!$quietMode) {
                     echo $dbMessage;
-                    LoggerUtility::log('error', $dbMessage);
+                    if ($canLog) {
+                        LoggerUtility::log('error', $dbMessage);
+                    }
                 }
 
                 if (!$autoContinueOnError) {  // Only prompt user if -y option is not provided

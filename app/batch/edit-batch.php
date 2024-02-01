@@ -76,7 +76,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
-$userNameList = $usersService->getAllUsers(null, null, 'drop-down');
+$userNameList = $usersService->getAllUsers(null, 'active', 'drop-down');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -367,6 +367,11 @@ $fundingSourceList = $general->getFundingSources();
 		setTimeout(function() {
 			$("#search_rightSelected").trigger('click');
 		}, 10);
+
+		$("#userId").select2({
+			placeholder: "<?= _translate('Select User', true); ?>"
+		});
+
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",

@@ -177,6 +177,7 @@ class UsersService
             }
 
             $this->db->orderBy("user_name", "asc");
+            $this->db->setQueryOption('DISTINCT');
 
             if (isset($type) && $type == 'drop-down') {
                 $result = $this->db->get('user_details u');
