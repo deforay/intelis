@@ -363,6 +363,11 @@ $tableResult = $db->rawQuery($sQuery);
             title: {
                 text: ''
             },
+            exporting: {
+                filename: "samples-registered-by-collection-point",
+                sourceWidth: 1200,
+                sourceHeight: 600
+            },
             subtitle: {
                 text: ''
             },

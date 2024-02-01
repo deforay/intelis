@@ -422,6 +422,11 @@ try {
             title: {
                 text: ''
             },
+            exporting: {
+                filename: "samples-registered",
+                sourceWidth: 1200,
+                sourceHeight: 600
+            },
             subtitle: {
                 text: ''
             },
@@ -492,6 +497,11 @@ try {
             title: {
                 text: ''
             },
+            exporting: {
+                filename: "samples-with-no-results",
+                sourceWidth: 1200,
+                sourceHeight: 600
+            },
             subtitle: {
                 text: ''
             },
@@ -545,6 +555,11 @@ try {
             },
             title: {
                 text: ''
+            },
+            exporting: {
+                filename: "samples-tested",
+                sourceWidth: 1200,
+                sourceHeight: 600
             },
             subtitle: {
                 text: ''
@@ -606,6 +621,11 @@ try {
             },
             title: {
                 text: ''
+            },
+            exporting: {
+                filename: "samples-rejected",
+                sourceWidth: 1200,
+                sourceHeight: 600
             },
             subtitle: {
                 text: ''
@@ -672,11 +692,9 @@ try {
                 text: ''
             },
             exporting: {
-                chartOptions: {
-                    subtitle: {
-                        text: "<?= _translate("Overall Sample Status", escapeText: true); ?>",
-                    }
-                }
+                filename: "overall-sample-status",
+                sourceWidth: 1200,
+                sourceHeight: 600
             },
             credits: {
                 enabled: false
