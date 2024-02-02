@@ -106,6 +106,20 @@ if (empty($syncLatestTime)) {
 				fontFamily: 'Arial', // Set global font family (optional)
 				fontSize: '16px' // Set global font size
 			}
+		},
+		exporting: {
+			buttons: {
+				contextButton: {
+					menuItems: [
+						"viewFullscreen", 
+						"printChart", 
+						"separator", 
+						"downloadPNG", 
+						"downloadJPEG", 
+						"downloadSVG"
+					]
+				}
+			}
 		}
 	});
 

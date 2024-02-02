@@ -97,6 +97,10 @@ try {
                 text: "<?= _translate("Samples Testing Report"); ?>",
                 align: 'left'
             },
+            exporting: {
+                sourceWidth: 1200,
+                sourceHeight: 600
+            },
             credits: {
                 enabled: false
             },

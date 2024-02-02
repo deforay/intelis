@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-01-31 11:49+0530\n"
-"PO-Revision-Date: 2024-01-31 11:50+0530\n"
+"POT-Creation-Date: 2024-02-01 18:33+0530\n"
+"PO-Revision-Date: 2024-02-01 18:33+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -175,7 +175,7 @@ msgstr "Sélectionner un laboratoire"
 msgid "Trying to sync Lab Details"
 msgstr "Essayer de synchroniser les détails du laboratoire"
 
-#: addInstanceDetails.php:154 footer.php:138 footer.php:160 footer.php:184
+#: addInstanceDetails.php:154 footer.php:152 footer.php:174 footer.php:198
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
@@ -429,8 +429,8 @@ msgstr "Call to action"
 #: admin/monitoring/api-sync-history.php:107
 #: admin/monitoring/lab-sync-details.php:173
 #: admin/monitoring/sources-of-requests.php:175
-#: admin/monitoring/sync-status.php:143 batch/get-samples-batch.php:184
-#: batch/get-samples-batch.php:185
+#: admin/monitoring/sync-status.php:143 batch/get-samples-batch.php:180
+#: batch/get-samples-batch.php:181
 #: covid-19/management/covid-19-clinic-report.php:168
 #: covid-19/management/covid-19-clinic-report.php:273
 #: covid-19/management/covid-19-clinic-report.php:372
@@ -530,8 +530,8 @@ msgstr "Rechercher"
 
 #: admin/monitoring/activity-log.php:91 admin/monitoring/activity-log.php:149
 #: admin/monitoring/api-sync-history.php:165
-#: admin/monitoring/sources-of-requests.php:300 batch/add-batch.php:332
-#: batch/edit-batch.php:370 covid-19/mail/mail-covid-19-results.php:281
+#: admin/monitoring/sources-of-requests.php:300 batch/add-batch.php:336
+#: batch/edit-batch.php:377 covid-19/mail/mail-covid-19-results.php:281
 #: covid-19/management/covid-19-clinic-report.php:543
 #: covid-19/management/covid-19-export-data.php:342
 #: covid-19/management/covid-19-sample-rejection-report.php:106
@@ -1601,7 +1601,7 @@ msgstr "Action"
 msgid "Sample ID"
 msgstr "ID de l'échantillon"
 
-#: admin/monitoring/audit-trail.php:160 batch/edit-batch.php:311
+#: admin/monitoring/audit-trail.php:160 batch/edit-batch.php:313
 #: common/reference/add-funding-sources.php:56
 #: common/reference/add-geographical-divisions.php:98
 #: common/reference/add-implementation-partners.php:56
@@ -1656,7 +1656,7 @@ msgstr "ID de l'échantillon"
 #: hepatitis/requests/add-samples-from-manifest.php:46
 #: import-result/import-file.php:164 instruments/add-instrument.php:483
 #: instruments/edit-instrument.php:585 patients/add-patient.php:237
-#: patients/edit-patient.php:252 roles/addRole.php:372 roles/editRole.php:366
+#: patients/edit-patient.php:252 roles/addRole.php:377 roles/editRole.php:372
 #: system-admin/edit-config/index.php:131
 #: system-admin/edit-config/resetPassword.php:56
 #: system-admin/reset-password/get-user.php:61 system-admin/setup/index.php:106
@@ -3378,7 +3378,7 @@ msgstr "Veuillez sélectionner une machine"
 msgid "Save and Next"
 msgstr "Sauvegarder et Suivant"
 
-#: batch/add-batch.php:298 batch/edit-batch.php:312
+#: batch/add-batch.php:298 batch/edit-batch.php:314
 #: common/reference/add-funding-sources.php:57
 #: common/reference/add-geographical-divisions.php:99
 #: common/reference/add-implementation-partners.php:57
@@ -3430,7 +3430,7 @@ msgstr "Sauvegarder et Suivant"
 #: hepatitis/results/email-results.php:333 import-result/import-file.php:165
 #: instruments/add-instrument.php:486 instruments/edit-instrument.php:588
 #: mail/vlResultMail.php:333 patients/add-patient.php:238
-#: patients/edit-patient.php:253 roles/addRole.php:375 roles/editRole.php:369
+#: patients/edit-patient.php:253 roles/addRole.php:380 roles/editRole.php:375
 #: system-admin/edit-config/resetPassword.php:57
 #: system-admin/instance-overview/instanceIndex.php:133
 #: tb/reference/add-tb-results.php:92
@@ -3465,7 +3465,7 @@ msgstr "Annuler"
 msgid "Select Test Type"
 msgstr "Sélectionnez le Type"
 
-#: batch/add-batch.php:327 batch/edit-batch.php:363
+#: batch/add-batch.php:327 batch/edit-batch.php:365
 #: covid-19/management/covid-19-clinic-report.php:536
 #: covid-19/management/covid-19-export-data.php:329
 #: covid-19/management/covid-19-export-data.php:332
@@ -3510,23 +3510,27 @@ msgstr "Sélectionnez le Type"
 msgid "Select Facilities"
 msgstr "Sélectionnez les structures"
 
-#: batch/add-batch.php:366 batch/edit-batch.php:343
+#: batch/add-batch.php:331 batch/edit-batch.php:372
+msgid "Select User"
+msgstr "Sélectionner un utilisateur"
+
+#: batch/add-batch.php:370 batch/edit-batch.php:345
 msgid "You have selected more than allowed number of samples"
 msgstr ""
 "Vous avez sélectionné un nombre d'échantillons supérieur au nombre autorisé"
 
-#: batch/add-batch.php:371 batch/edit-batch.php:348
+#: batch/add-batch.php:375 batch/edit-batch.php:350
 #: specimen-referral-manifest/add-manifest.php:261
 #: specimen-referral-manifest/edit-manifest.php:338
 msgid "Please select one or more samples"
 msgstr "Veuillez sélectionner un ou plusieurs échantillons"
 
-#: batch/add-batch.php:417
+#: batch/add-batch.php:421
 msgid "You have to choose a testing platform to proceed"
 msgstr "Vous devez choisir une plateforme de test pour procéder"
 
-#: batch/add-batch.php:449 batch/edit-batch.php:481
-#: batch/get-samples-batch.php:177
+#: batch/add-batch.php:453 batch/edit-batch.php:493
+#: batch/get-samples-batch.php:173
 msgid "Maximum number of samples allowed for the selected platform"
 msgstr ""
 "Nombre maximum d'échantillons autorisés pour la plate-forme sélectionnée"
@@ -3552,19 +3556,19 @@ msgid "Create New Batch"
 msgstr "Créer un nouveau batch"
 
 #: batch/batches.php:96
-#: covid-19/management/covid-19-sample-testing-report.php:115
+#: covid-19/management/covid-19-sample-testing-report.php:119
 #: covid-19/management/get-rejected-samples.php:89
-#: dashboard/getSampleResult.php:699
-#: eid/management/eid-sample-testing-report.php:114
+#: dashboard/getSampleResult.php:717
+#: eid/management/eid-sample-testing-report.php:118
 #: eid/management/get-rejected-samples.php:95
-#: generic-tests/program-management/generic-tests-sample-testing-report.php:115
+#: generic-tests/program-management/generic-tests-sample-testing-report.php:119
 #: generic-tests/program-management/get-rejection-result.php:101
 #: hepatitis/management/get-rejected-samples.php:103
 #: hepatitis/management/hepatitis-sample-testing-report.php:115
 #: tb/management/get-rejected-samples.php:106
-#: tb/management/tb-sample-testing-report.php:115 vl/getSampleResult.php:129
+#: tb/management/tb-sample-testing-report.php:119
 #: vl/program-management/getRejectionResult.php:105
-#: vl/program-management/getSampleTestingReport.php:116
+#: vl/program-management/getSampleTestingReport.php:120
 msgid "No. of Samples"
 msgstr "Nombre d'échantillons"
 
@@ -3610,7 +3614,12 @@ msgstr "Éditer un lot"
 msgid "This batch code already exists.Try another code"
 msgstr "Ce code de lot existe déjà, essayez un autre code"
 
-#: batch/edit-batch.php:300 batch/get-samples-batch.php:166
+#: batch/edit-batch.php:285 batch/get-samples-batch.php:144
+#: specimen-referral-manifest/get-samples-for-manifest.php:129
+msgid "Number of unselected samples"
+msgstr "Nombre d'échantillons non sélectionnés"
+
+#: batch/edit-batch.php:302 batch/get-samples-batch.php:162
 #: specimen-referral-manifest/get-samples-for-manifest.php:152
 msgid "Number of selected samples"
 msgstr "Nombre d'échantillons sélectionnés"
@@ -3821,12 +3830,7 @@ msgstr "Imprimer des PDF par lots"
 msgid "Delete"
 msgstr "Supprimer"
 
-#: batch/get-samples-batch.php:136 batch/get-samples-batch.php:148
-#: specimen-referral-manifest/get-samples-for-manifest.php:129
-msgid "Number of unselected samples"
-msgstr "Nombre d'échantillons non sélectionnés"
-
-#: batch/get-samples-batch.php:176
+#: batch/get-samples-batch.php:172
 msgid ""
 "Number of samples selected out of maximum number of samples allowed for the "
 "selected platform"
@@ -4880,8 +4884,8 @@ msgstr "Incomplet"
 #: eid/management/eid-clinic-report.php:154 eid/requests/eid-requests.php:210
 #: hepatitis/management/hepatitis-clinic-report.php:155
 #: hepatitis/requests/hepatitis-dhis2.php:104
-#: hepatitis/requests/hepatitis-requests.php:177 roles/addRole.php:327
-#: roles/editRole.php:307 tb/management/tb-clinic-report.php:153
+#: hepatitis/requests/hepatitis-requests.php:177 roles/addRole.php:333
+#: roles/editRole.php:314 tb/management/tb-clinic-report.php:153
 #: tb/requests/tb-requests.php:183 vl/program-management/highViralLoad.php:230
 #: vl/requests/vl-requests.php:350
 msgid "All"
@@ -6556,7 +6560,7 @@ msgstr "Enregistré au laboratoire de test"
 #: eid/management/eid-sample-testing-report.php:95
 #: generic-tests/program-management/generic-tests-sample-testing-report.php:96
 #: hepatitis/management/hepatitis-sample-testing-report.php:96
-#: tb/management/tb-sample-testing-report.php:96 vl/getSampleResult.php:110
+#: tb/management/tb-sample-testing-report.php:96
 #: vl/program-management/getSampleTestingReport.php:97
 msgid "Samples Testing Report"
 msgstr "Rapport de test des échantillons"
@@ -7033,8 +7037,8 @@ msgid "Covid-19 Results"
 msgstr "Covid-19-Imprimer le résultat"
 
 #: covid-19/management/getSampleStatus.php:260
-#: dashboard/getSampleResult.php:474 dashboard/getSampleResult.php:531
-#: dashboard/getSampleResult.php:589 dashboard/getSampleResult.php:650
+#: dashboard/getSampleResult.php:479 dashboard/getSampleResult.php:541
+#: dashboard/getSampleResult.php:604 dashboard/getSampleResult.php:670
 #: eid/management/getSampleStatus.php:311
 #: generic-tests/program-management/get-sample-status.php:227
 #: hepatitis/management/get-sample-status.php:351
@@ -10689,7 +10693,7 @@ msgstr "Résultats pas encore imprimés"
 msgid "Samples with Accepted Results"
 msgstr "Accepté"
 
-#: dashboard/getSampleCount.php:217 dashboard/getSampleResult.php:687
+#: dashboard/getSampleCount.php:217 dashboard/getSampleResult.php:705
 msgid "Samples Rejected"
 msgstr "Échantillons rejetés"
 
@@ -10743,31 +10747,27 @@ msgid "(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"
 msgstr ""
 "(SUR LA BASE DES ÉCHANTILLONS PRÉLEVÉS DANS LA PLAGE DE DATES SÉLECTIONNÉE)"
 
-#: dashboard/getSampleResult.php:677
-msgid "Overall Sample Status"
-msgstr "Statut global de l'échantillon"
-
-#: dashboard/getSampleResult.php:686
+#: dashboard/getSampleResult.php:704
 msgid "Samples Tested"
 msgstr "Nombre d'échantillons testés"
 
-#: dashboard/getSampleResult.php:688
+#: dashboard/getSampleResult.php:706
 msgid "Samples on Hold"
 msgstr "Échantillons en attente"
 
-#: dashboard/getSampleResult.php:689
+#: dashboard/getSampleResult.php:707
 msgid "Samples Registered at Testing Lab"
 msgstr "Enregistré au laboratoire de test"
 
-#: dashboard/getSampleResult.php:690
+#: dashboard/getSampleResult.php:708
 msgid "Samples Awaiting Approval"
 msgstr "Échantillons en attente d'approbation"
 
-#: dashboard/getSampleResult.php:691
+#: dashboard/getSampleResult.php:709
 msgid "Samples Registered at Collection Sites"
 msgstr "Échantillons enregistrés sur les sites de collecte"
 
-#: dashboard/getSampleResult.php:707
+#: dashboard/getSampleResult.php:725
 msgid "Total"
 msgstr "Total"
 
@@ -12221,8 +12221,9 @@ msgstr "Veuillez saisir la désignation"
 #: facilities/addFacility.php:634 facilities/editFacility.php:604
 #: facilities/editFacility.php:632 facilities/editFacility.php:985
 #: users/addUser.php:149 users/editUser.php:201
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:333
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:339
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:332
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:338
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:348
 msgid "Signature"
 msgstr "Signature"
 
@@ -12449,33 +12450,33 @@ msgstr "Forcer la synchronisation à distance"
 msgid "Last synced at"
 msgstr "Dernière synchronisation le"
 
-#: footer.php:132
+#: footer.php:146
 msgid "Please connect to internet to sync with STS"
 msgstr "Veuillez vous connecter à Internet pour synchroniser avec STS"
 
-#: footer.php:138
+#: footer.php:152
 msgid "Preparing for STS sync."
 msgstr "Préparation de la synchronisation STS."
 
-#: footer.php:149 footer.php:173 footer.php:197
+#: footer.php:163 footer.php:187 footer.php:211
 msgid "Unable to do STS Sync. Please contact technical team for assistance."
 msgstr ""
 "Impossible d'effectuer la synchronisation STS. Veuillez contacter l'équipe "
 "technique pour obtenir de l'aide."
 
-#: footer.php:160
+#: footer.php:174
 msgid "Trying to sync Test Results"
 msgstr "Essayer de synchroniser les résultats des tests"
 
-#: footer.php:184
+#: footer.php:198
 msgid "Trying to sync Test Requests"
 msgstr "Essayer de synchroniser les demandes de test"
 
-#: footer.php:217 footer.php:228
+#: footer.php:231 footer.php:242
 msgid "Thank you.Your message has been submitted."
 msgstr "Merci, votre message a été envoyé."
 
-#: footer.php:344
+#: footer.php:358
 msgid ""
 "Invalid phone number. Please enter full phone number with the proper country "
 "code"
@@ -12483,15 +12484,15 @@ msgstr ""
 "Numéro de téléphone non valide. Veuillez saisir le numéro de téléphone "
 "complet avec l'indicatif du pays"
 
-#: footer.php:380
+#: footer.php:394
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identité du patient : "
 
-#: footer.php:400
+#: footer.php:414
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères à rechercher"
 
-#: footer.php:455
+#: footer.php:469
 msgid "Cache cleared successfully"
 msgstr "Le cache a été éliminé avec succès"
 
@@ -16483,7 +16484,7 @@ msgstr ""
 msgid "Unselect All"
 msgstr "Tout déselectionner"
 
-#: roles/addRole.php:329 roles/editRole.php:309
+#: roles/addRole.php:335 roles/editRole.php:316
 msgid "None"
 msgstr "Rien"
 
@@ -19786,13 +19787,17 @@ msgstr "Résultats (log)"
 msgid "Comment, if applicable"
 msgstr "Commentaire, le cas échéant"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:315
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:327
 msgid "Validated by"
 msgstr "Validé par"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:316
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:328
 msgid "Authorized by"
 msgstr "Autorisé par"
+
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:344
+msgid "Authorized and Validated by"
+msgstr "Autorisé et validé par"
 
 #: vl/results/pdf/result-pdf-cameroon.php:203
 msgid "HEALTH CENTRE"
@@ -19937,6 +19942,9 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Overall Sample Status"
+#~ msgstr "Statut global de l'échantillon"
 
 #~ msgid "Facility Name & Code"
 #~ msgstr "Nom et code de la structure"
