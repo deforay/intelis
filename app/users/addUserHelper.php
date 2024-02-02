@@ -91,7 +91,10 @@ try {
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
 
+
+
         $id = $db->insert($tableName, $data);
+
 
         if ($id === true && trim((string) $_POST['selectedFacility']) != '') {
             $selectedFacility = explode(",", (string) $_POST['selectedFacility']);

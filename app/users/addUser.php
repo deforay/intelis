@@ -1,7 +1,14 @@
 <?php
 
+use App\Services\GeoLocationsService;
+use App\Registries\ContainerRegistry;
+
 
 require_once APPLICATION_PATH . '/header.php';
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
+
 $query = "SELECT * FROM roles where status='active' GROUP BY role_code";
 $result = $db->rawQuery($query);
 
@@ -17,10 +24,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $fResult = $db->rawQuery($fQuery);
 
      foreach ($fResult as $ft) {
-          $activeFacilities[] = array(
-               'id' => $ft['facility_id'],
-               'text' => $ft['facility_name']
-          );
+          $activeFacilities[$ft['facility_id']] = $ft['facility_name'];
      }
 
      $display = 'display:block';
@@ -41,6 +45,8 @@ $ftResult = [];
 
 $fQuery = "SELECT * FROM facility_type where facility_type_id IN(1,2)";
 $ftResult = $db->rawQuery($fQuery);
+
+$geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
 ?>
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
@@ -239,17 +245,66 @@ $ftResult = $db->rawQuery($fQuery);
                                         </div>
                                    </div>
                               </div> -->
-
                               <div class="row" style="margin: 15px;<?php echo $display; ?>">
-
                                    <div class="col-md-12">
-                                        <h4 style="font-weight:bold;"> <?php echo _translate("Map User to Selected Facilities (optional)"); ?></h4>
-                                        <input id="mappedFacilities" style="width:100%;" placeholder="Type facility name" />
+                                        <button type="button" class="btn btn-primary btn-sm pull-left" style="margin-right:5px;line-height: 2;" onclick="hideAdvanceSearch();"><span>Show Advanced Search Options</span></button>
+                                             </div>
+                                             </div>
+                                         <div class="row" style="margin: 15px;<?php echo $display; ?>">
+                                   <div class="col-md-12">
+					     <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="display: none;">
+                                   <tr>
+                                        <td><strong>
+                                                  <?php echo _translate("Province/State"); ?>&nbsp;:
+                                             </strong></td>
+                                        <td>
+                                             <?php if (sizeof($geoLocationParentArray) > 0) { ?>
+											<select name="stateId" id="stateId" class="form-control isRequired" title="<?php echo _translate('Please choose province/state'); ?>">
+												<?= $general->generateSelectOptions($geoLocationParentArray, null, _translate("-- Select --")); ?>
+											</select>
+                                                       <?php } ?>
+                                        </td>
+                                        <td><strong>
+                                                  <?php echo _translate("District/County"); ?>&nbsp;:
+                                             </strong></td>
+                                             <td>
+                                             <select name="districtId" id="districtId" class="form-control isRequired" title="<?php echo _translate('Please choose District/County'); ?>">
+										<option value="">
+											<?php echo _translate("-- Select --"); ?>
+										</option>
+									</select>
+                                        </td>
+                                        <td>
+                                             <input type="button" name="filter" id="filter" onclick="getFacilitiesToMap();" value="Search" class="btn btn-primary btn-sm"/>
+                                        </td>
+                                   </tr>
+                              </table>
                                    </div>
                               </div>
+                              <div class="row" style="margin: 15px;<?php echo $display; ?>">
+                                   <div class="col-md-12">
+                                   <h4 style="font-weight:bold;"> <?php echo _translate("Map User to Selected Facilities (optional)"); ?></h4>
 
+                                        <div class="col-md-5">
+									<select name="mappedFacilities[]" id="search" class="form-control" size="8" multiple="multiple">
+									</select>
+									<div class="sampleCounterDiv"><?= _translate("Number of unselected facilities"); ?> : <span id="unselectedCount"></span></div>
+								</div>
+
+								<div class="col-md-2">
+									<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+									<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+									<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+									<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+								</div>
+
+								<div class="col-md-5">
+									<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+									<div class="sampleCounterDiv"><?= _translate("Number of selected facilities"); ?> : <span id="selectedCount"></span></div>
+								</div>
+                                   </div>
+                              </div>
                          </div>
-
 
                          <!-- /.box-body -->
                          <div class="box-footer">
@@ -276,42 +331,27 @@ $ftResult = $db->rawQuery($fQuery);
      facilityName = true;
 
      jQuery(document).ready(function($) {
-
-          $('#mappedFacilities').select2({
-               data: <?= json_encode($activeFacilities) ?>,
-               placeholder: 'Type facility name',
-               multiple: true,
-               // query with pagination
-               query: function(q) {
-                    var pageSize,
-                         results,
-                         that = this;
-                    pageSize = 20; // or whatever pagesize
-                    results = [];
-                    if (q.term && q.term !== '') {
-                         // HEADS UP; for the _.filter function i use underscore (actually lo-dash) here
-                         results = _.filter(that.data, function(e) {
-                              return e.text.toUpperCase().indexOf(q.term.toUpperCase()) >= 0;
-                         });
-                    } else if (q.term === '') {
-                         results = that.data;
-                    }
-                    q.callback({
-                         results: results.slice((q.page - 1) * pageSize, q.page * pageSize),
-                         more: results.length >= q.page * pageSize,
-                    });
-               },
-          });
-
+          getFacilitiesToMap();
           $('#search').multiselect({
-               search: {
-                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-               },
-               fireSearch: function(value) {
-                    return value.length > 2;
-               }
-          });
+			search: {
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+			},
+			fireSearch: function(value) {
+				return value.length > 2;
+			},
+			startUp: function($left, $right) {
+				updateCounts($left, $right);
+			},
+			afterMoveToRight: function($left, $right, $options) {
+				updateCounts($left, $right);
+			},
+			afterMoveToLeft: function($left, $right, $options) {
+				updateCounts($left, $right);
+			}
+		});
+
+         
           $("#showFilter").click(function() {
                $("#showFilter").hide();
                $("#facilityFilter,#hideFilter").fadeIn();
@@ -345,19 +385,88 @@ $ftResult = $db->rawQuery($fQuery);
                     return false;
                }
           });
+
+          $("#stateId").select2({
+			placeholder: '<?php echo _translate("Select Province", true); ?>',
+			width: '100%'
+		});
+
+		$("#districtId").select2({
+			placeholder: '<?php echo _translate("Select District", true); ?>',
+			width: '100%'
+		});
+
+          $("#stateId").change(function() {
+			if ($(this).val() == 'other') {
+				$('#provinceNew').show();
+			} else {
+				$('#provinceNew').hide();
+				$('#state').val($("#stateId option:selected").text());
+			}
+			$.blockUI();
+			var pName = $(this).val();
+			if ($.trim(pName) != '') {
+				$.post("/includes/siteInformationDropdownOptions.php", {
+						pName: pName,
+					},
+					function(data) {
+						if (data != "") {
+							details = data.split("###");
+							$("#districtId").html(details[1]);
+							$("#districtId").append('<option value="other"><?php echo _translate("Other"); ?></option>');
+						}
+					});
+			}
+			$.unblockUI();
+		});
      });
 
+     function hideAdvanceSearch()
+     {
+          $('#advanceFilter').toggle();
+     }
+
+     function updateCounts($left, $right) {
+		let selectedCount = $right.find('option').length;
+		$("#unselectedCount").html($left.find('option').length);
+		$("#selectedCount").html(selectedCount);
+
+	}
+
+     function getFacilitiesToMap()
+     {
+          $.blockUI({
+			message: '<h3><?= _translate("Trying to get mapped facilities", true); ?> <br><?php echo _translate("Please wait", true); ?>...</h3>'
+		});
+		$.post("getFacilitiesHelper.php", {
+				provinceId: $('#stateId').val(),
+				districtId: $('#districtId').val()
+			},
+			function(toAppend) {
+				if (toAppend != "" && toAppend != null && toAppend != undefined) {
+					$('#search').html(toAppend)
+					setTimeout(function() {
+						$("#search_rightSelected").trigger('click');
+					}, 10);
+                         var count = $('#search option').length;
+					$("#unselectedCount").html(count);
+
+				} else {
+					$('#search').html("");
+					alert("<?= _translate("No facilities found for the selected facility type. Please add a new facility or edit an existing facility.", true); ?>");
+				}
+				$.unblockUI();
+			});
+     }
+
      function validateNow() {
-
-          let mappedFacilities = ($('#mappedFacilities').select2('data'));
-          let selVal = [];
-          $(mappedFacilities).each(
-               function(index, value) {
-                    selVal[index] = (value.id);
-               }
-          );
-
+          $("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES
+		var selVal = [];
+		$('#search_to option').each(function(i, selected) {
+			selVal[i] = $(selected).val();
+		});
           $("#selectedFacility").val(selVal);
+
 
           flag = deforayValidator.init({
                formId: 'userForm'
