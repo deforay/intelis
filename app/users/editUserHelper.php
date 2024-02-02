@@ -110,6 +110,7 @@ try {
             $data['force_password_reset'] = 1;
         }
 
+
         $db->where('user_id', $userId);
         $db->update("user_details", $data);
 

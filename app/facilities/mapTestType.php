@@ -100,7 +100,6 @@ require_once APPLICATION_PATH . '/header.php';
 
 													</select>
 													<div class="sampleCounterDiv"><?= _translate("Number of unselected facilities"); ?> : <span id="unselectedCount"></span></div>
-
 												</div>
 
 												<div class="col-md-2">
@@ -179,15 +178,11 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function validateNow() {
 
-		$("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES
 		var selVal = [];
-		$('#search_to option').each(function(i, selected) {
-			selVal[i] = $(selected).val();
-		});
-		let selectedFacilities = JSON.stringify(selVal);
-		console.log(selVal.length);
-		console.log(selectedFacilities);
-		$("#selectedFacilities").val(selectedFacilities);
+        $('#search_to option').each(function(i, selected) {
+            selVal[i] = $(selected).val();
+        });
+        $("#selectedSample").val(selVal);
 		flag = deforayValidator.init({
 			formId: 'facilityTestMapForm'
 		});
