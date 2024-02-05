@@ -167,6 +167,10 @@ if (isset($_POST['childId']) && $_POST['childId'] != "") {
 if (isset($_POST['childName']) && $_POST['childName'] != "") {
     $sWhere[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $_POST['childName'] . "%'";
 }
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+}
+
 
 
 if (!empty($_POST['sampleCollectionDate'])) {

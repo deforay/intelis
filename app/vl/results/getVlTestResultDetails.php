@@ -87,9 +87,7 @@ try {
      vl.sample_received_at_lab_datetime,
      vl.result_dispatched_datetime,
      vl.result_printed_datetime,
-     vl.result_approved_by,
-     b.batch_code
-
+     vl.result_approved_by
      FROM form_vl as vl
      LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
      LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
@@ -206,7 +204,7 @@ try {
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
      );
-
+//echo '<pre>'; print_r($rResult); die;
      foreach ($rResult as $aRow) {
           $row = [];
           if (isset($_POST['vlPrint'])) {

@@ -231,6 +231,11 @@ if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPa
     $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
 }
 
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+}
+
+
 if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
         $sWhere[] = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !='' OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL OR vl.hcv_vl_count  ='' OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
