@@ -215,7 +215,7 @@ try {
         'transactionId' => $transactionId,
         'data' => $rowData ?? []
     ];
-} catch (SystemException $exc) {
+} catch (Throwable $exc) {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),

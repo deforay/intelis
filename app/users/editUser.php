@@ -63,10 +63,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
 
      foreach ($fResult as $ft) {
-          if(in_array($ft['facility_id'],$preselectedFacilities)){
+          if (in_array($ft['facility_id'], $preselectedFacilities)) {
                $activeFacilities[$ft['facility_id']] = $ft['facility_name'];
-          }
-          else{
+          } else {
                $activeFacilitiesNotAdded[$ft['facility_id']] = $ft['facility_name'];
           }
      }
@@ -430,23 +429,23 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
           getFacilitiesToMap();
 
           $('#search').multiselect({
-			search: {
-				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-			},
-			fireSearch: function(value) {
-				return value.length > 2;
-			},
-			startUp: function($left, $right) {
-				updateCounts($left, $right);
-			},
-			afterMoveToRight: function($left, $right, $options) {
-				updateCounts($left, $right);
-			},
-			afterMoveToLeft: function($left, $right, $options) {
-				updateCounts($left, $right);
-			}
-		});
+               search: {
+                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+               },
+               fireSearch: function(value) {
+                    return value.length > 2;
+               },
+               startUp: function($left, $right) {
+                    updateCounts($left, $right);
+               },
+               afterMoveToRight: function($left, $right, $options) {
+                    updateCounts($left, $right);
+               },
+               afterMoveToLeft: function($left, $right, $options) {
+                    updateCounts($left, $right);
+               }
+          });
           $("#showFilter").click(function() {
                $("#showFilter").hide();
                $("#facilityFilter,#hideFilter").fadeIn();
@@ -480,87 +479,85 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
           });
 
           $("#stateId").select2({
-			placeholder: '<?php echo _translate("Select Province", true); ?>',
-			width: '100%'
-		});
+               placeholder: '<?php echo _translate("Select Province", true); ?>',
+               width: '100%'
+          });
 
-		$("#districtId").select2({
-			placeholder: '<?php echo _translate("Select District", true); ?>',
-			width: '100%'
-		});
+          $("#districtId").select2({
+               placeholder: '<?php echo _translate("Select District", true); ?>',
+               width: '100%'
+          });
 
           $("#stateId").change(function() {
-			if ($(this).val() == 'other') {
-				$('#provinceNew').show();
-			} else {
-				$('#provinceNew').hide();
-				$('#state').val($("#stateId option:selected").text());
-			}
-			$.blockUI();
-			var pName = $(this).val();
-			if ($.trim(pName) != '') {
-				$.post("/includes/siteInformationDropdownOptions.php", {
-						pName: pName,
-					},
-					function(data) {
-						if (data != "") {
-							details = data.split("###");
-							$("#districtId").html(details[1]);
-							$("#districtId").append('<option value="other"><?php echo _translate("Other"); ?></option>');
-						}
-					});
-			}
-			$.unblockUI();
-		});
+               if ($(this).val() == 'other') {
+                    $('#provinceNew').show();
+               } else {
+                    $('#provinceNew').hide();
+                    $('#state').val($("#stateId option:selected").text());
+               }
+               $.blockUI();
+               var pName = $(this).val();
+               if ($.trim(pName) != '') {
+                    $.post("/includes/siteInformationDropdownOptions.php", {
+                              pName: pName,
+                         },
+                         function(data) {
+                              if (data != "") {
+                                   details = data.split("###");
+                                   $("#districtId").html(details[1]);
+                                   $("#districtId").append('<option value="other"><?php echo _translate("Other"); ?></option>');
+                              }
+                         });
+               }
+               $.unblockUI();
+          });
      });
      pwdflag = true;
 
-     function hideAdvanceSearch()
-     {
+     function hideAdvanceSearch() {
           $('#advanceFilter').toggle();
      }
 
      function updateCounts($left, $right) {
-		let selectedCount = $right.find('option').length;
-		$("#unselectedCount").html($left.find('option').length);
-		$("#selectedCount").html(selectedCount);
+          let selectedCount = $right.find('option').length;
+          $("#unselectedCount").html($left.find('option').length);
+          $("#selectedCount").html(selectedCount);
 
-	}
+     }
 
-     function getFacilitiesToMap()
-     {
+     function getFacilitiesToMap() {
           $.blockUI({
-			message: '<h3><?= _translate("Trying to get mapped facilities", true); ?> <br><?php echo _translate("Please wait", true); ?>...</h3>'
-		});
-		$.post("getFacilitiesHelper.php", {
-				provinceId: $('#stateId').val(),
-				districtId: $('#districtId').val(),
+               message: '<h3><?= _translate("Trying to get mapped facilities", true); ?> <br><?php echo _translate("Please wait", true); ?>...</h3>'
+          });
+          $.post("getFacilitiesHelper.php", {
+                    provinceId: $('#stateId').val(),
+                    districtId: $('#districtId').val(),
                     selectedFacility: '<?php echo $facilityMap; ?>'
-			},
-			function(toAppend) {
-				if (toAppend != "" && toAppend != null && toAppend != undefined) {
-					$('#search').html(toAppend)
-					setTimeout(function() {
-						$("#search_rightSelected").trigger('click');
-					}, 10);
+               },
+               function(toAppend) {
+                    if (toAppend != "" && toAppend != null && toAppend != undefined) {
+                         $('#search').html(toAppend)
+                         setTimeout(function() {
+                              $("#search_rightSelected").trigger('click');
+                         }, 10);
                          var count = $('#search option').length;
-					$("#unselectedCount").html(count);
+                         $("#unselectedCount").html(count);
 
-				} else {
-					$('#search').html("");
-					alert("<?= _translate("No facilities found for the selected facility type. Please add a new facility or edit an existing facility.", true); ?>");
+                    } else {
+                         $('#search').html("");
+                         alert("<?= _translate("No facilities found for the selected facility type. Please add a new facility or edit an existing facility.", true); ?>");
                          $("#unselectedCount").html(0);
-				}
-				$.unblockUI();
-			});
+                    }
+                    $.unblockUI();
+               });
      }
 
      function validateNow() {
           $("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES
-		var selVal = [];
-		$('#search_to option').each(function(i, selected) {
-			selVal[i] = $(selected).val();
-		});
+          var selVal = [];
+          $('#search_to option').each(function(i, selected) {
+               selVal[i] = $(selected).val();
+          });
           $("#selectedFacility").val(selVal);
 
           flag = deforayValidator.init({
