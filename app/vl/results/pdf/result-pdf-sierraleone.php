@@ -248,9 +248,9 @@ if (!empty($result)) {
           }
      }
 
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($patientFname) . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_art_no'] . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['test_reason_name'] . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['test_reason_name']) . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
      $html .= '</tr>';
      $html .= '</table>';
@@ -273,10 +273,18 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $age . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
      if ($result['patient_gender'] == 'female') {
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", (string) $result['is_patient_breastfeeding'])) . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", (string) $result['is_patient_pregnant'])) . '</td>';
+          if (!empty($result['is_patient_breastfeeding'])) {
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", (string) $result['is_patient_breastfeeding'])) . '</td>';
+          } else {
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
+          }
+          if (!empty($result['is_patient_pregnant'])) {
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", (string) $result['is_patient_pregnant'])) . '</td>';
+          } else {
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
+          }
      } else {
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
@@ -289,9 +297,21 @@ if (!empty($result)) {
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EMAIL</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_name'] . '</td>';
-     $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
-     $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
+     if (!empty($result['request_clinician_name'])) {
+          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_name'] . '</td>';
+     } else {
+          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
+     }
+     if (!empty($result['request_clinician_phone_number'])) {
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
+     } else {
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
+     }
+     if (!empty($result['facility_emails'])) {
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
+     } else {
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
+     }
      $html .= '</tr>';
      $html .= '</table>';
      $html .= '</td>';
