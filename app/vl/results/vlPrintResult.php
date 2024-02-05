@@ -197,6 +197,7 @@ $state = $geolocationService->getProvinces("yes");
 													<td>
 														<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
 													</td>
+												
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
@@ -586,7 +587,12 @@ $state = $geolocationService->getProvinces("yes");
 	var selectedPrintedRowsId = [];
 	var oTable = null;
 	var opTable = null;
+	var availableBatchCode = [];
 	$(document).ready(function() {
+
+		//getBatchCodeList();
+
+		
 		var i = '<?php echo $i; ?>';
 		$(".printedData").click(function() {
 			loadPrintedVlRequestData();
@@ -679,8 +685,23 @@ $state = $geolocationService->getProvinces("yes");
 				$("#iCol" + colNo + "-sort").hide();
 			}
 		}
-
 	});
+
+	function getBatchCodeList()
+	{
+		$.post("/batch/getBatchCodeHelper.php", {
+				batchCode: $('#batchCode').val(),
+				testType: 'vl'
+			},
+			function(batchData) {
+				Obj = $.parseJSON(batchData);
+				availableBatchCode = Obj;
+				$( "#batchCode" ).autocomplete({
+					source: availableBatchCode
+				});
+				$.unblockUI();
+			});
+	}
 
 	function fnShowHide(iCol) {
 		var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
