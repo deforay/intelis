@@ -13,7 +13,6 @@ $general = ContainerRegistry::get(CommonService::class);
 $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 
 
-
 if (_isAllowed("sync-history.php")) {
 	$syncHistory = "/common/reference/sync-history.php";
 } else {
@@ -111,11 +110,11 @@ if (empty($syncLatestTime)) {
 			buttons: {
 				contextButton: {
 					menuItems: [
-						"viewFullscreen", 
-						"printChart", 
-						"separator", 
-						"downloadPNG", 
-						"downloadJPEG", 
+						"viewFullscreen",
+						"printChart",
+						"separator",
+						"downloadPNG",
+						"downloadJPEG",
 						"downloadSVG"
 					]
 				}
@@ -323,7 +322,7 @@ if (empty($syncLatestTime)) {
 		<?php }
 		// if instance facility name is not set, let us show the modal
 
-		if (empty($_SESSION['instanceFacilityName'])) {
+		if (empty($_SESSION['instanceFacilityName']) || ($_SESSION['instanceType'] == 'vluser' && empty($_SESSION['instanceLabId']))) {
 		?> showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 

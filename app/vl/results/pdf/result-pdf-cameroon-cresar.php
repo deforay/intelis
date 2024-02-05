@@ -143,23 +143,7 @@ if (!empty($result)) {
           $result['facility_name'] = '';
      }
 
-     //Set Age
-     $age = 'Unknown';
-     if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
-          $todayDate = strtotime(date('Y-m-d'));
-          $dob = strtotime((string) $result['patient_dob']);
-          $difference = $todayDate - $dob;
-          $seconds_per_year = 60 * 60 * 24 * 365;
-          $age = round($difference / $seconds_per_year);
-     } elseif (isset($result['patient_age_in_years']) && trim((string) $result['patient_age_in_years']) != '' && trim((string) $result['patient_age_in_years']) > 0) {
-          $age = $result['patient_age_in_years'];
-     } elseif (isset($result['patient_age_in_months']) && trim((string) $result['patient_age_in_months']) != '' && trim((string) $result['patient_age_in_months']) > 0) {
-          if ($result['patient_age_in_months'] > 1) {
-               $age = $result['patient_age_in_months'] . ' months';
-          } else {
-               $age = $result['patient_age_in_months'] . ' month';
-          }
-     }
+     $age = DateUtility::calculatePatientAge($result);
 
      $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '');
      $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '');
@@ -340,7 +324,7 @@ if (!empty($result)) {
                $html .= '<td style="text-align:right;"></td>';
           }
           $html .= '</tr>';
-     }else{
+     } else {
           $html .= '<tr><td width="40%" style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Authorized and Validated by') . ' : ' . $reviewedBy  . '</td></tr>';
           $html .= '<tr><td></td></tr>';
           $html .= '<tr>';

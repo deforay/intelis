@@ -226,4 +226,41 @@ class DateUtility
 
         return $latestDate->format('Y-m-d H:i:s');
     }
+
+    /**
+     * Calculates the age of a patient from their date of birth, age in years, or age in months.
+     *
+     * @param array $result Array containing patient's date of birth ('patient_dob'),
+     *                      age in years ('patient_age_in_years'), or age in months ('patient_age_in_months').
+     * @return string The calculated age as a string, with years or months specified as appropriate.
+     */
+    public static function calculatePatientAge($result)
+    {
+        if (!isset($result['patient_dob']) && !isset($result['patient_age_in_years']) && !isset($result['patient_age']) && !isset($result['patient_age_in_months'])) {
+            return _translate('Unknown');
+        }
+
+        // Check for valid DOB and calculate age in years
+        if (!empty($result['patient_dob']) && $result['patient_dob'] !== '0000-00-00' && self::isDateFormatValid($result['patient_dob'])) {
+            $dob = Carbon::parse($result['patient_dob']);
+            $age = Carbon::now()->diffInYears($dob);
+            return $age . ' ' . ($age > 1 ? _translate('years') : _translate('year'));
+        }
+
+        // Directly use age in years if provided and valid, considering both possible keys
+        $ageInYearsKey = isset($result['patient_age_in_years']) ? 'patient_age_in_years' : 'patient_age';
+        if (isset($result[$ageInYearsKey]) && is_numeric($result[$ageInYearsKey]) && $result[$ageInYearsKey] > 0) {
+            $age = (int)$result[$ageInYearsKey];
+            return $age . ' ' . ($age > 1 ? _translate('years') : _translate('year'));
+        }
+
+        // Convert age in months to appropriate format
+        if (isset($result['patient_age_in_months']) && is_numeric($result['patient_age_in_months']) && $result['patient_age_in_months'] > 0) {
+            $months = (int)$result['patient_age_in_months'];
+            return $months . ' ' . ($months > 1 ? _translate('months') : _translate('month'));
+        }
+
+        // Default case if none of the above conditions are met
+        return _translate('Unknown');
+    }
 }
