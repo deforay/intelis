@@ -203,107 +203,68 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                         </div>
                                    </div>
                               </div>
-                              <!-- <div class="row" style=<?php echo $display; ?>>
-                                   <div class="col-md-12">
-                                        <a href="javascript:void(0);" id="showFilter" class="btn btn-primary"><?php echo _translate("Show Advanced Search Options"); ?></a>
-                                        <a href="javascript:void(0);" style="display:none;" id="hideFilter" class="btn btn-danger"><?php echo _translate("Hide Advanced Search Options"); ?></a>
+                              <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+
+                                   <div class="row" style="margin: 15px;<?php echo $display; ?>">
+                                        <div class="col-md-12">
+                                             <button type="button" class="btn btn-primary btn-sm pull-left" style="margin-right:5px;line-height: 2;" onclick="hideAdvanceSearch();"><span>Show Advanced Search Options</span></button>
+                                        </div>
                                    </div>
-                                   <div id="facilityFilter" style="display:none;">
-                                        <h4 style="padding:36px 0px 0px 14px;"> <?php echo _translate("Filter Facilities by Province & Districts"); ?></h4>
-                                        <div class="col-md-4">
-                                             <div class="form-group">
-                                                  <label for="province" class="col-lg-4 control-label"><?php echo _translate("Province"); ?> </label>
-                                                  <div class="col-lg-7">
-                                                       <select class="form-control " name="province" id="province" title="<?php echo _translate('Please choose province'); ?>" style="width:100%;" onchange="getProvinceDistricts();">
-                                                            <?php echo $province; ?>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                             <div class="form-group">
-                                                  <label for="province" class="col-lg-4 control-label"><?php echo _translate("District"); ?> </label>
-                                                  <div class="col-lg-7">
-                                                       <select class="form-control " name="district" id="district" title="<?php echo _translate('Please choose district'); ?>" style="width:100%;" onchange="getFacilities();">
-                                                            <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                             <div class="form-group">
-                                                  <label for="province" class="col-lg-4 control-label"><?php echo _translate("Facility Type"); ?> </label>
-                                                  <div class="col-lg-7">
-                                                       <select class="form-control" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="getFacility()">
-                                                            <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                                            <?php foreach ($ftResult as $type) { ?>
-                                                                 <option value="<?php echo $type['facility_type_id']; ?>"><?php echo ($type['facility_type_name']); ?></option>
+                                   <div class="row" style="margin: 15px;<?php echo $display; ?>">
+                                        <div class="col-md-12">
+                                             <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="display: none;">
+                                                  <tr>
+                                                       <td><strong>
+                                                                 <?php echo _translate("Province/State"); ?>&nbsp;:
+                                                            </strong></td>
+                                                       <td>
+                                                            <?php if (!empty($geoLocationParentArray)) { ?>
+                                                                 <select name="stateId" id="stateId" class="form-control isRequired" title="<?php echo _translate('Please choose province/state'); ?>">
+                                                                      <?= $general->generateSelectOptions($geoLocationParentArray, null, _translate("-- Select --")); ?>
+                                                                 </select>
                                                             <?php } ?>
-                                                       </select>
-                                                  </div>
+                                                       </td>
+                                                       <td><strong>
+                                                                 <?php echo _translate("District/County"); ?>&nbsp;:
+                                                            </strong></td>
+                                                       <td>
+                                                            <select name="districtId" id="districtId" class="form-control isRequired" title="<?php echo _translate('Please choose District/County'); ?>">
+                                                                 <option value="">
+                                                                      <?php echo _translate("-- Select --"); ?>
+                                                                 </option>
+                                                            </select>
+                                                       </td>
+                                                       <td>
+                                                            <input type="button" name="filter" id="filter" onclick="getFacilitiesToMap();" value="Search" class="btn btn-primary btn-sm" />
+                                                       </td>
+                                                  </tr>
+                                             </table>
+                                        </div>
+                                   </div>
+                                   <div class="row" style="margin: 15px;<?php echo $display; ?>">
+                                        <div class="col-md-12">
+                                             <h4 style="font-weight:bold;"> <?php echo _translate("Map User to Selected Facilities (optional)"); ?></h4>
+
+                                             <div class="col-md-5">
+                                                  <select name="mappedFacilities[]" id="search" class="form-control" size="8" multiple="multiple">
+                                                  </select>
+                                                  <div class="sampleCounterDiv"><?= _translate("Number of unselected facilities"); ?> : <span id="unselectedCount"></span></div>
+                                             </div>
+
+                                             <div class="col-md-2">
+                                                  <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+                                                  <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+                                                  <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+                                                  <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+                                             </div>
+
+                                             <div class="col-md-5">
+                                                  <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+                                                  <div class="sampleCounterDiv"><?= _translate("Number of selected facilities"); ?> : <span id="selectedCount"></span></div>
                                              </div>
                                         </div>
                                    </div>
-                              </div> -->
-                              <div class="row" style="margin: 15px;<?php echo $display; ?>">
-                                   <div class="col-md-12">
-                                        <button type="button" class="btn btn-primary btn-sm pull-left" style="margin-right:5px;line-height: 2;" onclick="hideAdvanceSearch();"><span>Show Advanced Search Options</span></button>
-                                             </div>
-                                             </div>
-                                         <div class="row" style="margin: 15px;<?php echo $display; ?>">
-                                   <div class="col-md-12">
-					     <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="display: none;">
-                                   <tr>
-                                        <td><strong>
-                                                  <?php echo _translate("Province/State"); ?>&nbsp;:
-                                             </strong></td>
-                                        <td>
-                                             <?php if (sizeof($geoLocationParentArray) > 0) { ?>
-											<select name="stateId" id="stateId" class="form-control isRequired" title="<?php echo _translate('Please choose province/state'); ?>">
-												<?= $general->generateSelectOptions($geoLocationParentArray, null, _translate("-- Select --")); ?>
-											</select>
-                                                       <?php } ?>
-                                        </td>
-                                        <td><strong>
-                                                  <?php echo _translate("District/County"); ?>&nbsp;:
-                                             </strong></td>
-                                             <td>
-                                             <select name="districtId" id="districtId" class="form-control isRequired" title="<?php echo _translate('Please choose District/County'); ?>">
-										<option value="">
-											<?php echo _translate("-- Select --"); ?>
-										</option>
-									</select>
-                                        </td>
-                                        <td>
-                                             <input type="button" name="filter" id="filter" onclick="getFacilitiesToMap();" value="Search" class="btn btn-primary btn-sm"/>
-                                        </td>
-                                   </tr>
-                              </table>
-                                   </div>
-                              </div>
-                              <div class="row" style="margin: 15px;<?php echo $display; ?>">
-                                   <div class="col-md-12">
-                                   <h4 style="font-weight:bold;"> <?php echo _translate("Map User to Selected Facilities (optional)"); ?></h4>
-
-                                        <div class="col-md-5">
-									<select name="mappedFacilities[]" id="search" class="form-control" size="8" multiple="multiple">
-									</select>
-									<div class="sampleCounterDiv"><?= _translate("Number of unselected facilities"); ?> : <span id="unselectedCount"></span></div>
-								</div>
-
-								<div class="col-md-2">
-									<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-									<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-									<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-									<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-								</div>
-
-								<div class="col-md-5">
-									<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
-									<div class="sampleCounterDiv"><?= _translate("Number of selected facilities"); ?> : <span id="selectedCount"></span></div>
-								</div>
-                                   </div>
-                              </div>
+                              <?php } ?>
                          </div>
 
                          <!-- /.box-body -->
@@ -333,25 +294,25 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
      jQuery(document).ready(function($) {
           getFacilitiesToMap();
           $('#search').multiselect({
-			search: {
-				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-			},
-			fireSearch: function(value) {
-				return value.length > 2;
-			},
-			startUp: function($left, $right) {
-				updateCounts($left, $right);
-			},
-			afterMoveToRight: function($left, $right, $options) {
-				updateCounts($left, $right);
-			},
-			afterMoveToLeft: function($left, $right, $options) {
-				updateCounts($left, $right);
-			}
-		});
+               search: {
+                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+               },
+               fireSearch: function(value) {
+                    return value.length > 2;
+               },
+               startUp: function($left, $right) {
+                    updateCounts($left, $right);
+               },
+               afterMoveToRight: function($left, $right, $options) {
+                    updateCounts($left, $right);
+               },
+               afterMoveToLeft: function($left, $right, $options) {
+                    updateCounts($left, $right);
+               }
+          });
 
-         
+
           $("#showFilter").click(function() {
                $("#showFilter").hide();
                $("#facilityFilter,#hideFilter").fadeIn();
@@ -387,84 +348,82 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
           });
 
           $("#stateId").select2({
-			placeholder: '<?php echo _translate("Select Province", true); ?>',
-			width: '100%'
-		});
+               placeholder: '<?php echo _translate("Select Province", true); ?>',
+               width: '100%'
+          });
 
-		$("#districtId").select2({
-			placeholder: '<?php echo _translate("Select District", true); ?>',
-			width: '100%'
-		});
+          $("#districtId").select2({
+               placeholder: '<?php echo _translate("Select District", true); ?>',
+               width: '100%'
+          });
 
           $("#stateId").change(function() {
-			if ($(this).val() == 'other') {
-				$('#provinceNew').show();
-			} else {
-				$('#provinceNew').hide();
-				$('#state').val($("#stateId option:selected").text());
-			}
-			$.blockUI();
-			var pName = $(this).val();
-			if ($.trim(pName) != '') {
-				$.post("/includes/siteInformationDropdownOptions.php", {
-						pName: pName,
-					},
-					function(data) {
-						if (data != "") {
-							details = data.split("###");
-							$("#districtId").html(details[1]);
-							$("#districtId").append('<option value="other"><?php echo _translate("Other"); ?></option>');
-						}
-					});
-			}
-			$.unblockUI();
-		});
+               if ($(this).val() == 'other') {
+                    $('#provinceNew').show();
+               } else {
+                    $('#provinceNew').hide();
+                    $('#state').val($("#stateId option:selected").text());
+               }
+               $.blockUI();
+               var pName = $(this).val();
+               if ($.trim(pName) != '') {
+                    $.post("/includes/siteInformationDropdownOptions.php", {
+                              pName: pName,
+                         },
+                         function(data) {
+                              if (data != "") {
+                                   details = data.split("###");
+                                   $("#districtId").html(details[1]);
+                                   $("#districtId").append('<option value="other"><?php echo _translate("Other"); ?></option>');
+                              }
+                         });
+               }
+               $.unblockUI();
+          });
      });
 
-     function hideAdvanceSearch()
-     {
+     function hideAdvanceSearch() {
           $('#advanceFilter').toggle();
      }
 
      function updateCounts($left, $right) {
-		let selectedCount = $right.find('option').length;
-		$("#unselectedCount").html($left.find('option').length);
-		$("#selectedCount").html(selectedCount);
+          let selectedCount = $right.find('option').length;
+          $("#unselectedCount").html($left.find('option').length);
+          $("#selectedCount").html(selectedCount);
 
-	}
+     }
 
-     function getFacilitiesToMap()
-     {
+     function getFacilitiesToMap() {
           $.blockUI({
-			message: '<h3><?= _translate("Trying to get mapped facilities", true); ?> <br><?php echo _translate("Please wait", true); ?>...</h3>'
-		});
-		$.post("getFacilitiesHelper.php", {
-				provinceId: $('#stateId').val(),
-				districtId: $('#districtId').val()
-			},
-			function(toAppend) {
-				if (toAppend != "" && toAppend != null && toAppend != undefined) {
-					$('#search').html(toAppend)
-					setTimeout(function() {
-						$("#search_rightSelected").trigger('click');
-					}, 10);
+               message: '<h3><?= _translate("Trying to get mapped facilities", true); ?> <br><?php echo _translate("Please wait", true); ?>...</h3>'
+          });
+          $.post("getFacilitiesHelper.php", {
+                    provinceId: $('#stateId').val(),
+                    districtId: $('#districtId').val()
+               },
+               function(toAppend) {
+                    if (toAppend != "" && toAppend != null && toAppend != undefined) {
+                         $('#search').html(toAppend)
+                         setTimeout(function() {
+                              $("#search_rightSelected").trigger('click');
+                         }, 10);
                          var count = $('#search option').length;
-					$("#unselectedCount").html(count);
+                         $("#unselectedCount").html(count);
 
-				} else {
-					$('#search').html("");
-					alert("<?= _translate("No facilities found for the selected facility type. Please add a new facility or edit an existing facility.", true); ?>");
-				}
-				$.unblockUI();
-			});
+                    } else {
+                         $('#search').html("");
+                         alert("<?= _translate("No facilities found for the selected facility type. Please add a new facility or edit an existing facility.", true); ?>");
+                    }
+                    $.unblockUI();
+               });
      }
 
      function validateNow() {
           $("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES
-		var selVal = [];
-		$('#search_to option').each(function(i, selected) {
-			selVal[i] = $(selected).val();
-		});
+          var selVal = [];
+          $('#search_to option').each(function(i, selected) {
+               selVal[i] = $(selected).val();
+          });
           $("#selectedFacility").val(selVal);
 
 
