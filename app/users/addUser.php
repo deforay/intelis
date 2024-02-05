@@ -259,7 +259,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                              </strong></td>
                                         <td>
                                              <?php if (sizeof($geoLocationParentArray) > 0) { ?>
-											<select name="stateId" id="stateId" class="form-control isRequired" title="<?php echo _translate('Please choose province/state'); ?>">
+											<select name="stateId" id="stateId" class="form-control" title="<?php echo _translate('Please choose province/state'); ?>">
 												<?= $general->generateSelectOptions($geoLocationParentArray, null, _translate("-- Select --")); ?>
 											</select>
                                                        <?php } ?>
@@ -268,7 +268,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                   <?php echo _translate("District/County"); ?>&nbsp;:
                                              </strong></td>
                                              <td>
-                                             <select name="districtId" id="districtId" class="form-control isRequired" title="<?php echo _translate('Please choose District/County'); ?>">
+                                             <select name="districtId" id="districtId" class="form-control" title="<?php echo _translate('Please choose District/County'); ?>">
 										<option value="">
 											<?php echo _translate("-- Select --"); ?>
 										</option>
