@@ -249,7 +249,7 @@ if (!empty($result)) {
     }
 
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['labName']) . '</td>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($patientFname) . '</td>';
 
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['mother_id'] . '</td>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['child_id'] . '</td>';
@@ -272,7 +272,7 @@ if (!empty($result)) {
 
     $html .= '<tr>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['child_age'] . '</td>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", (string) $result['child_gender'])) . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", (string) $result['child_gender'])) . '</td>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
     $html .= '</tr>';
@@ -282,9 +282,21 @@ if (!empty($result)) {
     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EMAIL</td>';
     $html .= '</tr>';
     $html .= '<tr>';
-    $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_requestor_name']) . '</td>';
-    $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_mobile_numbers'] . '</td>';
-    $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
+    if (!empty($result['sample_requestor_name'])) {
+        $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['sample_requestor_name']) . '</td>';
+    } else {
+        $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
+    }    
+    if (!empty($result['facility_mobile_numbers'])) {
+        $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_mobile_numbers'] . '</td>';
+    } else {
+        $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
+    }
+    if (!empty($result['facility_emails'])) {
+        $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
+    } else {
+        $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
+    }
     $html .= '</tr>';
     $html .= '</table>';
     $html .= '</td>';
