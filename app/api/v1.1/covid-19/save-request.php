@@ -165,7 +165,7 @@ try {
         $update = "no";
         $rowData = null;
         $uniqueId = null;
-        if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
+        if (!empty($data['labId']) && !empty($data['appSampleCode'])) {
 
             $sQuery = "SELECT covid19_id,
                             sample_code,
@@ -181,10 +181,10 @@ try {
 
             $sQueryWhere = [];
 
-            if (!empty($data['uniqueId'])) {
-                $uniqueId = $data['uniqueId'];
-                $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-            }
+            // if (!empty($data['uniqueId'])) {
+            //     $uniqueId = $data['uniqueId'];
+            //     $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
+            // }
 
             if (!empty($data['appSampleCode']) && !empty($data['labId'])) {
                 $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
@@ -213,9 +213,6 @@ try {
             }
         }
 
-        if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
-            $uniqueId = $general->generateUUID();
-        }
 
         $currentSampleData = [];
         if (!empty($rowData)) {
@@ -227,7 +224,7 @@ try {
             $params['appSampleCode'] = $data['appSampleCode'] ?? null;
             $params['provinceCode'] = $provinceCode;
             $params['provinceId'] = $provinceId;
-            $params['uniqueId'] = $uniqueId;
+            $params['uniqueId'] = $uniqueId ?? $general->generateUUID();
             $params['sampleCollectionDate'] = $sampleCollectionDate;
             $params['userId'] = $user['user_id'];
             $params['accessType'] = $user['access_type'];
@@ -236,7 +233,7 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData['id'] = $covid19Service->insertSample($params, true);
+            $currentSampleData = $covid19Service->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['covid19SampleId'] = intval($currentSampleData['id']);
             if ($data['covid19SampleId'] == 0) {
