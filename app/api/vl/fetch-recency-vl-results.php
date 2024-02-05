@@ -99,7 +99,7 @@ try {
         'timestamp' => time(),
         'data' => $rowData ?? []
     ];
-} catch (SystemException $exc) {
+} catch (Throwable $exc) {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),

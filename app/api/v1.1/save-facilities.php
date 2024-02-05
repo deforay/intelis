@@ -90,7 +90,7 @@ try {
             'facility_code',
             'facility_type'
         ];
-       
+
 
         if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $noOfFailedRecords++;
@@ -101,62 +101,62 @@ try {
                 'message' => _translate("Missing required fields")
             ];
             continue;
-        } 
+        }
 
-            $stateCheckQuery = "SELECT geo_id,geo_name FROM geographical_divisions WHERE geo_name= ?";
-			$stateInfo = $db->rawQueryOne($stateCheckQuery, [$data['state']]);
-			if (isset($stateInfo['geo_name']) && !empty($stateInfo['geo_name'])) {
-				$data['facilityStateId'] = $stateInfo['geo_id'];
-			} else {
-				$stateData = array(
-					'geo_name' => $stateData['state'],
-					'updated_datetime' => DateUtility::getCurrentDateTime(),
-				);
-				$db->insert("geographical_divisions", $stateData);
-                $lastStateId = $db->getInsertId();
-				$data['facilityStateId'] = $lastStateId;
-			}
+        $stateCheckQuery = "SELECT geo_id,geo_name FROM geographical_divisions WHERE geo_name= ?";
+        $stateInfo = $db->rawQueryOne($stateCheckQuery, [$data['state']]);
+        if (isset($stateInfo['geo_name']) && !empty($stateInfo['geo_name'])) {
+            $data['facilityStateId'] = $stateInfo['geo_id'];
+        } else {
+            $stateData = array(
+                'geo_name' => $stateData['state'],
+                'updated_datetime' => DateUtility::getCurrentDateTime(),
+            );
+            $db->insert("geographical_divisions", $stateData);
+            $lastStateId = $db->getInsertId();
+            $data['facilityStateId'] = $lastStateId;
+        }
 
-            $districtCheckQuery = "SELECT geo_id,geo_name FROM geographical_divisions WHERE geo_name = ? AND geo_parent = ?";
-			$districtInfo = $db->rawQueryOne($districtCheckQuery, [$data['state'],$data['facilityStateId']]);
-			if (isset($districtInfo['geo_name']) && !empty($districtInfo['geo_name'])) {
-				$data['facilityDistrictId'] = $districtInfo['geo_id'];
-			} else {
-				$districtData = array(
-					'geo_name' => $stateData['state'],
-					'updated_datetime' => DateUtility::getCurrentDateTime(),
-				);
-				$db->insert("geographical_divisions", $districtData);
-                $lastDistrictId = $db->getInsertId();
-				$data['facilityDistrictId'] = $lastDistrictId;
-			}
+        $districtCheckQuery = "SELECT geo_id,geo_name FROM geographical_divisions WHERE geo_name = ? AND geo_parent = ?";
+        $districtInfo = $db->rawQueryOne($districtCheckQuery, [$data['state'], $data['facilityStateId']]);
+        if (isset($districtInfo['geo_name']) && !empty($districtInfo['geo_name'])) {
+            $data['facilityDistrictId'] = $districtInfo['geo_id'];
+        } else {
+            $districtData = array(
+                'geo_name' => $stateData['state'],
+                'updated_datetime' => DateUtility::getCurrentDateTime(),
+            );
+            $db->insert("geographical_divisions", $districtData);
+            $lastDistrictId = $db->getInsertId();
+            $data['facilityDistrictId'] = $lastDistrictId;
+        }
 
         if (isset($data['reportEmail']) && trim((string) $data['reportEmail']) != '') {
-			$expEmail = explode(",", (string) $data['reportEmail']);
-			for ($i = 0; $i < count($expEmail); $i++) {
-				$reportEmail = filter_var($expEmail[$i], FILTER_VALIDATE_EMAIL);
-				if ($reportEmail != '') {
-					if ($email != '') {
-						$email .= "," . $reportEmail;
-					} else {
-						$email .= $reportEmail;
-					}
-				}
-			}
-		}
+            $expEmail = explode(",", (string) $data['reportEmail']);
+            for ($i = 0; $i < count($expEmail); $i++) {
+                $reportEmail = filter_var($expEmail[$i], FILTER_VALIDATE_EMAIL);
+                if ($reportEmail != '') {
+                    if ($email != '') {
+                        $email .= "," . $reportEmail;
+                    } else {
+                        $email .= $reportEmail;
+                    }
+                }
+            }
+        }
 
         if (!empty($data['testingPoints'])) {
-			$data['testingPoints'] = explode(",", (string) $data['testingPoints']);
-			$data['testingPoints'] = array_map('trim', $data['testingPoints']);
-			$data['testingPoints'] = json_encode($data['testingPoints']);
-		} else {
-			$data['testingPoints'] = null;
-		}
+            $data['testingPoints'] = explode(",", (string) $data['testingPoints']);
+            $data['testingPoints'] = array_map('trim', $data['testingPoints']);
+            $data['testingPoints'] = json_encode($data['testingPoints']);
+        } else {
+            $data['testingPoints'] = null;
+        }
 
-        
+
         $data['api'] = "yes";
 
-      
+
         $facilityFulldata = [
             'vlsm_instance_id' => $instanceId,
             'facility_name' => $data['facilityName'],
@@ -177,7 +177,7 @@ try {
             'facility_hub_name' => $data['facilityHubName'],
             'latitude' => $data['latitude'],
             'longitude' => $data['longitude'],
-          //  'facility_attributes'  => $data['facilityAttributes'],
+            //  'facility_attributes'  => $data['facilityAttributes'],
             'testing_points' => $data['testingPoints'],
             'facility_logo' => $data['facilityLogo'],
             'header_text' => $data['headerText'],
@@ -187,8 +187,8 @@ try {
         ];
 
 
-            $id = $db->insert('facility_details', $facilityFulldata);
-            error_log($db->getLastError());
+        $id = $db->insert('facility_details', $facilityFulldata);
+        error_log($db->getLastError());
 
         if ($id) {
             $responseData[$rootKey] = [
@@ -201,7 +201,6 @@ try {
                 'timestamp' => time(),
                 'transactionId' => $transactionId,
             ];
-            
         } else {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
@@ -218,10 +217,10 @@ try {
         }
     }
 
-  
+
     $db->commitTransaction();
     http_response_code(200);
-} catch (SystemException $exc) {
+} catch (Throwable $exc) {
     $db->rollbackTransaction();
     http_response_code(500);
     $payload = [

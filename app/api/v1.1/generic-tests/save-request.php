@@ -453,7 +453,7 @@ try {
     ];
     http_response_code(200);
     $db->commitTransaction();
-} catch (SystemException $exc) {
+} catch (Throwable $exc) {
     $db->rollbackTransaction();
     http_response_code(500);
     $payload = [

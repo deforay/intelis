@@ -180,7 +180,7 @@ try {
         'transactionId' => $transactionId,
         'data' => $rowData ?? []
     ];
-} catch (SystemException $exc) {
+} catch (Throwable $exc) {
 
     // http_response_code(500);
     $payload = [
