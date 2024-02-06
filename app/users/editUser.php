@@ -354,6 +354,9 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                         </td>
                                         <td>
                                              <input type="button" name="filter" id="filter" onclick="getFacilitiesToMap();" value="Search" class="btn btn-primary btn-sm"/>
+                                             <button class="btn btn-danger btn-sm" type="button" onclick="document.location.href = document.location"><span>
+										<?= _translate('Reset'); ?>
+									</span></button>
                                         </td>
                                    </tr>
                               </table>
@@ -413,6 +416,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
 <script type="text/javascript">
+
      function clearUserSignature(img) {
           $(".userSignature").fileinput("clear");
           $("#clearUserSignature").addClass("hide");
@@ -480,11 +484,13 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
           $("#stateId").select2({
                placeholder: '<?php echo _translate("Select Province", true); ?>',
+               allowClear: true,
                width: '100%'
           });
 
           $("#districtId").select2({
                placeholder: '<?php echo _translate("Select District", true); ?>',
+               allowClear: true,
                width: '100%'
           });
 
