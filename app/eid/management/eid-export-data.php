@@ -166,16 +166,7 @@ $state = $geolocationService->getProvinces("yes");
 						<tr>
 							<td><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
-									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-									<?php
-									foreach ($batResult as $code) {
-									?>
-										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-									<?php
-									}
-									?>
-								</select>
+							<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
 							</td>
 							<th scope="row"><?php echo _translate("Funding Sources"); ?></th>
 							<td>
@@ -343,6 +334,24 @@ $state = $geolocationService->getProvinces("yes");
 	var selectedTestsId = [];
 	var oTable = null;
 	$(document).ready(function() {
+		$("#batchCode").autocomplete({
+        source: function( request, response ) {
+              // Fetch data
+              $.ajax({
+                   url: "/batch/getBatchCodeHelper.php",
+                   type: 'post',
+				   dataType: "json",
+                   data: {
+                        search: request.term,
+						type : 'eid'
+                   },
+                   success: function( data ) {
+                        response( data );
+                   }
+
+				});
+			}
+	});
 		$("#state").select2({
 			placeholder: "<?php echo _translate("Select Province"); ?>"
 		});
@@ -593,6 +602,10 @@ $state = $geolocationService->getProvinces("yes");
 					"name": "motherName",
 					"value": $("#motherName").val()
 				});
+				aoData.push({
+					"name": "batchCode",
+					"value": $("#batchCode").val()
+				});
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -639,7 +652,7 @@ $state = $geolocationService->getProvinces("yes");
 		oTable.fnDraw();
 		$.post(fileName, {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
-				Batch_Code: $("#batchCode  option:selected").text(),
+				Batch_Code: $("#batchCode").val(),
 				Facility_Name: $("#facilityName  option:selected").text(),
 				sample_Test_Date: $("#sampleTestDate").val(),
 				Sample_Type: $("#sampleType  option:selected").text(),

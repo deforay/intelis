@@ -158,16 +158,7 @@ $state = $geolocationService->getProvinces("yes");
 							</td>
 							<td><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
-									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-									<?php
-									foreach ($batResult as $code) {
-									?>
-										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-									<?php
-									}
-									?>
-								</select>
+								<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
 							</td>
 							<th scope="row"><?php echo _translate("Funding Sources"); ?></th>
 							<td>
@@ -319,6 +310,24 @@ $state = $geolocationService->getProvinces("yes");
 	var selectedTestsId = [];
 	var oTable = null;
 	$(document).ready(function() {
+		$("#batchCode").autocomplete({
+        source: function( request, response ) {
+              // Fetch data
+              $.ajax({
+                   url: "/batch/getBatchCodeHelper.php",
+                   type: 'post',
+				   dataType: "json",
+                   data: {
+                        search: request.term,
+						type : 'covid19'
+                   },
+                   success: function( data ) {
+                        response( data );
+                   }
+
+				});
+			}
+	});
 		$("#state").select2({
 			placeholder: "<?php echo _translate("Select Province"); ?>"
 		});
@@ -530,6 +539,10 @@ $state = $geolocationService->getProvinces("yes");
 					"name": "patientName",
 					"value": $("#patientName").val()
 				});
+				aoData.push({
+					"name": "batchCode",
+					"value": $("#batchCode").val()
+				});
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -587,7 +600,7 @@ $state = $geolocationService->getProvinces("yes");
 		$.post(fileName, {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				Sample_Recieved_Date: $("#sampleRecievedDate").val(),
-				Batch_Code: $("#batchCode  option:selected").text(),
+				Batch_Code: $("#batchCode").val(),
 				Facility_Name: $("#facilityName  option:selected").text(),
 				sample_Test_Date: $("#sampleTestDate").val(),
 				Viral_Load: $("#result  option:selected").text(),
