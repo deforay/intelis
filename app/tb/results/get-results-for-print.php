@@ -230,6 +230,11 @@ if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != 
 if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
     $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
 }
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+}
+
+
 // Only approved results can be printed
 if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {

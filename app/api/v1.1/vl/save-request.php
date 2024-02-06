@@ -146,8 +146,8 @@ try {
 
         $update = "no";
         $rowData = null;
-        $uniqueId = $data['uniqueId'] ?? null;
-        if (!empty($uniqueId) || !empty($data['appSampleCode'])) {
+        $uniqueId = null;
+        if (!empty($data['labId']) && !empty($data['appSampleCode'])) {
 
             $sQuery = "SELECT vl_sample_id,
                             unique_id,
@@ -155,22 +155,15 @@ try {
                             remote_sample_code,
                             result_status,
                             locked
-                        FROM form_vl ";
+                        FROM form_vl
+                        WHERE (app_sample_code like ? AND lab_id = ?) ";
 
-            $sQueryWhere = [];
-
-            if (!empty($uniqueId)) {
-                $sQueryWhere[] = " unique_id like '$uniqueId'";
-            } 
-            if (!empty($data['appSampleCode']) && !empty($data['labId'])) {
-                $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
-            }
 
             if (!empty($sQueryWhere)) {
                 $sQuery .= " WHERE " . implode(" AND ", $sQueryWhere);
             }
 
-            $rowData = $db->rawQueryOne($sQuery);
+            $rowData = $db->rawQueryOne($sQuery, [$data['appSampleCode'], $data['labId']]);
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
                     $noOfFailedRecords++;
@@ -185,11 +178,9 @@ try {
                 }
                 $update = "yes";
                 $uniqueId = $rowData['unique_id'];
+            } else {
+                $uniqueId = $general->generateUUID();
             }
-        }
-
-        if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
-            $uniqueId = $general->generateUUID();
         }
 
         $currentSampleData = [];
@@ -211,7 +202,7 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData['id'] = $vlService->insertSample($params, true);
+            $currentSampleData = $vlService->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['vlSampleId'] = intval($currentSampleData['id']);
             if ($data['vlSampleId'] == 0) {
@@ -273,7 +264,7 @@ try {
             'app_sample_code' => $data['appSampleCode'] ?? null,
             'sample_reordered' => $data['sampleReordered'] ?? 'no',
             'facility_id' => $data['facilityId'] ?? null,
-            'patient_Gender' => $data['patientGender'] ?? null,
+            'patient_gender' => $data['patientGender'] ?? null,
             'patient_dob' => DateUtility::isoDateFormat($data['dob'] ?? ''),
             'patient_age_in_years' => $data['ageInYears'] ?? null,
             'patient_age_in_months' => $data['ageInMonths'] ?? null,
@@ -435,7 +426,7 @@ try {
     ];
     $db->commitTransaction();
     http_response_code(200);
-} catch (SystemException $exc) {
+} catch (Throwable $exc) {
     $db->rollbackTransaction();
     http_response_code(500);
     $payload = [
@@ -446,6 +437,7 @@ try {
         'data' => []
     ];
     error_log($db->getLastError());
+    error_log($db->getLastQuery());
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
     LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);

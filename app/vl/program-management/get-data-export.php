@@ -222,16 +222,16 @@ try {
      /* Assign date time filters */
      if (!empty($_POST['sampleCollectionDate'])) {
           if (trim((string) $start_date) == trim((string) $end_date)) {
-               $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
+               $sWhere[] = "  DATE(vl.sample_collection_date) = '$start_date' ";
           } else {
-               $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+               $sWhere[] =  " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date' ";
           }
      }
      if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '' && $_POST['status'] == 7) {
           if (trim((string) $sTestDate) == trim((string) $eTestDate)) {
-               $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+               $sWhere[] = "  DATE(vl.sample_tested_datetime) = '$sTestDate' ";
           } else {
-               $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+               $sWhere[] =  " DATE(vl.sample_tested_datetime) BETWEEN '$sTestDate' AND '$eTestDate' ";
           }
      }
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {

@@ -123,6 +123,12 @@ $state = $geolocationService->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                                                     </td>
+                                                    <td><strong>
+															<?php echo _translate("Batch Code"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+													</td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
@@ -272,6 +278,12 @@ $state = $geolocationService->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="printPatientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                                                     </td>
+                                                    <td><strong>
+															<?php echo _translate("Batch Code"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<input type="text" id="printBatchCode" name="printBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+													</td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
@@ -381,6 +393,27 @@ $state = $geolocationService->getProvinces("yes");
     var oTable = null;
     var opTable = null;
     $(document).ready(function() {
+
+        $("#batchCode, #printBatchCode").autocomplete({
+        source: function( request, response ) {
+              // Fetch data
+              $.ajax({
+                   url: "/batch/getBatchCodeHelper.php",
+                   type: 'post',
+				   dataType: "json",
+                   data: {
+                        search: request.term,
+						type : 'tb'
+                   },
+                   success: function( data ) {
+                        response( data );
+                   }
+
+				});
+			}
+	});
+
+
         var i = '<?php echo $i; ?>';
         $(".printedData").click(function() {
             loadPrintedVlRequestData();
@@ -588,6 +621,10 @@ $state = $geolocationService->getProvinces("yes");
                     "name": "sampleTestDate",
                     "value": $("#sampleTestDate").val()
                 });
+                aoData.push({
+					"name": "batchCode",
+					"value": $("#batchCode").val()
+				});
 
                 $.ajax({
                     "dataType": 'json',
@@ -717,6 +754,10 @@ $state = $geolocationService->getProvinces("yes");
                     "name": "sampleTestDate",
                     "value": $("#printSampleTestDate").val()
                 });
+                aoData.push({
+					"name": "batchCode",
+					"value": $("#printBatchCode").val()
+				});
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",

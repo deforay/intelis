@@ -222,6 +222,12 @@ echo "All system checks passed. Continuing with the update..."
 # Update Ubuntu Packages
 echo "Updating Ubuntu packages..."
 apt-get update && apt-get upgrade -y
+
+# Configure any packages that were not fully installed
+echo "Configuring any partially installed packages..."
+sudo dpkg --configure -a
+
+# Clean up
 apt-get autoremove -y
 
 setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www

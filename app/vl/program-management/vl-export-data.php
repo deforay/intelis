@@ -265,20 +265,8 @@ $state = $geolocationService->getProvinces("yes");
 									<?php echo _translate("Batch Code"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
-									<option value="">
-										<?php echo _translate("-- Select --"); ?>
-									</option>
-									<?php
-									foreach ($batResult as $code) {
-									?>
-										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-									<?php
-									}
-									?>
-								</select>
+								<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
 							</td>
-
 
 						</tr>
 						<tr>
@@ -385,6 +373,7 @@ $state = $geolocationService->getProvinces("yes");
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
+						
 						</tr>
 						<tr>
 							<td colspan="6">
@@ -555,6 +544,24 @@ $state = $geolocationService->getProvinces("yes");
 	var selectedTestsId = [];
 	var oTable = null;
 	$(document).ready(function() {
+		$("#batchCode").autocomplete({
+        source: function( request, response ) {
+              // Fetch data
+              $.ajax({
+                   url: "/batch/getBatchCodeHelper.php",
+                   type: 'post',
+				   dataType: "json",
+                   data: {
+                        search: request.term,
+						type : 'vl'
+                   },
+                   success: function( data ) {
+                        response( data );
+                   }
+
+				});
+			}
+	});
 		$("#state").select2({
 			placeholder: "<?php echo _translate("Select Province"); ?>"
 		});
@@ -567,9 +574,7 @@ $state = $geolocationService->getProvinces("yes");
 		$("#vlLab").select2({
 			placeholder: "<?php echo _translate("Select Vl Lab"); ?>"
 		});
-		$("#batchCode").select2({
-			placeholder: "<?php echo _translate("Select Batch Code"); ?>"
-		});
+
 		$('.daterangefield').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",

@@ -423,7 +423,7 @@ class VlService extends AbstractTestService
     //     return $this->db->getValue('instruments', 'low_vl_result_text', null);
     // }
 
-    public function insertSample($params, $returnSampleData = false)
+    public function insertSample($params, $returnSampleData = false): int | array
     {
         try {
             // Start a new transaction (this starts a new transaction if not already started)
@@ -470,10 +470,10 @@ class VlService extends AbstractTestService
                     'sample_reordered' => $params['sampleReordered'] ?? 'no',
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
                     'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
-                    'lab_id' => $params['labId'] ?? null,
+                    //'lab_id' => $params['labId'] ?? null,
                     'patient_art_no' => $params['artNo'] ?? null,
                     'specimen_type' => $params['specimenType'] ?? null,
-                    'app_sample_code' => $params['appSampleCode'] ?? null,
+                    //'app_sample_code' => $params['appSampleCode'] ?? null,
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                     'province_id' => _castVariable($provinceId, 'int'),
@@ -512,7 +512,7 @@ class VlService extends AbstractTestService
                     'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address' => $this->commonService->getClientIpAddress()
                 ];
-                
+
                 $formAttributes = $this->commonService->jsonToSetString(json_encode($formAttributes), 'form_attributes');
                 $tesRequestData['form_attributes'] = $this->db->func($formAttributes);
                 $this->db->insert("form_vl", $tesRequestData);

@@ -82,7 +82,7 @@ try {
     } else {
         throw new SystemException('Login failed. Please contact system administrator.');
     }
-} catch (SystemException $exc) {
+} catch (Throwable $exc) {
     http_response_code(500);
     $payload = [
         'status' => 2,

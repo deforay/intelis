@@ -153,18 +153,8 @@ foreach ($srcResults as $list) {
 									<?php echo _translate("Batch Code"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>">
-									<option value="">
-										<?php echo _translate("-- Select --"); ?>
-									</option>
-									<?php
-									foreach ($batResult as $code) {
-									?>
-										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-									<?php
-									}
-									?>
-								</select>
+							<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+
 							</td>
 							<td><strong>
 									<?php echo _translate("Funding Sources"); ?>&nbsp;:
@@ -573,6 +563,25 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	var selectedTestsId = [];
 	var oTable = null;
 	$(document).ready(function() {
+		$("#batchCode").autocomplete({
+        source: function( request, response ) {
+              // Fetch data
+              $.ajax({
+                   url: "/batch/getBatchCodeHelper.php",
+                   type: 'post',
+				   dataType: "json",
+                   data: {
+                        search: request.term,
+						type : 'eid'
+                   },
+                   success: function( data ) {
+                        response( data );
+                   }
+
+				});
+			}
+	});
+
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
 			echo "printBarcodeLabel('" . htmlspecialchars((string) $_GET['s']) . "','" . htmlspecialchars((string) $_GET['f']) . "');";
@@ -584,9 +593,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#vlLab").select2({
 			placeholder: "<?php echo _translate("Select Vl Lab"); ?>"
 		});
-		$("#batchCode").select2({
-			placeholder: "<?php echo _translate("Select Batch Code"); ?>"
-		});
+	
 		loadVlRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
 				locale: {

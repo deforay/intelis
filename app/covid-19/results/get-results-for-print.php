@@ -159,6 +159,10 @@ try {
     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
         $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
     }
+    if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+        $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+    }
+    
 
     if (!empty($_POST['sampleCollectionDate'])) {
         if (trim((string) $start_date) == trim((string) $end_date)) {

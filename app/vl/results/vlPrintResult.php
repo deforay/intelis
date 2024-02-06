@@ -197,7 +197,12 @@ $state = $geolocationService->getProvinces("yes");
 													<td>
 														<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
 													</td>
-												
+													<td><strong>
+															<?php echo _translate("Batch Code"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+													</td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
@@ -440,6 +445,12 @@ $state = $geolocationService->getProvinces("yes");
 													<td>
 														<input type="text" id="printPatientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
 													</td>
+													<td><strong>
+															<?php echo _translate("Batch Code"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<input type="text" id="printBatchCode" name="printBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+													</td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
@@ -587,10 +598,27 @@ $state = $geolocationService->getProvinces("yes");
 	var selectedPrintedRowsId = [];
 	var oTable = null;
 	var opTable = null;
-	var availableBatchCode = [];
+	
 	$(document).ready(function() {
 
-		//getBatchCodeList();
+	$("#batchCode, #printBatchCode").autocomplete({
+        source: function( request, response ) {
+              // Fetch data
+              $.ajax({
+                   url: "/batch/getBatchCodeHelper.php",
+                   type: 'post',
+				   dataType: "json",
+                   data: {
+                        search: request.term,
+						type : 'vl'
+                   },
+                   success: function( data ) {
+                        response( data );
+                   }
+
+				});
+			}
+	});
 
 		
 		var i = '<?php echo $i; ?>';
@@ -687,21 +715,7 @@ $state = $geolocationService->getProvinces("yes");
 		}
 	});
 
-	function getBatchCodeList()
-	{
-		$.post("/batch/getBatchCodeHelper.php", {
-				batchCode: $('#batchCode').val(),
-				testType: 'vl'
-			},
-			function(batchData) {
-				Obj = $.parseJSON(batchData);
-				availableBatchCode = Obj;
-				$( "#batchCode" ).autocomplete({
-					source: availableBatchCode
-				});
-				$.unblockUI();
-			});
-	}
+	
 
 	function fnShowHide(iCol) {
 		var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
@@ -844,6 +858,10 @@ $state = $geolocationService->getProvinces("yes");
 				aoData.push({
 					"name": "implementingPartner",
 					"value": $("#implementingPartner").val()
+				});
+				aoData.push({
+					"name": "batchCode",
+					"value": $("#batchCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -991,6 +1009,10 @@ $state = $geolocationService->getProvinces("yes");
 				aoData.push({
 					"name": "implementingPartner",
 					"value": $("#printImplementingPartner").val()
+				});
+				aoData.push({
+					"name": "batchCode",
+					"value": $("#printBatchCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',

@@ -69,11 +69,13 @@ $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
 
-$tQuery = "SELECT COUNT(vl_sample_id) as total,status_id,status_name
-    FROM " . $table . " as vl
-    JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-    JOIN facility_details as f ON vl.lab_id=f.facility_id
-    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+$tQuery = "SELECT COUNT(vl_sample_id) as total,
+                status_id,
+                status_name
+            FROM $table as vl
+            JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+            JOIN facility_details as f ON vl.lab_id=f.facility_id
+            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
 $sWhere = [];
 if (!empty($whereCondition))
@@ -86,20 +88,20 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
     $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 
 if (!empty($sWhere)) {
-    $tQuery .= " where " . implode(" AND ", $sWhere);
+    $tQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 //echo $tQuery; die;
@@ -116,7 +118,7 @@ $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
                     ELSE 0
                 END)) AS lowVL
 
-        FROM " . $table . " as vl
+        FROM $table as vl
 
         JOIN facility_details as f ON vl.lab_id=f.facility_id
 
@@ -130,19 +132,19 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date'AND '$end_date'";
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
     $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (!empty($sWhere)) {
-    $vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
+    $vlSuppressionQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
@@ -151,7 +153,7 @@ $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 $sampleResultQuery = "SELECT
             SUM(CASE WHEN vl.result REGEXP '^-?[0-9]+$' THEN 1 ELSE 0 END) AS numberValue,
             SUM(CASE WHEN vl.result like 'TND' OR vl.result like 'Target Not Detected' OR vl.result like 'Below Detection Level' OR vl.result like 'HIV-1 Not Detected' THEN 1 ELSE 0 END) AS charValue
-            FROM " . $table . " as vl
+            FROM $table as vl
             JOIN facility_details as f ON vl.lab_id=f.facility_id
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
@@ -159,32 +161,38 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date'AND '$end_date'";
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
     $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (!empty($sWhere)) {
-    $sampleResultQuery .= " where " . implode(" AND ", $sWhere);
+    $sampleResultQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
 $sampleResultQueryResult = $db->rawQueryOne($sampleResultQuery);
 
-
 //get LAB TAT
-if ($start_date == '' && $end_date == '') {
-    $date = strtotime(date('Y-m-d') . ' -1 year');
-    $start_date = date('Y-m-d', $date);
-    $end_date = date('Y-m-d');
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+    $tatStartDate = $testedStartDate;
+    $tatEndDate = $testedEndDate;
+} else {
+    $date = new DateTime();
+    $tatEndDate = $date->format('Y-m-d');
+    $date->modify('-1 year');
+    $tatStartDate = $date->format('Y-m-d');
 }
 
 $tatSampleQuery = "SELECT
-        count(*) AS 'totalSamples',
+        COUNT(DISTINCT vl.unique_id) AS 'totalSamples',
+        COUNT(DISTINCT CASE WHEN vl.sample_collection_date BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberCollected',
+        COUNT(DISTINCT CASE WHEN vl.sample_tested_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberTested',
+        COUNT(DISTINCT CASE WHEN vl.sample_received_at_lab_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberReceived',
         DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthDate,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
@@ -194,13 +202,12 @@ $tatSampleQuery = "SELECT
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_on_sts_datetime,vl.result_printed_on_lis_datetime))) AS DECIMAL (10,2)) as AvgResultPrintedFirstTime
 
         FROM `$table` AS vl
-        INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+
         INNER JOIN facility_details as f ON vl.lab_id=f.facility_id
         LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
-        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
         WHERE
         (vl.result IS NOT NULL AND vl.result != '') AND
-        DATE(vl.sample_tested_datetime) BETWEEN '$start_date' AND '$end_date'  ";
+        DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate'  ";
 
 $sWhere = [];
 if (!empty($whereCondition)) {
@@ -208,15 +215,6 @@ if (!empty($whereCondition)) {
 }
 
 $sWhere[] = $recencyWhere;
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-    $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
-}
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
-}
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
-    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-}
 if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
@@ -228,12 +226,10 @@ if (!empty($_POST['labName'])) {
 if (!empty($sWhere)) {
     $tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
 }
-$tatSampleQuery .= " GROUP BY monthDate";
-//$tatSampleQuery .= " HAVING ABS(TIMESTAMPDIFF(DAY,sample_tested_datetime,sample_collection_date)) < 120";
-$tatSampleQuery .= " ORDER BY sample_tested_datetime";
+$tatSampleQuery .= " GROUP BY monthDate ORDER BY sample_tested_datetime ";
 
 // $general->elog($_POST['labName']);
-// error_log($tatSampleQuery);
+//error_log($tatSampleQuery);
 
 $tatResult = $db->rawQuery($tatSampleQuery);
 $j = 0;
@@ -243,6 +239,9 @@ foreach ($tatResult as $sRow) {
     }
 
     $result['totalSamples'][$j] = (isset($sRow["totalSamples"]) && $sRow["totalSamples"] > 0 && $sRow["totalSamples"] != null) ? $sRow["totalSamples"] : 'null';
+    $result['numberCollected'][$j] = (isset($sRow["numberCollected"]) && $sRow["numberCollected"] > 0 && $sRow["numberCollected"] != null) ? $sRow["numberCollected"] : 'null';
+    $result['numberTested'][$j] = (isset($sRow["numberTested"]) && $sRow["numberTested"] > 0 && $sRow["numberTested"] != null) ? $sRow["numberTested"] : 'null';
+    $result['numberReceived'][$j] = (isset($sRow["numberReceived"]) && $sRow["numberReceived"] > 0 && $sRow["numberReceived"] != null) ? $sRow["numberReceived"] : 'null';
     $result['avgResultPrinted'][$j] = (isset($sRow["AvgResultPrinted"]) && $sRow["AvgResultPrinted"] > 0 && $sRow["AvgResultPrinted"] != null) ? $sRow["AvgResultPrinted"] : 'null';
     $result['avgResultPrintedFirstTime'][$j] = (isset($sRow["AvgResultPrintedFirstTime"]) && $sRow["AvgResultPrintedFirstTime"] > 0 && $sRow["AvgResultPrintedFirstTime"] != null) ? $sRow["AvgResultPrintedFirstTime"] : 'null';
     $result['sampleTestedDiff'][$j] = (isset($sRow["AvgTestedDiff"]) && $sRow["AvgTestedDiff"] > 0 && $sRow["AvgTestedDiff"] != null) ? round($sRow["AvgTestedDiff"], 2) : 'null';
@@ -483,7 +482,6 @@ foreach ($tatResult as $sRow) {
                 enabled: false
             },
             xAxis: {
-                //categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
                 categories: [<?php
                                 if (!empty($result['date'])) {
                                     foreach ($result['date'] as $date) {

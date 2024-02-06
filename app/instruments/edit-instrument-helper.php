@@ -52,7 +52,7 @@ try {
             }
         }
 
-        $matchedTests = array_diff($_POST['userTestType'], $_POST['supportedTests']);
+        $matchedTests = array_diff($_POST['userTestType'] ?? [], $_POST['supportedTests'] ?? []);
         foreach ($matchedTests as $key => $row) {
             $_POST['reviewedBy'][$key] = "";
             $_POST['approvedBy'][$key] = "";
