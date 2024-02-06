@@ -27,7 +27,6 @@ if (!empty($_SESSION['facilityMap'])) {
     $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
-$genericWhere = " reason_for_testing != 9999 ";
 $sampleStatusOverviewContainer = "genericSampleStatusOverviewContainer";
 $samplesVlOverview = "genericSmplesVlOverview";
 $labAverageTat = "genericLabAverageTat";
@@ -73,7 +72,7 @@ $tQuery = "SELECT COUNT(sample_id) as total,status_id,status_name
 $sWhere = [];
 if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
-$sWhere[] = $genericWhere;
+
 if ($_SESSION['instanceType'] != 'remoteuser') {
     $sWhere[] = ' result_status !=  ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
@@ -107,7 +106,7 @@ if ($start_date == '' && $end_date == '') {
 }
 
 $tatSampleQuery = "SELECT
-        count(*) as 'totalSamples',
+        COUNT(sample_id) as 'totalSamples',
         DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthDate,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_testing_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
@@ -131,12 +130,12 @@ if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
 }
 
-$sWhere[] = $genericWhere;
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-    $sWhere[] = ' DATE(vl.sample_received_at_testing_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_testing_lab_datetime) <= "' . $labEndDate . '"';
-}
+
+
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate' ";
+} else {
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$start_date' AND '$end_date' ";
 }
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
