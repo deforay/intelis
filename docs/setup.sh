@@ -158,8 +158,16 @@ if [[ -n "$vlsm_sql_file" ]]; then
 fi
 
 # Initial Setup
-echo "Updating software packages..."
-apt-get update && apt-get upgrade -y && apt-get autoremove -y
+# Update Ubuntu Packages
+echo "Updating Ubuntu packages..."
+apt-get update && apt-get upgrade -y
+
+# Configure any packages that were not fully installed
+echo "Configuring any partially installed packages..."
+sudo dpkg --configure -a
+
+# Clean up
+apt-get autoremove -y
 
 echo "Installing basic packages..."
 apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk

@@ -838,7 +838,7 @@ $state = $geolocationService->getProvinces("yes");
                     oTable.fnDraw();
                     //opTable.fnDraw();
                     this.href = data;
-                    // window.open('/download.php?f=' + data, '_blank');
+                    window.open('/download.php?f=' + data, '_blank');
                 }
             });
     }

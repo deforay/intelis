@@ -137,36 +137,40 @@ if (!empty($sWhere)) {
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
 //get LAB TAT
-if ($start_date == '' && $end_date == '') {
-	$date = strtotime(date('Y-m-d') . ' -1 year');
-	$start_date = date('Y-m-d', $date);
-	$end_date = date('Y-m-d');
-}
 $sWhere = [];
 if (!empty($whereCondition)) {
 	$sWhere[] = $whereCondition;
 }
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+	$tatStartDate = $testedStartDate;
+	$tatEndDate = $testedEndDate;
+} else {
+	$date = new DateTime();
+	$tatEndDate = $date->format('Y-m-d');
+	$date->modify('-1 year');
+	$tatStartDate = $date->format('Y-m-d');
+}
 
 $tatSampleQuery = "SELECT
-        count(eid_id) as 'totalSamples',
-		DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
-		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
-		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
-		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
-		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
-		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted
-		FROM form_eid as vl
-		INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-		JOIN facility_details as f ON vl.lab_id=f.facility_id
-		LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-		WHERE vl.result is not null
-		AND vl.result != ''
-		AND DATE(vl.sample_tested_datetime) >= '$start_date'
-		AND DATE(vl.sample_tested_datetime) <= '$end_date' ";
+                        COUNT(DISTINCT vl.unique_id) AS 'totalSamples',
+                        COUNT(DISTINCT CASE WHEN vl.sample_collection_date BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberCollected',
+                        COUNT(DISTINCT CASE WHEN vl.sample_tested_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberTested',
+                        COUNT(DISTINCT CASE WHEN vl.sample_received_at_lab_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberReceived',
+                        DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthDate,
+						CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
+						CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
+						CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
+						CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
+						CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted
+						FROM form_eid as vl
+						INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+						JOIN facility_details as f ON vl.lab_id=f.facility_id
+						LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+						WHERE
+						vl.result is not null AND
+						vl.result != '' AND
+						DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate'  ";
 
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
-	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-}
 
 if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
@@ -175,9 +179,7 @@ if (!empty($_POST['labName'])) {
 if (!empty($sWhere)) {
 	$tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
 }
-$tatSampleQuery .= " GROUP BY monthDate";
-//$tatSampleQuery .= " HAVING daydiff < 120";
-$tatSampleQuery .= " ORDER BY sample_tested_datetime";
+$tatSampleQuery .= " GROUP BY monthDate ORDER BY sample_tested_datetime ";
 //echo $tatSampleQuery;die;
 
 $tatResult = $db->rawQuery($tatSampleQuery);
@@ -188,6 +190,9 @@ foreach ($tatResult as $sRow) {
 	}
 
 	$result['totalSamples'][$j] = (isset($sRow["totalSamples"]) && $sRow["totalSamples"] > 0 && $sRow["totalSamples"] != null) ? $sRow["totalSamples"] : 'null';
+	$result['numberCollected'][$j] = (isset($sRow["numberCollected"]) && $sRow["numberCollected"] > 0 && $sRow["numberCollected"] != null) ? $sRow["numberCollected"] : 'null';
+	$result['numberTested'][$j] = (isset($sRow["numberTested"]) && $sRow["numberTested"] > 0 && $sRow["numberTested"] != null) ? $sRow["numberTested"] : 'null';
+	$result['numberReceived'][$j] = (isset($sRow["numberReceived"]) && $sRow["numberReceived"] > 0 && $sRow["numberReceived"] != null) ? $sRow["numberReceived"] : 'null';
 	$result['avgResultPrinted'][$j] = (isset($sRow["AvgResultPrinted"]) && $sRow["AvgResultPrinted"] > 0 && $sRow["AvgResultPrinted"] != null) ? $sRow["AvgResultPrinted"] : 'null';
 	$result['sampleTestedDiff'][$j] = (isset($sRow["AvgTestedDiff"]) && $sRow["AvgTestedDiff"] > 0 && $sRow["AvgTestedDiff"] != null) ? round($sRow["AvgTestedDiff"], 2) : 'null';
 	$result['sampleReceivedDiff'][$j] = (isset($sRow["AvgReceivedDiff"]) && $sRow["AvgReceivedDiff"] > 0 && $sRow["AvgReceivedDiff"] != null) ? round($sRow["AvgReceivedDiff"], 2) : 'null';
