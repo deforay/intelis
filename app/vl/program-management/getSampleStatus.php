@@ -69,11 +69,13 @@ $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
 
-$tQuery = "SELECT COUNT(vl_sample_id) as total,status_id,status_name
-    FROM " . $table . " as vl
-    JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-    JOIN facility_details as f ON vl.lab_id=f.facility_id
-    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+$tQuery = "SELECT COUNT(vl_sample_id) as total,
+                status_id,
+                status_name
+            FROM $table as vl
+            JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+            JOIN facility_details as f ON vl.lab_id=f.facility_id
+            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
 $sWhere = [];
 if (!empty($whereCondition))
@@ -86,20 +88,20 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
     $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 
 if (!empty($sWhere)) {
-    $tQuery .= " where " . implode(" AND ", $sWhere);
+    $tQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 //echo $tQuery; die;
@@ -116,7 +118,7 @@ $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
                     ELSE 0
                 END)) AS lowVL
 
-        FROM " . $table . " as vl
+        FROM $table as vl
 
         JOIN facility_details as f ON vl.lab_id=f.facility_id
 
@@ -130,19 +132,19 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date'AND '$end_date'";
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
     $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (!empty($sWhere)) {
-    $vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
+    $vlSuppressionQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
@@ -151,7 +153,7 @@ $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 $sampleResultQuery = "SELECT
             SUM(CASE WHEN vl.result REGEXP '^-?[0-9]+$' THEN 1 ELSE 0 END) AS numberValue,
             SUM(CASE WHEN vl.result like 'TND' OR vl.result like 'Target Not Detected' OR vl.result like 'Below Detection Level' OR vl.result like 'HIV-1 Not Detected' THEN 1 ELSE 0 END) AS charValue
-            FROM " . $table . " as vl
+            FROM $table as vl
             JOIN facility_details as f ON vl.lab_id=f.facility_id
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
@@ -159,19 +161,19 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date'AND '$end_date'";
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
     $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (!empty($sWhere)) {
-    $sampleResultQuery .= " where " . implode(" AND ", $sWhere);
+    $sampleResultQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
 $sampleResultQueryResult = $db->rawQueryOne($sampleResultQuery);
 
@@ -184,7 +186,7 @@ if ($start_date == '' && $end_date == '') {
 }
 
 $tatSampleQuery = "SELECT
-        count(*) AS 'totalSamples',
+        COUNT(*) AS 'totalSamples',
         DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthDate,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
@@ -212,7 +214,7 @@ if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleRece
     $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';

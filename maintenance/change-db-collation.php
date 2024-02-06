@@ -28,10 +28,8 @@ function needsColumnConversion($db, $tableName, $columnName, $columnType)
 
 
 
-function convertTableAndColumns($db, $tableName)
+function convertTableAndColumns(DatabaseService $db, string $tableName)
 {
-    /** @var DatabaseService $db */
-    $db->startTransaction();
 
     // Convert table if necessary
     if (needsTableConversion($db, $tableName)) {
@@ -49,20 +47,19 @@ function convertTableAndColumns($db, $tableName)
             //echo "Converted column {$column['Field']} in table $tableName to utf8mb4 and utf8mb4_general_ci.\n";
         }
     }
-
-    $db->commit();
 }
 
+$db->beginTransaction();
 
 try {
-    $tables = $db->rawQuery("SHOW TABLES FROM `$dbName`");
-    $tablesList = array_column($tables, "Tables_in_$dbName");
-
     foreach ($tablesList as $table) {
         convertTableAndColumns($db, $table);
     }
 
+    $db->commitTransaction();
     echo "Conversion process completed for database $dbName.\n";
-} catch (mysqli_sql_exception $e) {
-    error_log("Error fetching tables from database $dbName: " . $e->getMessage());
+} catch (Exception $e) {
+    $db->rollbackTransaction();
+    error_log("Conversion failed: " . $e->getMessage());
+    echo "Conversion process failed for database $dbName. Error: " . $e->getMessage() . "\n";
 }
