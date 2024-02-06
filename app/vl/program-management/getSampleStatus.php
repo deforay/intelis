@@ -178,15 +178,21 @@ if (!empty($sWhere)) {
 $sampleResultQueryResult = $db->rawQueryOne($sampleResultQuery);
 
 //get LAB TAT
-if (empty($start_date) && empty($end_date)) {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+    $tatStartDate = $testedStartDate;
+    $tatEndDate = $testedEndDate;
+} else {
     $date = new DateTime();
-    $end_date = $date->format('Y-m-d');
+    $tatEndDate = $date->format('Y-m-d');
     $date->modify('-1 year');
-    $start_date = $date->format('Y-m-d');
+    $tatStartDate = $date->format('Y-m-d');
 }
 
 $tatSampleQuery = "SELECT
-        COUNT(vl_sample_id) AS 'totalSamples',
+        COUNT(DISTINCT vl.unique_id) AS 'totalSamples',
+        COUNT(DISTINCT CASE WHEN vl.sample_collection_date BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberCollected',
+        COUNT(DISTINCT CASE WHEN vl.sample_tested_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberTested',
+        COUNT(DISTINCT CASE WHEN vl.sample_received_at_lab_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberReceived',
         DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthDate,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
@@ -196,12 +202,12 @@ $tatSampleQuery = "SELECT
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_on_sts_datetime,vl.result_printed_on_lis_datetime))) AS DECIMAL (10,2)) as AvgResultPrintedFirstTime
 
         FROM `$table` AS vl
-        INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+
         INNER JOIN facility_details as f ON vl.lab_id=f.facility_id
         LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
-        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
         WHERE
-        (vl.result IS NOT NULL AND vl.result != '')  ";
+        (vl.result IS NOT NULL AND vl.result != '') AND
+        DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate'  ";
 
 $sWhere = [];
 if (!empty($whereCondition)) {
@@ -209,16 +215,6 @@ if (!empty($whereCondition)) {
 }
 
 $sWhere[] = $recencyWhere;
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate' ";
-} else {
-    $date = new DateTime();
-    $tatEndDate = $date->format('Y-m-d');
-    $date->modify('-1 year');
-    $tatStartDate = $date->format('Y-m-d');
-    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate' ";
-}
-
 if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
@@ -230,7 +226,7 @@ if (!empty($_POST['labName'])) {
 if (!empty($sWhere)) {
     $tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
 }
-$tatSampleQuery .= " GROUP BY monthDate ORDER BY sample_tested_datetime";
+$tatSampleQuery .= " GROUP BY monthDate ORDER BY sample_tested_datetime ";
 
 // $general->elog($_POST['labName']);
 //error_log($tatSampleQuery);
@@ -243,6 +239,9 @@ foreach ($tatResult as $sRow) {
     }
 
     $result['totalSamples'][$j] = (isset($sRow["totalSamples"]) && $sRow["totalSamples"] > 0 && $sRow["totalSamples"] != null) ? $sRow["totalSamples"] : 'null';
+    $result['numberCollected'][$j] = (isset($sRow["numberCollected"]) && $sRow["numberCollected"] > 0 && $sRow["numberCollected"] != null) ? $sRow["numberCollected"] : 'null';
+    $result['numberTested'][$j] = (isset($sRow["numberTested"]) && $sRow["numberTested"] > 0 && $sRow["numberTested"] != null) ? $sRow["numberTested"] : 'null';
+    $result['numberReceived'][$j] = (isset($sRow["numberReceived"]) && $sRow["numberReceived"] > 0 && $sRow["numberReceived"] != null) ? $sRow["numberReceived"] : 'null';
     $result['avgResultPrinted'][$j] = (isset($sRow["AvgResultPrinted"]) && $sRow["AvgResultPrinted"] > 0 && $sRow["AvgResultPrinted"] != null) ? $sRow["AvgResultPrinted"] : 'null';
     $result['avgResultPrintedFirstTime'][$j] = (isset($sRow["AvgResultPrintedFirstTime"]) && $sRow["AvgResultPrintedFirstTime"] > 0 && $sRow["AvgResultPrintedFirstTime"] != null) ? $sRow["AvgResultPrintedFirstTime"] : 'null';
     $result['sampleTestedDiff'][$j] = (isset($sRow["AvgTestedDiff"]) && $sRow["AvgTestedDiff"] > 0 && $sRow["AvgTestedDiff"] != null) ? round($sRow["AvgTestedDiff"], 2) : 'null';

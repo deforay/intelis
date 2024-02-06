@@ -92,7 +92,7 @@ if (!empty($interfaceData)) {
 
     $availableModules = [];
 
-    $activeModules = SystemService::getActiveModules(true);
+    $activeModules = SystemService::getActiveModules(onlyTests: true);
 
     foreach ($activeModules as $module) {
         $primaryKey = TestsService::getTestPrimaryKeyColumn($module);
