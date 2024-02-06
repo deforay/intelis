@@ -147,7 +147,7 @@ if ($start_date == '' && $end_date == '') {
     $end_date = date('Y-m-d');
 }
 $tatSampleQuery = "SELECT
-        count(*) as 'totalSamples',
+        count(hepatitis_id) as 'totalSamples',
                         DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
@@ -168,7 +168,9 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate' ";
+} else {
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$start_date' AND '$end_date' ";
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
