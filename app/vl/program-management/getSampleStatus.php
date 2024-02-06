@@ -212,11 +212,13 @@ $sWhere[] = $recencyWhere;
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
     $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate' ";
 } else {
-    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$start_date' AND '$end_date' ";
+    $date = new DateTime();
+    $tatEndDate = $date->format('Y-m-d');
+    $date->modify('-1 year');
+    $tatStartDate = $date->format('Y-m-d');
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate' ";
 }
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
-    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-}
+
 if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
@@ -231,7 +233,7 @@ if (!empty($sWhere)) {
 $tatSampleQuery .= " GROUP BY monthDate ORDER BY sample_tested_datetime";
 
 // $general->elog($_POST['labName']);
-error_log($tatSampleQuery);
+//error_log($tatSampleQuery);
 
 $tatResult = $db->rawQuery($tatSampleQuery);
 $j = 0;

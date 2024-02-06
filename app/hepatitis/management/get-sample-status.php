@@ -164,13 +164,15 @@ $tatSampleQuery = "SELECT
                         vl.result is not null
                         AND vl.result != ''"; // No where condition
 $sWhere = [];
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
-    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-}
+
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
     $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate' ";
 } else {
-    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$start_date' AND '$end_date' ";
+    $date = new DateTime();
+    $tatEndDate = $date->format('Y-m-d');
+    $date->modify('-1 year');
+    $tatStartDate = $date->format('Y-m-d');
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate' ";
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];

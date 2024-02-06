@@ -160,16 +160,21 @@ $tatSampleQuery = "SELECT
 		JOIN facility_details as f ON vl.lab_id=f.facility_id
 		LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
 		WHERE vl.result is not null
-		AND vl.result != ''
-		AND DATE(vl.sample_tested_datetime) >= '$start_date'
-		AND DATE(vl.sample_tested_datetime) <= '$end_date' ";
+		AND vl.result != '' ";
 
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
-	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-}
 
 if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
+}
+
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+	$sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate' ";
+} else {
+	$date = new DateTime();
+	$tatEndDate = $date->format('Y-m-d');
+	$date->modify('-1 year');
+	$tatStartDate = $date->format('Y-m-d');
+	$sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate' ";
 }
 
 if (!empty($sWhere)) {
