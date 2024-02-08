@@ -7,6 +7,8 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
+use App\Utilities\FileCacheUtility;
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -16,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
-
+$systemConfigTable = "system_config";
 $sanitizedLogoFile = _sanitizeFiles($_FILES['logo'], ['png', 'jpg', 'jpeg', 'gif']);
 
 $_POST = _sanitizeInput($_POST);
@@ -88,8 +90,22 @@ try {
 
 		$db->where('vlsm_instance_id', $instanceId);
 		$id = $db->update($tableName, $data);
+
+		$db->where('name', 'sc_testing_lab_id');
+		$db->update($systemConfigTable, array('value' => $_POST['labId']));
+
+		(ContainerRegistry::get(FileCacheUtility::class))->clear();
+		
+
 		if ($id === true) {
 			$_SESSION['instanceFacilityName'] = $_POST['facilityId'];
+
+			$systemInfo = $general->getSystemConfig();
+
+			$_SESSION['instanceType'] = $systemInfo['sc_user_type'];
+			$_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemInfo['sc_testing_lab_id'] : null;
+	
+	
 			if (isset($sanitizedLogoFile['name']) && $sanitizedLogoFile['name'] != "") {
 
 				MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo");
@@ -106,6 +122,7 @@ try {
 					$db->where('vlsm_instance_id', $instanceId);
 					$db->update($tableName, $image);
 				}
+		
 			}
 			//Add event log
 			$eventType = 'add-instance';
@@ -116,6 +133,7 @@ try {
 
 			$_SESSION['alertMsg'] = "Instance details added successfully";
 			$_SESSION['success'] = "success";
+
 		} else {
 			$_SESSION['alertMsg'] = "Something went wrong! Please try adding the instance again.";
 		}
@@ -124,3 +142,4 @@ try {
 } catch (Exception $exc) {
 	throw new SystemException($exc->getMessage(), 500, $exc);
 }
+?>
