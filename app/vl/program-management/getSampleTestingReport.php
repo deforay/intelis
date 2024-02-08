@@ -23,7 +23,7 @@ $recencyWhere = " AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 
 try {
 
-    if ($_SESSION['instanceType'] != 'remoteuser') {
+    if ($_SESSION['instance']['type'] != 'remoteuser') {
         $whereCondition = " AND result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . " ";
     } else {
         $whereCondition = "";
@@ -31,7 +31,7 @@ try {
             $whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
         }
     }
-    
+
     if (!empty($_POST['sampleCollectionDate'])) {
         [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
     } else {
@@ -74,14 +74,13 @@ try {
                 WHEN (result_status=4) THEN 1
                     ELSE 0
                 END) AS rejectCount
-            
+
             FROM form_vl as vl JOIN facility_details as f ON f.facility_id=vl.facility_id
             WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
-            $whereCondition 
+            $whereCondition
             $recencyWhere
             GROUP BY vl.facility_id ORDER BY totalCount DESC";
     $sampleTestingResult = $db->rawQuery($sQuery);
-
 } catch (Exception $e) {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
@@ -89,101 +88,99 @@ try {
 
 ?>
 <script>
-        Highcharts.chart('container', { 
-            chart: {
-                type: 'column'
-            },
+    Highcharts.chart('container', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: "<?= _translate("Samples Testing Report"); ?>",
+            align: 'left'
+        },
+        exporting: {
+            sourceWidth: 1200,
+            sourceHeight: 600
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            categories: [
+                <?php
+                foreach ($sampleTestingResult as $row) {
+                    echo '"' . ($row['facility_name']) . '",';
+                }
+                ?>
+            ]
+        },
+        yAxis: {
+            allowDecimals: false,
+            min: 0,
             title: {
-                text: "<?= _translate("Samples Testing Report"); ?>",
-                align: 'left'
+                text: "<?= _translate("No. of Samples"); ?>"
             },
-            exporting: {
-                sourceWidth: 1200,
-                sourceHeight: 600
-            },
-            credits: {
-                enabled: false
-            },
-            xAxis: {
-                categories: [
-                    <?php
-                    foreach ($sampleTestingResult as $row) {
-                        echo '"' . ($row['facility_name']) . '",';
-                    }
-                    ?>
-                ]
-            },
-            yAxis: {
-                allowDecimals: false,
-                min: 0,
-                title: {
-                    text: "<?= _translate("No. of Samples"); ?>"
-                },
-                stackLabels: {
+            stackLabels: {
+                enabled: true
+            }
+        },
+        legend: {
+            align: 'left',
+            x: 70,
+            verticalAlign: 'top',
+            y: 70,
+            floating: true,
+            backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            headerFormat: '<b>{point.key}</b><br/>',
+            pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
                     enabled: true
                 }
-            },
-            legend: {
-                align: 'left',
-                x: 70,
-                verticalAlign: 'top',
-                y: 70,
-                floating: true,
-                backgroundColor:
-                    Highcharts.defaultOptions.legend.backgroundColor || 'white',
-                borderColor: '#CCC',
-                borderWidth: 1,
-                shadow: false
-            },
-            tooltip: {
-                headerFormat: '<b>{point.key}</b><br/>',
-                pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
-            },
-            plotOptions: {
-                column: {
-                    stacking: 'normal',
-                    dataLabels: {
-                        enabled: true
-                    }
+            }
+        },
+        series: [{
+            name: 'Samples collected',
+            data: [
+                <?php
+                foreach ($sampleTestingResult as $row) {
+                    echo ($row['registerCount']) . ',';
                 }
-            },
-            series: [{
-                name: 'Samples collected',
-                data: [
-                    <?php
-                    foreach ($sampleTestingResult as $row) {
-                        echo ($row['registerCount']) . ',';
-                    }
-                    ?>
-                ]
-            }, {
-                name: 'Samples Not tested',
-                data: [
-                    <?php
-                    foreach ($sampleTestingResult as $row) {
-                        echo ($row['noResultCount']) . ',';
-                    }
-                    ?>
-                ]
-            }, {
-                name: 'Samples Tested',
-                data: [
-                    <?php
-                    foreach ($sampleTestingResult as $row) {
-                        echo ($row['acceptCount']) . ',';
-                    }
-                    ?>
-                ]
-            }, {
-                name: 'Samples Rejected',
-                data: [
-                    <?php
-                    foreach ($sampleTestingResult as $row) {
-                        echo ($row['rejectCount']) . ',';
-                    }
-                    ?>
-                ]
-            }]
-        });
-   
+                ?>
+            ]
+        }, {
+            name: 'Samples Not tested',
+            data: [
+                <?php
+                foreach ($sampleTestingResult as $row) {
+                    echo ($row['noResultCount']) . ',';
+                }
+                ?>
+            ]
+        }, {
+            name: 'Samples Tested',
+            data: [
+                <?php
+                foreach ($sampleTestingResult as $row) {
+                    echo ($row['acceptCount']) . ',';
+                }
+                ?>
+            ]
+        }, {
+            name: 'Samples Rejected',
+            data: [
+                <?php
+                foreach ($sampleTestingResult as $row) {
+                    echo ($row['rejectCount']) . ',';
+                }
+                ?>
+            ]
+        }]
+    });
 </script>

@@ -160,7 +160,7 @@ if (isset($_POST['sampleRejectionReason']) && $_POST['sampleRejectionReason'] !=
     $sWhere[] =  ' vl.reason_for_sample_rejection = "' . $_POST['sampleRejectionReason'] . '"';
 }
 
-if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
@@ -221,7 +221,7 @@ foreach ($rResult as $aRow) {
 
     $row = [];
     $row[] = $aRow['sample_code'];
-    if ($_SESSION['instanceType'] != 'standalone') {
+    if ($_SESSION['instance']['type'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

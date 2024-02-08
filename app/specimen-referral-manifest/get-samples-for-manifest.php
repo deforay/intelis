@@ -23,9 +23,9 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 	$sampleCode = 'remote_sample_code';
-} else if ($_SESSION['instanceType'] == 'vluser' || $_SESSION['instanceType'] == 'standalone') {
+} else if ($_SESSION['instance']['type'] == 'vluser' || $_SESSION['instance']['type'] == 'standalone') {
 	$sampleCode = 'sample_code';
 }
 

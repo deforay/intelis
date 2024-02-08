@@ -127,11 +127,11 @@ $state = $geolocationService->getProvinces("yes");
                                                         <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                                                     </td>
                                                     <td><strong>
-															<?php echo _translate("Batch Code"); ?>&nbsp;:
-														</strong></td>
-													<td>
-														<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
-													</td>
+                                                            <?php echo _translate("Batch Code"); ?>&nbsp;:
+                                                        </strong></td>
+                                                    <td>
+                                                        <input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
@@ -149,7 +149,7 @@ $state = $geolocationService->getProvinces("yes");
                                                             <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol1"><?php echo _translate("Sample ID"); ?></label>
                                                         </div>
                                                         <?php $i = 1;
-                                                        if ($_SESSION['instanceType'] != 'standalone') {
+                                                        if ($_SESSION['instance']['type'] != 'standalone') {
                                                             $i = 2; ?>
                                                             <div class="col-md-3">
                                                                 <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
@@ -196,7 +196,7 @@ $state = $geolocationService->getProvinces("yes");
                                                     <tr>
                                                         <th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
                                                         <th><?php echo _translate("Sample ID"); ?></th>
-                                                        <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+                                                        <?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
                                                             <th><?php echo _translate("Remote Sample ID"); ?></th>
                                                         <?php } ?>
                                                         <th><?php echo _translate("Batch Code"); ?></th>
@@ -287,11 +287,11 @@ $state = $geolocationService->getProvinces("yes");
                                                         <input type="text" id="printPatientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                                                     </td>
                                                     <td><strong>
-															<?php echo _translate("Batch Code"); ?>&nbsp;:
-														</strong></td>
-													<td>
-														<input type="text" id="printBatchCode" name="printBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
-													</td>
+                                                            <?php echo _translate("Batch Code"); ?>&nbsp;:
+                                                        </strong></td>
+                                                    <td>
+                                                        <input type="text" id="printBatchCode" name="printBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
@@ -309,7 +309,7 @@ $state = $geolocationService->getProvinces("yes");
                                                             <input type="checkbox" onclick="printfnShowHide(this.value);" value="1" id="printiCol1" data-showhide="sample_code" class="printShowhideCheckBox" /> <label for="printiCol1"><?php echo _translate("Sample ID"); ?></label>
                                                         </div>
                                                         <?php $i = 1;
-                                                        if ($_SESSION['instanceType'] != 'standalone') {
+                                                        if ($_SESSION['instance']['type'] != 'standalone') {
                                                             $i = 2; ?>
                                                             <div class="col-md-3">
                                                                 <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
@@ -355,7 +355,7 @@ $state = $geolocationService->getProvinces("yes");
                                                     <tr>
                                                         <th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>
                                                         <th><?php echo _translate("Sample ID"); ?></th>
-                                                        <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+                                                        <?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
                                                             <th><?php echo _translate("Remote Sample ID"); ?></th>
                                                         <?php } ?>
                                                         <th><?php echo _translate("Batch Code"); ?></th>
@@ -407,23 +407,23 @@ $state = $geolocationService->getProvinces("yes");
     $(document).ready(function() {
 
         $("#batchCode, #printBatchCode").autocomplete({
-        source: function( request, response ) {
-              // Fetch data
-              $.ajax({
-                   url: "/batch/getBatchCodeHelper.php",
-                   type: 'post',
-				   dataType: "json",
-                   data: {
+            source: function(request, response) {
+                // Fetch data
+                $.ajax({
+                    url: "/batch/getBatchCodeHelper.php",
+                    type: 'post',
+                    dataType: "json",
+                    data: {
                         search: request.term,
-						type : 'covid19'
-                   },
-                   success: function( data ) {
-                        response( data );
-                   }
+                        type: 'covid19'
+                    },
+                    success: function(data) {
+                        response(data);
+                    }
 
-				});
-			}
-	});
+                });
+            }
+        });
 
         var i = '<?php echo $i; ?>';
         $(".printedData").click(function() {
@@ -553,7 +553,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     "sClass": "center"
                 },
-                <?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+                <?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
                         "sClass": "center"
                     },
                 <?php } ?> {
@@ -598,7 +598,7 @@ $state = $geolocationService->getProvinces("yes");
                 },
             ],
             "aaSorting": [
-                [<?= ($_SESSION['instanceType'] != 'standalone') ? 12 : 11; ?>, "desc"]
+                [<?= ($_SESSION['instance']['type'] != 'standalone') ? 12 : 11; ?>, "desc"]
             ],
             "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");
@@ -650,9 +650,9 @@ $state = $geolocationService->getProvinces("yes");
                     "value": $("#sampleTestDate").val()
                 });
                 aoData.push({
-					"name": "batchCode",
-					"value": $("#batchCode").val()
-				});
+                    "name": "batchCode",
+                    "value": $("#batchCode").val()
+                });
 
                 $.ajax({
                     "dataType": 'json',
@@ -689,7 +689,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     "sClass": "center"
                 },
-                <?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+                <?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
                         "sClass": "center"
                     },
                 <?php } ?> {
@@ -735,7 +735,7 @@ $state = $geolocationService->getProvinces("yes");
                 },
             ],
             "aaSorting": [
-                [<?= ($_SESSION['instanceType'] != 'standalone') ? 12 : 11; ?>, "desc"]
+                [<?= ($_SESSION['instance']['type'] != 'standalone') ? 12 : 11; ?>, "desc"]
             ],
             "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chkPrinted[]");
@@ -788,9 +788,9 @@ $state = $geolocationService->getProvinces("yes");
                     "value": $("#printSampleTestDate").val()
                 });
                 aoData.push({
-					"name": "batchCode",
-					"value": $("#printBatchCode").val()
-				});
+                    "name": "batchCode",
+                    "value": $("#printBatchCode").val()
+                });
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",

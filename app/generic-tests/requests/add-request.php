@@ -132,7 +132,7 @@ $sFormat = '';
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 $mandatoryClass = "";
-if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') {
+if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') {
      $mandatoryClass = "isRequired";
 }
 
@@ -366,13 +366,13 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                    <div class="box-body">
                                         <div class="row">
                                              <div class="col-md-6">
-                                                  <label class="col-lg-5" for="artNo">EPID Number <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+                                                  <label class="col-lg-5" for="artNo">EPID Number <?php if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
                                                   <div class="col-lg-7">
                                                        <input type="text" name="artNo" id="artNo" class="form-control <?= $mandatoryClass; ?> patientId" placeholder="Enter EPID Number" title="Enter EPID Number" onchange="checkPatientDetails('form_generic','patient_id',this,null)" />
                                                   </div>
                                              </div>
                                              <div class="col-md-6">
-                                                  <label class="col-lg-5" for="artNo">Laboratory Number <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+                                                  <label class="col-lg-5" for="artNo">Laboratory Number <?php if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
                                                   <div class="col-lg-7">
                                                        <input type="text" name="laboratoryNumber" id="laboratoryNumber" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter Laboratory Number" title="Enter Laboratory Number" />
                                                   </div>
@@ -580,7 +580,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                                                 } ?>
                                                                            </optgroup>
                                                                       <?php }
-                                                                      if ($_SESSION['instanceType'] != 'vluser') { ?>
+                                                                      if ($_SESSION['instance']['type'] != 'vluser') { ?>
                                                                            <option value="other">Other (Please Specify) </option>
                                                                       <?php } ?>
                                                                  </select>

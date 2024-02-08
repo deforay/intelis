@@ -92,11 +92,11 @@ $requestResult = $db->query($searchQuery);
 $currentDateTime = DateUtility::getCurrentDateTime();
 
 foreach ($requestResult as $requestRow) {
-    if (($_SESSION['instanceType'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
+    if (($_SESSION['instance']['type'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
         $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
         $db->where('tb_id', $requestRow['tb_id']);
         $id = $db->update('form_tb', $pData);
-    } elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestRow['result_printed_on_sts_datetime'])) {
+    } elseif (($_SESSION['instance']['type'] == 'remoteuser') && empty($requestRow['result_printed_on_sts_datetime'])) {
         $pData = array('result_printed_on_sts_datetime' => $currentDateTime);
         $db->where('tb_id', $requestRow['tb_id']);
         $id = $db->update('form_tb', $pData);

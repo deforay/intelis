@@ -26,7 +26,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
      }
 }
 //check remote user
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
      if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
           $sampleCode = 'remote_sample_code';
@@ -135,7 +135,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                              <div class="row">
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="">
-                                                            <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+                                                            <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
                                                                  <label for="sampleCode">Sample ID </label><br>
                                                                  <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $vlQueryInfo[$sampleCode]; ?></span>
                                                                  <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" />
@@ -232,8 +232,8 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
-                                                            <label for="dob">Date of Birth <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                            <input type="text" name="dob" id="dob" class="form-control date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" placeholder="Enter DOB" title="Enter dob" value="<?= ($vlQueryInfo['patient_dob']); ?>" onchange="getAge();checkARTInitiationDate();" />
+                                                            <label for="dob">Date of Birth <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                            <input type="text" name="dob" id="dob" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" placeholder="Enter DOB" title="Enter dob" value="<?= ($vlQueryInfo['patient_dob']); ?>" onchange="getAge();checkARTInitiationDate();" />
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
@@ -317,8 +317,8 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                             </div>
                                                             <div class="col-xs-3 col-md-3">
                                                                  <div class="form-group">
-                                                                      <label for="artRegimen">Current Regimen <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                                      <select class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose an ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
+                                                                      <label for="artRegimen">Current Regimen <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                      <select class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose an ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
                                                                            <option value="">-- Select --</option>
                                                                            <?php foreach ($artRegimenResult as $heading) { ?>
                                                                                 <optgroup label="<?= $heading['headings']; ?>">
@@ -339,14 +339,14 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                             </div>
                                                             <div class="col-xs-3 col-md-3">
                                                                  <div class="form-group">
-                                                                      <label for="">Date of Initiation of Current Regimen<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                                      <input type="text" class="form-control date  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" value="<?php echo $vlQueryInfo['date_of_initiation_of_current_regimen']; ?>">
+                                                                      <label for="">Date of Initiation of Current Regimen<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                      <input type="text" class="form-control date  <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" value="<?php echo $vlQueryInfo['date_of_initiation_of_current_regimen']; ?>">
                                                                  </div>
                                                             </div>
                                                             <div class="col-xs-3 col-md-3">
                                                                  <div class="form-group">
-                                                                      <label for="arvAdherence">ARV Adherence <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                                      <select name="arvAdherence" id="arvAdherence" class="form-control  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose an adherence %">
+                                                                      <label for="arvAdherence">ARV Adherence <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                      <select name="arvAdherence" id="arvAdherence" class="form-control  <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose an adherence %">
                                                                            <option value=""> -- Select -- </option>
                                                                            <option value="good" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'good') ? "selected='selected'" : "" ?>>Good >= 95%</option>
                                                                            <option value="fair" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'fair') ? "selected='selected'" : "" ?>>Fair (85-94%)</option>
@@ -540,35 +540,35 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                             <hr>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label for="reqClinician" class="col-lg-5 control-label">Request Clinician <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                      <label for="reqClinician" class="col-lg-5 control-label">Request Clinician <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" />
+                                                                           <input type="text" class="form-control  <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                      <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control phone-number  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" />
+                                                                           <input type="text" class="form-control phone-number  <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <!--  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="requestDate">Request Date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                      <label class="col-lg-5 control-label" for="requestDate">Request Date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control date  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?php echo $vlQueryInfo['test_requested_on']; ?>" />
+                                                                           <input type="text" class="form-control date  <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?php echo $vlQueryInfo['test_requested_on']; ?>" />
                                                                       </div>
                                                                  </div>-->
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label for="vlFocalPerson" class="col-lg-5 control-label">Shipper Name<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                      <label for="vlFocalPerson" class="col-lg-5 control-label">Shipper Name<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter shipper name" value="<?= ($vlQueryInfo['vl_focal_person']); ?>" />
+                                                                           <input type="text" class="form-control  <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter shipper name" value="<?= ($vlQueryInfo['vl_focal_person']); ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Shipper Phone Number <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                      <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Shipper Phone Number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control phone-number  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
+                                                                           <input type="text" class="form-control phone-number  <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <!-- <div class="col-md-4">

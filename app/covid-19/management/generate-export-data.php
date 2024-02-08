@@ -49,7 +49,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 	} else {
 		$headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
 	}
-	if ($_SESSION['instanceType'] == 'standalone') {
+	if ($_SESSION['instance']['type'] == 'standalone') {
 		$headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
 	}
 
@@ -169,7 +169,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 
 
 		$row[] = $no;
-		if ($_SESSION['instanceType'] == 'standalone') {
+		if ($_SESSION['instance']['type'] == 'standalone') {
 			$row[] = $aRow["sample_code"];
 		} else {
 			$row[] = $aRow["sample_code"];

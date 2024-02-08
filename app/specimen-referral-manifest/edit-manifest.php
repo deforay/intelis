@@ -53,7 +53,7 @@ if ($pResult['package_status'] == 'dispatch') {
 
 $sarr = $general->getSystemConfig();
 
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 	$sCode = 'remote_sample_code';
 } elseif ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
 	$sCode = 'sample_code';

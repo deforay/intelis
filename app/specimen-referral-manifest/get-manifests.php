@@ -24,7 +24,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 //system config
 $sarr = $general->getSystemConfig();
 
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
     $sCode = 'remote_sample_code';
 } elseif ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
     $sCode = 'sample_code';
@@ -68,16 +68,11 @@ switch ($_POST['module']) {
 
 $vlForm = (int) $general->getGlobalConfig('vl_form');
 
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
 $aColumns = array('p.package_code', 'p.module', 'facility_name', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
 $orderColumns = array('p.package_id', 'p.module', 'facility_name', 'p.package_code', 'p.package_id', 'p.request_created_datetime');
 
 
-/*
- * Paging
- */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -96,12 +91,6 @@ if (isset($_POST['iSortCol_0'])) {
     }
     $sOrder = substr_replace($sOrder, "", -2);
 }
-/*
- * Filtering
- * NOTE this does not match the built-in DataTables filtering which does it
- * word by word on any field. It's possible to do here, but concerned about efficiency
- * on very large tables, and MySQL's regex functionality is very limited
- */
 $sWhere = [];
 $sWhere[] = "p.module = '$module'";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {

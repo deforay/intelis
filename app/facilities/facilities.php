@@ -70,7 +70,7 @@ $state = $geolocationService->getProvinces("yes");
               <tr>
                 <td>&nbsp;<strong>Facility Type &nbsp;:</strong></td>
                 <td>
-                  <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?> getTestType(); showSignature(this.value);">
+                  <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?> getTestType(); showSignature(this.value);">
                     <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                     <?php
                     foreach ($fResult as $type) {
@@ -105,13 +105,13 @@ $state = $geolocationService->getProvinces("yes");
               </tr>
               <tr>
 
-              <td>&nbsp;<strong>Show Only Active &nbsp;:</strong></td>
+                <td>&nbsp;<strong>Show Only Active &nbsp;:</strong></td>
                 <td>
                   <select class="form-control select2-element" id="activeFacility" name="activeFacility" title="<?php echo _translate('Please select Active Facility'); ?>">
-                      <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                      <option value="active"><?php echo _translate("Yes"); ?></option>
-                      <option value="inactive"><?php echo _translate("No"); ?></option>
-                    </select>
+                    <option value=""> <?php echo _translate("-- Select --"); ?> </option>
+                    <option value="active"><?php echo _translate("Yes"); ?></option>
+                    <option value="inactive"><?php echo _translate("No"); ?></option>
+                  </select>
                 </td>
                 <td></td>
                 <td></td>
@@ -148,7 +148,7 @@ $state = $geolocationService->getProvinces("yes");
             </div>
           </span>
           <div class="box-header with-border">
-            <?php if (_isAllowed("addFacility.php") && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
+            <?php if (_isAllowed("addFacility.php") && ($_SESSION['instance']['type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
               <a href="upload-facilities.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Bulk Upload"); ?></a>
               <a href="addFacility.php" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Facility"); ?></a>
               <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Manage Testing Lab"); ?></a>
@@ -169,7 +169,7 @@ $state = $geolocationService->getProvinces("yes");
                   <th scope="row"><?php echo _translate("Status"); ?></th>
                   <th><?php echo _translate("Province"); ?></th>
                   <th><?php echo _translate("District"); ?></th>
-                  <?php if (_isAllowed("editFacility.php") && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
+                  <?php if (_isAllowed("editFacility.php") && ($_SESSION['instance']['type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
                     <th><?php echo _translate("Action"); ?></th>
                   <?php } ?>
                 </tr>
@@ -234,7 +234,7 @@ $state = $geolocationService->getProvinces("yes");
         {
           "sClass": "center"
         },
-        <?php if (_isAllowed("editFacility.php") && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?> {
+        <?php if (_isAllowed("editFacility.php") && ($_SESSION['instance']['type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?> {
             "sClass": "center",
             "bSortable": false
           },

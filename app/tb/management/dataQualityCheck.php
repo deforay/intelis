@@ -8,7 +8,7 @@ use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 
 
@@ -16,187 +16,187 @@ if (session_status() == PHP_SESSION_NONE) {
 $db = ContainerRegistry::get(DatabaseService::class);
 try {
 
-    $db->beginReadOnlyTransaction();
+     $db->beginReadOnlyTransaction();
 
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+     /** @var CommonService $general */
+     $general = ContainerRegistry::get(CommonService::class);
 
-$gconfig = $general->getGlobalConfig();
-$sarr = $general->getSystemConfig();
-$key = (string) $general->getGlobalConfig('key');
+     $gconfig = $general->getGlobalConfig();
+     $sarr = $general->getSystemConfig();
+     $key = (string) $general->getGlobalConfig('key');
 
-$tableName = "form_tb";
-$primaryKey = "tb_id";
+     $tableName = "form_tb";
+     $primaryKey = "tb_id";
 
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
+     /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
-if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
-     $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
-}
+     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
+     if ($sarr['sc_user_type'] == 'standalone') {
+          $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+          $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+     }
 
-/* Indexed column (used for fast and accurate table cardinality) */
-$sIndexColumn = $primaryKey;
+     /* Indexed column (used for fast and accurate table cardinality) */
+     $sIndexColumn = $primaryKey;
 
-$sTable = $tableName;
-/*
+     $sTable = $tableName;
+     /*
 * Paging
 */
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-     $sOffset = $_POST['iDisplayStart'];
-     $sLimit = $_POST['iDisplayLength'];
-}
+     $sOffset = $sLimit = null;
+     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
+          $sOffset = $_POST['iDisplayStart'];
+          $sLimit = $_POST['iDisplayLength'];
+     }
 
-/*
+     /*
 * Ordering
 */
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-               $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
+     $sOrder = "";
+     if (isset($_POST['iSortCol_0'])) {
+          for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
+               if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
                " . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
-}
-
-
-
-$sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", (string) $_POST['sSearch']);
-     $sWhereSub = "";
-     foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
-               $sWhereSub .= "(";
-          } else {
-               $sWhereSub .= " AND (";
-          }
-          $colSize = count($aColumns);
-
-          for ($i = 0; $i < $colSize; $i++) {
-               if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-               } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
                }
           }
-          $sWhereSub .= ")";
+          $sOrder = substr_replace($sOrder, "", -2);
      }
-     $sWhere[] = $sWhereSub;
-}
 
 
 
-/*
+     $sWhere = [];
+     if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
+          $searchArray = explode(" ", (string) $_POST['sSearch']);
+          $sWhereSub = "";
+          foreach ($searchArray as $search) {
+               if ($sWhereSub == "") {
+                    $sWhereSub .= "(";
+               } else {
+                    $sWhereSub .= " AND (";
+               }
+               $colSize = count($aColumns);
+
+               for ($i = 0; $i < $colSize; $i++) {
+                    if ($i < $colSize - 1) {
+                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                    } else {
+                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                    }
+               }
+               $sWhereSub .= ")";
+          }
+          $sWhere[] = $sWhereSub;
+     }
+
+
+
+     /*
           * SQL queries
           * Get data to display
           */
-$aWhere = '';
-$sQuery = "SELECT vl.* FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+     $aWhere = '';
+     $sQuery = "SELECT vl.* FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
-if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim((string) $start_date) == trim((string) $end_date)) {
-          $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-     } else {
-          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-     }
-}
-if (isset($_POST['formField']) && trim((string) $_POST['formField']) != '') {
-     $sWhereSub = '';
-     $sWhereSubC = " (";
-     $searchArray = explode(",", (string) $_POST['formField']);
-     foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
-               $sWhereSub .= $sWhereSubC;
-               $sWhereSub .= "(";
+     if (!empty($_POST['sampleCollectionDate'])) {
+          if (trim((string) $start_date) == trim((string) $end_date)) {
+               $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
           } else {
-               $sWhereSub .= " AND (";
+               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
-          if ($search == 'sample_collection_date')
-               $sWhereSub .=  'vl.' . $search . " IS NULL";
-          else
-               $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
-          $sWhereSub .= ")";
      }
-     $sWhereSub .= ")";
-     $sWhere[] = $sWhereSub;
-}
+     if (isset($_POST['formField']) && trim((string) $_POST['formField']) != '') {
+          $sWhereSub = '';
+          $sWhereSubC = " (";
+          $searchArray = explode(",", (string) $_POST['formField']);
+          foreach ($searchArray as $search) {
+               if ($sWhereSub == "") {
+                    $sWhereSub .= $sWhereSubC;
+                    $sWhereSub .= "(";
+               } else {
+                    $sWhereSub .= " AND (";
+               }
+               if ($search == 'sample_collection_date')
+                    $sWhereSub .=  'vl.' . $search . " IS NULL";
+               else
+                    $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
+               $sWhereSub .= ")";
+          }
+          $sWhereSub .= ")";
+          $sWhere[] = $sWhereSub;
+     }
 
-if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
-     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
-}
+     if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+          $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
+     }
 
-if (!empty($sWhere)) {
-     $sWhere = ' where' . implode(" AND ", $sWhere);
-} else {
-     $sWhere = "";
-}
-$sQuery = $sQuery . ' ' . $sWhere;
-// echo $sQuery;die;
-if (!empty($sOrder)) {
-     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-     $sQuery = $sQuery . ' order by ' . $sOrder;
-}
-$_SESSION['vlIncompleteForm'] = $sQuery;
+     if (!empty($sWhere)) {
+          $sWhere = ' where' . implode(" AND ", $sWhere);
+     } else {
+          $sWhere = "";
+     }
+     $sQuery = $sQuery . ' ' . $sWhere;
+     // echo $sQuery;die;
+     if (!empty($sOrder)) {
+          $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+          $sQuery = $sQuery . ' order by ' . $sOrder;
+     }
+     $_SESSION['vlIncompleteForm'] = $sQuery;
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
-$_SESSION['vlIncompleteFormCount'] = $resultCount;
+     $_SESSION['vlIncompleteFormCount'] = $resultCount;
 
-/*
+     /*
                                                        * Output
                                                        */
-$output = array(
-     "sEcho" => (int) $_POST['sEcho'],
-     "iTotalRecords" => $resultCount,
-     "iTotalDisplayRecords" => $resultCount,
-     "aaData" => []
-);
+     $output = array(
+          "sEcho" => (int) $_POST['sEcho'],
+          "iTotalRecords" => $resultCount,
+          "iTotalDisplayRecords" => $resultCount,
+          "aaData" => []
+     );
 
-foreach ($rResult as $aRow) {
-     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
+     foreach ($rResult as $aRow) {
+          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 
-     if ($aRow['remote_sample'] == 'yes') {
-          $decrypt = 'remote_sample_code';
-     } else {
-          $decrypt = 'sample_code';
+          if ($aRow['remote_sample'] == 'yes') {
+               $decrypt = 'remote_sample_code';
+          } else {
+               $decrypt = 'sample_code';
+          }
+
+          $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]));
+
+          $row = [];
+          $row[] = $aRow['sample_code'];
+          if ($_SESSION['instance']['type'] != 'standalone') {
+               $row[] = $aRow['remote_sample_code'];
+          }
+          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+               $patientFname = $general->crypto('decrypt', $patientFname, $key);
+          }
+          $row[] = $aRow['sample_collection_date'];
+          $row[] = $aRow['batch_code'];
+          $row[] = ($patientFname);
+          $row[] = ($aRow['facility_name']);
+          $row[] = ($aRow['facility_state']);
+          $row[] = ($aRow['facility_district']);
+          $row[] = ($aRow['sample_name']);
+          $row[] = $aRow['result'];
+          $row[] = ($aRow['status_name']);
+          $output['aaData'][] = $row;
      }
 
-     $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]));
+     echo MiscUtility::convertToUtf8AndEncode($output);
 
-     $row = [];
-     $row[] = $aRow['sample_code'];
-     if ($_SESSION['instanceType'] != 'standalone') {
-          $row[] = $aRow['remote_sample_code'];
-     }
-     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $patientFname = $general->crypto('decrypt', $patientFname, $key);
-     }
-     $row[] = $aRow['sample_collection_date'];
-     $row[] = $aRow['batch_code'];
-     $row[] = ($patientFname);
-     $row[] = ($aRow['facility_name']);
-     $row[] = ($aRow['facility_state']);
-     $row[] = ($aRow['facility_district']);
-     $row[] = ($aRow['sample_name']);
-     $row[] = $aRow['result'];
-     $row[] = ($aRow['status_name']);
-     $output['aaData'][] = $row;
-}
-
-echo MiscUtility::convertToUtf8AndEncode($output);
-
-$db->commitTransaction();
+     $db->commitTransaction();
 } catch (Exception $exc) {
      LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }

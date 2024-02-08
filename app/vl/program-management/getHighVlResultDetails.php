@@ -26,22 +26,6 @@ try {
 
     $tableName = "form_vl";
     $primaryKey = "vl_sample_id";
-    //config  query
-    $configQuery = "SELECT * from global_config";
-    $configResult = $db->query($configQuery);
-    $arr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
-    //system config
-    $systemConfigQuery = "SELECT * from system_config";
-    $systemConfigResult = $db->query($systemConfigQuery);
-    $sarr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-        $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-    }
 
     /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
@@ -49,9 +33,9 @@ try {
     $sampleCode = 'sample_code';
     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_first_name', 'vl.patient_art_no', 'vl.patient_mobile_number', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result');
     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.patient_mobile_number', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result');
-    if ($_SESSION['instanceType'] == 'remoteuser') {
+    if ($_SESSION['instance']['type'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';
-    } else if ($sarr['sc_user_type'] == 'standalone') {
+    } else if ($_SESSION['instance']['type'] == 'standalone') {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
     }
@@ -228,7 +212,7 @@ try {
         $patientLname = $aRow['patient_last_name'] ?? '';
         $row = [];
         $row[] = $aRow['sample_code'];
-        if ($_SESSION['instanceType'] != 'standalone') {
+        if ($_SESSION['instance']['type'] != 'standalone') {
             $row[] = $aRow['remote_sample_code'];
         }
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

@@ -22,7 +22,7 @@ try {
 	/* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
-	if ($_SESSION['instanceType'] == 'remoteuser') {
+	if ($_SESSION['instance']['type'] == 'remoteuser') {
 		$sampleCode = 'remote_sample_code';
 	} else {
 		$sampleCode = 'sample_code';
@@ -34,9 +34,7 @@ try {
 	$sIndexColumn = $primaryKey;
 
 	$sTable = $tableName;
-	/*
- * Paging
- */
+
 	$sOffset = $sLimit = null;
 	if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 		$sOffset = $_POST['iDisplayStart'];
@@ -109,7 +107,7 @@ try {
 				(vl.sample_collection_date is NOT NULL AND DATE(vl.sample_collection_date) > '0000-00-00') AND
 				(vl.sample_tested_datetime is NOT NULL AND DATE(vl.sample_tested_datetime) > '0000-00-00') AND
 				vl.result is not null AND vl.result != ''";
-	if ($_SESSION['instanceType'] == 'remoteuser') {
+	if ($_SESSION['instance']['type'] == 'remoteuser') {
 		if (!empty($_SESSION['facilityMap'])) {
 			$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 		}

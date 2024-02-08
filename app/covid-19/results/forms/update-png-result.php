@@ -45,7 +45,7 @@ $rKey = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 
 
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     if (!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes') {
@@ -112,7 +112,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                             </div>
                             <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                 <tr>
-                                    <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+                                    <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
                                         <td><label for="sampleCode">EPID</label> </td>
                                         <td>
                                             <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $covid19Info[$sampleCode]; ?></span>
@@ -197,7 +197,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             <?php } ?>
                                         </select>
                                     </td>
-                                    <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+                                    <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
                                         <!-- <tr> -->
                                         <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
                                         <td>
@@ -504,7 +504,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                         </div>
                     </div>
                     <form class="form-horizontal" method="post" name="updateCovid19ConfirmatoryRequestForm" id="updateCovid19ConfirmatoryRequestForm" autocomplete="off" action="covid-19-update-result-helper.php">
-                        <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+                        <?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

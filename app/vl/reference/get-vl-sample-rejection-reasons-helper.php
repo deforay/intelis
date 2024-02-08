@@ -1,22 +1,18 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 
 $tableName = "r_vl_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$sarr = $general->getSystemConfig();
+
 
 $aColumns = array('rejection_reason_name', 'rejection_type', 'rejection_reason_code', 'rejection_reason_status');
 
@@ -24,9 +20,7 @@ $aColumns = array('rejection_reason_name', 'rejection_type', 'rejection_reason_c
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
- * Paging
- */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -47,12 +41,6 @@ if (isset($_POST['iSortCol_0'])) {
     $sOrder = substr_replace($sOrder, "", -2);
 }
 
-/*
- * Filtering
- * NOTE this does not match the built-in DataTables filtering which does it
- * word by word on any field. It's possible to do here, but concerned about efficiency
- * on very large tables, and MySQL's regex functionality is very limited
- */
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {

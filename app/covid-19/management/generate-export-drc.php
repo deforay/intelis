@@ -97,13 +97,13 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
         _translate("Date result released")
     );
 
-    if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
+    if ($_SESSION['instance']['type'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
         unset($headings[$key]);
     }
 
     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
-		$headings = array_values(array_diff($headings, [_translate("EPID Number"),_translate("Patient Name")]));
-	}
+        $headings = array_values(array_diff($headings, [_translate("EPID Number"), _translate("Patient Name")]));
+    }
 
     $no = 1;
     $resultSet = $db->rawQueryGenerator($_SESSION['covid19ResultQuery']);
@@ -193,7 +193,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
         }
 
         $row[] = $no;
-        if ($_SESSION['instanceType'] == 'standalone') {
+        if ($_SESSION['instance']['type'] == 'standalone') {
             $row[] = $aRow["sample_code"];
         } else {
             $row[] = $aRow["sample_code"];

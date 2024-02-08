@@ -39,7 +39,7 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
     } else {
         $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
     }
-    if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search('Remote Sample ID', $headings)) !== false) {
+    if ($_SESSION['instance']['type'] == 'standalone' && ($key = array_search('Remote Sample ID', $headings)) !== false) {
         unset($headings[$key]);
     }
 
@@ -80,7 +80,7 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
         }
         $row = [];
         $row[] = $no;
-        if ($_SESSION['instanceType'] == 'standalone') {
+        if ($_SESSION['instance']['type'] == 'standalone') {
             $row[] = $aRow["sample_code"];
         } else {
             $row[] = $aRow["sample_code"];

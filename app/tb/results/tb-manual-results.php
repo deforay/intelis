@@ -132,7 +132,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                                     <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _translate("Sample ID"); ?></label>
                                 </div>
                                 <?php $i = 0;
-                                if ($_SESSION['instanceType'] != 'standalone') {
+                                if ($_SESSION['instance']['type'] != 'standalone') {
                                     $i = 1; ?>
                                     <div class="col-md-3">
                                         <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
@@ -183,7 +183,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                             <thead>
                                 <tr>
                                     <th><?php echo _translate("Sample ID"); ?></th>
-                                    <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+                                    <?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
                                         <th><?php echo _translate("Remote Sample ID"); ?></th>
                                     <?php } ?>
                                     <th><?php echo _translate("Batch Code"); ?></th>
@@ -307,7 +307,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             "aoColumns": [{
                     "sClass": "center"
                 },
-                <?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+                <?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
                         "sClass": "center"
                     },
                 <?php } ?> {
@@ -337,7 +337,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                 }
             ],
             "aaSorting": [
-                [<?= ($_SESSION['instanceType'] != 'standalone') ? 7 : 6; ?>, "desc"]
+                [<?= ($_SESSION['instance']['type'] != 'standalone') ? 7 : 6; ?>, "desc"]
             ],
             "bProcessing": true,
             "bServerSide": true,

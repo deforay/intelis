@@ -118,11 +118,11 @@ $pages = [];
 $page = 1;
 $_SESSION['aliasPage'] = 1;
 foreach ($requestResult as $result) {
-	/*if (($_SESSION['instanceType'] == 'vluser') && empty($result['result_printed_on_lis_datetime'])) {
+	/*if (($_SESSION['instance']['type'] == 'vluser') && empty($result['result_printed_on_lis_datetime'])) {
 		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
 		$db->where('vl_sample_id', $result['vl_sample_id']);
 		$id = $db->update('form_vl', $pData);
-	} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($result['result_printed_on_sts_datetime'])) {
+	} elseif (($_SESSION['instance']['type'] == 'remoteuser') && empty($result['result_printed_on_sts_datetime'])) {
 		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
 		$db->where('vl_sample_id', $result['vl_sample_id']);
 		$id = $db->update('form_vl', $pData);

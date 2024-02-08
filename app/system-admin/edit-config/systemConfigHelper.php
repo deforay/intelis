@@ -1,11 +1,9 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+use App\Registries\AppRegistry;
+use App\Utilities\FileCacheUtility;
+use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -33,6 +31,7 @@ try {
         $db->where('name', $fieldName);
         $db->update('system_config', $data);
     }
+
     foreach ($globalConfigFields as $fieldName) {
         $data = [
             'value' => $_POST[$fieldName] ?? null,
@@ -41,6 +40,10 @@ try {
         $db->where('name', $fieldName);
         $db->update('global_config', $data);
     }
+
+    // Clear file cache
+    (ContainerRegistry::get(FileCacheUtility::class))->clear();
+    unset($_SESSION['instance']);
 
     $_SESSION['alertMsg'] = _translate("System Configuration updated successfully.");
     header("Location:index.php");

@@ -15,7 +15,7 @@ $result = $db->rawQuery($query);
 
 $activeFacilities = [];
 $display = 'display:none';
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
      $fResult = [];
      $fQuery = "SELECT facility_name,facility_id
                     FROM facility_details
@@ -248,63 +248,63 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                               <div class="row" style="margin: 15px;<?php echo $display; ?>">
                                    <div class="col-md-12">
                                         <button type="button" class="btn btn-primary btn-sm pull-left" style="margin-right:5px;line-height: 2;" onclick="hideAdvanceSearch();"><span>Show Advanced Search Options</span></button>
-                                             </div>
-                                             </div>
-                                         <div class="row" style="margin: 15px;<?php echo $display; ?>">
-                                   <div class="col-md-12">
-					     <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="display: none;">
-                                   <tr>
-                                        <td><strong>
-                                                  <?php echo _translate("Province/State"); ?>&nbsp;:
-                                             </strong></td>
-                                        <td>
-                                             <?php if (sizeof($geoLocationParentArray) > 0) { ?>
-											<select name="stateId" id="stateId" class="form-control" title="<?php echo _translate('Please choose province/state'); ?>">
-												<?= $general->generateSelectOptions($geoLocationParentArray, null, _translate("-- Select --")); ?>
-											</select>
-                                                       <?php } ?>
-                                        </td>
-                                        <td><strong>
-                                                  <?php echo _translate("District/County"); ?>&nbsp;:
-                                             </strong></td>
-                                             <td>
-                                             <select name="districtId" id="districtId" class="form-control" title="<?php echo _translate('Please choose District/County'); ?>">
-										<option value="">
-											<?php echo _translate("-- Select --"); ?>
-										</option>
-									</select>
-                                        </td>
-                                        <td>
-                                             <input type="button" name="filter" id="filter" onclick="getFacilitiesToMap();" value="Search" class="btn btn-primary btn-sm"/>
-                                             <button class="btn btn-danger btn-sm" type="button" onclick="document.location.href = document.location"><span>
-										<?= _translate('Reset'); ?>
-									</span></button>
-                                        </td>
-                                   </tr>
-                              </table>
                                    </div>
                               </div>
                               <div class="row" style="margin: 15px;<?php echo $display; ?>">
                                    <div class="col-md-12">
-                                   <h4 style="font-weight:bold;"> <?php echo _translate("Map User to Selected Facilities (optional)"); ?></h4>
+                                        <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="display: none;">
+                                             <tr>
+                                                  <td><strong>
+                                                            <?php echo _translate("Province/State"); ?>&nbsp;:
+                                                       </strong></td>
+                                                  <td>
+                                                       <?php if (sizeof($geoLocationParentArray) > 0) { ?>
+                                                            <select name="stateId" id="stateId" class="form-control" title="<?php echo _translate('Please choose province/state'); ?>">
+                                                                 <?= $general->generateSelectOptions($geoLocationParentArray, null, _translate("-- Select --")); ?>
+                                                            </select>
+                                                       <?php } ?>
+                                                  </td>
+                                                  <td><strong>
+                                                            <?php echo _translate("District/County"); ?>&nbsp;:
+                                                       </strong></td>
+                                                  <td>
+                                                       <select name="districtId" id="districtId" class="form-control" title="<?php echo _translate('Please choose District/County'); ?>">
+                                                            <option value="">
+                                                                 <?php echo _translate("-- Select --"); ?>
+                                                            </option>
+                                                       </select>
+                                                  </td>
+                                                  <td>
+                                                       <input type="button" name="filter" id="filter" onclick="getFacilitiesToMap();" value="Search" class="btn btn-primary btn-sm" />
+                                                       <button class="btn btn-danger btn-sm" type="button" onclick="document.location.href = document.location"><span>
+                                                                 <?= _translate('Reset'); ?>
+                                                            </span></button>
+                                                  </td>
+                                             </tr>
+                                        </table>
+                                   </div>
+                              </div>
+                              <div class="row" style="margin: 15px;<?php echo $display; ?>">
+                                   <div class="col-md-12">
+                                        <h4 style="font-weight:bold;"> <?php echo _translate("Map User to Selected Facilities (optional)"); ?></h4>
 
                                         <div class="col-md-5">
-									<select name="mappedFacilities[]" id="search" class="form-control" size="8" multiple="multiple">
-									</select>
-									<div class="sampleCounterDiv"><?= _translate("Number of unselected facilities"); ?> : <span id="unselectedCount"></span></div>
-								</div>
+                                             <select name="mappedFacilities[]" id="search" class="form-control" size="8" multiple="multiple">
+                                             </select>
+                                             <div class="sampleCounterDiv"><?= _translate("Number of unselected facilities"); ?> : <span id="unselectedCount"></span></div>
+                                        </div>
 
-								<div class="col-md-2">
-									<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-									<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-									<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-									<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-								</div>
+                                        <div class="col-md-2">
+                                             <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+                                             <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+                                             <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+                                             <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+                                        </div>
 
-								<div class="col-md-5">
-									<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
-									<div class="sampleCounterDiv"><?= _translate("Number of selected facilities"); ?> : <span id="selectedCount"></span></div>
-								</div>
+                                        <div class="col-md-5">
+                                             <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+                                             <div class="sampleCounterDiv"><?= _translate("Number of selected facilities"); ?> : <span id="selectedCount"></span></div>
+                                        </div>
                                    </div>
                               </div>
                          </div>
@@ -330,7 +330,6 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
 <script type="text/javascript">
-     
      provinceName = true;
      facilityName = true;
 

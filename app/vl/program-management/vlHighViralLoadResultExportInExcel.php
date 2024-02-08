@@ -1,19 +1,13 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
 
-
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -38,9 +32,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $headings = array('Sample ID', "Facility Name", "Patient ART no.", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      }
      if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
-          if (($key = array_search("Patient's Name", $headings)) !== false) {
-               unset($headings[$key]);
-          }
+          $headings = MiscUtility::removeMatchingElements($headings, ["Patient's Name"]);
      }
 
      $vlSampleId = [];

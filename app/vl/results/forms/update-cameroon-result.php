@@ -480,7 +480,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for=""> <?= _translate('Current ARV Protocol'); ?></label>
-											<select class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="<?= _translate('Please choose ART Regimen'); ?>" <?php echo $disable; ?> style="width:100%;" onchange="checkARTValue();">
+											<select class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="<?= _translate('Please choose ART Regimen'); ?>" <?php echo $disable; ?> style="width:100%;" onchange="checkARTValue();">
 												<option value=""><?= _translate('-- Select --'); ?></option>
 												<?php foreach ($artRegimenResult as $heading) { ?>
 													<optgroup label="<?= $heading['headings']; ?>">

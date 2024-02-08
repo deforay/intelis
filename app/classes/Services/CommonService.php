@@ -191,6 +191,11 @@ class CommonService
             return $returnConfig;
         });
 
+        if (session_status() != PHP_SESSION_NONE && !isset($_SESSION['instance'])) {
+            $_SESSION['instance']['type'] = $allConfigs['sc_user_type'] ?? 'standalone';
+            $_SESSION['instance']['labId'] = $allConfigs['sc_testing_lab_id'] ?? null;
+        }
+
         return $name ? ($allConfigs[$name] ?? null) : ($allConfigs ?? []);
     }
 
@@ -691,7 +696,7 @@ class CommonService
 
     public function isRemoteUser(): bool
     {
-        return isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser';
+        return isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'remoteuser';
     }
     public function getLastRemoteSyncDateTime()
     {

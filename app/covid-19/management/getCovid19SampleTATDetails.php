@@ -18,10 +18,7 @@ $whereCondition = '';
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";
 
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 	$sampleCode = 'remote_sample_code';
 } else {
 	$sampleCode = 'sample_code';
@@ -33,9 +30,7 @@ $orderColumns = array('vl.' . $sampleCode, 'vl.sample_collection_date', 'vl.samp
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
- * Paging
- */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 	$sOffset = $_POST['iDisplayStart'];
@@ -56,12 +51,6 @@ if (isset($_POST['iSortCol_0'])) {
 	$sOrder = substr_replace($sOrder, "", -2);
 }
 
-/*
- * Filtering
- * NOTE this does not match the built-in DataTables filtering which does it
- * word by word on any field. It's possible to do here, but concerned about efficiency
- * on very large tables, and MySQL's regex functionality is very limited
- */
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -110,7 +99,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_collection_date,
 					AND (vl.sample_tested_datetime is NOT NULL AND DATE(vl.sample_tested_datetime) > '0000-00-00')
 					AND vl.result is not null
 					AND vl.result != ''";
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 	if (!empty($_SESSION['facilityMap'])) {
 		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 	}
@@ -175,7 +164,7 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 $rUser = '';
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 	$rUser = $rUser . $whereCondition;
 } else {
 	$rUser = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;

@@ -278,7 +278,7 @@ try {
 
      $genericData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
-     if ($_SESSION['instanceType'] == 'remoteuser') {
+     if ($_SESSION['instance']['type'] == 'remoteuser') {
           $genericData['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : null;
      } elseif ($_POST['sampleCodeCol'] != '') {
           $genericData['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : null;

@@ -245,7 +245,7 @@ try {
 	}
 
 	$status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-	if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+	if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
 		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 	}
 
@@ -275,12 +275,12 @@ try {
 	}
 
 	$testingPlatform = null;
-    $instrumentId = null;
-    if (isset($_POST['eidPlatform']) && trim((string) $_POST['eidPlatform']) != '') {
-        $platForm = explode("##", (string) $_POST['eidPlatform']);
-        $testingPlatform = $platForm[0];
-        $instrumentId = $platForm[1];
-    }
+	$instrumentId = null;
+	if (isset($_POST['eidPlatform']) && trim((string) $_POST['eidPlatform']) != '') {
+		$platForm = explode("##", (string) $_POST['eidPlatform']);
+		$testingPlatform = $platForm[0];
+		$instrumentId = $platForm[1];
+	}
 
 	//Update patient Information in Patients Table
 	$patientsService->savePatient($_POST, 'form_eid');

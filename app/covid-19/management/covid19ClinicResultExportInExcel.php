@@ -22,15 +22,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-//system config
-$systemConfigQuery = "SELECT * FROM system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-
+$sarr = $general->getSystemConfig();
 $arr = $general->getGlobalConfig();
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
@@ -43,7 +35,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
 
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART no.", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
-     if ($_SESSION['instanceType'] == 'standalone') {
+     if ($_SESSION['instance']['type'] == 'standalone') {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
@@ -102,7 +94,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           }
           $patientFname = $aRow['patient_first_name'] ?? '';
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = ($aRow['facility_name']);
@@ -148,7 +140,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
           $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
           $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
           }
 

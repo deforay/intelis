@@ -15,7 +15,7 @@ $eidResults = $eidService->getEidResults();
 
 $rKey = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
 	//check user exist in user_facility_map table
@@ -78,7 +78,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
 											<td>
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
@@ -145,24 +145,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<td>
 											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" />
 										</td>
-										</tr>
-										<tr>
+									</tr>
+									<tr>
 										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien </label></td>
 										<td>
 											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="" style="width:100%;" />
 										</td>
-										</tr>
-										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
-									<tr>
-										<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
-										<td>
-											<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
-												<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
-											</select>
-										</td>
 									</tr>
+									<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+										<tr>
+											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
+											<td>
+												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
+													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
+												</select>
+											</td>
+										</tr>
 
-								<?php } ?>
+									<?php } ?>
 
 								</table>
 								<br><br>
@@ -473,7 +473,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 
 							</div>
 						</div>
-						<?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+						<?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">

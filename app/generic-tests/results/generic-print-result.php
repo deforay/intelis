@@ -195,7 +195,7 @@ $state = $geolocationService->getProvinces("yes");
 															</label>
 														</div>
 														<?php $i = 1;
-														if ($_SESSION['instanceType'] != 'standalone') {
+														if ($_SESSION['instance']['type'] != 'standalone') {
 															$i = 2; ?>
 															<div class="col-md-3">
 																<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
@@ -244,7 +244,7 @@ $state = $geolocationService->getProvinces("yes");
 														<th>
 															<?php echo _translate("Sample ID"); ?>
 														</th>
-														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
 															<th>
 																<?php echo _translate("Remote Sample ID"); ?>
 															</th>
@@ -413,7 +413,7 @@ $state = $geolocationService->getProvinces("yes");
 															</label>
 														</div>
 														<?php $i = 1;
-														if ($_SESSION['instanceType'] != 'standalone') {
+														if ($_SESSION['instance']['type'] != 'standalone') {
 															$i = 2; ?>
 															<div class="col-md-3">
 																<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
@@ -461,7 +461,7 @@ $state = $geolocationService->getProvinces("yes");
 														<th>
 															<?php echo _translate("Sample ID"); ?>
 														</th>
-														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
 															<th>
 																<?php echo _translate("Remote Sample ID"); ?>
 															</th>
@@ -669,7 +669,7 @@ $state = $geolocationService->getProvinces("yes");
 				{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -714,7 +714,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?php echo ($_SESSION['instanceType'] == 'remoteuser' || $_SESSION['instanceType'] == 'vluser') ? 12 : 11 ?>, "desc"]
+				[<?php echo ($_SESSION['instance']['type'] == 'remoteuser' || $_SESSION['instance']['type'] == 'vluser') ? 12 : 11 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
@@ -820,7 +820,7 @@ $state = $geolocationService->getProvinces("yes");
 				{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -865,7 +865,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?php echo ($_SESSION['instanceType'] == 'remoteuser' || $_SESSION['instanceType'] == 'vluser') ? 12 : 11 ?>, "desc"]
+				[<?php echo ($_SESSION['instance']['type'] == 'remoteuser' || $_SESSION['instance']['type'] == 'vluser') ? 12 : 11 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chkPrinted[]");

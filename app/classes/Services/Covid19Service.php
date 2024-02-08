@@ -417,7 +417,7 @@ class Covid19Service extends AbstractTestService
                 ];
 
                 $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
-                $instanceType = $_SESSION['instanceType'] ?? $params['instanceType'] ?? null;
+                $instanceType = $_SESSION['instance']['type'] ?? $params['instanceType'] ?? null;
 
                 if ($instanceType === 'remoteuser') {
                     $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];

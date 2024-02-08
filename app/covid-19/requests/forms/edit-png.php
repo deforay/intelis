@@ -44,7 +44,7 @@ $rKey = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 
 
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     if (!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes') {
@@ -117,7 +117,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+                                        <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">EPID</label> </td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $covid19Info[$sampleCode]; ?></span>
@@ -200,9 +200,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 ?>
                                                     <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($covid19Info['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
-                                                </select>
+                                            </select>
                                         </td>
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+                                        <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
                                             <td>
@@ -514,7 +514,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 </table>
                             </div>
                         </div>
-                        <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+                        <?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -594,7 +594,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
                                                                     <td>
                                                                         <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
-                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'].'##'.$rows['instrument_id'], '-- Select --'); ?>
+                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'] . '##' . $rows['instrument_id'], '-- Select --'); ?>
                                                                         </select>
                                                                     </td>
                                                                     <td>

@@ -83,7 +83,8 @@ if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
 }
 /* Facility filter */
 if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
-     $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+     $facilityIdsString = implode(',', $_POST['facilityName']);
+     $sWhere[] =  ' f.facility_id IN (' . $facilityIdsString . ')';
 }
 
 if (isset($_POST['gender']) && $_POST['gender'] != '') {
@@ -201,9 +202,12 @@ foreach ($vlnsData as $vlnsKey => $vlnsDataRow) {
           }
      }
 }
-
-$vfData = array_combine(range(1, count($vfData)), array_values($vfData));
-$vlnsData = array_combine(range(1, count($vlnsData)), array_values($vlnsData));
+if (!empty($vfData)) {
+     $vfData = array_combine(range(1, count($vfData)), array_values($vfData));
+}
+if (!empty($vlnsData)) {
+     $vlnsData = array_combine(range(1, count($vlnsData)), array_values($vlnsData));
+}
 $colNo = 1;
 $vlnsColNo = 1;
 $excel = new Spreadsheet();

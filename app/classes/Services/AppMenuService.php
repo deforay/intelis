@@ -44,7 +44,7 @@ class AppMenuService
             $this->db->where('id', $menuId);
         }
 
-        $mode = match ($_SESSION['instanceType']) {
+        $mode = match ($_SESSION['instance']['type']) {
             'remoteuser' => "(show_mode like 'sts' or show_mode like 'always')",
             'vluser' => "(show_mode like 'lis' or show_mode like 'always')",
             default => "(show_mode like 'always')",

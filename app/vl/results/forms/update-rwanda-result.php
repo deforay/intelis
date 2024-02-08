@@ -290,9 +290,9 @@ $disable = "disabled = 'disabled'";
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
 												<label for="artRegimen">Current Regimen
-													<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
-												<select class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" <?php echo $disable; ?> style="width:100%;" onchange="checkARTValue();">
+												<select class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" <?php echo $disable; ?> style="width:100%;" onchange="checkARTValue();">
 													<option value="">-- Select --</option>
 													<?php foreach ($artRegimenResult as $heading) { ?>
 														<optgroup label="<?= $heading['headings']; ?>">
@@ -315,17 +315,17 @@ $disable = "disabled = 'disabled'";
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
 												<label for="">Date of Initiation of Current Regimen
-													<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
-												<input type="text" class="form-control date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['date_of_initiation_of_current_regimen']; ?>">
+												<input type="text" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['date_of_initiation_of_current_regimen']; ?>">
 											</div>
 										</div>
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
 												<label for="arvAdherence">ARV Adherence
-													<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
-												<select name="arvAdherence" id="arvAdherence" class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose adherence" <?php echo $disable; ?>>
+												<select name="arvAdherence" id="arvAdherence" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose adherence" <?php echo $disable; ?>>
 													<option value=""> -- Select -- </option>
 													<option value="good" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'good') ? "selected='selected'" : "" ?>>Good >= 95%</option>
 													<option value="fair" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'fair') ? "selected='selected'" : "" ?>>Fair (85-94%)</option>
@@ -528,26 +528,26 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-4">
 												<label for="reqClinician" class="col-lg-5 control-label">Request
 													Clinician
-													<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">
 												<label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number
-													<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control phone-number <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control phone-number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">
 												<label class="col-lg-5 control-label" for="requestDate">Request Date
-													<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?php echo $vlQueryInfo['test_requested_on']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?php echo $vlQueryInfo['test_requested_on']; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 										</div>
@@ -555,19 +555,19 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-4">
 												<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal
 													Person
-													<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" value="<?= ($vlQueryInfo['vl_focal_person']); ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" value="<?= ($vlQueryInfo['vl_focal_person']); ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">
 												<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL
 													Focal Person Phone Number
-													<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control phone-number <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control phone-number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">

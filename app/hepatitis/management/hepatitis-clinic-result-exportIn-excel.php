@@ -34,7 +34,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
      $output = [];
 
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient's Name", "Patient ART no.", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
-     if ($_SESSION['instanceType'] == 'standalone') {
+     if ($_SESSION['instance']['type'] == 'standalone') {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
@@ -61,7 +61,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           }
           $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]));
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

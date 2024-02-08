@@ -373,7 +373,7 @@ $state = $geolocationService->getProvinces("yes");
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
-						
+
 						</tr>
 						<tr>
 							<td colspan="6">
@@ -405,7 +405,7 @@ $state = $geolocationService->getProvinces("yes");
 									</label>
 								</div>
 								<?php $i = 0;
-								if ($_SESSION['instanceType'] != 'standalone') {
+								if ($_SESSION['instance']['type'] != 'standalone') {
 									$i = 1; ?>
 									<div class="col-md-3">
 										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
@@ -466,7 +466,7 @@ $state = $geolocationService->getProvinces("yes");
 									<th>
 										<?php echo _translate("Sample ID"); ?>
 									</th>
-									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+									<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
 										<th>
 											<?php echo _translate("Remote Sample ID"); ?>
 										</th>
@@ -545,23 +545,23 @@ $state = $geolocationService->getProvinces("yes");
 	var oTable = null;
 	$(document).ready(function() {
 		$("#batchCode").autocomplete({
-        source: function( request, response ) {
-              // Fetch data
-              $.ajax({
-                   url: "/batch/getBatchCodeHelper.php",
-                   type: 'post',
-				   dataType: "json",
-                   data: {
-                        search: request.term,
-						type : 'vl'
-                   },
-                   success: function( data ) {
-                        response( data );
-                   }
+			source: function(request, response) {
+				// Fetch data
+				$.ajax({
+					url: "/batch/getBatchCodeHelper.php",
+					type: 'post',
+					dataType: "json",
+					data: {
+						search: request.term,
+						type: 'vl'
+					},
+					success: function(data) {
+						response(data);
+					}
 
 				});
 			}
-	});
+		});
 		$("#state").select2({
 			placeholder: "<?php echo _translate("Select Province"); ?>"
 		});
@@ -667,7 +667,7 @@ $state = $geolocationService->getProvinces("yes");
 			"aoColumns": [{
 					"sClass": "center"
 				}, <?php
-					if ($_SESSION['instanceType'] != 'standalone') {
+					if ($_SESSION['instance']['type'] != 'standalone') {
 					?> {
 						"sClass": "center"
 					}, <?php

@@ -10,7 +10,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 //check remote user
 $rKey = '';
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
 	$rKey = 'R';
@@ -71,7 +71,7 @@ $sFormat = '';
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
 											<td>
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
@@ -152,7 +152,7 @@ $sFormat = '';
 												<?php } ?>
 											</select>
 										</td>
-										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 											<!-- <tr> -->
 											<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
 											<td>
@@ -233,7 +233,7 @@ $sFormat = '';
 										<td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
 											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<? _translate('Please choose KP'); ?>">
-												
+
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
 										</td>
@@ -424,7 +424,7 @@ $sFormat = '';
 								</table>
 							</div>
 						</div>
-						<?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+						<?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
