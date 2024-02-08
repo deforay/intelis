@@ -37,7 +37,6 @@ $_SESSION['logged'] = false;
 $systemInfo = $general->getSystemConfig();
 $ipaddress = $general->getClientIpAddress();
 
-
 try {
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
         $_POST['username'] = base64_decode((string) $_GET['u']);

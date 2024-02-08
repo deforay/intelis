@@ -41,10 +41,9 @@ try {
         $db->update('global_config', $data);
     }
 
-
-
     // Clear file cache
     (ContainerRegistry::get(FileCacheUtility::class))->clear();
+    unset($_SESSION['instance']);
 
     $_SESSION['alertMsg'] = _translate("System Configuration updated successfully.");
     header("Location:index.php");

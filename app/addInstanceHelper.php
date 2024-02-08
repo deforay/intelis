@@ -102,10 +102,6 @@ try {
 
 			$systemInfo = $general->getSystemConfig();
 
-			$_SESSION['instance']['type'] = $systemInfo['sc_user_type'];
-			$_SESSION['instance']['labId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemInfo['sc_testing_lab_id'] : null;
-
-
 			if (isset($sanitizedLogoFile['name']) && $sanitizedLogoFile['name'] != "") {
 
 				MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo");

@@ -30,8 +30,6 @@ $general = ContainerRegistry::get(CommonService::class);
 $globalConfigResult = $general->getGlobalConfig();
 $systemInfo = $general->getSystemConfig();
 
-$_SESSION['instance']['type'] = $systemInfo['sc_user_type'];
-
 if (!empty(SYSTEM_CONFIG['instanceName'])) {
 	$systemType = SYSTEM_CONFIG['instanceName'];
 } else {
