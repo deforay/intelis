@@ -323,7 +323,8 @@ if (empty($syncLatestTime)) {
 		// if instance facility name is not set, let us show the modal
 
 		if (empty($_SESSION['instanceFacilityName']) || ($_SESSION['instanceType'] == 'vluser' && ($_SESSION['instanceLabId'] == null))) {
-		?> showModal('/addInstanceDetails.php', 900, 420);
+		?>
+			showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 
 		let phoneNumberDebounceTimeout;
