@@ -196,7 +196,7 @@ $sResult = $db->rawQuery($sQuery);
                                     <th>
                                         <?php echo _translate("Sample ID"); ?>
                                     </th>
-                                    <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+                                    <?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
                                         <th>
                                             <?php echo _translate("Remote Sample ID"); ?>
                                         </th>
@@ -407,7 +407,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 }, {
                     "sClass": "center"
                 },
-                <?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+                <?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
                         "sClass": "center"
                     },
                 <?php } ?> {

@@ -133,7 +133,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 										<?php echo _translate("Facility Type"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?> getTestType(); showSignature(this.value);">
+										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?> getTestType(); showSignature(this.value);">
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
 											</option>

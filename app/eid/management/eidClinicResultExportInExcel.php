@@ -30,7 +30,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
 
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Child's ID", "Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "Result");
-     if ($_SESSION['instanceType'] == 'standalone') {
+     if ($_SESSION['instance']['type'] == 'standalone') {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
@@ -58,7 +58,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           }
           $childName = ($general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]));
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = ($aRow['facility_name']);
@@ -128,7 +128,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
           $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
           $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
           }
 

@@ -114,7 +114,7 @@ try {
 
 
 
-	if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+	if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
 		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 	}
 
@@ -349,7 +349,7 @@ try {
 						$testingPlatform = $platForm[0];
 						$instrumentId = $platForm[1];
 					}
-					
+
 					$covid19TestData = array(
 						'covid19_id' => $_POST['covid19SampleId'],
 						'test_name' => ($testName == 'other') ? $_POST['testNameOther'][$testKey] : $testName,

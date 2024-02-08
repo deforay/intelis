@@ -46,9 +46,7 @@ $orderColumns = array('vl.sample_tested_datetime', 'f.facility_name');
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
- * Paging
- */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];

@@ -20,120 +20,115 @@ try {
     $db->beginReadOnlyTransaction();
 
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-$table = "form_vl";
-$primaryKey = "vl_sample_id";
-
-$testType = 'vl';
-
-$sources = array(
-    'vlsm' => 'VLSM',
-    'vlsts' => 'STS',
-    'app' => 'Tablet',
-    'api' => 'API',
-    'dhis2' => 'DHIS2'
-);
-$sampleReceivedfield = "sample_received_at_lab_datetime";
-if (!empty($_POST['testType'])) {
-    $testType = $_POST['testType'];
-}
-
-if (isset($testType) && $testType == 'vl') {
-    $url = "/vl/requests/vl-requests.php";
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
     $table = "form_vl";
-    $testName = 'Viral Load';
-}
-if (isset($testType) && $testType == 'eid') {
-    $url = "/eid/requests/eid-requests.php";
-    $table = "form_eid";
-    $testName = 'EID';
-}
-if (isset($testType) && $testType == 'covid19') {
-    $url = "/covid-19/requests/covid-19-requests.php";
-    $table = "form_covid19";
-    $testName = 'Covid-19';
-}
-if (isset($testType) && $testType == 'hepatitis') {
-    $url = "/hepatitis/requests/hepatitis-requests.php";
-    $table = "form_hepatitis";
-    $testName = 'Hepatitis';
-}
-if (isset($testType) && $testType == 'tb') {
-    $url = "/tb/requests/tb-requests.php";
-    $table = "form_tb";
-    $testName = 'TB';
-}
+    $primaryKey = "vl_sample_id";
 
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
-$aColumns = array('l.facility_name', 'vl.source_of_request', 'vl.request_created_datetime');
-$orderColumns = array('l.facility_name', '', '', '', '', 'vl.source_of_request', 'vl.request_created_datetime');
+    $testType = 'vl';
 
-/* Indexed column (used for fast and accurate table cardinality) */
-$sIndexColumn = $primaryKey;
-
-/*
- * Paging
- */
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
-}
-
-
-
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-            $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-        }
+    $sources = array(
+        'vlsm' => 'VLSM',
+        'vlsts' => 'STS',
+        'app' => 'Tablet',
+        'api' => 'API',
+        'dhis2' => 'DHIS2'
+    );
+    $sampleReceivedfield = "sample_received_at_lab_datetime";
+    if (!empty($_POST['testType'])) {
+        $testType = $_POST['testType'];
     }
-    $sOrder = substr_replace($sOrder, "", -2);
-}
 
-/*
+    if (isset($testType) && $testType == 'vl') {
+        $url = "/vl/requests/vl-requests.php";
+        $table = "form_vl";
+        $testName = 'Viral Load';
+    }
+    if (isset($testType) && $testType == 'eid') {
+        $url = "/eid/requests/eid-requests.php";
+        $table = "form_eid";
+        $testName = 'EID';
+    }
+    if (isset($testType) && $testType == 'covid19') {
+        $url = "/covid-19/requests/covid-19-requests.php";
+        $table = "form_covid19";
+        $testName = 'Covid-19';
+    }
+    if (isset($testType) && $testType == 'hepatitis') {
+        $url = "/hepatitis/requests/hepatitis-requests.php";
+        $table = "form_hepatitis";
+        $testName = 'Hepatitis';
+    }
+    if (isset($testType) && $testType == 'tb') {
+        $url = "/tb/requests/tb-requests.php";
+        $table = "form_tb";
+        $testName = 'TB';
+    }
+
+    $aColumns = array('l.facility_name', 'vl.source_of_request', 'vl.request_created_datetime');
+    $orderColumns = array('l.facility_name', '', '', '', '', 'vl.source_of_request', 'vl.request_created_datetime');
+
+    /* Indexed column (used for fast and accurate table cardinality) */
+    $sIndexColumn = $primaryKey;
+
+
+    $sOffset = $sLimit = null;
+    if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
+        $sOffset = $_POST['iDisplayStart'];
+        $sLimit = $_POST['iDisplayLength'];
+    }
+
+
+
+    $sOrder = "";
+    if (isset($_POST['iSortCol_0'])) {
+        $sOrder = "";
+        for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
+            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
+                $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
+               " . ($_POST['sSortDir_' . $i]) . ", ";
+            }
+        }
+        $sOrder = substr_replace($sOrder, "", -2);
+    }
+
+    /*
  * Filtering
  * NOTE this does not match the built-in DataTables filtering which does it
  * word by word on any field. It's possible to do here, but concerned about efficiency
  * on very large tables, and MySQL's regex functionality is very limited
  */
 
-$sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", (string) $_POST['sSearch']);
-    $sWhereSub = "";
-    foreach ($searchArray as $search) {
-        $sWhereSub .= " (";
-        $colSize = count($aColumns);
+    $sWhere = [];
+    if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
+        $searchArray = explode(" ", (string) $_POST['sSearch']);
+        $sWhereSub = "";
+        foreach ($searchArray as $search) {
+            $sWhereSub .= " (";
+            $colSize = count($aColumns);
 
-        for ($i = 0; $i < $colSize; $i++) {
-            if ($i < $colSize - 1) {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-            } else {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+            for ($i = 0; $i < $colSize; $i++) {
+                if ($i < $colSize - 1) {
+                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                } else {
+                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                }
             }
+            $sWhereSub .= ")";
         }
-        $sWhereSub .= ")";
+        $sWhere[] = $sWhereSub;
     }
-    $sWhere[] = $sWhereSub;
-}
 
 
 
-/*
+    /*
  * SQL queries
  * Get data to display
  */
-$aWhere = '';
-$sQuery = '';
+    $aWhere = '';
+    $sQuery = '';
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS l.facility_name as 'labname',
+    $sQuery = "SELECT SQL_CALC_FOUND_ROWS l.facility_name as 'labname',
         vl.source_of_request,
         vl.sample_collection_date,
         count(*) as 'samples',
@@ -146,120 +141,120 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS l.facility_name as 'labname',
         FROM $table as vl
         LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id";
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
+    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
 
-$sWhere[] = " (lab_id is not null AND lab_id not like '' AND lab_id > 0) ";
+    $sWhere[] = " (lab_id is not null AND lab_id not like '' AND lab_id > 0) ";
 
 
-if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
-    $sWhere[] = ' DATE(vl.sample_collection_date) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
-}
-if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
-    $sWhere[] = ' vl.lab_id IN (' . $_POST['labName'] . ')';
-}
-if (isset($_POST['srcRequest']) && trim((string) $_POST['srcRequest']) != '') {
-    $sWhere[] = ' vl.source_of_request = "' . $_POST['srcRequest'] . '"';
-}
+    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
+        $sWhere[] = ' DATE(vl.sample_collection_date) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
+    }
+    if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
+        $sWhere[] = ' vl.lab_id IN (' . $_POST['labName'] . ')';
+    }
+    if (isset($_POST['srcRequest']) && trim((string) $_POST['srcRequest']) != '') {
+        $sWhere[] = ' vl.source_of_request = "' . $_POST['srcRequest'] . '"';
+    }
 
-/* Implode all the where fields for filtering the data */
-if (!empty($sWhere)) {
-    $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
-}
+    /* Implode all the where fields for filtering the data */
+    if (!empty($sWhere)) {
+        $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
+    }
 
-$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.sample_collection_date)';
-if (!empty($sOrder)) {
-    $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-    $sQuery = $sQuery . " ORDER BY " . $sOrder;
-}
-$_SESSION['sourceOfRequestsQuery'] = $sQuery;
-if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
+    $sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.sample_collection_date)';
+    if (!empty($sOrder)) {
+        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sQuery = $sQuery . " ORDER BY " . $sOrder;
+    }
+    $_SESSION['sourceOfRequestsQuery'] = $sQuery;
+    if (isset($sLimit) && isset($sOffset)) {
+        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    }
 
-$rResult = $db->rawQuery($sQuery);
+    $rResult = $db->rawQuery($sQuery);
 
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+    /* Data set length after filtering */
+    $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+    $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-/*
+    /*
  * Output
  */
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+    $output = array(
+        "sEcho" => (int) $_POST['sEcho'],
+        "iTotalRecords" => $iTotal,
+        "iTotalDisplayRecords" => $iFilteredTotal,
+        "aaData" => []
+    );
 
-foreach ($rResult as $key => $aRow) {
-    $params = array($aRow['sample_collection_date'], $aRow['lab_id'], $aRow['source_of_request']);
-    if (isset($aRow['samples']) && $aRow['samples'] > 0) {
-        $samples = $params;
-        $samples[] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-        $samplesParams = implode("##", $samples);
-    }
+    foreach ($rResult as $key => $aRow) {
+        $params = array($aRow['sample_collection_date'], $aRow['lab_id'], $aRow['source_of_request']);
+        if (isset($aRow['samples']) && $aRow['samples'] > 0) {
+            $samples = $params;
+            $samples[] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+            $samplesParams = implode("##", $samples);
+        }
 
-    if (isset($aRow['noOfSampleReceivedAtLab']) && $aRow['noOfSampleReceivedAtLab'] > 0) {
-        $register = $params;
-        $register[] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-        $registerParams = implode("##", $register);
-    }
+        if (isset($aRow['noOfSampleReceivedAtLab']) && $aRow['noOfSampleReceivedAtLab'] > 0) {
+            $register = $params;
+            $register[] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+            $registerParams = implode("##", $register);
+        }
 
-    if (isset($aRow['samplesWithResults']) && $aRow['samplesWithResults'] > 0) {
-        $tested = $params;
-        $tested[] = SAMPLE_STATUS\ACCEPTED;
-        $testedParams = implode("##", $tested);
-    }
+        if (isset($aRow['samplesWithResults']) && $aRow['samplesWithResults'] > 0) {
+            $tested = $params;
+            $tested[] = SAMPLE_STATUS\ACCEPTED;
+            $testedParams = implode("##", $tested);
+        }
 
-    if (isset($aRow['rejected']) && $aRow['rejected'] > 0) {
-        $rejected = $params;
-        $rejected[] = SAMPLE_STATUS\REJECTED;
-        $rejectedParams = implode("##", $rejected);
-    }
+        if (isset($aRow['rejected']) && $aRow['rejected'] > 0) {
+            $rejected = $params;
+            $rejected[] = SAMPLE_STATUS\REJECTED;
+            $rejectedParams = implode("##", $rejected);
+        }
 
-    if (isset($aRow['noOfResultsReturned']) && $aRow['noOfResultsReturned'] > 0) {
-        $returned = $params;
-        $returned[] = "sent";
-        $returnedParams = implode("##", $returned);
-    }
+        if (isset($aRow['noOfResultsReturned']) && $aRow['noOfResultsReturned'] > 0) {
+            $returned = $params;
+            $returned[] = "sent";
+            $returnedParams = implode("##", $returned);
+        }
 
-    $row = [];
-    $row[] = $aRow['labname'];
-    $row[] = $testName;
-    if (isset($aRow['samples']) && $aRow['samples'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($registerParams) . '\',1200,700);"> ' . $aRow['samples'] . '</a>';
-    } else {
-        $row[] = $aRow['samples'];
-    }
-    if (isset($aRow['noOfSampleReceivedAtLab']) && $aRow['noOfSampleReceivedAtLab'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($registerParams) . '\',1200,700);"> ' . $aRow['noOfSampleReceivedAtLab'] . '</a>';
-    } else {
-        $row[] = $aRow['noOfSampleReceivedAtLab'];
-    }
-    if (isset($aRow['samplesWithResults']) && $aRow['samplesWithResults'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($testedParams) . '\',1200,700);"> ' . $aRow['samplesWithResults'] . '</a>';
-    } else {
-        $row[] = $aRow['samplesWithResults'];
-    }
-    if (isset($aRow['rejected']) && $aRow['rejected'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($rejectedParams) . '\',1200,700);"> ' . $aRow['rejected'] . '</a>';
-    } else {
-        $row[] = $aRow['rejected'];
-    }
-    if (isset($aRow['noOfResultsReturned']) && $aRow['noOfResultsReturned'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($returnedParams) . '\',1200,700);"> ' . $aRow['noOfResultsReturned'] . '</a>';
-    } else {
-        $row[] = $aRow['noOfResultsReturned'];
-    }
-    $row[] = !empty($sources[$aRow['source_of_request']]) ? $sources[$aRow['source_of_request']] : strtoupper((string) $aRow['source_of_request']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['lastRequest']);
+        $row = [];
+        $row[] = $aRow['labname'];
+        $row[] = $testName;
+        if (isset($aRow['samples']) && $aRow['samples'] > 0) {
+            $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($registerParams) . '\',1200,700);"> ' . $aRow['samples'] . '</a>';
+        } else {
+            $row[] = $aRow['samples'];
+        }
+        if (isset($aRow['noOfSampleReceivedAtLab']) && $aRow['noOfSampleReceivedAtLab'] > 0) {
+            $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($registerParams) . '\',1200,700);"> ' . $aRow['noOfSampleReceivedAtLab'] . '</a>';
+        } else {
+            $row[] = $aRow['noOfSampleReceivedAtLab'];
+        }
+        if (isset($aRow['samplesWithResults']) && $aRow['samplesWithResults'] > 0) {
+            $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($testedParams) . '\',1200,700);"> ' . $aRow['samplesWithResults'] . '</a>';
+        } else {
+            $row[] = $aRow['samplesWithResults'];
+        }
+        if (isset($aRow['rejected']) && $aRow['rejected'] > 0) {
+            $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($rejectedParams) . '\',1200,700);"> ' . $aRow['rejected'] . '</a>';
+        } else {
+            $row[] = $aRow['rejected'];
+        }
+        if (isset($aRow['noOfResultsReturned']) && $aRow['noOfResultsReturned'] > 0) {
+            $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($returnedParams) . '\',1200,700);"> ' . $aRow['noOfResultsReturned'] . '</a>';
+        } else {
+            $row[] = $aRow['noOfResultsReturned'];
+        }
+        $row[] = !empty($sources[$aRow['source_of_request']]) ? $sources[$aRow['source_of_request']] : strtoupper((string) $aRow['source_of_request']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['lastRequest']);
 
-    $output['aaData'][] = $row;
-}
-echo MiscUtility::convertToUtf8AndEncode($output);
+        $output['aaData'][] = $row;
+    }
+    echo MiscUtility::convertToUtf8AndEncode($output);
 
-$db->commitTransaction();
+    $db->commitTransaction();
 } catch (Exception $exc) {
-     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+    LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }

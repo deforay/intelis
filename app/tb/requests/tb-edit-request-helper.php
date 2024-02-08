@@ -104,7 +104,7 @@ try {
         $_POST['sampleCode'] = null;
     }
 
-    if ($_SESSION['instanceType'] == 'remoteuser') {
+    if ($_SESSION['instance']['type'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';
         $sampleCodeKey = 'remote_sample_code_key';
     } else {
@@ -113,7 +113,7 @@ try {
     }
 
     $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-    if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+    if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
         $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     }
 
@@ -242,14 +242,14 @@ try {
         'source_of_request' => "web"
     );
 
-     //$db->select('result');
-     $db->where('tb_id', $_POST['tbSampleId']);
-     $getPrevResult = $db->getOne('form_tb');
-     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
-          $tbData['result_modified'] = "yes";
-     } else {
-          $tbData['result_modified'] = "no";
-     }
+    //$db->select('result');
+    $db->where('tb_id', $_POST['tbSampleId']);
+    $getPrevResult = $db->getOne('form_tb');
+    if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+        $tbData['result_modified'] = "yes";
+    } else {
+        $tbData['result_modified'] = "no";
+    }
 
     $id = 0;
 

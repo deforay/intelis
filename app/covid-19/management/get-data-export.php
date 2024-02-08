@@ -40,9 +40,9 @@ try {
      $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $sampleCode = 'sample_code';
-     if ($_SESSION['instanceType'] == 'remoteuser') {
+     if ($_SESSION['instance']['type'] == 'remoteuser') {
           $sampleCode = 'remote_sample_code';
-     } else if ($_SESSION['instanceType'] == 'standalone') {
+     } else if ($_SESSION['instance']['type'] == 'standalone') {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
@@ -263,7 +263,7 @@ try {
 
           $row = [];
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = $aRow['batch_code'];

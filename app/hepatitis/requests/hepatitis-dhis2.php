@@ -306,7 +306,7 @@ foreach ($srcResults as $list) {
 									<th>
 										<?php echo _translate("Sample ID"); ?>
 									</th>
-									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+									<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
 										<th>
 											<?php echo _translate("Remote Sample ID"); ?>
 										</th>
@@ -513,7 +513,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -675,7 +675,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#" + showId).show();
 	}
 
-	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
+	<?php if (isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?>
 		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
 
 		function forceResultSync(sampleCode) {

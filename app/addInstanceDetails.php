@@ -146,7 +146,7 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 			width: '100%',
 			placeholder: "<?= _translate("Select Lab", escapeText: true); ?>"
 		});
-		<?php if (!empty(trim((string) SYSTEM_CONFIG['remoteURL'])) && isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser' && empty($labResults)) { ?>
+		<?php if (!empty(trim((string) SYSTEM_CONFIG['remoteURL'])) && isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser' && empty($labResults)) { ?>
 
 			window.parent.remoteSync = true;
 			async function syncData() {

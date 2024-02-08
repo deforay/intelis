@@ -71,7 +71,7 @@ try {
 	}
 
 
-	if ($_SESSION['instanceType'] == 'remoteuser') {
+	if ($_SESSION['instance']['type'] == 'remoteuser') {
 		$sampleCode = 'remote_sample_code';
 		$sampleCodeKey = 'remote_sample_code_key';
 	} else {
@@ -79,7 +79,7 @@ try {
 		$sampleCodeKey = 'sample_code_key';
 	}
 
-	if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+	if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
 		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 	}
 
@@ -123,12 +123,12 @@ try {
 	}
 
 	$testingPlatform = null;
-    $instrumentId = null;
-    if (isset($_POST['hepatitisPlatform']) && trim((string) $_POST['hepatitisPlatform']) != '') {
-        $platForm = explode("##", (string) $_POST['hepatitisPlatform']);
-        $testingPlatform = $platForm[0];
-        $instrumentId = $platForm[1];
-    }
+	$instrumentId = null;
+	if (isset($_POST['hepatitisPlatform']) && trim((string) $_POST['hepatitisPlatform']) != '') {
+		$platForm = explode("##", (string) $_POST['hepatitisPlatform']);
+		$testingPlatform = $platForm[0];
+		$instrumentId = $platForm[1];
+	}
 
 	//Update patient Information in Patients Table
 	$patientsService->updatePatient($_POST, 'form_hepatitis');
@@ -198,14 +198,14 @@ try {
 		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
 	);
 
-	 //$db->select('result');
-     $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
-     $getPrevResult = $db->getOne('form_hepatitis');
-     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
-          $hepatitisData['result_modified'] = "yes";
-     } else {
-          $hepatitisData['result_modified'] = "no";
-     }
+	//$db->select('result');
+	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
+	$getPrevResult = $db->getOne('form_hepatitis');
+	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+		$hepatitisData['result_modified'] = "yes";
+	} else {
+		$hepatitisData['result_modified'] = "no";
+	}
 
 	// For Save Comorbidity
 	if (isset($_POST['hepatitisSampleId']) && $_POST['hepatitisSampleId'] != 0) {

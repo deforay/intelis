@@ -225,7 +225,7 @@ try {
 		}
 	}
 
-	if ($_SESSION['instanceType'] == 'remoteuser') {
+	if ($_SESSION['instance']['type'] == 'remoteuser') {
 		$sampleCode = 'remote_sample_code';
 		$sampleCodeKey = 'remote_sample_code_key';
 	} else {
@@ -244,7 +244,7 @@ try {
 
 
 
-	if (($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site')) {
+	if (($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site')) {
 		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 	}
 
@@ -290,12 +290,12 @@ try {
 	}
 
 	$testingPlatform = null;
-    $instrumentId = null;
-    if (isset($_POST['eidPlatform']) && trim((string) $_POST['eidPlatform']) != '') {
-        $platForm = explode("##", (string) $_POST['eidPlatform']);
-        $testingPlatform = $platForm[0];
-        $instrumentId = $platForm[1];
-    }
+	$instrumentId = null;
+	if (isset($_POST['eidPlatform']) && trim((string) $_POST['eidPlatform']) != '') {
+		$platForm = explode("##", (string) $_POST['eidPlatform']);
+		$testingPlatform = $platForm[0];
+		$instrumentId = $platForm[1];
+	}
 
 	//Update patient Information in Patients Table
 	$patientsService->updatePatient($_POST, 'form_eid');
@@ -433,13 +433,13 @@ try {
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
 	);
 
-		$db->where('eid_id', $_POST['eidSampleId']);
-		$getPrevResult = $db->getOne('form_eid');
-		if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
-			$eidData['result_modified'] = "yes";
-		} else {
-			$eidData['result_modified'] = "no";
-		}
+	$db->where('eid_id', $_POST['eidSampleId']);
+	$getPrevResult = $db->getOne('form_eid');
+	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+		$eidData['result_modified'] = "yes";
+	} else {
+		$eidData['result_modified'] = "no";
+	}
 
 
 	$eidData['request_created_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;

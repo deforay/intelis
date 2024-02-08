@@ -432,7 +432,7 @@ if (!empty($requestResult)) {
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:20px;border-bottom:2px solid #d3d3d3;"></td>';
         $html .= '</tr>';
-        if ($_SESSION['instanceType'] == 'vluser' && $result['dataSync'] == 0) {
+        if ($_SESSION['instance']['type'] == 'vluser' && $result['dataSync'] == 0) {
             $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
         } else {
             $generatedAtTestingLab = "";

@@ -8,7 +8,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 
 //check remote user
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 
 	if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
 		$sampleCode = 'remote_sample_code';
@@ -92,7 +92,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 
 
 									<tr>
-										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
 											<td>
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;">
@@ -185,7 +185,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 												<?php } ?>
 											</select>
 										</td>
-										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 											<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
 											<td>
 												<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">
@@ -453,7 +453,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 								</table>
 							</div>
 						</div>
-						<?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+						<?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
@@ -835,7 +835,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 	});
 	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
-													
+
 			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>');
 			$(".femaleSection").show();
 		} else if ($(this).val() == 'male') {

@@ -32,9 +32,9 @@ $systemType = (string) $general->getSystemConfig('sc_user_type');
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
-if ($_SESSION['instanceType'] ==  'remoteuser') {
+if ($_SESSION['instance']['type'] ==  'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} elseif ($_SESSION['instanceType'] ==  'standalone') {
+} elseif ($_SESSION['instance']['type'] ==  'standalone') {
      $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
      $orderColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
 }

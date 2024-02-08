@@ -61,7 +61,7 @@ if (isset($_SESSION['highTbResult']) && trim((string) $_SESSION['highTbResult'])
           $patientFname = $general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]);
           $patientMname = $general->crypto('doNothing', $aRow['patient_surname'], $aRow[$decrypt]);
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
@@ -120,7 +120,7 @@ if (isset($_SESSION['highTbResult']) && trim((string) $_SESSION['highTbResult'])
           $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
           $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
           $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
           }
 

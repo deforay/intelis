@@ -154,7 +154,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['status']);
     $row[] = ($aRow['province']);
     $row[] = ($aRow['district']);
-    if (_isAllowed("editFacility.php") && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) {
+    if (_isAllowed("editFacility.php") && ($_SESSION['instance']['type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) {
         $row[] = '<a href="editFacility.php?id=' . base64_encode((string) $aRow['facility_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;

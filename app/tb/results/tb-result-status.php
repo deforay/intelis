@@ -160,7 +160,7 @@ foreach ($rejectionTypeResult as $type) {
                                 <tr>
                                     <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
                                     <th><?php echo _translate("Sample ID"); ?></th>
-                                    <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+                                    <?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
                                         <th><?php echo _translate("Remote Sample ID"); ?></th>
                                     <?php } ?>
                                     <th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
@@ -255,7 +255,7 @@ foreach ($rejectionTypeResult as $type) {
                 {
                     "sClass": "center"
                 },
-                <?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+                <?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
                         "sClass": "center"
                     },
                 <?php } ?> {
@@ -285,7 +285,7 @@ foreach ($rejectionTypeResult as $type) {
                 //{"sClass":"center","bSortable":false},
             ],
             "aaSorting": [
-                [<?= ($_SESSION['instanceType'] != 'standalone') ? 9 : 8; ?>, "desc"]
+                [<?= ($_SESSION['instance']['type'] != 'standalone') ? 9 : 8; ?>, "desc"]
             ],
             "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");

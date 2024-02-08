@@ -15,15 +15,12 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.last_modified_datetime', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} elseif ($_SESSION['instanceType'] == 'standalone') {
+} elseif ($_SESSION['instance']['type'] == 'standalone') {
      $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
      $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
 }
@@ -33,9 +30,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
- * Paging
- */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -112,7 +107,7 @@ foreach ($rResult as $aRow) {
 
      $row = [];
      $row[] = $aRow['sample_code'];
-     if ($_SESSION['instanceType'] != 'standalone') {
+     if ($_SESSION['instance']['type'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
      $row[] = $aRow['sample_collection_date'];

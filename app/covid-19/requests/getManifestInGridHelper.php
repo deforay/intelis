@@ -23,9 +23,9 @@ $primaryKey = "covid19_id";
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} else if ($_SESSION['instanceType'] == 'standalone') {
+} else if ($_SESSION['instance']['type'] == 'standalone') {
      $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
      $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
 }
@@ -74,7 +74,7 @@ foreach ($rResult as $aRow) {
 
      $row = [];
      $row[] = $aRow['sample_code'];
-     if ($_SESSION['instanceType'] != 'standalone') {
+     if ($_SESSION['instance']['type'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');

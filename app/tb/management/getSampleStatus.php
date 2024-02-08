@@ -30,7 +30,7 @@ $systemType = $general->getSystemConfig('sc_user_type');
 
 $whereCondition = '';
 
-if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
     $whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 

@@ -48,7 +48,7 @@ if ($testType == 'eid') {
 }
 
 
-if ($_SESSION['instanceType'] != 'remoteuser') {
+if ($_SESSION['instance']['type'] != 'remoteuser') {
     if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
         $whereCondition = " AND eid.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     } else {

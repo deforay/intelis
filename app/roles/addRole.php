@@ -339,7 +339,7 @@ $rInfo = $db->query($resourcesQuery);
 											echo "</th>";
 											echo "</tr>";
 
-											$mode = match ($_SESSION['instanceType']) {
+											$mode = match ($_SESSION['instance']['type']) {
 												'remoteuser' => " AND (show_mode like 'sts' or show_mode like 'always')",
 												'vluser' => " AND (show_mode like 'lis' or show_mode like 'always')",
 												default => " AND (show_mode like 'always')",

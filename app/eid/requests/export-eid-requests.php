@@ -36,13 +36,13 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 $output = [];
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results","Reason For PCR Test", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 } else {
     $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 }
 
 
-if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
+if ($_SESSION['instance']['type'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
     unset($headings[$key]);
 }
 
@@ -68,7 +68,7 @@ foreach ($resultSet as $aRow) {
     }
 
     $row[] = $no;
-    if ($_SESSION['instanceType'] == 'standalone') {
+    if ($_SESSION['instance']['type'] == 'standalone') {
         $row[] = $aRow["sample_code"];
     } else {
         $row[] = $aRow["sample_code"];
@@ -102,7 +102,7 @@ foreach ($resultSet as $aRow) {
     $row[] = $sampleRejection;
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');    
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
     $row[] = $aRow['lab_tech_comments'];
     $row[] = $aRow['funding_source_name'] ?? null;
     $row[] = $aRow['i_partner_name'] ?? null;

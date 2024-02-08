@@ -34,7 +34,7 @@ try {
      $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name', 'vl.sample_collection_date', 's.sample_name', 'vl.sample_tested_datetime', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name', 'vl.request_created_datetime', 'vl.last_modified_datetime');
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name', 'vl.sample_collection_date', 's.sample_name', 'vl.sample_tested_datetime', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name', 'vl.request_created_datetime', 'vl.last_modified_datetime');
      $sampleCode = 'sample_code';
-     if ($_SESSION['instanceType'] == 'remoteuser') {
+     if ($_SESSION['instance']['type'] == 'remoteuser') {
           $sampleCode = 'remote_sample_code';
      } elseif ($sarr['sc_user_type'] == 'standalone') {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
@@ -304,7 +304,7 @@ try {
 
           $row = [];
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

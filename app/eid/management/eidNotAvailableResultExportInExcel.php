@@ -23,7 +23,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
     $output = [];
     $sheet = $excel->getActiveSheet();
     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name", "Sample Status");
-    if ($_SESSION['instanceType'] == 'standalone') {
+    if ($_SESSION['instance']['type'] == 'standalone') {
         $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
     }
 
@@ -67,7 +67,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
     $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
     $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
     $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
-    if ($_SESSION['instanceType'] != 'standalone') {
+    if ($_SESSION['instance']['type'] != 'standalone') {
         $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
     }
 
@@ -87,7 +87,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         }
         $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow[$decrypt]));
         $row[] = $aRow['sample_code'];
-        if ($_SESSION['instanceType'] != 'standalone') {
+        if ($_SESSION['instance']['type'] != 'standalone') {
             $row[] = $aRow['remote_sample_code'];
         }
         $row[] = $aRow['facility_name'];

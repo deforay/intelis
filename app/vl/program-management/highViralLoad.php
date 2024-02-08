@@ -317,7 +317,7 @@ $state = $geolocationService->getProvinces("yes");
 														<th>
 															<?php echo _translate("Sample ID"); ?>
 														</th>
-														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
 															<th>
 																<?php echo _translate("Remote Sample ID"); ?>
 															</th>
@@ -660,7 +660,7 @@ $state = $geolocationService->getProvinces("yes");
 														<th>
 															<?php echo _translate("Sample ID"); ?>
 														</th>
-														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
 															<th>
 																<?php echo _translate("Remote Sample ID"); ?>
 															</th>
@@ -862,7 +862,7 @@ $state = $geolocationService->getProvinces("yes");
 														<th>
 															<?php echo _translate("Sample ID"); ?>
 														</th>
-														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
 															<th>
 																<?php echo _translate("Remote Sample ID"); ?>
 															</th>
@@ -980,7 +980,7 @@ $state = $geolocationService->getProvinces("yes");
 														<th>
 															<?php echo _translate("Sample ID"); ?>
 														</th>
-														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
 															<th>
 																<?php echo _translate("Remote Sample ID"); ?>
 															</th>
@@ -1240,7 +1240,7 @@ $state = $geolocationService->getProvinces("yes");
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -1273,7 +1273,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instanceType'] != 'standalone') ? 6 : 5; ?>, "desc"]
+				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 6 : 5; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -1346,7 +1346,7 @@ $state = $geolocationService->getProvinces("yes");
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -1372,7 +1372,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instanceType'] != 'standalone') ? 6 : 5; ?>, "desc"]
+				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 6 : 5; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -1445,7 +1445,7 @@ $state = $geolocationService->getProvinces("yes");
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -1468,7 +1468,7 @@ $state = $geolocationService->getProvinces("yes");
 				}
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instanceType'] != 'standalone') ? 5 : 4; ?>, "desc"]
+				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 5 : 4; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -1537,7 +1537,7 @@ $state = $geolocationService->getProvinces("yes");
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -1572,7 +1572,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instanceType'] != 'standalone') ? 2 : 1; ?>, "desc"]
+				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 2 : 1; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

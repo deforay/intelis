@@ -38,9 +38,9 @@ try {
     $sampleCode = 'sample_code';
     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
-    if ($_SESSION['instanceType'] == 'remoteuser') {
+    if ($_SESSION['instance']['type'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';
-    } elseif ($_SESSION['instanceType'] == 'standalone') {
+    } elseif ($_SESSION['instance']['type'] == 'standalone') {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
     }
@@ -49,9 +49,7 @@ try {
     $sIndexColumn = $primaryKey;
 
     $sTable = $tableName;
-    /*
- * Paging
- */
+
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
         $sOffset = $_POST['iDisplayStart'];
@@ -162,7 +160,7 @@ try {
     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
         $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
     }
-    
+
 
     if (!empty($_POST['sampleCollectionDate'])) {
         if (trim((string) $start_date) == trim((string) $end_date)) {
@@ -225,7 +223,7 @@ try {
     } else {
         $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     }
-    if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+    if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
     }
     if (!empty($sWhere)) {
@@ -269,7 +267,7 @@ try {
         }
 
         $row[] = $aRow['sample_code'];
-        if ($_SESSION['instanceType'] != 'standalone') {
+        if ($_SESSION['instance']['type'] != 'standalone') {
             $row[] = $aRow['remote_sample_code'];
         }
         $row[] = $aRow['batch_code'];

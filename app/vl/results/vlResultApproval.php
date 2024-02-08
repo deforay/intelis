@@ -224,7 +224,7 @@ foreach ($rejectionTypeResult as $type) {
                   <th>
                     <?php echo _translate("Sample ID"); ?>
                   </th>
-                  <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+                  <?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
                     <th>
                       <?php echo _translate("Remote Sample ID"); ?>
                     </th>
@@ -343,7 +343,7 @@ foreach ($rejectionTypeResult as $type) {
         {
           "sClass": "center"
         },
-        <?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+        <?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
             "sClass": "center"
           },
         <?php } ?> {
@@ -377,7 +377,7 @@ foreach ($rejectionTypeResult as $type) {
         //{"sClass":"center","bSortable":false},
       ],
       "aaSorting": [
-        [<?= ($_SESSION['instanceType'] != 'standalone') ? 10 : 9; ?>, "desc"]
+        [<?= ($_SESSION['instance']['type'] != 'standalone') ? 10 : 9; ?>, "desc"]
       ],
       "fnDrawCallback": function() {
         var checkBoxes = document.getElementsByName("chk[]");

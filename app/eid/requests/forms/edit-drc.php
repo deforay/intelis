@@ -16,7 +16,7 @@ $eidResults = $eidService->getEidResults();
 
 $rKey = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
 	if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
@@ -90,7 +90,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 
-										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 											<td><label for="sampleCode">Échantillon ID <span class="mandatory">*</span>
 												</label></td>
 											<td>
@@ -158,7 +158,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											</select>
 										</td>
 
-										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 											<!-- <tr> -->
 											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 											<td>
@@ -174,12 +174,12 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<td>
 											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" value="<?= $eidInfo['clinician_name']; ?>" />
 										</td>
-									
+
 										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien </label></td>
 										<td>
-											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" style="width:100%;" value="<?= $eidInfo['request_clinician_phone_number']; ?>"/>
+											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" style="width:100%;" value="<?= $eidInfo['request_clinician_phone_number']; ?>" />
 										</td>
-										</tr>
+									</tr>
 								</table>
 								<br><br>
 								<div class="box-header with-border">
@@ -487,7 +487,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 
 							</div>
 						</div>
-						<?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+						<?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
@@ -499,7 +499,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											</td>
 											<td style="width: 25%;">
 												<select name="eidPlatform" id="eidPlatform" class="form-control" title="Please choose EID Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
-													<?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'].'##'.$eidInfo['instrument_id'], '-- Select --'); ?>
+													<?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
 												</select>
 											</td>
 											<th scope="row" style="width:15%;"><label for="">Date de réception de l'échantillon </label></th>

@@ -33,7 +33,7 @@ try {
      $aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l.facility_name', 'f.facility_name', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'l.facility_name', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 
-     if ($_SESSION['instanceType'] == 'remoteuser') {
+     if ($_SESSION['instance']['type'] == 'remoteuser') {
           $sampleCode = 'remote_sample_code';
      } elseif ($sarr['sc_user_type'] == 'standalone') {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
@@ -201,7 +201,7 @@ try {
           $sWhere[] = ' (vl.is_sample_rejected like "' . $_POST['rejectedSamples'] . '" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
      }
 
-     if ($_SESSION['instanceType'] == 'remoteuser') {
+     if ($_SESSION['instance']['type'] == 'remoteuser') {
           if (!empty($_SESSION['facilityMap'])) {
                $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
           }
@@ -251,7 +251,7 @@ try {
 
           //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow[$primaryKey] . '"  value="' . $aRow[$primaryKey] . '" onclick="toggleTest(this);"  />';
           $row[] = $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '');
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
@@ -282,7 +282,7 @@ try {
           }
 
           $sync = "";
-          if ($syncRequest && $_SESSION['instanceType'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4) && $aRow['data_sync'] == 0) {
+          if ($syncRequest && $_SESSION['instance']['type'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4) && $aRow['data_sync'] == 0) {
                $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Sync Sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> ' . _translate("Sync") . '</a>';
           }
 

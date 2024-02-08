@@ -172,7 +172,7 @@ foreach ($srcResults as $list) {
 									<?php echo _translate("Batch Code"); ?> :
 								</strong></td>
 							<td>
-							<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+								<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
 
 							</td>
 							<td><strong>
@@ -361,12 +361,12 @@ foreach ($srcResults as $list) {
 									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add new Covid-19 Request"); ?>
 									</a>
-									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser' && !$hidesrcofreq) { ?>
+									<?php if ($global['vl_form'] == 1 && $_SESSION['instance']['type'] != 'remoteuser' && !$hidesrcofreq) { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?php echo _translate("Bulk Import Covid-19 Request"); ?>
 										</a>
 									<?php }
-									if ($formId == COUNTRY\SOUTH_SUDAN && $_SESSION['instanceType'] != 'remoteuser' && !$hidesrcofreq) { ?>
+									if ($formId == COUNTRY\SOUTH_SUDAN && $_SESSION['instance']['type'] != 'remoteuser' && !$hidesrcofreq) { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?php echo _translate("Quick Add Covid-19 Request"); ?>
 										</a>
@@ -386,7 +386,7 @@ foreach ($srcResults as $list) {
 
 								<?php
 								if (_isAllowed("/covid-19/requests/covid-19-add-request.php") && !$hidesrcofreq) { ?>
-									<?php if ($formId == COUNTRY\SOUTH_SUDAN && $_SESSION['instanceType'] != 'remoteuser') { ?>
+									<?php if ($formId == COUNTRY\SOUTH_SUDAN && $_SESSION['instance']['type'] != 'remoteuser') { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?= _translate("Quick Add Covid-19 Request"); ?>
 										</a>
@@ -395,7 +395,7 @@ foreach ($srcResults as $list) {
 									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?= _translate("Add new Covid-19 Request"); ?>
 									</a>
-									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
+									<?php if ($global['vl_form'] == 1 && $_SESSION['instance']['type'] != 'remoteuser') { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?= _translate("Bulk Import Covid-19 Requests"); ?>
 										</a>
@@ -422,7 +422,7 @@ foreach ($srcResults as $list) {
 									<th>
 										<?php echo _translate("Sample ID"); ?>
 									</th>
-									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+									<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
 										<th>
 											<?php echo _translate("Remote Sample ID"); ?>
 										</th>
@@ -554,23 +554,23 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	$(document).ready(function() {
 
 		$("#batchCode").autocomplete({
-        source: function( request, response ) {
-              // Fetch data
-              $.ajax({
-                   url: "/batch/getBatchCodeHelper.php",
-                   type: 'post',
-				   dataType: "json",
-                   data: {
-                        search: request.term,
-						type : 'covid19'
-                   },
-                   success: function( data ) {
-                        response( data );
-                   }
+			source: function(request, response) {
+				// Fetch data
+				$.ajax({
+					url: "/batch/getBatchCodeHelper.php",
+					type: 'post',
+					dataType: "json",
+					data: {
+						search: request.term,
+						type: 'covid19'
+					},
+					success: function(data) {
+						response(data);
+					}
 
 				});
 			}
-	});
+		});
 
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
@@ -656,7 +656,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -851,7 +851,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#" + showId).show();
 	}
 
-	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
+	<?php if (isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?>
 		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
 
 		function forceResultSync(sampleCode) {

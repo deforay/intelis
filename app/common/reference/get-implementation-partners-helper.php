@@ -13,9 +13,7 @@ $aColumns = array('i_partner_name', 'i_partner_status');
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
- * Paging
- */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -36,12 +34,6 @@ if (isset($_POST['iSortCol_0'])) {
     $sOrder = substr_replace($sOrder, "", -2);
 }
 
-/*
- * Filtering
- * NOTE this does not match the built-in DataTables filtering which does it
- * word by word on any field. It's possible to do here, but concerned about efficiency
- * on very large tables, and MySQL's regex functionality is very limited
- */
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -120,7 +112,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['i_partner_name']);
-    if (_isAllowed("/common/reference/add-implementation-partners.php") && $_SESSION['instanceType'] != 'vluser') {
+    if (_isAllowed("/common/reference/add-implementation-partners.php") && $_SESSION['instance']['type'] != 'vluser') {
         $row[] = $status;
     } else {
         $row[] = $aRow['i_partner_status'];

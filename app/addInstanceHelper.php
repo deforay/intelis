@@ -102,8 +102,8 @@ try {
 
 			$systemInfo = $general->getSystemConfig();
 
-			$_SESSION['instanceType'] = $systemInfo['sc_user_type'];
-			$_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemInfo['sc_testing_lab_id'] : null;
+			$_SESSION['instance']['type'] = $systemInfo['sc_user_type'];
+			$_SESSION['instance']['labId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemInfo['sc_testing_lab_id'] : null;
 
 
 			if (isset($sanitizedLogoFile['name']) && $sanitizedLogoFile['name'] != "") {

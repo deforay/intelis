@@ -48,7 +48,7 @@ try {
      $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $sampleCode = 'sample_code';
-     if ($_SESSION['instanceType'] == 'remoteuser') {
+     if ($_SESSION['instance']['type'] == 'remoteuser') {
           $sampleCode = 'remote_sample_code';
      } else if ($sarr['sc_user_type'] == 'standalone') {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
@@ -265,7 +265,7 @@ try {
 
           $row = [];
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
 

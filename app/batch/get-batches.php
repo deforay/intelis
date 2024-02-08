@@ -63,9 +63,7 @@ try {
     $sIndexColumn = $primaryKey;
 
     $sTable = $tableName;
-    /*
- * Paging
- */
+
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
         $sOffset = $_POST['iDisplayStart'];

@@ -1,19 +1,16 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 $tableName = "r_vl_test_reasons";
 $primaryKey = "test_reason_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$sarr = $general->getSystemConfig();
+
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */

@@ -153,7 +153,7 @@ foreach ($srcResults as $list) {
 									<?php echo _translate("Batch Code"); ?> :
 								</strong></td>
 							<td>
-							<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+								<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
 
 							</td>
 							<td><strong>
@@ -432,7 +432,7 @@ foreach ($srcResults as $list) {
 									<th>
 										<?php echo _translate("Sample ID"); ?>
 									</th>
-									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
+									<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
 										<th>
 											<?php echo _translate("Remote Sample ID"); ?>
 										</th>
@@ -564,23 +564,23 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	var oTable = null;
 	$(document).ready(function() {
 		$("#batchCode").autocomplete({
-        source: function( request, response ) {
-              // Fetch data
-              $.ajax({
-                   url: "/batch/getBatchCodeHelper.php",
-                   type: 'post',
-				   dataType: "json",
-                   data: {
-                        search: request.term,
-						type : 'eid'
-                   },
-                   success: function( data ) {
-                        response( data );
-                   }
+			source: function(request, response) {
+				// Fetch data
+				$.ajax({
+					url: "/batch/getBatchCodeHelper.php",
+					type: 'post',
+					dataType: "json",
+					data: {
+						search: request.term,
+						type: 'eid'
+					},
+					success: function(data) {
+						response(data);
+					}
 
 				});
 			}
-	});
+		});
 
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
@@ -593,7 +593,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#vlLab").select2({
 			placeholder: "<?php echo _translate("Select Vl Lab"); ?>"
 		});
-	
+
 		loadVlRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
 				locale: {
@@ -667,7 +667,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -878,7 +878,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#" + showId).show();
 	}
 
-	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
+	<?php if (isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?>
 		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
 
 		function forceResultSync(sampleCode) {

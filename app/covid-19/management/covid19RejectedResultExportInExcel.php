@@ -3,16 +3,12 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -21,16 +17,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 //system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$key = (string) $general->getGlobalConfig('key');
-
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-
+$sarr = $general->getSystemConfig();
 $arr = $general->getGlobalConfig();
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
@@ -41,7 +28,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
      $output = [];
 
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient's ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action");
-     if ($_SESSION['instanceType'] == 'standalone') {
+     if ($_SESSION['instance']['type'] == 'standalone') {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
@@ -67,7 +54,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
                $patientFname = $general->crypto('decrypt', $patientFname, $key);
           }
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = ($aRow['facility_name']);

@@ -188,7 +188,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="facilityType" class="col-lg-4 control-label"><?php echo _translate("Facility Type"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?>getTestType(); showSignature(this.value);">
+										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?>getTestType(); showSignature(this.value);">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<?php
 											$k = 10;
@@ -438,8 +438,9 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											<?php } ?>
 											<?php foreach ($reportFormats['eid'] as $key => $value) { ?>
 												<?php foreach ($value as $k => $v) { ?>
-												<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['eid'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
-											<?php } } ?>
+													<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['eid'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
+											<?php }
+											} ?>
 										</select>
 									</div>
 								</div>
@@ -455,10 +456,11 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											<?php if (($count > 1)) { ?>
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
-											<?php foreach ($reportFormats['covid19'] as $key => $value) { 
-												foreach ($value as $k => $v) { ?> 
-												<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['covid19'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
-											<?php } } ?>
+											<?php foreach ($reportFormats['covid19'] as $key => $value) {
+												foreach ($value as $k => $v) { ?>
+													<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['covid19'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
+											<?php }
+											} ?>
 										</select>
 									</div>
 								</div>
@@ -551,7 +553,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									<?php echo _translate("Upload Report Template"); ?>
 								</label>
 								<div class="col-lg-7">
-								<?php
+									<?php
 									$showreportTemplate = "style='display:block'";
 									if (isset($facilityAttributes) && isset($facilityAttributes->report_template) && $facilityAttributes->report_template != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $facilityAttributes->report_template)) {
 										$lmSign = "/uploads/labs/" . $facilityInfo['facility_id'] . "/report-template/" . $facilityAttributes->report_template;
@@ -695,7 +697,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
 			width: '150px'
 		});
-	
+
 		$("#testType").select2({
 			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
 			width: '100%'

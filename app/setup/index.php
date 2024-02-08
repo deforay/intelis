@@ -40,7 +40,7 @@ if ($count != 0) {
 
 $shortName = _translate('Lab Sample Management System');
 
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
   $shortName = 'Sample Tracking';
   $systemType = "Remote Sample Tracking Module";
   $path = '/assets/img/remote-bg.jpg';
@@ -60,7 +60,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
   <meta name="viewport" content="width=1024">
 
   <?php
-  $iconType = !empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser' ? 'vlsts' : 'vlsm';
+  $iconType = !empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'remoteuser' ? 'vlsts' : 'vlsm';
   ?>
 
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/<?= $iconType; ?>-icons/apple-touch-icon.png">

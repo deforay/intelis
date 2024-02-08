@@ -36,13 +36,12 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 		$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Health Facility Name"), _translate("Testing Lab"), _translate("Sample Reception Date"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate('KP'), _translate("Patient Cellphone Number"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Requesting Clinican Cellphone Number"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Rejection Reason"), _translate("Recommended Corrective Action"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
 
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
-			$headings = MiscUtility::removeMatchingElements($headings, [_translate("Unique ART No."),_translate("Patient Name")]);
+			$headings = MiscUtility::removeMatchingElements($headings, [_translate("Unique ART No."), _translate("Patient Name")]);
 		}
-
 	}
 
 
-	if ($_SESSION['instanceType'] == 'standalone') {
+	if ($_SESSION['instance']['type'] == 'standalone') {
 		$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
 	}
 
@@ -171,7 +170,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 		} else {
 			$row[] = $aRow["sample_code"];
 
-			if ($_SESSION['instanceType'] != 'standalone') {
+			if ($_SESSION['instance']['type'] != 'standalone') {
 				$row[] = $aRow["remote_sample_code"];
 			}
 

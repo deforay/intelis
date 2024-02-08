@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 
 $rKey = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
 	if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
@@ -78,7 +78,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['resul
 							</div>
 							<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 								<tr>
-									<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+									<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 										<td><label for="sampleCode">Échantillon ID </label></td>
 										<td>
 											<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars((string) $eidInfo['sample_code']); ?></span>
@@ -139,7 +139,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['resul
 											<?php } ?>
 										</select>
 									</td>
-									<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+									<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 										<!-- <tr> -->
 										<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 										<td>
@@ -698,13 +698,13 @@ if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['resul
 			placeholder: "Province"
 		});
 		$('#reviewedBy').select2({
-            width: '100%',
-            placeholder: "Select Reviewed By"
-        });
-        $('#approvedBy').select2({
-            width: '100%',
-            placeholder: "Select Approved By"
-        });
+			width: '100%',
+			placeholder: "Select Reviewed By"
+		});
+		$('#approvedBy').select2({
+			width: '100%',
+			placeholder: "Select Approved By"
+		});
 		getfacilityProvinceDetails($("#facilityId").val());
 		<?php if (isset($eidInfo['mother_treatment']) && in_array('Other', $eidInfo['mother_treatment'])) { ?>
 			$('#motherTreatmentOther').prop('disabled', false);

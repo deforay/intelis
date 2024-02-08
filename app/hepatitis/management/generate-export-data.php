@@ -33,7 +33,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 	$output = [];
 
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
-		$headings = array_values(array_diff($headings, ["Patient ID","Patient Name"]));
+		$headings = array_values(array_diff($headings, ["Patient ID", "Patient Name"]));
 	}
 
 	$no = 1;
@@ -50,7 +50,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 
 		$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
 
-		if ($_SESSION['instanceType'] == 'remoteuser') {
+		if ($_SESSION['instance']['type'] == 'remoteuser') {
 			$sampleCode = 'remote_sample_code';
 		} else {
 			$sampleCode = 'sample_code';

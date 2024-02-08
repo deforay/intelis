@@ -16,7 +16,7 @@ if (session_status() == PHP_SESSION_NONE) {
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-try{
+try {
 
      $db->beginReadOnlyTransaction();
 
@@ -39,7 +39,7 @@ try{
      $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'l_f.facility_name', 'vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'l_f.facility_name', 'vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $sampleCode = 'sample_code';
-     if ($_SESSION['instanceType'] == 'remoteuser') {
+     if ($_SESSION['instance']['type'] == 'remoteuser') {
           $sampleCode = 'remote_sample_code';
      } elseif ($sarr['sc_user_type'] == 'standalone') {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
@@ -281,7 +281,7 @@ try{
 
           $row = [];
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
@@ -309,6 +309,6 @@ try{
      echo MiscUtility::convertToUtf8AndEncode($output);
 
      $db->commitTransaction();
-}    catch (Exception $exc) {
-          LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
-     }
+} catch (Exception $exc) {
+     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+}

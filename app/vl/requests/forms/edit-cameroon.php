@@ -32,7 +32,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 }
 //check remote user
 
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
      if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
           $sampleCode = 'remote_sample_code';
@@ -137,7 +137,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
-                                                       <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+                                                       <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
                                                             <label for="sampleCode"><?= _translate('Sample ID'); ?> </label><br>
                                                             <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $vlQueryInfo[$sampleCode]; ?></span>
                                                             <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" />
@@ -282,7 +282,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="dob"><?= _translate('Date of Birth'); ?> <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                       <label for="dob"><?= _translate('Date of Birth'); ?> <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                        <input type="text" name="dob" id="dob" value="<?= $vlQueryInfo['patient_dob'] ?>" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();checkARTInitiationDate();" />
                                                   </div>
                                              </div>

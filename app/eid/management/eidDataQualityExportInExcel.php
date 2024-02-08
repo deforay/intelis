@@ -26,7 +26,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
      $output = [];
 
      $headings = array('Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Child Id.", "Child's Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
-     if ($_SESSION['instanceType'] == 'standalone') {
+     if ($_SESSION['instance']['type'] == 'standalone') {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
@@ -49,7 +49,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           $childName = ($general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = $sampleCollectionDate;

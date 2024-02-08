@@ -34,9 +34,9 @@ try {
           $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
           $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
      }
-     if ($_SESSION['instanceType'] == 'remoteuser') {
+     if ($_SESSION['instance']['type'] == 'remoteuser') {
           $sampleCode = 'remote_sample_code';
-     } elseif ($_SESSION['instanceType'] == 'standalone') {
+     } elseif ($_SESSION['instance']['type'] == 'standalone') {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
@@ -204,7 +204,7 @@ try {
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
      );
-//echo '<pre>'; print_r($rResult); die;
+     //echo '<pre>'; print_r($rResult); die;
      foreach ($rResult as $aRow) {
           $row = [];
           if (isset($_POST['vlPrint'])) {
@@ -228,7 +228,7 @@ try {
           $patientLname = $aRow['patient_last_name'] ?? '';
 
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = $aRow['batch_code'];

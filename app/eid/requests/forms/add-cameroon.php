@@ -21,7 +21,7 @@ $rKey = '';
 $sKey = '';
 $sFormat = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     //check user exist in user_facility_map table
@@ -80,7 +80,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+                                        <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode"><?= _translate('Sample ID'); ?> </label></td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>

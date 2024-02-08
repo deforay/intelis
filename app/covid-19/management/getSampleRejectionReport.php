@@ -23,7 +23,7 @@ try {
     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'Recommended Corrective Action');
     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name', 'Recommended Corrective Action');
 
-    if ($_SESSION['instanceType'] == 'standalone') {
+    if ($_SESSION['instance']['type'] == 'standalone') {
         $aColumns = MiscUtility::removeMatchingElements($aColumns, ['vl.remote_sample_code']);
         $orderColumns = MiscUtility::removeMatchingElements($orderColumns, ['vl.remote_sample_code']);
     }
@@ -122,7 +122,7 @@ try {
     if (isset($_POST['sampleRejectionReason']) && $_POST['sampleRejectionReason'] != '') {
         $sWhere[] = ' vl.reason_for_sample_rejection = "' . $_POST['sampleRejectionReason'] . '"';
     }
-    if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+    if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
     }
     if (!empty($sWhere)) {
@@ -180,7 +180,7 @@ try {
         }
         $row = [];
         $row[] = $aRow['sample_code'];
-        if ($_SESSION['instanceType'] != 'standalone') {
+        if ($_SESSION['instance']['type'] != 'standalone') {
             $row[] = $aRow['remote_sample_code'];
         }
         $row[] = ($aRow['facility_name']);

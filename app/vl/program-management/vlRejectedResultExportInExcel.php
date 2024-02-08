@@ -27,7 +27,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
 
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART no.", "Patient Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action");
-     if ($_SESSION['instanceType'] == 'standalone') {
+     if ($_SESSION['instance']['type'] == 'standalone') {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
      if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
@@ -60,7 +60,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
                $patientLname = '';
           }
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instanceType'] != 'standalone') {
+          if ($_SESSION['instance']['type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

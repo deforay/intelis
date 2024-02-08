@@ -81,7 +81,7 @@ $sWhere = [];
 if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 $sWhere[] = $recencyWhere;
-if ($_SESSION['instanceType'] != 'remoteuser') {
+if ($_SESSION['instance']['type'] != 'remoteuser') {
     $sWhere[] = ' result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {

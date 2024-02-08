@@ -4,8 +4,8 @@ require_once APPLICATION_PATH . '/header.php';
 
 $facilityQuery = "SELECT * FROM facility_details where facility_type = 2 AND status='active'";
 
-if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser' && isset($_SESSION['instanceLabId'])) {
-  $facilityQuery .= " AND facility_id = " . $_SESSION['instanceLabId'];
+if (isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser' && isset($_SESSION['instance']['labId'])) {
+  $facilityQuery .= " AND facility_id = " . $_SESSION['instance']['labId'];
 }
 
 $facilityResult = $db->rawQuery($facilityQuery);

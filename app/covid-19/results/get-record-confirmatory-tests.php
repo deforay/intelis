@@ -41,13 +41,10 @@ $covid19Results = $covid19Service->getCovid19Results();
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";
 
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
      $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
@@ -60,9 +57,7 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
- * Paging
- */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -86,12 +81,6 @@ if (isset($_POST['iSortCol_0'])) {
      $sOrder = substr_replace($sOrder, "", -2);
 }
 
-/*
- * Filtering
- * NOTE this does not match the built-in DataTables filtering which does it
- * word by word on any field. It's possible to do here, but concerned about efficiency
- * on very large tables, and MySQL's regex functionality is very limited
- */
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -284,7 +273,7 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
 }
 
 
-if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
      $sWhere = $sWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
      $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
 }
@@ -333,7 +322,7 @@ foreach ($rResult as $aRow) {
 
 
      $row[] = $aRow['sample_code'];
-     if ($_SESSION['instanceType'] != 'standalone') {
+     if ($_SESSION['instance']['type'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
      $row[] = $aRow['batch_code'];
