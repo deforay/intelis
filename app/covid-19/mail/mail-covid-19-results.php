@@ -20,7 +20,7 @@ $query = "SELECT covid19.sample_code,covid19.covid19_id,covid19.facility_id,f.fa
 $result = $db->rawQuery($query);
 $sTypeQuery = "SELECT * FROM r_covid19_sample_type where status='active'";
 $sTypeResult = $db->rawQuery($sTypeQuery);
-$facilityQuery = "SELECT * FROM facility_details where status='active'";
+$facilityQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
 $facilityResult = $db->rawQuery($facilityQuery);
 $pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 $batchQuery = "SELECT * FROM batch_details";

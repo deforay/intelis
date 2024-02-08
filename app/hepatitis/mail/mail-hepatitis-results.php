@@ -14,7 +14,7 @@ $query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility
 $result = $db->rawQuery($query);
 $sTypeQuery = "SELECT * FROM r_hepatitis_sample_type where status='active'";
 $sTypeResult = $db->rawQuery($sTypeQuery);
-$facilityQuery = "SELECT * FROM facility_details where status='active'";
+$facilityQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
 $facilityResult = $db->rawQuery($facilityQuery);
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);

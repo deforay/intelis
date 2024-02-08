@@ -9,7 +9,7 @@ $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);
 $sQuery = "SELECT * FROM r_eid_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
-$fQuery = "SELECT * FROM facility_details where status='active'";
+$fQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
 $fResult = $db->rawQuery($fQuery);
 $batQuery = "SELECT batch_code FROM batch_details where test_type = 'eid' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);

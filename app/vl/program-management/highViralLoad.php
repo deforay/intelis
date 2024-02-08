@@ -31,7 +31,7 @@ for ($i = 0; $i < sizeof($configResult); $i++) {
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$fQuery = "SELECT * FROM facility_details WHERE status='active' ";
+$fQuery = "SELECT * FROM facility_details WHERE status='active' Order By facility_name";
 
 if (!empty($_SESSION['facilityMap'])) {
 	$fQuery .= " AND facility_id IN (" . $_SESSION['facilityMap'] . ")";

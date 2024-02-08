@@ -8,13 +8,13 @@ $vlfmResult = $db->rawQuery($vlfmQuery);
 
 $vlLabIds = array_column($vlfmResult, 'vl_lab_id');
 
-$fQuery = "SELECT * FROM facility_details WHERE facility_type=2";
+$fQuery = "SELECT * FROM facility_details WHERE facility_type=2 Order By facility_name";
 if (!empty($vlLabIds)) {
   $fQuery .= " AND facility_id NOT IN (" . implode(',', $vlLabIds) . ")";
 }
 
 $fResult = $db->rawQuery($fQuery);
-$hcQuery = "SELECT * FROM facility_details where facility_type!=2";
+$hcQuery = "SELECT * FROM facility_details where facility_type!=2 Order By facility_name";
 $hcResult = $db->rawQuery($hcQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->
