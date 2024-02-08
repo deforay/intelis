@@ -27,7 +27,7 @@ $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);
-$fQuery = "SELECT * FROM facility_details where status='active'";
+$fQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
 $fResult = $db->rawQuery($fQuery);
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='hepatitis' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);

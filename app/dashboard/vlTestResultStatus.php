@@ -20,7 +20,7 @@ $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);
 $sQuery = "SELECT * FROM r_vl_sample_type WHERE status='active'";
 $sResult = $db->rawQuery($sQuery);
-$fQuery = "SELECT * FROM facility_details WHERE status='active'";
+$fQuery = "SELECT * FROM facility_details WHERE status='active' Order By facility_name";
 $fResult = $db->rawQuery($fQuery);
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='vl' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);

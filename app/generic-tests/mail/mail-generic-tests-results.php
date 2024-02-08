@@ -20,7 +20,7 @@ $query = "SELECT generic.sample_code,generic.sample_id,generic.facility_id,f.fac
 $result = $db->rawQuery($query);
 $sTypeQuery = "SELECT * FROM r_generic_sample_types where sample_type_status='active'";
 $sTypeResult = $db->rawQuery($sTypeQuery);
-$facilityQuery = "SELECT * FROM facility_details where status='active'";
+$facilityQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
 $facilityResult = $db->rawQuery($facilityQuery);
 $pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 $batchQuery = "SELECT * FROM batch_details where test_type = 'generic-tests'";

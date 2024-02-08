@@ -20,7 +20,7 @@ $testType   = $_POST['testType'];
 $isTestingLab = ($mappingType == "testing-labs") ? true : false;
 
 $facilityTypeCondition = $isTestingLab ? " AND facility_type=2 " : "";
-$facilityQuery = "SELECT facility_id, facility_name FROM facility_details WHERE `status` = 'active' " . $facilityTypeCondition;
+$facilityQuery = "SELECT facility_id, facility_name FROM facility_details WHERE `status` = 'active' " . $facilityTypeCondition . " order by facility_name";
 $facilityResult = $db->rawQuery($facilityQuery);
 
 if (empty($facilityResult)) {
