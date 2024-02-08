@@ -695,7 +695,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
 			width: '150px'
 		});
-
+	
 		$("#testType").select2({
 			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
 			width: '100%'

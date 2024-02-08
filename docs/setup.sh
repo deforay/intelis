@@ -121,8 +121,9 @@ for cmd in "apt"; do
     fi
 done
 
-# Ask user for VLSM installation path
-read -p "Enter the VLSM installation path [press enter to select /var/www/vlsm]: " vlsm_path
+# Ask user for VLSM installation path with a 15-second timeout and default path as fallback
+echo "Enter the VLSM installation path [press enter to select /var/www/vlsm]: "
+read -t 15 -p "" vlsm_path
 vlsm_path="${vlsm_path:-/var/www/vlsm}"
 
 # Initialize variable for database file path

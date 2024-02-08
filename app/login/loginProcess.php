@@ -39,14 +39,14 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
+include('/includes/clear-cache.php');
 
 $_SESSION['logged'] = false;
 $systemInfo = $general->getSystemConfig();
 $ipaddress = $general->getClientIpAddress();
-
+//echo '<pre>'; print_r($systemInfo); die;
 $_SESSION['instanceType'] = $systemInfo['sc_user_type'];
 $_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemInfo['sc_testing_lab_id'] : null;
-
 
 try {
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {

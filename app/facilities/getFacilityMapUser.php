@@ -28,12 +28,15 @@ $uResult = $db->rawQuery($uQuery);
         <select name="from[]" id="search" class="form-control" size="8" multiple="multiple">
             <?php
             foreach ($uResult as $uName) {
+                if(in_array($uName['user_id'], $selectedUserIds)==false){
             ?>
-                <option value="<?= $uName['user_id']; ?>" <?php echo (in_array($uName['user_id'], $selectedUserIds) ? "selected='selected'" : ''); ?>><?= ($uName['user_name']); ?></option>
-            <?php
+                <option value="<?= $uName['user_id']; ?>"><?= ($uName['user_name']); ?></option>
+            <?php }
             }
             ?>
         </select>
+        <div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
+
     </div>
 
     <div class="col-xs-2">
@@ -44,23 +47,44 @@ $uResult = $db->rawQuery($uQuery);
     </div>
 
     <div class="col-xs-5">
-        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+        <?php foreach ($uResult as $uName) {
+                if (isset($selectedUserIds) && in_array($uName['user_id'],$selectedUserIds)) { ?>
+                <option value="<?= $uName['user_id']; ?>" ><?= ($uName['user_name']); ?></option>
+            <?php }
+            } ?>
+        </select>
+        <div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span></div>
+
     </div>
 </div>
 <script type="text/javascript">
-    jQuery(document).ready(function($) {
+
+    function updateCounts($left, $right) {
+        let selectedCount = $right.find('option').length;
+        $("#unselectedCount").html($left.find('option').length);
+        $("#selectedCount").html(selectedCount);
+    }
+    $(document).ready(function() {
+
         $('#search').multiselect({
             search: {
-                left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
-                right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
             },
             fireSearch: function(value) {
                 return value.length > 2;
+            },
+            startUp: function($left, $right) {
+                updateCounts($left, $right);
+            },
+            afterMoveToRight: function($left, $right, $options) {
+                updateCounts($left, $right);
+            },
+            afterMoveToLeft: function($left, $right, $options) {
+                updateCounts($left, $right);
             }
         });
-        setTimeout(function() {
-            $("#search_rightSelected").trigger('click');
-        }, 300);
 
     });
 </script>
