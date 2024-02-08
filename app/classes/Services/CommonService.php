@@ -191,7 +191,7 @@ class CommonService
             return $returnConfig;
         });
 
-        if (!isset($_SESSION['instance'])) {
+        if (session_status() != PHP_SESSION_NONE && !isset($_SESSION['instance'])) {
             $_SESSION['instance']['type'] = $allConfigs['sc_user_type'] ?? 'standalone';
             $_SESSION['instance']['labId'] = $allConfigs['sc_testing_lab_id'] ?? null;
         }
