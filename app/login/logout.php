@@ -1,13 +1,8 @@
 <?php
 
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

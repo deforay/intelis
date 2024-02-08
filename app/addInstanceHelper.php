@@ -95,7 +95,7 @@ try {
 		$db->update($systemConfigTable, array('value' => $_POST['labId']));
 
 		(ContainerRegistry::get(FileCacheUtility::class))->clear();
-		
+
 
 		if ($id === true) {
 			$_SESSION['instanceFacilityName'] = $_POST['facilityId'];
@@ -104,8 +104,8 @@ try {
 
 			$_SESSION['instanceType'] = $systemInfo['sc_user_type'];
 			$_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemInfo['sc_testing_lab_id'] : null;
-	
-	
+
+
 			if (isset($sanitizedLogoFile['name']) && $sanitizedLogoFile['name'] != "") {
 
 				MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo");
@@ -122,7 +122,6 @@ try {
 					$db->where('vlsm_instance_id', $instanceId);
 					$db->update($tableName, $image);
 				}
-		
 			}
 			//Add event log
 			$eventType = 'add-instance';
@@ -133,7 +132,6 @@ try {
 
 			$_SESSION['alertMsg'] = "Instance details added successfully";
 			$_SESSION['success'] = "success";
-
 		} else {
 			$_SESSION['alertMsg'] = "Something went wrong! Please try adding the instance again.";
 		}
@@ -142,4 +140,3 @@ try {
 } catch (Exception $exc) {
 	throw new SystemException($exc->getMessage(), 500, $exc);
 }
-?>
