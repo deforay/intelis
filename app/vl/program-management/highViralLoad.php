@@ -402,7 +402,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
-														<select name="vfvlnGender" id="vfvlnGender" class="form-control select2" title="<?php echo _translate('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'pregnancy','breastfeeding');">
+														<select name="vfvlnGender" id="vfvlnGender" class="form-control select2 vfvlnsfilters" title="<?php echo _translate('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'pregnancy','breastfeeding');">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -424,7 +424,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Pregnancy"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
-														<select class="form-control select2 select2-element" id="pregnancy" name="pregnancy" title="<?php echo _translate('Please select pregnancy'); ?>">
+														<select class="form-control select2 select2-element vfvlnsfilters" id="pregnancy" name="pregnancy" title="<?php echo _translate('Please select pregnancy'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -440,7 +440,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
-														<select class="form-control select2 select2-element" id="breastfeeding" name="breastfeeding" title="<?php echo _translate('Please select Province/State'); ?>">
+														<select class="form-control select2 select2-element vfvlnsfilters" id="breastfeeding" name="breastfeeding" title="<?php echo _translate('Please select Province/State'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -457,7 +457,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td>
 														<div class="col-sm-6">
-															<input type="number" id="min_age" class="form-control" name="min_age" min="0" max="120" value="0">
+															<input type="number" id="min_age" class="form-control vfvlnsfilters" name="min_age" min="0" max="120" value="0">
 														</div>
 														<div class="col-sm-6">
 															<input type="number" id="max_age" name="max_age" class="form-control" min="0" max="120" value="120">
@@ -1751,35 +1751,38 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function getByProvince(districtId, facilityId, provinceId) {
-		$.blockUI();
-		$("#" + districtId).html('');
-		$("#" + facilityId).html('');
-		$.post("/common/get-by-province-id.php", {
-				provinceId: provinceId,
-				districts: true,
-				facilities: true,
-				facilityCode: true
-			},
-			function(data) {
-				$.unblockUI();
-				Obj = $.parseJSON(data);
-				$("#" + districtId).html(Obj['districts']);
-				$("#" + facilityId).html(Obj['facilities']);
-			});
-
+		if(provinceId != '') {
+			$.blockUI();
+			$("#" + districtId).html('');
+			$("#" + facilityId).html('');
+			$.post("/common/get-by-province-id.php", {
+					provinceId: provinceId,
+					districts: true,
+					facilities: true,
+					facilityCode: true
+				},
+				function(data) {
+					$.unblockUI();
+					Obj = $.parseJSON(data);
+					$("#" + districtId).html(Obj['districts']);
+					$("#" + facilityId).html(Obj['facilities']);
+				});
+		}
 	}
 
 	function getByDistrict(facilityId, districtId) {
-		$("#" + facilityId).html('');
-		$.post("/common/get-by-district-id.php", {
-				districtId: districtId,
-				facilities: true,
-				facilityCode: true
-			},
-			function(data) {
-				Obj = $.parseJSON(data);
-				$("#" + facilityId).html(Obj['facilities']);
-			});
+		if(districtId != '') {
+			$("#" + facilityId).html('');
+			$.post("/common/get-by-district-id.php", {
+					districtId: districtId,
+					facilities: true,
+					facilityCode: true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+					$("#" + facilityId).html(Obj['facilities']);
+				});
+		}
 	}
 
 	function resetFilters(filtersClass) {
