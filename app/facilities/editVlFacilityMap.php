@@ -19,7 +19,7 @@ foreach ($vlfmResult as $fId) {
 }
 $fQuery = "SELECT * FROM facility_details where facility_type=2 AND facility_id=" . $id;
 $fResult = $db->rawQuery($fQuery);
-$hcQuery = "SELECT * FROM facility_details where facility_type!=2";
+$hcQuery = "SELECT * FROM facility_details where facility_type!=2 Order By facility_name";
 $hcResult = $db->rawQuery($hcQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->

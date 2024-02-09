@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use COUNTRY;
-use Exception;
+use Throwable;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
-use App\Utilities\LoggerUtility;
 
 class VlService extends AbstractTestService
 {
@@ -51,7 +51,7 @@ class VlService extends AbstractTestService
 
             try {
                 return $this->generateSampleCode($this->table, $params);
-            } catch (SystemException $e) {
+            } catch (Throwable $e) {
                 LoggerUtility::log('error', 'Generate Sample ID : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
@@ -72,7 +72,7 @@ class VlService extends AbstractTestService
         $query = "SELECT * FROM r_vl_sample_type WHERE `status` like 'active' $where";
         try {
             return $this->db->rawQuery($query);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return [];
         }
     }
@@ -470,10 +470,10 @@ class VlService extends AbstractTestService
                     'sample_reordered' => $params['sampleReordered'] ?? 'no',
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
                     'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
-                    //'lab_id' => $params['labId'] ?? null,
+                    'lab_id' => $params['labId'] ?? null,
                     'patient_art_no' => $params['artNo'] ?? null,
                     'specimen_type' => $params['specimenType'] ?? null,
-                    //'app_sample_code' => $params['appSampleCode'] ?? null,
+                    'app_sample_code' => $params['appSampleCode'] ?? null,
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                     'province_id' => _castVariable($provinceId, 'int'),
@@ -543,7 +543,7 @@ class VlService extends AbstractTestService
                     return $this->insertSample($params);
                 }
             }
-        } catch (Exception | SystemException $e) {
+        } catch (Throwable $e) {
             // Rollback the current transaction to release locks and undo changes
             $this->db->rollbackTransaction();
 

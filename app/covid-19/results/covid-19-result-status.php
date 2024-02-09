@@ -13,7 +13,7 @@ $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_covid19_sample_type";
 $sResult = $db->rawQuery($sQuery);
-$fQuery = "SELECT * FROM facility_details where status='active'";
+$fQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
 $fResult = $db->rawQuery($fQuery);
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='covid19' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);

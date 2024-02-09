@@ -1,13 +1,13 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Services\SystemService;
-
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 
 require_once APPLICATION_PATH . '/header.php';
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 

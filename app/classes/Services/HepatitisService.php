@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use COUNTRY;
-use Exception;
+use Throwable;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
@@ -50,7 +50,7 @@ class HepatitisService extends AbstractTestService
 
             try {
                 return $this->generateSampleCode($this->table, $params);
-            } catch (SystemException $e) {
+            } catch (Throwable $e) {
                 LoggerUtility::log('error', 'Generate Sample ID : ' . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
@@ -307,7 +307,7 @@ class HepatitisService extends AbstractTestService
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSample($params);
             }
-        } catch (Exception | SystemException $e) {
+        } catch (Throwable $e) {
             // Rollback the current transaction to release locks and undo changes
             $this->db->rollbackTransaction();
 
