@@ -179,10 +179,10 @@ require_once APPLICATION_PATH . '/header.php';
 	function validateNow() {
 
 		var selVal = [];
-        $('#search_to option').each(function(i, selected) {
-            selVal[i] = $(selected).val();
-        });
-        $("#selectedSample").val(selVal);
+		$('#search_to option').each(function(i, selected) {
+			selVal[i] = $(selected).val();
+		});
+		$("#selectedSample").val(selVal);
 		flag = deforayValidator.init({
 			formId: 'facilityTestMapForm'
 		});
@@ -213,7 +213,7 @@ require_once APPLICATION_PATH . '/header.php';
 					}, 10);
 				} else {
 					$('#search').html("");
-					alert("<?= _translate("No facilities found for the selected facility type. Please add a new facility or edit an existing facility.", true); ?>");
+					//alert("<?= _translate("No facilities found for the selected facility type. Please add a new facility or edit an existing facility.", true); ?>");
 				}
 				$.unblockUI();
 			});
