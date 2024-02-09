@@ -4,7 +4,7 @@ UPDATE `system_config` SET `value` = '5.2.9' WHERE `system_config`.`name` = 'sc_
 
 -- Amit 09-Feb-2024
 
-CREATE TABLE `form_cd4` (
+CREATE TABLE IF NOT EXISTS `form_cd4` (
   `cd4_id` int(11) NOT NULL,
   `unique_id` varchar(64) DEFAULT NULL,
   `vlsm_instance_id` varchar(64) NOT NULL,
@@ -152,7 +152,7 @@ CREATE TABLE `form_cd4` (
   `result_sent_to_source` varchar(10) DEFAULT 'pending',
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indexes for table `form_cd4`
@@ -194,7 +194,7 @@ ALTER TABLE `form_cd4`
 ALTER TABLE `form_cd4`
   MODIFY `cd4_id` int(11) NOT NULL AUTO_INCREMENT;
 
-CREATE TABLE `r_cd4_sample_rejection_reasons` (
+CREATE TABLE IF NOT EXISTS `r_cd4_sample_rejection_reasons` (
   `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT,
   `rejection_reason_name` varchar(255) DEFAULT NULL,
   `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
@@ -203,19 +203,19 @@ CREATE TABLE `r_cd4_sample_rejection_reasons` (
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`rejection_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-CREATE TABLE `r_cd4_sample_types` (
+CREATE TABLE IF NOT EXISTS `r_cd4_sample_types` (
   `sample_id` int(11) NOT NULL AUTO_INCREMENT,
   `sample_name` varchar(255) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `r_cd4_test_reasons` (
+CREATE TABLE IF NOT EXISTS `r_cd4_test_reasons` (
   `test_reason_id` int(11) NOT NULL AUTO_INCREMENT,
   `test_reason_name` varchar(255) DEFAULT NULL,
   `parent_reason` int(11) DEFAULT '0',
@@ -223,4 +223,4 @@ CREATE TABLE `r_cd4_test_reasons` (
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int(11) DEFAULT '0',
   PRIMARY KEY (`test_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
