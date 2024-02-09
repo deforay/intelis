@@ -224,3 +224,6 @@ CREATE TABLE IF NOT EXISTS `r_cd4_test_reasons` (
   `data_sync` int(11) DEFAULT '0',
   PRIMARY KEY (`test_reason_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Brindha 08-Feb-2024 version 5.2.9
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display VL Log Result', 'vl_display_log_result', 'yes', 'vl', 'no', NULL, NULL, 'active');
