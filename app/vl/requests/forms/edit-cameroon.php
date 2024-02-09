@@ -12,8 +12,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$_SESSION['dateFormat'] = 'dd-m-yy';
-$_SESSION['jsDateFormatMask'] = '99-99-9999';
+//$_SESSION['dateFormat'] = 'dd-m-yy';
+//$_SESSION['jsDateFormatMask'] = '99-99-9999';
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
      $sampleClass = '';
