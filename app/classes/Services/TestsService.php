@@ -27,7 +27,17 @@ class TestsService
                 'patientId' => 'patient_art_no',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
-                'specimenType' => 'sample_type'
+                'specimenType' => 'specimen_type'
+            ],
+            'cd4' => [
+                'testName' => _translate('CD4'),
+                'testShortName' => 'CD4',
+                'tableName' => 'form_cd4',
+                'primaryKey' => 'cd4_id',
+                'patientId' => 'patient_art_no',
+                'patientFirstName' => 'patient_first_name',
+                'patientLastName' => 'patient_last_name',
+                'specimenType' => 'specimen_type'
             ],
             'eid' => [
                 'testName' => _translate('Early Infant Diagnosis'),

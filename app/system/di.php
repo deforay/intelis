@@ -4,6 +4,7 @@ use DI\ContainerBuilder;
 use App\Services\TbService;
 use App\Services\VlService;
 use App\Services\ApiService;
+use App\Services\CD4Service;
 use App\Services\EidService;
 use App\Services\BatchService;
 use App\Services\TestsService;
@@ -93,6 +94,7 @@ $builder->addDefinitions([
     CommonService::class  => DI\autowire(),
     BatchService::class  => DI\autowire(),
     VlService::class => DI\autowire(),
+    CD4Service::class => DI\autowire(),
     EidService::class =>  DI\autowire(),
     Covid19Service::class => DI\autowire(),
     HepatitisService::class => DI\autowire(),
