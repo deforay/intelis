@@ -715,7 +715,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <input type="hidden" name="provinceId" id="provinceId" />
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;"><?= _translate('Save and Next'); ?></a>
-                                             <a href="vlRequest.php" class="btn btn-default"> <?= _translate('Cancel'); ?></a>
+                                             <a href="/vl/requests/vl-requests.php" class="btn btn-default"> <?= _translate('Cancel'); ?></a>
                                         </div>
                                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
                                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
