@@ -1495,6 +1495,17 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
+											<label for="vl_display_log_result" class="col-lg-4 control-label"><?php echo _translate("Display VL Log Result"); ?> </label>
+											<div class="col-lg-8">
+												<input type="radio" class="readPage" id="vl_display_log_result_yes" name="vl_display_log_result" value="yes" <?php echo ($arr['vl_display_log_result'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Yes"); ?>&nbsp;&nbsp;
+												<input type="radio" class="readPage" id="vl_display_log_result_no" name="vl_display_log_result" value="no" <?php echo ($arr['vl_display_log_result'] == 'no' || $arr['vl_display_log_result'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("No"); ?>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-7">
+										<div class="form-group">
 											<label for="h_vl_msg" class="col-lg-4 control-label"><?php echo _translate("High Viral Load Message"); ?> </label>
 											<div class="col-lg-8">
 												<textarea class="form-control readPage" id="h_vl_msg" name="h_vl_msg" placeholder="<?php echo _translate('High Viral Load message that will appear for results >= the VL threshold limit'); ?>" title="<?php echo _translate('Please enter high viral load message'); ?>" style="width:100%;min-height:80px;max-height:100px;"><?php echo $arr['h_vl_msg']; ?></textarea>
