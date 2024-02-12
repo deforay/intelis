@@ -382,7 +382,6 @@ $state = $geolocationService->getProvinces("yes");
 													<td style="width: 10%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
 													<td style="width: 23.33%;">
 														<select class="form-control vfvlnsfilters" id="vfVlnsfacilityName" name="vfVlnsfacilityName" multiple="multiple" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
-															<option value=""><?php echo _translate('-- Select --'); ?></option>
 															<?php foreach ($fResult as $name) { ?>
 																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?></option>
 															<?php } ?>
@@ -1203,7 +1202,7 @@ $state = $geolocationService->getProvinces("yes");
 				sampleTestDate: $('#vfVlnsSampleTestDate').val(),
 				state: $('#vfVlnsState').val(),
 				district: $('#vfVlnsDistrict').val(),
-				facilityName: $("#vfVlnsfacilityName  option:selected").val(),
+				facilityName: $("#vfVlnsfacilityName").val(),
 				gender: $('#vfvlnGender').val(),
 				pregnancy: $('#pregnancy').val(),
 				breastfeeding: $('#breastfeeding').val(),
