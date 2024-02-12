@@ -550,7 +550,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
                     } else {
                          $('#search').html("");
-                         alert("<?= _translate("No facilities found for the selected facility type. Please add a new facility or edit an existing facility.", true); ?>");
+                         //alert("<?= _translate("No facilities found for the selected facility type. Please add a new facility or edit an existing facility.", true); ?>");
                          $("#unselectedCount").html(0);
                     }
                     $.unblockUI();
