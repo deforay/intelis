@@ -1203,7 +1203,7 @@ $state = $geolocationService->getProvinces("yes");
 				sampleTestDate: $('#vfVlnsSampleTestDate').val(),
 				state: $('#vfVlnsState').val(),
 				district: $('#vfVlnsDistrict').val(),
-				facilityName: $('#vfVlnsfacilityName').val(),
+				facilityName: $("#vfVlnsfacilityName  option:selected").val(),
 				gender: $('#vfvlnGender').val(),
 				pregnancy: $('#pregnancy').val(),
 				breastfeeding: $('#breastfeeding').val(),

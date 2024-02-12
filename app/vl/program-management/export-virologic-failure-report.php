@@ -138,7 +138,7 @@ if (!empty($sWhere)) {
      $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
 }
 $sQuery = $sQuery . " ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc";
-
+//die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
 if (!$rResult) {
