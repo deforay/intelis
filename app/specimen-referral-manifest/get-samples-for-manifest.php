@@ -79,12 +79,12 @@ if (!empty($_SESSION['facilityMap'])) {
 	$where[] = " facility_id IN(" . $_SESSION['facilityMap'] . ")";
 }
 
-if (!empty($_POST['testingLab'])) {
-	$where[] = " (vl.lab_id IN(" . $_POST['testingLab'] . ") OR (vl.lab_id like '' OR vl.lab_id is null OR vl.lab_id = 0))";
+if (!empty($_POST['testingLab']) && is_numeric($_POST['testingLab'])) {
+	$where[] = " (vl.lab_id = " . $_POST['testingLab'] . " OR (vl.lab_id like '' OR vl.lab_id is null OR vl.lab_id = 0))";
 }
 
 if (!empty($_POST['facility'])) {
-	$where[] = " (facility_id IN(" . $_POST['facility'] . ")  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
+	$where[] = " (facility_id = " . $_POST['facility'] . "  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
 }
 
 //if (!empty($_POST['operator'])) {
@@ -106,7 +106,7 @@ if (!empty($where)) {
 	$query .= " WHERE " . implode(" AND ", $where);
 }
 $query .= " ORDER BY vl.request_created_datetime ASC";
-// die($query);
+ //die($query);
 $result = $db->rawQuery($query);
 $key = (string) $general->getGlobalConfig('key');
 
