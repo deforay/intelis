@@ -478,11 +478,30 @@ if (!empty($result)) {
           }
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime((string) $result['revised_on'])) . '</td>';
           $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td colspan="3" style="line-height:2px;"></td>';
+          $html .= '</tr>';
      }
+     if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("TESTED BY") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
+          $html .= '</tr>';
 
-     $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:8px;"></td>';
-     $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
+          if (!empty($testUserSignaturePath) && $pdf->imageExists(($testUserSignaturePath))) {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:40px;" /></td>';
+          } else {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+          }
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td colspan="3" style="line-height:2px;"></td>';
+          $html .= '</tr>';
+     }
      if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("APPROVED BY") . '</td>';
@@ -499,6 +518,9 @@ if (!empty($result)) {
           }
 
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td colspan="3" style="line-height:2px;"></td>';
           $html .= '</tr>';
      }
 
@@ -517,18 +539,41 @@ if (!empty($result)) {
 
 
      if (!empty($result['lab_tech_comments'])) {
-
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:20px;"></td>';
-          $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;"><strong>' . _translate("Lab Comments") . ':</strong> ' . $result['lab_tech_comments'] . '</td>';
           $html .= '</tr>';
-
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:2px;"></td>';
           $html .= '</tr>';
      }
+
+     $html .= '<tr>';
+     $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;"><strong>' . _translate("Techniciens ") . ':</strong></td>';
+     $html .= '</tr>';
+
+     $html .= '<tr>';
+     $html .= '<td colspan="3" style="line-height:2px;"></td>';
+     $html .= '</tr>';
+
+     $html .= '<tr>';
+     $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;">';
+     $html .= '<u><b>NB</u></b> : Pour qu’une variation de la charge virale soit significative, il faut que la différence entre deux mesures soit<br>';
+     $html .= 'd’au moins 0,5 Log 10 soit une réduction ou une augmentation d’un facteur 3 du nombre de copies/ml </td>';
+     $html .= '</tr>';
+
+     $html .= '<tr>';
+     $html .= '<td colspan="3" style="line-height:2px;"></td>';
+     $html .= '</tr>';
+
+     $html .= '<tr>';
+     $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;color:#808080;">(*) <u><b>Limite de détection</b></u> (LDD): <b>&lt;40 copies/mL (1,60 Log 10 copies/mL)</b><br>';
+     $html .= ' &nbsp;&nbsp;&nbsp;<u><b>Limites de quantifcation</b></u> (LDQ) Comprise entre <b>40 et 10 000 000 copies/mL (1,60 et 7,0 Log 10 copies/mL)</b></td>';
+     $html .= '</tr>';
+
+     $html .= '<tr>';
+     $html .= '<td colspan="3" style="line-height:2px;"></td>';
+     $html .= '</tr>';
+
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
