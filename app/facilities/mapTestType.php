@@ -81,6 +81,9 @@ require_once APPLICATION_PATH . '/header.php';
 													if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 														<option value='tb'><?php echo _translate("TB"); ?></option>
 													<?php }
+													if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
+														<option value='cd4'><?php echo _translate("CD4"); ?></option>
+													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 														<option value='generic-tests'><?php echo _translate("Other Lab Tests"); ?></option>
 													<?php } ?>
@@ -182,7 +185,10 @@ require_once APPLICATION_PATH . '/header.php';
 		$('#search_to option').each(function(i, selected) {
 			selVal[i] = $(selected).val();
 		});
-		$("#selectedSample").val(selVal);
+		let selectedFacilities = JSON.stringify(selVal);
+		console.log(selVal.length);
+		console.log(selectedFacilities);
+		$("#selectedFacilities").val(selectedFacilities);
 		flag = deforayValidator.init({
 			formId: 'facilityTestMapForm'
 		});

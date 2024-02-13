@@ -237,3 +237,10 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 -- Jeyabanu 12-Feb-2024
 ALTER TABLE `form_cd4` CHANGE `result` `cd4_result` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_cd4` CHANGE `result_percentage` `cd4_result_percentage` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-results', '/cd4/results/cd4-manual-results.php', '[\"/cd4/results/cd4-update-result.php\", \"/cd4/results/cd4-failed-results.php\"]', 'Enter Result Manually', NULL, 'always');
+
+-- Jeyabanu 13-Feb-2024
+ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','cd4','generic-tests') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','cd4','generic-tests') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/cd4/requests/cd4-requests.php', NULL, 'View', NULL, 'always'), (NULL, 'cd4-requests', '/cd4/requests/export-cd4-requests.php', NULL, 'Export CD4 Requests', NULL, 'always');
