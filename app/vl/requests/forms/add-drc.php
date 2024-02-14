@@ -418,8 +418,9 @@ $sFormat = '';
 										<td></td>
 									</tr>
 									<tr>
-										<td colspan="4"><label class="radio-inline" style="margin:0;padding:0;">A
-												remplir par le préleveur </label></td>
+										<td colspan="4">
+											<label class="radio-inline" style="margin:0;padding:0;">A remplir par le préleveur </label>
+										</td>
 									</tr>
 								</table>
 							</div>
