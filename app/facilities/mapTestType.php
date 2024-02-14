@@ -186,8 +186,6 @@ require_once APPLICATION_PATH . '/header.php';
 			selVal[i] = $(selected).val();
 		});
 		let selectedFacilities = JSON.stringify(selVal);
-		console.log(selVal.length);
-		console.log(selectedFacilities);
 		$("#selectedFacilities").val(selectedFacilities);
 		flag = deforayValidator.init({
 			formId: 'facilityTestMapForm'

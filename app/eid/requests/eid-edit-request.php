@@ -466,6 +466,30 @@ require_once($fileArray[$arr['vl_form']]);
         var dateOfBirth = moment($("#childDob").val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
         $("#childAge").val(moment().diff(dateOfBirth, 'months'));
     }
+
+    function checkSampleReceviedDate() {
+
+    var sampleCollectionDate = $("#sampleCollectionDate").val();
+    var sampleReceivedDate = $("#sampleReceivedDate").val();
+
+    if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
+
+        date1 = new Date(sampleCollectionDate);
+        date2 = new Date(sampleReceivedDate);
+        date3 = new Date();
+
+        if (date1.getTime() > date3.getTime()) {
+            alert("<?= _translate("Sample Collection Date cannot be grater than Today Date"); ?>");
+            $("#sampleCollectionDate").val("");
+        }else if (date2.getTime() > date3.getTime()) {
+            alert("<?= _translate("Sample Received at Testing Lab Date cannot be grater than Today Date"); ?>");
+            $("#sampleReceivedDate").val("");
+        }else if (date2.getTime() < date1.getTime()) {
+            alert("<?= _translate("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
+            $("#sampleReceivedDate").val("");
+        } 
+    }
+    }
 </script>
 
 

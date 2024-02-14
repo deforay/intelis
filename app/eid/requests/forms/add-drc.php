@@ -394,7 +394,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									<tr>
 										<th scope="row" style="width:15%;">Date de collecte <span class="mandatory">*</span> </th>
 										<td style="width:35%;">
-											<input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" onchange="generateSampleCode();" />
+											<input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" onchange="checkSampleReceviedDate();generateSampleCode();" />
 										</td>
 
 										<th scope="row" style="width:15%;">Tel. du préleveur</th>
@@ -490,7 +490,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											</td>
 											<th scope="row" style="width:15%;"><label for="">Date de réception de l'échantillon </label></th>
 											<td style="width:35%;">
-												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" onchange="" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" onchange="checkSampleReceviedDate();" style="width:100%;" />
 											</td>
 
 										<tr>
