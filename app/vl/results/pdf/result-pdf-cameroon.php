@@ -58,14 +58,14 @@ if (!empty($result)) {
      }
 
      $resultApprovedBy = '';
-     $userSignaturePath = null;
+     $approverSignaturePath = null;
      if (!empty($result['result_approved_by'])) {
           $resultApprovedByRes = $usersService->getUserInfo($result['result_approved_by'], array('user_name', 'user_signature'));
           if ($resultApprovedByRes) {
                $resultApprovedBy = $resultApprovedByRes['result_approved_by'] ?? null;
           }
           if (!empty($resultApprovedByRes['user_signature'])) {
-               $userSignaturePath =  $resultApprovedByRes['user_signature'];
+               $approverSignaturePath =  $resultApprovedByRes['user_signature'];
           }
      }
 
@@ -76,9 +76,9 @@ if (!empty($result)) {
           $resultApprovedBy  = '';
      }
 
-     $userSignaturePath = null;
+     $approverSignaturePath = null;
      if (!empty($userRes['user_signature'])) {
-          $userSignaturePath =  $userRes['user_signature'];
+          $approverSignaturePath =  $userRes['user_signature'];
      }
      $_SESSION['aliasPage'] = $page;
      if (!isset($result['labName'])) {
@@ -221,7 +221,7 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['funding_source_name'] ?? '-') . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['request_clinician_name'] ?? '-') . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['request_clinician_name'] ?? '-') . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['request_clinician_phone_number'] ?? '-') . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_emails'] ?? '-') . '</td>';
      $html .= '</tr>';
@@ -533,8 +533,8 @@ if (!empty($result)) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-          if (!empty($userSignaturePath) && $pdf->imageExists(($userSignaturePath))) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:100px;" /></td>';
+          if (!empty($approverSignaturePath) && $pdf->imageExists(($approverSignaturePath))) {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approverSignaturePath . '" style="width:100px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }
