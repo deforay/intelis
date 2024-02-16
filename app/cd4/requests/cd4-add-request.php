@@ -54,7 +54,7 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 //get active sample types
 $condition = "status = 'active'";
-$sResult = $general->fetchDataFromTable('r_vl_sample_type', $condition);
+$sResult = $general->fetchDataFromTable('r_cd4_sample_types', $condition);
 
 
 //get cd4test reason details

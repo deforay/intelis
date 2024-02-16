@@ -1,630 +1,960 @@
 <?php
 
-// imported in /eid/results/eid-update-result.php based on country in global config
-
-use App\Registries\ContainerRegistry;
-use App\Services\EidService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var EidService $eidService */
-$eidService = ContainerRegistry::get(EidService::class);
-$eidResults = $eidService->getEidResults();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
+
+$facility = $general->generateSelectOptions($healthFacilities, $cd4QueryInfo['facility_id'], '-- Select --');
 
 
-// Getting the list of Provinces, Districts and Facilities
-
-$rKey = '';
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-if ($_SESSION['instance']['type'] == 'remoteuser') {
-    $sampleCodeKey = 'remote_sample_code_key';
-    $sampleCode = 'remote_sample_code';
-    if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
-        $sampleCode = 'remote_sample_code';
-    } else {
-        $sampleCode = 'sample_code';
-    }
-    //check user exist in user_facility_map table
-    $chkUserFcMapQry = "Select user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-    $chkUserFcMapResult = $db->query($chkUserFcMapQry);
-    if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-    }
-    $rKey = 'R';
-} else {
-    $sampleCodeKey = 'sample_code_key';
-    $sampleCode = 'sample_code';
-    $rKey = '';
+//facility details
+if (isset($cd4QueryInfo['facility_id']) && $cd4QueryInfo['facility_id'] > 0) {
+	$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
+	$facilityResult = $db->rawQuery($facilityQuery, array($cd4QueryInfo['facility_id']));
 }
-$pdResult = $db->query($pdQuery);
-$province = "<option value=''> -- Select -- </option>";
-foreach ($pdResult as $provinceName) {
-    $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
+if (!isset($facilityResult[0]['facility_code'])) {
+	$facilityResult[0]['facility_code'] = '';
+}
+if (!isset($facilityResult[0]['facility_mobile_numbers'])) {
+	$facilityResult[0]['facility_mobile_numbers'] = '';
+}
+if (!isset($facilityResult[0]['contact_person'])) {
+	$facilityResult[0]['contact_person'] = '';
+}
+if (!isset($facilityResult[0]['facility_emails'])) {
+	$facilityResult[0]['facility_emails'] = '';
+}
+if (!isset($facilityResult[0]['facility_state']) || $facilityResult[0]['facility_state'] == '') {
+	$facilityResult[0]['facility_state'] = '';
+}
+if (!isset($facilityResult[0]['facility_district']) || $facilityResult[0]['facility_district'] == '') {
+	$facilityResult[0]['facility_district'] = '';
+}
+$stateName = $facilityResult[0]['facility_state'];
+if (trim((string) $stateName) != '') {
+	$stateQuery = "SELECT * from geographical_divisions where geo_name='" . $stateName . "'";
+	$stateResult = $db->query($stateQuery);
+}
+if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
+	$stateResult[0]['geo_code'] = '';
+}
+//district details
+$districtResult = [];
+if (trim((string) $stateName) != '') {
+	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
+	$districtResult = $db->query($districtQuery);
+	$facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2' Order By facility_name";
+	$lResult = $db->query($facilityQuery);
 }
 
-$facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');
-
-$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", (string) $eidInfo['mother_treatment']) : [];
-
+//set reason for changes history
+$rch = '';
+if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_for_result_changes'] != '' && $cd4QueryInfo['reason_for_result_changes'] != null) {
+	$rch .= '<h4>Result Changes History</h4>';
+	$rch .= '<table style="width:100%;">';
+	$rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
+	$rch .= '<tbody>';
+	$splitChanges = explode('vlsm', (string) $cd4QueryInfo['reason_for_result_changes']);
+	for ($c = 0; $c < count($splitChanges); $c++) {
+		$getData = explode("##", $splitChanges[$c]);
+		$expStr = explode(" ", $getData[2]);
+		$changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+		$rch .= '<tr><td>' . ($getData[0]) . '</td><td>' . ($getData[1]) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
+	}
+	$rch .= '</tbody>';
+	$rch .= '</table>';
+}
+$disable = "disabled = 'disabled'";
 
 ?>
+<style>
+	.table>tbody>tr>td {
+		border-top: none;
+	}
 
+	.form-control {
+		width: 100% !important;
+	}
 
+	.row {
+		margin-top: 6px;
+	}
+</style>
+<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
-        <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-            <li class="active"><?php echo _translate("Edit EID Request"); ?></li>
-        </ol>
-    </section>
-    <!-- Main content -->
-    <section class="content">
+	<!-- Content Header (Page header) -->
+	<section class="content-header">
+		<h1><em class="fa-solid fa-pen-to-square"></em> CD4 LABORATORY REQUEST FORM </h1>
+		<ol class="breadcrumb">
+			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
+			<li class="active">Enter CD4 Request</li>
+		</ol>
+	</section>
 
-        <div class="box box-default">
-            <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <!-- form start -->
+	<!-- Main content -->
+	<section class="content">
 
-                <div class="box-body">
-                    <div class="box box-default">
-                        <div class="box-body disabledForm">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">A. CHILD and MOTHER INFORMATION</h3>
-                            </div>
-                            <div class="box-header with-border">
-                                <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
-                            </div>
-                            <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                <tr>
-                                    <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
-                                        <td><label for="sampleCode">Sample ID </label></td>
-                                        <td>
-                                            <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars((string) $eidInfo['sample_code']); ?></span>
+		<div class="box box-default">
+			<div class="box-header with-border">
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+			</div>
+			<div class="box-body">
+				<!-- form start -->
 
-                                        </td>
-                                    <?php } else { ?>
-                                        <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
-                                        <td>
-                                            <input type="text" readonly value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
-                                        </td>
-                                    <?php } ?>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="province">Province </label><span class="mandatory">*</span></td>
-                                    <td>
-                                        <select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
-                                            <?php echo $province; ?>
-                                        </select>
-                                    </td>
-                                    <td><label for="district">District </label><span class="mandatory">*</span></td>
-                                    <td>
-                                        <select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-                                            <option value=""><?= _translate("-- Select --"); ?> </option>
-                                        </select>
-                                    </td>
-                                    <td><label for="facilityId">Health Facility </label><span class="mandatory">*</span></td>
-                                    <td>
-                                        <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
-                                            <?php echo $facility; ?>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><label for="supportPartner">Implementing Partner </label></td>
-                                    <td>
-                                        <!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
-                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
-                                            <option value=""> -- Select -- </option>
-                                            <?php
-                                            foreach ($implementingPartnerList as $implementingPartner) {
-                                            ?>
-                                                <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($eidInfo['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </td>
-                                    <td><label for="fundingSource">Funding Partner</label></td>
-                                    <td>
-                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
-                                            <option value=""> -- Select -- </option>
-                                            <?php
-                                            foreach ($fundingSourceList as $fundingSource) {
-                                            ?>
-                                                <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($eidInfo['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </td>
-                                    <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
-                                        <!-- <tr> -->
-                                        <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
-                                        <td>
-                                            <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Lab name" style="width:100%;">
-                                                <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                        <!-- </tr> -->
-                                    <?php } ?>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
-                                    <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Requesting Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>" /></td>
-
-                                </tr>
-                            </table>
-                            <br><br>
-                            <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-
-                                <tr>
-                                    <th scope="row" style="width:15% !important"><label for="childId">Exposed Infant Identification <span class="mandatory">*</span> </label></th>
-                                    <td style="width:35% !important">
-                                        <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Exposed Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" onchange="" />
-                                    </td>
-                                    <th scope="row" style="width:15% !important"><label for="childName">Infant name </label></th>
-                                    <td style="width:35% !important">
-                                        <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['child_name']); ?>" onchange="" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><label for="childDob">Date of Birth </label></th>
-                                    <td>
-                                        <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="" />
-                                    </td>
-                                    <th scope="row"><label for="childGender">Gender </label></th>
-                                    <td>
-                                        <select class="form-control " name="childGender" id="childGender">
-                                            <option value=''> -- Select -- </option>
-                                            <option value='male' <?php echo ($eidInfo['child_gender'] == 'male') ? "selected='selected'" : ""; ?>> Male </option>
-                                            <option value='female' <?php echo ($eidInfo['child_gender'] == 'female') ? "selected='selected'" : ""; ?>> Female </option>
-
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Infant Age (months)</th>
-                                    <td><input type="number" max=9 maxlength="1" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" /></td>
-                                    <th scope="row">Mother ART Number</th>
-                                    <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['mother_id']); ?>" onchange="" /></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Caretaker phone number</th>
-                                    <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
-
-                                    <th scope="row">Infant caretaker address</th>
-                                    <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?= htmlspecialchars((string) $eidInfo['caretaker_address']); ?></textarea></td>
-
-                                </tr>
-
-
-                            </table>
-
-
-
-                            <br><br>
-                            <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                <tr>
-                                    <th scope="row" colspan=4>
-                                        <h4>Infant and Mother's Health Information</h4>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width:15% !important">Mother's HIV Status:</th>
-                                    <td style="width:35% !important">
-                                        <select class="form-control" name="mothersHIVStatus" id="mothersHIVStatus">
-                                            <option value=''> -- Select -- </option>
-                                            <option value="positive" <?php echo ($eidInfo['mother_hiv_status'] == 'positive') ? "selected='selected'" : ""; ?>> Positive </option>
-                                            <option value="negative" <?php echo ($eidInfo['mother_hiv_status'] == 'negative') ? "selected='selected'" : ""; ?>> Negative </option>
-                                            <option value="unknown" <?php echo ($eidInfo['mother_hiv_status'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
-                                        </select>
-                                    </td>
-
-                                    <th scope="row" style="width:15% !important">ART given to the Mother during:</th>
-                                    <td style="width:35% !important">
-                                        <input type="checkbox" name="motherTreatment[]" value="No ART given" <?php echo in_array('No ART given', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> No ART given <br>
-                                        <input type="checkbox" name="motherTreatment[]" value="Pregnancy" <?php echo in_array('Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Pregnancy <br>
-                                        <input type="checkbox" name="motherTreatment[]" value="Labour/Delivery" <?php echo in_array('Labour/Delivery', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Labour/Delivery <br>
-                                        <input type="checkbox" name="motherTreatment[]" value="Postnatal" <?php echo in_array('Postnatal', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Postnatal <br>
-                                        <!-- <input type="checkbox" name="motherTreatment[]" value="Other" <?php echo in_array('Other', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?>  onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" /> Other (Please specify): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Other" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> <br> -->
-                                        <input type="checkbox" name="motherTreatment[]" value="Unknown" <?php echo in_array('Unknown', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Unknown
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">Infant Rapid HIV Test Done</th>
-                                    <td>
-                                        <select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
-                                            <option value=''> -- Select -- </option>
-                                            <option value="yes" <?php echo ($eidInfo['rapid_test_performed'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
-                                            <option value="no" <?php echo ($eidInfo['rapid_test_performed'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
-                                        </select>
-                                    </td>
-
-                                    <th scope="row">If yes, test date :</th>
-                                    <td>
-                                        <input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="if yes, test date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rapid_test_date']); ?>">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Rapid Test Result</th>
-                                    <td>
-                                        <select class="form-control" name="rapidTestResult" id="rapidTestResult">
-                                            <option value=''> -- Select -- </option>
-                                            <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
-                                                <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['rapid_test_result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
-                                            <?php } ?>
-
-                                        </select>
-                                    </td>
-
-                                    <th scope="row">Infant stopped breastfeeding ?</th>
-                                    <td>
-                                        <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
-                                            <option value=''> -- Select -- </option>
-                                            <option value="yes" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
-                                            <option value="no" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
-                                            <option value="unknown" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Age (months) breastfeeding stopped :</th>
-                                    <td>
-                                        <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
-                                    </td>
-
-                                    <th scope="row">PCR test performed on child before :</th>
-                                    <td>
-                                        <select class="form-control" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
-                                            <option value=''> -- Select -- </option>
-                                            <option value="yes" <?php echo (isset($eidInfo['pcr_test_performed_before']) && $eidInfo['pcr_test_performed_before'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
-                                            <option value="no" <?php echo (isset($eidInfo['pcr_test_performed_before']) && $eidInfo['pcr_test_performed_before'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Previous PCR test date :</th>
-                                    <td>
-                                        <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
-                                    </td>
-
-                                    <th scope="row">Reason for 2nd PCR :</th>
-                                    <td>
-                                        <select class="form-control" name="pcrTestReason" id="pcrTestReason">
-                                            <option value=''> -- Select -- </option>
-                                            <option value="Confirmation of positive first EID PCR test result" <?php echo ($eidInfo['reason_for_pcr'] == 'Confirmation of positive first EID PCR test result') ? "selected='selected'" : ""; ?>> Confirmation of positive first EID PCR test result </option>
-                                            <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months" <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months') ? "selected='selected'" : ""; ?>> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
-                                            <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
-                                            <option value="Other" <?php echo ($eidInfo['reason_for_pcr'] == 'Other') ? "selected='selected'" : ""; ?>> Other </option>
-                                        </select>
-                                    </td>
-                                </tr>
-
-
-                            </table>
-
-                            <br><br>
-                            <table aria-describedby="table" class="table" aria-hidden="true">
-                                <tr>
-                                    <th scope="row" colspan=4>
-                                        <h4>Sample Information</h4>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
-                                    <td style="width:35% !important;">
-                                        <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" />
-                                    </td>
-                                    <th style="width:15% !important;"></th>
-                                    <td style="width:35% !important;"></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Requesting Officer</th>
-                                    <td>
-                                        <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" value="<?= htmlspecialchars((string) $eidInfo['sample_requestor_name']); ?>" />
-                                    </td>
-                                    <th scope="row">Sample Requestor Phone</th>
-                                    <td>
-                                        <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?= htmlspecialchars((string) $eidInfo['sample_requestor_phone']); ?>" />
-                                    </td>
-                                </tr>
-
-                            </table>
-
-
-                        </div>
-                    </div>
-
-                    <form class="form-horizontal" method="post" name="editEIDRequestForm" id="editEIDRequestForm" autocomplete="off" action="eid-update-result-helper.php">
-                        <div class="box box-primary">
-                            <div class="box-body">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">B. Reserved for Laboratory Use </h3>
-                                </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                    <tr>
-                                        <td><label for="" class="labels">Testing Platform </label></td>
-                                        <td><select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
-                                                <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                        <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
-                                        <td>
-                                            <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
-                                        </td>
-
-                                    <tr>
-                                        <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
-                                        <td>
-                                            <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Lab name" style="width:100%;">
-                                                <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                        <th scope="row">Is Sample Rejected? <span class="mandatory">*</span></th>
-                                        <td>
-                                            <select class="form-control isRequired" name="isSampleRejected" id="isSampleRejected">
-                                                <option value=''> -- Select -- </option>
-                                                <option value="yes" <?php echo ($eidInfo['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
-                                                <option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
-                                            </select>
-                                        </td>
-
-
-                                    </tr>
-                                    <tr class="show-rejection rejected" style="display:none;">
-                                        <th>Reason for Rejection</th>
-                                        <td class="show-rejection rejected" style="display:none;">
-                                            <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
-                                                <option value="">-- Select --</option>
-                                                <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                    <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
+				<div class="box-body">
+					<div class="box box-primary">
+						<div class="box-header with-border">
+							<h3 class="box-title">Clinic Information: (To be filled by requesting Clinican/Nurse)</h3>
+						</div>
+						<div class="box-body">
+							<div class="row">
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
+										<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Enter Sample ID" title="Please enter sample id" value="<?= ($cd4QueryInfo['sample_code']); ?>" <?php echo $disable; ?> style="width:100%;" />
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="sampleReordered">
+											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $cd4QueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> Sample Reordered
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-3 col-md-3">
+									<label for="province">Province <span class="mandatory">*</span></label>
+									<select class="form-control isRequired" name="province" id="province" title="Please choose province" <?php echo $disable; ?> style="width:100%;" onchange="getfacilityDetails(this);">
+										<option value=""> -- Select -- </option>
+										<?php foreach ($pdResult as $provinceName) { ?>
+											<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo ($facilityResult[0]['facility_state'] . "##" . $stateResult[0]['geo_code'] == $provinceName['geo_name'] . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>;
+										<?php } ?>
+									</select>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<label for="district">District <span class="mandatory">*</span></label>
+									<select class="form-control isRequired" name="district" id="district" title="Please choose district" <?php echo $disable; ?> style="width:100%;" onchange="getfacilityDistrictwise(this);">
+										<option value=""> -- Select -- </option>
+										<?php
+										foreach ($districtResult as $districtName) {
+										?>
+											<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($facilityResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ($districtName['facility_district']); ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<label for="facilityId">Health Facility Name <span class="mandatory">*</span></label>
+									<select class="form-control isRequired" id="facilityId" name="facilityId" title="Please select Health Facility Name" <?php echo $disable; ?> style="width:100%;" onchange="autoFillFacilityCode();">
+										<?= $facility; ?>
+									</select>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="facilityCode">Facility Code </label>
+										<input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Facility Code" title="Please enter Facility code" value="<?php echo $facilityResult[0]['facility_code']; ?>" <?php echo $disable; ?>>
+									</div>
+								</div>
+							</div>
+							<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+									<strong>Clinic/Health Center Email(s)</strong>
+								</div>
+								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+									<?php echo $facilityResult[0]['facility_emails']; ?></div>
+								<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+									<strong>Clinic/Health Center Mobile No.(s)</strong>
+								</div>
+								<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+									<?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
+								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+									<strong>Clinic Contact Person -</strong>
+								</div>  
+								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+									<?php echo ($facilityResult[0]['contact_person']); ?></div>
+							</div>
+                            <div class="row">
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="">
+                                                       <label for="facilityCode">Affiliated District Hospital </label>
+                                                       <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Affiliated District Hospital" title="Please enter Affiliated District Hospital" <?php echo $disable; ?>>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="">
+                                                       <label for="labId">Affiliated CD4 Testing Hub <span class="mandatory">*</span></label>
+                                                       <select name="labId" id="labId" class="form-control isRequired" title="Please choose a CD4 testing hub" style="width:100%;" <?php echo $disable; ?>>
+                                                            <?= $general->generateSelectOptions($testingLabs, $cd4QueryInfo['lab_id'], '-- Select --'); ?>
+                                                       </select>
+                                                  </div>
+                                             </div>
+                                        </div>
+						</div>
+					</div>
+					<div class="box box-primary">
+						<div class="box-header with-border">
+							<h3 class="box-title">Patient Information</h3>
+						</div>
+						<div class="box-body">
+							<div class="row">
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
+										<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?= ($cd4QueryInfo['patient_art_no']); ?>" <?php echo $disable; ?> />
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="dob">Date of Birth <span class="mandatory">*</span></label>
+										<input type="text" name="dob" id="dob" class="form-control date isRequired" placeholder="Enter DOB" title="Enter dob" value="<?= ($cd4QueryInfo['patient_dob']); ?>" <?php echo $disable; ?> />
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="ageInYears">If DOB unknown, Age in Year </label>
+										<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="Age in Year" title="Enter age in years" <?php echo $disable; ?> value="<?= ($cd4QueryInfo['patient_age_in_years']); ?>" />
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="ageInMonths">If Age < 1, Age in Month </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" <?php echo $disable; ?> value="<?= ($cd4QueryInfo['patient_age_in_months']); ?>" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="patientFirstName">Patient Name </label>
+										<input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" <?php echo $disable; ?> value="<?php echo $patientFirstName; ?>" />
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="gender">Gender <span class="mandatory">*</span></label><br>
+										<label class="radio-inline" style="margin-left:0px;">
+											<input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please check gender" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>> Male
+										</label>&nbsp;&nbsp;
+										<label class="radio-inline" style="margin-left:0px;">
+											<input type="radio" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
+										</label>
+										<!--<label class="radio-inline" style="margin-left:0px;">
+							<input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender" < ?php echo $disable;?> < ?php echo ($cd4QueryInfo['patient_gender']=='not_recorded')?"checked='checked'":""?>>Not Recorded
+						  </label>-->
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="patientPhoneNumber">Phone Number</label>
+										<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($cd4QueryInfo['patient_mobile_number']); ?>" <?php echo $disable; ?> />
+									</div>
+								</div>
+							</div>
+                            <div class="row femaleSection" style="display:<?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" ;>
+										<div class="col-xs-3 col-md-3">
+											<div class="form-group">
+												<label for="patientPregnant">Is Patient Pregnant? <span class="mandatory">*</span></label><br>
+												<label class="radio-inline">
+													<input type="radio" class="<?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregYes" name="patientPregnant" value="yes" title="Please check if patient is pregnant" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+												</label>
+												<label class="radio-inline">
+													<input type="radio" id="pregNo" name="patientPregnant" value="no" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
+												</label>
+											</div>
+										</div>
+										<div class="col-xs-3 col-md-3">
+											<div class="form-group">
+												<label for="breastfeeding">Is Patient Breastfeeding? <span class="mandatory">*</span></label><br>
+												<label class="radio-inline">
+													<input type="radio" class="<?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check if patient is breastfeeding" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+												</label>
+												<label class="radio-inline">
+													<input type="radio" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
+												</label>
+											</div>
+										</div>
+									</div>
+						</div>
+						<div class="box box-primary">
+							<div class="box-header with-border">
+								<h3 class="box-title">Sample Information</h3>
+							</div>
+							<div class="box-body">
+								<div class="row">
+									<div class="col-xs-3 col-md-3">
+										<div class="form-group">
+											<label for="">Date of Sample Collection <span class="mandatory">*</span></label>
+											<input type="text" class="form-control isRequired" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $cd4QueryInfo['sample_collection_date']; ?>" <?php echo $disable; ?>>
+										</div>
+									</div>
+									<div class="col-xs-3 col-md-3">
+										<div class="form-group">
+											<label for="specimenType">Sample Type <span class="mandatory">*</span></label>
+											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type" <?php echo $disable; ?>>
+												<option value=""> -- Select -- </option>
+												<?php
+												foreach ($sResult as $name) {
+												?>
+													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($cd4QueryInfo['specimen_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
+												<?php
+												}
+												?>
+											</select>
+										</div>
+									</div>
+                                    <div class="col-xs-3 col-md-3">
+                                                       <div class="form-group">
+                                                            <label for="">Is sample re-ordered as part of corrective action? <span class="mandatory">*</span></label>
+                                                                 <select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose adherence">
+                                                                      <option value=""> -- Select -- </option>
+                                                                      <option value="yes" <?php echo $cd4QueryInfo['sample_reordered']=='yes' ? 'selected="selected"' : ''; ?>>Yes</option>
+                                                                      <option value="no" <?php echo $cd4QueryInfo['sample_reordered']=='no' ? 'selected="selected"' : ''; ?>>No</option>
+                                                                 </select>
+                                                       </div>
+                                                  </div>
+								</div>
+							</div>
+							<div class="box box-primary">
+								<div class="box-header with-border">
+									<h3 class="box-title">Treatment Information</h3>
+								</div>
+								<div class="box-body">
+									<div class="row">
+										<div class="col-xs-3 col-md-3">
+											<div class="form-group">
+												<label for="">Date of Treatment Initiation</label>
+												<input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="Date Of Treatment Initiated" title="Date Of treatment initiated" value="<?php echo $cd4QueryInfo['treatment_initiated_date']; ?>" <?php echo $disable; ?> style="width:100%;">
+											</div>
+										</div>
+										<div class="col-xs-3 col-md-3">
+											<div class="form-group">
+												<label for="artRegimen">Current Regimen
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+												</label>
+												<select class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" <?php echo $disable; ?> style="width:100%;" onchange="checkARTValue();">
+													<option value="">-- Select --</option>
+													<?php foreach ($artRegimenResult as $heading) { ?>
+														<optgroup label="<?= $heading['headings']; ?>">
+															<?php
+															foreach ($aResult as $regimen) {
+																if ($heading['headings'] == $regimen['headings']) {
+															?>
+																	<option value="<?php echo $regimen['art_code']; ?>" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['current_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
+															<?php
+																}
+															}
+															?>
+														</optgroup>
+													<?php } ?>
+													<option value="other">Other</option>
+												</select>
+												<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" <?php echo $disable; ?> style="width:100%;display:none;margin-top:2px;">
+											</div>
+										</div>
+										<div class="col-xs-3 col-md-3">
+											<div class="form-group">
+												<label for="">Date of Initiation of Current Regimen
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+												</label>
+												<input type="text" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" <?php echo $disable; ?> value="<?php echo $cd4QueryInfo['date_of_initiation_of_current_regimen']; ?>">
+											</div>
+										</div>
+										<div class="col-xs-3 col-md-3">
+											<div class="form-group">
+												<label for="arvAdherence">ARV Adherence
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+												</label>
+												<select name="arvAdherence" id="arvAdherence" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose adherence" <?php echo $disable; ?>>
+													<option value=""> -- Select -- </option>
+													<option value="good" <?php echo ($cd4QueryInfo['arv_adherance_percentage'] == 'good') ? "selected='selected'" : "" ?>>Good >= 95%</option>
+													<option value="fair" <?php echo ($cd4QueryInfo['arv_adherance_percentage'] == 'fair') ? "selected='selected'" : "" ?>>Fair (85-94%)</option>
+													<option value="poor" <?php echo ($cd4QueryInfo['arv_adherance_percentage'] == 'poor') ? "selected='selected'" : "" ?>>Poor < 85%</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									
+								</div>
+								<div class="box box-primary">
+									<div class="box-header with-border">
+										<h3 class="box-title">INDICATION FOR CD4 COUNT TESTING <span class="mandatory">*</span></h3><small> (Please tick one):(To be
+											completed by clinician)</small>
+									</div>
+									<div class="box-body">
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<div class="col-lg-12">
+														<label class="radio-inline">
                                                         <?php
-                                                        foreach ($rejectionResult as $reject) {
-                                                            if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-                                                                <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($eidInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
-                                                        <?php }
-                                                        } ?>
-                                                    </optgroup>
-                                                <?php }  ?>
-                                            </select>
-                                        </td>
-                                        <th>Rejection Date<span class="mandatory">*</span></th>
-                                        <td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width:25%;"><label for="">Sample Test Date </label></td>
-                                        <td style="width:25%;">
-                                            <input type="text" class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
-                                        </td>
+                                                                $cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
+                                                                $cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
+                                                                $checked = '';
+                                                                $display = '';
+                                                                $cd4Date = '';
+                                                                $cd4Value = '';
+                                                                $cd4ValuePercentage = '';
+                                                                if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'baselineInitiation' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'baselineInitiation') {
+                                                                    $checked = 'checked="checked"';
+                                                                    $display = 'block';
+                                                                   $cd4Date = $cd4QueryInfo['last_cd4_date'];
+                                                                    $cd4Value = $cd4QueryInfo['last_cd4_result'];
+                                                                    $cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
 
+                                                                 } else {
+                                                              $checked = '';
+                                                            $display = 'none';
+                                                          }
+                                                       ?>
+                                                       <input type="radio" class="isRequired" id="baselineInitiation" name="reasonForCD4Testing" value="baselineInitiation" title="Please check CD4 indication testing type" onclick="showTesting('baselineInitiation');" <?= $checked; ?> <?php echo $disable; ?>>
+                                                       <strong>Baseline at ART initiation or re-initiation</strong>
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row baselineInitiation hideTestData well" style="display:<?php echo $display; ?>;">
+                                                            <div class="col-md-6">
+                                                                 <label class="col-lg-5 control-label">Last CD4 date</label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control date viralTestData" id="baselineInitiationLastCd4Date" name="baselineInitiationLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?>/>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                 <label for="baselineInitiationCD4Value" class="col-lg-5 control-label">  Absolute value & Percentage  :</label>
+                                                                 <div class="col-lg-7">
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4Result" name="baselineInitiationLastCd4Result" placeholder="Enter CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?>/>(cells/ml)</div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4ResultPercentage" name="baselineInitiationLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?>/></div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<div class="col-lg-12">
+														<label class="radio-inline">
+                                                        <?php
+                                                                                     $cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
+                                                                                     $cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
+                                                                                     $checked = '';
+                                                                                     $display = '';
+                                                                                     if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'assessmentAHD' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'assessmentAHD') {
+                                                                                          $checked = 'checked="checked"';
+                                                                                          $display = 'block';
+                                                                                          $cd4Date = $cd4QueryInfo['last_cd4_date'];
+                                                                                          $cd4Value = $cd4QueryInfo['last_cd4_result'];
+                                                                                          $cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
+                                                                                     } else {
+                                                                                          $checked = '';
+                                                                                          $display = 'none';
+                                                                                     }
+                                                                                     ?>
+                                                                           <input type="radio" class="" id="assessmentAHD" name="reasonForCD4Testing" value="assessmentAHD" title="Please check CD4 indication testing type" onclick="showTesting('assessmentAHD');" <?= $checked; ?> <?php echo $disable; ?>> 
+                                                                                <strong>Assessment for Advanced HIV Disease (AHD)</strong>
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row assessmentAHD hideTestData well" style="display: <?= $display; ?>;margin-bottom:20px;">
+                                                            <div class="col-md-6">
+                                                                 <label class="col-lg-5 control-label">Last CD4 date</label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control date viralTestData" id="assessmentAHDLastCd4Date" name="assessmentAHDLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?>/>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                 <label for="assessmentAHDCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
+                                                                 <div class="col-lg-7">
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4Result" name="assessmentAHDLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?>/>(cells/ml)</div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4ResultPercentage" name="assessmentAHDLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?>/></div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+										<div class="row">
+											<div class="col-md-8">
+												<div class="form-group">
+													<div class="col-lg-12">
+														<label class="radio-inline">
+                                                        <?php
+                                                                                     $cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
+                                                                                     $cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
+                                                                                     $checked = '';
+                                                                                     $display = '';
+                                                                                     if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'treatmentCoinfection' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'treatmentCoinfection') {
+                                                                                          $checked = 'checked="checked"';
+                                                                                          $display = 'block';
+                                                                                          $cd4Date = $cd4QueryInfo['last_cd4_date'];
+                                                                                          $cd4Value = $cd4QueryInfo['last_cd4_result'];
+                                                                                          $cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
+                                                                                     } else {
+                                                                                          $checked = '';
+                                                                                          $display = 'none';
+                                                                                     }
+                                                                                     ?>
+                                                                                <input type="radio" class="" id="treatmentCoinfection" name="reasonForCD4Testing" value="treatmentCoinfection" title="Please check CD4 indication testing type" onclick="showTesting('treatmentCoinfection');" <?= $checked; ?> <?php echo $disable; ?>>
+                                                                                <strong>Treatment follow up of TB-HIV co-infection </strong>
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+                                        <div class="row treatmentCoinfection hideTestData well" style="display:<?= $display; ?>;">
+                                                            <div class="col-md-6">
+                                                                 <label class="col-lg-5 control-label">Last CD4 date</label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control date viralTestData" id="treatmentCoinfectionLastCd4Date" name="treatmentCoinfectionLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?> />
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                 <label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>     
+                                                                 <div class="col-lg-7">
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4Result" name="treatmentCoinfectionLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?> />(cells/ml)</div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4ResultPercentage" name="treatmentCoinfectionLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?> /></div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
 
-                                        <th scope="row">Result</th>
-                                        <td>
-                                            <select class="result-focus form-control isRequired" name="result" id="result">
-                                                <option value=''> -- Select -- </option>
-                                                <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
-                                                    <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
-                                                <?php } ?>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Reviewed By</th>
-                                        <td>
-                                            <select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose reviewed by" style="width: 100%;">
-                                                <?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                        <th scope="row">Reviewed On</th>
-                                        <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Approved By</th>
-                                        <td>
-                                            <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
-                                                <?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                        <th scope="row">Approved On</th>
-                                        <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['result_approved_datetime']); ?>" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
-                                    </tr>
-                                    <tr class="change-reason">
-                                        <th scope="row" class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
-                                        <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
-                                        <th scope="row"></th>
-                                        <td></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
+										<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<div class="col-lg-12">
+															<label class="radio-inline">
+																<input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" <?php echo $disable; ?> <?php echo trim((string) $cd4QueryInfo['reason_for_vl_testing']) == '9999' ? "checked='checked'" : ""; ?> onclick="showTesting('recency')">
+																<strong>Confirmation Test for Recency</strong>
+															</label>
+														</div>
+													</div>
+												</div>
+											</div>
+										<?php } ?>
+										<hr>
+										<div class="row">
+											<div class="col-md-4">
+												<label for="reqClinician" class="col-lg-5 control-label">Request
+													Clinician
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+												</label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician" title="Please enter request clinician" value="<?php echo $cd4QueryInfo['request_clinician_name']; ?>" <?php echo $disable; ?> />
+												</div>
+											</div>
+											<div class="col-md-4">
+												<label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+												</label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control phone-number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $cd4QueryInfo['request_clinician_phone_number']; ?>" <?php echo $disable; ?> />
+												</div>
+											</div>
+											<div class="col-md-4">
+												<label class="col-lg-5 control-label" for="requestDate">Request Date
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+												</label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?php echo $cd4QueryInfo['test_requested_on']; ?>" <?php echo $disable; ?> />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-4">
+												<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal
+													Person
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+												</label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" value="<?= ($cd4QueryInfo['vl_focal_person']); ?>" <?php echo $disable; ?> />
+												</div>
+											</div>
+											<div class="col-md-4">
+												<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL
+													Focal Person Phone Number
+													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+												</label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control phone-number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($cd4QueryInfo['vl_focal_person_phone_number']); ?>" <?php echo $disable; ?> />
+												</div>
+											</div>
+											<div class="col-md-4">
+												<label class="col-lg-5 control-label" for="emailHf">Email for HF
+												</label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control" id="emailHf" name="emailHf" placeholder="Email for HF" title="Please enter email for hf" value="<?php echo $facilityResult[0]['facility_emails']; ?>" <?php echo $disable; ?> />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+                                <form class="form-inline" method="post" name="cd4RequestFormRwd" id="cd4RequestFormRwd" autocomplete="off" action="cd4-update-result-helper.php">
+                                                  <div class="box box-primary">
+                                                       <div class="box-header with-border">
+                                                            <h3 class="box-title">Laboratory Information</h3>
+                                                       </div>
+                                                       <div class="box-body">
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label for="testingPlatform" class="col-lg-5 control-label">CD4 Testing Platform </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> >
+                                                                                <option value="">-- Select --</option>
+                                                                                <?php foreach ($importResult as $mName) { ?>
+                                                                                     <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>"><?php echo $mName['machine_name']; ?></option>
+                                                                                <?php } ?>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate()" />
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> />
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="isSampleRejected" id="isSampleRejected" class="form-control" title="Please check if sample is rejected or not">
+                                                                                <option value="">-- Select --</option>
+                                                                                <option value="yes">Yes</option>
+                                                                                <option value="no">No</option>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
 
+                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
+                                                                      <label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
+                                                                                <option value="">-- Select --</option>
+                                                                                <?php foreach ($rejectionTypeResult as $type) { ?>
+                                                                                     <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
+                                                                                          <?php foreach ($rejectionResult as $reject) {
+                                                                                               if ($type['rejection_type'] == $reject['rejection_type']) {
+                                                                                          ?>
+                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
+                                                                                          <?php }
+                                                                                          } ?>
+                                                                                     </optgroup>
+                                                                                <?php }
+                                                                                if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                                                     <option value="other">Other (Please Specify) </option>
+                                                                                <?php } ?>
+                                                                           </select>
+                                                                           <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
+                                                                      </div>
+                                                                 </div>
+                                                                 
+                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
+                                                                      <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                            <div class="col-md-6 cd4Result">
+                                                                      <label class="col-lg-5 control-label" for="cd4Result">Sample Results (CD4 count -Absolute value): </label>
+                                                                      <div class="col-lg-7 resultInputContainer">
+                                                                           <input class="form-control" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" />
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6 cd4Result">
+                                                                      <label class="col-lg-5 control-label" for="cd4ResultPercentage">Sample Results (Percentage) :</label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control" id="cd4ResultPercentage" name="cd4ResultPercentage" placeholder="CD4 Result Value percentage" title="Please enter CD4 Result Value percentage" style="width:100%;" />
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Tested By </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
+                                                                                <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
 
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer">
-                    <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                        <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
-                        <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
-                    <?php } ?>
-                    <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-                    <input type="hidden" name="revised" id="revised" value="no" />
-                    <input type="hidden" name="formId" id="formId" value="7" />
-                    <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
-                    <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
-                    <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
-                    <a href="/eid/results/eid-manual-results.php" class="btn btn-default"> Cancel</a>
-                </div>
-                <!-- /.box-footer -->
-                </form>
-                <!-- /.row -->
-            </div>
-        </div>
-        <!-- /.box -->
-    </section>
-    <!-- /.content -->
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" />
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
+                                                                                <option value="">-- Select --</option>
+                                                                                <?php foreach ($userResult as $uName) { ?>
+                                                                                     <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                                                                                <?php } ?>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
+                                                                      <div class="col-lg-7">
+                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?>></textarea>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                        </div>
+                                        <div class="box-footer">
+                                             <!-- BARCODESTUFF START -->
+                                             <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
+                                                  <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
+                                                       <div class="progress" style="width:100%">
+                                                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                                            </div>
+                                                       </div>
+                                                  </div> <!-- /printer_data_loading -->
+                                                  <div id="printer_details" style="display:none">
+                                                       <span id="selected_printer">No printer selected!</span>
+                                                       <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
+                                                  </div><br /> <!-- /printer_details -->
+                                                  <div id="printer_select" style="display:none">
+                                                       Zebra Printer Options<br />
+                                                       Printer: <select id="printers"></select>
+                                                  </div> <!-- /printer_select -->
+                                             <?php } ?>
+                                             <!-- BARCODESTUFF END -->
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                                             <input type="hidden" name="saveNext" id="saveNext" />
+                                             <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+                                                  <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
+                                                  <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
+                                             <?php } ?>
+                                             <input type="hidden" name="cd4SampleId" id="cd4SampleId" value="<?= ($cd4QueryInfo['cd4_id']); ?>" />
+                                             <input type="hidden" name="provinceId" id="provinceId" />
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
+                                             <a href="/vl/requests/vl-requests.php" class="btn btn-default"> Cancel</a>
+                                        </div>
+                                        <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
+                                        <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
+
+							</form>
+						</div>
+	</section>
 </div>
+<script>
+	$(document).ready(function() {
+		$("#vlLog").on('keyup keypress blur change paste', function() {
+			if ($(this).val() != '') {
+				if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
+					$(this).val('');
+					alert('Please enter only numeric values for Viral Load Log')
+				}
+			}
+		});
+		$('#labId').select2({
+			placeholder: "Select Lab Name"
+		});
+		$('#reviewedBy').select2({
+			placeholder: "Select Reviewed By"
+		});
+		$('#approvedBy').select2({
+			placeholder: "Select Approved By"
+		});
+		$('#testingPlatform').select2({
+			placeholder: "Select Testing Platform"
+		});
+
+		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			onChangeMonthYear: function(year, month, widget) {
+				setTimeout(function() {
+					$('.ui-datepicker-calendar').show();
+				});
+			},
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
+		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?> 99:99');
+		__clone = $("#cd4RequestFormRwd .labSection").clone();
+		reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
+		result = ($("#vlResult").length) ? $("#vlResult").val() : '';
+		hivDetectionChange();
+	});
+
+	$("#isSampleRejected").on("change", function() {
+		if ($(this).val() == 'yes') {
+			$('.rejectionReason').show();
+			$('.vlResult').css('display', 'none');
+			$('#rejectionReason').addClass('isRequired');
+			$("#status").val(4);
+			$('#vlResult').removeClass('isRequired');
+		} else {
+			$('.vlResult').css('display', 'block');
+			$('.rejectionReason').hide();
+			$('#rejectionReason').removeClass('isRequired');
+			$('#rejectionReason').val('');
+			$("#status").val('');
+			$('#vlResult').addClass('isRequired');
+			// if any of the special results like tnd,bld are selected then remove isRequired from vlResult
+			if ($('.specialResults:checkbox:checked').length) {
+				$('#vlResult').removeClass('isRequired');
+			}
+		}
+	});
+
+	$('.specialResults').change(function() {
+		if ($(this).is(':checked')) {
+			$('#vlResult,#vlLog').attr('readonly', true);
+			$('#vlResult').removeClass('isRequired');
+			$(".specialResults").not(this).attr('disabled', true);
+			$('.specialResults').not(this).prop('checked', false).removeAttr('checked');
+		} else {
+			$('#vlResult,#vlLog').attr('readonly', false);
+			$(".specialResults").not(this).attr('disabled', false);
+		}
+	});
 
 
+	if ($(".specialResults:checked").length > 0) {
+		$('#vlResult, #vlLog').val('');
+		$('#vlResult,#vlLog').attr('readonly', true);
+		$('#vlResult, #vlLog').removeClass('isRequired');
+		$(".specialResults").attr('disabled', false);
+		$(".specialResults").not($(".specialResults:checked")).attr('disabled', true);
+		$('.specialResults').not($(".specialResults:checked")).prop('checked', false).removeAttr('checked');
+	}
+	if ($('#vlResult, #vlLog').val() != '') {
+		$('.specialResults').prop('checked', false).removeAttr('checked');
+		$(".specialResults").attr('disabled', true);
+		$('#vlResult').addClass('isRequired');
+	}
 
-<script type="text/javascript">
-    changeProvince = true;
-    changeFacility = true;
-    provinceName = true;
-    facilityName = true;
-    machineName = true;
+	$('#vlResult,#vlLog').on('input', function(e) {
+		if (this.value != '') {
+			$(".specialResults").not(this).attr('disabled', true);
+		} else {
+			$(".specialResults").not(this).attr('disabled', false);
+		}
+	});
 
-    function getfacilityDetails(obj) {
-        $.blockUI();
-        var cName = $("#facilityId").val();
-        var pName = $("#province").val();
-        if (pName != '' && provinceName && facilityName) {
-            facilityName = false;
-        }
-        if ($.trim(pName) != '') {
-            //if (provinceName) {
-            $.post("/includes/siteInformationDropdownOptions.php", {
-                    pName: pName,
-                    testType: 'eid'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#facilityId").html(details[0]);
-                        $("#district").html(details[1]);
-                        //$("#clinicianName").val(details[2]);
-                    }
-                });
-            //}
-        } else if (pName == '') {
-            provinceName = true;
-            facilityName = true;
-            $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo $facility; ?>");
-            $("#facilityId").select2("val", "");
-            $("#district").html("<option value=''> -- Sélectionner -- </option>");
-        }
-        $.unblockUI();
-    }
+	$(".labSection").on("change", function() {
+		if ($.trim(result) != '') {
+			if ($(".labSection").serialize() == $(__clone).serialize()) {
+				$(".reasonForResultChanges").css("display", "none");
+				$("#reasonForResultChanges").removeClass("isRequired");
+			} else {
+				$(".reasonForResultChanges").css("display", "block");
+				$("#reasonForResultChanges").addClass("isRequired");
+			}
+		}
+	});
 
-    function getfacilityDistrictwise(obj) {
-        $.blockUI();
-        var dName = $("#district").val();
-        var cName = $("#facilityId").val();
-        if (dName != '') {
-            $.post("/includes/siteInformationDropdownOptions.php", {
-                    dName: dName,
-                    cliName: cName,
-                    testType: 'eid'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#facilityId").html(details[0]);
-                    }
-                });
-        } else {
-            $("#facilityId").html("<option value=''> -- Sélectionner -- </option>");
-        }
-        $.unblockUI();
-    }
+	function checkRejectionReason() {
+		var rejectionReason = $("#rejectionReason").val();
+		if (rejectionReason == "other") {
+			$("#newRejectionReason").show();
+			$("#newRejectionReason").addClass("isRequired");
+		} else {
+			$("#newRejectionReason").hide();
+			$("#newRejectionReason").removeClass("isRequired");
+			$('#newRejectionReason').val("");
+		}
+	}
 
-    function getfacilityProvinceDetails(obj) {
-        $.blockUI();
-        //check facility name
-        var cName = $("#facilityId").val();
-        var pName = $("#province").val();
-        if (cName != '' && provinceName && facilityName) {
-            provinceName = false;
-        }
-        if (cName != '' && facilityName) {
-            $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'eid'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#province").html(details[0]);
-                        $("#district").html(details[1]);
-                        //$("#clinicianName").val(details[2]);
-                    }
-                });
-        } else if (pName == '' && cName == '') {
-            provinceName = true;
-            facilityName = true;
-            $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo $facility; ?>");
-        }
-        $.unblockUI();
-    }
+	function calculateLogValue(obj) {
+		if (obj.id == "vlResult") {
+			absValue = $("#vlResult").val();
+			absValue = Number.parseFloat(absValue).toFixed();
+			if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
+				//$("#vlResult").val(absValue);
+				$("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
+			} else {
+				$("#vlLog").val('');
+			}
+		}
+		if (obj.id == "vlLog") {
+			logValue = $("#vlLog").val();
+			if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
+				var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
+				if (absVal != 'Infinity' && !isNaN(absVal)) {
+					$("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
+				}
+			} else {
+				$("#vlResult").val('');
+			}
+		}
+	}
 
-    function validateNow() {
-        flag = deforayValidator.init({
-            formId: 'editEIDRequestForm'
-        });
-        if (flag) {
-            document.getElementById('editEIDRequestForm').submit();
-        }
-    }
+	function validateNow() {
+		flag = deforayValidator.init({
+			formId: 'cd4RequestFormRwd'
+		});
 
-    function updateMotherViralLoad() {
-        var motherVl = $("#motherViralLoadCopiesPerMl").val();
-        var motherVlText = $("#motherViralLoadText").val();
-        if (motherVlText != '') {
-            $("#motherViralLoadCopiesPerMl").val('');
-        }
-    }
+		$('.isRequired').each(function() {
+			($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
+		});
+		if (flag) {
+			$.blockUI();
+			document.getElementById('cd4RequestFormRwd').submit();
+		}
+	}
 
+	function hivDetectionChange() {
 
+		let text = $('#testingPlatform').val();
+		if (!text) {
+			$("#vlResult").attr("disabled", true);
+			return;
+		}
+		var str1 = text.split("##");
+		var str = str1[0];
 
-    $(document).ready(function() {
+		$(".vlResult, .vlLog").show();
+		$("#isSampleRejected").val("");
+		//Get VL results by platform id
+		var platformId = str1[3];
+		$("#possibleVlResults").html('');
+		$.post("/vl/requests/getVlResults.php", {
+				instrumentId: platformId,
+			},
+			function(data) {
+				$("#vlResult").attr("disabled", false);
+				if (data != "") {
+					$("#possibleVlResults").html(data);
+				}
+			});
 
-
-        $('.disabledForm input, .disabledForm select , .disabledForm textarea ').attr('disabled', true);
-
-        $('#facilityId').select2({
-            placeholder: "Select Clinic/Health Center"
-        });
-        $('#district').select2({
-            placeholder: "District"
-        });
-        $('#province').select2({
-            placeholder: "Province"
-        });
-        $('#labId').select2({
-            placeholder: "Select Lab Name"
-        });
-        $('#reviewedBy').select2({
-            placeholder: "Select Reviewed By"
-        });
-        $('#approvedBy').select2({
-            placeholder: "Select Approved By"
-        });
-        getfacilityProvinceDetails($("#facilityId").val());
-        <?php if (isset($eidInfo['mother_treatment']) && in_array('Other', $eidInfo['mother_treatment'])) { ?>
-            $('#motherTreatmentOther').prop('disabled', false);
-        <?php } ?>
-
-        <?php if (!empty($eidInfo['mother_vl_result'])) { ?>
-            updateMotherViralLoad();
-        <?php } ?>
-
-        $("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
-            var motherVl = $("#motherViralLoadCopiesPerMl").val();
-            //var motherVlText = $("#motherViralLoadText").val();
-            if (motherVl != '') {
-                $("#motherViralLoadText").val('');
-            }
-        });
-
-    });
+	}
 </script>

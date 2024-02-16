@@ -33,21 +33,13 @@ $request = AppRegistry::get('request');
 
 // Define custom filters, with only StringTrim for viral load results
 $onlyStringTrim = (new FilterChain())->attach(new StringTrim());
-$customFilters = [
-     'vlResult' => $onlyStringTrim,
-     'cphlVlResult' => $onlyStringTrim,
-     'last_vl_result_failure' => $onlyStringTrim,
-     'last_vl_result_failure_ac' => $onlyStringTrim,
-     'last_vl_result_routine' => $onlyStringTrim,
-     'last_viral_load_result' => $onlyStringTrim
-];
 
 // Sanitize input
 $_POST = _sanitizeInput($_POST, $customFilters);
 
 $tableName = "form_cd4";
 $tableName1 = "activity_log";
-$vlTestReasonTable = "r_vl_test_reasons";
+$vlTestReasonTable = "r_cd4_test_reasons";
 $fDetails = "facility_details";
 $vl_result_category = null;
 $vlResult = null;
@@ -143,7 +135,23 @@ try {
           }
      }
 
-    
+     if($_POST['reasonForCD4Testing']=="baselineInitiation")
+     {
+          $lastDate = $_POST['baselineInitiationLastCd4Date'];
+          $lastResult = $_POST['baselineInitiationLastCd4Result'];
+          $lastResultPercentage = $_POST['baselineInitiationLastCd4ResultPercentage'];
+     }
+     elseif($_POST['reasonForCD4Testing']=="assessmentAHD"){
+          $lastDate = $_POST['assessmentAHDLastCd4Date'];
+          $lastResult = $_POST['assessmentAHDLastCd4Result'];
+          $lastResultPercentage = $_POST['assessmentAHDLastCd4ResultPercentage'];
+     }
+     elseif($_POST['reasonForCD4Testing']=="treatmentCoinfection"){
+          $lastDate = $_POST['treatmentCoinfectionLastCd4Date'];
+          $lastResult = $_POST['treatmentCoinfectionLastCd4Result'];
+          $lastResultPercentage = $_POST['treatmentCoinfectionLastCd4ResultPercentage'];
+     }
+     
        //set cd4 test reason
        if (isset($_POST['reasonForCD4Testing']) && trim((string) $_POST['reasonForCD4Testing']) != "") {
           if (!is_numeric($_POST['reasonForCD4Testing'])) {
@@ -208,9 +216,9 @@ try {
           'sample_reordered' => $_POST['isSampleReordered'] ?? null,
           'arv_adherance_percentage' => $_POST['arvAdherence'] ?? null,
           'reason_for_cd4_testing' => $_POST['reasonForCD4Testing'] ?? null,
-          'last_cd4_date' => DateUtility::isoDateFormat($_POST['lastCd4Date'] ?? ''),
-          'last_cd4_result' => $_POST['lastCd4Result'] ?? null,
-          'last_cd4_result_percentage' => $_POST['lastCd4ResultPercentage'] ?? null,
+          'last_cd4_date' => DateUtility::isoDateFormat($lastDate ?? ''),
+          'last_cd4_result' => $lastResult ?? null,
+          'last_cd4_result_percentage' => $lastResultPercentage ?? null,
           'cd4_result' => $_POST['cd4Result'] ?? null,
           'cd4_result_percentage' => $_POST['cd4ResultPercentage'] ?? null,
           'request_clinician_name' => $_POST['reqClinician'] ?? null,
