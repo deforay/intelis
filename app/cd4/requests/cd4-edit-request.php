@@ -75,7 +75,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 
 $pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 
-$sQuery = "SELECT * FROM r_vl_sample_type
+$sQuery = "SELECT * FROM r_cd4_sample_types
                WHERE status='active'";
 $sResult = $db->query($sQuery);
 

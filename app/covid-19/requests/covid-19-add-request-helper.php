@@ -316,6 +316,15 @@ try {
 		$reasonData["reason_details"] = json_encode($_POST['reasonDetails']);
 		//var_dump($reasonData);
 		$db->insert("covid19_reasons_for_testing", $reasonData);
+	}else{
+		if (!empty($_POST['reasonForCovid19Test'])) {
+			$reasonData = [];
+			$reasonData["covid19_id"] = $_POST['covid19SampleId'];
+			$reasonData["reasons_id"] = $_POST['reasonForCovid19Test'];
+			$reasonData["reasons_detected"] = "yes";
+			$reasonData["reason_details"] = null;
+			$db->insert("covid19_reasons_for_testing", $reasonData);
+		}
 	}
 
 	//die;

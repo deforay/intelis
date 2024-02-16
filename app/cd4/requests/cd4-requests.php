@@ -71,7 +71,7 @@ $fundingSourceList = $db->query($fundingSourceQry);
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
+$sQuery = "SELECT * FROM r_cd4_sample_types WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'cd4'";

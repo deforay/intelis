@@ -949,6 +949,10 @@ $sFormat = '';
 				dt2.datetimepicker('option', 'minDate', minDate);
 				dt2.datetimepicker('option', 'minDateTime', minDate);
 				//dt2.val($(this).val());
+				var dt3 = $("#sampleReceivedDate");
+				dt3.datetimepicker('option', 'maxDate', "Today");
+				dt3.datetimepicker('option', 'minDate', minDate);
+				dt3.datetimepicker('option', 'minDateTime', minDate);
 			}
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
