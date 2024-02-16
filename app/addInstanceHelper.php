@@ -94,11 +94,12 @@ try {
 		$db->where('name', 'sc_testing_lab_id');
 		$db->update($systemConfigTable, array('value' => $_POST['labId']));
 
+		unset($_SESSION['instance']);
 		(ContainerRegistry::get(FileCacheUtility::class))->clear();
 
-
 		if ($id === true) {
-			$_SESSION['instanceFacilityName'] = $_POST['facilityId'];
+
+			$_SESSION['instance']['facilityName'] = $_POST['facilityId'];
 
 			$systemInfo = $general->getSystemConfig();
 

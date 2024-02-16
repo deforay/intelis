@@ -116,12 +116,12 @@ try {
 
         if (!empty($instanceResult['vlsm_instance_id'])) {
             $_SESSION['instanceId'] = $instanceResult['vlsm_instance_id'];
-            $_SESSION['instanceFacilityName'] = $instanceResult['instance_facility_name'];
+            $_SESSION['instance']['facilityName'] = $instanceResult['instance_facility_name'];
         } else {
             $id = $general->generateRandomString();
             $db->insert('s_vlsm_instance', ['vlsm_instance_id' => $id]);
             $_SESSION['instanceId'] = $id;
-            $_SESSION['instanceFacilityName'] = null;
+            $_SESSION['instance']['facilityName'] = null;
         }
 
 
