@@ -260,10 +260,7 @@ if (!empty($result)) {
 	$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
 	$html .= '</tr>';
 
-	/*$html .= '<tr>';
-	$html .= '<td colspan="3"></td>';
-	$html .= '<td rowspan="3" style="text-align:left;">' . $smileyContent . '</td>';
-	$html .= '</tr>';*/
+	$html .= '<tr><td colspan="3"></td></tr>';
 
 	if ($result['result'] == "< 40" || $result['result'] == "<40") {
 		$logResult = '1.60';
