@@ -434,7 +434,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     <tr>
                                         <td colspan="2">
                                             <label class="radio-inline" style="margin-left:0;">
-                                                <input type="radio" class="" id="reason5" name="reasonForCovid19Test" value="5" title="Diagnostique">
+                                                <input type="radio" class="" id="reason5" name="reasonForCovid19Test" value="5" title="Diagnostique" onchange="checkSubReason(this,'diagnostique');">
                                                 <strong>Diagnostique</strong>
                                             </label>
                                         </td>
@@ -1663,11 +1663,17 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
     function checkSubReason(obj, show) {
         $('.reason-checkbox').prop("checked", false);
-        if ($(obj).prop("checked", true)) {
-            $('.' + show).show();
-            $('.' + show).removeClass('hide-reasons');
-            $('.hide-reasons').hide();
-            $('.' + show).addClass('hide-reasons');
+        if(show == "diagnostique"){
+            if ($(obj).prop("checked", true)) {
+                $('.hide-reasons').hide();
+            }
+        }else{
+            if ($(obj).prop("checked", true)) {
+                $('.' + show).show();
+                $('.' + show).removeClass('hide-reasons');
+                $('.hide-reasons').hide();
+                $('.' + show).addClass('hide-reasons');
+            }
         }
     }
 

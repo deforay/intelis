@@ -111,12 +111,15 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 												<?= _translate("Recency ID"); ?>
 											</label></td>
 										<td><input type="text" class="form-control" id="serialNo" name="serialNo" placeholder="<?= _translate("Recency ID"); ?>" title="<?= _translate("Recency ID"); ?>" style="width:100%;" value="<?php echo $vlQueryInfo['external_sample_code']; ?>" /></td>
-
+										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>"><label for="">Date de réception de léchantillon <span class="mandatory">*</span></label></td>
 										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>">
 											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo ($vlQueryInfo['sample_received_at_lab_datetime'] != '' && $vlQueryInfo['sample_received_at_lab_datetime'] != null) ? $vlQueryInfo['sample_received_at_lab_datetime'] : date('d-M-Y H:i:s'); ?>" style="width:100%;" />
 										</td>
-
+										<?php }else{ ?>
+											<td></td>
+											<td></td>
+										<?php } ?>
 
 									</tr>
 									<tr>
@@ -684,6 +687,10 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 				dt2.datetimepicker('option', 'minDate', minDate);
 				dt2.datetimepicker('option', 'minDateTime', minDate);
 				//dt2.val($(this).val());
+				var dt3 = $("#sampleReceivedDate");
+				dt3.datetimepicker('option', 'maxDate', "Today");
+				dt3.datetimepicker('option', 'minDate', minDate);
+				dt3.datetimepicker('option', 'minDateTime', minDate);
 			}
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();

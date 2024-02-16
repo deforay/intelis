@@ -156,16 +156,16 @@ if (!empty($result)) {
 
     $revisedSignaturePath = $reviewedBySignaturePath = $testUserSignaturePath = null;
     if (!empty($testedByRes['user_signature'])) {
-        $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
+        $testUserSignaturePath = $testedByRes['user_signature'];
     }
     if (!empty($result['reviewedBySignature'])) {
-        $reviewedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['reviewedBySignature'];
+        $reviewedBySignaturePath = $result['reviewedBySignature'];
     }
     if (!empty($result['approvedBySignature'])) {
-        $approvedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
+        $approvedBySignaturePath = $result['approvedBySignature'];
     }
     if (!empty($revisedByRes['user_signature'])) {
-        $revisedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];
+        $revisedSignaturePath = $revisedByRes['user_signature'];
     }
 
     if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
@@ -500,18 +500,6 @@ if (!empty($result)) {
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime((string) $result['revised_on'])) . '</td>';
         $html .= '</tr>';
     }
-    if (!empty($result['lab_tech_comments'])) {
-        $html .= '<tr>';
-        $html .= '<td colspan="3" style="line-height:22px;"></td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Comments</td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['lab_tech_comments'] . '</td>';
-        $html .= '</tr>';
-    }
-
 
     if (!empty($result['lab_tech_comments'])) {
 
