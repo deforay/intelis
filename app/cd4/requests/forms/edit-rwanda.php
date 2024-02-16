@@ -441,7 +441,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                                           $checked = '';
                                                                                           $display = 'none';
                                                                                      }
-                                                                                     ?>
+                                                                                     ?>   
                                                                                 <input type="radio" class="isRequired" id="baselineInitiation" name="reasonForCD4Testing" value="baselineInitiation" title="Please check CD4 indication testing type" onclick="showTesting('baselineInitiation');" <?= $checked; ?>>
                                                                                 <strong>Baseline at ART initiation or re-initiation</strong>
                                                                            </label>
@@ -453,14 +453,14 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label">Last CD4 date</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control date viralTestData" id="baselineInitiationLastCD4Date" name="lastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" />
+                                                                      <input type="text" class="form-control date viralTestData" id="baselineInitiationLastCd4Date" name="baselineInitiationLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                  <label for="baselineInitiationCD4Value" class="col-lg-5 control-label">  Absolute value & Percentage  :</label>
                                                                  <div class="col-lg-7">
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="lastCd4Result" name="lastCd4Result" placeholder="Enter CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>"/>(cells/ml)</div>
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="lastCd4ResultPercentage" name="lastCd4ResultPercentage" placeholder="Enter CD4 Result" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4Result" name="baselineInitiationLastCd4Result" placeholder="Enter CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>"/>(cells/ml)</div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4ResultPercentage" name="baselineInitiationLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -496,14 +496,14 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label">Last CD4 date</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control date viralTestData" id="assessmentAHDLastCD4Date" name="lastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" />
+                                                                      <input type="text" class="form-control date viralTestData" id="assessmentAHDLastCd4Date" name="assessmentAHDLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                  <label for="assessmentAHDCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
                                                                  <div class="col-lg-7">
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4Result" name="lastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>"/>(cells/ml)</div>
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4ResultPercentage" name="lastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4Result" name="assessmentAHDLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>"/>(cells/ml)</div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4ResultPercentage" name="assessmentAHDLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -528,25 +528,25 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                                           $display = 'none';
                                                                                      }
                                                                                      ?>
-                                                                                <input type="radio" class="" id="treatmentCoinfection" name="reasonForCD4Testing" value="treatmentCoinfection" title="Please check CD4 indication testing type" onclick="showTesting('treatmentCoinfection');">
+                                                                                <input type="radio" class="" id="treatmentCoinfection" name="reasonForCD4Testing" value="treatmentCoinfection" title="Please check CD4 indication testing type" onclick="showTesting('treatmentCoinfection');" <?= $checked; ?>>
                                                                                 <strong>Treatment follow up of TB-HIV co-infection </strong>
                                                                            </label>
                                                                       </div>
                                                                  </div>
                                                             </div>
                                                        </div>
-                                                       <div class="row treatmentCoinfection hideTestData well" style="display:none;">
+                                                       <div class="row treatmentCoinfection hideTestData well" style="display:<?= $display; ?>;">
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label">Last CD4 date</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control date viralTestData" id="treatmentCoinfectionLastCD4Date" name="lastCD4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>"/>
+                                                                      <input type="text" class="form-control date viralTestData" id="treatmentCoinfectionLastCd4Date" name="treatmentCoinfectionLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>"/>
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                  <label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>     
                                                                  <div class="col-lg-7">
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4Result" name="lastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" />(cells/ml)</div>
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4ResultPercentage" name="lastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4Result" name="treatmentCoinfectionLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" />(cells/ml)</div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4ResultPercentage" name="treatmentCoinfectionLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -771,6 +771,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                              <input type="hidden" name="cd4SampleId" id="cd4SampleId" value="<?= ($cd4QueryInfo['cd4_id']); ?>" />
                                                   <input type="hidden" name="isRemoteSample" value="<?= ($cd4QueryInfo['remote_sample']); ?>" />
                                              <input type="hidden" name="provinceId" id="provinceId" />
+                                             <input type="hidden" name="oldStatus" id="oldStatus" value="<?php echo $cd4QueryInfo['result_status']; ?>" />
                                              <a href="/cd4/requests/cd4-requests.php" class="btn btn-default"> Cancel</a>
                                         </div>
                                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
@@ -1075,115 +1076,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-     $('.specialResults').change(function() {
-          if ($(this).is(':checked')) {
-               $('#cd4Result, #vlLog').val('');
-               $('#cd4Result,#vlLog').attr('readonly', true);
-               $(".specialResults").not(this).attr('disabled', true);
-               $("#sampleTestingDateAtLab").addClass('isRequired');
-          } else {
-               $('#cd4Result,#vlLog').attr('readonly', false);
-               $(".specialResults").not(this).attr('disabled', false);
-          }
-     });
-
-     $('#cd4Result,#vlLog').on('keyup keypress blur change paste input', function(e) {
+     $('#cd4Result').on('keyup keypress blur change paste input', function(e) {
           if (this.value != '') {
                $(".specialResults").not(this).attr('disabled', true);
                $("#sampleTestingDateAtLab").addClass('isRequired');
           } else {
                $(".specialResults").not(this).attr('disabled', false);
                $("#sampleTestingDateAtLab").removeClass('isRequired');
-          }
-     });
-
-     $('#baselineInitiationCD4Value').on('input', function(e) {
-          if (this.value != '') {
-               $('#baselineInitiationVlCheckValuelt20').attr('disabled', true);
-               $('#baselineInitiationVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#baselineInitiationVlCheckValuelt20').attr('disabled', false);
-               $('#baselineInitiationVlCheckValueTnd').attr('disabled', false);
-          }
-     });
-
-     $('#baselineInitiationVlCheckValuelt20').change(function() {
-          if ($('#baselineInitiationVlCheckValuelt20').is(':checked')) {
-               $('#baselineInitiationCD4Value').attr('readonly', true);
-               $('#baselineInitiationVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#baselineInitiationCD4Value').attr('readonly', false);
-               $('#baselineInitiationVlCheckValueTnd').attr('disabled', false);
-          }
-     });
-
-     $('#baselineInitiationVlCheckValueTnd').change(function() {
-          if ($('#baselineInitiationVlCheckValueTnd').is(':checked')) {
-               $('#baselineInitiationCD4Value').attr('readonly', true);
-               $('#baselineInitiationVlCheckValuelt20').attr('disabled', true);
-          } else {
-               $('#baselineInitiationCD4Value').attr('readonly', false);
-               $('#baselineInitiationVlCheckValuelt20').attr('disabled', false);
-          }
-     });
-
-     $('#treatmentCoinfectionCD4Value').on('input', function(e) {
-          if (this.value != '') {
-               $('#treatmentCoinfectionVlCheckValuelt20').attr('disabled', true);
-               $('#treatmentCoinfectionVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#treatmentCoinfectionVlCheckValuelt20').attr('disabled', false);
-               $('#treatmentCoinfectionVlCheckValueTnd').attr('disabled', false);
-          }
-     });
-
-     $('#treatmentCoinfectionVlCheckValuelt20').change(function() {
-          if ($('#treatmentCoinfectionVlCheckValuelt20').is(':checked')) {
-               $('#treatmentCoinfectionCD4Value').attr('readonly', true);
-               $('#treatmentCoinfectionVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#treatmentCoinfectionCD4Value').attr('readonly', false);
-               $('#treatmentCoinfectionVlCheckValueTnd').attr('disabled', false);
-          }
-     });
-
-     $('#treatmentCoinfectionVlCheckValueTnd').change(function() {
-          if ($('#treatmentCoinfectionVlCheckValueTnd').is(':checked')) {
-               $('#treatmentCoinfectionCD4Value').attr('readonly', true);
-               $('#treatmentCoinfectionVlCheckValuelt20').attr('disabled', true);
-          } else {
-               $('#treatmentCoinfectionCD4Value').attr('readonly', false);
-               $('#treatmentCoinfectionVlCheckValuelt20').attr('disabled', false);
-          }
-     });
-
-     $('#assessmentAHDVlValue').on('input', function(e) {
-          if (this.value != '') {
-               $('#assessmentAHDVlCheckValuelt20').attr('disabled', true);
-               $('#assessmentAHDVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#assessmentAHDVlCheckValuelt20').attr('disabled', false);
-               $('#assessmentAHDVlCheckValueTnd').attr('disabled', false);
-          }
-     });
-
-     $('#assessmentAHDVlCheckValuelt20').change(function() {
-          if ($('#assessmentAHDVlCheckValuelt20').is(':checked')) {
-               $('#assessmentAHDVlValue').attr('readonly', true);
-               $('#assessmentAHDVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#assessmentAHDVlValue').attr('readonly', false);
-               $('#assessmentAHDVlCheckValueTnd').attr('disabled', false);
-          }
-     });
-
-     $('#assessmentAHDVlCheckValueTnd').change(function() {
-          if ($('#assessmentAHDVlCheckValueTnd').is(':checked')) {
-               $('#assessmentAHDVlValue').attr('readonly', true);
-               $('#assessmentAHDVlCheckValuelt20').attr('disabled', true);
-          } else {
-               $('#assessmentAHDVlValue').attr('readonly', false);
-               $('#assessmentAHDVlCheckValuelt20').attr('disabled', false);
           }
      });
 

@@ -958,19 +958,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-     $('.specialResults').change(function() {
-          if ($(this).is(':checked')) {
-               $('#cd4Result, #vlLog').val('');
-               $('#cd4Result,#vlLog').attr('readonly', true);
-               $(".specialResults").not(this).attr('disabled', true);
-               $("#sampleTestingDateAtLab").addClass('isRequired');
-          } else {
-               $('#cd4Result,#vlLog').attr('readonly', false);
-               $(".specialResults").not(this).attr('disabled', false);
-          }
-     });
-
-     $('#cd4Result,#vlLog').on('keyup keypress blur change paste input', function(e) {
+     $('#cd4Result').on('keyup keypress blur change paste input', function(e) {
           if (this.value != '') {
                $(".specialResults").not(this).attr('disabled', true);
                $("#sampleTestingDateAtLab").addClass('isRequired');
@@ -980,95 +968,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-     $('#baselineInitiationCD4Value').on('input', function(e) {
-          if (this.value != '') {
-               $('#baselineInitiationVlCheckValuelt20').attr('disabled', true);
-               $('#baselineInitiationVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#baselineInitiationVlCheckValuelt20').attr('disabled', false);
-               $('#baselineInitiationVlCheckValueTnd').attr('disabled', false);
-          }
-     });
 
-     $('#baselineInitiationVlCheckValuelt20').change(function() {
-          if ($('#baselineInitiationVlCheckValuelt20').is(':checked')) {
-               $('#baselineInitiationCD4Value').attr('readonly', true);
-               $('#baselineInitiationVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#baselineInitiationCD4Value').attr('readonly', false);
-               $('#baselineInitiationVlCheckValueTnd').attr('disabled', false);
-          }
-     });
-
-     $('#baselineInitiationVlCheckValueTnd').change(function() {
-          if ($('#baselineInitiationVlCheckValueTnd').is(':checked')) {
-               $('#baselineInitiationCD4Value').attr('readonly', true);
-               $('#baselineInitiationVlCheckValuelt20').attr('disabled', true);
-          } else {
-               $('#baselineInitiationCD4Value').attr('readonly', false);
-               $('#baselineInitiationVlCheckValuelt20').attr('disabled', false);
-          }
-     });
-
-     $('#treatmentCoinfectionCD4Value').on('input', function(e) {
-          if (this.value != '') {
-               $('#treatmentCoinfectionVlCheckValuelt20').attr('disabled', true);
-               $('#treatmentCoinfectionVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#treatmentCoinfectionVlCheckValuelt20').attr('disabled', false);
-               $('#treatmentCoinfectionVlCheckValueTnd').attr('disabled', false);
-          }
-     });
-
-     $('#treatmentCoinfectionVlCheckValuelt20').change(function() {
-          if ($('#treatmentCoinfectionVlCheckValuelt20').is(':checked')) {
-               $('#treatmentCoinfectionCD4Value').attr('readonly', true);
-               $('#treatmentCoinfectionVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#treatmentCoinfectionCD4Value').attr('readonly', false);
-               $('#treatmentCoinfectionVlCheckValueTnd').attr('disabled', false);
-          }
-     });
-
-     $('#treatmentCoinfectionVlCheckValueTnd').change(function() {
-          if ($('#treatmentCoinfectionVlCheckValueTnd').is(':checked')) {
-               $('#treatmentCoinfectionCD4Value').attr('readonly', true);
-               $('#treatmentCoinfectionVlCheckValuelt20').attr('disabled', true);
-          } else {
-               $('#treatmentCoinfectionCD4Value').attr('readonly', false);
-               $('#treatmentCoinfectionVlCheckValuelt20').attr('disabled', false);
-          }
-     });
-
-     $('#assessmentAHDVlValue').on('input', function(e) {
-          if (this.value != '') {
-               $('#assessmentAHDVlCheckValuelt20').attr('disabled', true);
-               $('#assessmentAHDVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#assessmentAHDVlCheckValuelt20').attr('disabled', false);
-               $('#assessmentAHDVlCheckValueTnd').attr('disabled', false);
-          }
-     });
-
-     $('#assessmentAHDVlCheckValuelt20').change(function() {
-          if ($('#assessmentAHDVlCheckValuelt20').is(':checked')) {
-               $('#assessmentAHDVlValue').attr('readonly', true);
-               $('#assessmentAHDVlCheckValueTnd').attr('disabled', true);
-          } else {
-               $('#assessmentAHDVlValue').attr('readonly', false);
-               $('#assessmentAHDVlCheckValueTnd').attr('disabled', false);
-          }
-     });
-
-     $('#assessmentAHDVlCheckValueTnd').change(function() {
-          if ($('#assessmentAHDVlCheckValueTnd').is(':checked')) {
-               $('#assessmentAHDVlValue').attr('readonly', true);
-               $('#assessmentAHDVlCheckValuelt20').attr('disabled', true);
-          } else {
-               $('#assessmentAHDVlValue').attr('readonly', false);
-               $('#assessmentAHDVlCheckValuelt20').attr('disabled', false);
-          }
-     });
 
      function checkRejectionReason() {
           var rejectionReason = $("#rejectionReason").val();

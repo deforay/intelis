@@ -19,7 +19,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$healthFacilites = $facilitiesService->getHealthFacilities('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('cd4');
 
 
 // Sanitized values from $request object
@@ -33,13 +33,13 @@ $request = AppRegistry::get('request');
 $_COOKIE = _sanitizeInput($request->getCookieParams());
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesService->getTestingLabs('vl');
+$testingLabs = $facilitiesService->getTestingLabs('cd4');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
-$sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
+$sQuery = "SELECT * FROM r_cd4_sample_types WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'vl' AND batch_status='completed'";
+$batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'cd4' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 //check filters
 $collectionDate = '';
@@ -51,8 +51,8 @@ $status = 'no_result';
 $lastUrl1 = '';
 $lastUrl2 = '';
 if (isset($_SERVER['HTTP_REFERER'])) {
-	$lastUrl1 = strpos((string) $_SERVER['HTTP_REFERER'], "updateVlTestResult.php");
-	$lastUrl2 = strpos((string) $_SERVER['HTTP_REFERER'], "vlTestResult.php");
+	$lastUrl1 = strpos((string) $_SERVER['HTTP_REFERER'], "cd4-update-result.php");
+	$lastUrl2 = strpos((string) $_SERVER['HTTP_REFERER'], "cd4-manual-results.php");
 }
 if ($lastUrl1 != '' || $lastUrl2 != '') {
 	$collectionDate = (isset($_COOKIE['collectionDate']) && $_COOKIE['collectionDate'] != '') ? $_COOKIE['collectionDate'] : '';
@@ -73,14 +73,14 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-list-check"></em>
-			<?php echo _translate("Enter VL Result"); ?>
+			<?php echo _translate("Enter CD4 Result"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em>
 					<?php echo _translate("Home"); ?>
 				</a></li>
 			<li class="active">
-				<?php echo _translate("Enter VL Result"); ?>
+				<?php echo _translate("Enter CD4 Result"); ?>
 			</li>
 		</ol>
 	</section>
@@ -146,7 +146,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<?php echo _translate("Testing Lab"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;">
+								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select cd4 lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -308,7 +308,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#vlLab").select2({
-			placeholder: "<?php echo _translate("Select Vl Lab"); ?>"
+			placeholder: "<?php echo _translate("Select CD4 Lab"); ?>"
 		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
@@ -438,7 +438,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/vl/results/get-manual-results.php",
+			"sAjaxSource": "/cd4/results/get-manual-results.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",
