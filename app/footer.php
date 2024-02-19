@@ -322,7 +322,7 @@ if (empty($syncLatestTime)) {
 		<?php }
 		// if instance facility name is not set, let us show the modal
 
-		if (empty($_SESSION['instance']['facilityId']) || ($_SESSION['instance']['type'] == 'vluser' && ($_SESSION['instance']['labId'] == null))) {
+		if (empty($_SESSION['instance']['facilityName']) || ($_SESSION['instance']['type'] == 'vluser' && ($_SESSION['instance']['labId'] == null))) {
 		?>
 			showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
