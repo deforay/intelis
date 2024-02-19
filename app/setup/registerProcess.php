@@ -120,7 +120,7 @@ try {
     }
     header("Location:/login/login.php");
 } catch (Exception | SystemException $exc) {
-    LoggerUtility::log('error', /*$exception->getFile() . ':' . $exception->getLine()  . ':' .  $exception->getMessage(),*/ [
+    LoggerUtility::log('error', $exc->getFile() . ':' . $exc->getLine()  . ':' .  $exc->getMessage(), [
         'exception' => $exc->getMessage(),
         'line' => __LINE__,
         'file' => __FILE__
