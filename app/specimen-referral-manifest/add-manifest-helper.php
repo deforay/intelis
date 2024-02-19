@@ -59,7 +59,10 @@ try {
                 } else if ($_POST['module'] == 'tb') {
                     $db->where('tb_id', $uniqueSampleId[$j]);
                     $db->update('form_tb', $value);
-                } else if ($_POST['module'] == 'generic-tests') {
+                } else if ($_POST['module'] == 'cd4') {
+                    $db->where('cd4_id', $uniqueSampleId[$j]);
+                    $db->update('form_cd4', $value);
+                }else if ($_POST['module'] == 'generic-tests') {
                     $db->where('sample_id', $uniqueSampleId[$j]);
                     $db->update('form_generic', $value);
                 }

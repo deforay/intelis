@@ -165,7 +165,9 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 			manifestFileName = "generateHepatitisManifest.php";
 		} else if (module == 'tb') {
 			manifestFileName = "generateTBManifest.php";
-		} else if (module == 'generic-tests') {
+		} else if (module == 'cd4') {
+			manifestFileName = "generateCD4Manifest.php";
+		}else if (module == 'generic-tests') {
 			manifestFileName = "generateGenericManifest.php";
 		}
 		//alert(manifestFileName);

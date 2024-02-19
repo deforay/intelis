@@ -12,6 +12,7 @@ use App\Services\Covid19Service;
 use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\CD4Service;
 
 $title = "Move Manifest";
 
@@ -68,7 +69,11 @@ if ($module == 'vl') {
     /** @var TbService $tbService */
     $tbService = ContainerRegistry::get(TbService::class);
     $sampleTypes = $tbService->getTbSampleTypes();
-} else if ($module == 'generic-tests') {
+} else if ($module == 'cd4') {
+    /** @var CD4Service $cd4Service */
+    $cd4Service = ContainerRegistry::get(CD4Service::class);
+    $sampleTypes = $cd4Service->getCd4SampleTypes();
+}else if ($module == 'generic-tests') {
     /** @var GenericTestsService $genericService */
     $genericService = ContainerRegistry::get(GenericTestsService::class);
     $sampleTypes = $genericService->getGenericSampleTypes();
@@ -80,6 +85,7 @@ $testTypes = array(
     "covid19" => "Covid-19",
     "hepatitis" => "Hepatitis",
     "tb" => "TB",
+    "cd4" => "CD4",
     "generic-tests" => "Generic Tests"
 );
 

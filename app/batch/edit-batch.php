@@ -53,7 +53,12 @@ if ($testType == 'vl') {
 	$refTable = "form_tb";
 	$refPrimaryColumn = "tb_id";
 	$sampleTypeTable = "r_tb_sample_type";
-} elseif ($testType == 'generic-tests') {
+} elseif ($testType == 'cd4') {
+	$title = "CD4";
+	$refTable = "form_cd4";
+	$refPrimaryColumn = "cd4_id";
+	$sampleTypeTable = "r_cd4_sample_types";
+}elseif ($testType == 'generic-tests') {
 	$title = "Other Lab Tests";
 	$refTable = "form_generic";
 	$refPrimaryColumn = "sample_id";
@@ -86,6 +91,11 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $patientIdColumn = TestsService::getPatientIdColumn($_GET['type']);
 
+$resultColumn = 'result';
+if($_GET['type']=='cd4')
+{
+    $resultColumn = 'cd4_result';
+}
 
 $batchQuery = "SELECT * from batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
@@ -93,7 +103,7 @@ $batchQuery = "SELECT * from batch_details as b_d
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
 $bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
                     vl.$refPrimaryColumn,vl.$patientIdColumn,vl.facility_id,
-                    vl.result,vl.result_status,
+                    vl.$resultColumn,vl.result_status,
                     f.facility_name,f.facility_code
                     FROM $refTable as vl
                     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -114,7 +124,7 @@ $bQuery .= ") UNION
 
                     (SELECT vl.sample_code,vl.sample_batch_id,
                         vl.$refPrimaryColumn,vl.$patientIdColumn ,vl.facility_id,
-                        vl.result,vl.result_status,
+                        vl.$resultColumn,vl.result_status,
                         f.facility_name,f.facility_code
                         FROM $refTable as vl
                         INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -125,7 +135,7 @@ $bQuery .= ") UNION
                         AND (vl.reason_for_sample_rejection IS NULL
                                 OR vl.reason_for_sample_rejection like ''
                                 OR vl.reason_for_sample_rejection = 0)
-                        AND (vl.result is NULL or vl.result = '')
+                        AND (vl.$resultColumn is NULL or vl.$resultColumn = '')
                         AND vl.sample_code!=''
                         ORDER BY vl.last_modified_datetime ASC)";
 $result = $db->rawQuery($bQuery, [$id]);

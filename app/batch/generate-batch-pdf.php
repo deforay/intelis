@@ -42,6 +42,11 @@ $patientIdColumn = $testTableData['patientId'];
 $primaryKey = $testTableData['primaryKey'];
 $patientFirstName = $testTableData['patientFirstName'];
 $patientLastName = $testTableData['patientLastName'];
+$resultColumn = 'result';
+if($_GET['type']=='cd4')
+{
+    $resultColumn = 'cd4_result';
+}
 
 $worksheetName = $testName . " " . _translate('Test Worksheet');
 
@@ -197,10 +202,10 @@ if (!empty($id)) {
                 if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
                     $xplodJsonToArray = explode("_", (string) $jsonToArray[$alphaNumeric[$j]]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-                        if (isset($_GET['type']) && $_GET['type'] == 'tb') {
+                        if ((isset($_GET['type']) && $_GET['type'] == 'tb') || (isset($_GET['type']) && $_GET['type'] == 'cd4')) {
                             $sampleQuery = "SELECT sample_code,
                                                     remote_sample_code,
-                                                    result,
+                                                    $resultColumn,
                                                     is_encrypted,
                                                     $patientIdColumn,
                                                     $patientFirstName,
@@ -211,7 +216,7 @@ if (!empty($id)) {
                         } else {
                             $sampleQuery = "SELECT sample_code,
                                                     remote_sample_code,
-                                                    result,
+                                                    $resultColumn,
                                                     lot_number,is_encrypted,
                                                     CASE
                                                         WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
@@ -256,11 +261,11 @@ if (!empty($id)) {
                         if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
-                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0]['result']) . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0][$resultColumn]) . '</td>';
                         } else {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . $lotDetails . '</td>';
-                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0]['result']) . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0][$resultColumn]) . '</td>';
                         }
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
@@ -283,10 +288,10 @@ if (!empty($id)) {
                 } else {
                     $xplodJsonToArray = explode("_", (string) $jsonToArray[$j]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-                        if (isset($_GET['type']) && $_GET['type'] == 'tb') {
+                        if ((isset($_GET['type']) && $_GET['type'] == 'tb') || (isset($_GET['type']) && $_GET['type'] == 'cd4')) {
                             $sampleQuery = "SELECT sample_code,
                                             remote_sample_code,
-                                            result,is_encrypted,
+                                            $resultColumn,is_encrypted,
                                             $patientIdColumn,
                                             $patientFirstName,
                                             $patientLastName
@@ -295,7 +300,7 @@ if (!empty($id)) {
                         } else {
                             $sampleQuery = "SELECT sample_code,
                                                 remote_sample_code,
-                                                result,
+                                                $resultColumn,
                                                 lot_number,is_encrypted,
                                                 CASE
                                                     WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
@@ -336,11 +341,11 @@ if (!empty($id)) {
                         if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
-                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0]['result']) . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0][$resultColumn]) . '</td>';
                         } else {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . $lotDetails . '</td>';
-                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0]['result']) . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0][$resultColumn]) . '</td>';
                         }
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
@@ -421,7 +426,7 @@ if (!empty($id)) {
                                 WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
                                 ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
                             END AS lot_expiration_date,
-                            result,
+                            $resultColumn,
                             $patientIdColumn
                             FROM $table
                             WHERE sample_batch_id=$id";
@@ -466,11 +471,11 @@ if (!empty($id)) {
                 if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                     $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $sample['remote_sample_code'] . '</td>';
                     $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;">' . $patientIdentifier . '</td>';
-                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;">' . $sample['result'] . '</td>';
+                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;">' . $sample[$resultColumn] . '</td>';
                 } else {
                     $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $patientIdentifier . '</td>';
                     $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;">' . $lotDetails . '</td>';
-                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;">' . $sample['result'] . '</td>';
+                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;">' . $sample[$resultColumn] . '</td>';
                 }
                 $tbl .= '</tr>';
                 $tbl .= '</table>';

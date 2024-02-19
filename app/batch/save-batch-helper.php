@@ -48,6 +48,10 @@ if (isset($_POST['type'])) {
             $refTable = "form_tb";
             $refPrimaryColumn = "tb_id";
             break;
+        case 'cd4':
+            $refTable = "form_cd4";
+            $refPrimaryColumn = "cd4_id";
+            break;
         case 'generic-tests':
             $refTable = "form_generic";
             $refPrimaryColumn = "sample_id";

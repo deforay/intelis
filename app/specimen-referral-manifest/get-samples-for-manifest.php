@@ -53,7 +53,11 @@ if ($module == 'vl') {
 	$patientId = 'patient_id';
 	$sampleId  = 'tb_id';
 	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_vl.patient_id,package_id,vl.is_encrypted,pd.package_id FROM form_tb as vl ";
-} else if ($module == 'generic-tests') {
+} else if ($module == 'cd4') {
+	$patientId = 'patient_art_no';
+	$sampleId  = 'cd4_id';
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.patient_art_no,vl.cd4_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_cd4 as vl ";
+}else if ($module == 'generic-tests') {
 	$patientId = 'patient_id';
 	$sampleId  = 'sample_id';
 	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id,vl.patient_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_generic as vl ";

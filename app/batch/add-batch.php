@@ -35,6 +35,9 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 } elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
     $title = "TB";
     $sampleTypeTable = "r_tb_sample_type";
+} else if (isset($_GET['type']) && $_GET['type'] == 'cd4') {
+    $title = "CD4";
+    $sampleTypeTable = "r_cd4_sample_types";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
     $title = "Other Lab Tests";
     $sampleTypeTable = "r_generic_sample_types";

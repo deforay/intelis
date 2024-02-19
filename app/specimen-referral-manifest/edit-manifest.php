@@ -12,6 +12,7 @@ use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Services\CD4Service;
 
 $title = "Edit Specimen Referral Manifest";
 require_once APPLICATION_PATH . '/header.php';
@@ -101,6 +102,17 @@ if ($module == 'vl') {
 	/** @var TbService $tbService */
 	$tbService = ContainerRegistry::get(TbService::class);
 	$sampleTypes = $tbService->getTbSampleTypes();
+} if ($module == 'cd4') {
+	$query = "SELECT vl.sample_code,
+				vl.remote_sample_code,
+				vl.cd4_id,
+				vl.sample_package_id
+				FROM form_cd4 as vl
+				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
+	$m = ($module == 'cd4') ? 'cd4' : $module;
+	/** @var CD4Service $cd4Service */
+	$cd4Service = ContainerRegistry::get(CD4Service::class);
+	$sampleTypes = $cd4Service->getCd4SampleTypes();
 } elseif ($module == 'generic-tests') {
 	$testTypeQuery = "SELECT test_type FROM form_generic WHERE sample_package_id = ?";
 	$testType = $db->rawQueryOne($testTypeQuery, [$id]);
