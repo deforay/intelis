@@ -51,6 +51,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					vl.reason_for_vl_testing_other,
 					l.facility_name as labName,
 					l.report_format as reportFormat,
+					f.facility_attributes as vl_facility_attributes,
 					l.facility_attributes,
 					u_d.user_name as reviewedBy,
 					a_u_d.user_name as approvedBy,

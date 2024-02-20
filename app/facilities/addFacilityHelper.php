@@ -144,6 +144,12 @@ try {
 				$facilityAttributes['report_template'] = $fileName;
 			}
 		}
+		if (!empty($_POST['display_pageno_in_footer'])) {
+			$facilityAttributes['display_page_number_in_footer'] = $_POST['display_pageno_in_footer'];
+		}
+		if (!empty($_POST['display_signature_table'])) {
+			$facilityAttributes['display_signature_table'] = $_POST['display_signature_table'];
+		}
 
 		if (!empty($_POST['sampleType'])) {
 			foreach ($_POST['sampleType'] as $testType => $sampleTypes) {

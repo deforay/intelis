@@ -53,6 +53,7 @@ if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']
 	$reportFormats['generic-tests'] = $general->activeReportFormats('generic-tests');
 }
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
+$formId = $general->getGlobalConfig('vl_form');
 ?>
 <style>
 	.ms-choice {
@@ -595,6 +596,38 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 									</div>
 								</div>
 							</div>
+							<?php if ($formId == COUNTRY\CAMEROON){ ?>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="display_pageno_in_footer" class="col-lg-4 control-label">
+												<?php echo _translate("Display Page Number in Footer"); ?>
+											</label>
+											<div class="col-lg-7">
+												<select class="form-control" name='display_pageno_in_footer' id='display_pageno_in_footer' title="<?php echo _translate('Display Page Number in Footer'); ?>">
+													<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+													<option value="yes" ><?php echo _translate("Yes"); ?></option>
+													<option value="no" ><?php echo _translate("No"); ?></option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="display_signature_table" class="col-lg-4 control-label">
+												<?php echo _translate("Display Signature Table"); ?>
+											</label>
+											<div class="col-lg-7">
+												<select class="form-control" name='display_signature_table' id='display_signature_table' title="<?php echo _translate('Display Signature Table'); ?>">
+													<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+													<option value="yes" ><?php echo _translate("Yes"); ?></option>
+													<option value="no" ><?php echo _translate("No"); ?></option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							<?php } ?>
 							<div class="row" id="sampleType"></div>
 							<div class="row-item labDiv" style="display:none;">
 								<hr>

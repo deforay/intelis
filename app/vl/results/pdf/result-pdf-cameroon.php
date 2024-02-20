@@ -19,10 +19,19 @@ $resultPdfService = ContainerRegistry::get(ResultPdfService::class);
 
 $arr = $general->getGlobalConfig();
 
-$displaySignatureTable = $arr['vl_display_signature_table'] ?? 'no';
-$displayPageNoInFooter = ($arr['vl_display_page_no_in_footer'] ?? 'no') == 'yes' ? true : false;
-
 if (!empty($result)) {
+     $displayPageNoInFooter = "";
+     $displaySignatureTable = "";
+     
+     if (!empty($result['vl_facility_attributes'])) {
+          $vlFacilityAttributes = json_decode($result['vl_facility_attributes'], true);
+          if (!empty($vlFacilityAttributes) && !empty($vlFacilityAttributes['display_page_number_in_footer'])) {
+               $displayPageNoInFooter = ($vlFacilityAttributes['display_page_number_in_footer']) == 'yes' ? true : false;
+          }
+          if (!empty($vlFacilityAttributes) && !empty($vlFacilityAttributes['display_signature_table'])) {
+               $displaySignatureTable = $vlFacilityAttributes['display_signature_table'];
+          }
+     }
 
      $currentTime = DateUtility::getCurrentDateTime();
 

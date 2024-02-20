@@ -127,6 +127,12 @@ try {
 				$facilityAttributes['sampleType'][$testType] = implode(",", $sampleTypes ?? []);
 			}
 		}
+		if (!empty($_POST['display_pageno_in_footer'])) {
+			$facilityAttributes['display_page_number_in_footer'] = $_POST['display_pageno_in_footer'];
+		}
+		if (!empty($_POST['display_signature_table'])) {
+			$facilityAttributes['display_signature_table'] = $_POST['display_signature_table'];
+		}
 		// Upload Report Template
 		if (isset($sanitizedReportTemplate['name']) && $sanitizedReportTemplate['name'] != "") {
 
