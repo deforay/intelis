@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -31,18 +31,18 @@ $directoryMap = [
     'tb' => 'tb',
 ];
 
-if (isset($directoryMap[$type])) {
-    $directoryName = $directoryMap[$type];
-    $machineImportScript = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments") . DIRECTORY_SEPARATOR . $directoryName . DIRECTORY_SEPARATOR . $machineImportScript;
-} else {
+
+MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results");
+
+if (!isset($directoryMap[$type])) {
     throw new SystemException(_translate('Invalid Test Type'));
 }
 
+$directoryName = $directoryMap[$type];
+$machineImportScript = realpath(APPLICATION_PATH . "/instruments") . "/$directoryName/$machineImportScript";
 
-
-if (file_exists($machineImportScript) && !is_dir($machineImportScript)) {
-    MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results");
-    require_once($machineImportScript);
-} else {
+if (!is_file($machineImportScript)) {
     throw new SystemException(_translate("Import Script not found"));
 }
+
+require_once($machineImportScript);

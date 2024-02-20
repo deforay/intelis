@@ -16,6 +16,11 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var ResultPdfService $resultPdfService */
 $resultPdfService = ContainerRegistry::get(ResultPdfService::class);
 
+
+$arr = $general->getGlobalConfig();
+
+$displaySignatureTable = $arr['vl_display_signature_table'] ?? 'no';
+
 if (!empty($result)) {
 
      $currentTime = DateUtility::getCurrentDateTime();
@@ -119,7 +124,7 @@ if (!empty($result)) {
      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
      // set margins
-     $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 16, PDF_MARGIN_RIGHT);
+     $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 17, PDF_MARGIN_RIGHT);
      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -460,7 +465,7 @@ if (!empty($result)) {
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_reviewed_datetime']) ? $result['result_reviewed_datetime'] : $result['sample_tested_datetime']) . '</td>';
           $html .= '</tr>';
      }*/
-     if ($result['is_sample_rejected'] == 'no') {
+     if ($result['is_sample_rejected'] == 'no' && $displaySignatureTable == 'yes') {
           if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("TESTED BY") . '</td>';
@@ -482,7 +487,7 @@ if (!empty($result)) {
                $html .= '</tr>';
           }
      }
-     if (!empty($reviewedBy)) {
+     if (!empty($reviewedBy) && $displaySignatureTable == 'yes') {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("REVIEWED BY") . '</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
@@ -502,7 +507,7 @@ if (!empty($result)) {
           $html .= '<td colspan="3" style="line-height:2px;"></td>';
           $html .= '</tr>';
      }
-     if (!empty($revisedBy)) {
+     if (!empty($revisedBy) && $displaySignatureTable == 'yes') {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("REPORT REVISED BY") . '</td>';
@@ -524,7 +529,7 @@ if (!empty($result)) {
           $html .= '</tr>';
      }
 
-     if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
+     if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime']) && $displaySignatureTable == 'yes') {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("APPROVED BY") . '</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
@@ -569,9 +574,9 @@ if (!empty($result)) {
           $html .= '</tr>';
      }
 
-     $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;"><strong>' . _translate("Techniciens ") . ':</strong></td>';
-     $html .= '</tr>';
+     // $html .= '<tr>';
+     // $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;"><strong>' . _translate("Techniciens ") . ':</strong></td>';
+     // $html .= '</tr>';
 
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;"></td>';
