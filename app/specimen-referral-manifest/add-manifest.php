@@ -12,6 +12,7 @@ use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Services\CD4Service;
 
 $title = "Add New Specimen Referral Manifest";
 
@@ -66,6 +67,10 @@ if ($module == 'vl') {
 	/** @var TbService $tbService */
 	$tbService = ContainerRegistry::get(TbService::class);
 	$sampleTypes = $tbService->getTbSampleTypes();
+} else if ($module == 'cd4') {
+	/** @var CD4Service $cd4Service */
+	$cd4Service = ContainerRegistry::get(CD4Service::class);
+	$sampleTypes = $cd4Service->getCd4SampleTypes();
 } else if ($module == 'generic-tests') {
 	/** @var GenericTestsService $genService */
 	$genService = ContainerRegistry::get(GenericTestsService::class);

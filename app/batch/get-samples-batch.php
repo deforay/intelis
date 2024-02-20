@@ -29,7 +29,11 @@ $table = TestsService::getTestTableName($_POST['type']);
 $primaryKeyColumn = TestsService::getTestPrimaryKeyColumn($_POST['type']);
 $sampleTypeColumn = TestsService::getSpecimenTypeColumn($_POST['type']);
 $patientIdColumn = TestsService::getPatientIdColumn($_POST['type']);
-
+$resultColumn = 'result';
+if($_POST['type']=='cd4')
+{
+    $resultColumn = 'cd4_result';
+}
 [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$sampleReceivedStartDate, $sampleReceivedEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedAtLab'] ?? '');
 
@@ -44,7 +48,7 @@ $query = "(SELECT vl.sample_code,
                     FROM $table as vl
                     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
 
-$where[] = " (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND (vl.sample_code NOT LIKE '' AND vl.sample_code IS NOT NULL)";
+$where[] = " (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.$resultColumn is NULL or vl.$resultColumn = '') AND (vl.sample_code NOT LIKE '' AND vl.sample_code IS NOT NULL)";
 
 if (isset($_POST['batchId'])) {
     $where[] = " (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
@@ -113,7 +117,7 @@ if (isset($_POST['batchId'])) {
         AND (vl.reason_for_sample_rejection IS NULL
         OR vl.reason_for_sample_rejection like ''
         OR vl.reason_for_sample_rejection = 0)
-        AND (vl.result is NULL or vl.result = '')
+        AND (vl.$resultColumn is NULL or vl.$resultColumn = '')
         AND (vl.sample_code NOT LIKE '' AND vl.sample_code IS NOT NULL)";
     if (!empty($swhere)) {
         $squery = $squery . ' WHERE ' . implode(" AND ", $swhere);

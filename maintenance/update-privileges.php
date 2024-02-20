@@ -217,6 +217,34 @@ $sharedTbPrivileges = [
 ];
 $sharedPrivileges = array_merge($sharedPrivileges, $sharedTbPrivileges);
 
+//CD4 Module Shared Privileges
+$sharedCD4Privileges = [
+    '/batch/delete-batch.php?type=cd4' => '/batch/edit-batch.php?type=cd4',
+    '/batch/generate-batch-pdf.php?type=cd4' => '/batch/batches.php?type=cd4',
+    '/batch/add-batch-position.php?type=cd4' => '/batch/add-batch.php?type=cd4',
+    '/batch/edit-batch-position.php?type=cd4' => '/batch/edit-batch.php?type=cd4',
+    '/cd4/results/cd4-update-result.php' => '/cd4/results/cd4-manual-results.php',
+    '/cd4/results/cd4-failed-results.php' => '/cd4/results/cd4-manual-results.php',
+    '/cd4/results/email-results.php' => '/cd4/results/email-results.php',
+    '/cd4/results/email-results-confirm.php' => '/cd4/results/email-results.php',
+    '/cd4/requests/cd4-bulk-import-request.php' => '/cd4/requests/cd4-add-request.php',
+    '/cd4/reference/cd4-sample-rejection-reasons.php' => '/cd4/reference/cd4-sample-type.php',
+    '/cd4/reference/add-cd4-sample-rejection-reasons.php' => '/cd4/reference/cd4-sample-type.php',
+    'edit-cd4-sample-rejection-reasons.php' => '/cd4/reference/cd4-sample-type.php',
+    '/cd4/reference/add-cd4-sample-type.php' => '/cd4/reference/cd4-sample-type.php',
+    '/cd4/reference/edit-cd4-sample-type.php' => '/cd4/reference/cd4-sample-type.php',
+    '/cd4/reference/cd4-test-reasons.php' => '/cd4/reference/cd4-sample-type.php',
+    '/cd4/reference/add-cd4-test-reasons.php' => '/cd4/reference/cd4-sample-type.php',
+    '/cd4/reference/edit-cd4-test-reasons.php' => '/cd4/reference/cd4-sample-type.php',
+    '/cd4/reference/cd4-results.php' => '/cd4/reference/cd4-sample-type.php',
+    '/cd4/reference/add-cd4-results.php' => '/cd4/reference/cd4-sample-type.php',
+    '/cd4/reference/edit-cd4-results.php' => '/cd4/reference/cd4-sample-type.php',
+    '/cd4/management/cd4TestingTargetReport.php' => '/cd4/management/cd4MonthlyThresholdReport.php',
+    '/cd4/management/cd4SuppressedTargetReport.php' => '/cd4/management/cd4MonthlyThresholdReport.php'
+];
+$sharedPrivileges = array_merge($sharedPrivileges, $sharedCD4Privileges);
+
+
 $sql = "UPDATE `privileges` SET `shared_privileges` = NULL";
 $db->rawQuery($sql);
 

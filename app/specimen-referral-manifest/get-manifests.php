@@ -38,7 +38,11 @@ switch ($_POST['module']) {
         $tableName = "form_eid";
         $primaryKey = "eid_id";
         break;
-    case 'C19':
+    case 'cd4':
+        $module = 'cd4';
+        $tableName = "form_cd4";
+        $primaryKey = "cd4_id";
+        break;
     case 'covid19':
         $module = 'covid19';
         $tableName = "form_covid19";

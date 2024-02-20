@@ -188,4 +188,18 @@ class CD4Service extends AbstractTestService
             return max($id, 0);
         }
     }
+
+    public function getCd4SampleTypes($updatedDateTime = null): array
+    {
+        $query = "SELECT * FROM r_cd4_sample_types where status='active' ";
+        if ($updatedDateTime) {
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        }
+        $results = $this->db->rawQuery($query);
+        $response = [];
+        foreach ($results as $row) {
+            $response[$row['sample_id']] = $row['sample_name'];
+        }
+        return $response;
+    }
 }

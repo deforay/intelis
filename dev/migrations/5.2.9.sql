@@ -228,18 +228,24 @@ CREATE TABLE IF NOT EXISTS `r_cd4_test_reasons` (
 -- Brindha 08-Feb-2024 version 5.2.9
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display VL Log Result', 'vl_display_log_result', 'yes', 'vl', 'no', NULL, NULL, 'active');
 
+
 -- Jeyabanu 09-Feb-2024
+
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('cd4-requests', 'cd4', 'CD4 Requests'), ('cd4-results', 'cd4', 'CD4 Results'), ('cd4-reports', 'cd4', 'CD4 Reports');
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/cd4/requests/cd4-add-request.php', NULL, 'Add', NULL, 'always');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/cd4/requests/cd4-edit-request.php', NULL, 'Edit', NULL, 'always');
 
+
 -- Jeyabanu 12-Feb-2024
+
 ALTER TABLE `form_cd4` CHANGE `result` `cd4_result` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_cd4` CHANGE `result_percentage` `cd4_result_percentage` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-results', '/cd4/results/cd4-manual-results.php', '[\"/cd4/results/cd4-update-result.php\", \"/cd4/results/cd4-failed-results.php\"]', 'Enter Result Manually', NULL, 'always');
 
+
 -- Jeyabanu 13-Feb-2024
+
 ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','cd4','generic-tests') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','cd4','generic-tests') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 
@@ -253,10 +259,24 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'View Test Request', '/cd4/requests/cd4-requests.php', '/cd4/requests/cd4-edit-request.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlRequestMenu', '219', '176', 'active', CURRENT_TIMESTAMP);
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'Add New Request', '/cd4/requests/cd4-add-request.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu addVlRequestMenu', '219', '176', 'active', CURRENT_TIMESTAMP);
 
+
 -- Jeyabanu 14-Feb-2024
+
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'cd4', 'no', 'CD4 Config', NULL, NULL, 'always', 'fa-solid fa-eyedropper', 'yes', 'treeview tb-reference-manage', '2', '14', 'active', CURRENT_TIMESTAMP);
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', NULL, 'no', 'Sample Type', '/cd4/reference/cd4-sample-type.php', '/cd4/reference/add-cd4-sample-type.php,/cd4/reference/edit-cd4-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4-sample-type', '224', '178', 'active', CURRENT_TIMESTAMP);
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'Enter Result Manually', '/cd4/results/cd4-manual-results.php', '/cd4/results/cd4-update-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlTestResultMenu', '220', '180', 'active', CURRENT_TIMESTAMP), (NULL, 'cd4', NULL, 'no', 'Manage Results Status', '/cd4/results/cd4-result-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchCodeMenu', '220', '181', 'active', CURRENT_TIMESTAMP);
+INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'Manage Batch', '/batch/batches.php?type=cd4', '/batch/add-batch.php?type=cd4,/batch/edit-batch.php?type=cd4,/batch/add-batch-position.php?type=cd4,/batch/edit-batch-position.php?type=cd4', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4BatchCodeMenu', '219', '183', 'active', CURRENT_TIMESTAMP);
+INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'CD4 Manifest', '/specimen-referral-manifest/view-manifests.php?t=cd4', '/specimen-referral-manifest/add-manifest.php?t=cd4,/specimen-referral-manifest/edit-manifest.php?t=cd4,/specimen-referral-manifest/move-manifest.php?t=cd4', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu cd4BatchCodeMenu', '219', '184', 'active', CURRENT_TIMESTAMP);
+
+
+-- Jeyabanu 16-Feb-2024
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/specimen-referral-manifest/add-manifest.php?t=cd4', NULL, 'Add CD4 Manifests', NULL, 'always'), (NULL, 'cd4-requests', '/specimen-referral-manifest/edit-manifest.php?t=cd4', NULL, 'Edit CD4 Manifests', NULL, 'always');
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('cd4-batches', 'cd4', 'CD4 Batch Management');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-batches', '/batch/batches.php?type=cd4', '[\r\n    \"/batch/generate-batch-pdf.php?type=cd4\"\r\n]', 'View Batches', NULL, 'always'), (NULL, 'cd4-batches', '/batch/add-batch.php?type=cd4', '[\r\n    \"/batch/add-batch-position.php?type=cd4\"\r\n]', 'Add Batch', NULL, 'always');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-batches', '/batch/edit-batch.php?type=cd4', '[ "/batch/delete-batch.php?type=cd4", "/batch/edit-batch-position.php?type=cd4" ]', 'Edit Batches', NULL, 'always');
+ALTER TABLE `form_cd4` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
+
 
 
 -- Amit 20-Feb-2024

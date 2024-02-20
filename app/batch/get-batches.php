@@ -46,6 +46,9 @@ try {
     } else if (isset($_POST['type']) && $_POST['type'] == 'tb') {
         $refTable = "form_tb";
         $refPrimaryColumn = "tb_id";
+    } else if (isset($_POST['type']) && $_POST['type'] == 'cd4') {
+        $refTable = "form_cd4";
+        $refPrimaryColumn = "cd4_id";
     } else if (isset($_POST['type']) && $_POST['type'] == 'generic-tests') {
         $refTable = "form_generic";
         $refPrimaryColumn = "sample_id";
