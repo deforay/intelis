@@ -271,9 +271,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                        <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" id="genderFemale" name="gender" value="female" title="<?= _translate('Please choose gender'); ?>"><?= _translate('Female'); ?>
                                                        </label>&nbsp;&nbsp;
-                                                       <!--<label class="radio-inline" style="margin-left:0px;">
-                                                       <input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender">Not Recorded
-                                                  </label>-->
+                                                       <label class="radio-inline" style="margin-left:0px;">
+                                                            <input type="radio" id="genderNotRecorded" name="gender" value="unreported" title="<?= _translate('Please choose gender'); ?>"><?= _translate('Unreported'); ?>
+                                                       </label>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">

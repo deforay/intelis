@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
@@ -57,7 +57,7 @@ if ($module == 'vl') {
 	$patientId = 'patient_art_no';
 	$sampleId  = 'cd4_id';
 	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.patient_art_no,vl.cd4_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_cd4 as vl ";
-}else if ($module == 'generic-tests') {
+} else if ($module == 'generic-tests') {
 	$patientId = 'patient_id';
 	$sampleId  = 'sample_id';
 	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id,vl.patient_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_generic as vl ";
@@ -67,16 +67,10 @@ $query .= " LEFT JOIN package_details as pd ON vl.sample_package_id = pd.package
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) ";
 if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) != '') {
-	$dateRange = explode("to", (string) $_POST['daterange']);
-	//print_r($dateRange);die;
-	if (isset($dateRange[0]) && trim($dateRange[0]) != "") {
-		$startDate = DateUtility::isoDateFormat(trim($dateRange[0]));
-	}
-	if (isset($dateRange[1]) && trim($dateRange[1]) != "") {
-		$endDate = DateUtility::isoDateFormat(trim($dateRange[1]));
-	}
 
-	$where[] = "DATE(vl.sample_collection_date) >= '" . $startDate . "' AND DATE(vl.sample_collection_date) <= '" . $endDate . "'";
+	[$startDate, $endDate] = DateUtility::convertDateRange($_POST['daterange']);
+
+	$where[] = " DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate' ";
 }
 
 if (!empty($_SESSION['facilityMap'])) {
@@ -84,11 +78,11 @@ if (!empty($_SESSION['facilityMap'])) {
 }
 
 if (!empty($_POST['testingLab']) && is_numeric($_POST['testingLab'])) {
-	$where[] = " (vl.lab_id = " . $_POST['testingLab'] . " OR (vl.lab_id like '' OR vl.lab_id is null OR vl.lab_id = 0))";
+	$where[] = " vl.lab_id = " . $_POST['testingLab'];
 }
 
-if (!empty($_POST['facility'])) {
-	$where[] = " (facility_id = " . $_POST['facility'] . "  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
+if (!empty($_POST['testingLab']) && is_numeric($_POST['facility'])) {
+	$where[] = " facility_id = " . $_POST['facility'];
 }
 
 //if (!empty($_POST['operator'])) {
@@ -101,16 +95,16 @@ if (!empty($_POST['testType'])) {
 if (!empty($_POST['pkgId'])) {
 	$where[] = " (pd.package_id = '" . $_POST['pkgId'] . "' OR pd.package_id IS NULL OR pd.package_id = '')";
 } else {
-	$where[] = "(vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
+	$where[] = " (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
 }
 if (!empty($_POST['sampleType'])) {
-	$where[] = " (specimen_type IN(" . $_POST['sampleType'] . ")  OR (specimen_type like '' OR specimen_type is null OR specimen_type = 0))";
+	$where[] = " specimen_type IN(" . $_POST['sampleType'] . ") ";
 }
 if (!empty($where)) {
 	$query .= " WHERE " . implode(" AND ", $where);
 }
 $query .= " ORDER BY vl.request_created_datetime ASC";
- //die($query);
+
 $result = $db->rawQuery($query);
 $key = (string) $general->getGlobalConfig('key');
 
