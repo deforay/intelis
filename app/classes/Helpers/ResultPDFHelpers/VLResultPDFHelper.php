@@ -19,9 +19,9 @@ class VLResultPDFHelper extends Fpdi
     private bool $enableFooter = true; // Default is true to render footer
 
 
-    public function __construct($orientation = 'P', $unit = 'mm', $format = 'A4', $unicode = true, $encoding = 'UTF-8', $diskcache = false, $pdfTemplatePath = null, $enableFooter = true)
+    public function __construct($orientation = 'P', $unit = 'mm', $format = 'A4', $unicode = true, $encoding = 'UTF-8', $diskCache = false, $pdfTemplatePath = null, $enableFooter = true)
     {
-        parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache);
+        parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskCache);
         $this->pdfTemplatePath = $pdfTemplatePath ?? null;
         $this->enableFooter = $enableFooter;
     }
@@ -118,10 +118,10 @@ class VLResultPDFHelper extends Fpdi
         if ($this->enableFooter) {
             // Position at 15 mm from bottom
             // Page number
-            $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . ' of ' . $this->getAliasNbPages(), 0, false, 'C', 0);
+            $this->Cell(0, 10, _translate('Page') . ' ' . $this->getAliasNumPage() . ' ' . _translate('of') . ' ' . $this->getAliasNbPages(), 0, false, 'C', 0);
         }
         if (!empty($this->trainingTxt)) {
-            $this->writeHTML('<span Style="color:red">' . strtoupper((string) $this->trainingTxt) . '</span>', true, false, true, false, 'M');
+            $this->writeHTML('<span style="color:red">' . strtoupper((string) $this->trainingTxt) . '</span>', true, false, true, false, 'M');
         }
     }
 }

@@ -20,6 +20,7 @@ $resultPdfService = ContainerRegistry::get(ResultPdfService::class);
 $arr = $general->getGlobalConfig();
 
 $displaySignatureTable = $arr['vl_display_signature_table'] ?? 'no';
+$displayPageNoInFooter = ($arr['vl_display_page_no_in_footer'] ?? 'no') == 'yes' ? true : false;
 
 if (!empty($result)) {
 
@@ -100,7 +101,7 @@ if (!empty($result)) {
           }
      }
      // create new PDF document
-     $pdf = new VLResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, $reportTemplatePath);
+     $pdf = new VLResultPDFHelper(orientation: PDF_PAGE_ORIENTATION, unit: PDF_UNIT, format: PDF_PAGE_FORMAT, unicode: true, encoding: 'UTF-8', diskCache: false, pdfTemplatePath: $reportTemplatePath, enableFooter: $displayPageNoInFooter);
 
      if (empty($reportTemplatePath)) {
           if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
