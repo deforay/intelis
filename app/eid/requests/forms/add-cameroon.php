@@ -709,35 +709,35 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $.unblockUI();
     }
 
-    // function getfacilityProvinceDetails(obj) {
-    //     $.blockUI();
-    //     //check facility name
-    //     var cName = $("#facilityId").val();
-    //     var pName = $("#province").val();
-    //     if (cName != '' && provinceName && facilityName) {
-    //         provinceName = false;
-    //     }
-    //     if (cName != '' && facilityName) {
-    //         $.post("/includes/siteInformationDropdownOptions.php", {
-    //                 cName: cName,
-    //                 testType: 'eid'
-    //             },
-    //             function(data) {
-    //                 if (data != "") {
-    //                     details = data.split("###");
-    //                     $("#province").html(details[0]);
-    //                     $("#district").html(details[1]);
-    //                     $("#clinicianName").val(details[2]);
-    //                 }
-    //             });
-    //     } else if (pName == '' && cName == '') {
-    //         provinceName = true;
-    //         facilityName = true;
-    //         $("#province").html("<?php echo $province; ?>");
-    //         $("#facilityId").html("<?php echo $facility; ?>");
-    //     }
-    //     $.unblockUI();
-    // }
+    function getfacilityProvinceDetails(obj) {
+        $.blockUI();
+        //check facility name
+        var cName = $("#facilityId").val();
+        var pName = $("#province").val();
+        if (cName != '' && provinceName && facilityName) {
+            provinceName = false;
+        }
+        if (cName != '' && facilityName) {
+            $.post("/includes/siteInformationDropdownOptions.php", {
+                    cName: cName,
+                    testType: 'eid'
+                },
+                function(data) {
+                    if (data != "") {
+                        details = data.split("###");
+                        $("#province").html(details[0]);
+                        $("#district").html(details[1]);
+                        $("#clinicianName").val(details[2]);
+                    }
+                });
+        } else if (pName == '' && cName == '') {
+            provinceName = true;
+            facilityName = true;
+            $("#province").html("<?php echo $province; ?>");
+            $("#facilityId").html("<?php echo $facility; ?>");
+        }
+        $.unblockUI();
+    }
 
 
     function validateNow() {
