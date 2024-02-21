@@ -272,7 +272,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                             <input type="radio" id="genderFemale" name="gender" value="female" title="<?= _translate('Please choose gender'); ?>"><?= _translate('Female'); ?>
                                                        </label>&nbsp;&nbsp;
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" id="genderNotRecorded" name="gender" value="unreported" title="<?= _translate('Please choose gender'); ?>"><?= _translate('Unreported'); ?>
+                                                            <input type="radio" id="genderUnreported" name="gender" value="unreported" title="<?= _translate('Please choose gender'); ?>"><?= _translate('Unreported'); ?>
                                                        </label>
                                                   </div>
                                              </div>
@@ -999,7 +999,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      $("input:radio[name=gender]").click(function() {
-          if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
+          if ($(this).val() == 'male' || $(this).val() == 'unreported') {
                $('.femaleSection').hide();
                $('input[name="breastfeeding"]').prop('checked', false);
                $('input[name="patientPregnant"]').prop('checked', false);

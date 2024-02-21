@@ -227,6 +227,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <option value=''> <?= _translate("-- Select --"); ?> </option>
                                                 <option value='male' <?php echo ($covid19Info['patient_gender'] == 'male') ? "selected='selected'" : ""; ?>> <?= _translate("Male"); ?> </option>
                                                 <option value='female' <?php echo ($covid19Info['patient_gender'] == 'female') ? "selected='selected'" : ""; ?>> <?= _translate("Female"); ?> </option>
+                                                <option value='unreported' <?php echo ($covid19Info['patient_gender'] == 'unreported') ? "selected='selected'" : ""; ?>> <?= _translate('Unreported'); ?> </option>
                                                 <option value='other' <?php echo ($covid19Info['patient_gender'] == 'other') ? "selected='selected'" : ""; ?>> <?= _translate("Other"); ?> </option>
 
                                             </select>

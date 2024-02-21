@@ -243,7 +243,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value=''> <?= _translate("-- Select --"); ?> </option>
                                                 <option value='male'> <?= _translate("Male"); ?> </option>
                                                 <option value='female'> <?= _translate("Female"); ?> </option>
-                                                <option value='other'> <?= _translate("Other"); ?> </option>
+                                                <option value='unreported'> <?= _translate('Unreported'); ?> </option>
+                                                <!-- <option value='other'> < ?= _translate("Other"); ?> </option> -->
 
                                             </select>
                                         </td>

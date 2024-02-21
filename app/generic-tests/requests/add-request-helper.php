@@ -104,7 +104,7 @@ try {
     //   $db=$db->where('facility_id',$_POST['facilityId']);
     //   $id=$db->update($fDetails,$fData);
     //}
-    if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {
+    if (isset($_POST['gender']) && (trim((string) $_POST['gender']) == 'male' || trim((string) $_POST['gender']) == 'unreported')) {
         $_POST['patientPregnant'] = "N/A";
         $_POST['breastfeeding'] = "N/A";
     }

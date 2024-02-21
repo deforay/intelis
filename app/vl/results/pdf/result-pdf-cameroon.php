@@ -185,7 +185,7 @@ if (!empty($result)) {
      $result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date'] ?? '', true, 'd/M/Y H:i:s');
 
      if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
-          $result['patient_gender'] = 'not reported';
+          $result['patient_gender'] = 'Unreported';
      }
 
      $smileyContent = '';

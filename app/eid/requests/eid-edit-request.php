@@ -349,6 +349,19 @@ require_once($fileArray[$arr['vl_form']]);
             $('.ui-datepicker-calendar').show();
         });
 
+        $('#nextAppointmentDate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            onSelect: function() {
+                $(this).change();
+            },
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
+            timeFormat: "HH:mm",
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
 
         $('.dateTime').datetimepicker({
             changeMonth: true,

@@ -198,6 +198,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
                                                 <option value='male'> <?= _translate('Male'); ?> </option>
                                                 <option value='female'> <?= _translate('Female'); ?> </option>
+                                                <option value='unreported'> <?= _translate('Unreported'); ?> </option>
 
                                             </select>
                                         </td>
@@ -256,7 +257,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row" style="width:18% !important"><?= _translate('Date of next appointment'); ?> </th>
                                         <td>
-                                            <input class="form-control date" type="text" name="nextAppointmentDate" id="nextAppointmentDate" placeholder="<?= _translate('Please enter date of next appointment'); ?>" />
+                                            <input class="form-control" type="text" name="nextAppointmentDate" id="nextAppointmentDate" placeholder="<?= _translate('Please enter date of next appointment'); ?>" />
                                         </td>
                                         <th scope="row" style="width:18% !important"><?= _translate('Mode of Delivery'); ?> </th>
                                         <td>
