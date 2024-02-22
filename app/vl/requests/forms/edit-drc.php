@@ -112,11 +112,11 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 											</label></td>
 										<td><input type="text" class="form-control" id="serialNo" name="serialNo" placeholder="<?= _translate("Recency ID"); ?>" title="<?= _translate("Recency ID"); ?>" style="width:100%;" value="<?php echo $vlQueryInfo['external_sample_code']; ?>" /></td>
 										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
-										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>"><label for="">Date de réception de léchantillon <span class="mandatory">*</span></label></td>
-										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>">
-											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo ($vlQueryInfo['sample_received_at_lab_datetime'] != '' && $vlQueryInfo['sample_received_at_lab_datetime'] != null) ? $vlQueryInfo['sample_received_at_lab_datetime'] : date('d-M-Y H:i:s'); ?>" style="width:100%;" />
-										</td>
-										<?php }else{ ?>
+											<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>"><label for="">Date de réception de léchantillon <span class="mandatory">*</span></label></td>
+											<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>">
+												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo ($vlQueryInfo['sample_received_at_lab_datetime'] != '' && $vlQueryInfo['sample_received_at_lab_datetime'] != null) ? $vlQueryInfo['sample_received_at_lab_datetime'] : date('d-M-Y H:i:s'); ?>" style="width:100%;" />
+											</td>
+										<?php } else { ?>
 											<td></td>
 											<td></td>
 										<?php } ?>
@@ -696,19 +696,6 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 			$('.ui-datepicker-calendar').show();
 		});
 
-
-		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-		if ($("#sampleDispatchedDate").val() == "")
-			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-
-		$('#sampleDispatchedDate').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			minDate: minDate,
-			startDate: minDate,
-		});
 		checkreasonForVLTesting();
 	});
 

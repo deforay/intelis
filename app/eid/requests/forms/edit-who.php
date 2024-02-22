@@ -185,7 +185,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <tr>
                                         <th scope="row" class="labels"><label for="childDob">Date of Birth </label></th>
                                         <td>
-                                            <input type="text" class="form-control" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
                                         </td>
                                         <th scope="row" class="labels"><label for="childGender">Gender <span class="mandatory">*</span> </label></th>
                                         <td>
@@ -403,7 +403,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </td>
                                             <td><label for="" class="labels">Testing Platform </label></td>
                                             <td><select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
-                                                    <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'].'##'.$eidInfo['instrument_id'], '-- Select --'); ?>
+                                                    <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         </tr>
@@ -701,43 +701,6 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
             }
         });
 
-        $('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "+1Y",
-            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function(date) {
-                var dt2 = $('#sampleDispatchedDate');
-                var startDate = $(this).datetimepicker('getDate');
-                var minDate = $(this).datetimepicker('getDate');
-                //dt2.datetimepicker('setDate', minDate);
-                startDate.setDate(startDate.getDate() + 1000000);
-                dt2.datetimepicker('option', 'maxDate', "+1Y");
-                dt2.datetimepicker('option', 'minDate', minDate);
-                dt2.datetimepicker('option', 'minDateTime', minDate);
-                //dt2.val($(this).val());
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-
-
-        var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-        var collectDate = $("#sampleCollectionDate").toString();
-        var dispatchDate = $("#sampleDispatchedDate").toString();
-        if ($("#sampleDispatchedDate").val() == "" || (collectDate > dispatchDate))
-            $("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-
-        $('#sampleDispatchedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            minDate: minDate,
-            startDate: minDate,
-        });
         $('#labId').select2({
             width: '100%',
             placeholder: "Select Testing Lab"

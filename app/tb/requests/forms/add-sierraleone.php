@@ -828,7 +828,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 			maxDate: "Today",
 			yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(dateText, inst) {
-				//$("#sampleCollectionDate").datepicker("option", "minDate", $("#dob").datepicker("getDate"));
+				//$("#sampleCollectionDate").datetimepicker("option", "minDate", $("#dob").datepicker("getDate"));
 				$(this).change();
 			}
 		}).click(function() {

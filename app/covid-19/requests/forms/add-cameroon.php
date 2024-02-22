@@ -1131,7 +1131,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 $(this).change();
             },
             dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {

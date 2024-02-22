@@ -849,7 +849,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                 $(this).change();
             },
             dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {

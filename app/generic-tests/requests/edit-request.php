@@ -1052,23 +1052,6 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		});
 
 
-		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-		var collectDate = $("#sampleCollectionDate").toString();
-		var dispatchDate = $("#sampleDispatchedDate").toString();
-		if (collectDate > dispatchDate) {
-			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		}
-
-		$('#sampleDispatchedDate').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			minDate: minDate,
-			startDate: minDate,
-		});
-
-
 		autoFillFocalDetails();
 		$("#specimenType").select2({
 			width: '100%',

@@ -525,7 +525,7 @@ $patientProvince = $patientProvinceInfo[0];
                                                                                 <option value="Sure Status® COVID-19 Antigen Card Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'Sure Status® COVID-19 Antigen Card Test') ? "selected='selected'" : ""; ?>>Sure Status® COVID-19 Antigen Card Test</option>
                                                                                 <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>Others</option>
                                                                             <?php } else { ?>
-                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'].'##'.$rows['instrument_id'], '-- Select --');
+                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'] . '##' . $rows['instrument_id'], '-- Select --');
                                                                             } ?>
                                                                         </select>
                                                                     </td>
@@ -916,21 +916,6 @@ $patientProvince = $patientProvinceInfo[0];
         });
 
 
-        var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-        var collectDate = $("#sampleCollectionDate").toString();
-        var dispatchDate = $("#sampleDispatchedDate").toString();
-        if ($("#sampleDispatchedDate").val() == "" || (collectDate > dispatchDate))
-            $("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-
-        $('#sampleDispatchedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            minDate: minDate,
-            startDate: minDate,
-        });
-
         $('.expDate').datepicker({
             changeMonth: true,
             changeYear: true,
@@ -1076,7 +1061,6 @@ $patientProvince = $patientProvinceInfo[0];
                 $(this).change();
             },
             dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {

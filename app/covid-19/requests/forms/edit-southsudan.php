@@ -478,7 +478,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                                 <option value="Sure Status® COVID-19 Antigen Card Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'Sure Status® COVID-19 Antigen Card Test') ? "selected='selected'" : ""; ?>>Sure Status® COVID-19 Antigen Card Test</option>
                                                                                 <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>Others</option>
                                                                             <?php } else { ?>
-                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'].'##'.$rows['instrument_id'], '-- Select --');
+                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'] . '##' . $rows['instrument_id'], '-- Select --');
                                                                             } ?>
                                                                         </select>
                                                                     </td>
@@ -818,44 +818,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
         $("#labId,#facilityId,#sampleCollectionDate").trigger('change');
 
-        $('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function(date) {
-                var dt2 = $('#sampleDispatchedDate');
-                var startDate = $(this).datetimepicker('getDate');
-                var minDate = $(this).datetimepicker('getDate');
-                //dt2.datetimepicker('setDate', minDate);
-                startDate.setDate(startDate.getDate() + 1000000);
-                dt2.datetimepicker('option', 'maxDate', "Today");
-                dt2.datetimepicker('option', 'minDate', minDate);
-                dt2.datetimepicker('option', 'minDateTime', minDate);
-                //dt2.val($(this).val());
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-
-
-        var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-        var collectDate = $("#sampleCollectionDate").toString();
-        var dispatchDate = $("#sampleDispatchedDate").toString();
-        if ($("#sampleDispatchedDate").val() == "" || (collectDate > dispatchDate))
-            $("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-
-        $('#sampleDispatchedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            minDate: minDate,
-            maxDate: "Today",
-            startDate: minDate,
-        });
 
         $('.expDate').datepicker({
             changeMonth: true,
@@ -870,6 +832,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
+
+
         $(".select2").select2();
         $(".select2").select2({
             tags: true
@@ -1000,7 +964,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                 $(this).change();
             },
             dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {

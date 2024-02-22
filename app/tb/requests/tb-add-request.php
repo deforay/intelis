@@ -94,7 +94,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 $testPlatformList = [];
 foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name'].'##'.$row['instrument_id']] = $row['machine_name'];
+    $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
 $fileArray = [
@@ -119,7 +119,6 @@ require_once($fileArray[$arr['vl_form']]);
                 $(this).change();
             },
             dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
@@ -150,7 +149,7 @@ require_once($fileArray[$arr['vl_form']]);
             maxDate: "Today",
             yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
             onSelect: function(dateText, inst) {
-                $("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
+                $("#sampleCollectionDate").datetimepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
                 $(this).change();
             }
         }).click(function() {

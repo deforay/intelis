@@ -747,22 +747,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		});
 
 
-		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-		var collectDate = $("#sampleCollectionDate").toString();
-		var dispatchDate = $("#sampleDispatchedDate").toString();
-		if (collectDate > dispatchDate) {
-			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		}
 
-		$('#sampleDispatchedDate').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			minDate: minDate,
-			maxDate: "Today",
-			startDate: minDate,
-		});
 
 		$("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
 			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {

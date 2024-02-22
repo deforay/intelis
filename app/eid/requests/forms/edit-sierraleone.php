@@ -203,7 +203,7 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" class="labels"><label for="childDob">Date of Birth <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control isRequired date" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
                                         </td>
                                         <th scope="row" class="labels"><label for="childGender">Gender <span class="mandatory">*</span> </label></th>
                                         <td>
@@ -237,8 +237,9 @@ $aResult = $db->query($aQuery);
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes" <?php echo ($eidInfo['mother_treatment'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value="no" <?php echo ($eidInfo['mother_treatment'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
-                                            </select></td>
-                                            <th scope="row" class="labels motherRegimen" style="display:none;">Mother's Regimen</th>
+                                            </select>
+                                        </td>
+                                        <th scope="row" class="labels motherRegimen" style="display:none;">Mother's Regimen</th>
                                         <td class="motherRegimen" style="display:none;">
                                             <select class="form-control" id="motherRegimen" name="motherRegimen" title="Please choose Mother's ART Regimen" style="width:100%;" onchange="checkMotherARTRegimenValue();">
                                                 <option value="">-- Select --</option>
@@ -414,11 +415,11 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" class="labels">Sample Dispatcher Name</th>
                                         <td>
-                                            <input class="form-control" type="text" name="sampleDispatcherName" id="sampleDispatcherName" placeholder="Sample Dispatcher Name" value="<?= htmlspecialchars((string) $eidInfo['sample_dispatcher_name']); ?>"/>
+                                            <input class="form-control" type="text" name="sampleDispatcherName" id="sampleDispatcherName" placeholder="Sample Dispatcher Name" value="<?= htmlspecialchars((string) $eidInfo['sample_dispatcher_name']); ?>" />
                                         </td>
                                         <th scope="row" class="labels">Sample Dispatcher Phone</th>
                                         <td>
-                                            <input class="form-control phone-number" type="text" name="sampleDispatcherPhone" id="sampleDispatcherPhone" placeholder="Sample Dispatcher Phone" value="<?= htmlspecialchars((string) $eidInfo['sample_dispatcher_phone']); ?>"/>
+                                            <input class="form-control phone-number" type="text" name="sampleDispatcherPhone" id="sampleDispatcherPhone" placeholder="Sample Dispatcher Phone" value="<?= htmlspecialchars((string) $eidInfo['sample_dispatcher_phone']); ?>" />
                                         </td>
 
                                     </tr>
@@ -437,7 +438,7 @@ $aResult = $db->query($aQuery);
 
                                             <td><label for="" class="labels">Testing Platform </label></td>
                                             <td><select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
-                                                    <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'].'##'.$eidInfo['instrument_id'], '-- Select --'); ?>
+                                                    <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                             <td class="labels"><label>Machine used to test </label></td>
@@ -836,43 +837,7 @@ $aResult = $db->query($aQuery);
             }
         });
 
-        $('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function(date) {
-                var dt2 = $('#sampleDispatchedDate');
-                var startDate = $(this).datetimepicker('getDate');
-                var minDate = $(this).datetimepicker('getDate');
-                //dt2.datetimepicker('setDate', minDate);
-                startDate.setDate(startDate.getDate() + 1000000);
-                dt2.datetimepicker('option', 'maxDate', "Today");
-                dt2.datetimepicker('option', 'minDate', minDate);
-                dt2.datetimepicker('option', 'minDateTime', minDate);
-                //dt2.val($(this).val());
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
 
-
-        var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-        var collectDate = $("#sampleCollectionDate").toString();
-        var dispatchDate = $("#sampleDispatchedDate").toString();
-        if ($("#sampleDispatchedDate").val() == "" || (collectDate > dispatchDate))
-            $("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-
-        $('#sampleDispatchedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            minDate: minDate,
-            startDate: minDate,
-        });
         $('#labId').select2({
             width: '100%',
             placeholder: "Select Testing Lab"

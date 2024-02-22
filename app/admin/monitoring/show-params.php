@@ -78,3 +78,4 @@ $userResponse = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'res
     }
 </script>
 <?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
+<?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>

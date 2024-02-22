@@ -935,22 +935,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		});
 
 
-		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-		var collectDate = $("#sampleCollectionDate").toString();
-		var dispatchDate = $("#sampleDispatchedDate").toString();
-		if (collectDate > dispatchDate) {
-			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		}
 
-		$('#sampleDispatchedDate').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			minDate: minDate,
-			maxDate: "Today",
-			startDate: minDate,
-		});
 
 
 		$('#facilityId').select2({

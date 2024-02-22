@@ -96,6 +96,7 @@ if (empty($syncLatestTime)) {
 <script src="/assets/js/highcharts-offline-exporting.js"></script>
 <script src="/assets/js/highcharts-accessibility.js"></script>
 <?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
+<?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>
 
 <script type="text/javascript">
 	Highcharts.setOptions({

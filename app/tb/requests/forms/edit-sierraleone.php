@@ -866,21 +866,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 		});
 
 
-		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-		var collectDate = $("#sampleCollectionDate").toString();
-		var dispatchDate = $("#sampleDispatchedDate").toString();
-		if (collectDate > dispatchDate) {
-			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		}
 
-		$('#sampleDispatchedDate').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			minDate: minDate,
-			startDate: minDate,
-		});
 
 		$("#firstSputumSamplesCollectionDate").datepicker({
 			changeMonth: true,
@@ -889,7 +875,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 			maxDate: "Today",
 			yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(dateText, inst) {
-				//$("#sampleCollectionDate").datepicker("option", "minDate", $("#dob").datepicker("getDate"));
+				//$("#sampleCollectionDate").datetimepicker("option", "minDate", $("#dob").datepicker("getDate"));
 				$(this).change();
 			}
 		}).click(function() {
