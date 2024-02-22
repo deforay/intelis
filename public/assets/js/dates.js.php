@@ -147,13 +147,13 @@
             });
 
             $('#sampleReceivedDate').on('change', function() {
-                $('#sampleTestedDateTime').val('');
+                $('#sampleTestedDateTime, #sampleTestingDateAtLab').val('');
                 var selectedDate = $(this).datetimepicker('getDate');
-                $('#sampleTestedDateTime').datetimepicker('option', 'minDate', selectedDate);
+                $('#sampleTestedDateTime, #sampleTestingDateAtLab').datetimepicker('option', 'minDate', selectedDate);
             });
         }
-        if ($('#sampleTestedDateTime').length) {
-            $('#sampleTestedDateTime').datetimepicker({
+        if ($('#sampleTestedDateTime, #sampleTestingDateAtLab').length) {
+            $('#sampleTestedDateTime, #sampleTestingDateAtLab').datetimepicker({
                 changeMonth: true,
                 changeYear: true,
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
@@ -169,7 +169,7 @@
                 $('.ui-datepicker-calendar').show();
             });
 
-            $('#sampleTestedDateTime').on('change', function() {
+            $('#sampleTestedDateTime, #sampleTestingDateAtLab').on('change', function() {
                 var selectedDate = $(this).datetimepicker('getDate');
                 $('#approvedOnDateTime').val('');
                 $('#resultDispatchedOn').val('');
