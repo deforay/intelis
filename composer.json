@@ -67,7 +67,8 @@
     },
     "config": {},
     "require-dev": {
-        "symfony/var-dumper": "^5.4"
+        "symfony/var-dumper": "^5.4",
+        "kint-php/kint": "^5.1"
     },
     "scripts": {
         "cleanup": "php app/scheduled-jobs/cleanup.php 60",

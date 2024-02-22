@@ -1294,17 +1294,31 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	}
 
 	function checkSampleReceviedDate() {
+
+		var todayFromServer = new Date('<?= date('Y-m-d'); ?>');
+
 		var sampleCollectionDate = $("#sampleCollectionDate").val();
 		var sampleReceivedDate = $("#sampleReceivedDate").val();
+
+		var date1 = new Date(sampleCollectionDate);
+		var date2 = new Date(sampleReceivedDate);
+		var today = new Date(todayFromServer.getTime());
+
+		// Ensure both dates are entered
 		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
+			// Reset time parts to compare dates only
+			date1.setHours(0, 0, 0, 0);
+			date2.setHours(0, 0, 0, 0);
+			today.setHours(0, 0, 0, 0);
 
-			date1 = new Date(sampleCollectionDate);
-			date2 = new Date(sampleReceivedDate);
-
-			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _translate("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
+			if (date2 > today) {
+				alert("<?= _translate("Sample Received at Testing Lab Date cannot be grater than today"); ?>");
+				$("#sampleReceivedDate").val("");
+			} else if (date2 < date1) {
+				alert("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date");
 				$("#sampleReceivedDate").val("");
 			}
+			// If no issues, no action is needed. The dates are valid.
 		}
 	}
 

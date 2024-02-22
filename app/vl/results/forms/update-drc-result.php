@@ -712,34 +712,31 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 	}
 
 	function checkSampleReceviedDate() {
+
+		var todayFromServer = new Date('<?= date('Y-m-d'); ?>');
+
 		var sampleCollectionDate = $("#sampleCollectionDate").val();
 		var sampleReceivedDate = $("#sampleReceivedDate").val();
+
+		var date1 = new Date(sampleCollectionDate);
+		var date2 = new Date(sampleReceivedDate);
+		var today = new Date(todayFromServer.getTime());
+
+		// Ensure both dates are entered
 		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
-			//Set sample coll. datetime
-			splitSampleCollDateTime = sampleCollectionDate.split(" ");
-			splitSampleCollDate = splitSampleCollDateTime[0].split("-");
-			var sampleCollOn = new Date(splitSampleCollDate[1] + splitSampleCollDate[2] + ", " + splitSampleCollDate[0]);
-			var monthDigit = sampleCollOn.getMonth();
-			var smplCollYear = splitSampleCollDate[2];
-			var smplCollMonth = isNaN(monthDigit) ? 0 : (parseInt(monthDigit) + parseInt(1));
-			smplCollMonth = (smplCollMonth < 10) ? '0' + smplCollMonth : smplCollMonth;
-			var smplCollDate = splitSampleCollDate[0];
-			sampleCollDateTime = smplCollYear + "-" + smplCollMonth + "-" + smplCollDate + " " + splitSampleCollDateTime[1] + ":00";
-			//Set sample rece. datetime
-			splitSampleReceivedDateTime = sampleReceivedDate.split(" ");
-			splitSampleReceivedDate = splitSampleReceivedDateTime[0].split("-");
-			var sampleReceivedDate = new Date(splitSampleReceivedDate[1] + splitSampleReceivedDate[2] + ", " + splitSampleReceivedDate[0]);
-			var monthDigit = sampleReceivedDate.getMonth();
-			var smplReceivedYear = splitSampleReceivedDate[2];
-			var smplReceivedMonth = isNaN(monthDigit) ? 0 : (parseInt(monthDigit) + parseInt(1));
-			smplReceivedMonth = (smplReceivedMonth < 10) ? '0' + smplReceivedMonth : smplReceivedMonth;
-			var smplReceivedDate = splitSampleReceivedDate[0];
-			sampleReceivedDateTime = smplReceivedYear + "-" + smplReceivedMonth + "-" + smplReceivedDate + " " + splitSampleReceivedDateTime[1] + ":00";
-			//Check diff
-			if (moment(sampleCollDateTime).diff(moment(sampleReceivedDateTime)) > 0) {
-				alert("L'échantillon de données reçues ne peut pas être antérieur à la date de collecte de l'échantillon!");
+			// Reset time parts to compare dates only
+			date1.setHours(0, 0, 0, 0);
+			date2.setHours(0, 0, 0, 0);
+			today.setHours(0, 0, 0, 0);
+
+			if (date2 > today) {
+				alert("<?= _translate("Sample Received at Testing Lab Date cannot be grater than today"); ?>");
+				$("#sampleReceivedDate").val("");
+			} else if (date2 < date1) {
+				alert("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date");
 				$("#sampleReceivedDate").val("");
 			}
+			// If no issues, no action is needed. The dates are valid.
 		}
 	}
 
