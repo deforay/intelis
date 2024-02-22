@@ -22,6 +22,7 @@ $arr = $general->getGlobalConfig();
 if (!empty($result)) {
      $displayPageNoInFooter = true;
      $displaySignatureTable = true;
+     $reportTopMargin = 17;
 
      if (!empty($result['vl_facility_attributes'])) {
           $vlFacilityAttributes = json_decode($result['vl_facility_attributes'], true);
@@ -30,6 +31,9 @@ if (!empty($result)) {
           }
           if (!empty($vlFacilityAttributes) && !empty($vlFacilityAttributes['display_signature_table'])) {
                $displaySignatureTable = (isset($vlFacilityAttributes['display_signature_table']) && $vlFacilityAttributes['display_signature_table']) == 'yes' ? true : false;
+          }
+          if (!empty($vlFacilityAttributes) && !empty($vlFacilityAttributes['report_top_margin'])) {
+               $reportTopMargin = (isset($vlFacilityAttributes['report_top_margin'])) ? $vlFacilityAttributes['report_top_margin'] : $reportTopMargin;
           }
      }
 
@@ -134,7 +138,7 @@ if (!empty($result)) {
      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
      // set margins
-     $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 17, PDF_MARGIN_RIGHT);
+     $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + $reportTopMargin, PDF_MARGIN_RIGHT);
      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 

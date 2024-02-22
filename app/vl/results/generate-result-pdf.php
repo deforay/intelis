@@ -41,7 +41,7 @@ $requestResult = null;
 if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 
 	$searchQuery = "SELECT vl.*,
-					f.*,
+					c_f.*,
 					imp.i_partner_name,
 					rst.sample_name,
 					vltr.test_reason_name,
@@ -49,26 +49,25 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					vl.control_vl_testing_type,
 					vl.coinfection_type,
 					vl.reason_for_vl_testing_other,
-					l.facility_name as labName,
-					l.report_format as reportFormat,
-					f.facility_attributes as vl_facility_attributes,
-					l.facility_attributes,
+					l_f.facility_name as labName,
+					l_f.report_format as reportFormat,
+					l_f.facility_attributes as vl_facility_attributes,
 					u_d.user_name as reviewedBy,
 					a_u_d.user_name as approvedBy,
 					vl.last_modified_by as modified_by,
 					r_r_b.user_name as revised,
-					l.facility_logo as facilityLogo,
+					l_f.facility_logo as facilityLogo,
 					rsrr.rejection_reason_name,
 					funding.funding_source_name as funding_source_name,
 					r_c_a.recommended_corrective_action_name
 					FROM form_vl as vl
 					LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id
-					LEFT JOIN facility_details as f ON vl.facility_id = f.facility_id
+					LEFT JOIN facility_details as c_f ON vl.facility_id = c_f.facility_id
 					LEFT JOIN r_vl_sample_type as rst ON rst.sample_id = vl.specimen_type
 					LEFT JOIN user_details as u_d ON u_d.user_id = vl.result_reviewed_by
 					LEFT JOIN user_details as a_u_d ON a_u_d.user_id = vl.result_approved_by
 					LEFT JOIN user_details as r_r_b ON r_r_b.user_id = vl.revised_by
-					LEFT JOIN facility_details as l ON l.facility_id = vl.lab_id
+					LEFT JOIN facility_details as l_f ON l_f.facility_id = vl.lab_id
 					LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
 					LEFT JOIN r_funding_sources as funding ON funding.funding_source_id = vl.funding_source
 					LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection
