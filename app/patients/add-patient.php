@@ -270,18 +270,7 @@ $state = $geolocationService->getProvinces("yes", true, $_SESSION['facilityMap']
                 $('#pregYes').addClass('isRequired');
             }
         });
-        $('.date').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            onSelect: function() {
-                $(this).change();
-            },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            maxDate: "Today",
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+        initDatePicker();
     });
 
     function validateNow() {

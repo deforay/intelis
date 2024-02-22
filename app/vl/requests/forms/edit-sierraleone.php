@@ -1117,27 +1117,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 			yearRange: "-100:+100",
 		});*/
 
-		$('#sampleCollectionDate').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				//dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "Today");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-				//dt2.val($(this).val());
-			}
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
+
 
 
 

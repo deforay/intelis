@@ -971,31 +971,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		var testType = $("#testType").val();
 		getTestTypeConfigList(testType);
 
-		$('.date').datepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
-		$('.dateTime').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			onChangeMonthYear: function(year, month, widget) {
-				setTimeout(function() {
-					$('.ui-datepicker-calendar').show();
-				});
-			},
-			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
+		initDatePicker();
+		initDateTimePicker();
 		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
 		$('.date').mask(dateFormatMask);
 		$('.dateTime').mask(dateFormatMask + ' 99:99');
@@ -1029,27 +1006,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			}
 		});
 
-		$('#sampleCollectionDate').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				//dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "Today");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-				//dt2.val($(this).val());
-			}
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
+
 
 
 		autoFillFocalDetails();
@@ -1620,20 +1577,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 					if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
 						$("#otherSection").html(data.otherSection);
 					}
-					$('.dateTime').datetimepicker({
-						changeMonth: true,
-						changeYear: true,
-						dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-						timeFormat: "HH:mm",
-						maxDate: "Today",
-						onChangeMonthYear: function(year, month, widget) {
-							setTimeout(function() {
-								$('.ui-datepicker-calendar').show();
-							});
-						}
-					}).click(function() {
-						$('.ui-datepicker-calendar').show();
-					});
+					initDateTimePicker();
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
@@ -1716,20 +1660,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 					} else {
 						$('#resultSection').hide();
 					}
-					$('.dateTime').datetimepicker({
-						changeMonth: true,
-						changeYear: true,
-						dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-						timeFormat: "HH:mm",
-						maxDate: "Today",
-						onChangeMonthYear: function(year, month, widget) {
-							setTimeout(function() {
-								$('.ui-datepicker-calendar').show();
-							});
-						}
-					}).click(function() {
-						$('.ui-datepicker-calendar').show();
-					});
+					initDateTimePicker();
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
@@ -1836,20 +1767,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			$('.ui-datepicker-calendar').show();
 		});
 
-		$('.dateTime').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			onChangeMonthYear: function(year, month, widget) {
-				setTimeout(function() {
-					$('.ui-datepicker-calendar').show();
-				});
-			}
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
+		initDateTimePicker();
 
 		if ($('.kitlabels').is(':visible') == true) {
 			$('.kitlabels').show();

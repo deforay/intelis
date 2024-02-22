@@ -591,29 +591,6 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 		getVlResults($("#testingPlatform").val());
 		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');
 
-		$('.date').datepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
-
-		$('.dateTime').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
-
-		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
-		$('.date').mask(dateFormatMask);
-		$('.dateTime').mask(dateFormatMask + ' 99:99');
-
 		if ($("#status").val() == 4) {
 			$(".rejectionReason").show();
 			$("#rejectionReason").addClass('isRequired');

@@ -1,18 +1,34 @@
 <script type="text/javascript">
     $(document).ready(function() {
-        $('.date').datepicker({
+
+
+        initDatePicker();
+        initDateTimePicker();
+
+
+        $('.expDate').datepicker({
             changeMonth: true,
             changeYear: true,
             onSelect: function() {
                 $(this).change();
             },
             dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            maxDate: "Today",
+            timeFormat: "HH:mm",
+            // minDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
 
+
+        if ($("#patientDob").length) {
+            $("#patientDob").datepicker('option', {
+                onSelect: function(dateText, inst) {
+                    $("#sampleCollectionDate").datetimepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
+                    $(this).change();
+                }
+            });
+        }
 
         if ($("#childDob").length) {
             $("#childDob").datepicker('option', {
@@ -57,23 +73,6 @@
 
 
 
-        if ($('.dateTime').length) {
-            $('.dateTime').datetimepicker({
-                changeMonth: true,
-                changeYear: true,
-                dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-                timeFormat: "HH:mm",
-                maxDate: "Today",
-                onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
-                        $('.ui-datepicker-calendar').show();
-                    });
-                },
-                yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function() {
-                $('.ui-datepicker-calendar').show();
-            });
-        }
 
         if ($('#sampleCollectionDate').length) {
             $('#sampleCollectionDate').datetimepicker({
@@ -194,11 +193,48 @@
 
         let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
         $('.date').mask(dateFormatMask);
-        $('.dateTime').mask(dateFormatMask + ' 99:99');
+        $('.dateTime, .date-time').mask(dateFormatMask + ' 99:99');
 
     });
 
 
+    function initDatePicker() {
+        $('.date:not(.hasDatePicker)').each(function() {
+            $(this).addClass('hasDatePicker').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                onSelect: function() {
+                    $(this).change();
+                },
+                dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
+                maxDate: "Today",
+                yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+            }).click(function() {
+                $('.ui-datepicker-calendar').show();
+            });
+        });
+    }
+
+    function initDateTimePicker() {
+
+        $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function() {
+            $(this).addClass('hasDateTimePicker').datetimepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
+                timeFormat: "HH:mm",
+                maxDate: "Today",
+                onChangeMonthYear: function(year, month, widget) {
+                    setTimeout(function() {
+                        $('.ui-datepicker-calendar').show();
+                    });
+                },
+                yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+            }).click(function() {
+                $('.ui-datepicker-calendar').show();
+            });
+        });
+    }
 
 
     function checkSampleReceivedDate() {
