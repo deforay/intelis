@@ -26,13 +26,13 @@ if (!empty($result)) {
 
      if (!empty($result['vl_facility_attributes'])) {
           $vlFacilityAttributes = json_decode($result['vl_facility_attributes'], true);
-          if (!empty($vlFacilityAttributes) && !empty($vlFacilityAttributes['display_page_number_in_footer'])) {
-               $displayPageNoInFooter = (isset($vlFacilityAttributes['display_page_number_in_footer']) && $vlFacilityAttributes['display_page_number_in_footer']) == 'yes' ? true : false;
+          if (!empty($vlFacilityAttributes) && isset($vlFacilityAttributes['display_page_number_in_footer'])) {
+               $displayPageNoInFooter = ($vlFacilityAttributes['display_page_number_in_footer']) == 'yes' ? true : false;
           }
-          if (!empty($vlFacilityAttributes) && !empty($vlFacilityAttributes['display_signature_table'])) {
-               $displaySignatureTable = (isset($vlFacilityAttributes['display_signature_table']) && $vlFacilityAttributes['display_signature_table']) == 'yes' ? true : false;
+          if (!empty($vlFacilityAttributes) && isset($vlFacilityAttributes['display_signature_table'])) {
+               $displaySignatureTable = ($vlFacilityAttributes['display_signature_table']) == 'yes' ? true : false;
           }
-          if (!empty($vlFacilityAttributes) && !empty($vlFacilityAttributes['report_top_margin'])) {
+          if (!empty($vlFacilityAttributes) && isset($vlFacilityAttributes['report_top_margin'])) {
                $reportTopMargin = (isset($vlFacilityAttributes['report_top_margin'])) ? $vlFacilityAttributes['report_top_margin'] : $reportTopMargin;
           }
      }
