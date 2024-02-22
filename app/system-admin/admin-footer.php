@@ -19,12 +19,11 @@
 
 <!-- AdminLTE App -->
 <script type="text/javascript" src="/assets/js/app.min.js"></script>
-<script type="text/javascript" src="/assets/js/main.js"></script>
 <script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
 <script type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
 <script type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
-
+<?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
 <script type="text/javascript">
   $(document).ready(function() {
     <?php

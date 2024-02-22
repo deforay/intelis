@@ -1393,65 +1393,6 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		});
 	});
 
-	function checkSampleReceviedAtHubDate() {
-		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
-		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
-
-			date1 = new Date(sampleCollectionDate);
-			date2 = new Date(sampleReceivedAtHubOn);
-
-			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _translate("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
-				$("#sampleReceivedAtHubOn").val("");
-			}
-		}
-	}
-
-	function checkSampleReceviedDate() {
-
-		var todayFromServer = new Date('<?= date('Y-m-d'); ?>');
-
-		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleReceivedDate = $("#sampleReceivedDate").val();
-
-		var date1 = new Date(sampleCollectionDate);
-		var date2 = new Date(sampleReceivedDate);
-		var today = new Date(todayFromServer.getTime());
-
-		// Ensure both dates are entered
-		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
-			// Reset time parts to compare dates only
-			date1.setHours(0, 0, 0, 0);
-			date2.setHours(0, 0, 0, 0);
-			today.setHours(0, 0, 0, 0);
-
-			if (date2 > today) {
-				alert("<?= _translate("Sample Received at Testing Lab Date cannot be grater than today"); ?>");
-				$("#sampleReceivedDate").val("");
-			} else if (date2 < date1) {
-				alert("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date");
-				$("#sampleReceivedDate").val("");
-			}
-			// If no issues, no action is needed. The dates are valid.
-		}
-	}
-
-	function checkSampleTestingDate() {
-		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleTestingDate = $("#sampleTestingDateAtLab").val();
-		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
-
-			date1 = new Date(sampleCollectionDate);
-			date2 = new Date(sampleTestingDate);
-
-			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _translate("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
-				$("#sampleTestingDateAtLab").val("");
-			}
-		}
-	}
-
 	function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
 		if ($.trim($("#" + id).val()) != '') {
 			$.blockUI();

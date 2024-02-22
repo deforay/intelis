@@ -711,67 +711,6 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 		}
 	}
 
-	function checkSampleReceviedDate() {
-
-		var todayFromServer = new Date('<?= date('Y-m-d'); ?>');
-
-		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleReceivedDate = $("#sampleReceivedDate").val();
-
-		var date1 = new Date(sampleCollectionDate);
-		var date2 = new Date(sampleReceivedDate);
-		var today = new Date(todayFromServer.getTime());
-
-		// Ensure both dates are entered
-		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
-			// Reset time parts to compare dates only
-			date1.setHours(0, 0, 0, 0);
-			date2.setHours(0, 0, 0, 0);
-			today.setHours(0, 0, 0, 0);
-
-			if (date2 > today) {
-				alert("<?= _translate("Sample Received at Testing Lab Date cannot be grater than today"); ?>");
-				$("#sampleReceivedDate").val("");
-			} else if (date2 < date1) {
-				alert("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date");
-				$("#sampleReceivedDate").val("");
-			}
-			// If no issues, no action is needed. The dates are valid.
-		}
-	}
-
-	function checkSampleTestingDate() {
-		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleTestingDate = $("#sampleTestingDateAtLab").val();
-		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
-			//Set sample coll. date
-			splitSampleCollDateTime = sampleCollectionDate.split(" ");
-			splitSampleCollDate = splitSampleCollDateTime[0].split("-");
-			var sampleCollOn = new Date(splitSampleCollDate[1] + splitSampleCollDate[2] + ", " + splitSampleCollDate[0]);
-			var monthDigit = sampleCollOn.getMonth();
-			var smplCollYear = splitSampleCollDate[2];
-			var smplCollMonth = isNaN(monthDigit) ? 0 : (parseInt(monthDigit) + parseInt(1));
-			smplCollMonth = (smplCollMonth < 10) ? '0' + smplCollMonth : smplCollMonth;
-			var smplCollDate = splitSampleCollDate[0];
-			sampleCollDateTime = smplCollYear + "-" + smplCollMonth + "-" + smplCollDate + " " + splitSampleCollDateTime[1] + ":00";
-			//Set sample testing date
-			splitSampleTestedDateTime = sampleTestingDate.split(" ");
-			splitSampleTestedDate = splitSampleTestedDateTime[0].split("-");
-			var sampleTestingOn = new Date(splitSampleTestedDate[1] + splitSampleTestedDate[2] + ", " + splitSampleTestedDate[0]);
-			var monthDigit = sampleTestingOn.getMonth();
-			var smplTestingYear = splitSampleTestedDate[2];
-			var smplTestingMonth = isNaN(monthDigit) ? 0 : (parseInt(monthDigit) + parseInt(1));
-			smplTestingMonth = (smplTestingMonth < 10) ? '0' + smplTestingMonth : smplTestingMonth;
-			var smplTestingDate = splitSampleTestedDate[0];
-			sampleTestingAtLabDateTime = smplTestingYear + "-" + smplTestingMonth + "-" + smplTestingDate + " " + splitSampleTestedDateTime[1] + ":00";
-			//Check diff
-			if (moment(sampleCollDateTime).diff(moment(sampleTestingAtLabDateTime)) > 0) {
-				alert("La date d'essai de l'échantillon ne peut pas être antérieure à la date de collecte de l'échantillon!");
-				$("#sampleTestingDateAtLab").val("");
-			}
-		}
-	}
-
 	function calculateLogValue(obj) {
 		if (obj.id == "vlResult") {
 			absValue = $("#vlResult").val();
