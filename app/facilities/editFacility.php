@@ -577,11 +577,11 @@ $formId = $general->getGlobalConfig('vl_form');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="display_pageno_in_footer" class="col-lg-4 control-label">
+									<label for="displayPagenoInFooter" class="col-lg-4 control-label">
 										<?php echo _translate("Display Page Number in Footer"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control" name='display_pageno_in_footer' id='display_pageno_in_footer' title="<?php echo _translate('Display Page Number in Footer'); ?>">
+										<select class="form-control" name='displayPagenoInFooter' id='displayPagenoInFooter' title="<?php echo _translate('Display Page Number in Footer'); ?>">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<option value="yes" <?php echo (isset($facilityAttributes->display_page_number_in_footer) && $facilityAttributes->display_page_number_in_footer === 'yes') ? "selected='selected'" : "" ?>><?php echo _translate("Yes"); ?></option>
 											<option value="no" <?php echo (isset($facilityAttributes->display_page_number_in_footer) && $facilityAttributes->display_page_number_in_footer === 'no') ? "selected='selected'" : "" ?>><?php echo _translate("No"); ?></option>
@@ -591,11 +591,11 @@ $formId = $general->getGlobalConfig('vl_form');
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="display_signature_table" class="col-lg-4 control-label">
+									<label for="displaySignatureTable" class="col-lg-4 control-label">
 										<?php echo _translate("Display Signature Table"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control" name='display_signature_table' id='display_signature_table' title="<?php echo _translate('Display Signature Table'); ?>">
+										<select class="form-control" name='displaySignatureTable' id='displaySignatureTable' title="<?php echo _translate('Display Signature Table'); ?>">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<option value="yes" <?php echo (isset($facilityAttributes->display_signature_table) && $facilityAttributes->display_signature_table === 'yes') ? "selected='selected'" : "" ?>><?php echo _translate("Yes"); ?></option>
 											<option value="no" <?php echo (isset($facilityAttributes->display_signature_table) && $facilityAttributes->display_signature_table === 'no') ? "selected='selected'" : "" ?>><?php echo _translate("No"); ?></option>
@@ -604,6 +604,18 @@ $formId = $general->getGlobalConfig('vl_form');
 								</div>
 							</div>
 						</div>
+						<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="reportTopMargin" class="col-lg-4 control-label">
+												<?php echo _translate("Report Top Margin"); ?>
+											</label>
+											<div class="col-lg-7">
+												<input type="number" value="<?php echo (isset($facilityAttributes->report_top_margin)) ? $facilityAttributes->report_top_margin : '' ?>" class="form-control" name="reportTopMargin" id="reportTopMargin" placeholder="<?php echo _translate('Report Top Margin'); ?>" title="<?php echo _translate('Please enter the report top margin'); ?>">
+											</div>
+										</div>
+									</div>
+								</div>
 					<?php } ?>
 					<div class="row" id="sampleType"></div>
 					<div class="row-item labDiv" style="display:<?php echo $labDiv; ?>;">

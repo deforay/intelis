@@ -600,11 +600,11 @@ $formId = $general->getGlobalConfig('vl_form');
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
-											<label for="display_pageno_in_footer" class="col-lg-4 control-label">
+											<label for="displayPagenoInFooter" class="col-lg-4 control-label">
 												<?php echo _translate("Display Page Number in Footer"); ?>
 											</label>
 											<div class="col-lg-7">
-												<select class="form-control" name='display_pageno_in_footer' id='display_pageno_in_footer' title="<?php echo _translate('Display Page Number in Footer'); ?>">
+												<select class="form-control" name='displayPagenoInFooter' id='displayPagenoInFooter' title="<?php echo _translate('Display Page Number in Footer'); ?>">
 													<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 													<option value="yes" ><?php echo _translate("Yes"); ?></option>
 													<option value="no" ><?php echo _translate("No"); ?></option>
@@ -614,15 +614,27 @@ $formId = $general->getGlobalConfig('vl_form');
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">
-											<label for="display_signature_table" class="col-lg-4 control-label">
+											<label for="displaySignatureTable" class="col-lg-4 control-label">
 												<?php echo _translate("Display Signature Table"); ?>
 											</label>
 											<div class="col-lg-7">
-												<select class="form-control" name='display_signature_table' id='display_signature_table' title="<?php echo _translate('Display Signature Table'); ?>">
+												<select class="form-control" name='displaySignatureTable' id='displaySignatureTable' title="<?php echo _translate('Display Signature Table'); ?>">
 													<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 													<option value="yes" ><?php echo _translate("Yes"); ?></option>
 													<option value="no" ><?php echo _translate("No"); ?></option>
 												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="reportTopMargin" class="col-lg-4 control-label">
+												<?php echo _translate("Report Top Margin"); ?>
+											</label>
+											<div class="col-lg-7">
+												<input type="number" class="form-control" name="reportTopMargin" id="reportTopMargin" placeholder="<?php echo _translate('Report Top Margin'); ?>" title="<?php echo _translate('Please enter the report top margin'); ?>">
 											</div>
 										</div>
 									</div>
