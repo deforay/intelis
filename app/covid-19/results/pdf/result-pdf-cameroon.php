@@ -244,7 +244,7 @@ if (!empty($requestResult)) {
         }
 
         if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
-            $result['patient_gender'] = 'Unreported';
+            $result['patient_gender'] = _translate('Unreported');
         }
 
         $userRes = [];
