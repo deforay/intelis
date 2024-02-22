@@ -1090,39 +1090,6 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 			}
 		});
 
-
-
-		/*$("#sampleCollectionDate").datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				////dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "Today");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-			}
-		});
-		$('#sampleDispatchedDate').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			yearRange: "-100:+100",
-		});*/
-
-
-
-
-
-
-
 		autoFillFocalDetails();
 		$('#facilityId').select2({
 			width: '100%',

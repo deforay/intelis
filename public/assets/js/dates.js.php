@@ -96,6 +96,7 @@
 
                 var selectedDate = $(this).datetimepicker('getDate');
 
+                $('#sampleReceivedAtHubOn').datetimepicker('option', 'minDate', selectedDate);
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', selectedDate);
                 $('#sampleDispatchedDate').datetimepicker('option', 'minDate', selectedDate);
 
