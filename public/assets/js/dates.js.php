@@ -93,6 +93,8 @@
 
             $('#sampleCollectionDate').on('change', function() {
                 $('#sampleReceivedDate').val('');
+                $('#sampleReceivedAtHubOn').val('');
+                $('#sampleDispatchedDate').val('');
 
                 var selectedDate = $(this).datetimepicker('getDate');
 
@@ -170,7 +172,9 @@
             $('#sampleTestedDateTime').on('change', function() {
                 var selectedDate = $(this).datetimepicker('getDate');
                 $('#approvedOnDateTime').val('');
+                $('#resultDispatchedOn').val('');
                 $('#approvedOnDateTime').datetimepicker('option', 'minDate', selectedDate);
+                $('#resultDispatchedOn').datetimepicker('option', 'minDate', selectedDate);
             });
         }
 
@@ -189,6 +193,11 @@
                 yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
             }).click(function() {
                 $('.ui-datepicker-calendar').show();
+            });
+            $('#approvedOnDateTime').on('change', function() {
+                var selectedDate = $(this).datetimepicker('getDate');
+                $('#resultDispatchedOn').val('');
+                $('#resultDispatchedOn').datetimepicker('option', 'minDate', selectedDate);
             });
         }
 
