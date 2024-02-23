@@ -58,7 +58,7 @@ $sResult = $general->fetchDataFromTable('r_cd4_sample_types', $condition);
 
 
 //get cd4test reason details
-$testReason = $general->fetchDataFromTable('r_vl_test_reasons');
+$testReason = $general->fetchDataFromTable('r_cd4_test_reasons');
 $pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 
 //Funding source list

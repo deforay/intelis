@@ -125,7 +125,7 @@ try {
         'result_approved_datetime' => DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true),
         'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
         'lab_tech_comments' => $_POST['labComments'] ?? null,
-        'result_status' => $resultStatus,
+        'result_status' => 8,
         'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'result_modified'  => 'no',
@@ -138,12 +138,6 @@ try {
         $vlData['result_modified'] = "yes";
     } else {
         $vlData['result_modified'] = "no";
-    }
-
-
-    // only if result status has changed, let us update
-    if (!empty($resultStatus)) {
-        $vlData['result_status'] = $resultStatus;
     }
 
 
