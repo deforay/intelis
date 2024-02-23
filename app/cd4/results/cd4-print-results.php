@@ -797,7 +797,6 @@ $state = $geolocationService->getProvinces("yes");
                 newData: newData
             },
             function(data) {
-alert(data);
                 if (data == "" || data == null || data == undefined) {
                     $.unblockUI();
                     alert("<?php echo _translate("Unable to generate download"); ?>");

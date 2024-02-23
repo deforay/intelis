@@ -31,7 +31,7 @@ if (!empty($result)) {
      // set document information
      $pdf->SetCreator(_translate('VLSM'));
      //$pdf->SetAuthor('Pal');
-     $pdf->SetTitle('Viral Load Test Result');
+     $pdf->SetTitle('CD4 Test Result');
      //$pdf->SetSubject('TCPDF Tutorial');
      //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
@@ -118,10 +118,10 @@ if (!empty($result)) {
           $result['sample_tested_datetime'] = '';
      }
 
-     if (isset($result['last_viral_load_date']) && trim((string) $result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
-          $result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date']);
+     if (isset($result['last_cd4_date']) && trim((string) $result['last_cd4_date']) != '' && $result['last_cd4_date'] != '0000-00-00') {
+          $result['last_cd4_date'] = DateUtility::humanReadableDateFormat($result['last_cd4_date']);
      } else {
-          $result['last_viral_load_date'] = '';
+          $result['last_cd4_date'] = '';
      }
      if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
           $result['patient_gender'] = 'not reported';
@@ -298,7 +298,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['sample_name']) . '</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['vl_test_platform']) . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['cd4_test_platform']) . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td colspan="4" style="line-height:16px;"></td>';
@@ -307,7 +307,7 @@ if (!empty($result)) {
      $html .= '<td colspan="3"></td>';
      $html .= '<td rowspan="3" style="text-align:left;">' . $smileyContent . '</td>';
      $html .= '</tr>';
-     $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;VIRAL LOAD RESULT (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '</td></tr>';
+     $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;CD4 RESULT (value)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['cd4_result']) . '</td></tr>';
      $html .= '<tr><td colspan="3"></td></tr>';
      $html .= '</table>';
      $html .= '</td>';
@@ -360,10 +360,10 @@ if (!empty($result)) {
      $html .= '<td colspan="3" style="line-height:8px;"></td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Date of Last VL Test&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_date'] . '</span></td>';
+     $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Date of Last CD4 Test&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_cd4_date'] . '</span></td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Result of previous viral load(copies/ml)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_result'] . '</span></td>';
+     $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Result of previous result value&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_cd4_result'] . '</span></td>';
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:110px;border-bottom:2px solid #d3d3d3;"></td>';
@@ -380,18 +380,18 @@ if (!empty($result)) {
           $generatedAtTestingLab = "";
      }
      $html .= '<tr>';
-     $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> = VL < = 1000 copies/ml: Continue on current regimen</td>';
+     $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> </td>';
      $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;' . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> = VL > 1000 copies/ml: copies/ml: Clinical and counselling action required</td>';
+     $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/></td>';
      $html .= '<td style="font-size:10px;text-align:left;">' . $generatedAtTestingLab . '</td>';
      $html .= '</tr>';
      $html .= '</table>';
      $html .= '</td>';
      $html .= '</tr>';
      $html .= '</table>';
-     if (!empty($result['result'])) {
+     if (!empty($result['cd4_result'])) {
           $pdf->writeHTML($html);
           if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                $viewId = CommonService::encryptViewQRCode($result['unique_id']);
