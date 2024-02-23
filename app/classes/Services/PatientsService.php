@@ -66,6 +66,14 @@ class PatientsService
         $result = $this->db->getOne($testTable, $col);
         return $result[$col];
     }
+    public function getSystemPatientCodeBySampleId($sampleId, $testTable)
+    {
+        $col = "system_patient_code";
+        $this->db->where("sample_code", $sampleId);
+        $result = $this->db->getOne($testTable, $col);
+        return $result[$col];
+    }
+    
 
     public function savePatient($params, $testTable)
     {
@@ -153,8 +161,7 @@ class PatientsService
 
     public function updatePatient($params, $testTable)
     {
-        $oldPatientCode = $this->getPatientCodeBySampleId($params['sampleCode'], $testTable);
-
+        $systemPatientCode = $this->getSystemPatientCodeBySampleId($params['sampleCode'], $testTable);
         if ($testTable == "form_vl" || $testTable == "form_generic") {
             $patientId = $params['artNo'];
             $params['patientGender'] = $params['gender'];
@@ -207,7 +214,7 @@ class PatientsService
         $data['patient_registered_on'] = DateUtility::getCurrentDateTime();
         $data['patient_registered_by'] = $params['registeredBy'] ?? null;
 
-        $this->db->where("patient_code", $oldPatientCode);
+        $this->db->where("system_patient_code", $systemPatientCode);
         return $this->db->update($this->table, $data);
     }
 

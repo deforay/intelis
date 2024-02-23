@@ -482,7 +482,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                     <tr>
                                         <th scope="row" style="width:15% !important"><?= _translate('Sample Collection Date'); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" value="<?php echo $eidInfo['sample_collection_date']; ?>" />
                                         </td>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
@@ -534,7 +534,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                             </td>
                                             <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo $eidInfo['sample_received_at_lab_datetime']; ?>" onchange="" style="width:100%;" />
                                             </td>
 
                                         <tr>
@@ -573,7 +573,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         <tr>
                                             <td style="width:25%;"><label for=""><?= _translate('Sample Test Date'); ?> </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $eidInfo['sample_tested_datetime']; ?>" style="width:100%;" />
                                             </td>
 
                                             <th scope="row"><?= _translate('Result'); ?></th>
