@@ -31,8 +31,8 @@ if (!empty($_POST['sampleCollectionDate'])) {
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
     //get value by rejection reason id
     $vlQuery = "SELECT count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`, r_c_a.recommended_corrective_action_name
-                FROM form_covid19 as vl
-                INNER JOIN r_covid19_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
+                FROM form_cd4 as vl
+                INNER JOIN r_vl_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
                 LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";

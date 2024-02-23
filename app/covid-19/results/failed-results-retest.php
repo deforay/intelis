@@ -53,7 +53,7 @@ try {
                     'failed_result_retest_tracker',
                     array(
                         'test_type_pid' => (isset($result['covid19_id']) && $result['covid19_id'] != "") ? $result['covid19_id'] : null,
-                        'test_type' => 'vl',
+                        'test_type' => 'covid19',
                         'sample_code' => (isset($result['sample_code']) && $result['sample_code'] != "") ? $result['sample_code'] : null,
                         'remote_sample_code' => (isset($result['remote_sample_code']) && $result['remote_sample_code'] != "") ? $result['remote_sample_code'] : null,
                         'batch_id' => (isset($result['sample_batch_id']) && $result['sample_batch_id'] != "") ? $result['sample_batch_id'] : null,

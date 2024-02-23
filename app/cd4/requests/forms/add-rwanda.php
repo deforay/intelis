@@ -677,7 +677,7 @@ $sFormat = '';
                                              <input type="hidden" name="cd4SampleId" id="cd4SampleId" value="" />
                                              <input type="hidden" name="provinceId" id="provinceId" />
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
-                                             <a href="/vl/requests/vl-requests.php" class="btn btn-default"> Cancel</a>
+                                             <a href="/cd4/requests/cd4-requests.php" class="btn btn-default"> Cancel</a>
                                         </div>
                                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
                                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
@@ -846,7 +846,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           if (pName != '' && sDate != '') {
-               $.post("/vl/requests/generateSampleCode.php", {
+               $.post("/cd4/requests/generateSampleCode.php", {
                          sampleCollectionDate: sDate,
                          provinceCode: provinceCode
                     },
