@@ -121,7 +121,7 @@ try {
             'line' => __LINE__
         ]);
     }
-    if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {
+    if (isset($_POST['gender']) && (trim((string) $_POST['gender']) == 'male' || trim((string) $_POST['gender']) == 'unreported')) {
         $_POST['patientPregnant'] = "N/A";
         $_POST['breastfeeding'] = "N/A";
     }

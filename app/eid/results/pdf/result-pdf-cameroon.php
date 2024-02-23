@@ -177,7 +177,7 @@ if (!empty($result)) {
     }
 
     if (!isset($result['child_gender']) || trim((string) $result['child_gender']) == '') {
-        $result['child_gender'] = 'not reported';
+        $result['child_gender'] = _translate('Unreported');
     }
 
     $finalResult = '';
@@ -273,7 +273,7 @@ if (!empty($result)) {
 
     $html .= '<tr>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['child_age'] . '</td>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", (string) $result['child_gender'])) . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", (string) $result['child_gender'])) . '</td>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
     $html .= '</tr>';

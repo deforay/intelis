@@ -67,7 +67,7 @@ $userResponse = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'res
 </div>
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 <script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/assets/js/main.js"></script>
+
 <script type="text/javascript" src="/assets/js/app.min.js"></script>
 <script>
     function openTab(active, inactive) {
@@ -77,3 +77,5 @@ $userResponse = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'res
         $('.' + inactive).removeClass('active');
     }
 </script>
+<?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
+<?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>

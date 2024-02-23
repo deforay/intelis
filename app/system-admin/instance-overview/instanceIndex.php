@@ -231,22 +231,6 @@ $data = $db->rawQuery($instanceValues);
             });
         });
 
-        $('.date-time').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            },
-            onSelect: function(e) {},
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
     });
 </script>
 

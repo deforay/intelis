@@ -417,7 +417,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                             <input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please check gender">Female
                                                        </label>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender">Not Recorded
+                                                            <input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please check gender">Unreported
                                                        </label>
                                                   </div>
                                              </div>
@@ -783,26 +783,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           });
 
-          $('#sampleCollectionDate').datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-               timeFormat: "HH:mm",
-               maxDate: "Today",
-               onSelect: function(date) {
-                    var dt2 = $('#sampleDispatchedDate');
-                    var startDate = $(this).datetimepicker('getDate');
-                    var minDate = $(this).datetimepicker('getDate');
-                    //dt2.datetimepicker('setDate', minDate);
-                    startDate.setDate(startDate.getDate() + 1000000);
-                    dt2.datetimepicker('option', 'maxDate', "Today");
-                    dt2.datetimepicker('option', 'minDate', minDate);
-                    dt2.datetimepicker('option', 'minDateTime', minDate);
-                    //dt2.val($(this).val());
-               }
-          }).click(function() {
-               $('.ui-datepicker-calendar').show();
-          });
+
 
           $("#specimenType").select2({
                width: '100%',
@@ -1345,83 +1326,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-
-
-     $(document).ready(function() {
-          $('.date').datepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-               timeFormat: "hh:mm",
-               maxDate: "Today",
-               yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-          }).click(function() {
-               $('.ui-datepicker-calendar').show();
-          });
-          $('.dateTime').datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-               timeFormat: "HH:mm",
-               maxDate: "Today",
-               onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
-                         $('.ui-datepicker-calendar').show();
-                    });
-               }
-          }).click(function() {
-               $('.ui-datepicker-calendar').show();
-          });
-          let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
-          $('.date').mask(dateFormatMask);
-          $('.dateTime').mask(dateFormatMask + ' 99:99');
-     });
-
-     function checkSampleReceviedDate() {
-          var sampleCollectionDate = $("#sampleCollectionDate").val();
-          var sampleReceivedDate = $("#sampleReceivedDate").val();
-          if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
-
-               date1 = new Date(sampleCollectionDate);
-               date2 = new Date(sampleReceivedDate);
-
-               if (date2.getTime() < date1.getTime()) {
-                    alert("<?= _translate("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
-                    $("#sampleReceivedDate").val("");
-               }
-          }
-     }
-
-     function checkSampleReceviedAtHubDate() {
-          var sampleCollectionDate = $("#sampleCollectionDate").val();
-          var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
-          if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
-
-               date1 = new Date(sampleCollectionDate);
-               date2 = new Date(sampleReceivedAtHubOn);
-
-               if (date2.getTime() < date1.getTime()) {
-                    alert("<?= _translate("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
-                    $("#sampleReceivedAtHubOn").val("");
-               }
-          }
-     }
-
-     function checkSampleTestingDate() {
-          var sampleCollectionDate = $("#sampleCollectionDate").val();
-          var sampleTestingDate = $("#sampleTestingDateAtLab").val();
-          if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
-
-               date1 = new Date(sampleCollectionDate);
-               date2 = new Date(sampleTestingDate);
-
-               if (date2.getTime() < date1.getTime()) {
-                    alert("<?= _translate("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
-                    $("#sampleTestingDateAtLab").val("");
-               }
-          }
-     }
-
      function showPatientList() {
           $("#showEmptyResult").hide();
           if ($.trim($("#artPatientNo").val()) != '') {
@@ -1577,20 +1481,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                                    $("#otherSection").html(data.otherSection);
                               }
 
-                              $('.dateTime').datetimepicker({
-                                   changeMonth: true,
-                                   changeYear: true,
-                                   dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-                                   timeFormat: "HH:mm",
-                                   maxDate: "Today",
-                                   onChangeMonthYear: function(year, month, widget) {
-                                        setTimeout(function() {
-                                             $('.ui-datepicker-calendar').show();
-                                        });
-                                   }
-                              }).click(function() {
-                                   $('.ui-datepicker-calendar').show();
-                              });
+                              initDateTimePicker();
+
                               $(".dynamicFacilitySelect2").select2({
                                    width: '100%',
                                    placeholder: "<?php echo _translate("Select any one of the option"); ?>"
@@ -1642,20 +1534,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          } else {
                               $('.subTestResultSection').hide();
                          }
-                         $('.dateTime').datetimepicker({
-                              changeMonth: true,
-                              changeYear: true,
-                              dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-                              timeFormat: "HH:mm",
-                              maxDate: "Today",
-                              onChangeMonthYear: function(year, month, widget) {
-                                   setTimeout(function() {
-                                        $('.ui-datepicker-calendar').show();
-                                   });
-                              }
-                         }).click(function() {
-                              $('.ui-datepicker-calendar').show();
-                         });
+                         initDateTimePicker();
                     });
           } else {
                $(".subTestResultSection").hide();
@@ -1763,20 +1642,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.ui-datepicker-calendar').show();
           });
 
-          $('.dateTime').datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-               timeFormat: "HH:mm",
-               maxDate: "Today",
-               onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
-                         $('.ui-datepicker-calendar').show();
-                    });
-               }
-          }).click(function() {
-               $('.ui-datepicker-calendar').show();
-          });
+          initDateTimePicker();
 
           if ($('.kitlabels').is(':visible') == true) {
                $('.kitlabels').show();

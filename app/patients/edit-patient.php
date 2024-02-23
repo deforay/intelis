@@ -288,19 +288,7 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
                 $('#pregYes').addClass('isRequired');
             }
         });
-        $('.date').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            onSelect: function() {
-                $(this).change();
-            },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+        initDatePicker();
     });
 
     function validateNow() {

@@ -277,12 +277,6 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-batches', '/batch/edit-batch.php?type=cd4', '[ "/batch/delete-batch.php?type=cd4", "/batch/edit-batch-position.php?type=cd4" ]', 'Edit Batches', NULL, 'always');
 ALTER TABLE `form_cd4` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
 
-
-
--- Amit 20-Feb-2024
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display VL Log Result', 'vl_display_signature_table', 'yes', 'vl', 'no', NULL, NULL, 'active');
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display VL Log Result', 'vl_display_page_no_in_footer', 'yes', 'vl', 'no', NULL, NULL, 'active');
-
 -- Jeyabanu 19-Feb-2024
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-results', '/cd4/results/cd4-result-status.php', NULL, 'Manage Result Status', NULL, 'always'), (NULL, 'cd4-results', '/cd4/results/email-results.php', '[\"/cd4/results/email-results.php\",\"/cd4/results/email-results-confirm.php\"]', 'Email Test Results', NULL, 'always'), (NULL, 'cd4-results', '/cd4/results//import-result/import-file.php?t=cd4', NULL, 'Import Result from Files', NULL, 'always');
@@ -292,3 +286,12 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-results', '/cd4/results/cd4-print-results.php', NULL, 'Print Results', NULL, 'always');
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'Sample Status Report', '/cd4/management/cd4-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4SampleStatus', '221', '184', 'active', CURRENT_TIMESTAMP), (NULL, 'cd4', NULL, 'no', 'Export Results', '/cd4/management/cd4-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4ExportResult', '221', '185', 'active', CURRENT_TIMESTAMP);
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'Print Result', '/cd4/results/cd4-print-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4PrintResults', '221', '185', 'active', CURRENT_TIMESTAMP), (NULL, 'cd4', NULL, 'no', 'Sample Rejection Report', '/cd4/management/cd4-sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4SampleRejectionReport', '221', '186', 'active', CURRENT_TIMESTAMP), (NULL, 'cd4', NULL, 'no', 'Clinic Report', '/cd4/management/cd4-clinic-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4ClinicReport', '221', '186', 'active', CURRENT_TIMESTAMP);
+
+-- Amit 20-Feb-2024
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display VL Log Result', 'vl_display_signature_table', 'yes', 'vl', 'no', NULL, NULL, 'active');
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display VL Log Result', 'vl_display_page_no_in_footer', 'yes', 'vl', 'no', NULL, NULL, 'active');
+
+-- Amit 21-Feb-2024
+ALTER TABLE `form_eid` CHANGE COLUMN second_DBS_requested_reason second_dbs_requested_reason VARCHAR(256) NULL DEFAULT NULL
+ALTER TABLE `form_eid` ADD `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_dbs_requested`;
+ALTER TABLE `audit_form_eid`  ADD `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_dbs_requested`;

@@ -247,29 +247,29 @@ $sFormat = '';
                                              </div>
                                         </div>
                                         <div class="row femaleSection" style="display:none;">
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="patientPregnant">Is Patient Pregnant? <span class="mandatory">*</span></label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check if patient is pregnant"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="breastfeeding">Is Patient Breastfeeding? <span class="mandatory">*</span></label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check if patient is breastfeeding"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
+                                                       <label for="patientPregnant">Is Patient Pregnant? <span class="mandatory">*</span></label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check if patient is pregnant"> Yes
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
+                                                       </label>
                                                   </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
+                                                       <label for="breastfeeding">Is Patient Breastfeeding? <span class="mandatory">*</span></label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check if patient is breastfeeding"> Yes
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
+                                                       </label>
+                                                  </div>
+                                             </div>
+                                        </div>
                                    </div>
                                    <div class="box box-primary">
                                         <div class="box-header with-border">
@@ -303,11 +303,11 @@ $sFormat = '';
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="">Is sample re-ordered as part of corrective action? <span class="mandatory">*</span></label>
-                                                                 <select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose adherence">
-                                                                      <option value=""> -- Select -- </option>
-                                                                      <option value="yes">Yes</option>
-                                                                      <option value="no">No</option>
-                                                                 </select>
+                                                            <select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose adherence">
+                                                                 <option value=""> -- Select -- </option>
+                                                                 <option value="yes">Yes</option>
+                                                                 <option value="no">No</option>
+                                                            </select>
                                                        </div>
                                                   </div>
                                              </div>
@@ -366,9 +366,9 @@ $sFormat = '';
                                                                  <input type="text" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on">
                                                             </div>
                                                        </div>
-                                                       
+
                                                   </div>
-                                                 
+
                                              </div>
                                              <div class="box box-primary">
                                                   <div class="box-header with-border">
@@ -395,7 +395,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="baselineInitiationCD4Value" class="col-lg-5 control-label">  Absolute value & Percentage  :</label>
+                                                                 <label for="baselineInitiationCD4Value" class="col-lg-5 control-label"> Absolute value & Percentage :</label>
                                                                  <div class="col-lg-7">
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="lastCd4Result" name="baselineInitiationCD4Value" placeholder="Enter CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="lastCd4ResultPercentage" name="baselineInitiationCD4ValuePercentage" placeholder="Enter CD4 Result" title="Please enter CD4 Result" /></div>
@@ -407,7 +407,7 @@ $sFormat = '';
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                           <input type="radio" class="" id="assessmentAHD" name="reasonForCD4Testing" value="assessmentAHD" title="Please check CD4 indication testing type" onclick="showTesting('assessmentAHD');">
+                                                                                <input type="radio" class="" id="assessmentAHD" name="reasonForCD4Testing" value="assessmentAHD" title="Please check CD4 indication testing type" onclick="showTesting('assessmentAHD');">
                                                                                 <strong>Assessment for Advanced HIV Disease (AHD)</strong>
                                                                            </label>
                                                                       </div>
@@ -449,7 +449,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>     
+                                                                 <label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
                                                                  <div class="col-lg-7">
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4Result" name="treatmentCoinfectionCD4Value" placeholder="CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4ResultPercentage" name="treatmentCoinfectionCD4ValuePercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" /></div>
@@ -491,7 +491,7 @@ $sFormat = '';
                                                                       <input type="text" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" />
                                                                  </div>
                                                             </div>
-                                                            </div>
+                                                       </div>
                                                        <div class="row">
                                                             <div class="col-md-4">
                                                                  <label for="cd4FocalPerson" class="col-lg-5 control-label">CD4 Focal Person at Transport Transit site (DH):<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
@@ -505,7 +505,7 @@ $sFormat = '';
                                                                       <input type="text" class="form-control phone-number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="cd4FocalPersonPhoneNumber" name="cd4FocalPersonPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Phone Number" title="Please enter phone number" />
                                                                  </div>
                                                             </div>
-                                                             <div class="col-md-4">
+                                                            <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label" for="emailHf">Email for HF Lab results</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control isEmail" id="emailHf" name="emailHf" placeholder="Email for HF" title="Please enter email for hf" />
@@ -524,7 +524,7 @@ $sFormat = '';
                                                                  <div class="col-md-6">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label">CD4 Testing Platform </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> >
+                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?>>
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
                                                                                      <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>"><?php echo $mName['machine_name']; ?></option>
@@ -587,7 +587,7 @@ $sFormat = '';
                                                                            <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
                                                                       </div>
                                                                  </div>
-                                                                 
+
                                                                  <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
                                                                       <div class="col-lg-7">
@@ -596,7 +596,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                            <div class="col-md-6 cd4Result">
+                                                                 <div class="col-md-6 cd4Result">
                                                                       <label class="col-lg-5 control-label" for="cd4Result">Sample Results (CD4 count -Absolute value): </label>
                                                                       <div class="col-lg-7 resultInputContainer">
                                                                            <input class="form-control" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" />
@@ -722,7 +722,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
                     $.post("/common/patient-last-request-details.php", {
                               testType: 'cd4',
-                              patientId: artNo, 
+                              patientId: artNo,
                          },
                          function(data) {
                               if (data != "0") {
@@ -1116,6 +1116,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
 
      }
-
-  
 </script>

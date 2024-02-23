@@ -204,7 +204,7 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" class="labels"><label for="childDob">Date of Birth <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control isRequired date" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInMonths();" />
                                         </td>
                                         <th scope="row" class="labels"><label for="childGender">Gender <span class="mandatory">*</span> </label></th>
                                         <td>
@@ -844,27 +844,6 @@ $aResult = $db->query($aQuery);
             }
         });
 
-        $('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function(date) {
-                var dt2 = $('#sampleDispatchedDate');
-                var startDate = $(this).datetimepicker('getDate');
-                var minDate = $(this).datetimepicker('getDate');
-                //dt2.datetimepicker('setDate', minDate);
-                startDate.setDate(startDate.getDate() + 1000000);
-                dt2.datetimepicker('option', 'maxDate', "Today");
-                dt2.datetimepicker('option', 'minDate', minDate);
-                dt2.datetimepicker('option', 'minDateTime', minDate);
-                //dt2.val($(this).val());
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
         $('.select2').select2();
         $('#labId').select2({
             width: '100%',

@@ -205,7 +205,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                     <tr>
                                         <th scope="row"><label for="childDob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control isRequired date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
                                         </td>
                                         <th scope="row"><label for="childGender"><?= _translate('Gender'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
@@ -213,6 +213,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
                                                 <option value='male' <?php echo ($eidInfo['child_gender'] == 'male') ? "selected='selected'" : ""; ?>> <?= _translate('Male'); ?> </option>
                                                 <option value='female' <?php echo ($eidInfo['child_gender'] == 'female') ? "selected='selected'" : ""; ?>> <?= _translate('Female'); ?> </option>
+                                                <option value='unreported' <?php echo ($eidInfo['child_gender'] == 'unreported') ? "selected='selected'" : ""; ?>> <?= _translate('Unreported'); ?> </option>
 
                                             </select>
                                         </td>
@@ -271,7 +272,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                     <tr>
                                         <th scope="row" style="width:18% !important"><?= _translate('Date of next appointment'); ?> </th>
                                         <td>
-                                            <input class="form-control date" type="text" name="nextAppointmentDate" id="nextAppointmentDate" placeholder="<?= _translate('Please enter date of next appointment'); ?>" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['next_appointment_date']); ?>" />
+                                            <input class="form-control" type="text" name="nextAppointmentDate" id="nextAppointmentDate" placeholder="<?= _translate('Please enter date of next appointment'); ?>" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['next_appointment_date']); ?>" />
                                         </td>
                                         <th scope="row" style="width:18% !important"><?= _translate('Mode of Delivery'); ?> </th>
                                         <td>

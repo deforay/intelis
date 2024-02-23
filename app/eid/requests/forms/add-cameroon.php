@@ -190,7 +190,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row"><label for="childDob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control isRequired date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInMonths();" />
                                         </td>
                                         <th scope="row"><label for="childGender"><?= _translate('Gender'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
@@ -198,6 +198,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
                                                 <option value='male'> <?= _translate('Male'); ?> </option>
                                                 <option value='female'> <?= _translate('Female'); ?> </option>
+                                                <option value='unreported'> <?= _translate('Unreported'); ?> </option>
 
                                             </select>
                                         </td>
@@ -256,7 +257,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row" style="width:18% !important"><?= _translate('Date of next appointment'); ?> </th>
                                         <td>
-                                            <input class="form-control date" type="text" name="nextAppointmentDate" id="nextAppointmentDate" placeholder="<?= _translate('Please enter date of next appointment'); ?>" />
+                                            <input class="form-control" type="text" name="nextAppointmentDate" id="nextAppointmentDate" placeholder="<?= _translate('Please enter date of next appointment'); ?>" />
                                         </td>
                                         <th scope="row" style="width:18% !important"><?= _translate('Mode of Delivery'); ?> </th>
                                         <td>
@@ -709,35 +710,35 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $.unblockUI();
     }
 
-    // function getfacilityProvinceDetails(obj) {
-    //     $.blockUI();
-    //     //check facility name
-    //     var cName = $("#facilityId").val();
-    //     var pName = $("#province").val();
-    //     if (cName != '' && provinceName && facilityName) {
-    //         provinceName = false;
-    //     }
-    //     if (cName != '' && facilityName) {
-    //         $.post("/includes/siteInformationDropdownOptions.php", {
-    //                 cName: cName,
-    //                 testType: 'eid'
-    //             },
-    //             function(data) {
-    //                 if (data != "") {
-    //                     details = data.split("###");
-    //                     $("#province").html(details[0]);
-    //                     $("#district").html(details[1]);
-    //                     $("#clinicianName").val(details[2]);
-    //                 }
-    //             });
-    //     } else if (pName == '' && cName == '') {
-    //         provinceName = true;
-    //         facilityName = true;
-    //         $("#province").html("<?php echo $province; ?>");
-    //         $("#facilityId").html("<?php echo $facility; ?>");
-    //     }
-    //     $.unblockUI();
-    // }
+    function getfacilityProvinceDetails(obj) {
+        $.blockUI();
+        //check facility name
+        var cName = $("#facilityId").val();
+        var pName = $("#province").val();
+        if (cName != '' && provinceName && facilityName) {
+            provinceName = false;
+        }
+        if (cName != '' && facilityName) {
+            $.post("/includes/siteInformationDropdownOptions.php", {
+                    cName: cName,
+                    testType: 'eid'
+                },
+                function(data) {
+                    if (data != "") {
+                        details = data.split("###");
+                        $("#province").html(details[0]);
+                        $("#district").html(details[1]);
+                        $("#clinicianName").val(details[2]);
+                    }
+                });
+        } else if (pName == '' && cName == '') {
+            provinceName = true;
+            facilityName = true;
+            $("#province").html("<?php echo $province; ?>");
+            $("#facilityId").html("<?php echo $facility; ?>");
+        }
+        $.unblockUI();
+    }
 
 
     function validateNow() {

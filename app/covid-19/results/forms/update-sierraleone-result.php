@@ -811,35 +811,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
         $("#testKitNameTable").append(rowString);
 
-        $('.dateTime').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            },
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+        initDateTimePicker();
 
-        $('.date').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            onSelect: function() {
-                $(this).change();
-            },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+        initDatePicker();
 
         $('.expDate').datepicker({
             changeMonth: true,

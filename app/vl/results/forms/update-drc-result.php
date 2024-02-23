@@ -591,29 +591,6 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 		getVlResults($("#testingPlatform").val());
 		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');
 
-		$('.date').datepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
-
-		$('.dateTime').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
-
-		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
-		$('.date').mask(dateFormatMask);
-		$('.dateTime').mask(dateFormatMask + ' 99:99');
-
 		if ($("#status").val() == 4) {
 			$(".rejectionReason").show();
 			$("#rejectionReason").addClass('isRequired');
@@ -708,70 +685,6 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 		} else {
 			$(".newRejectionReason").hide();
 			$("#newRejectionReason").removeClass('isRequired');
-		}
-	}
-
-	function checkSampleReceviedDate() {
-		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleReceivedDate = $("#sampleReceivedDate").val();
-		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
-			//Set sample coll. datetime
-			splitSampleCollDateTime = sampleCollectionDate.split(" ");
-			splitSampleCollDate = splitSampleCollDateTime[0].split("-");
-			var sampleCollOn = new Date(splitSampleCollDate[1] + splitSampleCollDate[2] + ", " + splitSampleCollDate[0]);
-			var monthDigit = sampleCollOn.getMonth();
-			var smplCollYear = splitSampleCollDate[2];
-			var smplCollMonth = isNaN(monthDigit) ? 0 : (parseInt(monthDigit) + parseInt(1));
-			smplCollMonth = (smplCollMonth < 10) ? '0' + smplCollMonth : smplCollMonth;
-			var smplCollDate = splitSampleCollDate[0];
-			sampleCollDateTime = smplCollYear + "-" + smplCollMonth + "-" + smplCollDate + " " + splitSampleCollDateTime[1] + ":00";
-			//Set sample rece. datetime
-			splitSampleReceivedDateTime = sampleReceivedDate.split(" ");
-			splitSampleReceivedDate = splitSampleReceivedDateTime[0].split("-");
-			var sampleReceivedDate = new Date(splitSampleReceivedDate[1] + splitSampleReceivedDate[2] + ", " + splitSampleReceivedDate[0]);
-			var monthDigit = sampleReceivedDate.getMonth();
-			var smplReceivedYear = splitSampleReceivedDate[2];
-			var smplReceivedMonth = isNaN(monthDigit) ? 0 : (parseInt(monthDigit) + parseInt(1));
-			smplReceivedMonth = (smplReceivedMonth < 10) ? '0' + smplReceivedMonth : smplReceivedMonth;
-			var smplReceivedDate = splitSampleReceivedDate[0];
-			sampleReceivedDateTime = smplReceivedYear + "-" + smplReceivedMonth + "-" + smplReceivedDate + " " + splitSampleReceivedDateTime[1] + ":00";
-			//Check diff
-			if (moment(sampleCollDateTime).diff(moment(sampleReceivedDateTime)) > 0) {
-				alert("L'échantillon de données reçues ne peut pas être antérieur à la date de collecte de l'échantillon!");
-				$("#sampleReceivedDate").val("");
-			}
-		}
-	}
-
-	function checkSampleTestingDate() {
-		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleTestingDate = $("#sampleTestingDateAtLab").val();
-		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
-			//Set sample coll. date
-			splitSampleCollDateTime = sampleCollectionDate.split(" ");
-			splitSampleCollDate = splitSampleCollDateTime[0].split("-");
-			var sampleCollOn = new Date(splitSampleCollDate[1] + splitSampleCollDate[2] + ", " + splitSampleCollDate[0]);
-			var monthDigit = sampleCollOn.getMonth();
-			var smplCollYear = splitSampleCollDate[2];
-			var smplCollMonth = isNaN(monthDigit) ? 0 : (parseInt(monthDigit) + parseInt(1));
-			smplCollMonth = (smplCollMonth < 10) ? '0' + smplCollMonth : smplCollMonth;
-			var smplCollDate = splitSampleCollDate[0];
-			sampleCollDateTime = smplCollYear + "-" + smplCollMonth + "-" + smplCollDate + " " + splitSampleCollDateTime[1] + ":00";
-			//Set sample testing date
-			splitSampleTestedDateTime = sampleTestingDate.split(" ");
-			splitSampleTestedDate = splitSampleTestedDateTime[0].split("-");
-			var sampleTestingOn = new Date(splitSampleTestedDate[1] + splitSampleTestedDate[2] + ", " + splitSampleTestedDate[0]);
-			var monthDigit = sampleTestingOn.getMonth();
-			var smplTestingYear = splitSampleTestedDate[2];
-			var smplTestingMonth = isNaN(monthDigit) ? 0 : (parseInt(monthDigit) + parseInt(1));
-			smplTestingMonth = (smplTestingMonth < 10) ? '0' + smplTestingMonth : smplTestingMonth;
-			var smplTestingDate = splitSampleTestedDate[0];
-			sampleTestingAtLabDateTime = smplTestingYear + "-" + smplTestingMonth + "-" + smplTestingDate + " " + splitSampleTestedDateTime[1] + ":00";
-			//Check diff
-			if (moment(sampleCollDateTime).diff(moment(sampleTestingAtLabDateTime)) > 0) {
-				alert("La date d'essai de l'échantillon ne peut pas être antérieure à la date de collecte de l'échantillon!");
-				$("#sampleTestingDateAtLab").val("");
-			}
 		}
 	}
 

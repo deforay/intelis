@@ -596,8 +596,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 												Female
 											</label>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender" <?php echo ($genericResultInfo['patient_gender'] == 'not_recorded') ? "checked='checked'" : "" ?>>Not
-												Recorded
+												<input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please check gender" <?php echo ($genericResultInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>
+												Unreported
 											</label>
 										</div>
 									</div>
@@ -971,31 +971,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		var testType = $("#testType").val();
 		getTestTypeConfigList(testType);
 
-		$('.date').datepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
-		$('.dateTime').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			onChangeMonthYear: function(year, month, widget) {
-				setTimeout(function() {
-					$('.ui-datepicker-calendar').show();
-				});
-			},
-			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
+		initDatePicker();
+		initDateTimePicker();
 		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
 		$('.date').mask(dateFormatMask);
 		$('.dateTime').mask(dateFormatMask + ' 99:99');
@@ -1029,44 +1006,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			}
 		});
 
-		$('#sampleCollectionDate').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				//dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "Today");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-				//dt2.val($(this).val());
-			}
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
 
-
-		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-		var collectDate = $("#sampleCollectionDate").toString();
-		var dispatchDate = $("#sampleDispatchedDate").toString();
-		if (collectDate > dispatchDate) {
-			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		}
-
-		$('#sampleDispatchedDate').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			minDate: minDate,
-			startDate: minDate,
-		});
 
 
 		autoFillFocalDetails();
@@ -1278,51 +1218,6 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		});
 	});
 
-	function checkSampleReceviedAtHubDate() {
-		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
-		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
-
-			date1 = new Date(sampleCollectionDate);
-			date2 = new Date(sampleReceivedAtHubOn);
-
-			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _translate("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
-				$("#sampleReceivedAtHubOn").val("");
-			}
-		}
-	}
-
-	function checkSampleReceviedDate() {
-		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleReceivedDate = $("#sampleReceivedDate").val();
-		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
-
-			date1 = new Date(sampleCollectionDate);
-			date2 = new Date(sampleReceivedDate);
-
-			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _translate("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
-				$("#sampleReceivedDate").val("");
-			}
-		}
-	}
-
-	function checkSampleTestingDate() {
-		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleTestingDate = $("#sampleTestingDateAtLab").val();
-		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
-
-			date1 = new Date(sampleCollectionDate);
-			date2 = new Date(sampleTestingDate);
-
-			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _translate("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
-				$("#sampleTestingDateAtLab").val("");
-			}
-		}
-	}
-
 	function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
 		if ($.trim($("#" + id).val()) != '') {
 			$.blockUI();
@@ -1515,7 +1410,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			'');
 	}
 	$("input:radio[name=gender]").click(function() {
-		if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
+		if ($(this).val() == 'male' || $(this).val() == 'unreported') {
 			$('.femaleSection').hide();
 			$('input[name="breastfeeding"]').prop('checked', false);
 			$('input[name="patientPregnant"]').prop('checked', false);
@@ -1682,20 +1577,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 					if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
 						$("#otherSection").html(data.otherSection);
 					}
-					$('.dateTime').datetimepicker({
-						changeMonth: true,
-						changeYear: true,
-						dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-						timeFormat: "HH:mm",
-						maxDate: "Today",
-						onChangeMonthYear: function(year, month, widget) {
-							setTimeout(function() {
-								$('.ui-datepicker-calendar').show();
-							});
-						}
-					}).click(function() {
-						$('.ui-datepicker-calendar').show();
-					});
+					initDateTimePicker();
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
@@ -1778,20 +1660,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 					} else {
 						$('#resultSection').hide();
 					}
-					$('.dateTime').datetimepicker({
-						changeMonth: true,
-						changeYear: true,
-						dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-						timeFormat: "HH:mm",
-						maxDate: "Today",
-						onChangeMonthYear: function(year, month, widget) {
-							setTimeout(function() {
-								$('.ui-datepicker-calendar').show();
-							});
-						}
-					}).click(function() {
-						$('.ui-datepicker-calendar').show();
-					});
+					initDateTimePicker();
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
@@ -1898,20 +1767,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			$('.ui-datepicker-calendar').show();
 		});
 
-		$('.dateTime').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			onChangeMonthYear: function(year, month, widget) {
-				setTimeout(function() {
-					$('.ui-datepicker-calendar').show();
-				});
-			}
-		}).click(function() {
-			$('.ui-datepicker-calendar').show();
-		});
+		initDateTimePicker();
 
 		if ($('.kitlabels').is(':visible') == true) {
 			$('.kitlabels').show();

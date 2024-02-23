@@ -1,11 +1,16 @@
 <?php
 // Allow from any origin
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+
+
+if (empty(SYSTEM_CONFIG['recency']['crosslogin']) || SYSTEM_CONFIG['recency']['crosslogin'] !== true) {
+    exit('Cross login is not enabled');
+}
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");

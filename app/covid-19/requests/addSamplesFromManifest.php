@@ -298,24 +298,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				$.unblockUI();
 			});
 	}
-	$(document).ready(function() {
-		$('.dateTime').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "Today");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-			}
-		});
-	});
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

@@ -174,7 +174,7 @@ if (isset($arr['tb_min_patient_id_length']) && $arr['tb_min_patient_id_length'] 
 $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 $testPlatformList = [];
 foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name'].'##'.$row['instrument_id']] = $row['machine_name'];
+    $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 $fileArray = [
     COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
@@ -217,94 +217,7 @@ require_once($fileArray[$arr['vl_form']]);
     }
 
     $(document).ready(function() {
-        $('.date').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            onSelect: function() {
-                $(this).change();
-            },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-
-        $('.date-time').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            },
-            onSelect: function(e) {},
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-
-        $("#patientDob").datepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function(dateText, inst) {
-                $("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
-                $(this).change();
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-
-        $('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            },
-            onSelect: function(e) {
-                $('#sampleReceivedDate').val('');
-                $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
-            },
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-
-        $('#sampleReceivedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            },
-            onSelect: function(e) {
-                $('#sampleTestedDateTime').val('');
-                $('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
-            },
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-
-        // let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
-        // $('.date').mask(dateFormatMask);
-        // $('.dateTime').mask(dateFormatMask + ' 99:99');
+        initDatePicker();
 
         $('#isSampleRejected').change(function(e) {
             changeReject(this.value);

@@ -1,37 +1,4 @@
 <script type="text/javascript">
-    $(document).ready(function() {
-
-        let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?>';
-        $('.date').mask(dateFormatMask);
-        $('.dateTime').mask(dateFormatMask + ' 99:99');
-
-        $('.date').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "hh:mm",
-            maxDate: "Today",
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-        $('.dateTime').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-    });
-
-
     function changeFormat(date) {
         splitDate = date.split("-");
         var fDate = new Date(splitDate[1] + splitDate[2] + ", " + splitDate[0]);
@@ -62,59 +29,6 @@
         }
     }
 
-    function checkSampleReceviedDate() {
-
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleReceivedDate = $("#sampleReceivedDate").val();
-
-        if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
-
-            date1 = new Date(sampleCollectionDate);
-            date2 = new Date(sampleReceivedDate);
-            date3 = new Date();
-
-            if (date1.getTime() > date3.getTime()) {
-                alert("<?= _translate("Sample Collection Date cannot be grater than Today Date"); ?>");
-                $("#sampleCollectionDate").val("");
-            }else if (date2.getTime() > date3.getTime()) {
-                alert("<?= _translate("Sample Received at Testing Lab Date cannot be grater than Today Date"); ?>");
-                $("#sampleReceivedDate").val("");
-            }else if (date2.getTime() < date1.getTime()) {
-                alert("<?= _translate("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
-                $("#sampleReceivedDate").val("");
-            } 
-        }
-    }
-
-    function checkSampleReceviedAtHubDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
-        if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
-
-            date1 = new Date(sampleCollectionDate);
-            date2 = new Date(sampleReceivedAtHubOn);
-
-            if (date2.getTime() < date1.getTime()) {
-                alert("<?= _translate("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
-                $("#sampleReceivedAtHubOn").val("");
-            }
-        }
-    }
-
-    function checkSampleTestingDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleTestingDate = $("#sampleTestingDateAtLab").val();
-        if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
-
-            date1 = new Date(sampleCollectionDate);
-            date2 = new Date(sampleTestingDate);
-
-            if (date2.getTime() < date1.getTime()) {
-                alert("<?= _translate("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
-                $("#sampleTestingDateAtLab").val("");
-            }
-        }
-    }
 
     function checkARTInitiationDate() {
         var dob = changeFormat($("#dob").val());

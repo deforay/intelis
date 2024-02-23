@@ -87,7 +87,6 @@ if (empty($syncLatestTime)) {
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript" src="/assets/js/dayjs.min.js"></script>
 <script type="text/javascript" src="/assets/js/dayjs.customParseFormat.js"></script>
-<script type="text/javascript" src='/assets/js/main.js?v=<?= filemtime(WEB_ROOT . "/assets/js/main.js") ?>'></script>
 <script type="text/javascript" src="/assets/js/app.min.js"></script>
 <script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
 <script type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
@@ -96,7 +95,8 @@ if (empty($syncLatestTime)) {
 <script src="/assets/js/highcharts-exporting.js"></script>
 <script src="/assets/js/highcharts-offline-exporting.js"></script>
 <script src="/assets/js/highcharts-accessibility.js"></script>
-
+<?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
+<?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>
 
 <script type="text/javascript">
 	Highcharts.setOptions({

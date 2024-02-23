@@ -1375,41 +1375,8 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
 
     $(document).ready(function() {
-        $('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "+1Y",
-            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function(date) {
-                var dt2 = $('#sampleDispatchedDate');
-                var startDate = $(this).datetimepicker('getDate');
-                var minDate = $(this).datetimepicker('getDate');
-                //dt2.datetimepicker('setDate', minDate);
-                startDate.setDate(startDate.getDate() + 1000000);
-                dt2.datetimepicker('option', 'maxDate', "+1Y");
-                dt2.datetimepicker('option', 'minDate', minDate);
-                dt2.datetimepicker('option', 'minDateTime', minDate);
-                //dt2.val($(this).val());
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
 
 
-        var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-        if ($("#sampleDispatchedDate").val() == "")
-            $("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-
-        $('#sampleDispatchedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            minDate: minDate,
-            startDate: minDate,
-        });
         $('.result-focus').change(function(e) {
             var status = false;
             $(".result-focus").each(function(index) {
@@ -1702,21 +1669,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
         $("#testKitNameTable").append(rowString);
 
-        $('.dateTime').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            },
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+        initDateTimePicker();
         tableRowId++;
 
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
@@ -1794,11 +1747,11 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
     function checkSubReason(obj, show) {
         $('.checkbox').prop("checked", false);
-        if(show == "diagnostique"){
+        if (show == "diagnostique") {
             if ($(obj).prop("checked", true)) {
                 $('.hide-reasons').hide();
             }
-        }else{
+        } else {
             if ($(obj).prop("checked", true)) {
                 $('.' + show).show();
                 $('.' + show).removeClass('hide-reasons');
@@ -1806,7 +1759,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                 $('.' + show).addClass('hide-reasons');
             }
         }
-        
+
     }
 
     function asymptomaticFn(value) {

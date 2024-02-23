@@ -144,11 +144,14 @@ try {
 				$facilityAttributes['report_template'] = $fileName;
 			}
 		}
-		if (!empty($_POST['display_pageno_in_footer'])) {
-			$facilityAttributes['display_page_number_in_footer'] = $_POST['display_pageno_in_footer'];
+		if (!empty($_POST['displayPagenoInFooter'])) {
+			$facilityAttributes['display_page_number_in_footer'] = $_POST['displayPagenoInFooter'];
 		}
-		if (!empty($_POST['display_signature_table'])) {
-			$facilityAttributes['display_signature_table'] = $_POST['display_signature_table'];
+		if (!empty($_POST['displaySignatureTable'])) {
+			$facilityAttributes['display_signature_table'] = $_POST['displaySignatureTable'];
+		}
+		if (!empty($_POST['reportTopMargin'])) {
+			$facilityAttributes['report_top_margin'] = $_POST['reportTopMargin'];
 		}
 
 		if (!empty($_POST['sampleType'])) {

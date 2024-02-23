@@ -782,8 +782,8 @@ ALTER TABLE `form_generic` ADD `result_unit` INT NULL DEFAULT NULL AFTER `result
 UPDATE `system_config` SET `value` = '5.1.7' WHERE `system_config`.`name` = 'sc_version';
 
 -- Jeyabanu 08-06-2023
-ALTER TABLE `form_eid` ADD `second_dbs_requested` VARCHAR(256) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
-ALTER TABLE `audit_form_eid` ADD `second_dbs_requested` VARCHAR(256) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
+ALTER TABLE `form_eid` ADD `second_dbs_requested` VARCHAR(256) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_dbs_requested`;
+ALTER TABLE `audit_form_eid` ADD `second_dbs_requested` VARCHAR(256) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_dbs_requested`;
 
 -- Thana 09-Jun-2023
 

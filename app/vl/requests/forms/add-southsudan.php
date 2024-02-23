@@ -855,26 +855,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           });
 
-          $('#sampleCollectionDate').datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-               timeFormat: "HH:mm",
-               maxDate: "Today",
-               onSelect: function(date) {
-                    var dt2 = $('#sampleDispatchedDate');
-                    //var startDate = $(this).datetimepicker('getDate');
-                    var minDate = $(this).datetimepicker('getDate');
-                    //dt2.datetimepicker('setDate', minDate);
-                    //startDate.setDate(startDate.getDate() + 1000000);
-                    dt2.datetimepicker('option', 'maxDate', "Today");
-                    dt2.datetimepicker('option', 'minDate', minDate);
-                    dt2.datetimepicker('option', 'minDateTime', minDate);
-                    //dt2.val($(this).val());
-               }
-          }).click(function() {
-               $('.ui-datepicker-calendar').show();
-          });
           $('#labId').select2({
                width: '100%',
                placeholder: "Select Testing Lab"
