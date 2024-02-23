@@ -230,22 +230,18 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 
 
 -- Jeyabanu 09-Feb-2024
-
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('cd4-requests', 'cd4', 'CD4 Requests'), ('cd4-results', 'cd4', 'CD4 Results'), ('cd4-reports', 'cd4', 'CD4 Reports');
-
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/cd4/requests/cd4-add-request.php', NULL, 'Add', NULL, 'always');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/cd4/requests/cd4-edit-request.php', NULL, 'Edit', NULL, 'always');
 
 
 -- Jeyabanu 12-Feb-2024
-
 ALTER TABLE `form_cd4` CHANGE `result` `cd4_result` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_cd4` CHANGE `result_percentage` `cd4_result_percentage` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-results', '/cd4/results/cd4-manual-results.php', '[\"/cd4/results/cd4-update-result.php\", \"/cd4/results/cd4-failed-results.php\"]', 'Enter Result Manually', NULL, 'always');
 
 
 -- Jeyabanu 13-Feb-2024
-
 ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','cd4','generic-tests') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','cd4','generic-tests') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 
@@ -261,7 +257,6 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 
 
 -- Jeyabanu 14-Feb-2024
-
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'cd4', 'no', 'CD4 Config', NULL, NULL, 'always', 'fa-solid fa-eyedropper', 'yes', 'treeview tb-reference-manage', '2', '14', 'active', CURRENT_TIMESTAMP);
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', NULL, 'no', 'Sample Type', '/cd4/reference/cd4-sample-type.php', '/cd4/reference/add-cd4-sample-type.php,/cd4/reference/edit-cd4-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4-sample-type', '224', '178', 'active', CURRENT_TIMESTAMP);
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'Enter Result Manually', '/cd4/results/cd4-manual-results.php', '/cd4/results/cd4-update-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlTestResultMenu', '220', '180', 'active', CURRENT_TIMESTAMP), (NULL, 'cd4', NULL, 'no', 'Manage Results Status', '/cd4/results/cd4-result-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchCodeMenu', '220', '181', 'active', CURRENT_TIMESTAMP);
@@ -270,7 +265,6 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 
 
 -- Jeyabanu 16-Feb-2024
-
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/specimen-referral-manifest/add-manifest.php?t=cd4', NULL, 'Add CD4 Manifests', NULL, 'always'), (NULL, 'cd4-requests', '/specimen-referral-manifest/edit-manifest.php?t=cd4', NULL, 'Edit CD4 Manifests', NULL, 'always');
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('cd4-batches', 'cd4', 'CD4 Batch Management');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-batches', '/batch/batches.php?type=cd4', '[\r\n    \"/batch/generate-batch-pdf.php?type=cd4\"\r\n]', 'View Batches', NULL, 'always'), (NULL, 'cd4-batches', '/batch/add-batch.php?type=cd4', '[\r\n    \"/batch/add-batch-position.php?type=cd4\"\r\n]', 'Add Batch', NULL, 'always');
@@ -278,7 +272,6 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 ALTER TABLE `form_cd4` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
 
 -- Jeyabanu 19-Feb-2024
-
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-results', '/cd4/results/cd4-result-status.php', NULL, 'Manage Result Status', NULL, 'always'), (NULL, 'cd4-results', '/cd4/results/email-results.php', '[\"/cd4/results/email-results.php\",\"/cd4/results/email-results-confirm.php\"]', 'Email Test Results', NULL, 'always'), (NULL, 'cd4-results', '/cd4/results//import-result/import-file.php?t=cd4', NULL, 'Import Result from Files', NULL, 'always');
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', '', 'no', 'Import Result From File', '/import-result/import-file.php?t=cd4', '/import-result/imported-results.php?t=cd4,/import-result/importedStatistics.php?t=cd4', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4ImportResultMenu', '220', '182', 'active', CURRENT_TIMESTAMP), (NULL, 'cd4', NULL, 'no', 'Failed/Hold Samples', '/cd4/results/cd4-failed-results.php', NULL, 'always', NULL, 'no', 'allMenu cd4FailedResultsMenu', '220', '183', 'active', CURRENT_TIMESTAMP);
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-management', '/cd4/management/cd4-clinic-report.php', NULL, 'CD4 Clinic Reports', NULL, 'always'), (NULL, 'cd4-management', '/cd4/management/cd4-export-data.php', NULL, 'Export Data', NULL, 'always');
@@ -295,3 +288,7 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 ALTER TABLE `form_eid` CHANGE COLUMN second_DBS_requested_reason second_dbs_requested_reason VARCHAR(256) NULL DEFAULT NULL
 ALTER TABLE `form_eid` ADD `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_dbs_requested`;
 ALTER TABLE `audit_form_eid`  ADD `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_dbs_requested`;
+
+
+--Jeyabanu 23-Feb-2024
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('CD4 Maximum Length', 'cd4_max_length', '', 'cd4', 'no', '2024-02-21 15:13:51', '456456amit2w343ersd3456t4yrgdfsew2', 'active'), ('CD4 Minimum Length', 'cd4_min_length', '', 'cd4', 'no', '2024-02-21 15:13:51', '456456amit2w343ersd3456t4yrgdfsew2', 'active'), ('Minimum Patient ID Length', 'cd4_min_patient_id_length', '', 'cd4', 'no', '2024-02-21 15:13:51', '456456amit2w343ersd3456t4yrgdfsew2', 'active'), ('CD4 Sample Code Format', 'cd4_sample_code', 'MMYY', 'cd4', 'no', '2024-02-21 15:13:51', '456456amit2w343ersd3456t4yrgdfsew2', 'active'), ('CD4 Sample Code Prefix', 'cd4_sample_code_prefix', 'CD4', 'cd4', 'no', '2024-02-21 15:13:51', '456456amit2w343ersd3456t4yrgdfsew2', 'active'), ('CD4 Sample Expiry Days', 'cd4_sample_expiry_after_days', '999', 'cd4', 'no', '2024-02-21 15:13:51', '456456amit2w343ersd3456t4yrgdfsew2', 'active'), ('CD4 Sample Lock Expiry Days', 'cd4_sample_lock_after_days', '999', 'cd4', 'no', '2024-02-21 15:13:51', '456456amit2w343ersd3456t4yrgdfsew2', 'active'), ('Show Participant Name in Manifest', 'cd4_show_participant_name_in_manifest', 'yes', 'CD4', 'no', '2024-02-21 15:13:51', '456456amit2w343ersd3456t4yrgdfsew2', 'active');
