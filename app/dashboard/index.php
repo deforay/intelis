@@ -92,6 +92,9 @@ require_once APPLICATION_PATH . '/header.php';
 				if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], array('tb'))) { ?>
 					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');"><?= _translate("TB Tests"); ?></a></li>
 				<?php }
+				if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true && array_intersect($_SESSION['modules'], array('cd4'))) { ?>
+					<li><a href="#cd4Dashboard" data-toggle="tab" onclick="generateDashboard('cd4');"><?= _translate("CD4 Tests"); ?></a></li>
+				<?php }
 				if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true && array_intersect($_SESSION['modules'], array('generic-tests'))) { ?>
 					<li><a href="#genericTestsDashboard" data-toggle="tab" onclick="generateDashboard('generic-tests');"><?= _translate("Other Lab Tests"); ?></a></li>
 				<?php }
@@ -383,6 +386,57 @@ require_once APPLICATION_PATH . '/header.php';
 				<?php } ?>
 				<!-- TB END -->
 
+
+					<!-- CD4 START-->
+					<?php if (
+					isset(SYSTEM_CONFIG['modules']['cd4']) &&
+					SYSTEM_CONFIG['modules']['cd4'] === true && array_intersect($_SESSION['modules'], array('cd4'))
+				) { ?>
+
+					<div class="tab-pane fade in" id="cd4Dashboard">
+						<!-- TB content -->
+						<section class="content">
+							<div id="contCovid"> </div>
+							<!-- Small boxes (Stat box) -->
+							<div class="row" style="padding-top:10px;padding-bottom:20px;">
+								<div class="col-lg-7">
+									<form autocomplete="off">
+										<table aria-describedby="table" class="table searchTable" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+											<tr>
+												<th scope="row" style="vertical-align:middle;"><strong>
+														<?= _translate('Date Range'); ?>&nbsp;:
+													</strong></th>
+												<td>
+													<input type="text" id="cd4SampleCollectionDate" name="cd4SampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
+												</td>
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('cd4')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('cd4');"><span>
+															<?= _translate('Reset'); ?>
+														</span></button>
+												</td>
+											</tr>
+										</table>
+									</form>
+								</div>
+							</div>
+							<div class="row cd4">
+								<div class="searchVlRequestDataDiv" id="cd4SampleResultDetails"></div>
+								<div class="box-body sampleCountsDatatableDiv" id="cd4NoOfSampleCount"></div>
+								<div class="samplePieChartDiv" id="cd4PieChartDiv"></div>
+							</div>
+
+							<!-- /.row -->
+							<!-- Main row -->
+							<!-- /.row (main row) -->
+						</section>
+						<!-- /. CD4 content -->
+					</div>
+
+				<?php } ?>
+				<!-- CD4 END -->
+
+
+
 				<!-- OTHER LAB TESTS START-->
 				<?php if (
 					isset(SYSTEM_CONFIG['modules']['generic-tests']) &&
@@ -549,6 +603,8 @@ require_once APPLICATION_PATH . '/header.php';
 				getHepatitisMonthlyTargetsReport();
 			} else if (requestType == 'tb') {
 				getTbMonthlyTargetsReport();
+			} else if (requestType == 'cd4') {
+				getCd4MonthlyTargetsReport();
 			}
 		<?php } ?>
 
@@ -616,7 +672,17 @@ require_once APPLICATION_PATH . '/header.php';
 						$("#tbSampleResultDetails").html(data);
 					}
 				});
-		} else if (requestType == 'generic-tests') {
+		} else if (requestType == 'cd4') {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
+					sampleCollectionDate: $("#cd4SampleCollectionDate").val(),
+					type: 'cd4'
+				},
+				function(data) {
+					if (data != '') {
+						$("#cd4SampleResultDetails").html(data);
+					}
+				});
+		}else if (requestType == 'generic-tests') {
 			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
 					type: 'generic-tests'
@@ -749,6 +815,20 @@ require_once APPLICATION_PATH . '/header.php';
 						$(".labAverageTatDiv").css("display", "none");
 					}
 				});
+		} else if (requestType == 'cd4') {
+			currentXHR = $.post("/cd4/management/get-sample-status.php", {
+					sampleCollectionDate: $("#cd4SampleCollectionDate").val(),
+					batchCode: '',
+					facilityName: '',
+					sampleType: '',
+					type: 'cd4'
+				},
+				function(data) {
+					if ($.trim(data) != '') {
+						$("#cd4PieChartDiv").html(data);
+						$(".labAverageTatDiv").css("display", "none");
+					}
+				});
 		} else if (requestType == 'generic-tests') {
 			currentXHR = $.post("/generic-tests/program-management/get-sample-status.php", {
 					sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
@@ -769,7 +849,7 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	function resetSearchVlRequestData(requestType) {
-		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate,#tbSampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
+		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate,#tbSampleCollectionDate,#cd4SampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
 			locale: {
 				cancelLabel: "<?= _translate("Clear", true); ?>",
 				format: 'DD-MMM-YYYY',
@@ -937,6 +1017,28 @@ require_once APPLICATION_PATH . '/header.php';
 				}
 
 
+
+			});
+		$.unblockUI();
+	}
+
+	function getCd4MonthlyTargetsReport() {
+		// $.blockUI();
+
+		$.post("/cd4/management/get-cd4-monthly-threshold-report.php", {
+				targetType: '1',
+				sampleTestDate: $("#cd4SampleCollectionDate").val(),
+			},
+			function(data) {
+				var data = JSON.parse(data);
+				// console.log(data['aaData'].length);
+				if (data['aaData'].length > 0) {
+					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
+				<span >' + data['aaData'].length + ' <?= _translate("CD4 testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
+				</div>';
+					$("#contCovid").html(div);
+				}
 
 			});
 		$.unblockUI();

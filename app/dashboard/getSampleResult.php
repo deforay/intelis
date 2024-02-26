@@ -57,7 +57,13 @@ if ($testType == 'eid') {
     $samplesRejectedChart = "vlSamplesRejectedChart";
     $samplesWaitingChart = "vlSamplesWaitingChart";
     $samplesOverviewChart = "vlSamplesOverviewChart";
-} elseif ($testType == 'recency') {
+} elseif ($testType == 'cd4') {
+    $samplesReceivedChart = "cd4SamplesReceivedChart";
+    $samplesTestedChart = "cd4SamplesTestedChart";
+    $samplesRejectedChart = "cd4SamplesRejectedChart";
+    $samplesWaitingChart = "cd4SamplesWaitingChart";
+    $samplesOverviewChart = "cd4SamplesOverviewChart";
+}elseif ($testType == 'recency') {
     $recencyWhere = " reason_for_vl_testing = 9999 ";
     $samplesReceivedChart = "recencySamplesReceivedChart";
     $samplesTestedChart = "recencySamplesTestedChart";
@@ -149,7 +155,15 @@ try {
                         AND (vl.is_sample_rejected like 'no'
                                 OR vl.is_sample_rejected is null
                                 OR vl.is_sample_rejected = '' )";
-    } elseif ($table == "form_generic") {
+    } elseif ($table == "form_cd4") {
+        $waitingQuery = "SELECT COUNT(unique_id) as total
+                        FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
+                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        AND (vl.cd4_result is null or vl.cd4_result = '')
+                        AND (vl.is_sample_rejected like 'no'
+                                OR vl.is_sample_rejected is null
+                                OR vl.is_sample_rejected = '' )";
+    }elseif ($table == "form_generic") {
         $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as generic
                         LEFT JOIN facility_details as f ON f.facility_id=generic.facility_id
@@ -187,6 +201,23 @@ try {
     INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
     WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
 
+    if($table == "form_cd4"){
+        $aggregateQuery = "SELECT COUNT(unique_id) as totalCollected,
+        SUM(CASE WHEN (vl.lab_id is NOT NULL AND vl.sample_tested_datetime is NOT NULL
+                            AND vl.cd4_result is NOT NULL AND vl.cd4_result not like ''
+                            AND vl.result_status = 7) THEN 1 ELSE 0 END)
+                                                                as 'tested',
+        SUM(CASE WHEN (vl.result_status = 1) THEN 1 ELSE 0 END) as 'hold',
+        SUM(CASE WHEN (vl.result_status = 4) THEN 1 ELSE 0 END) as 'rejected',
+        SUM(CASE WHEN (vl.result_status = 5) THEN 1 ELSE 0 END) as 'invalid',
+        SUM(CASE WHEN (vl.result_status = 6) THEN 1 ELSE 0 END) as 'registeredAtTestingLab',
+        SUM(CASE WHEN (vl.result_status = 8) THEN 1 ELSE 0 END) as 'awaitingApproval',
+        SUM(CASE WHEN (vl.result_status = 9) THEN 1 ELSE 0 END) as 'registeredAtCollectionPoint',
+        SUM(CASE WHEN (vl.result_status = 10) THEN 1 ELSE 0 END) as 'expired'
+        FROM $table as vl
+        INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
+        WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
+    }
     $aggregateResult = $db->rawQueryOne($aggregateQuery);
 
     // Samples Accession

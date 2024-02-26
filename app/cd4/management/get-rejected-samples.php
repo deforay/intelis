@@ -7,10 +7,12 @@ use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
+
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -23,26 +25,36 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $formId = (int) $general->getGlobalConfig('vl_form');
-
+$sWhere = [];
 $tResult = [];
 //$rjResult = [];
 if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere = [];
-    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+    $start_date = '';
+    $end_date = '';
+
+    $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
+    //print_r($s_c_date);die;
+    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
+    }
+    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
+    }
     //get value by rejection reason id
-    $vlQuery = "SELECT count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`, r_c_a.recommended_corrective_action_name
+    $vlQuery = "SELECT count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`
                 FROM form_cd4 as vl
                 INNER JOIN r_vl_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
-                LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
-                INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
-    $sWhere[] = ' where vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
+                INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id
+                ";
+
+    $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
 
     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
-        $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
+        $sWhere[] = '  s.sample_id = "' . $_POST['sampleType'] . '"';
     }
     if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
-        $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
+        $sWhere[] = '  vl.lab_id = "' . $_POST['labName'] . '"';
     }
     if (is_array($_POST['clinicName']) && !empty($_POST['clinicName'])) {
         $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
@@ -52,10 +64,13 @@ if (!empty($_POST['sampleCollectionDate'])) {
     }
     if (!empty($sWhere)) {
         $sWhere = implode(' AND ', $sWhere);
+    } else {
+        $sWhere = "";
     }
-    $vlQuery = $vlQuery . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
+    $vlQuery = $vlQuery . ' where ' . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
     $_SESSION['rejectedSamples'] = $vlQuery;
     $tableResult = $db->rawQuery($vlQuery);
+    // print_r($vlQuery);die;
 
     foreach ($tableResult as $tableRow) {
         if (!isset($tResult[$tableRow['rejection_reason_name']])) {
@@ -85,7 +100,6 @@ if (!empty($tableResult)) { ?>
             <th><?php echo _translate("Facility Name"); ?></th>
             <th><?php echo _translate("Rejection Reason"); ?></th>
             <th><?php echo _translate("Reason Category"); ?></th>
-            <th><?php echo _translate("Recommended Corrective Action"); ?></th>
             <th><?php echo _translate("No. of Samples"); ?></th>
         </tr>
     </thead>
@@ -99,7 +113,6 @@ if (!empty($tableResult)) { ?>
                     <td><?php echo ($tableRow['facility_name']); ?></td>
                     <td><?php echo ($tableRow['rejection_reason_name']); ?></td>
                     <td><?php echo strtoupper((string) $tableRow['rejection_type']); ?></td>
-                    <td><?php echo ($tableRow['recommended_corrective_action_name']); ?></td>
                     <td><?php echo $tableRow['total']; ?></td>
                 </tr>
         <?php

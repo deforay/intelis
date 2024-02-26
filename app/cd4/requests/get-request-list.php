@@ -32,8 +32,8 @@ try {
      $primaryKey = "cd4_id";
 
      $sampleCode = 'sample_code';
-     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'testingLab.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'testingLab.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'testingLab.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.cd4_result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'testingLab.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.cd4_result', 'vl.last_modified_datetime', 'ts.status_name');
      if ($_SESSION['instance']['type'] == 'remoteuser') {
           $sampleCode = 'remote_sample_code';
      } elseif ($_SESSION['instance']['type'] == 'standalone') {
@@ -152,14 +152,7 @@ try {
                $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
           }
      }
-     /* Viral load filter */
-     if (isset($_POST['vLoad']) && trim((string) $_POST['vLoad']) != '') {
-          if ($_POST['vLoad'] === 'suppressed') {
-               $sWhere[] = " vl.vl_result_category like 'suppressed' AND vl.vl_result_category is NOT NULL ";
-          } else {
-               $sWhere[] = "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL ";
-          }
-     }
+   
 
      if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
           $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
@@ -209,9 +202,9 @@ try {
      }
 
      if (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) == 'result') {
-          $sWhere[] = ' vl.result != "" ';
+          $sWhere[] = ' vl.cd4_result != "" ';
      } elseif (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) == 'noresult') {
-          $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
+          $sWhere[] = ' (vl.cd4_result IS NULL OR vl.cd4_result = "") ';
      }
      if (isset($_POST['srcOfReq']) && trim((string) $_POST['srcOfReq']) != '') {
           $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '" ';
@@ -233,7 +226,7 @@ try {
           $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL AND DATE(vl.sample_received_at_lab_datetime) > '0000-00-00')";
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
-          $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
+          $sWhere[] = ' vl.cd4_result is not null AND vl.cd4_result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
           $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';

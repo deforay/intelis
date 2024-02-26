@@ -1310,6 +1310,135 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 								</div>
 							</div>
 						<?php }
+						if (SYSTEM_CONFIG['modules']['cd4']) { ?>
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title"><?php echo _translate("CD4 Settings"); ?></h3>
+								</div>
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="cd4_sample_code" class="col-lg-2 control-label"><?php echo _translate("Sample ID"); ?><br><?php echo _translate("Format"); ?> <span class="mandatory">*</span> </label>
+												<div class="col-lg-10">
+													<?php
+													$sPrefixMMYY = 'CD4';
+													$sPrefixYY = '';
+													$sPrefixMMYYDisplay = 'disabled="disabled"';
+													$sPrefixYYDisplay = 'disabled="disabled"';
+													if ($arr['cd4_sample_code'] == 'MMYY') {
+														$sPrefixMMYY = $arr['cd4_sample_code_prefix'];
+														$sPrefixMMYYDisplay = '';
+													} else if ($arr['cd4_sample_code'] == 'YY') {
+														$sPrefixYY = $arr['cd4_sample_code_prefix'];
+														$sPrefixYYDisplay = '';
+													}
+													?>
+													<input type="radio" class="isRequired readPage" title="<?php echo _translate('Please select the CD4 Sample ID Format'); ?>" id="cd4_auto_generate_yy" name="cd4_sample_code" value="YY" <?php echo ($arr['cd4_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="cd4_boxWidth cd4_prefixYY readPage" id="cd4_prefixYY" name="cd4_sample_code_prefix" title="<?php echo _translate('Enter Prefix'); ?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _translate("YY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _translate('Please select the CD4 Sample ID Format'); ?>" id="cd4_auto_generate_mmyy" name="cd4_sample_code" value="MMYY" <?php echo ($arr['cd4_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="cd4_boxWidth cd4_prefixMMYY readPage" id="cd4_prefixMMYY" name="cd4_sample_code_prefix" title="<?php echo _translate('Enter Prefix'); ?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _translate("MMYY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _translate('Please select the CD4 Sample ID Format'); ?>" id="cd4_auto_generate" name="cd4_sample_code" value="auto" <?php echo ($arr['cd4_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="cd4_auto1"><?php echo ($arr['vl_form'] == COUNTRY\PNG) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _translate('Please select the CD4 Sample ID Format'); ?>" id="cd4_auto_generate2" name="cd4_sample_code" value="auto2" <?php echo ($arr['cd4_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == COUNTRY\PNG) ? '' : 'none'; ?>"><span id="cd4_auto2" style="display:<?php echo ($arr['vl_form'] == COUNTRY\PNG) ? '' : 'none'; ?>"> <?php echo _translate("Auto"); ?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+													<input type="radio" class="isRequired readPage" title="<?php echo _translate('Please select the CD4 Sample ID Format'); ?>" id="cd4_numeric" name="cd4_sample_code" value="numeric" <?php echo ($arr['cd4_sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _translate("Numeric"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _translate('Please select the CD4 Sample ID Format'); ?>" id="cd4_alpha_numeric" name="cd4_sample_code" value="alphanumeric" <?php echo ($arr['cd4_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _translate("Alpha Numeric"); ?>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div id="cd4_auto-sample-eg" class="row" style="display:<?php echo ($arr['cd4_sample_code'] == 'auto' || $arr['cd4_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
+										<div class="col-md-12" style="text-align:center;">
+											<code id="cd4_auto-sample-code" class="cd4_autoSample" style="display:<?php echo ($arr['cd4_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
+												<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+											</code>
+											<code id="cd4_auto-sample-code2" class="cd4_autoSample" style="display:<?php echo ($arr['cd4_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
+												<?php echo _translate("eg. R+Year+Province Code+cd4+Increment Counter (R18NCDC190001)"); ?>
+											</code>
+											<code id="cd4_auto-sample-code-MMYY" class="cd4_autoSample" style="display:<?php echo ($arr['cd4_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
+												<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
+											</code>
+											<code id="cd4_auto-sample-code-YY" class="cd4_autoSample" style="display:<?php echo ($arr['cd4_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
+												<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
+											</code>
+										</div>
+									</div><br />
+
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="cd4_min_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['cd4_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<div class="col-lg-4">
+													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['cd4_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="cd4_min_length" name="cd4_min_length" <?php echo ($arr['cd4_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter sample id min length'); ?>" value="<?php echo ($arr['cd4_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
+												</div>
+												<label for="cd4_max_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['cd4_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<div class="col-lg-4">
+													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['cd4_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="cd4_max_length" name="cd4_max_length" <?php echo ($arr['cd4_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter sample id max length'); ?>" value="<?php echo ($arr['cd4_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="cd4_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-10">
+													<input type="text" class="form-control forceNumeric isNumeric" id="cd4_min_patient_id_length" name="cd4_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['cd4_min_patient_id_length'] == '') ? '' : $arr['cd4_min_patient_id_length']; ?>" style="max-width:60px;" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<?php if (isset($arr['cd4_sample_expiry_after_days']) && $arr['cd4_sample_expiry_after_days'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="cd4_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Expiry Days"); ?></label>
+													<div class="col-lg-4">
+														<input value="<?php echo $arr['cd4_sample_expiry_after_days']; ?>" type="text" id="cd4_sample_expiry_after_days" name="cd4_sample_expiry_after_days" placeholder="<?php echo _translate('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample expiry days'); ?>">
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php } ?>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="cd4_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Lock Expiry Days"); ?></label>
+												<div class="col-lg-4">
+													<input value="<?php echo $arr['cd4_sample_lock_after_days']; ?>" type="text" id="cd4_sample_lock_after_days" name="cd4_sample_lock_after_days" placeholder="<?php echo _translate('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample lock expiry days'); ?>">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="cd4_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _translate("cd4 Auto Approve API Results"); ?></label>
+												<div class="col-lg-4">
+													<select id="cd4_auto_approve_api_results" name="cd4_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _translate('Please select cd4 Auto Approve API Results'); ?>">
+														<option value=""><?php echo _translate("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['cd4_auto_approve_api_results']) && $arr['cd4_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['cd4_auto_approve_api_results']) && $arr['cd4_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="cd4_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _translate("cd4 Show Participant Name in Manifest"); ?></label>
+												<div class="col-lg-4">
+													<select id="cd4_show_participant_name_in_manifest" name="cd4_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _translate('Please select cd4 Participant Name in Manifest'); ?>">
+														<option value=""><?php echo _translate("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['cd4_show_participant_name_in_manifest']) && $arr['cd4_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['cd4_show_participant_name_in_manifest']) && $arr['cd4_show_participant_name_in_manifest'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						<?php }
 						if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
