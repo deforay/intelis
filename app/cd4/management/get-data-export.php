@@ -36,8 +36,8 @@ try {
      /* Array of database columns which should be read and sent back to DataTables. Use a space where
      * you want to insert a non-database field (for example a counter or static image)
      */
-     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'CONCAT(COALESCE(vl.patient_first_name,""), COALESCE(vl.patient_last_name,""))', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $sampleCode = 'sample_code';
      if ($_SESSION['instance']['type'] == 'remoteuser') {
           $sampleCode = 'remote_sample_code';
@@ -180,10 +180,10 @@ try {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (isset($_POST['patientId']) && trim((string) $_POST['patientId']) != '') {
-          $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
+          $sWhere[] = " vl.patient_art_no LIKE '%" . $_POST['patientId'] . "%' ";
      }
      if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-          $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+          $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
      }
      /* Date time filtering */
      if (!empty($_POST['sampleCollectionDate'])) {
@@ -251,11 +251,11 @@ try {
 
      foreach ($rResult as $aRow) {
 
-          $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
-          $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
+          $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
+          $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
 
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-               $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+               $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
                $patientFname = $general->crypto('decrypt', $patientFname, $key);
                $patientLname = $general->crypto('decrypt', $patientLname, $key);
           }
@@ -266,7 +266,7 @@ try {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = $aRow['batch_code'];
-          $row[] = $aRow['patient_id'];
+          $row[] = $aRow['patient_art_no'];
           $row[] = ($patientFname . " " . $patientLname);
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['lab_name']);

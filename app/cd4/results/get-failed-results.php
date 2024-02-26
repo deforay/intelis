@@ -45,8 +45,8 @@ try {
 */
     $sampleCode = 'sample_code';
 
-    $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'f.facility_name',  'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+    $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'f.facility_name',  'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+    $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 
     if ($_SESSION['instance']['type'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';
@@ -155,10 +155,10 @@ try {
         $sWhere[] =  ' vl.result_status = "' . $_POST['status'] . '"';
     }
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-        $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
+        $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
     }
     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-        $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+        $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
     }
 
     if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
@@ -218,14 +218,14 @@ try {
             $row[] = $aRow['remote_sample_code'];
         }
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
-            $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
+            $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+            $aRow['patient_first_name'] = $general->crypto('decrypt', $aRow['patient_first_name'], $key);
         }
         $row[] = $aRow['sample_collection_date'];
         $row[] = $aRow['batch_code'];
         $row[] = ($aRow['facility_name']);
-        $row[] = $aRow['patient_id'];
-        $row[] = $aRow['patient_name'];
+        $row[] = $aRow['patient_art_no'];
+        $row[] = $aRow['patient_first_name'];
 
         $row[] = ($aRow['facility_state']);
         $row[] = ($aRow['facility_district']);

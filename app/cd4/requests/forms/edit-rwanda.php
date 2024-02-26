@@ -179,7 +179,14 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                   <div class="">
                                                        <label for="facilityId">Health Facility Name <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" id="facilityId" name="facilityId" title="Please select a clinic/health center name" style="width:100%;" onchange="fillFacilityDetails();">
-                                                            <?php echo $facility; ?>
+                                                       <option value=""> <?= _translate('-- Select --'); ?> </option>
+                                                            <?php //echo $facility;
+                                                            foreach ($healthFacilitiesAllColumns as $hFacility) {
+                                                            ?>
+                                                                 <option value="<?php echo $hFacility['facility_id']; ?>" <?php echo ($cd4QueryInfo['facility_id'] == $hFacility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $hFacility['facility_code']; ?>"><?php echo $hFacility['facility_name']; ?></option>
+                                                            <?php
+                                                            }
+                                                            ?>
                                                        </select>
                                                   </div>
                                              </div>
@@ -210,6 +217,32 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                        <label for="labId">Affiliated CD4 Testing Hub <span class="mandatory">*</span></label>
                                                        <select name="labId" id="labId" class="form-control isRequired" title="Please choose a CD4 testing hub" style="width:100%;">
                                                             <?= $general->generateSelectOptions($testingLabs, $cd4QueryInfo['lab_id'], '-- Select --'); ?>
+                                                       </select>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="">
+                                                       <label for="facilityCode">Implementing Partner </label>
+                                                       <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
+                                                <option value=""> -- Select -- </option>
+                                                <?php
+                                                foreach ($implementingPartnerList as $implementingPartner) {
+                                                ?>
+                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($cd4QueryInfo['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="">
+                                                       <label for="labId">Funding Partner </label>
+                                                       <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+                                                            <option value=""> -- Select -- </option>
+                                                            <?php
+                                                            foreach ($fundingSourceList as $fundingSource) {
+                                                            ?>
+                                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($eidInfo['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                            <?php } ?>
                                                        </select>
                                                   </div>
                                              </div>

@@ -70,7 +70,7 @@ $sQuery = "SELECT * from r_cd4_sample_types where status='active'";
 $sResult = $db->query($sQuery);
 
 //get vl test reason list
-$vlTestReasonQuery = "SELECT * from r_vl_test_reasons where test_reason_status = 'active'";
+$vlTestReasonQuery = "SELECT * from r_cd4_test_reasons where test_reason_status = 'active'";
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
 //Recommended corrective actgions
@@ -337,7 +337,7 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
 				delay: 250,
 				data: function(params) {
 					return {
-						fieldName: 'vl_focal_person',
+						fieldName: 'cd4_focal_person',
 						tableName: 'form_cd4',
 						q: params.term, // search term
 						page: params.page
@@ -364,15 +364,15 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
 			var search = $(this).val();
 			if ($.trim(search) != '') {
 				$.get("/includes/get-data-list.php", {
-						fieldName: 'vl_focal_person',
+						fieldName: 'cd4_focal_person',
 						tableName: 'form_cd4',
-						returnField: 'vl_focal_person_phone_number',
+						returnField: 'cd4_focal_person_phone_number',
 						limit: 1,
 						q: search,
 					},
 					function(data) {
 						if (data != "") {
-							$("#vlFocalPersonPhoneNumber").val(data);
+							$("#cd4FocalPersonPhoneNumber").val(data);
 						}
 					});
 			}

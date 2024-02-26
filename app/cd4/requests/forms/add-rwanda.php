@@ -136,8 +136,15 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="facilityId">Health Facility Name <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired" id="facilityId" name="facilityId" title="Please select a clinic/health center name" style="width:100%;" onchange="fillFacilityDetails();">
-                                                            <?php echo $facility; ?>
+                                                       <select class="form-control isRequired" id="facilityId" name="facilityId" title="Please select a clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
+                                                            <option value=""> <?= _translate('-- Select --'); ?> </option>
+                                                            <?php //echo $facility;
+                                                            foreach ($healthFacilitiesAllColumns as $hFacility) {
+                                                            ?>
+                                                                 <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>"><?php echo $hFacility['facility_name']; ?></option>
+                                                            <?php
+                                                            }
+                                                            ?>
                                                        </select>
                                                   </div>
                                              </div>
@@ -157,17 +164,44 @@ $sFormat = '';
                                              <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:none;"></div>
                                         </div>
                                         <div class="row">
-                                             <div class="col-xs-3 col-md-3">
+                                             <!--<div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="facilityCode">Affiliated District Hospital </label>
                                                        <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Affiliated District Hospital" title="Please enter Affiliated District Hospital">
                                                   </div>
-                                             </div>
+                                             </div>-->
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="labId">Affiliated CD4 Testing Hub <span class="mandatory">*</span></label>
                                                        <select name="labId" id="labId" class="form-control isRequired" title="Please choose a CD4 testing hub" style="width:100%;">
                                                             <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                                       </select>
+                                                  </div>
+                                             </div>
+
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="">
+                                                       <label for="facilityCode">Implementing Partner </label>
+                                                       <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
+                                                <option value=""> -- Select -- </option>
+                                                <?php
+                                                foreach ($implementingPartnerList as $implementingPartner) {
+                                                ?>
+                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="">
+                                                       <label for="labId">Funding Partner</label>
+                                                       <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+                                                            <option value=""> -- Select -- </option>
+                                                            <?php
+                                                            foreach ($fundingSourceList as $fundingSource) {
+                                                            ?>
+                                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                                            <?php } ?>
                                                        </select>
                                                   </div>
                                              </div>

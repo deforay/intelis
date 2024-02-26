@@ -41,13 +41,6 @@ $tableName = "form_cd4";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_cd4_test_reasons";
 $fDetails = "facility_details";
-$vl_result_category = null;
-$vlResult = null;
-$logVal = null;
-$absDecimalVal = null;
-$absVal = null;
-$txtVal = null;
-$finalResult = null;
 $resultStatus = null;
 
 $instanceId = $general->getInstanceId();
@@ -248,6 +241,8 @@ try {
           'last_modified_datetime' => DateUtility::getCurrentDateTime(),
           'result_modified'  => 'no',
           'manual_result_entry' => 'yes',
+          'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
+          'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,  
       ];
   
   

@@ -123,7 +123,11 @@ $patientFirstName = $cd4QueryInfo['patient_first_name'] ?? '';
 $patientMiddleName = $cd4QueryInfo['patient_middle_name'] ?? '';
 $patientLastName = $cd4QueryInfo['patient_last_name'] ?? '';
 
+//Funding source list
+$fundingSourceList = $general->getFundingSources();
 
+//Implementing partner list
+$implementingPartnerList = $general->getImplementationPartners();
 
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
@@ -149,8 +153,8 @@ if (!empty($cd4QueryInfo['is_encrypted']) && $cd4QueryInfo['is_encrypted'] == 'y
      $patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 }
 $minPatientIdLength = 0;
-if (isset($arr['vl_min_patient_id_length']) && $arr['vl_min_patient_id_length'] != "") {
-     $minPatientIdLength = $arr['vl_min_patient_id_length'];
+if (isset($arr['cd4_min_patient_id_length']) && $arr['cd4_min_patient_id_length'] != "") {
+     $minPatientIdLength = $arr['cd4_min_patient_id_length'];
 }
 ?>
 <style>

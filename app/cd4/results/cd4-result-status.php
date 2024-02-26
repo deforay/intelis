@@ -482,7 +482,7 @@ foreach ($rejectionTypeResult as $type) {
     if (stValue != '' && testIds != '') {
       conf = confirm("Do you wish to change the test status ?");
       if (conf) {
-        $.post("/vl/results/updateTestStatus.php", {
+        $.post("/cd4/results/updateTestStatus.php", {
             status: stValue,
             id: testIds,
             rejectedReason: $("#bulkRejectionReason").val()
@@ -557,7 +557,7 @@ foreach ($rejectionTypeResult as $type) {
     if (obj.value != '') {
       conf = confirm("<?= _translate("Do you wish to change the status?", true); ?>");
       if (conf) {
-        $.post("/vl/results/updateTestStatus.php", {
+        $.post("/cd4/results/updateTestStatus.php", {
             status: '4',
             id: $("#statusDropDownId").val(),
             rejectedReason: obj.value
