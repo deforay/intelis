@@ -47,7 +47,6 @@ try {
                         AND ud.status = 'active'
                         AND ud.login_id = ?";
         $userResult = $db->rawQueryOne($userQuery, [$input['userName']]);
-
         if (empty($userResult) || !password_verify((string) $input['password'], (string) $userResult['password'])) {
             throw new SystemException('Login failed. Please contact system administrator.');
         } else {
@@ -95,6 +94,6 @@ try {
 }
 $payload = json_encode($payload);
 
-$trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], count($userResult), 'login', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
+$trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], 1, 'login', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
 echo $payload;
