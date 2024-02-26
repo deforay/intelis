@@ -101,7 +101,8 @@ class CD4Service extends AbstractTestService
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'result_modified'  => 'no',
                     'is_result_sms_sent'  => 'no',
-                    'manual_result_entry' => 'yes'
+                    'manual_result_entry' => 'yes',
+                    'locked' => 'no'
                 ];
 
                 $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
