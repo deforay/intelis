@@ -259,13 +259,13 @@ $sFormat = '';
                                                             <input type="radio" class="isRequired" id="genderFemale" name="gender" value="female" title="Please check gender">Female
                                                        </label>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="isRequired" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender">Not Recorded
+                                                            <input type="radio" class="isRequired" id="genderUnreported" name="gender" value="unreported" title="Please check gender">Unreported
                                                        </label>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="gender">Patient consent to receive SMS?<span class="mandatory">*</span></label><br>
+                                                       <label for="receiveSms">Patient consent to receive SMS?<span class="mandatory">*</span></label><br>
                                                        <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" class="isRequired" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);"> Yes
                                                        </label>
@@ -1277,7 +1277,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
      $("input:radio[name=gender]").click(function() {
-          if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
+          if ($(this).val() == 'male' || $(this).val() == 'unreported') {
                $('.femaleSection').hide();
                $('input[name="breastfeeding"]').prop('checked', false);
                $('input[name="patientPregnant"]').prop('checked', false);
@@ -1553,7 +1553,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     if (patientArray['gender'] == 'male') {
                          $("#genderMale").prop('checked', true);
                     } else {
-                         $("#genderNotRecorded").prop('checked', true);
+                         $("#genderUnreported").prop('checked', true);
                     }
                } else if (patientArray['gender'] == 'female') {
                     $('.femaleSection').show();

@@ -1235,7 +1235,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     if (patientArray['gender'] == 'male') {
                          $("#genderMale").prop('checked', true);
                     } else {
-                         $("#genderNotRecorded").prop('checked', true);
+                         $("#genderUnreported").prop('checked', true);
                     }
                } else if (patientArray['gender'] == 'female') {
                     $('.femaleSection').show();
