@@ -669,7 +669,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 										<div class="col-md-6">
 											<label class="col-lg-5" for="">Date of Sample Collection <span class="mandatory">*</span></label>
 											<div class="col-lg-7">
-												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $genericResultInfo['sample_collection_date']; ?>" onchange="checkSampleReceviedDate();checkSampleTestingDate();">
+												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $genericResultInfo['sample_collection_date']; ?>" onchange="checkSampleTestingDate();">
 											</div>
 										</div>
 										<div class="col-md-6">
@@ -736,7 +736,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 												<label class="col-lg-5 control-label" for="sampleReceivedDate">Date
 													Sample Received at Testing Lab </label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $genericResultInfo['sample_received_at_testing_lab_datetime']; ?>" onchange="checkSampleReceviedDate()" />
+													<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $genericResultInfo['sample_received_at_testing_lab_datetime']; ?>" />
 												</div>
 											</div>
 										</div>

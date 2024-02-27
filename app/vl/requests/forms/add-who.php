@@ -277,7 +277,7 @@ $sFormat = '';
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="">Date of Sample Collection <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleReceviedDate();checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();">
+                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();">
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
@@ -543,7 +543,7 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label labels" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" onchange="checkSampleReceviedDate()" />
+                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">

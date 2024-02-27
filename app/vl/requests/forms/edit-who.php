@@ -369,7 +369,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
 												<label for="">Date of Sample Collection <span class="mandatory">*</span></label>
-												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleReceviedDate();checkSampleTestingDate();">
+												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleTestingDate();">
 											</div>
 										</div>
 										<div class="col-xs-3 col-md-3">
@@ -670,7 +670,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" onchange="checkSampleReceviedDate()" />
+														<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
 													</div>
 												</div>
 												<div class="col-md-4">
