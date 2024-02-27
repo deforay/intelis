@@ -315,8 +315,8 @@ $state = $geolocationService->getProvinces("yes");
 									<option value="female">
 										<?php echo _translate("Female"); ?>
 									</option>
-									<option value="not_recorded">
-										<?php echo _translate("Not Recorded"); ?>
+									<option value="unreported">
+										<?php echo _translate("Unreported"); ?>
 									</option>
 								</select>
 							</td>
@@ -866,8 +866,8 @@ $state = $geolocationService->getProvinces("yes");
 			$("#patientPregnant").attr("disabled", false);
 			$("#breastFeeding").attr("disabled", false);
 		} else {
-			$('select#patientPregnant option').removeAttr("selected");
-			$('select#breastFeeding option').removeAttr("selected");
+			$('select#patientPregnant').val('');
+        	$('select#breastFeeding').val('');
 			$("#patientPregnant").attr("disabled", true);
 			$("#breastFeeding").attr("disabled", true);
 		}

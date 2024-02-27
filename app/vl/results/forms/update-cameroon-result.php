@@ -350,7 +350,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _translate('Please check gender'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> <?= _translate('Female'); ?>
 										</label>
 										<label class="radio-inline" style="margin-left:0px;">
-											<input type="radio" id="genderNotRecorded" name="gender" value="unreported" title="<?= _translate('Please choose gender'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>><?= _translate('Unreported'); ?>
+											<input type="radio" id="genderUnreported" name="gender" value="unreported" title="<?= _translate('Please choose gender'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>><?= _translate('Unreported'); ?>
 										</label>
 									</div>
 								</div>

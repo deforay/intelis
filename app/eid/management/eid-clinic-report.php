@@ -160,7 +160,7 @@ foreach ($rejectionTypeResult as $type) {
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
-															<option value="not_recorded"><?php echo _translate("Not Recorded"); ?></option>
+															<option value="unreported"><?php echo _translate("Unreported"); ?></option>
 														</select>
 													</td>
 													<td></td>
@@ -260,7 +260,7 @@ foreach ($rejectionTypeResult as $type) {
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
-															<option value="not_recorded"><?php echo _translate("Not Recorded"); ?></option>
+															<option value="unreported"><?php echo _translate("Unreported"); ?></option>
 														</select>
 													</td>
 
@@ -367,7 +367,7 @@ foreach ($rejectionTypeResult as $type) {
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
-															<option value="not_recorded"><?php echo _translate("Not Recorded"); ?></option>
+															<option value="unreported"><?php echo _translate("Unreported"); ?></option>
 														</select>
 													</td>
 												</tr>

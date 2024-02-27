@@ -122,7 +122,7 @@ if (!empty($result)) {
     }
 
     if (!isset($result['child_gender']) || trim((string) $result['child_gender']) == '') {
-        $result['child_gender'] = 'not reported';
+        $result['child_gender'] = _translate('Unreported');
     }
     $userRes = [];
     if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {

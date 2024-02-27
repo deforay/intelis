@@ -232,7 +232,8 @@ $patientProvince = $patientProvinceInfo[0];
                                                 <option value=''> -- Select -- </option>
                                                 <option value='male' <?php echo ($covid19Info['patient_gender'] == 'male') ? "selected='selected'" : ""; ?>> Male </option>
                                                 <option value='female' <?php echo ($covid19Info['patient_gender'] == 'female') ? "selected='selected'" : ""; ?>> Female </option>
-                                                <option value='other' <?php echo ($covid19Info['patient_gender'] == 'other') ? "selected='selected'" : ""; ?>> Other </option>
+                                                <option value='unreported' <?php echo ($covid19Info['patient_gender'] == 'unreported') ? "selected='selected'" : ""; ?>> Unreported </option>
+                                                <!-- <option value='other' < ?php echo ($covid19Info['patient_gender'] == 'other') ? "selected='selected'" : ""; ?>> Other </option> -->
 
                                             </select>
                                         </td>

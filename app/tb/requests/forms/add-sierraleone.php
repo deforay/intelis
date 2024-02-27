@@ -225,7 +225,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<option value=''> -- Select -- </option>
 												<option value='male'> Male </option>
 												<option value='female'> Female </option>
-												<option value='other'> Other </option>
+												<option value='unreported'> Unreported </option>
 											</select>
 										</td>
 									</tr>

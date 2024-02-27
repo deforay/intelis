@@ -602,7 +602,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 										</div>
 									</div>
 									<div class="col-md-6">
-										<label class="col-lg-5" for="gender">Patient consent to receive SMS?</label>
+										<label class="col-lg-5" for="receiveSms">Patient consent to receive SMS?</label>
 										<div class="col-lg-7">
 											<label class="radio-inline" style="margin-left:0px;">
 												<input type="radio" class="" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);" <?php echo ($genericResultInfo['consent_to_receive_sms'] == 'yes') ? "checked='checked'" : "" ?>>

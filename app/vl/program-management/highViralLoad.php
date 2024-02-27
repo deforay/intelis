@@ -245,8 +245,8 @@ $state = $geolocationService->getProvinces("yes");
 															<option value="female">
 																<?php echo _translate("Female"); ?>
 															</option>
-															<option value="not_recorded">
-																<?php echo _translate("Not Recorded"); ?>
+															<option value="unreported">
+																<?php echo _translate("Unreported"); ?>
 															</option>
 														</select>
 													</td>
@@ -411,8 +411,8 @@ $state = $geolocationService->getProvinces("yes");
 															<option value="female">
 																<?php echo _translate("Female"); ?>
 															</option>
-															<option value="not_recorded">
-																<?php echo _translate("Not Recorded"); ?>
+															<option value="unreported">
+																<?php echo _translate("Unreported"); ?>
 															</option>
 														</select>
 													</td>
@@ -566,8 +566,8 @@ $state = $geolocationService->getProvinces("yes");
 															<option value="female">
 																<?php echo _translate("Female"); ?>
 															</option>
-															<option value="not_recorded">
-																<?php echo _translate("Not Recorded"); ?>
+															<option value="unreported">
+																<?php echo _translate("Unreported"); ?>
 															</option>
 														</select>
 													</td>
@@ -791,8 +791,8 @@ $state = $geolocationService->getProvinces("yes");
 															<option value="female">
 																<?php echo _translate("Female"); ?>
 															</option>
-															<option value="not_recorded">
-																<?php echo _translate("Not Recorded"); ?>
+															<option value="unreported">
+																<?php echo _translate("Unreported"); ?>
 															</option>
 														</select>
 													</td>
@@ -1738,8 +1738,8 @@ $state = $geolocationService->getProvinces("yes");
 			$("#" + pregnant).attr("disabled", false);
 			$("#" + breastFeeding).attr("disabled", false);
 		} else {
-			$('select#' + pregnant + ' option').removeAttr("selected");
-			$('select#' + breastFeeding + ' option').removeAttr("selected");
+			$('select#'+ pregnant).val('');
+        	$('select#'+ breastFeeding).val('');
 			$("#" + pregnant).attr("disabled", true);
 			$("#" + breastFeeding).attr("disabled", true);
 		}

@@ -63,7 +63,7 @@ foreach ($rResult as $aRow) {
         $gender = 'M';
     } elseif ($aRow['patient_gender'] == 'female') {
         $gender = 'F';
-    } elseif ($aRow['patient_gender'] == 'not_recorded') {
+    } elseif ($aRow['patient_gender'] == 'unreported') {
         $gender = 'Unreported';
     }
 

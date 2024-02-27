@@ -155,7 +155,7 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
                                                 <input type="radio" class="isRequired" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo ($patientQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>>Female
                                             </label>
                                             <label class="radio-inline control-label" style="margin-left:0px;">
-                                                <input type="radio" class="isRequired" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender" <?php echo ($patientQueryInfo['patient_gender'] == 'not_recorded') ? "checked='checked'" : "" ?>>Not Recorded
+                                                <input type="radio" class="isRequired" id="genderUnreported" name="gender" value="unreported" title="Please check gender" <?php echo ($patientQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>Unreported
                                             </label>
                                         </div>
                                     </div>
@@ -276,7 +276,7 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
             placeholder: "<?= _translate('Select Distrct'); ?>"
         });
         $("input:radio[name=gender]").click(function() {
-            if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
+            if ($(this).val() == 'male' || $(this).val() == 'unreported') {
                 $('.femaleSection').hide();
                 $('input[name="breastfeeding"]').prop('checked', false);
                 $('input[name="patientPregnant"]').prop('checked', false);

@@ -326,8 +326,8 @@ foreach ($srcResults as $list) {
 									<option value="female">
 										<?php echo _translate("Female"); ?>
 									</option>
-									<option value="not_recorded">
-										<?php echo _translate("Not Recorded"); ?>
+									<option value="unreported">
+										<?php echo _translate("Unreported"); ?>
 									</option>
 								</select>
 							</td>
@@ -1278,6 +1278,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				$("#facilityName").html(Obj['facilities']);
 				$("#vlLab").html(Obj['labs']);
 			});
+	}
+
+	function hideFemaleDetails(value) {
+		if (value == 'female') {
+			$("#patientPregnant").attr("disabled", false);
+			$("#breastFeeding").attr("disabled", false);
+		} else {
+			$('select#patientPregnant').val('');
+        	$('select#breastFeeding').val('');
+			$("#patientPregnant").attr("disabled", true);
+			$("#breastFeeding").attr("disabled", true);
+		}
 	}
 </script>
 <?php

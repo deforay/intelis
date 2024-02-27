@@ -143,7 +143,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<option value="male" <?php echo ($gender == 'male') ? "selected='selected'" : "" ?>>
 										<?php echo _translate("Male"); ?></option>
 									<option value="female" <?php echo ($gender == 'female') ? "selected='selected'" : "" ?>><?php echo _translate("Female"); ?></option>
-									<option value="not_recorded" <?php echo ($gender == 'not_recorded') ? "selected='selected'" : "" ?>><?php echo _translate("Not Recorded"); ?></option>
+									<option value="unreported" <?php echo ($gender == 'unreported') ? "selected='selected'" : "" ?>><?php echo _translate("Unreported"); ?></option>
 								</select>
 							</td>
 						</tr>

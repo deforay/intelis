@@ -337,7 +337,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
 											</label>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'not_recorded') ? "checked='checked'" : "" ?>>Not Recorded
+												<input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>Unreported
 											</label>
 										</div>
 									</div>
@@ -1216,7 +1216,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html('');
 	}
 	$("input:radio[name=gender]").click(function() {
-		if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
+		if ($(this).val() == 'male' || $(this).val() == 'unreported') {
 			$('.femaleSection').hide();
 			$('input[name="breastfeeding"]').prop('checked', false);
 			$('input[name="patientPregnant"]').prop('checked', false);

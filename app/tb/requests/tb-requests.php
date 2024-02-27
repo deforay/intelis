@@ -178,11 +178,11 @@ foreach ($srcResults as $list) {
                             </td>
                             <td><strong><?php echo _translate("Gender"); ?>&nbsp;:</strong></td>
                             <td>
-                                <select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
+                                <select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;">
                                     <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                                     <option value="male"><?php echo _translate("Male"); ?></option>
                                     <option value="female"><?php echo _translate("Female"); ?></option>
-                                    <option value="not_recorded"><?php echo _translate("Not Recorded"); ?></option>
+                                    <option value="unreported"><?php echo _translate("Unreported"); ?></option>
                                 </select>
                             </td>
 

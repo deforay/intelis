@@ -145,8 +145,8 @@ $state = $geolocationService->getProvinces("yes");
 															<option value="female">
 																<?php echo _translate("Female"); ?>
 															</option>
-															<option value="not_recorded">
-																<?php echo _translate("Not Recorded"); ?>
+															<option value="unreported">
+																<?php echo _translate("Unreported"); ?>
 															</option>
 														</select>
 													</td>
@@ -364,8 +364,8 @@ $state = $geolocationService->getProvinces("yes");
 															<option value="female">
 																<?php echo _translate("Female"); ?>
 															</option>
-															<option value="not_recorded">
-																<?php echo _translate("Not Recorded"); ?>
+															<option value="unreported">
+																<?php echo _translate("Unreported"); ?>
 															</option>
 														</select>
 													</td>
