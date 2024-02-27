@@ -629,7 +629,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $cd4QueryInfo['sample_received_at_lab_datetime']; ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate()" />
+                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $cd4QueryInfo['sample_received_at_lab_datetime']; ?>" <?php echo $labFieldDisabled; ?> />
                                                                       </div>
                                                                  </div>
                                                             </div>
