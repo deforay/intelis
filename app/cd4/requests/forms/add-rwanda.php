@@ -452,14 +452,14 @@ $sFormat = '';
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label">Last CD4 date</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control date viralTestData" id="assessmentAHDLastCD4Date" name="lastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last VL Date" />
+                                                                      <input type="text" class="form-control date viralTestData" id="assessmentAHDLastCD4Date" name="assessmentAHDLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                  <label for="assessmentAHDCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
                                                                  <div class="col-lg-7">
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4Result" name="assessmentAHDCD4Value" placeholder="CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4ResultPercentage" name="assessmentAHDCD4ValuePercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" /></div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4Result" name="assessmentAHDLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4ResultPercentage" name="assessmentAHDLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" /></div>
                                                                  </div>
                                                             </div>
                                                        </div>

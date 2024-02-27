@@ -41,8 +41,7 @@ $tableName = "form_cd4";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_cd4_test_reasons";
 $fDetails = "facility_details";
-$resultStatus = null;
-
+$status = null;
 $instanceId = $general->getInstanceId();
 
 try {
@@ -175,6 +174,41 @@ try {
           $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
      }
 
+     if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+	}
+
+	if (!empty($_POST['oldStatus'])) {
+		$status = $_POST['oldStatus'];
+	}
+
+	if ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+		$status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+	}
+
+	$resultSentToSource = null;
+
+	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
+		$_POST['cd4_result'] = null;
+		$status = SAMPLE_STATUS\REJECTED;
+		$resultSentToSource = 'pending';
+	}
+
+	if (!empty($_POST['cd4_result'])) {
+		$resultSentToSource = 'pending';
+	}
+
+
+	if ($sarr['sc_user_type'] == 'remoteuser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+	} elseif ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+	}
+	if (isset($_POST['status']) && $_POST['status'] == '') {
+		$_POST['status'] = $_POST['oldStatus'];
+	}
+
+
      $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
      $vlData = [
@@ -233,7 +267,7 @@ try {
           'result_approved_datetime' => DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true),
           'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
           'lab_tech_comments' => $_POST['labComments'] ?? null,
-          'result_status' => $resultStatus,
+          'result_status' => $status,
           'request_created_datetime' => DateUtility::getCurrentDateTime(),
           'last_modified_datetime' => DateUtility::getCurrentDateTime(),
           'result_modified'  => 'no',
