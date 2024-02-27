@@ -27,9 +27,9 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 
 $tableName = "form_cd4";
 $tableName1 = "activity_log";
-$vlTestReasonTable = "r_vl_test_reasons";
+$vlTestReasonTable = "r_cd4_test_reasons";
 $fDetails = "facility_details";
-$vl_result_category = null;
+
 $finalResult = null;
 
 $systemType = $general->getSystemConfig('sc_user_type');
@@ -39,20 +39,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 
-// Define custom filters, with only StringTrim for viral load results
-$onlyStringTrim = (new FilterChain())->attach(new StringTrim());
-
-$customFilters = [
-    'vlResult' => $onlyStringTrim,
-    'cphlVlResult' => $onlyStringTrim,
-    'last_vl_result_failure' => $onlyStringTrim,
-    'last_vl_result_failure_ac' => $onlyStringTrim,
-    'last_vl_result_routine' => $onlyStringTrim,
-    'last_viral_load_result' => $onlyStringTrim
-];
-
-// Sanitize input
-$_POST = _sanitizeInput($_POST, $customFilters);
 
 $instanceId = $general->getInstanceId();
 
@@ -282,6 +268,8 @@ try {
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'result_modified'  => 'no',
         'manual_result_entry' => 'yes',
+        'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
+        'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
     ];
 
 
@@ -354,7 +342,7 @@ try {
             ]);
         }
         $_SESSION['alertMsg'] = _translate("Please try again later");
-        header("Location:/vl/requests/vl-requests.php");
+        header("Location:/cd4/requests/cd4-requests.php");
     }
 } catch (Exception $e) {
     $db->rollbackTransaction();

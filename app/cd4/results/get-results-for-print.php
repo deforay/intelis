@@ -42,8 +42,8 @@ $tableName = "form_cd4";
 $primaryKey = "cd4_id";
 
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 'vl.cd4_result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'vl.cd4_result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'CONCAT(COALESCE(vl.patient_first_name,""), COALESCE(vl.patient_last_name,""))', 'f.facility_name', 'l_f.facility_name', 'vl.cd4_result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'l_f.facility_name', 'vl.cd4_result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instance']['type'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
@@ -162,10 +162,10 @@ if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
 }
 
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-    $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
+    $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
 }
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-    $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+    $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
 }
 
 
@@ -269,20 +269,20 @@ foreach ($rResult as $aRow) {
         $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="resultPDF(' . $aRow['cd4_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
     }
 
-    $patientFname = $general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']);
-    $patientLname = $general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']);
+    $patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']);
+    $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']);
 
     $row[] = $aRow['sample_code'];
     if ($_SESSION['instance']['type'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-        $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+        $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
         $patientFname = $general->crypto('decrypt', $patientFname, $key);
         $patientLname = $general->crypto('decrypt', $patientLname, $key);
     }
     $row[] = $aRow['batch_code'];
-    $row[] = $aRow['patient_id'];
+    $row[] = $aRow['patient_art_no'];
     $row[] = ($patientFname . " " . $patientLname);
     $row[] = ($aRow['facility_name']);
     $row[] = ($aRow['labName']);

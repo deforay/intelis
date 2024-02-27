@@ -1,6 +1,6 @@
 <?php
 
-// This file is included in /vl/results/generate-result-pdf.php
+// This file is included in /cd4/results/generate-result-pdf.php
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
@@ -151,17 +151,8 @@ if (!empty($result)) {
           $result['patient_last_name'] = $general->crypto('decrypt',  $result['patient_last_name'], $key);
      }
 
-
-     if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
-          $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-          $showMessage = ($arr['l_vl_msg']);
-     } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
-          $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
-          $showMessage = ($arr['h_vl_msg']);
-     } elseif ($result['result_status'] == '4' || $result['is_sample_rejected'] == 'yes') {
-          $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
-     }
-
+     $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
+        
      if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
           $smileyContent = '';
      } else {

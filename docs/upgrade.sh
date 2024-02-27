@@ -376,6 +376,8 @@ setfacl -R -m u:$USER:rwx,u:www-data:rwx "${vlsm_path}"
 echo "Running composer update as www-data user..."
 cd "${vlsm_path}"
 
+sudo -u www-data composer self-update
+
 sudo -u www-data composer config process-timeout 30000
 
 sudo -u www-data composer update --no-dev &&

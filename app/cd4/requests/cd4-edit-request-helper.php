@@ -41,13 +41,6 @@ $tableName = "form_cd4";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_cd4_test_reasons";
 $fDetails = "facility_details";
-$vl_result_category = null;
-$vlResult = null;
-$logVal = null;
-$absDecimalVal = null;
-$absVal = null;
-$txtVal = null;
-$finalResult = null;
 $resultStatus = null;
 
 $instanceId = $general->getInstanceId();
@@ -135,51 +128,48 @@ try {
           }
      }
 
-     if($_POST['reasonForCD4Testing']=="baselineInitiation")
-     {
+     if ($_POST['reasonForCD4Testing'] == "baselineInitiation") {
           $lastDate = $_POST['baselineInitiationLastCd4Date'];
           $lastResult = $_POST['baselineInitiationLastCd4Result'];
           $lastResultPercentage = $_POST['baselineInitiationLastCd4ResultPercentage'];
-     }
-     elseif($_POST['reasonForCD4Testing']=="assessmentAHD"){
+     } elseif ($_POST['reasonForCD4Testing'] == "assessmentAHD") {
           $lastDate = $_POST['assessmentAHDLastCd4Date'];
           $lastResult = $_POST['assessmentAHDLastCd4Result'];
           $lastResultPercentage = $_POST['assessmentAHDLastCd4ResultPercentage'];
-     }
-     elseif($_POST['reasonForCD4Testing']=="treatmentCoinfection"){
+     } elseif ($_POST['reasonForCD4Testing'] == "treatmentCoinfection") {
           $lastDate = $_POST['treatmentCoinfectionLastCd4Date'];
           $lastResult = $_POST['treatmentCoinfectionLastCd4Result'];
           $lastResultPercentage = $_POST['treatmentCoinfectionLastCd4ResultPercentage'];
      }
-     
-       //set cd4 test reason
-       if (isset($_POST['reasonForCD4Testing']) && trim((string) $_POST['reasonForCD4Testing']) != "") {
+
+     //set cd4 test reason
+     if (isset($_POST['reasonForCD4Testing']) && trim((string) $_POST['reasonForCD4Testing']) != "") {
           if (!is_numeric($_POST['reasonForCD4Testing'])) {
-              if ($_POST['reasonForCD4Testing'] == "other") {
-                  $_POST['reasonForCD4Testing'] = $_POST['newreasonForCD4Testing'];
-              }
-              $reasonQuery = "SELECT test_reason_id FROM r_cd4_test_reasons
+               if ($_POST['reasonForCD4Testing'] == "other") {
+                    $_POST['reasonForCD4Testing'] = $_POST['newreasonForCD4Testing'];
+               }
+               $reasonQuery = "SELECT test_reason_id FROM r_cd4_test_reasons
                           WHERE test_reason_name= ?";
-              $reasonResult = $db->rawQuery($reasonQuery, [$_POST['reasonForCD4Testing']]);
-              if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
-                  $_POST['reasonForCD4Testing'] = $reasonResult[0]['test_reason_id'];
-              } else {
-                  $data = array(
-                      'test_reason_name' => $_POST['reasonForCD4Testing'],
-                      'test_reason_status' => 'active'
-                  );
-                  $id = $db->insert('r_cd4_test_reasons', $data);
-                  $_POST['reasonForCD4Testing'] = $id;
-              }
+               $reasonResult = $db->rawQuery($reasonQuery, [$_POST['reasonForCD4Testing']]);
+               if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
+                    $_POST['reasonForCD4Testing'] = $reasonResult[0]['test_reason_id'];
+               } else {
+                    $data = array(
+                         'test_reason_name' => $_POST['reasonForCD4Testing'],
+                         'test_reason_status' => 'active'
+                    );
+                    $id = $db->insert('r_cd4_test_reasons', $data);
+                    $_POST['reasonForCD4Testing'] = $id;
+               }
           }
-      }
-      //update facility emails
-      if(trim($_POST['emailHf'])!=''){
-         $fData = array('facility_emails'=>$_POST['emailHf']);
-         $db=$db->where('facility_id',$_POST['facilityId']);
-         $id=$db->update($fDetails,$fData);
-      }
-  
+     }
+     //update facility emails
+     if (trim($_POST['emailHf']) != '') {
+          $fData = array('facility_emails' => $_POST['emailHf']);
+          $db = $db->where('facility_id', $_POST['facilityId']);
+          $id = $db->update($fDetails, $fData);
+     }
+
 
      if (isset($_POST['treatmentIndication']) && $_POST['treatmentIndication'] == "Other") {
           $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
@@ -248,9 +238,11 @@ try {
           'last_modified_datetime' => DateUtility::getCurrentDateTime(),
           'result_modified'  => 'no',
           'manual_result_entry' => 'yes',
-      ];
-  
-  
+          'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
+          'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,  
+     ];
+
+
      //$db->select('result');
      $db->where('cd4_id', $_POST['cd4SampleId']);
      $getPrevResult = $db->getOne('form_cd4');

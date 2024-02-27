@@ -1,12 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -78,12 +78,6 @@ try {
   foreach ($constantColumns as $columnName => $constantValue) {
     $columnSelection .= ", $constantValue AS $columnName";
   }
-
-  // Construct the final SQL query
-  $vlQuery = "SELECT $columnSelection FROM form_vl WHERE $condition";
-
-  // Now $vlQuery contains your complete SQL statement
-
 
   // Construct the final SQL query
   $vlQuery = "SELECT $columnSelection FROM form_vl WHERE $condition";
