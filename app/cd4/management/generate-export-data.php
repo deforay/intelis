@@ -56,19 +56,19 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 			$sampleCode = 'sample_code';
 		}
 
-		if (!empty($aRow['patient_name'])) {
-			$patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
+		if (!empty($aRow['patient_first_name'])) {
+			$patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
 		} else {
 			$patientFname = '';
 		}
 		if ($aRow['patient_last_name'] != '') {
-			$patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
+			$patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
 		} else {
 			$patientLname = '';
 		}
 
 		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-			$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+			$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
 			$patientFname = $general->crypto('decrypt', $patientFname, $key);
 			$patientLname = $general->crypto('decrypt', $patientLname, $key);
 		}
@@ -82,7 +82,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 		$row[] = ($aRow['facility_district']);
 		$row[] = ($aRow['facility_state']);
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-			$row[] = $aRow['patient_id'];
+			$row[] = $aRow['patient_art_no'];
 			$row[] = $patientFname . " " . $patientLname;
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');

@@ -169,28 +169,25 @@ foreach ($srcResults as $list) {
 							<td>
 								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly style="background:#fff;" />
 							</td>
-							<td><strong>
-									<?php echo _translate("Viral Load"); ?> &nbsp;:
-								</strong></td>
-							<td>
-								<select class="form-control" id="vLoad" name="vLoad" title="Please select batch code" style="width:220px;">
-									<option value="">
-										<?php echo _translate("-- Select --"); ?>
-									</option>
-									<option value="suppressed">
-										<= <?php echo $arr['viral_load_threshold_limit']; ?> <?php echo _translate("cp/ml"); ?> </option>
-									<option value="not suppressed">
-										>
-										<?php echo $arr['viral_load_threshold_limit']; ?>
-										<?php echo _translate("cp/ml"); ?>
-									</option>
-								</select>
-							</td>
+							
 							<td><strong>
 									<?php echo _translate("Last Print Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
+							</td>
+							<td><strong>
+									<?php echo _translate("Show Rejected Samples"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<select name="rejectedSamples" id="rejectedSamples" class="form-control" title="<?php echo _translate('Please choose show rejected samples'); ?>" style="width:100%;">
+									<option value="yes" selected="selected">
+										<?php echo _translate("Yes"); ?>
+									</option>
+									<option value="no">
+										<?php echo _translate("No"); ?>
+									</option>
+								</select>
 							</td>
 						</tr>
 						<tr>
@@ -455,19 +452,7 @@ foreach ($srcResults as $list) {
 									</select>
 								</td>
 							<?php } ?>
-							<td><strong>
-									<?php echo _translate("Show Rejected Samples"); ?>&nbsp;:
-								</strong></td>
-							<td>
-								<select name="rejectedSamples" id="rejectedSamples" class="form-control" title="<?php echo _translate('Please choose show rejected samples'); ?>" style="width:100%;">
-									<option value="yes" selected="selected">
-										<?php echo _translate("Yes"); ?>
-									</option>
-									<option value="no">
-										<?php echo _translate("No"); ?>
-									</option>
-								</select>
-							</td>
+							
 						</tr>
 
 						<tr>
@@ -492,7 +477,7 @@ foreach ($srcResults as $list) {
 									</span></button>
 								&nbsp;
 								<?php
-								if (_isAllowed("/vl/requests/export-cd4-requests.php")) {
+								if (_isAllowed("/cd4/requests/export-cd4-requests.php")) {
 								?>
 									<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
 										<?php echo _translate("Export Excel"); ?>

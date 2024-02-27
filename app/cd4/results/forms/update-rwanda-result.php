@@ -532,7 +532,7 @@ $disable = "disabled = 'disabled'";
 													<div class="form-group">
 														<div class="col-lg-12">
 															<label class="radio-inline">
-																<input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" <?php echo $disable; ?> <?php echo trim((string) $cd4QueryInfo['reason_for_vl_testing']) == '9999' ? "checked='checked'" : ""; ?> onclick="showTesting('recency')">
+																<input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" <?php echo $disable; ?> <?php echo trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == '9999' ? "checked='checked'" : ""; ?> onclick="showTesting('recency')">
 																<strong>Confirmation Test for Recency</strong>
 															</label>
 														</div>
@@ -570,21 +570,21 @@ $disable = "disabled = 'disabled'";
 										</div>
 										<div class="row">
 											<div class="col-md-4">
-												<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal
+												<label for="cd4FocalPerson" class="col-lg-5 control-label">CD4 Focal
 													Person
 													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" value="<?= ($cd4QueryInfo['vl_focal_person']); ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="cd4FocalPerson" name="cdrFocalPerson" placeholder="VL Focal Person" title="Please enter cd4 focal person name" value="<?= ($cd4QueryInfo['cd4_focal_person']); ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">
-												<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL
+												<label for="cd4FocalPersonPhoneNumber" class="col-lg-5 control-label">CD4
 													Focal Person Phone Number
 													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control phone-number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($cd4QueryInfo['vl_focal_person_phone_number']); ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control phone-number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="cd4FocalPersonPhoneNumber" name="cd4FocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter cd4 focal person phone number" value="<?= ($cd4QueryInfo['cd4_focal_person_phone_number']); ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">
@@ -618,7 +618,7 @@ $disable = "disabled = 'disabled'";
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate()" />
+                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" <?php echo $labFieldDisabled; ?> />
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -759,7 +759,7 @@ $disable = "disabled = 'disabled'";
                                              <input type="hidden" name="cd4SampleId" id="cd4SampleId" value="<?= ($cd4QueryInfo['cd4_id']); ?>" />
                                              <input type="hidden" name="provinceId" id="provinceId" />
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
-                                             <a href="/vl/requests/vl-requests.php" class="btn btn-default"> Cancel</a>
+                                             <a href="/cd4/requests/cd4-requests.php" class="btn btn-default"> Cancel</a>
                                         </div>
                                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
                                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
@@ -810,7 +810,6 @@ $disable = "disabled = 'disabled'";
 		__clone = $("#cd4RequestFormRwd .labSection").clone();
 		reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 		result = ($("#vlResult").length) ? $("#vlResult").val() : '';
-		hivDetectionChange();
 	});
 
 	$("#isSampleRejected").on("change", function() {
@@ -931,30 +930,4 @@ $disable = "disabled = 'disabled'";
 		}
 	}
 
-	function hivDetectionChange() {
-
-		let text = $('#testingPlatform').val();
-		if (!text) {
-			$("#vlResult").attr("disabled", true);
-			return;
-		}
-		var str1 = text.split("##");
-		var str = str1[0];
-
-		$(".vlResult, .vlLog").show();
-		$("#isSampleRejected").val("");
-		//Get VL results by platform id
-		var platformId = str1[3];
-		$("#possibleVlResults").html('');
-		$.post("/vl/requests/getVlResults.php", {
-				instrumentId: platformId,
-			},
-			function(data) {
-				$("#vlResult").attr("disabled", false);
-				if (data != "") {
-					$("#possibleVlResults").html(data);
-				}
-			});
-
-	}
 </script>
