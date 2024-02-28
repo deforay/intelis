@@ -59,7 +59,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 			$gender = 'M';
 		} elseif ($aRow['child_gender'] == 'female') {
 			$gender = 'F';
-		} elseif ($aRow['child_gender'] == 'not_recorded') {
+		} elseif ($aRow['child_gender'] == 'unreported') {
 			$gender = 'Unreported';
 		}
 		//set sample rejection

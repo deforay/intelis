@@ -138,7 +138,7 @@ $state = $geolocationService->getProvinces("yes", true, $_SESSION['facilityMap']
                                                 <input type="radio" class="isRequired" id="genderFemale" name="gender" value="female" title="Please check gender">Female
                                             </label>
                                             <label class="radio-inline control-label" style="margin-left:0px;">
-                                                <input type="radio" class="isRequired" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender">Not Recorded
+                                                <input type="radio" class="isRequired" id="genderUnreported" name="gender" value="unreported" title="Please check gender">Unreported
                                             </label>
                                         </div>
                                     </div>
@@ -258,7 +258,7 @@ $state = $geolocationService->getProvinces("yes", true, $_SESSION['facilityMap']
             placeholder: "<?= _translate('Select Distrct'); ?>"
         });
         $("input:radio[name=gender]").click(function() {
-            if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
+            if ($(this).val() == 'male' || $(this).val() == 'unreported') {
                 $('.femaleSection').hide();
                 $('input[name="breastfeeding"]').prop('checked', false);
                 $('input[name="patientPregnant"]').prop('checked', false);

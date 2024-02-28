@@ -57,7 +57,7 @@ foreach ($resultSet as $aRow) {
         $gender = 'M';
     } elseif ($aRow['child_gender'] == 'female') {
         $gender = 'F';
-    } elseif ($aRow['child_gender'] == 'not_recorded') {
+    } elseif ($aRow['child_gender'] == 'unreported') {
         $gender = 'Unreported';
     }
 

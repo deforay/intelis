@@ -164,7 +164,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 												<option value="">-- Select --</option>
 												<option value="male">Male</option>
 												<option value="female">Female</option>
-												<option value="not_recorded">Not Reported</option>
+												<option value="unreported">Unreported</option>
 											</select>
 										</td>
 									</tr>

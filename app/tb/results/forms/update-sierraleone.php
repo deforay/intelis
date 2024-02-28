@@ -234,7 +234,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												<option value=''> -- Select -- </option>
 												<option value='male' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'male') ? "selected='selected'" : ""; ?>> Male </option>
 												<option value='female' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'female') ? "selected='selected'" : ""; ?>> Female </option>
-												<option value='other' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'other') ? "selected='selected'" : ""; ?>> Other </option>
+												<option value='unreported' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'unreported') ? "selected='selected'" : ""; ?>> Unreported </option>
 											</select>
 										</td>
 									</tr>

@@ -212,7 +212,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value=''> -- Select -- </option>
                                                 <option value='male'> Male </option>
                                                 <option value='female'> Female </option>
-                                                <option value='other'> Other </option>
+                                                <option value='unreported'> Unreported </option>
+                                                <!-- <option value='other'> Other </option> -->
                                             </select>
                                         </td>
                                         <th scope="row">Phone number</th>

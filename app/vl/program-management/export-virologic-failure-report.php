@@ -88,7 +88,11 @@ if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != ''
 }
 
 if (isset($_POST['gender']) && $_POST['gender'] != '') {
-     $sWhere[] = ' vl.patient_gender = "' . $_POST['gender'] . '"';
+     if (trim((string) $_POST['gender']) == "unreported") {
+          $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+     } else {
+          $sWhere[] = ' vl.patient_gender ="' . $_POST['gender'] . '"';
+     }
 }
 
 

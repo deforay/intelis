@@ -577,15 +577,15 @@ $reasonForChange = $reasonForChangeArr[1];
 												Female
 											</label>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender" <?php echo ($genericResultInfo['patient_gender'] == 'not_recorded') ? "checked='checked'" : "" ?>>Not
-												Recorded
+												<input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please check gender" <?php echo ($genericResultInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>
+												Unreported
 											</label>
 										</div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-6">
-										<label class="col-lg-5" for="gender">Patient consent to receive SMS?</label>
+										<label class="col-lg-5" for="receiveSms">Patient consent to receive SMS?</label>
 										<div class="col-lg-7">
 											<label class="radio-inline" style="margin-left:0px;">
 												<input type="radio" class="" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);" <?php echo ($genericResultInfo['consent_to_receive_sms'] == 'yes') ? "checked='checked'" : "" ?>>
@@ -1389,7 +1389,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			'');
 	}
 	$("input:radio[name=gender]").click(function() {
-		if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
+		if ($(this).val() == 'male' || $(this).val() == 'unreported') {
 			$('.femaleSection').hide();
 			$('input[name="breastfeeding"]').prop('checked', false);
 			$('input[name="patientPregnant"]').prop('checked', false);

@@ -151,7 +151,11 @@ if (isset($_POST['rjtFacilityName']) && $_POST['rjtFacilityName'] != '') {
     $sWhere[] =  ' f.facility_id IN (' . $_POST['rjtFacilityName'] . ')';
 }
 if (isset($_POST['rjtGender']) && $_POST['rjtGender'] != '') {
-    $sWhere[] =  ' vl.child_gender = "' . $_POST['rjtGender'] . '"';
+    if (trim((string) $_POST['rjtGender']) == "unreported") {
+        $sWhere[] =  ' (vl.child_gender = "unreported" OR vl.child_gender ="" OR vl.child_gender IS NULL)';
+    } else {
+        $sWhere[] =  ' (vl.child_gender IS NOT NULL AND vl.child_gender ="' . $_POST['rjtGender'] . '") ';
+    }
 }
 if (isset($_POST['rjtPatientPregnant']) && $_POST['rjtPatientPregnant'] != '') {
     $sWhere[] = '  vl.is_patient_pregnant = "' . $_POST['rjtPatientPregnant'] . '"';

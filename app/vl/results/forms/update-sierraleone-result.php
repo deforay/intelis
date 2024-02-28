@@ -341,13 +341,13 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
 										</label>
 										<label class="radio-inline" style="margin-left:0px;">
-											<input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'not_recorded') ? "checked='checked'" : "" ?>>Not Recorded
+											<input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please check gender" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>Unreported
 										</label>
 									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
-										<label for="gender">Gender</label><br>
+										<label for="receiveSms">Patient consent to receive SMS?</label><br>
 										<label class="radio-inline" style="margin-left:0px;">
 											<input type="radio" class="" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" <?php echo $disable; ?> onclick="checkPatientReceivesms(this.value);" <?php echo ($vlQueryInfo['consent_to_receive_sms'] == 'yes') ? "checked='checked'" : "" ?>> Yes
 										</label>

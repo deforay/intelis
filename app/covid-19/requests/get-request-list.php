@@ -173,8 +173,8 @@ try {
 
 
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
-          if (trim((string) $_POST['gender']) == "not_recorded") {
-               $sWhere[] = ' vl.patient_gender="not_recorded" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
+          if (trim((string) $_POST['gender']) == "unreported") {
+               $sWhere[] = ' vl.patient_gender="unreported" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
           } else {
                $sWhere[] = ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
           }
