@@ -221,41 +221,21 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2">
-								<div class="col-md-12">
-									<div class="col-md-6">
-										<strong>
-											<?php echo _translate("Pregnant"); ?>&nbsp;:
-										</strong>
-										<select name="patientPregnant" id="patientPregnant" class="form-control" title="<?php echo _translate('Please choose pregnant option'); ?>">
-											<option value="">
-												<?php echo _translate("-- Select --"); ?>
-											</option>
-											<option value="yes">
-												<?php echo _translate("Yes"); ?>
-											</option>
-											<option value="no">
-												<?php echo _translate("No"); ?>
-											</option>
-										</select>
-									</div>
-									<div class="col-md-6">
-										<strong>
-											<?php echo _translate("Breastfeeding"); ?>&nbsp;:
-										</strong>
-										<select name="breastFeeding" id="breastFeeding" class="form-control" title="<?php echo _translate('Please choose pregnant option'); ?>">
-											<option value="">
-												<?php echo _translate("-- Select --"); ?>
-											</option>
-											<option value="yes">
-												<?php echo _translate("Yes"); ?>
-											</option>
-											<option value="no">
-												<?php echo _translate("No"); ?>
-											</option>
-										</select>
-									</div>
-								</div>
+						<td><strong>
+									<?php echo _translate("Sample Type"); ?> :
+								</strong></td>
+							<td>
+								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _translate('Please select request sample type'); ?>">
+									<option value="">
+										<?php echo _translate("All"); ?>
+									</option>
+									<option value="result">
+										<?php echo _translate("Samples with result"); ?>
+									</option>
+									<option value="noresult">
+										<?php echo _translate("Samples without result"); ?>
+									</option>
+								</select>
 							</td>
 							<td><strong>
 									<?php echo _translate("Batch Code"); ?> :
@@ -311,26 +291,46 @@ foreach ($srcResults as $list) {
 									<option value="female">
 										<?php echo _translate("Female"); ?>
 									</option>
-									<option value="not_recorded">
-										<?php echo _translate("Not Recorded"); ?>
+									<option value="unreported">
+										<?php echo _translate("Unreported"); ?>
 									</option>
 								</select>
 							</td>
-							<td><strong>
-									<?php echo _translate("Sample Type"); ?> :
-								</strong></td>
-							<td>
-								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _translate('Please select request sample type'); ?>">
-									<option value="">
-										<?php echo _translate("All"); ?>
-									</option>
-									<option value="result">
-										<?php echo _translate("Samples with result"); ?>
-									</option>
-									<option value="noresult">
-										<?php echo _translate("Samples without result"); ?>
-									</option>
-								</select>
+							<td colspan="2">
+								<div class="col-md-12">
+									<div class="col-md-6">
+										<strong>
+											<?php echo _translate("Pregnant"); ?>&nbsp;:
+										</strong>
+										<select name="patientPregnant" id="patientPregnant" class="form-control" title="<?php echo _translate('Please choose pregnant option'); ?>">
+											<option value="">
+												<?php echo _translate("-- Select --"); ?>
+											</option>
+											<option value="yes">
+												<?php echo _translate("Yes"); ?>
+											</option>
+											<option value="no">
+												<?php echo _translate("No"); ?>
+											</option>
+										</select>
+									</div>
+									<div class="col-md-6">
+										<strong>
+											<?php echo _translate("Breastfeeding"); ?>&nbsp;:
+										</strong>
+										<select name="breastFeeding" id="breastFeeding" class="form-control" title="<?php echo _translate('Please choose pregnant option'); ?>">
+											<option value="">
+												<?php echo _translate("-- Select --"); ?>
+											</option>
+											<option value="yes">
+												<?php echo _translate("Yes"); ?>
+											</option>
+											<option value="no">
+												<?php echo _translate("No"); ?>
+											</option>
+										</select>
+									</div>
+								</div>
 							</td>
 						</tr>
 						<tr>
@@ -535,6 +535,9 @@ foreach ($srcResults as $list) {
 								</div>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label>
+								</div>
+								<div class="col-md-3">
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
 								</div>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
@@ -1245,6 +1248,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				$("#facilityName").html(Obj['facilities']);
 				$("#vlLab").html(Obj['labs']);
 			});
+	}
+
+	function hideFemaleDetails(value) {
+		if (value == 'female') {
+			$("#patientPregnant").attr("disabled", false);
+			$("#breastFeeding").attr("disabled", false);
+		} else {
+			$('select#patientPregnant').val('');
+        	$('select#breastFeeding').val('');
+			$("#patientPregnant").attr("disabled", true);
+			$("#breastFeeding").attr("disabled", true);
+		}
 	}
 </script>
 <?php

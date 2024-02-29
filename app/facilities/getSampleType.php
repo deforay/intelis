@@ -2,6 +2,7 @@
 
 use App\Registries\AppRegistry;
 use App\Services\TbService;
+use App\Services\CD4Service;
 use App\Services\VlService;
 use App\Services\EidService;
 use App\Services\Covid19Service;
@@ -53,6 +54,11 @@ if ($_POST['testType'] != "") {
             /** @var TbService $tbService */
             $tbService = ContainerRegistry::get(TbService::class);
             $sampleType['tb'] = $tbService->getTbSampleTypes();
+        }
+        if ($test == 'cd4') {
+            /** @var CD4Service $cd4Service */
+            $cd4Service = ContainerRegistry::get(CD4Service::class);
+            $sampleType['cd4'] = $cd4Service->getCd4SampleTypes();
         }
         $selectedType[$test] = explode(",", (string) $selectedSamplesTypes['sampleType'][$test]);
     }

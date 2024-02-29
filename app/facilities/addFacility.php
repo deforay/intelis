@@ -364,6 +364,11 @@ $formId = $general->getGlobalConfig('vl_form');
 														<?php echo _translate("TB"); ?>
 													</option>
 												<?php }
+												if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
+													<option value='cd4'>
+														<?php echo _translate("CD4"); ?>
+													</option>
+												<?php }
 												if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 													<option value='generic-tests'>
 														<?php echo _translate("Other Lab Tests"); ?>

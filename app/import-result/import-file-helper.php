@@ -29,6 +29,7 @@ $directoryMap = [
     'covid19' => 'covid-19',
     'hepatitis' => 'hepatitis',
     'tb' => 'tb',
+    'cd4' => 'cd4',
 ];
 
 

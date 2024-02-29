@@ -161,7 +161,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<option value="male" <?php echo ($gender == 'male') ? "selected='selected'" : "" ?>>
 										<?php echo _translate("Male"); ?></option>
 									<option value="female" <?php echo ($gender == 'female') ? "selected='selected'" : "" ?>><?php echo _translate("Female"); ?></option>
-									<option value="not_recorded" <?php echo ($gender == 'not_recorded') ? "selected='selected'" : "" ?>><?php echo _translate("Not Recorded"); ?></option>
+									<option value="unreported" <?php echo ($gender == 'unreported') ? "selected='selected'" : "" ?>><?php echo _translate("Unreported"); ?></option>
 								</select>
 							</td>
 						</tr>
@@ -204,10 +204,13 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
 								</div>
 								<div class="col-md-3">
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
+								</div>
+								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label> <br>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="cd4_result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
 								</div>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="modified_on" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Modified On"); ?></label>

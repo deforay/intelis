@@ -1106,6 +1106,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.rejectionReason').hide();
                $('#rejectionReason').removeClass('isRequired');
                $('#rejectionReason').val('');
+               $('#rejectionDate').val('');
           }
      });
 
