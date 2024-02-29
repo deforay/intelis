@@ -28,7 +28,9 @@ $userResult = $usersService->getAllUsers();
 
 $userInfo = [];
 foreach ($userResult as $user) {
-	$userInfo[$user['user_id']] = ($user['user_name']);
+	if (!empty($user['user_name'])) {
+		$userInfo[$user['user_id']] = ($user['user_name']);
+	}
 }
 
 $reportFormats = [];
@@ -713,6 +715,11 @@ $formId = $general->getGlobalConfig('vl_form');
 														<option value='generic-tests'>
 															<?php echo _translate("Other Lab Tests"); ?>
 														</option>
+													<?php } 
+													if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
+														<option value='cd4'>
+															<?php echo _translate("CD4"); ?>
+														</option>
 													<?php } ?>
 												</select>
 											</td>
@@ -939,8 +946,10 @@ $formId = $general->getGlobalConfig('vl_form');
 		var facility = $("#facilityType").val();
 		var testType = $("#testType").val();
 		if (facility == '2') {
-			$("#testType").addClass('isRequired');
-			$(".test-type").append('<span class="mandatory">*</span>');
+			if (!$("#testType").hasClass('isRequired')) {
+				$("#testType").addClass('isRequired');
+				$(".test-type").append('<span class="mandatory">*</span>');
+			}
 		} else {
 			$("#testType").removeClass('isRequired');
 			$(".test-type").find('span').remove();
@@ -1009,6 +1018,9 @@ $formId = $general->getGlobalConfig('vl_form');
 					<option value="eid"><?php echo _translate("Early Infant Diagnosis", true); ?></option>
 					<option value="covid19"><?php echo _translate("Covid-19", true); ?></option>
 					<option value='hepatitis'><?php echo _translate("Hepatitis", true); ?></option>
+					<option value='tb'><?php echo _translate("TB", true); ?></option>
+					<option value='generic-tests'><?php echo _translate("Other Lab Tests", true); ?></option>
+					<option value='cd4'><?php echo _translate("CD4", true); ?></option>
 				</select>
 			</td>
 			<td style="width:14%;"><input type="number" class="form-control" name="sortOrder[]" id="sortOrder${testCounter}" placeholder="<?php echo _translate("Display Order", true); ?>" title="<?php echo _translate("Please enter the Display Order", true); ?>"></td>

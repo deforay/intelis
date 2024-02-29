@@ -66,15 +66,15 @@ $state = $geolocationService->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                    <!--  <td><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
+                                                    <!--  <td><strong>< ?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
                                                     <td>
-                                                        <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
-                                                            <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                                            <?php
+                                                        <select class="form-control" id="batchCode" name="batchCode" title="< ?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+                                                            <option value=""> < ?php echo _translate("-- Select --"); ?> </option>
+                                                            < ?php
                                                             foreach ($batResult as $code) {
                                                             ?>
-                                                                <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-                                                            <?php
+                                                                <option value="< ?php echo $code['batch_code']; ?>">< ?php echo $code['batch_code']; ?></option>
+                                                            < ?php
                                                             }
                                                             ?>
                                                         </select>
@@ -152,7 +152,10 @@ $state = $geolocationService->getProvinces("yes");
                                                                 <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
                                                             </div>
                                                         <?php } ?>
-
+                                                        
+                                                        <div class="col-md-3">
+                                                            <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
+                                                        </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label>
                                                         </div>
@@ -222,15 +225,15 @@ $state = $geolocationService->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                    <!--  <td><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
+                                                    <!--  <td><strong>< ?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
                                                     <td>
-                                                        <select class="form-control" id="printBatchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
-                                                            <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                                            <?php
+                                                        <select class="form-control" id="printBatchCode" name="batchCode" title="< ?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+                                                            <option value=""> < ?php echo _translate("-- Select --"); ?> </option>
+                                                            < ?php
                                                             foreach ($batResult as $code) {
                                                             ?>
-                                                                <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-                                                            <?php
+                                                                <option value="< ?php echo $code['batch_code']; ?>">< ?php echo $code['batch_code']; ?></option>
+                                                            < ?php
                                                             }
                                                             ?>
                                                         </select>
@@ -307,7 +310,9 @@ $state = $geolocationService->getProvinces("yes");
                                                                 <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
                                                             </div>
                                                         <?php } ?>
-
+                                                        <div class="col-md-3">
+                                                            <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="batch_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
+                                                        </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_art_no" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label>
                                                         </div>
