@@ -45,6 +45,8 @@ if ($type == 'vl') {
 	$lastQuery = "SELECT lab_id FROM form_hepatitis WHERE lab_id is not NULL ORDER BY hepatitis_id DESC LIMIT 1";
 } elseif ($type == 'tb') {
 	$lastQuery = "SELECT lab_id FROM form_tb WHERE lab_id is not NULL ORDER BY tb_id DESC LIMIT 1";
+} elseif ($type == 'cd4') {
+	$lastQuery = "SELECT lab_id FROM form_cd4 WHERE lab_id is not NULL ORDER BY cd4_id DESC LIMIT 1";
 }
 
 $lastResult = $db->rawQueryOne($lastQuery);

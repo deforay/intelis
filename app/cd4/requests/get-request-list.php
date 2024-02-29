@@ -75,7 +75,8 @@ try {
                vl.arv_adherance_percentage,
                vl.is_sample_rejected,
                vl.reason_for_sample_rejection,
-               vl.cd4_result as result,
+               vl.cd4_result,
+               vl.cd4_result_percentage,
                vl.current_regimen,
                vl.is_patient_pregnant,
                vl.is_patient_breastfeeding,
@@ -280,11 +281,11 @@ try {
      }
 
 
-     $_SESSION['vlRequestQuery'] = $sQuery;
+     $_SESSION['cd4RequestQuery'] = $sQuery;
 
      [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
-     $_SESSION['vlRequestQueryCount'] = $resultCount;
+     $_SESSION['cd4RequestQueryCount'] = $resultCount;
 
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
@@ -329,7 +330,7 @@ try {
           $row[] = $aRow['facility_state'];
           $row[] = $aRow['facility_district'];
           $row[] = $aRow['sample_name'];
-          $row[] = $aRow['result'];
+          $row[] = $aRow['cd4_result'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
           $row[] = $aRow['status_name'];
 
