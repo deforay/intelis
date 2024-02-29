@@ -309,9 +309,9 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                        <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" id="genderFemale" name="gender" value="female" title="Please choose gender" <?php echo (isset($cd4QueryInfo['patient_gender']) && $cd4QueryInfo['patient_gender'] == 'female') ? "checked='checked'" : ""; ?>>Female
                                                        </label>&nbsp;&nbsp;
-                                                       <!--<label class="radio-inline" style="margin-left:0px;">
-                                                       <input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender">Not Recorded
-                                                  </label>-->
+                                                       <label class="radio-inline" style="margin-left:0px;">
+                                                       <input type="radio" class="" id="genderNotRecorded" name="gender" value="unreported" title="Please check gender" <?php echo (isset($cd4QueryInfo['patient_gender']) && $cd4QueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : ""; ?>>Unreported
+                                                  </label>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -1083,7 +1083,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      $("input:radio[name=gender]").click(function() {
-          if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
+          if ($(this).val() == 'male' || $(this).val() == 'unreported') {
                $('.femaleSection').hide();
                $('input[name="breastfeeding"]').prop('checked', false);
                $('input[name="patientPregnant"]').prop('checked', false);
@@ -1172,7 +1172,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if ($.trim(patientArray['gender']) != '') {
                $('#breastfeedingYes').removeClass('isRequired');
                $('#pregYes').removeClass('isRequired');
-               if (patientArray['gender'] == 'male' || patientArray['gender'] == 'not_recorded') {
+               if (patientArray['gender'] == 'male' || patientArray['gender'] == 'unreported') {
                     $('.femaleSection').hide();
                     $('input[name="breastfeeding"]').prop('checked', false);
                     $('input[name="patientPregnant"]').prop('checked', false);
