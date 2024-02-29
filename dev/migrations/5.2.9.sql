@@ -295,3 +295,7 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/cd4/requests/add-samples-from-manifest.php', NULL, 'Add Samples from Manifest', '6', 'lis');
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'Add Samples from Manifest', '/cd4/requests/add-samples-from-manifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestMenu', '219', '188', 'active', CURRENT_TIMESTAMP);
 
+--Brindha 29-Feb-2024
+UPDATE `privileges` SET `resource_id` = 'cd4-management' WHERE `privileges`.`privilege_name` = "/cd4/results/cd4-print-results.php";
+
+UPDATE `resources` SET `resource_id` = 'cd4-management' WHERE `resources`.`resource_id` = 'cd4-reports';
