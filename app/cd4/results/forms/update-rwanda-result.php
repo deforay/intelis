@@ -815,58 +815,16 @@ $disable = "disabled = 'disabled'";
 	$("#isSampleRejected").on("change", function() {
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
-			$('.vlResult').css('display', 'none');
 			$('#rejectionReason').addClass('isRequired');
-			$("#status").val(4);
-			$('#vlResult').removeClass('isRequired');
 		} else {
-			$('.vlResult').css('display', 'block');
 			$('.rejectionReason').hide();
 			$('#rejectionReason').removeClass('isRequired');
 			$('#rejectionReason').val('');
-			$("#status").val('');
-			$('#vlResult').addClass('isRequired');
-			// if any of the special results like tnd,bld are selected then remove isRequired from vlResult
-			if ($('.specialResults:checkbox:checked').length) {
-				$('#vlResult').removeClass('isRequired');
-			}
+			$('#rejectionDate').val('');
+			
 		}
 	});
 
-	$('.specialResults').change(function() {
-		if ($(this).is(':checked')) {
-			$('#vlResult,#vlLog').attr('readonly', true);
-			$('#vlResult').removeClass('isRequired');
-			$(".specialResults").not(this).attr('disabled', true);
-			$('.specialResults').not(this).prop('checked', false).removeAttr('checked');
-		} else {
-			$('#vlResult,#vlLog').attr('readonly', false);
-			$(".specialResults").not(this).attr('disabled', false);
-		}
-	});
-
-
-	if ($(".specialResults:checked").length > 0) {
-		$('#vlResult, #vlLog').val('');
-		$('#vlResult,#vlLog').attr('readonly', true);
-		$('#vlResult, #vlLog').removeClass('isRequired');
-		$(".specialResults").attr('disabled', false);
-		$(".specialResults").not($(".specialResults:checked")).attr('disabled', true);
-		$('.specialResults').not($(".specialResults:checked")).prop('checked', false).removeAttr('checked');
-	}
-	if ($('#vlResult, #vlLog').val() != '') {
-		$('.specialResults').prop('checked', false).removeAttr('checked');
-		$(".specialResults").attr('disabled', true);
-		$('#vlResult').addClass('isRequired');
-	}
-
-	$('#vlResult,#vlLog').on('input', function(e) {
-		if (this.value != '') {
-			$(".specialResults").not(this).attr('disabled', true);
-		} else {
-			$(".specialResults").not(this).attr('disabled', false);
-		}
-	});
 
 	$(".labSection").on("change", function() {
 		if ($.trim(result) != '') {
