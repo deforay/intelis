@@ -389,6 +389,12 @@ $formId = $general->getGlobalConfig('vl_form');
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 												<option value='tb' <?php echo (preg_match("/tb/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("TB"); ?></option>
+											<?php } 
+											if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
+												<option value='cd4' <?php echo (preg_match("/cd4/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("CD4"); ?></option>
+											<?php } 
+											if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
+												<option value='generic-tests' <?php echo (preg_match("/generic-tests/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("Other Lab Tests"); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -509,7 +515,7 @@ $formId = $general->getGlobalConfig('vl_form');
 							</div>
 						<?php } ?>
 					</div>
-					<div class="row">
+					<div class="row logoImage">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="" class="col-lg-4 control-label"><?php echo _translate("Logo Image"); ?> </label>
@@ -662,6 +668,8 @@ $formId = $general->getGlobalConfig('vl_form');
 													<option value="covid19" <?php echo (isset($row['test_types']) && in_array("covid19", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Covid-19"); ?></option>
 													<option value='hepatitis' <?php echo (isset($row['test_types']) && in_array("hepatitis", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Hepatitis"); ?></option>
 													<option value='tb' <?php echo (isset($row['test_types']) && in_array("tb", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("TB"); ?></option>
+													<option value='generic-tests' <?php echo (isset($row['test_types']) && in_array("generic-tests", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Other Lab Tests"); ?></option>
+													<option value='cd4' <?php echo (isset($row['test_types']) && in_array("cd4", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("CD4"); ?></option>
 												</select>
 											</td>
 											<td style="width:14%;"><input value="<?php echo $row['display_order'] ?>" type="number" class="form-control" name="sortOrder[]" id="sortOrder<?= $key + 1; ?>" placeholder="<?php echo _translate('Display Order'); ?>" title="<?php echo _translate('Please enter the Display Order'); ?>"></td>
@@ -688,6 +696,9 @@ $formId = $general->getGlobalConfig('vl_form');
 												<option value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
 												<option value="covid19"><?php echo _translate("Covid-19"); ?></option>
 												<option value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
+												<option value='tb'><?php echo _translate("TB"); ?></option>
+												<option value='generic-tests'><?php echo _translate("Other Lab Tests"); ?></option>
+												<option value='cd4'><?php echo _translate("CD4"); ?></option>
 											</select>
 										</td>
 										<td style="width:14%;"><input type="number" class="form-control" name="sortOrder[]" id="sortOrder1" placeholder="<?php echo _translate('Display Order'); ?>" title="<?php echo _translate('Please enter the Display Order'); ?>"></td>
@@ -1042,6 +1053,8 @@ $formId = $general->getGlobalConfig('vl_form');
 					<option value="covid19"><?php echo _translate("Covid-19", true); ?></option>
 					<option value='hepatitis'><?php echo _translate("Hepatitis", true); ?></option>
 					<option value='tb'><?php echo _translate("TB", true); ?></option>
+					<option value='generic-tests'><?php echo _translate("Other Lab Tests", true); ?></option>
+					<option value='cd4'><?php echo _translate("CD4", true); ?></option>
 				</select>
 			</td>
 			<td style="width:14%;"><input type="text" class="form-control" name="sortOrder[]" id="sortOrder${testCounter}" placeholder="<?php echo _translate('Display Order', true); ?>" title="<?php echo _translate('Please enter the Display Order', true); ?>"></td>
