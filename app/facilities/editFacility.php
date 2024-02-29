@@ -382,6 +382,11 @@ $formId = $general->getGlobalConfig('vl_form');
 											if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
 												<option value='hepatitis' <?php echo (preg_match("/hepatitis/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("Hepatitis"); ?></option>
 											<?php }
+											if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
+												<option value='cd4' <?php echo (preg_match("/cd4/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>>
+													<?php echo _translate("CD4"); ?>
+												</option>
+											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 												<option value='tb' <?php echo (preg_match("/tb/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("TB"); ?></option>
 											<?php } ?>

@@ -249,9 +249,9 @@ $disable = "disabled = 'disabled'";
 										<label class="radio-inline" style="margin-left:0px;">
 											<input type="radio" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
 										</label>
-										<!--<label class="radio-inline" style="margin-left:0px;">
-							<input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender" < ?php echo $disable;?> < ?php echo ($cd4QueryInfo['patient_gender']=='not_recorded')?"checked='checked'":""?>>Not Recorded
-						  </label>-->
+										<label class="radio-inline" style="margin-left:0px;">
+										<input type="radio" class="" id="genderNotRecorded" name="gender" value="unreported" title="Please check gender" <?php echo $disable;?> <?php echo ($cd4QueryInfo['patient_gender']=='unreported')?"checked='checked'":""?>>Unreported
+									</label>
 									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">
