@@ -177,17 +177,16 @@ class UsersService
             }
 
             $this->db->orderBy("user_name", "asc");
-            $this->db->setQueryOption('DISTINCT');
-
+            
             if (isset($type) && $type == 'drop-down') {
-                $result = $this->db->get('user_details u');
+                $result = $this->db->setQueryOption('DISTINCT')->get('user_details u');
                 $userDetails = [];
                 foreach ($result as $user) {
                     $userDetails[$user['user_id']] = ($user['user_name']);
                 }
                 return $userDetails;
             } else {
-                return $this->db->get('user_details u');
+                return $this->db->setQueryOption('DISTINCT')->get('user_details u');
             }
         });
     }
