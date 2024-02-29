@@ -481,7 +481,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 				});
 			}
 		});
-
+		$.unblockUI();
 	}
 
 	function searchVlRequestData() {
