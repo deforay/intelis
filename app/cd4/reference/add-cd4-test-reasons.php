@@ -1,9 +1,9 @@
 <?php
 
-$title = "VL Test Reasons";
+$title = "CD4 Test Reasons";
 
 require_once APPLICATION_PATH . '/header.php';
-$testQuery = "SELECT * from r_vl_test_reasons WHERE parent_reason ='0'";
+$testQuery = "SELECT * from r_cd4_test_reasons WHERE parent_reason ='0'";
 $testInfo = $db->query($testQuery);
 foreach ($testInfo as $test) {
 	$testParent[$test['test_reason_id']] = ($test['test_reason_name']);
@@ -13,10 +13,10 @@ foreach ($testInfo as $test) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("Add VL Test Reasons"); ?></h1>
+		<h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("Add CD4 Test Reasons"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-			<li class="active"><?php echo _translate("VL Test Reasons"); ?></li>
+			<li class="active"><?php echo _translate("CD4 Test Reasons"); ?></li>
 		</ol>
 	</section>
 
@@ -30,14 +30,14 @@ foreach ($testInfo as $test) {
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='addTstForm' id='addTstForm' autocomplete="off" enctype="multipart/form-data" action="save-vl-test-reasons-helper.php">
+				<form class="form-horizontal" method='post' name='addTstForm' id='addTstForm' autocomplete="off" enctype="multipart/form-data" action="save-cd4-test-reasons-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="testReasonName" class="col-lg-4 control-label"><?php echo _translate("Test Reason Name"); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testReasonName" name="testReasonName" placeholder="<?php echo _translate('Test Reason Name'); ?>" title="<?php echo _translate('Please enter Test Reason name'); ?>" onblur='checkNameValidation("r_vl_test_reasons","test_reason_name",this,null,"<?php echo _translate("The Test Reason name that you entered already exists.Enter another name"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="testReasonName" name="testReasonName" placeholder="<?php echo _translate('Test Reason Name'); ?>" title="<?php echo _translate('Please enter Test Reason name'); ?>" onblur='checkNameValidation("r_cd4_test_reasons","test_reason_name",this,null,"<?php echo _translate("The Test Reason name that you entered already exists.Enter another name"); ?>",null)' />
 									</div>
 								</div>
 							</div>
@@ -68,7 +68,7 @@ foreach ($testInfo as $test) {
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-						<a href="vl-test-reasons.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
+						<a href="cd4-test-reasons.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

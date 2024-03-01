@@ -68,7 +68,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					LEFT JOIN facility_details as l ON l.facility_id = vl.lab_id
 					LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
 					LEFT JOIN r_funding_sources as funding ON funding.funding_source_id = vl.funding_source
-					LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection
+					LEFT JOIN r_cd4_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection
 					LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action";
 
 	$searchQueryWhere = [];

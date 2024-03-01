@@ -2,7 +2,7 @@
 
 use App\Registries\AppRegistry;
 
-$title = "VL Test Reasons";
+$title = "CD4 Test Reasons";
 
 require_once APPLICATION_PATH . '/header.php';
 // Sanitized values from $request object
@@ -12,23 +12,23 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
-$testQuery = "SELECT * from r_vl_test_reasons WHERE parent_reason ='0' AND test_reason_id != $id";
+$testQuery = "SELECT * from r_cd4_test_reasons WHERE parent_reason ='0' AND test_reason_id != $id";
 $testInfo = $db->query($testQuery);
 foreach ($testInfo as $test) {
 	$testParent[$test['test_reason_id']] = ($test['test_reason_name']);
 }
 
-$tstQuery = "SELECT * from r_vl_test_reasons where test_reason_id=$id";
+$tstQuery = "SELECT * from r_cd4_test_reasons where test_reason_id=$id";
 $tstInfo = $db->query($tstQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-flask-vial"></em> Edit VL Test Reasons</h1>
+		<h1><em class="fa-solid fa-flask-vial"></em> Edit CD4 Test Reasons</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-			<li class="active">VL Test Reasons</li>
+			<li class="active">CD4 Test Reasons</li>
 		</ol>
 	</section>
 
@@ -42,14 +42,14 @@ $tstInfo = $db->query($tstQuery);
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='editTstForm' id='editTstForm' autocomplete="off" enctype="multipart/form-data" action="save-vl-test-reasons-helper.php">
+				<form class="form-horizontal" method='post' name='editTstForm' id='editTstForm' autocomplete="off" enctype="multipart/form-data" action="save-cd4-test-reasons-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="testReasonName" class="col-lg-4 control-label">Test Reason Name <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testReasonName" name="testReasonName" placeholder="Test Reason Name" title="Please enter Test Reason name" value="<?php echo $tstInfo[0]['test_reason_name']; ?>" onblur="checkNameValidation('r_vl_test_reasons','test_reason_name',this,'<?php echo "test_reason_id##" . $id; ?>','The Test Reason name that you entered already exists.Enter another name',null)" />
+										<input type="text" class="form-control isRequired" id="testReasonName" name="testReasonName" placeholder="Test Reason Name" title="Please enter Test Reason name" value="<?php echo $tstInfo[0]['test_reason_name']; ?>" onblur="checkNameValidation('r_cd4_test_reasons','test_reason_name',this,'<?php echo "test_reason_id##" . $id; ?>','The Test Reason name that you entered already exists.Enter another name',null)" />
 										<input type="hidden" class="form-control" id="testReasonId" name="testReasonId" value="<?php echo $_GET['id']; ?>" />
 									</div>
 								</div>
@@ -84,7 +84,7 @@ $tstInfo = $db->query($tstQuery);
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-						<a href="vl-test-reasons.php" class="btn btn-default"> Cancel</a>
+						<a href="cd4-test-reasons.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

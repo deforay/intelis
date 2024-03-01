@@ -12,7 +12,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$tableName = "r_vl_sample_rejection_reasons";
+$tableName = "r_cd4_sample_rejection_reasons";
 try {
 
     // Sanitized values from $request object

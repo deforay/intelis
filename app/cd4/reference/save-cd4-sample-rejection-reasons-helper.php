@@ -16,7 +16,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$tableName = "r_vl_sample_rejection_reasons";
+$tableName = "r_cd4_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";
 
 try {
@@ -39,11 +39,11 @@ try {
 			$lastId = $db->getInsertId();
 		}
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _translate("VL Sample Rejection Reasons details added successfully");
-			$general->activityLog('VL Sample Rejection Reasons For VL', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons for VL  ' . $_POST['rejectionReasonName'], 'vl-reference');
+			$_SESSION['alertMsg'] = _translate("CD4 Sample Rejection Reasons details added successfully");
+			$general->activityLog('CD4 Sample Rejection Reasons For CD4', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons for CD4  ' . $_POST['rejectionReasonName'], 'cd4-reference');
 		}
 	}
-	header("Location:/vl/reference/vl-sample-rejection-reasons.php");
+	header("Location:/cd4/reference/cd4-sample-rejection-reasons.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

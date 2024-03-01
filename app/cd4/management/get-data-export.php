@@ -36,8 +36,8 @@ try {
      /* Array of database columns which should be read and sent back to DataTables. Use a space where
      * you want to insert a non-database field (for example a counter or static image)
      */
-     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'CONCAT(COALESCE(vl.patient_first_name,""), COALESCE(vl.patient_last_name,""))', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'CONCAT(COALESCE(vl.patient_first_name,""), COALESCE(vl.patient_last_name,""))', 'f.facility_name', 'l_f.facility_name', 'vl.cd4_result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'l_f.facility_name', 'vl.cd4_result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $sampleCode = 'sample_code';
      if ($_SESSION['instance']['type'] == 'remoteuser') {
           $sampleCode = 'remote_sample_code';
@@ -133,7 +133,7 @@ try {
                     LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.tested_by
                     LEFT JOIN r_cd4_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_cd4_testing
                     LEFT JOIN r_cd4_sample_types as rst ON rst.sample_id=vl.specimen_type
-                    LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
+                    LEFT JOIN r_cd4_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
                     LEFT JOIN r_recommended_corrective_actions as r_c_a ON vl.recommended_corrective_action=r_c_a.recommended_corrective_action_id
                     LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
                     LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";

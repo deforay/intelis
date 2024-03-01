@@ -4,7 +4,7 @@
 use App\Registries\AppRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
-$rejReaons = $general->getRejectionReasons('vl');
+$rejReaons = $general->getRejectionReasons('cd4');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -12,7 +12,7 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$rsnQuery = "SELECT * from r_vl_sample_rejection_reasons where rejection_reason_id = $id";
+$rsnQuery = "SELECT * from r_cd4_sample_rejection_reasons where rejection_reason_id = $id";
 $rsnInfo = $db->query($rsnQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -36,14 +36,14 @@ $rsnInfo = $db->query($rsnQuery);
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='addSampleRejcForm' id='addSampleRejcForm' autocomplete="off" enctype="multipart/form-data" action="save-vl-sample-rejection-reasons-helper.php">
+				<form class="form-horizontal" method='post' name='addSampleRejcForm' id='addSampleRejcForm' autocomplete="off" enctype="multipart/form-data" action="save-cd4-sample-rejection-reasons-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="rejectionReasonName" class="col-lg-4 control-label">Rejection Reason Name <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="rejectionReasonName" name="rejectionReasonName" value="<?php echo $rsnInfo[0]['rejection_reason_name']; ?>" placeholder="Rejection Reason Name" title="Please enter Rejection Reason name" onblur="checkNameValidation('r_vl_sample_rejection_reasons','rejection_reason_name',this,'<?php echo "rejection_reason_id##" . htmlspecialchars($id); ?>','This Rejection reason name that you entered already exists.Try another Rejection reason name',null)" />
+										<input type="text" class="form-control isRequired" id="rejectionReasonName" name="rejectionReasonName" value="<?php echo $rsnInfo[0]['rejection_reason_name']; ?>" placeholder="Rejection Reason Name" title="Please enter Rejection Reason name" onblur="checkNameValidation('r_cd4_sample_rejection_reasons','rejection_reason_name',this,'<?php echo "rejection_reason_id##" . htmlspecialchars($id); ?>','This Rejection reason name that you entered already exists.Try another Rejection reason name',null)" />
 										<input type="hidden" class="form-control isRequired" id="rejectionReasonId" name="rejectionReasonId" value="<?php echo $_GET['id']; ?>" />
 									</div>
 								</div>
@@ -64,7 +64,7 @@ $rsnInfo = $db->query($rsnQuery);
 								<div class="form-group">
 									<label for="rejectionReasonCode" class="col-lg-4 control-label">Rejection Reason Code <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" value="<?php echo $rsnInfo[0]['rejection_reason_code']; ?>" id="rejectionReasonCode" name="rejectionReasonCode" placeholder="Rejection Reason Code" title="Please enter Rejection Reason Code" onblur="checkNameValidation('r_vl_sample_rejection_reasons','rejection_reason_code',this,'<?php echo "rejection_reason_id##" . htmlspecialchars($id); ?>','This Rejection reason code that you entered already exists.Try another Rejection reason code',null)" />
+										<input type="text" class="form-control isRequired" value="<?php echo $rsnInfo[0]['rejection_reason_code']; ?>" id="rejectionReasonCode" name="rejectionReasonCode" placeholder="Rejection Reason Code" title="Please enter Rejection Reason Code" onblur="checkNameValidation('r_cd4_sample_rejection_reasons','rejection_reason_code',this,'<?php echo "rejection_reason_id##" . htmlspecialchars($id); ?>','This Rejection reason code that you entered already exists.Try another Rejection reason code',null)" />
 									</div>
 								</div>
 							</div>
@@ -86,7 +86,7 @@ $rsnInfo = $db->query($rsnQuery);
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-						<a href="/vl/reference/vl-sample-rejection-reasons.php" class="btn btn-default"> Cancel</a>
+						<a href="/cd4/reference/cd4-sample-rejection-reasons.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

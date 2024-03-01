@@ -56,12 +56,12 @@ foreach ($userResult as $user) {
      $userInfo[$user['user_id']] = ($user['user_name']);
 }
 //sample rejection reason
-$rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons
+$rejectionQuery = "SELECT * FROM r_cd4_sample_rejection_reasons
                          WHERE rejection_reason_status = 'active'";
 $rejectionResult = $db->rawQuery($rejectionQuery);
 //rejection type
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type
-                         FROM r_vl_sample_rejection_reasons
+                         FROM r_cd4_sample_rejection_reasons
                          WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 //sample status

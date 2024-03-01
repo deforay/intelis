@@ -18,7 +18,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$tableName = "r_vl_sample_type";
+$tableName = "r_cd4_sample_types";
 $primaryKey = "sample_id";
 
 try {
@@ -38,11 +38,11 @@ try {
 			$lastId = $db->getInsertId();
 		}
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _translate("VL Sample details saved successfully");
-			$general->activityLog('VL Sample Type details', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleName'], 'vl-reference');
+			$_SESSION['alertMsg'] = _translate("CD4 Sample details saved successfully");
+			$general->activityLog('CD4 Sample Type details', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleName'], 'cd4-reference');
 		}
 	}
-	header("Location:vl-sample-type.php");
+	header("Location:cd4-sample-type.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

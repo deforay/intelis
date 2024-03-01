@@ -29,11 +29,11 @@ $sResult = $db->rawQuery($sQuery);
 $batQuery = "SELECT batch_code FROM batch_details where test_type = 'cd4' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 
-$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active'";
+$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_cd4_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 //sample rejection reason
-$rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active'";
+$rejectionQuery = "SELECT * FROM r_cd4_sample_rejection_reasons where rejection_reason_status = 'active'";
 $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $rejectionReason = '<option value="">-- ' . _translate("Select Sample Rejection Reason") . ' --</option>';

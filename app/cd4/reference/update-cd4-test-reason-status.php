@@ -14,7 +14,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-$tableName = "r_vl_test_reasons";
+$tableName = "r_cd4_test_reasons";
 try {
 
     // Sanitized values from $request object
