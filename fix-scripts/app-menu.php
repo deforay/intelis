@@ -1,11 +1,15 @@
 <?php
-
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
+// only run from command line
+if (php_sapi_name() !== 'cli') {
+    exit(0);
+}
 
+require_once(__DIR__ . '/../bootstrap.php'); 
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
