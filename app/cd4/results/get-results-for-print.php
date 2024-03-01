@@ -81,7 +81,6 @@ try {
      vl.is_encrypted,
      ts.status_name,
      vl.result_approved_datetime,
-     vl.last_modified_datetime as cd4_last_modified_datetime,
      vl.result_reviewed_datetime,
      vl.sample_received_at_hub_datetime,
      vl.sample_received_at_lab_datetime,
@@ -246,7 +245,7 @@ try {
                $row[] = ($aRow['facility_state']);
                $row[] = ($aRow['facility_district']);
           }
-          $row[] = ($aRow['sample_name']);
+          //$row[] = ($aRow['sample_name']);
           $row[] = $aRow['cd4_result'];
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 	  
