@@ -4,7 +4,7 @@ use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
 
-$tableName = "r_vl_sample_rejection_reasons";
+$tableName = "r_cd4_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";
 
 
@@ -121,7 +121,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['rejection_reason_name']);
     $row[] = ($aRow['rejection_type']);
     $row[] = ($aRow['rejection_reason_code']);
-    if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("cd4-sample-type.php") && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
     } else {
         $row[] = ($aRow['rejection_reason_status']);

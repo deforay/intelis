@@ -276,3 +276,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-results', '/cd4/results/cd4-print-results.php', NULL, 'Print Results', NULL, 'always');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/cd4/requests/add-samples-from-manifest.php', NULL, 'Add Samples from Manifest', '6', 'lis');
 
+-- Jeyabanu 01-Mar-2024
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('cd4-reference', 'cd4', 'CD4 Reference Management');
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-reference', '/cd4/reference/cd4-sample-type.php', '[\"/cd4/reference/cd4-sample-rejection-reasons.php\", \"/cd4/reference/add-cd4-sample-rejection-reasons.php\", \"edit-cd4-sample-rejection-reasons.php\", \"/cd4/reference/add-cd4-sample-type.php\", \"/cd4/reference/edit-cd4-sample-type.php\", \"/cd4/reference/cd4-test-reasons.php\", \"/cd4/reference/add-cd4-test-reasons.php\", \"/cd4/reference/edit-cd4-test-reasons.php\", \"/cd4/reference/cd4-results.php\", \"/cd4/reference/add-cd4-results.php\", \"/cd4/reference/edit-cd4-results.php\"]', 'Manage CD4 Reference Tables', NULL, 'always');

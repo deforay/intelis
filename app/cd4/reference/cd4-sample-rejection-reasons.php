@@ -1,5 +1,5 @@
 <?php
-$title = _translate("Viral Load Sample Rejection Reasons");
+$title = _translate("CD4 Sample Rejection Reasons");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -8,10 +8,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("Viral Load Sample Rejection Reasons"); ?></h1>
+    <h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("CD4 Sample Rejection Reasons"); ?></h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-      <li class="active"><?php echo _translate("Viral Load Sample Rejection Reasons"); ?></li>
+      <li class="active"><?php echo _translate("CD4 Sample Rejection Reasons"); ?></li>
     </ol>
   </section>
 
@@ -21,8 +21,8 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (_isAllowed("/vl/reference/vl-art-code-details.php") && $_SESSION['instance']['type'] != 'vluser') { ?>
-              <a href="/vl/reference/add-vl-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Sample Rejection Reasons"); ?></a>
+            <?php if (_isAllowed("/cd4/reference/cd4-sample-type.php") && $_SESSION['instance']['type'] != 'vluser') { ?>
+              <a href="/cd4/reference/add-cd4-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add CD4 Sample Rejection Reasons"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
@@ -88,7 +88,7 @@ require_once APPLICATION_PATH . '/header.php';
       ],
       "bProcessing": true,
       "bServerSide": true,
-      "sAjaxSource": "get-vl-sample-rejection-reasons-helper.php",
+      "sAjaxSource": "get-cd4-sample-rejection-reasons-helper.php",
       "fnServerData": function(sSource, aoData, fnCallback) {
         $.ajax({
           "dataType": 'json',
@@ -106,7 +106,7 @@ require_once APPLICATION_PATH . '/header.php';
     if (obj.value != '') {
       conf = confirm("<?php echo _translate("Are you sure you want to change the status?"); ?>");
       if (conf) {
-        $.post("update-vl-rejection-status.php", {
+        $.post("update-cd4-rejection-status.php", {
             status: obj.value,
             id: obj.id
           },

@@ -212,12 +212,12 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                              <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><?php echo ($user); ?></div>
                                         </div>
                                         <div class="row">
-                                             <div class="col-xs-3 col-md-3">
+                                             <!--<div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="facilityCode">Affiliated District Hospital </label>
                                                        <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Affiliated District Hospital" title="Please enter Affiliated District Hospital">
                                                   </div>
-                                             </div>
+                                             </div>-->
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="labId">Affiliated CD4 Testing Hub <span class="mandatory">*</span></label>
@@ -698,7 +698,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                       </div>
                                                                  </div>
 
-                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
+                                                                 <div class="col-md-6 rejectionReason" style="display:<?php echo ($cd4QueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
                                                                       <label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
@@ -846,7 +846,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      $(document).ready(function() {
           Utilities.autoSelectSingleOption('facilityId');
           Utilities.autoSelectSingleOption('specimenType');
-
+          fillFacilityDetails();
           $("#artNo").on('input', function() {
 
                let artNo = $.trim($(this).val());
