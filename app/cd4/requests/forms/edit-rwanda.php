@@ -496,7 +496,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="baselineInitiationCD4Value" class="col-lg-5 control-label">  Absolute value & Percentage  :</label>
+                                                                 <label for="baselineInitiationLastCd4Result" class="col-lg-5 control-label">  Absolute value & Percentage  :</label>
                                                                  <div class="col-lg-7">
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4Result" name="baselineInitiationLastCd4Result" placeholder="Enter CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>"/>(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4ResultPercentage" name="baselineInitiationLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
@@ -539,7 +539,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="assessmentAHDCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
+                                                                 <label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">Absolute value & Percentage</label>
                                                                  <div class="col-lg-7">
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4Result" name="assessmentAHDLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>"/>(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4ResultPercentage" name="assessmentAHDLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
@@ -582,7 +582,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>     
+                                                                 <label for="treatmentCoinfectionLastCd4Result" class="col-lg-5 control-label">Absolute value & Percentage</label>     
                                                                  <div class="col-lg-7">
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4Result" name="treatmentCoinfectionLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" />(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4ResultPercentage" name="treatmentCoinfectionLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
@@ -882,6 +882,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
           getfacilityProvinceDetails($("#facilityId").val());
 
+          $("#cd4ResultPercentage").on('keyup keypress blur change paste', function() {
+               if ($(this).val() != '') {
+                    if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
+                         $(this).val('');
+                         alert('Please enter only numeric values for Sample Results (Percentage)')
+                    }
+               }
+          });
+
           $('#facilityId').select2({
                placeholder: "Select Clinic/Health Center"
           });
@@ -952,9 +961,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
 
                if ($.trim(patientInfo['result']) != '') {
-                    $("#baselineInitiationCD4Value").val($.trim(patientInfo['result']));
-                    $("#treatmentCoinfectionCD4Value").val($.trim(patientInfo['result']));
-                    $("#assessmentAHDVlValue").val($.trim(patientInfo['result']));
+                    $("#baselineInitiationLastCd4Result").val($.trim(patientInfo['result']));
+                    $("#treatmentCoinfectionLastCd4Result").val($.trim(patientInfo['result']));
+                    $("#assessmentAHDLastCd4Result").val($.trim(patientInfo['result']));
                }
           }
      }
