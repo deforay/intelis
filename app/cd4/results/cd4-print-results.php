@@ -203,6 +203,7 @@ $state = $geolocationService->getProvinces("yes");
                                                         <th><?php echo _translate("Testing Labs"); ?></th>
                                                         <th><?php echo _translate("Province/State"); ?></th>
                                                         <th><?php echo _translate("District/County"); ?></th>
+                                                        <th><?php echo _translate("Sample Type"); ?></th>
                                                         <th><?php echo _translate("Result"); ?></th>
                                                         <th><?php echo _translate("Last Modified On"); ?></th>
                                                         <th scope="row"><?php echo _translate("Status"); ?></th>
@@ -359,6 +360,7 @@ $state = $geolocationService->getProvinces("yes");
                                                         <th><?php echo _translate("Testing Labs"); ?></th>
                                                         <th><?php echo _translate("Province/State"); ?></th>
                                                         <th><?php echo _translate("District/County"); ?></th>
+                                                        <th><?php echo _translate("Sample Type"); ?></th>
                                                         <th><?php echo _translate("Result"); ?></th>
                                                         <th><?php echo _translate("Last Modified On"); ?></th>
                                                         <th scope="row"><?php echo _translate("Status"); ?></th>
