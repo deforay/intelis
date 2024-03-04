@@ -245,7 +245,7 @@ try {
                $row[] = ($aRow['facility_state']);
                $row[] = ($aRow['facility_district']);
           }
-          //$row[] = ($aRow['sample_name']);
+          $row[] = ($aRow['sample_name']);
           $row[] = $aRow['cd4_result'];
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 	  
