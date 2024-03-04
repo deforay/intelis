@@ -193,12 +193,12 @@ $disable = "disabled = 'disabled'";
 									<?php echo ($user); ?></div>
 							</div>
                             <div class="row">
-                                             <div class="col-xs-3 col-md-3">
+                                             <!--<div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="facilityCode">Affiliated District Hospital </label>
-                                                       <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Affiliated District Hospital" title="Please enter Affiliated District Hospital" <?php echo $disable; ?>>
+                                                       <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Affiliated District Hospital" title="Please enter Affiliated District Hospital" < ?php echo $disable; ?>>
                                                   </div>
-                                             </div>
+                                             </div>-->
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="labId">Affiliated CD4 Testing Hub <span class="mandatory">*</span></label>
