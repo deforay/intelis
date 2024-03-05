@@ -176,8 +176,8 @@ try {
           $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
      }
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
-          if (trim((string) $_POST['gender']) == "not_recorded") {
-               $sWhere[] = ' vl.child_gender="not_recorded" OR vl.child_gender="" OR vl.child_gender IS NULL';
+          if (trim((string) $_POST['gender']) == "unreported") {
+               $sWhere[] = ' vl.child_gender="unreported" OR vl.child_gender="" OR vl.child_gender IS NULL';
           } else {
                $sWhere[] = ' vl.child_gender IN ("' . $_POST['gender'] . '")';
           }

@@ -190,7 +190,7 @@ if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_te
 }
 
 if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
-    $result['patient_gender'] = 'not reported';
+    $result['patient_gender'] = _translate('Unreported');
 }
 
 $userRes = [];

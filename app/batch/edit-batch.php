@@ -190,7 +190,10 @@ $fundingSourceList = $general->getFundingSources();
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
-			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-top:20px;width: 100%;">
+			&nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
+										<?php echo _translate("Show Advanced Search Options"); ?>
+									</span></button>
+			<table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-top:20px;width: 100%; display:none;">
 				<tr>
 					<th style="width: 20%;" scope="col"><?php echo _translate("Facility"); ?></th>
 					<td style="width: 30%;">
@@ -198,22 +201,21 @@ $fundingSourceList = $general->getFundingSources();
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
-					<th style="width: 20%;" scope="col"><?php echo _translate("Sample Collection Date"); ?></th>
-					<td style="width: 30%;">
-						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
-					</td>
+					<td><label for="fundingSource"><?= _translate("Samples Entered By"); ?></label></td>
+                    <td>
+                        <select class="form-control" name="userId" id="userId" title="Please choose source de financement" style="width:100%;">
+                            <?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
+                        </select>
+                    </td>
 				</tr>
 				<tr>
 					<th style="width: 20%;" scope="col">Date Sample Receieved at Lab</th>
 					<td style="width: 30%;">
 						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _translate('Select Received at Lab Date'); ?>" readonly style="width:100%;background:#fff;" />
 					</td>
-					<th style="width: 20%;" scope="col"><?php echo _translate("Positions"); ?></th>
+					<th style="width: 20%;" scope="col"><?php echo _translate("Sample Collection Date"); ?></th>
 					<td style="width: 30%;">
-						<select id="positions-type" class="form-control" title="<?php echo _translate('Please select the postion'); ?>">
-							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _translate("Numeric"); ?></option>
-							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _translate("Alpha Numeric"); ?></option>
-						</select>
+						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
 					</td>
 				</tr>
 				<tr>
@@ -230,6 +232,13 @@ $fundingSourceList = $general->getFundingSources();
 							?>
 						</select>
 					</td>
+					<th style="width: 20%;" scope="col"><?php echo _translate("Positions"); ?></th>
+					<td style="width: 30%;">
+						<select id="positions-type" class="form-control" title="<?php echo _translate('Please select the postion'); ?>">
+							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _translate("Numeric"); ?></option>
+							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _translate("Alpha Numeric"); ?></option>
+						</select>
+					</td>
 				</tr>
 				<tr>
 					<td><label for="fundingSource">Funding Partner</label></td>
@@ -243,16 +252,14 @@ $fundingSourceList = $general->getFundingSources();
 							<?php } ?>
 						</select>
 					</td>
-					<td><label for="fundingSource"><?= _translate("Samples Entered By"); ?></label></td>
-                    <td>
-                        <select class="form-control" name="userId" id="userId" title="Please choose source de financement" style="width:100%;">
-                            <?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
-                        </select>
-                    </td>
+					
 				</tr>
 				<tr>
 					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
 						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Reset Filters"); ?></span></button>
+						&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
+										<?php echo _translate("Hide Advanced Search Options"); ?>
+									</span></button>
 					</td>
 				</tr>
 			</table>
@@ -492,6 +499,11 @@ $fundingSourceList = $general->getFundingSources();
 			$(".pregnant,.breastfeeding").prop("checked", false);
 			$(".pregnant,.breastfeeding").attr("disabled", true);
 		}
+	}
+
+	function hideAdvanceSearch(hideId, showId) {
+		$("#" + hideId).hide();
+		$("#" + showId).show();
 	}
 
 	$("#machine").change(function() {

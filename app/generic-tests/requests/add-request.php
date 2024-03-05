@@ -70,9 +70,8 @@ $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_generic_sample_reje
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 //get active sample types
-$condition = "sample_type_status = 'active'";
-$sResult = $general->fetchDataFromTable('r_generic_sample_types', $condition);
-
+$condition1 = "sample_type_status = 'active'";
+$sResult = $general->fetchDataFromTable('r_generic_sample_types', $condition1);
 
 //get vltest reason details
 $testReason = $general->fetchDataFromTable('r_generic_test_reasons');
@@ -121,7 +120,7 @@ if ($chkUserFcMapResult) {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-     $province .= "<option data-province-id='" . $provinceName['geo_id'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
+     $province .= "<option data-code='" . $provinceName['geo_code'] ."' data-name='" . $provinceName['geo_name'] . "'data-province-id='" . $provinceName['geo_id'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 
@@ -422,7 +421,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                   </div>
                                              </div>
                                              <div class="col-md-6">
-                                                  <label class="col-lg-5" for="gender">Patient consent to receive SMS?</label>
+                                                  <label class="col-lg-5" for="receiveSms">Patient consent to receive SMS?</label>
                                                   <div class="col-lg-7">
                                                        <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" class="" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);"> Yes
@@ -1001,11 +1000,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
 
+          var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           if (pName != '' && sDate != '' && testType != '') {
                $.post("/generic-tests/requests/generateSampleCode.php", {
                          sampleCollectionDate: sDate,
-                         pName: pName,
+                         provinceCode: provinceCode,
                          testType: $('#testType').find(':selected').data('short')
                     },
                     function(data) {
@@ -1062,7 +1062,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html('');
      }
      $("input:radio[name=gender]").click(function() {
-          if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
+          if ($(this).val() == 'male' || $(this).val() == 'unreported') {
                $('.femaleSection').hide();
                $('input[name="breastfeeding"]').prop('checked', false);
                $('input[name="patientPregnant"]').prop('checked', false);
@@ -1264,14 +1264,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if ($.trim(patientArray['gender']) != '') {
                $('#breastfeedingYes').removeClass('isRequired');
                $('#pregYes').removeClass('isRequired');
-               if (patientArray['gender'] == 'male' || patientArray['gender'] == 'not_recorded') {
+               if (patientArray['gender'] == 'male' || patientArray['gender'] == 'unreported') {
                     $('.femaleSection').hide();
                     $('input[name="breastfeeding"]').prop('checked', false);
                     $('input[name="patientPregnant"]').prop('checked', false);
                     if (patientArray['gender'] == 'male') {
                          $("#genderMale").prop('checked', true);
                     } else {
-                         $("#genderNotRecorded").prop('checked', true);
+                         $("#genderUnreported").prop('checked', true);
                     }
                } else if (patientArray['gender'] == 'female') {
                     $('.femaleSection').show();

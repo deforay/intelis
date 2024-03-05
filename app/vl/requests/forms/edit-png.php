@@ -307,7 +307,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 												<option value="">-- Select --</option>
 												<option value="male" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "selected='selected' " : "" ?>>Male</option>
 												<option value="female" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "selected='selected' " : "" ?>>Female</option>
-												<option value="not_recorded" <?php echo ($vlQueryInfo['patient_gender'] == 'not_recorded') ? "selected='selected' " : "" ?>>Not Reported</option>
+												<option value="unreported" <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "selected='selected' " : "" ?>>Unreported</option>
 											</select>
 
 										</td>

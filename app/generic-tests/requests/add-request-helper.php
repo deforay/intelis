@@ -350,7 +350,8 @@ try {
         $genericData['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] : null;
         $id = $db->insert($tableName, $genericData);
     }
-    if ($id === true) {
+    
+    if ($id > 0) {
         $_SESSION['alertMsg'] = _translate("Lab test request added successfully");
         //Add event log
 

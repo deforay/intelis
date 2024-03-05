@@ -174,7 +174,7 @@ $fundingSourceList = $general->getFundingSources();
                     </div>
                 </div>
             <?php } ?>
-            <table aria-describedby="table" class="table batchDiv" aria-hidden="true" style="margin-top:20px;width: 100%;<?php echo $genericHide; ?>">
+            <table aria-describedby="table" class="table batchDiv" aria-hidden="true" style="margin-top:20px;">
                 <tr>
                     <th style="width: 20%;" scope="col">
                         <?php echo _translate("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span>
@@ -190,12 +190,29 @@ $fundingSourceList = $general->getFundingSources();
                             <?php } ?>
                         </select>
                     </td>
+                    <td style="width: 30%;">&nbsp;
+                    </td>
+                </tr>
+            </table>
+           
+            &nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
+										<?php echo _translate("Show Advanced Search Options"); ?>
+									</span></button>
+            <table aria-describedby="table" id="advanceFilter" class="table batchDiv" aria-hidden="true" style="display: none;margin-top:20px;width: 100%;<?php echo $genericHide; ?>">
+          
+            <tr>
                     <th style="width: 20%;" scope="col">
                         <?php echo _translate("Facility"); ?>
                     </th>
                     <td style="width: 30%;">
                         <select style="width: 100%;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
                             <?= $facilitiesDropdown; ?>
+                        </select>
+                    </td>
+                    <td><label for="fundingSource"><?= _translate("Samples Entered By"); ?></label></td>
+                    <td>
+                        <select class="form-control select2" name="userId" id="userId" title="Please choose source de financement" style="width:100%;">
+                            <?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
                         </select>
                     </td>
                 </tr>
@@ -253,26 +270,26 @@ $fundingSourceList = $general->getFundingSources();
                             <?php } ?>
                         </select>
                     </td>
-                    <td><label for="fundingSource"><?= _translate("Samples Entered By"); ?></label></td>
-                    <td>
-                        <select class="form-control select2" name="userId" id="userId" title="Please choose source de financement" style="width:100%;">
-                            <?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
-                        </select>
-                    </td>
+                    
                 </tr>
                 <tr>
                     <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
                                 <?php echo _translate("Reset Filters"); ?>
                             </span></button>
+                            &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
+										<?php echo _translate("Hide Advanced Search Options"); ?>
+									</span></button>
                     </td>
                 </tr>
             </table>
+            
             <!-- /.box-header -->
             <div class="box-body batchDiv" style="<?php echo $genericHide; ?>">
                 <!-- form start -->
                 <form class="form-horizontal" method="post" style="display:none;" name="addBatchForm" id="addBatchForm" autocomplete="off" action="save-batch-helper.php">
                     <div class="box-body">
+                      
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="form-group">
@@ -426,7 +443,6 @@ $fundingSourceList = $general->getFundingSources();
         }
         var facilityId = $("#facilityName").val();
 
-
         batchXhr = $.post("/batch/get-samples-batch.php", {
                 sampleCollectionDate: $("#sampleCollectionDate").val(),
                 sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
@@ -471,5 +487,10 @@ $fundingSourceList = $general->getFundingSources();
             $('.batchAlert').show();
         }
     }
+
+    function hideAdvanceSearch(hideId, showId) {
+		$("#" + hideId).hide();
+		$("#" + showId).show();
+	}
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';

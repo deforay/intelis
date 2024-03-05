@@ -273,7 +273,7 @@ $disable = "disabled = 'disabled'";
 											<input type="radio" class="" id="genderFemale" name="gender" value="female" <?php echo $disable; ?> title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
 										</label>
 										<label class="radio-inline">
-											<input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" <?php echo $disable; ?> title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'not_recorded') ? "checked='checked'" : "" ?>> Not Recorded
+											<input type="radio" class="" id="genderUnreported" name="gender" value="unreported" <?php echo $disable; ?> title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>> Unreported
 										</label>
 									</td>
 								</tr>

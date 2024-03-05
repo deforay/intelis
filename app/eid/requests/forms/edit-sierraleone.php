@@ -211,6 +211,7 @@ $aResult = $db->query($aQuery);
                                                 <option value=''> -- Select -- </option>
                                                 <option value='male' <?php echo ($eidInfo['child_gender'] == 'male') ? "selected='selected'" : ""; ?>> Male </option>
                                                 <option value='female' <?php echo ($eidInfo['child_gender'] == 'female') ? "selected='selected'" : ""; ?>> Female </option>
+                                                <option value='unreported' <?php echo ($eidInfo['child_gender'] == 'unreported') ? "selected='selected'" : ""; ?>> Unreported </option>
 
                                             </select>
                                         </td>

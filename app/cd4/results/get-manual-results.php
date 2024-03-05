@@ -31,8 +31,8 @@ try {
      $primaryKey = "cd4_id";
 
      $sampleCode = 'sample_code';
-     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
+     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.cd4_result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.cd4_result', "vl.last_modified_datetime", 'ts.status_name');
      if ($_SESSION['instance']['type'] == 'remoteuser') {
           $sampleCode = 'remote_sample_code';
      } else if ($_SESSION['instance']['type'] == 'standalone') {
@@ -204,8 +204,8 @@ try {
           $sWhere[] = $statusCondition;
      }
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
-          if (trim((string) $_POST['gender']) == "not_recorded") {
-               $sWhere[] = ' (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+          if (trim((string) $_POST['gender']) == "unreported") {
+               $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
           } else {
                $sWhere[] = ' vl.patient_gender ="' . $_POST['gender'] . '"';
           }
@@ -288,7 +288,7 @@ try {
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['lab_name']);
           $row[] = ($aRow['sample_name']);
-          $row[] = $aRow['result'];
+          $row[] = $aRow['cd4_result'];
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
           $row[] = $aRow['last_modified_datetime'];

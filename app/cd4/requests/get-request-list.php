@@ -75,7 +75,8 @@ try {
                vl.arv_adherance_percentage,
                vl.is_sample_rejected,
                vl.reason_for_sample_rejection,
-               vl.cd4_result as result,
+               vl.cd4_result,
+               vl.cd4_result_percentage,
                vl.current_regimen,
                vl.is_patient_pregnant,
                vl.is_patient_breastfeeding,
@@ -116,7 +117,7 @@ try {
                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
                LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
                LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
-               LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
+               LEFT JOIN r_cd4_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
                LEFT JOIN r_cd4_test_reasons as tr ON tr.test_reason_id=vl.reason_for_cd4_testing
                LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
                LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
@@ -164,8 +165,8 @@ try {
           $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
      }
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
-          if (trim((string) $_POST['gender']) == "not_recorded") {
-               $sWhere[] = ' (vl.patient_gender="not_recorded" OR vl.patient_gender="" OR vl.patient_gender IS NULL)';
+          if (trim((string) $_POST['gender']) == "unreported") {
+               $sWhere[] = ' (vl.patient_gender="unreported" OR vl.patient_gender="" OR vl.patient_gender IS NULL)';
           } else {
                $sWhere[] = ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
           }
@@ -280,11 +281,11 @@ try {
      }
 
 
-     $_SESSION['vlRequestQuery'] = $sQuery;
+     $_SESSION['cd4RequestQuery'] = $sQuery;
 
      [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
-     $_SESSION['vlRequestQueryCount'] = $resultCount;
+     $_SESSION['cd4RequestQueryCount'] = $resultCount;
 
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
@@ -329,7 +330,7 @@ try {
           $row[] = $aRow['facility_state'];
           $row[] = $aRow['facility_district'];
           $row[] = $aRow['sample_name'];
-          $row[] = $aRow['result'];
+          $row[] = $aRow['cd4_result'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
           $row[] = $aRow['status_name'];
 

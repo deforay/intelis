@@ -121,7 +121,7 @@ try {
          * SQL queries.
          * Get data to display
         */
-    $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > " . $thresholdLimit;
+    $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_covid19_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > " . $thresholdLimit;
 
     if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) != '') {
         $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
@@ -148,7 +148,11 @@ try {
         $sWhere[] = ' f.facility_id IN (' . $_POST['hvlFacilityName'] . ')';
     }
     if (isset($_POST['hvlGender']) && $_POST['hvlGender'] != '') {
-        $sWhere[] = ' vl.patient_gender = "' . $_POST['hvlGender'] . '"';
+        if (trim((string) $_POST['hvlGender']) == "unreported") {
+            $sWhere[] =  ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+       } else {
+            $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['hvlGender'] . '") ';
+       }
     }
     if (isset($_POST['hvlPatientPregnant']) && $_POST['hvlPatientPregnant'] != '') {
         $sWhere[] = ' vl.is_patient_pregnant = "' . $_POST['hvlPatientPregnant'] . '"';

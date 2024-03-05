@@ -268,9 +268,9 @@ $sFormat = '';
                                                        <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" id="genderFemale" name="gender" value="female" title="Please choose gender">Female
                                                        </label>&nbsp;&nbsp;
-                                                       <!--<label class="radio-inline" style="margin-left:0px;">
-                                                       <input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender">Not Recorded
-                                                  </label>-->
+                                                       <label class="radio-inline" style="margin-left:0px;">
+                                                       <input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please check gender">Unreported
+                                                  </label>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -425,14 +425,14 @@ $sFormat = '';
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label">Last CD4 date</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control date viralTestData" id="baselineInitiationLastCD4Date" name="lastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" />
+                                                                      <input type="text" class="form-control date viralTestData" id="baselineInitiationLastCD4Date" name="baselineInitiationLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="baselineInitiationCD4Value" class="col-lg-5 control-label"> Absolute value & Percentage :</label>
+                                                                 <label for="baselineInitiationLastCd4Result" class="col-lg-5 control-label"> Absolute value & Percentage :</label>
                                                                  <div class="col-lg-7">
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="lastCd4Result" name="baselineInitiationCD4Value" placeholder="Enter CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="lastCd4ResultPercentage" name="baselineInitiationCD4ValuePercentage" placeholder="Enter CD4 Result" title="Please enter CD4 Result" /></div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4Result" name="baselineInitiationLastCd4Result" placeholder="Enter CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="lastCd4ResultPercentage" name="baselineInitiationLastCd4ResultPercentage" placeholder="Enter CD4 Result" title="Please enter CD4 Result" /></div>
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -456,9 +456,9 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="assessmentAHDCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
+                                                                 <label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">Absolute value & Percentage</label>
                                                                  <div class="col-lg-7">
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4Result" name="assessmentAHDLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4Result" name="assessmentAHDLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4ResultPercentage" name="assessmentAHDLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" /></div>
                                                                  </div>
                                                             </div>
@@ -479,14 +479,14 @@ $sFormat = '';
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label">Last CD4 date</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control date viralTestData" id="treatmentCoinfectionLastCD4Date" name="lastCD4Date" placeholder="Select Last VL Date" title="Please select Last VL Date" />
+                                                                      <input type="text" class="form-control date viralTestData" id="treatmentCoinfectionLastCD4Date" name="treatmentCoinfectionLastCD4Date" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
+                                                                 <label for="treatmentCoinfectionLastCd4Result" class="col-lg-5 control-label">Absolute value & Percentage</label>
                                                                  <div class="col-lg-7">
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4Result" name="treatmentCoinfectionCD4Value" placeholder="CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4ResultPercentage" name="treatmentCoinfectionCD4ValuePercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" /></div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4Result" name="treatmentCoinfectionLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4ResultPercentage" name="treatmentCoinfectionLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" /></div>
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -637,9 +637,9 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6 cd4Result">
-                                                                      <label class="col-lg-5 control-label" for="vlLog">Sample Results (Percentage) :</label>
+                                                                      <label class="col-lg-5 control-label" for="cd4ResultPercentage">Sample Results (Percentage) :</label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="CD4 Result Value percentage" title="Please enter CD4 Result Value percentage" style="width:100%;" />
+                                                                           <input type="text" class="form-control" id="cd4ResultPercentage" name="cd4ResultPercentage" placeholder="CD4 Result Value percentage" title="Please enter CD4 Result Value percentage" style="width:100%;" />
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -781,11 +781,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
           });
 
-          $("#vlLog").on('keyup keypress blur change paste', function() {
+          $("#cd4ResultPercentage").on('keyup keypress blur change paste', function() {
                if ($(this).val() != '') {
                     if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
                          $(this).val('');
-                         alert('Please enter only numeric values for Viral Load Log Result')
+                         alert('Please enter only numeric values for Sample Results (Percentage)')
                     }
                }
           });
@@ -829,9 +829,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
 
                if ($.trim(patientInfo['result']) != '') {
-                    $("#baselineInitiationCD4Value").val($.trim(patientInfo['result']));
-                    $("#treatmentCoinfectionCD4Value").val($.trim(patientInfo['result']));
-                    $("#assessmentAHDVlValue").val($.trim(patientInfo['result']));
+                    $("#baselineInitiationLastCd4Result").val($.trim(patientInfo['result']));
+                    $("#treatmentCoinfectionLastCd4Result").val($.trim(patientInfo['result']));
+                    $("#assessmentAHDLastCd4Result").val($.trim(patientInfo['result']));
                }
           }
      }
@@ -966,7 +966,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      $("input:radio[name=gender]").click(function() {
-          if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
+          if ($(this).val() == 'male' || $(this).val() == 'unreported') {
                $('.femaleSection').hide();
                $('input[name="breastfeeding"]').prop('checked', false);
                $('input[name="patientPregnant"]').prop('checked', false);
@@ -989,6 +989,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.rejectionReason').hide();
                $('#rejectionReason').removeClass('isRequired');
                $('#rejectionReason').val('');
+               $('#rejectionDate').val('');
           }
      });
 
@@ -1099,7 +1100,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if ($.trim(patientArray['gender']) != '') {
                $('#breastfeedingYes').removeClass('isRequired');
                $('#pregYes').removeClass('isRequired');
-               if (patientArray['gender'] == 'male' || patientArray['gender'] == 'not_recorded') {
+               if (patientArray['gender'] == 'male' || patientArray['gender'] == 'unreported') {
                     $('.femaleSection').hide();
                     $('input[name="breastfeeding"]').prop('checked', false);
                     $('input[name="patientPregnant"]').prop('checked', false);

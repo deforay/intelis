@@ -136,7 +136,11 @@ if (isset($_POST['noResultFacilityName']) && $_POST['noResultFacilityName'] != '
     $sWhere[] = ' f.facility_id IN (' . $_POST['noResultFacilityName'] . ')';
 }
 if (isset($_POST['noResultGender']) && $_POST['noResultGender'] != '') {
-    $sWhere[] = ' vl.patient_gender = "' . $_POST['noResultGender'] . '"';
+    if (trim((string) $_POST['noResultGender']) == "unreported") {
+        $sWhere[] = ' vl.patient_gender="unreported" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
+    } else {
+        $sWhere[] = ' vl.patient_gender IN ("' . $_POST['noResultGender'] . '")';
+    }
 }
 if (isset($_POST['noResultPatientPregnant']) && $_POST['noResultPatientPregnant'] != '') {
     $sWhere[] = ' vl.is_patient_pregnant = "' . $_POST['noResultPatientPregnant'] . '"';

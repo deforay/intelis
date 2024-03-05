@@ -222,7 +222,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							<div class="col-md-12 text-center">
 								<div class="form-group">
 									<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSampleCodeDetails();return false;">Search </a>
-									<a href="javascript:void(0);" class="btn btn-default" onclick="clearSelection();"> Clear</a>
+									<a href="javascript:void(0);" class="btn btn-default" onclick="document.location.href = document.location"> Clear</a>
 								</div>
 							</div>
 						</div>
