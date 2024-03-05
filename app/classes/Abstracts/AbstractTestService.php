@@ -147,7 +147,7 @@ abstract class AbstractTestService
             if ($sampleCodeFormat == 'auto') {
                 $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
             } elseif ($sampleCodeFormat == 'auto2') {
-                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $year . $provinceCode . $prefix . $autoFormatedString;
+                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $year . $provinceCode . $prefix;
             } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
                 $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'];
             }
