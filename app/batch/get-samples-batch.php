@@ -30,10 +30,14 @@ $primaryKeyColumn = TestsService::getTestPrimaryKeyColumn($_POST['type']);
 $sampleTypeColumn = TestsService::getSpecimenTypeColumn($_POST['type']);
 $patientIdColumn = TestsService::getPatientIdColumn($_POST['type']);
 $resultColumn = 'result';
+$testType = $_POST['type'];
+
+
 if($_POST['type']=='cd4')
 {
     $resultColumn = 'cd4_result';
-}
+} 
+
 [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$sampleReceivedStartDate, $sampleReceivedEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedAtLab'] ?? '');
 

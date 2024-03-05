@@ -175,8 +175,8 @@ $disable = "disabled = 'disabled'";
 									</div>
 								</div>
 							</div>
-							<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-								<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+							<!--<div class="row facilityDetails" style="display:< ?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 femails" style="display:< ?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
 									<strong>Clinic/Health Center Email(s)</strong>
 								</div>
 								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
@@ -191,7 +191,7 @@ $disable = "disabled = 'disabled'";
 								</div>  
 								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;">
 									<?php echo ($user); ?></div>
-							</div>
+							</div>-->
                             <div class="row">
                                              <!--<div class="col-xs-3 col-md-3">
                                                   <div class="">
