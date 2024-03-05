@@ -70,9 +70,8 @@ $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_generic_sample_reje
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 //get active sample types
-$condition = "sample_type_status = 'active'";
-$sResult = $general->fetchDataFromTable('r_generic_sample_types', $condition);
-
+$condition1 = "sample_type_status = 'active'";
+$sResult = $general->fetchDataFromTable('r_generic_sample_types', $condition1);
 
 //get vltest reason details
 $testReason = $general->fetchDataFromTable('r_generic_test_reasons');
@@ -121,7 +120,7 @@ if ($chkUserFcMapResult) {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-     $province .= "<option data-province-id='" . $provinceName['geo_id'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
+     $province .= "<option data-code='" . $provinceName['geo_code'] ."' data-name='" . $provinceName['geo_name'] . "'data-province-id='" . $provinceName['geo_id'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 
@@ -1001,11 +1000,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
 
+          var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           if (pName != '' && sDate != '' && testType != '') {
                $.post("/generic-tests/requests/generateSampleCode.php", {
                          sampleCollectionDate: sDate,
-                         pName: pName,
+                         provinceCode: provinceCode,
                          testType: $('#testType').find(':selected').data('short')
                     },
                     function(data) {
