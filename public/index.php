@@ -28,7 +28,7 @@ $host = $request->getUri()->getHost();
 $allowedDomains = [];
 
 if (isset(SYSTEM_CONFIG['remoteURL'])) {
-    $allowedDomains[] = parse_url(SYSTEM_CONFIG['remoteURL'], PHP_URL_HOST);;
+    $allowedDomains[] = parse_url(SYSTEM_CONFIG['remoteURL'], PHP_URL_HOST);
 }
 
 $allowedDomains[] = $host;

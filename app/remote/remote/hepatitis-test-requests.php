@@ -84,7 +84,7 @@ try {
 
     $general->updateTestRequestsSyncDateTime('hepatitis', $facilityIds, $labId);
     $db->commitTransaction();
-} catch (Exception | SystemException $e) {
+} catch (Throwable $e) {
     $db->rollbackTransaction();
 
     $payload = json_encode([]);

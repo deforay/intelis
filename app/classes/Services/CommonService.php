@@ -139,7 +139,7 @@ class CommonService
         while ($attempts < 3) {
             try {
                 return bin2hex(random_bytes($length / 2));
-            } catch (SystemException $e) {
+            } catch (Throwable $e) {
                 error_log($e->getMessage());
                 $attempts++;
             }
@@ -867,7 +867,7 @@ class CommonService
         // Build the set string
         $setString = '';
         foreach ($data as $key => $value) {
-            $setString .= ', "$.' . $key . '", ' . (string) $this->jsonValueToString($value) . '';
+            $setString .= ', "$.' . $key . '", ' . $this->jsonValueToString($value);
             //$setString .= ', "$.' . $key . '", JSON_UNQUOTE(' . (string) $this->jsonValueToString($value) . ')';
         }
 

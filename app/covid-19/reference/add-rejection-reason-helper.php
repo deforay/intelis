@@ -41,7 +41,10 @@ try {
 		$general->activityLog('add-Sample Rejection Reasons', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons ' . $_POST['rejectionReasonName'], 'reference-covid19-Sample Rejection Reasons');
 	}
 	header("Location:covid19-sample-rejection-reasons.php");
-} catch (Exception $exc) {
-	error_log($exc->getMessage());
-	error_log($exc->getTraceAsString());
+} catch (Exception $e) {
+	LoggerUtility::log("error", $e->getMessage(), [
+		'file' => __FILE__,
+		'line' => __LINE__,
+		'trace' => $e->getTraceAsString(),
+	]);
 }

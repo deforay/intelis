@@ -5,7 +5,6 @@ use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -17,8 +16,14 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var BatchService $batchService */
 $batchService = ContainerRegistry::get(BatchService::class);
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_GET = _sanitizeInput($request->getQueryParams());
 
-$testTableData = TestsService::getAllData($_GET['type']);
+$testType = $_GET['type'];
+
+$testTableData = TestsService::getAllData($testType);
 
 $testName = $testTableData['testName'];
 $table = $testTableData['tableName'];
@@ -28,13 +33,7 @@ $patientFirstName = $testTableData['patientFirstName'];
 $patientLastName = $testTableData['patientLastName'];
 
 
-
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = AppRegistry::get('request');
-$_GET = _sanitizeInput($request->getQueryParams());
-
-$_GET['type'] = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
+$testType = ($testType == 'covid19') ? 'covid-19' : $testType;
 $title = _translate($testName . " | Edit Batch Position");
 $testType = (isset($_GET['testType'])) ? base64_decode((string) $_GET['testType']) : null;
 
@@ -45,7 +44,7 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 if (!isset($id) || trim($id) == '') {
-	header("Location:batches.php?type=" . $_GET['type']);
+	header("Location:batches.php?type=" . $testType);
 }
 $content = '';
 $displayOrder = [];
@@ -66,7 +65,7 @@ foreach ($configControlInfo as $info) {
 
 
 if (empty($batchInfo)) {
-	header("Location:batches.php?type=" . $_GET['type']);
+	header("Location:batches.php?type=" . $testType);
 }
 if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_order']) != '') {
 	if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
@@ -87,7 +86,7 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 		$xplodJsonToArray = explode("_", (string) $jsonToArray[$index]);
 		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
 			$sampleQuery = "SELECT sample_code, $patientIdColumn FROM $table WHERE  $primaryKeyColumn = ?";
-			if (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
+			if (isset($testType) && $testType == 'generic-tests') {
 				$sampleQuery .= " AND test_type = $testType";
 			}
 			$sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
@@ -100,26 +99,26 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 		$content .= '<li class="ui-state-default" id="' . $jsonToArray[$index] . '">' . $label . '</li>';
 	}
 } else {
-	if (isset($configControl[$_GET['type']]['noHouseCtrl']) && trim((string) $configControl[$_GET['type']]['noHouseCtrl']) != '' && $configControl[$_GET['type']]['noHouseCtrl'] > 0) {
-		foreach (range(1, $configControl[$_GET['type']]['noHouseCtrl']) as $h) {
+	if (isset($configControl[$testType]['noHouseCtrl']) && trim((string) $configControl[$testType]['noHouseCtrl']) != '' && $configControl[$testType]['noHouseCtrl'] > 0) {
+		foreach (range(1, $configControl[$testType]['noHouseCtrl']) as $h) {
 			$displayOrder[] = "no_of_in_house_controls_" . $h;
 			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Controls ' . $h . '</li>';
 		}
 	}
-	if (isset($configControl[$_GET['type']]['noManufacturerCtrl']) && trim((string) $configControl[$_GET['type']]['noManufacturerCtrl']) != '' && $configControl[$_GET['type']]['noManufacturerCtrl'] > 0) {
-		foreach (range(1, $configControl[$_GET['type']]['noManufacturerCtrl']) as $m) {
+	if (isset($configControl[$testType]['noManufacturerCtrl']) && trim((string) $configControl[$testType]['noManufacturerCtrl']) != '' && $configControl[$testType]['noManufacturerCtrl'] > 0) {
+		foreach (range(1, $configControl[$testType]['noManufacturerCtrl']) as $m) {
 			$displayOrder[] = "no_of_manufacturer_controls_" . $m;
 			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '">Manufacturer Controls ' . $m . '</li>';
 		}
 	}
-	if (isset($configControl[$_GET['type']]['noCalibrators']) && trim((string) $configControl[$_GET['type']]['noCalibrators']) != '' && $configControl[$_GET['type']]['noCalibrators'] > 0) {
-		foreach (range(1, $configControl[$_GET['type']]['noCalibrators']) as $c) {
+	if (isset($configControl[$testType]['noCalibrators']) && trim((string) $configControl[$testType]['noCalibrators']) != '' && $configControl[$testType]['noCalibrators'] > 0) {
+		foreach (range(1, $configControl[$testType]['noCalibrators']) as $c) {
 			$displayOrder[] = "no_of_calibrators_" . $c;
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
-	$samplesQuery = "SELECT $primaryKeyColumn ,$patientIdColumn, sample_code from " . $table . " where sample_batch_id=$id ORDER BY sample_code ASC";
-	$samplesInfo = $db->query($samplesQuery);
+	$samplesQuery = "SELECT $primaryKeyColumn ,$patientIdColumn, sample_code FROM $table WHERE sample_batch_id=? ORDER BY sample_code ASC";
+	$samplesInfo = $db->rawQuery($samplesQuery, [$id]);
 	foreach ($samplesInfo as $sample) {
 		$displayOrder[] = "s_" . $sample[$primaryKeyColumn];
 		$content .= '<li class="ui-state-default" id="s_' . $sample[$primaryKeyColumn] . '">' . $sample['sample_code'] . ' - ' . $sample[$patientIdColumn] . '</li>';
@@ -173,8 +172,6 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
-				<!-- <pre><?php print_r($configControl); ?></pre> -->
-				<!-- form start -->
 				<form class="form-horizontal" method='post' name='editBatchControlsPosition' id='editBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
 					<div class="box-body">
 						<div class="row" id="displayOrderDetails">
@@ -189,11 +186,11 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
-						<input type="hidden" name="sortOrders" id="sortOrders" value="<?php echo implode(",", $displayOrder); ?>" />
+						<input type="hidden" name="type" id="type" value="<?php echo $testType; ?>" />
+						<input type="hidden" name="sortOrders" id="sortOrders" value="<?= implode(",", $displayOrder); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-						<a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> Cancel</a>
+						<a href="batches.php?type=<?php echo $testType; ?>" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
