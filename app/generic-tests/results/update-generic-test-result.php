@@ -924,6 +924,8 @@ $reasonForChange = $reasonForChangeArr[1];
 						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $genericResultInfo['reason_for_testing']); ?>" />
 						<input type="hidden" name="oldStatus" value="<?= htmlspecialchars((string) $genericResultInfo['result_status']); ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
+						<input type="hidden" name="sampleCode" id="sampleCode" value="<?= ($genericResultInfo[$sampleCode]); ?>" />
+					    <input type="hidden" name="artNo" id="artNo" value="<?= ($genericResultInfo['patient_id']); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 						<a href="generic-test-results.php" class="btn btn-default"> Cancel</a>
 					</div>
