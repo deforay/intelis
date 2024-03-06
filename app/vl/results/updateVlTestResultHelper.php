@@ -199,8 +199,9 @@ try {
 
     $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);
+    $patientId = (isset($_POST['artNo'])) ? $_POST['artNo'] : '';
     if ($id === true) {
-        $_SESSION['alertMsg'] = _translate("VL request updated successfully");
+        $_SESSION['alertMsg'] = _translate("VL result updated successfully");
         //Log result updates
         $data = array(
             'user_id' => $_SESSION['userId'],
@@ -209,6 +210,11 @@ try {
             'updated_on' => DateUtility::getCurrentDateTime()
         );
         $db->insert($tableName2, $data);
+
+        $eventType = 'update-vl-result';
+        $action = $_SESSION['userName'] . ' updated result for the sample id ' . $_POST['sampleCode'] . ' and patient id '. $patientId;
+        $resource = 'vl-result';
+        $general->activityLog($eventType, $action, $resource);
     } else {
         $_SESSION['alertMsg'] = _translate("Please try again later");
     }

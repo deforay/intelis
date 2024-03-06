@@ -384,11 +384,12 @@ try {
           ]);
      }
      //die;
+     $patientId = (isset($_POST['artNo'])) ? $_POST['artNo'] : '';
      if ($id === true) {
           $_SESSION['alertMsg'] = _translate("VL request updated successfully");
 
-          $eventType = 'update-vl-request-sudan';
-          $action = $_SESSION['userName'] . ' updated request with the sample id ' . $_POST['sampleCode'];
+          $eventType = 'update-vl-request';
+          $action = $_SESSION['userName'] . ' updated VL request with the sample id ' . $_POST['sampleCode'] . ' and patient id '. $patientId;
           $resource = 'vl-request';
 
           $general->activityLog($eventType, $action, $resource);

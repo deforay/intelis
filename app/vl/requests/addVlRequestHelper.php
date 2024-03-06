@@ -393,10 +393,11 @@ try {
     $id = $db->update($tableName, $vlData);
 
     $db->commitTransaction();
+    $patientId = (isset($_POST['artNo'])) ? $_POST['artNo'] : '';
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("VL request added successfully");
-        $eventType = 'add-vl-request-sudan';
-        $action = $_SESSION['userName'] . ' added a new request with the sample id ' . $_POST['sampleCode'];
+        $eventType = 'add-vl-request';
+        $action = $_SESSION['userName'] . ' added a new VL request with the sample id ' . $_POST['sampleCode'] . ' and patient id '. $patientId;
         $resource = 'vl-request';
 
         $general->activityLog($eventType, $action, $resource);
