@@ -154,7 +154,7 @@ try {
         'manual_result_entry' => 'yes',
         'result_status' => $resultStatus,
         'data_sync' => 0,
-        'sub_tests' => implode("##", $_POST['subTestResult']),
+        'sub_tests' => (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) ? implode("##", $_POST['subTestResult']) : $_POST['subTestResult'],
         'result_printed_datetime' => null
     );
 
@@ -200,8 +200,15 @@ try {
     $db->where('sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);
     //var_dump($db->getLastError());die;
+    $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("Lab Tests results updated successfully");
+
+        $eventType = 'update-lab-test-result';
+        $action = $_SESSION['userName'] . ' updated result for the sample id ' . $_POST['sampleCode'] . $patientId;
+        $resource = 'lab-test-result';
+
+        $general->activityLog($eventType, $action, $resource);
     } else {
         $_SESSION['alertMsg'] = _translate("Please try again later");
     }

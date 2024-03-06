@@ -47,7 +47,7 @@ if (empty($facilityResult)) {
 $response = '';
 foreach ($facilityResult as $row) {
     //$selectedText = in_array($row['facility_id'], $selectedFacilityArray) ? "selected='selected'" : "";
-    if(in_array($row['facility_id'], $selectedFacilityArray) == false)
+    if(!in_array($row['facility_id'], $selectedFacilityArray))
         $response .= "<option value='" . $row['facility_id'] . "'>" . $row['facility_name'] . "</option>";
 }
 echo $response;

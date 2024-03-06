@@ -53,6 +53,12 @@ $facilityEmails = $facilityResult[0]['facility_emails'] ?? '';
 $facilityState = $facilityResult[0]['facility_state'] ?? '';
 $facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
 
+$contactUser = $usersService->getUserInfo($contactPerson);
+$user = '';
+if (!empty($contactUser)) {
+     $user = $contactUser['user_name'];
+}
+
 if (trim((string) $facilityResult[0]['facility_state']) != '') {
      $stateQuery = "SELECT * FROM geographical_divisions where geo_name='" . $facilityResult[0]['facility_state'] . "'";
      $stateResult = $db->query($stateQuery);
@@ -193,25 +199,25 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="facilityCode">Faility Code </label>
-                                                       <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Clinic/Health Center Code" title="Please enter clinic/health center code">
+                                                       <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Clinic/Health Center Code" title="Please enter clinic/health center code" value="<?php echo $facilityResult[0]['facility_code']; ?>">
                                                   </div>
                                              </div>
                                         </div>
-                                        <div class="row facilityDetails" style="display:none;">
-                                             <div class="col-xs-2 col-md-2 femails" style="display:none;"><strong>Clinic Email(s) -</strong></div>
-                                             <div class="col-xs-2 col-md-2 femails facilityEmails" style="display:none;"></div>
-                                             <div class="col-xs-2 col-md-2 fmobileNumbers" style="display:none;"><strong>Clinic Mobile No.(s) -</strong></div>
-                                             <div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:none;"></div>
-                                             <div class="col-xs-2 col-md-2 fContactPerson" style="display:none;"><strong>Clinic Contact Person -</strong></div>
-                                             <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:none;"></div>
+                                        <div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+                                             <div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;"><strong>Clinic Email(s) -</strong></div>
+                                             <div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_emails']; ?></div>
+                                             <div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><strong>Clinic Mobile No.(s) -</strong></div>
+                                             <div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
+                                             <div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;"><strong>Clinic Contact Person -</strong></div>
+                                             <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;"><?php echo ($user); ?></div>
                                         </div>
                                         <div class="row">
-                                             <div class="col-xs-3 col-md-3">
+                                             <!--<div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="facilityCode">Affiliated District Hospital </label>
                                                        <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Affiliated District Hospital" title="Please enter Affiliated District Hospital">
                                                   </div>
-                                             </div>
+                                             </div>-->
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="labId">Affiliated CD4 Testing Hub <span class="mandatory">*</span></label>
@@ -490,7 +496,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="baselineInitiationCD4Value" class="col-lg-5 control-label">  Absolute value & Percentage  :</label>
+                                                                 <label for="baselineInitiationLastCd4Result" class="col-lg-5 control-label">  Absolute value & Percentage  :</label>
                                                                  <div class="col-lg-7">
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4Result" name="baselineInitiationLastCd4Result" placeholder="Enter CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>"/>(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4ResultPercentage" name="baselineInitiationLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
@@ -533,7 +539,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="assessmentAHDCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
+                                                                 <label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">Absolute value & Percentage</label>
                                                                  <div class="col-lg-7">
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4Result" name="assessmentAHDLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>"/>(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4ResultPercentage" name="assessmentAHDLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
@@ -576,7 +582,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>     
+                                                                 <label for="treatmentCoinfectionLastCd4Result" class="col-lg-5 control-label">Absolute value & Percentage</label>     
                                                                  <div class="col-lg-7">
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4Result" name="treatmentCoinfectionLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" />(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4ResultPercentage" name="treatmentCoinfectionLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>"/></div>
@@ -692,7 +698,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                       </div>
                                                                  </div>
 
-                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
+                                                                 <div class="col-md-6 rejectionReason" style="display:<?php echo ($cd4QueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
                                                                       <label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
@@ -840,7 +846,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      $(document).ready(function() {
           Utilities.autoSelectSingleOption('facilityId');
           Utilities.autoSelectSingleOption('specimenType');
-
+          fillFacilityDetails();
           $("#artNo").on('input', function() {
 
                let artNo = $.trim($(this).val());
@@ -875,6 +881,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
 
           getfacilityProvinceDetails($("#facilityId").val());
+
+          $("#cd4ResultPercentage").on('keyup keypress blur change paste', function() {
+               if ($(this).val() != '') {
+                    if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
+                         $(this).val('');
+                         alert('Please enter only numeric values for Sample Results (Percentage)')
+                    }
+               }
+          });
 
           $('#facilityId').select2({
                placeholder: "Select Clinic/Health Center"
@@ -946,9 +961,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
 
                if ($.trim(patientInfo['result']) != '') {
-                    $("#baselineInitiationCD4Value").val($.trim(patientInfo['result']));
-                    $("#treatmentCoinfectionCD4Value").val($.trim(patientInfo['result']));
-                    $("#assessmentAHDVlValue").val($.trim(patientInfo['result']));
+                    $("#baselineInitiationLastCd4Result").val($.trim(patientInfo['result']));
+                    $("#treatmentCoinfectionLastCd4Result").val($.trim(patientInfo['result']));
+                    $("#assessmentAHDLastCd4Result").val($.trim(patientInfo['result']));
                }
           }
      }

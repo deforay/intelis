@@ -328,13 +328,14 @@ try {
      $db->where('sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $genericData);
      error_log($db->getLastError());
+     $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';
      if ($id === true) {
           $_SESSION['alertMsg'] = _translate("Request updated successfully");
           //Add event log
 
-          $eventType = 'update-test-request';
-          $action = $_SESSION['userName'] . ' updated a request data with the sample id ' . $_POST['sampleCode'];
-          $resource = 'vl-request-ss';
+          $eventType = 'update-lab-test-request';
+          $action = $_SESSION['userName'] . ' updated request with the sample id ' . $_POST['sampleCode'] . $patientId;
+          $resource = 'lab-test-request';
 
           $general->activityLog($eventType, $action, $resource);
      } else {

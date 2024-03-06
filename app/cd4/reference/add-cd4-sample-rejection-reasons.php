@@ -7,10 +7,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("Add Viral Load Sample Rejection Reasons"); ?></h1>
+		<h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("Add CD4 Sample Rejection Reasons"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-			<li class="active"><?php echo _translate("Viral Load Sample Rejection Reasons"); ?></li>
+			<li class="active"><?php echo _translate("CD4 Sample Rejection Reasons"); ?></li>
 		</ol>
 	</section>
 
@@ -24,14 +24,14 @@ require_once APPLICATION_PATH . '/header.php';
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='addSampleRejcForm' id='addSampleRejcForm' autocomplete="off" enctype="multipart/form-data" action="save-vl-sample-rejection-reasons-helper.php">
+				<form class="form-horizontal" method='post' name='addSampleRejcForm' id='addSampleRejcForm' autocomplete="off" enctype="multipart/form-data" action="save-cd4-sample-rejection-reasons-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="rejectionReasonName" class="col-lg-4 control-label"><?php echo _translate("Rejection Reason Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="rejectionReasonName" name="rejectionReasonName" placeholder="<?php echo _translate('Rejection Reason Name'); ?>" title="<?php echo _translate('Please enter Rejection Reason name'); ?>" onblur='checkNameValidation("r_vl_sample_rejection_reasons","rejection_reason_name",this,null,"<?php echo _translate("The Rejection Reason name that you entered already exists.Enter another Rejection Reason name"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="rejectionReasonName" name="rejectionReasonName" placeholder="<?php echo _translate('Rejection Reason Name'); ?>" title="<?php echo _translate('Please enter Rejection Reason name'); ?>" onblur='checkNameValidation("r_cd4_sample_rejection_reasons","rejection_reason_name",this,null,"<?php echo _translate("The Rejection Reason name that you entered already exists.Enter another Rejection Reason name"); ?>",null)' />
 									</div>
 								</div>
 							</div>
@@ -50,7 +50,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<div class="form-group">
 									<label for="rejectionReasonCode" class="col-lg-4 control-label"><?php echo _translate("Rejection Reason Code"); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="rejectionReasonCode" name="rejectionReasonCode" placeholder="<?php echo _translate('Rejection Reason Code'); ?>" title="<?php echo _translate('Please enter Rejection Reason Code'); ?>" onblur='checkNameValidation("r_vl_sample_rejection_reasons","rejection_reason_code",this,null,"<?php echo _translate("The Rejection Reason code that you entered already exists.Enter another Rejection Reason code"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="rejectionReasonCode" name="rejectionReasonCode" placeholder="<?php echo _translate('Rejection Reason Code'); ?>" title="<?php echo _translate('Please enter Rejection Reason Code'); ?>" onblur='checkNameValidation("r_cd4_sample_rejection_reasons","rejection_reason_code",this,null,"<?php echo _translate("The Rejection Reason code that you entered already exists.Enter another Rejection Reason code"); ?>",null)' />
 									</div>
 								</div>
 							</div>
@@ -72,7 +72,7 @@ require_once APPLICATION_PATH . '/header.php';
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-						<a href="/vl/reference/vl-sample-rejection-reasons.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
+						<a href="/cd4/reference/cd4-sample-rejection-reasons.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -91,7 +91,7 @@ require_once APPLICATION_PATH . '/header.php';
 		$(".select2").select2({
 			tags: true
 		});
-		editableSelect('rejectionType', 'rejection_type', 'r_vl_sample_rejection_reasons', 'Rejection type');
+		editableSelect('rejectionType', 'rejection_type', 'r_cd4_sample_rejection_reasons', 'Rejection type');
 	});
 
 	function validateNow() {

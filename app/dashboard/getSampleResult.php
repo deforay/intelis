@@ -369,7 +369,7 @@ try {
                     <?php echo _translate("SAMPLES TESTED"); ?>
                 </small><br>
                 <small class="font-blue-sharp" style="font-size:0.75em;">
-                    <?php echo _translate("In Selected Range") . " : " . $selectedRange;; ?>
+                    <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
                 </small>
             </div>
             <div class="icon">
@@ -391,7 +391,7 @@ try {
                     <?php echo _translate("SAMPLES REJECTED"); ?>
                 </small><br>
                 <small class="font-red-haze" style="font-size:0.75em;">
-                    <?php echo _translate("In Selected Range") . " - " . $selectedRange;; ?>
+                    <?php echo _translate("In Selected Range") . " - " . $selectedRange; ?>
                 </small>
             </div>
             <div class="icon">

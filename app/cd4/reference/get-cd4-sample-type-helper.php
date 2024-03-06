@@ -3,7 +3,7 @@
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
-$tableName = "r_vl_sample_type";
+$tableName = "r_cd4_sample_types";
 $primaryKey = "sample_id";
 
 
@@ -117,7 +117,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['sample_name']);
-    if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("cd4-sample-type.php") && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
     } else {
         $row[] = ($aRow['status']);

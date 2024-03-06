@@ -14,6 +14,14 @@ require_once(__DIR__ . '/../bootstrap.php');
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$systemConfig = $general->getSystemConfig();
+
+
+$scriptName = basename(__FILE__);
+
 /** DELETE CD4 menus IF already There */
 
 $deleteCd4 = $db->rawQuery("DELETE FROM s_app_menu WHERE module='cd4'");

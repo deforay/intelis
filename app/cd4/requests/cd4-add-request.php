@@ -46,10 +46,10 @@ foreach ($userResult as $user) {
 
 //sample rejection reason
 $condition = "rejection_reason_status ='active'";
-$rejectionResult = $general->fetchDataFromTable('r_vl_sample_rejection_reasons', $condition);
+$rejectionResult = $general->fetchDataFromTable('r_cd4_sample_rejection_reasons', $condition);
 
 //rejection type
-$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active'";
+$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_cd4_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 //get active sample types

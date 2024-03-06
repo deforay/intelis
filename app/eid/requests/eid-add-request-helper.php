@@ -463,7 +463,7 @@ try {
 		$_SESSION['alertMsg'] = _translate("EID request added successfully");
 		//Add event log
 		$eventType = 'add-eid-request';
-		$action = $_SESSION['userName'] . ' added a new EID request for the Child ID ' . $_POST['childId'];
+		$action = $_SESSION['userName'] . ' added a new EID request with the sample id ' . $_POST['sampleCode'] . ' and child id ' . $_POST['childId'];
 		$resource = 'eid-request';
 
 		$general->activityLog($eventType, $action, $resource);

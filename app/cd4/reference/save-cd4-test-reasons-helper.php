@@ -15,7 +15,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$tableName = "r_vl_test_reasons";
+$tableName = "r_cd4_test_reasons";
 $primaryKey = "test_reason_id";
 try {
 	if (isset($_POST['testReasonName']) && trim((string) $_POST['testReasonName']) != "") {
@@ -35,11 +35,11 @@ try {
 		}
 
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _translate("VL Test Reason details saved successfully");
-			$general->activityLog('VL Test Reason details', $_SESSION['userName'] . ' added new Test Reason for ' . $_POST['testReasonName'], 'vl-reference');
+			$_SESSION['alertMsg'] = _translate("CD4 Test Reason details saved successfully");
+			$general->activityLog('CD4 Test Reason details', $_SESSION['userName'] . ' added new Test Reason for ' . $_POST['testReasonName'], 'cd4-reference');
 		}
 	}
-	header("Location:vl-test-reasons.php");
+	header("Location:cd4-test-reasons.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

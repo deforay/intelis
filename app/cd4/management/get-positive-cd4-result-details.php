@@ -41,8 +41,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
          * you want to insert a non-database field (for example a counter or static image)
         */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_first_name', 'vl.patient_art_no',  "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.cd4_result');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.cd4_result');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_first_name', 'vl.patient_art_no',  "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.cd4_result', 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.cd4_result', 'ts.status_name');
 if ($_SESSION['instance']['type'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
@@ -116,7 +116,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
          * SQL queries
          * Get data to display
         */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_cd4 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_cd4_sample_types as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.cd4_result = 'positive' OR vl.cd4_result > 0";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,ts.*,fd.facility_name as labName FROM form_cd4 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_cd4_sample_types as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.cd4_result = 'positive' OR vl.cd4_result > 0";
 $start_date = '';
 $end_date = '';
 
@@ -248,7 +248,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['sample_tested_datetime'];
     $row[] = $aRow['labName'];
     $row[] =  ($aRow['cd4_result']);
-    $row[] = '';
+    $row[] = ($aRow['status_name']);
     /* $row[] = '<select class="form-control" name="status" id=' . $aRow['cd4_id'] . ' title="Please select status" onchange="updateStatus(this.id,this.value)">
                             <option value=""> -- Select -- </option>
                             <option value="yes" ' . ($aRow['contact_complete_status'] == "yes" ? "selected=selected" : "") . '>Yes</option>

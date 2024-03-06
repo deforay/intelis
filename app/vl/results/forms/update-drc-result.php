@@ -221,7 +221,7 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 										</td>
 										<td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<? _translate('Please choose KP'); ?>" <?php echo $disable; ?>>
+											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>" <?php echo $disable; ?>>
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>
 												<option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option>
@@ -573,6 +573,8 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 						<input type="hidden" id="dubPatientArtNo" name="dubPatientArtNo" value="<?= htmlspecialchars((string) $vlQueryInfo['patient_art_no']); ?>" />
 						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_result_changes']); ?>" />
 						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?= htmlspecialchars((string) $vlQueryInfo['vl_sample_id']); ?>" />
+						<input type="hidden" name="sampleCode" id="sampleCode" value="<?= ($vlQueryInfo['sample_code']); ?>" />
+					    <input type="hidden" name="artNo" id="artNo" value="<?= ($vlQueryInfo['patient_art_no']); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
 					</div>

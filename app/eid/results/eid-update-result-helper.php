@@ -126,9 +126,9 @@ try {
 
   $_SESSION['alertMsg'] = _translate("EID result updated successfully");
   //Add event log
-  $eventType = 'update-vl-result-drc';
-  $action = $_SESSION['userName'] . ' updated a result for the EID sample no. ' . $_POST['sampleCode'];
-  $resource = 'eid-result-drc';
+  $eventType = 'update-eid-result';
+  $action = $_SESSION['userName'] . ' updated result for the sample id ' . $_POST['sampleCode'] . ' and child id ' . $_POST['childId'];
+  $resource = 'eid-result';
 
   $general->activityLog($eventType, $action, $resource);
 

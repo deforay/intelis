@@ -1,5 +1,5 @@
 <?php
-$title = _translate("Viral Load Sample Type");
+$title = _translate("CD4 Sample Type");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -8,10 +8,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("Viral Load Sample Type"); ?></h1>
+    <h1><em class="fa-solid fa-eyedropper"></em> <?php echo _translate("CD4 Sample Type"); ?></h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-      <li class="active"><?php echo _translate("Viral Load Sample Type"); ?></li>
+      <li class="active"><?php echo _translate("CD4 Sample Type"); ?></li>
     </ol>
   </section>
 
@@ -21,8 +21,8 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
-              <a href="add-vl-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Viral Load Sample Type"); ?></a>
+            <?php if (_isAllowed("cd4-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+              <a href="add-cd4-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add CD4 Sample Type"); ?></a>
             <?php } ?>
           </div>
           <!-- /.box-header -->
@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
                 <tr>
                   <th scope="row"><?php echo _translate("Sample Name"); ?></th>
                   <th scope="row"><?php echo _translate("Sample Status"); ?></th>
-                  <?php if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+                  <?php if (_isAllowed("cd4-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
                     <!-- <th scope="row">Action</th> -->
                   <?php } ?>
                 </tr>
@@ -82,7 +82,7 @@ require_once APPLICATION_PATH . '/header.php';
       ],
       "bProcessing": true,
       "bServerSide": true,
-      "sAjaxSource": "get-vl-sample-type-helper.php",
+      "sAjaxSource": "get-cd4-sample-type-helper.php",
       "fnServerData": function(sSource, aoData, fnCallback) {
         $.ajax({
           "dataType": 'json',
@@ -100,7 +100,7 @@ require_once APPLICATION_PATH . '/header.php';
     if (obj.value != '') {
       conf = confirm("<?php echo _translate("Are you sure you want to change the status?"); ?>");
       if (conf) {
-        $.post("update-vl-sample-status.php", {
+        $.post("update-cd4-sample-status.php", {
             status: obj.value,
             id: obj.id
           },

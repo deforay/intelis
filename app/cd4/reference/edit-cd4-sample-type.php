@@ -10,17 +10,17 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$sampleQuery = "SELECT * from r_vl_sample_type where sample_id = $id";
+$sampleQuery = "SELECT * from r_cd4_sample_types where sample_id = $id";
 $sampleInfo = $db->query($sampleQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-flask-vial"></em> Edit Viral Load Sample Type</h1>
+        <h1><em class="fa-solid fa-flask-vial"></em> Edit CD4 Sample Type</h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-            <li class="active">Viral Load Sample Type</li>
+            <li class="active">CD4 Sample Type</li>
         </ol>
     </section>
 
@@ -34,14 +34,14 @@ $sampleInfo = $db->query($sampleQuery);
             <!-- /.box-header -->
             <div class="box-body">
                 <!-- form start -->
-                <form class="form-horizontal" method='post' name='editSampleForm' id='editSampleForm' autocomplete="off" enctype="multipart/form-data" action="save-vl-sample-type-helper.php">
+                <form class="form-horizontal" method='post' name='editSampleForm' id='editSampleForm' autocomplete="off" enctype="multipart/form-data" action="save-cd4-sample-type-helper.php">
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="sampleName" class="col-lg-4 control-label">Sample Name<span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="sampleName" name="sampleName" placeholder="sample Name" title="Please enter Sample name" value="<?php echo $sampleInfo[0]['sample_name']; ?>" onblur="checkNameValidation('r_vl_sample_type','sample_name',this,'<?php echo "sample_id##" . $id; ?>','The sample name that you entered already exists.Enter another name',null)" />
+                                        <input type="text" class="form-control isRequired" id="sampleName" name="sampleName" placeholder="sample Name" title="Please enter Sample name" value="<?php echo $sampleInfo[0]['sample_name']; ?>" onblur="checkNameValidation('r_cd4_sample_types','sample_name',this,'<?php echo "sample_id##" . $id; ?>','The sample name that you entered already exists.Enter another name',null)" />
                                         <input type="hidden" class="form-control" id="sampleId" name="sampleId" value="<?php echo $_GET['id']; ?>" />
                                     </div>
                                 </div>
@@ -66,7 +66,7 @@ $sampleInfo = $db->query($sampleQuery);
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-                        <a href="vl-sample-type.php" class="btn btn-default"> Cancel</a>
+                        <a href="cd4-sample-type.php" class="btn btn-default"> Cancel</a>
                     </div>
                     <!-- /.box-footer -->
                 </form>

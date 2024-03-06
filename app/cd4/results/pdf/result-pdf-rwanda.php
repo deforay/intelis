@@ -294,11 +294,7 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td colspan="4" style="line-height:16px;"></td>';
      $html .= '</tr>';
-     $html .= '<tr>';
-     $html .= '<td colspan="3"></td>';
-     $html .= '<td rowspan="3" style="text-align:left;">' . $smileyContent . '</td>';
-     $html .= '</tr>';
-     $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;CD4 RESULT (value)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['cd4_result']) . '</td></tr>';
+     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;CD4 RESULT (value)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['cd4_result']) . '</td><td>' . $smileyContent . '</td></tr>';
      $html .= '<tr><td colspan="3"></td></tr>';
      $html .= '</table>';
      $html .= '</td>';

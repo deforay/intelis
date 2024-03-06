@@ -20,7 +20,7 @@ try {
     echo $tbService->insertSample($_POST);
     // Commit transaction
     $db->commitTransaction();
-} catch (Exception | SystemException $exception) {
+} catch (Throwable $exception) {
     // Rollback transaction in case of error
     $db->rollbackTransaction();
     LoggerUtility::log('error', $exception->getFile() . ':' . $exception->getLine()  . ':' .  $exception->getMessage(), [

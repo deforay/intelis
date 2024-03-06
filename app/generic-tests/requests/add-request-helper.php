@@ -350,12 +350,13 @@ try {
         $genericData['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] : null;
         $id = $db->insert($tableName, $genericData);
     }
-    if ($id === true) {
+    $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';
+    if ($id > 0) {
         $_SESSION['alertMsg'] = _translate("Lab test request added successfully");
         //Add event log
 
-        $eventType = 'add-test-request';
-        $action = $_SESSION['userName'] . ' added a new request data with the sample id ' . $_POST['sampleCode'];
+        $eventType = 'add-lab-test-request';
+        $action = $_SESSION['userName'] . ' added a new request with the sample id ' . $_POST['sampleCode'] . $patientId;
         $resource = 'lab-test-request';
 
         $general->activityLog($eventType, $action, $resource);
