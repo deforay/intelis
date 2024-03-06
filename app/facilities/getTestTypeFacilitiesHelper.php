@@ -17,7 +17,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $mappingType     = $_POST['mappingType'];
 $testType   = $_POST['testType'];
 
-$isTestingLab = ($mappingType == "testing-labs") ? true : false;
+$isTestingLab = $mappingType == "testing-labs";
 
 $facilityTypeCondition = $isTestingLab ? " AND facility_type=2 " : "";
 $facilityQuery = "SELECT facility_id, facility_name FROM facility_details WHERE `status` = 'active' " . $facilityTypeCondition . " order by facility_name";

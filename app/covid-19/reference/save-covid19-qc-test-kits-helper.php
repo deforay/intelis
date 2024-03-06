@@ -1,14 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

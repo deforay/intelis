@@ -5,6 +5,7 @@ use App\Services\UsersService;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
@@ -181,10 +182,12 @@ try {
     ];
 
     $payload = json_encode($payload);
-    error_log(print_r($data['post'], true));
 
-    error_log("Save User Profile API : " . $exc->getMessage());
-    error_log($exc->getTraceAsString());
+    LoggerUtility::log("error", "Save User Profile API : " . $exc->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'trace' => $exc->getTraceAsString(),
+    ]);
 }
 
 $trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');

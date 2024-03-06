@@ -316,7 +316,7 @@ try {
 		$reasonData["reason_details"] = json_encode($_POST['reasonDetails']);
 		//var_dump($reasonData);
 		$db->insert("covid19_reasons_for_testing", $reasonData);
-	}else{
+	} else {
 		if (!empty($_POST['reasonForCovid19Test'])) {
 			$reasonData = [];
 			$reasonData["covid19_id"] = $_POST['covid19SampleId'];
@@ -418,7 +418,10 @@ try {
 			header("Location:/covid-19/requests/covid-19-requests.php");
 		}
 	}
-} catch (Exception $exc) {
-	error_log($exc->getMessage());
-	error_log($exc->getTraceAsString());
+} catch (Exception $e) {
+	LoggerUtility::log("error", $e->getMessage(), [
+		'file' => __FILE__,
+		'line' => __LINE__,
+		'trace' => $e->getTraceAsString(),
+	]);
 }

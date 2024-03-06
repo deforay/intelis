@@ -157,7 +157,6 @@ $aResult = $db->query($aQuery);
                                         <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
                                         <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Requesting Clinician Name" title="Please enter request clinician" /></td>
                                     </tr>
-                                    </tr>
                                     <tr class="testingPoint" style="display:none;">
                                         <td class="labels"><label for="labTestingPoint">Lab Testing Points <span class="mandatory">*</span></label> </td>
                                         <td>

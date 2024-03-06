@@ -147,7 +147,7 @@ class ApiService
             }
 
             return $jsonData;
-        } catch (GuzzleException | SystemException | Exception $e) {
+        } catch (\Throwable $e) {
             LoggerUtility::log('error', "Unable to retrieve json: " . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(), // File where the error occurred

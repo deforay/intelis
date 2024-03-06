@@ -71,6 +71,7 @@ class SystemService
                 return $_SESSION['translations']->find(null, $text)->getTranslation();
             }
         }
+        return $text;
     }
 
 

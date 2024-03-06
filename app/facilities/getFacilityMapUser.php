@@ -28,7 +28,7 @@ $uResult = $db->rawQuery($uQuery);
         <select name="from[]" id="search" class="form-control" size="8" multiple="multiple">
             <?php
             foreach ($uResult as $uName) {
-                if(in_array($uName['user_id'], $selectedUserIds)==false){
+                if(!in_array($uName['user_id'], $selectedUserIds)){
             ?>
                 <option value="<?= $uName['user_id']; ?>"><?= ($uName['user_name']); ?></option>
             <?php }

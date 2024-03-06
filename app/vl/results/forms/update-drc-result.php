@@ -221,7 +221,7 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 										</td>
 										<td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<? _translate('Please choose KP'); ?>" <?php echo $disable; ?>>
+											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>" <?php echo $disable; ?>>
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>
 												<option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option>

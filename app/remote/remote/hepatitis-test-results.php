@@ -140,7 +140,7 @@ try {
                     //$db->onDuplicate(array_keys($lab), $primaryKey);
                     $id = $db->insert($tableName, $lab);
                 }
-            } catch (Exception | SystemException $e) {
+            } catch (Throwable $e) {
                 if ($db->getLastErrno() > 0) {
                     error_log($db->getLastErrno());
                     error_log($db->getLastError());
@@ -165,7 +165,7 @@ try {
     $general->updateResultSyncDateTime('hepatitis', $facilityIds, $labId);
 
     $db->commitTransaction();
-} catch (Exception | SystemException $e) {
+} catch (Throwable $e) {
     $db->rollbackTransaction();
 
     $payload = json_encode([]);
