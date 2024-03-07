@@ -371,7 +371,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                   </div>
                                              </div>
                                              <div class="col-md-6">
-                                                  <label class="col-lg-5" for="artNo">Laboratory Number <?php if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+                                                  <label class="col-lg-5" for="laboratoryNumber">Laboratory Number <?php if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
                                                   <div class="col-lg-7">
                                                        <input type="text" name="laboratoryNumber" id="laboratoryNumber" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter Laboratory Number" title="Enter Laboratory Number" />
                                                   </div>
@@ -1195,8 +1195,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.btn-disabled').attr('disabled', 'yes');
                $(".btn-disabled").prop("onclick", null).off("click");
                $.blockUI();
-               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                    insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', '1', 'sampleCollectionDate');
+               var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
+               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'auto2' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+                    insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', '1', 'sampleCollectionDate', provinceCode, $("#province").find(":selected").attr("data-province-id"));
                <?php } else { ?>
                     document.getElementById('vlRequestFormSs').submit();
                <?php } ?>
@@ -1222,8 +1223,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.btn-disabled').attr('disabled', 'yes');
                $(".btn-disabled").prop("onclick", null).off("click");
                $.blockUI();
-               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                    insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate');
+               var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
+               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'auto2' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+                    insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate', provinceCode, $("#province").find(":selected").attr("data-province-id"));
                <?php } else { ?>
                     document.getElementById('vlRequestFormSs').submit();
                <?php } ?>
@@ -1392,7 +1394,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           formData += "&provinceCode=" + encodeURIComponent(provinceCode);
           formData += "&provinceId=" + encodeURIComponent(provinceId);
           formData += "&countryId=" + encodeURIComponent(countryId);
-          formData += "&testType=" + encodeURIComponent($('#testType').find(':selected').val())
+          formData += "&testType=" + encodeURIComponent($('#testType').find(':selected').data('short'))
           $.post("/generic-tests/requests/insert-sample.php", formData,
                function(data) {
                     //alert(data);

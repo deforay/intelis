@@ -44,7 +44,6 @@ $formId = $general->getGlobalConfig('vl_form');
 
 $authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserByToken($authToken);
-
 $updatedDateTime = $input['latestDateTime'] ?? null;
 /* Status name list */
 $statusList = [];
@@ -129,7 +128,7 @@ $data['sampleStatusList'] = $general->generateSelectOptionsAPI($statusList);
 $statusFilterList = $general->generateSelectOptionsAPI($general->getSampleStatus(true));
 $modules = SYSTEM_CONFIG['modules'];
 
-$rejectionReason = [];
+$rejectionReason = []; $testReason = [];
 foreach ($modules as $module => $status) {
     $rejectionResult = [];
     $rejectionTypeResult = [];
@@ -145,6 +144,7 @@ foreach ($modules as $module => $status) {
             $condition .= " AND updated_datetime >= '$updatedDateTime'";
         }
         $rejectionTypeResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', array('rejection_type'), false, $condition, 'rejection_type');
+        
         foreach ($rejectionTypeResult as $key => $type) {
             $reasons[$module][$key]['show'] = ucwords((string) $type['rejection_type']);
             $condition = " rejection_reason_status ='active' AND rejection_type LIKE '" . $type['rejection_type'] . "'";
@@ -159,6 +159,19 @@ foreach ($modules as $module => $status) {
         }
     }
     $rejectionReason[$module] = $reasons[$module];
+    $testReasonName = "test_reason_name";
+    $testReasonTable = 'r_' . $module . '_test_reasons';
+    if($module == 'genericTests'){
+        $testReasonTable = 'r_generic_test_reasons';
+        $testReasonName = "test_reason";
+    }
+    $testReasonsResult = $general->getDataByTableAndFields($testReasonTable, array('test_reason_id', $testReasonName), false, " test_reason_status like 'active' ", $testReasonName);
+    // print_r($testReasonsResult);die;
+    foreach ($testReasonsResult as $subKey => $reject) {
+        $testReasons[$module]['testReasons'][$subKey]['value'] = $reject['test_reason_id'];
+        $testReasons[$module]['testReasons'][$subKey]['show'] = ($reject[$testReasonName]);
+    }
+    $testReason[$module] = $testReasons[$module];
 }
 // print_r($responseRejections);die;
 
@@ -249,6 +262,7 @@ if (
 
     /* Rejected Reason*/
     $data['covid19']['rejectedReasonList'] = $rejectionReason['covid19'];
+    $data['covid19']['testReasonList'] = $testReason['covid19']['testReasons'];
 
     /* Testing Platform Details */
     $testPlatformList = [];
@@ -307,6 +321,7 @@ if (isset($applicationConfig['modules']['eid']) && $applicationConfig['modules']
 
     /* Rejected Reason*/
     $data['eid']['rejectedReasonList'] = $rejectionReason['eid'];
+    $data['eid']['testReasonList'] = $testReason['eid']['testReasons'];
 
     /* Testing Platform Details */
     $testPlatformList = [];
@@ -350,6 +365,7 @@ if (isset($applicationConfig['modules']['vl']) && $applicationConfig['modules'][
 
     /* Rejected Reason*/
     $data['vl']['rejectedReasonList'] = $rejectionReason['vl'];
+    $data['vl']['testReasonList'] = $testReason['vl']['testReasons'];
 
     /* Testing Platform Details */
     $testPlatformList = [];
@@ -376,7 +392,7 @@ if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules'][
 
     /* Rejected Reason*/
     $data['tb']['rejectedReasonList'] = $rejectionReason['tb'];
-
+    $data['tb']['testReasonList'] = $testReason['tb']['testReasons'];
     /* Testing Platform Details */
     $testPlatformList = [];
     $testPlatformResult = $general->getTestingPlatforms('tb');
@@ -400,6 +416,8 @@ if (isset($applicationConfig['modules']['generic-tests']) && $applicationConfig[
     $data['genericTests']['resultsList'] = $general->generateSelectOptionsAPI($genericService->getGenericResults(null, $updatedDateTime));
     /* Rejected Reason*/
     $data['genericTests']['rejectedReasonList'] = $rejectionReason['generic-tests'];
+    $data['genericTests']['testReasonList'] = $testReason['generic-tests']['testReasons'];
+    
     /* Testing Platform Details */
     $testPlatformList = [];
     $testPlatformResult = $general->getTestingPlatforms('generic-tests');

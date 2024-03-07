@@ -401,8 +401,8 @@ try {
 	if ($id === true) {
 		$_SESSION['alertMsg'] = _translate("Covid-19 test request added successfully");
 		//Add event log
-		$eventType = 'covid-19-add-request';
-		$action = $_SESSION['userName'] . ' added a new Covid-19 request with the Sample ID/ID ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
+		$eventType = 'add-covid-19-request';
+		$action = $_SESSION['userName'] . ' added a new Covid-19 request with the sample id ' . $_POST['sampleCode'] . ' and patientId ' . $_POST['patientId'];
 		$resource = 'covid-19-add-request';
 
 		$general->activityLog($eventType, $action, $resource);

@@ -191,7 +191,7 @@ try {
 	}
 	//Add event log
 	$eventType = 'update-covid-19-result';
-	$action = $_SESSION['userName'] . ' updated a result for the Covid-19 Sample ID/ID. ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
+	$action = $_SESSION['userName'] . ' updated result for the sample id ' . $_POST['sampleCode'] . ' and patientId ' . $_POST['patientId'];
 	$resource = 'covid-19-result';
 
 	$general->activityLog($eventType, $action, $resource);

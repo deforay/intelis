@@ -481,8 +481,8 @@ try {
 	if ($id === true) {
 		$_SESSION['alertMsg'] = _translate("EID request updated successfully");
 		//Add event log
-		$eventType = 'eid-edit-request';
-		$action = $_SESSION['userName'] . ' updated EID request for the Child ID ' . $_POST['childId'];
+		$eventType = 'update-eid-request';
+		$action = $_SESSION['userName'] . ' updated EID request with the sample id ' . $_POST['sampleCode'] . ' and Child id ' . $_POST['childId'];
 		$resource = 'eid-request';
 
 		$general->activityLog($eventType, $action, $resource);
