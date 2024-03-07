@@ -182,8 +182,8 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 			</div>
 		</div>
 	</div>
-	<div style="padding:1% 2%;width:100%;position:absolute;bottom:1.5%;color:#fff;background:rgba(0,0,0,0);">
-		<span class="pull-right" style="font-weight:bold;">v <?php echo VERSION; ?></span>
+	<div style="padding:1% 2%;width:100%;position:absolute;bottom:1.5%;color:#fff;background:rgba(0,0,0,0.1);">
+		<small class="pull-right" style="font-weight:bold;">v <?php echo VERSION; ?></small>
 	</div>
 	<script src="/assets/js/deforayValidation.js"></script>
 	<script src="/assets/js/jquery.blockUI.js"></script>

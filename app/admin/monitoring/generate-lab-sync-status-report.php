@@ -22,7 +22,7 @@ $excel = new Spreadsheet();
 $output = [];
 $sheet = $excel->getActiveSheet();
 
-$headings = array("Lab Name", "Last Sync done on", "Latest Results Sync from Lab", "Latest Requests Sync from STS", "Version");
+$headings = ["Lab Name", "Last Sync done on", "Latest Results Sync from Lab", "Latest Requests Sync from STS", "Version"];
 $sheet->fromArray($headings, null, 'A3');
 
 $no = 1;
