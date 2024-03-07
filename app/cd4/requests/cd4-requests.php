@@ -133,13 +133,13 @@ foreach ($srcResults as $list) {
 									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" value="<?php echo (!empty($_GET['daterange'])) ? $_GET['daterange'] : ""; ?>" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" value="<?php echo (!empty($_GET['daterange'])) ? $_GET['daterange'] : ""; ?>" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Sample Received at Lab Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control daterangefield" placeholder="<?php echo _translate('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
 							</td>
 
 							<td><strong>
@@ -685,7 +685,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 ?>
 
 
-
 <script type="text/javascript">
 	let searchExecuted = false;
 	let startDate = "";
@@ -703,6 +702,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	// });
 
 	$(document).ready(function() {
+
 		$("#batchCode").autocomplete({
 			source: function(request, response) {
 				// Fetch data
@@ -735,17 +735,21 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		});
 
 		loadVlRequestData();
-		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').daterangepicker({
+		
+		$("#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime").daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
-					separator: ' to ',
+					separator: ' to '
 				},
 				showDropdowns: true,
 				alwaysShowCalendars: false,
 				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
+				beforeShow : function(inst, elem){
+					setCalsClearButton(null, null, elem);
+				},
 				ranges: {
 					'Today': [moment(), moment()],
 					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -765,6 +769,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
+		
 		<?php if ((!empty($_GET['daterange']) && isset($_GET['type']) && $_GET['type'] == 'rejection')) { ?>
 			$('#sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
 			$('#sampleCollectionDate').val('<?php echo $_GET['daterange']; ?>');
