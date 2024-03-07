@@ -75,6 +75,7 @@ try {
         vl.patient_surname                      as lastName,
         vl.patient_dob                          as patientDob,
         vl.patient_gender                       as patientGender,
+        vl.patient_email                        as patientEmail,
         vl.is_patient_pregnant                  as isPatientPregnant,
         vl.patient_age                          as patientAge,
         vl.patient_phone_number                 as patientPhoneNumber,
