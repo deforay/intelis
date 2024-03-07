@@ -39,7 +39,10 @@ try {
 		}
 	}
 	header("Location:vl-test-failure-reasons.php");
-} catch (Exception $exc) {
-	error_log($exc->getMessage());
-	error_log($exc->getTraceAsString());
+} catch (Exception $e) {
+	LoggerUtility::log("error", $e->getMessage(), [
+		'file' => __FILE__,
+		'line' => __LINE__,
+		'trace' => $e->getTraceAsString(),
+	]);
 }

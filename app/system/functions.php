@@ -138,7 +138,7 @@ function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = tru
             }
 
             $sanitizedFiles[$key] = $file;
-        } catch (SystemException | \Exception $e) {
+        } catch (SystemException |Exception $e) {
             LoggerUtility::log('error', $e->getMessage());
             // Set to empty array to indicate failure
             $sanitizedFiles[$key] = [];

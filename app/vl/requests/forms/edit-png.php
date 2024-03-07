@@ -608,7 +608,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 											<label for="vlResult">VL result</label>
 										</td>
 										<td class="vlResult resultInputContainer" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
-											<input list="possibleVlResults" disabled="disabled" type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
+											<input list="possibleVlResults" disabled="disabled" type="text" class="form-control" name="cphlVlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
 											<datalist id="possibleVlResults"></datalist>
 										</td>
 										<!--<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>

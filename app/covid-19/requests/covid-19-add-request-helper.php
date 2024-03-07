@@ -316,7 +316,7 @@ try {
 		$reasonData["reason_details"] = json_encode($_POST['reasonDetails']);
 		//var_dump($reasonData);
 		$db->insert("covid19_reasons_for_testing", $reasonData);
-	}else{
+	} else {
 		if (!empty($_POST['reasonForCovid19Test'])) {
 			$reasonData = [];
 			$reasonData["covid19_id"] = $_POST['covid19SampleId'];
@@ -401,8 +401,8 @@ try {
 	if ($id === true) {
 		$_SESSION['alertMsg'] = _translate("Covid-19 test request added successfully");
 		//Add event log
-		$eventType = 'covid-19-add-request';
-		$action = $_SESSION['userName'] . ' added a new Covid-19 request with the Sample ID/ID ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
+		$eventType = 'add-covid-19-request';
+		$action = $_SESSION['userName'] . ' added a new Covid-19 request with the sample id ' . $_POST['sampleCode'] . ' and patientId ' . $_POST['patientId'];
 		$resource = 'covid-19-add-request';
 
 		$general->activityLog($eventType, $action, $resource);
@@ -418,7 +418,10 @@ try {
 			header("Location:/covid-19/requests/covid-19-requests.php");
 		}
 	}
-} catch (Exception $exc) {
-	error_log($exc->getMessage());
-	error_log($exc->getTraceAsString());
+} catch (Exception $e) {
+	LoggerUtility::log("error", $e->getMessage(), [
+		'file' => __FILE__,
+		'line' => __LINE__,
+		'trace' => $e->getTraceAsString(),
+	]);
 }

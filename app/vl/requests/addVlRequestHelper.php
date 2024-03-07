@@ -156,7 +156,7 @@ try {
 
 
     if ($formId == '5') {
-        $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlvlResult'] ?? $_POST['vlResult'] ?? null;
+        $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlVlResult'] ?? $_POST['vlResult'] ?? null;
     }
 
     // Let us process the result entered by the user
@@ -393,10 +393,11 @@ try {
     $id = $db->update($tableName, $vlData);
 
     $db->commitTransaction();
+    $patientId = (isset($_POST['artNo'])) ? $_POST['artNo'] : '';
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("VL request added successfully");
-        $eventType = 'add-vl-request-sudan';
-        $action = $_SESSION['userName'] . ' added a new request with the sample id ' . $_POST['sampleCode'];
+        $eventType = 'add-vl-request';
+        $action = $_SESSION['userName'] . ' added a new VL request with the sample id ' . $_POST['sampleCode'] . ' and patient id '. $patientId;
         $resource = 'vl-request';
 
         $general->activityLog($eventType, $action, $resource);

@@ -603,6 +603,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                     <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
                     <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
                     <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
+                    <input type="hidden" id="childId" name="childId"  value="<?php echo $eidInfo['child_id']; ?>" />
                     <a href="/eid/results/eid-manual-results.php" class="btn btn-default"> Cancel</a>
                 </div>
                 <!-- /.box-footer -->

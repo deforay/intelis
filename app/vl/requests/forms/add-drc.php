@@ -232,7 +232,7 @@ $sFormat = '';
 										</td>
 										<td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<? _translate('Please choose KP'); ?>">
+											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
 
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">

@@ -1,13 +1,14 @@
 <?php
 
 // File included in import-file-helper.php
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use League\Csv\Reader;
 use League\Csv\Statement;
 use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
@@ -230,7 +231,10 @@ try {
     $general->activityLog($eventType, $action, $resource);
 
     header("Location:/import-result/imported-results.php?t=$type");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+} catch (Exception $e) {
+    LoggerUtility::log("error", $e->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

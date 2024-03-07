@@ -144,7 +144,7 @@ try {
      }
 
      if ($formId == '5') {
-          $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlvlResult'] ?? $_POST['vlResult'] ?? null;
+          $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlVlResult'] ?? $_POST['vlResult'] ?? null;
      }
 
      // Let us process the result entered by the user
@@ -384,11 +384,12 @@ try {
           ]);
      }
      //die;
+     $patientId = (isset($_POST['artNo'])) ? $_POST['artNo'] : '';
      if ($id === true) {
           $_SESSION['alertMsg'] = _translate("VL request updated successfully");
 
-          $eventType = 'update-vl-request-sudan';
-          $action = $_SESSION['userName'] . ' updated request with the sample id ' . $_POST['sampleCode'];
+          $eventType = 'update-vl-request';
+          $action = $_SESSION['userName'] . ' updated VL request with the sample id ' . $_POST['sampleCode'] . ' and patient id '. $patientId;
           $resource = 'vl-request';
 
           $general->activityLog($eventType, $action, $resource);

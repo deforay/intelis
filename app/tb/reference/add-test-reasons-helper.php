@@ -41,7 +41,10 @@ try {
 		$general->activityLog('add-test-reasons', $_SESSION['userName'] . ' added new reference test reasons' . $_POST['testReasonName'], 'reference-tb-test-reasons');
 	}
 	header("Location:tb-test-reasons.php");
-} catch (Exception $exc) {
-	error_log($exc->getMessage());
-	error_log($exc->getTraceAsString());
+} catch (Exception $e) {
+	LoggerUtility::log("error", $e->getMessage(), [
+		'file' => __FILE__,
+		'line' => __LINE__,
+		'trace' => $e->getTraceAsString(),
+	]);
 }

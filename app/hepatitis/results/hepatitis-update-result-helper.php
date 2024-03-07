@@ -89,12 +89,12 @@ try {
 	);
 
 	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
-     $getPrevResult = $db->getOne('form_hepatitis');
-     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
-          $hepatitisData['result_modified'] = "yes";
-     } else {
-          $hepatitisData['result_modified'] = "no";
-     }
+	$getPrevResult = $db->getOne('form_hepatitis');
+	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+		$hepatitisData['result_modified'] = "yes";
+	} else {
+		$hepatitisData['result_modified'] = "no";
+	}
 
 	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 	$id = $db->update($tableName, $hepatitisData);
@@ -112,7 +112,10 @@ try {
 	$general->activityLog($eventType, $action, $resource);
 
 	header("Location:hepatitis-manual-results.php");
-} catch (Exception $exc) {
-	error_log($exc->getMessage());
-	error_log($exc->getTraceAsString());
+} catch (Exception $e) {
+	LoggerUtility::log("error", $e->getMessage(), [
+		'file' => __FILE__,
+		'line' => __LINE__,
+		'trace' => $e->getTraceAsString(),
+	]);
 }

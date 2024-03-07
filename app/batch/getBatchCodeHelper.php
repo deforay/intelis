@@ -38,7 +38,7 @@ $result = $db->rawQuery($query);
 
 $options = array();
 foreach ($result as $batch) {
-      array_push( $options, $batch['batch_code'] );
+      $options[] = $batch['batch_code'];
 }
 
 echo json_encode( $options );

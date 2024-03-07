@@ -139,7 +139,7 @@ class CommonService
         while ($attempts < 3) {
             try {
                 return bin2hex(random_bytes($length / 2));
-            } catch (SystemException $e) {
+            } catch (Throwable $e) {
                 error_log($e->getMessage());
                 $attempts++;
             }
@@ -192,8 +192,10 @@ class CommonService
         });
 
         if (session_status() != PHP_SESSION_NONE && !isset($_SESSION['instance'])) {
+            $instanceResult = $this->db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
             $_SESSION['instance']['type'] = $allConfigs['sc_user_type'] ?? 'standalone';
             $_SESSION['instance']['labId'] = $allConfigs['sc_testing_lab_id'] ?? null;
+            $_SESSION['instance']['facilityName'] = $instanceResult['instance_facility_name'];
         }
 
         return $name ? ($allConfigs[$name] ?? null) : ($allConfigs ?? []);
@@ -867,7 +869,7 @@ class CommonService
         // Build the set string
         $setString = '';
         foreach ($data as $key => $value) {
-            $setString .= ', "$.' . $key . '", ' . (string) $this->jsonValueToString($value) . '';
+            $setString .= ', "$.' . $key . '", ' . $this->jsonValueToString($value);
             //$setString .= ', "$.' . $key . '", JSON_UNQUOTE(' . (string) $this->jsonValueToString($value) . ')';
         }
 

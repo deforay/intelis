@@ -123,13 +123,13 @@ try {
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
 	);
 
-		$db->where('covid19_id', $_POST['covid19SampleId']);
-		$getPrevResult = $db->getOne('form_covid19');
-		if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
-			$covid19Data['result_modified'] = "yes";
-		} else {
-			$covid19Data['result_modified'] = "no";
-		}
+	$db->where('covid19_id', $_POST['covid19SampleId']);
+	$getPrevResult = $db->getOne('form_covid19');
+	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+		$covid19Data['result_modified'] = "yes";
+	} else {
+		$covid19Data['result_modified'] = "no";
+	}
 
 	if (!empty($_POST['labId'])) {
 		$facility = $facilitiesService->getFacilityById($_POST['labId']);
@@ -191,7 +191,7 @@ try {
 	}
 	//Add event log
 	$eventType = 'update-covid-19-result';
-	$action = $_SESSION['userName'] . ' updated a result for the Covid-19 Sample ID/ID. ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
+	$action = $_SESSION['userName'] . ' updated result for the sample id ' . $_POST['sampleCode'] . ' and patientId ' . $_POST['patientId'];
 	$resource = 'covid-19-result';
 
 	$general->activityLog($eventType, $action, $resource);
@@ -205,7 +205,10 @@ try {
 	$db->insert($tableName2, $data);
 
 	header("Location:covid-19-manual-results.php");
-} catch (Exception $exc) {
-	error_log($exc->getMessage());
-	error_log($exc->getTraceAsString());
+} catch (Exception $e) {
+	LoggerUtility::log("error", $e->getMessage(), [
+		'file' => __FILE__,
+		'line' => __LINE__,
+		'trace' => $e->getTraceAsString(),
+	]);
 }

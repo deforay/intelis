@@ -139,7 +139,7 @@ try {
                     //$db->onDuplicate(array_keys($lab), $primaryKey);
                     $id = $db->insert($tableName, $lab);
                 }
-            } catch (Exception | SystemException $e) {
+            } catch (Throwable $e) {
 
                 // $sampleCodes[] = $lab['sample_code'];
                 // $facilityIds[] = $lab['facility_id'];
@@ -166,7 +166,7 @@ try {
     $general->updateResultSyncDateTime('vl', $facilityIds, $labId);
 
     $db->commitTransaction();
-} catch (Exception | SystemException $e) {
+} catch (Throwable $e) {
     $db->rollbackTransaction();
 
     $payload = json_encode([]);

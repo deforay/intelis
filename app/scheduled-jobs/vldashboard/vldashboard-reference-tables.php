@@ -130,6 +130,8 @@ try {
     ];
 
     $response  = $apiService->postFile($url, 'referenceFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
+
+    unlink(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

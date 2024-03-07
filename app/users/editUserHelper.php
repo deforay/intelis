@@ -1,12 +1,13 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
@@ -172,8 +173,11 @@ try {
                 $deResult = json_decode($result, true);
             } catch (Exception $e) {
                 // Handle the exception
-                error_log("Error: " . $e->getMessage());
-                error_log($e->getTraceAsString());
+                LoggerUtility::log("error", $e->getMessage(), [
+                    'file' => __FILE__,
+                    'line' => __LINE__,
+                    'trace' => $e->getTraceAsString(),
+                ]);
             }
         }
     }
@@ -187,7 +191,10 @@ try {
     $general->activityLog($eventType, $action, $resource);
 
     header("Location:users.php");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+} catch (Exception $e) {
+    LoggerUtility::log("error", $e->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

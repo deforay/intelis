@@ -556,6 +556,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['resul
 					<input type="hidden" name="formId" id="formId" value="3" />
 					<input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
 					<input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
+					<input type="hidden" id="childId" name="childId"  value="<?php echo $eidInfo['child_id']; ?>" />
 					<input type="hidden" name="revised" id="revised" value="no" />
 
 					<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>

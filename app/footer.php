@@ -324,6 +324,7 @@ if (empty($syncLatestTime)) {
 
 		if (empty($_SESSION['instance']['facilityName']) || ($_SESSION['instance']['type'] == 'vluser' && ($_SESSION['instance']['labId'] == null))) {
 		?>
+			alert("<?= $_SESSION['instance']['facilityName']; ?>");
 			showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 
