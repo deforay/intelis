@@ -19,6 +19,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -91,7 +92,7 @@ try {
     }
 
     if ($formId == '5') {
-        $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlvlResult'] ?? $_POST['vlResult'] ?? null;
+        $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlVlResult'] ?? $_POST['vlResult'] ?? null;
     }
 
     // Let us process the result entered by the user

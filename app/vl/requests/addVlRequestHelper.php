@@ -156,7 +156,7 @@ try {
 
 
     if ($formId == '5') {
-        $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlvlResult'] ?? $_POST['vlResult'] ?? null;
+        $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlVlResult'] ?? $_POST['vlResult'] ?? null;
     }
 
     // Let us process the result entered by the user

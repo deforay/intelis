@@ -507,15 +507,15 @@ $disable = "disabled = 'disabled'";
 											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlvlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');" class="testingPlatformSelect form-control isRequired" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
-													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
+													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
 												<?php
 												}
 												?>
 											</select>
 										</td>
-										<td class="vlResult labels" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"><label for="cphlvlResult">VL result <span class="mandatory">*</span></label></td>
+										<td class="vlResult labels" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"><label for="cphlVlResult">VL result <span class="mandatory">*</span></label></td>
 										<td class="vlResult resultInputContainer" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
-											<input list="possibleVlResults" disabled="disabled" type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
+											<input list="possibleVlResults" disabled="disabled" type="text" class="form-control" name="cphlVlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
 											<datalist id="possibleVlResults"></datalist>
 										</td>
 										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
