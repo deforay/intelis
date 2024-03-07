@@ -280,3 +280,12 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('cd4-reference', 'cd4', 'CD4 Reference Management');
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-reference', '/cd4/reference/cd4-sample-type.php', '[\"/cd4/reference/cd4-sample-rejection-reasons.php\", \"/cd4/reference/add-cd4-sample-rejection-reasons.php\", \"edit-cd4-sample-rejection-reasons.php\", \"/cd4/reference/add-cd4-sample-type.php\", \"/cd4/reference/edit-cd4-sample-type.php\", \"/cd4/reference/cd4-test-reasons.php\", \"/cd4/reference/add-cd4-test-reasons.php\", \"/cd4/reference/edit-cd4-test-reasons.php\", \"/cd4/reference/cd4-results.php\", \"/cd4/reference/add-cd4-results.php\", \"/cd4/reference/edit-cd4-results.php\"]', 'Manage CD4 Reference Tables', NULL, 'always');
+
+-- Amit 07-Mar-2024
+DELETE s1 FROM s_app_menu s1
+JOIN (
+    SELECT link, parent_id, MIN(id) as min_id
+    FROM s_app_menu
+    GROUP BY link, parent_id
+) s2 ON s1.link = s2.link AND s1.parent_id = s2.parent_id
+WHERE s1.id > s2.min_id;
