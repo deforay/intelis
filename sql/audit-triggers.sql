@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS `audit_form_covid19`;
 DROP TABLE IF EXISTS `audit_form_hepatitis`;
 DROP TABLE IF EXISTS `audit_form_tb`;
 DROP TABLE IF EXISTS `audit_form_generic`;
+DROP TABLE IF EXISTS `audit_form_cd4`;
 
 
 CREATE TABLE `audit_form_vl` SELECT * from `form_vl` WHERE 1=0;
@@ -182,4 +183,34 @@ CREATE TRIGGER form_generic_data__au AFTER UPDATE ON `form_generic` FOR EACH ROW
 CREATE TRIGGER form_generic_data__bd BEFORE DELETE ON `form_generic` FOR EACH ROW
     INSERT INTO `audit_form_generic` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_generic` AS d WHERE d.sample_id = OLD.sample_id;
+
+
+
+--- CD4 Tests
+
+CREATE TABLE `audit_form_cd4` SELECT * from `form_cd4` WHERE 1=0;
+
+ALTER TABLE `audit_form_cd4`
+   MODIFY COLUMN `cd4_id` int(11) NOT NULL,
+   ENGINE = MyISAM,
+   ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
+   ADD `revision` INT(6) NOT NULL AUTO_INCREMENT AFTER `action`,
+   ADD `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`,
+   ADD PRIMARY KEY (`cd4_id`, `revision`);
+
+DROP TRIGGER IF EXISTS form_cd4_data__ai;
+DROP TRIGGER IF EXISTS form_cd4_data__au;
+DROP TRIGGER IF EXISTS form_cd4_data__bd;
+
+CREATE TRIGGER form_cd4_data__ai AFTER INSERT ON `form_cd4` FOR EACH ROW
+    INSERT INTO `audit_form_cd4` SELECT 'insert', NULL, NOW(), d.*
+    FROM `form_cd4` AS d WHERE d.cd4_id = NEW.cd4_id;
+
+CREATE TRIGGER form_cd4_data__au AFTER UPDATE ON `form_cd4` FOR EACH ROW
+    INSERT INTO `audit_form_cd4` SELECT 'update', NULL, NOW(), d.*
+    FROM `form_cd4` AS d WHERE d.cd4_id = NEW.cd4_id;
+
+CREATE TRIGGER form_cd4_data__bd BEFORE DELETE ON `form_cd4` FOR EACH ROW
+    INSERT INTO `audit_form_cd4` SELECT 'delete', NULL, NOW(), d.*
+    FROM `form_cd4` AS d WHERE d.cd4_id = OLD.cd4_id;
 
