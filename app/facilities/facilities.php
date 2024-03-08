@@ -99,6 +99,9 @@ $state = $geolocationService->getProvinces("yes");
                     <?php }
                     if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
                       <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'tb') ? "selected='selected'" : ""; ?> value='tb'><?php echo _translate("TB"); ?></option>
+                    <?php } 
+                    if (!empty($activeModules) && in_array('cd4', $activeModules)) { ?>
+                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'cd4') ? "selected='selected'" : ""; ?> value='cd4'><?php echo _translate("CD4"); ?></option>
                     <?php } ?>
                   </select>
                 </td>

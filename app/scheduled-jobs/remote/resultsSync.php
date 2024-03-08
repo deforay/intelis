@@ -241,6 +241,41 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', count($hepLabResult), 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
+      // CD4 TEST RESULTS
+      if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
+        $cd4Query = "SELECT cd4.*, a.user_name as 'approved_by_name'
+            FROM `form_cd4` AS cd4
+            LEFT JOIN `user_details` AS a ON cd4.result_approved_by = a.user_id
+            WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+            AND (facility_id != '' AND facility_id is not null)
+            AND (sample_code !='' AND sample_code is not null)
+            AND cd4.data_sync = 0";
+
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "cd4" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
+            $cd4Query .= " AND sample_code like '$sampleCode'";
+        }
+
+        $cd4LabResult = $db->rawQuery($cd4Query);
+
+        $url = $remoteUrl . '/remote/remote/testResults.php';
+
+        $payload = [
+            "labId" => $labId,
+            "result" => $cd4LabResult,
+            "Key" => "vlsm-lab-data--",
+        ];
+
+        $jsonResponse = $apiService->post($url, $payload);
+        $result = json_decode($jsonResponse, true);
+
+        if (!empty($result)) {
+            $db->where('sample_code', $result, 'IN');
+            $id = $db->update('form_cd4', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', count($cd4LabResult), 'send-results', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
+    }
+
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);

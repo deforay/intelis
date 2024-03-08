@@ -85,7 +85,7 @@ try {
         if ($id > 0 && !empty($_POST['testType'])) {
             foreach ($_POST['testType'] as $key => $val) {
                 if (trim((string) $val) != '') {
-                    $configControlData = array('test_type' => $val, 'instrument_id' => $id, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
+                    $configControlData = array('test_type' => $val, 'instrument_id' => $data['instrument_id'], 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
                     $db->insert($importControlTable, $configControlData);
                 }
             }
