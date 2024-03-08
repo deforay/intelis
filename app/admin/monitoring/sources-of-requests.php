@@ -154,6 +154,11 @@ foreach ($sources as $list) {
                                         <option value='tb'>
                                             <?php echo _translate("TB"); ?>
                                         </option>
+                                    <?php }
+                                    if (!empty($activeModules) && in_array('cd4', $activeModules)) { ?>
+                                        <option value='cd4'>
+                                            <?php echo _translate("CD4"); ?>
+                                        </option>
                                     <?php } ?>
                                 </select>
                             </td>

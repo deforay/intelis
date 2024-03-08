@@ -90,6 +90,11 @@ foreach ($syncedTypeResults as $synced) {
 										<option value='tb'>
 											<?php echo _translate("TB"); ?>
 										</option>
+									<?php } 
+									if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
+										<option value='cd4'>
+											<?php echo _translate("CD4"); ?>
+										</option>
 									<?php } ?>
 								</select>
 							</td>

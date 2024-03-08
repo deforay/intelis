@@ -23,6 +23,9 @@ if(isset($_POST['testType']))
     if (isset($testType) && $testType == 'tb') {
         $table = "form_tb";
     }
+    if (isset($testType) && $testType == 'cd4') {
+        $table = "form_cd4";
+    }
     $sourceList = $general->getSourceOfRequest($table);
     $option="";
     foreach($sourceList as $list)

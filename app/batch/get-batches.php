@@ -1,18 +1,18 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
-use App\Utilities\LoggerUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
 try {
 
     $db->beginReadOnlyTransaction();
@@ -24,48 +24,17 @@ try {
 
     $tableName = "batch_details";
     $primaryKey = "batch_id";
+
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
 
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
 
+    $refTable = TestsService::getTestTableName($_POST['type']);
 
-    if (isset($_POST['type']) && $_POST['type'] == 'vl') {
-        $refTable = "form_vl";
-        $refPrimaryColumn = "vl_sample_id";
-    } else if (isset($_POST['type']) && $_POST['type'] == 'eid') {
-        $refTable = "form_eid";
-        $refPrimaryColumn = "eid_id";
-    } else if (isset($_POST['type']) && $_POST['type'] == 'covid19') {
-        $refTable = "form_covid19";
-        $refPrimaryColumn = "covid19_id";
-    } else if (isset($_POST['type']) && $_POST['type'] == 'hepatitis') {
-        $refTable = "form_hepatitis";
-        $refPrimaryColumn = "hepatitis_id";
-    } else if (isset($_POST['type']) && $_POST['type'] == 'tb') {
-        $refTable = "form_tb";
-        $refPrimaryColumn = "tb_id";
-    } else if (isset($_POST['type']) && $_POST['type'] == 'cd4') {
-        $refTable = "form_cd4";
-        $refPrimaryColumn = "cd4_id";
-    } else if (isset($_POST['type']) && $_POST['type'] == 'generic-tests') {
-        $refTable = "form_generic";
-        $refPrimaryColumn = "sample_id";
-    }
-
-
-
-    /* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
-    $aColumns = array('b.batch_code', 'b.batch_code', null, "DATE_FORMAT(last_tested_date,'%d-%b-%Y')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')");
-    $orderColumns = array('b.batch_code', 'b.batch_code', null, 'last_tested_date', 'b.last_modified_datetime');
-
-    /* Indexed column (used for fast and accurate table cardinality) */
-    $sIndexColumn = $primaryKey;
-
-    $sTable = $tableName;
+    $aColumns = ['b.batch_code', 'b.batch_code', null, "DATE_FORMAT(vl.sample_tested_datetime, '%d-%b-%Y')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')"];
+    $orderColumns = ['b.batch_code', 'b.batch_code', null, 'last_tested_date', 'b.last_modified_datetime'];
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -76,16 +45,13 @@ try {
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
     $sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+
     $sWhere[] = " b.test_type like '" . $_POST['type'] . "'";
 
 
     if (isset($_POST['testType']) && ($_POST['testType'] != "")) {
         $sWhere[] = " vl.test_type = '" . $_POST['testType'] . "'";
     }
-    /*
- * SQL queries
- * Get data to display
- */
 
     $testTypeCol = "";
 
@@ -115,14 +81,14 @@ try {
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
 
-    [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+    [$rResult, $resultCount] = $general->getQueryResultAndCount(sql: $sQuery, params: null, limit: $sLimit, offset: $sOffset, returnGenerator: true);
 
-    $output = array(
+    $output = [
         "sEcho" => (int) $_POST['sEcho'],
         "iTotalRecords" => $resultCount,
         "iTotalDisplayRecords" => $resultCount,
         "aaData" => []
-    );
+    ];
     $editBatch = $delete = $pdf = $editPosition = false;
     if (_isAllowed("/batch/edit-batch.php?type=" . $_POST['type'])) {
         $editBatch = true;

@@ -978,6 +978,9 @@ $formId = $general->getGlobalConfig('vl_form');
 				} else if (testType[i] == 'tb') {
 					testOrg = 'TB';
 					var extraDiv = '<td></td>';
+				} else if (testType[i] == 'cd4') {
+					testOrg = 'CD4';
+					var extraDiv = '<td></td>';
 				} else if (testType[i] == 'generic-tests') {
 					testOrg = 'Other Lab Tests';
 					var extraDiv = '<td></td>';

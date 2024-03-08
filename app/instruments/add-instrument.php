@@ -24,6 +24,9 @@ $labNameList = $facilitiesService->getTestingLabs();
 
 $activeModules = SystemService::getActiveModules();
 
+$testTypeList = SystemService::getActiveModules(true);
+
+
 $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 ?>
 <style>
@@ -102,36 +105,9 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 									</label>
 									<div class="col-lg-7">
 										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
-											<?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
-												<option value='vl'>
-													<?php echo _translate("Viral Load"); ?>
-												</option>
-											<?php }
-											if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
-												<option value='eid'>
-													<?php echo _translate("EID"); ?>
-												</option>
-											<?php }
-											if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
-												<option value='covid19'>
-													<?php echo _translate("Covid-19"); ?>
-												</option>
-											<?php }
-											if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
-												<option value='hepatitis'>
-													<?php echo _translate("Hepatitis"); ?>
-												</option>
-											<?php }
-											if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
-												<option value='tb'>
-													<?php echo _translate("TB"); ?>
-												</option>
-											<?php }
-											if (!empty($activeModules) && in_array('generic-tests', $activeModules)) { ?>
-												<option value='generic-tests'>
-													<?php echo _translate("Other Lab Tests"); ?>
-												</option>
-											<?php } ?>
+											<?php foreach($testTypeList as $testType){ ?>
+												<option value="<?= $testType; ?>"><?= ucfirst($testType); ?></option>
+												<?php } ?>
 										</select>
 									</div>
 								</div>
@@ -315,7 +291,24 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 													</select>
 												</td>
 											</tr>
-										<?php } ?>
+										<?php } 
+										if (SYSTEM_CONFIG['modules']['cd4']) { ?>
+											<tr class="cd4-access user-access-form" style="display: none;">
+												<td style="text-align:center;">
+													<?php echo _translate("CD4"); ?><input type="hidden" name="userTestType[]" id="userTestTypeCd4" value="cd4" />
+												</td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByCd4" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for CD4 Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _translate("Please enter Approved By for TB Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php }?>
 									</tbody>
 								</table>
 								<br>
@@ -399,6 +392,18 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _translate("No of Manufacturer Controls in TB"); ?>' title='<?php echo _translate("Please enter No of Manufacturer Controls in TB"); ?>' />
 												</td>
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _translate("No of Calibrators in TB"); ?>' title='<?php echo _translate("Please enter No of Calibrators in TB"); ?>' /></td>
+											</tr>
+										<?php }
+										if (SYSTEM_CONFIG['modules']['cd4']) { ?>
+											<tr id="cd4Table" class="ctlCalibrator">
+												<td align="left" style="text-align:center;">
+													<?php echo _translate("CD4"); ?><input type="hidden" name="testType[]" id="testType1" value="cd4" />
+												</td>
+												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _translate("No of In-House Controls in CD4"); ?>' title='<?php echo _translate("Please enter No of In-House Controls in CD4"); ?>' />
+												</td>
+												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _translate("No of Manufacturer Controls in CD4"); ?>' title='<?php echo _translate("Please enter No of Manufacturer Controls in CD4"); ?>' />
+												</td>
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _translate("No of Calibrators in CD4"); ?>' title='<?php echo _translate("Please enter No of Calibrators in CD4"); ?>' /></td>
 											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>
