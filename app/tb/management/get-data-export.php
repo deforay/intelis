@@ -48,9 +48,7 @@ try {
 
      $tableName = "form_tb";
      $primaryKey = "tb_id";
-     /* Array of database columns which should be read and sent back to DataTables. Use a space where
-     * you want to insert a non-database field (for example a counter or static image)
-     */
+
      $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $sampleCode = 'sample_code';
