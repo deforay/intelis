@@ -232,13 +232,14 @@ try {
                         WHERE $whereCondition DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
                         GROUP BY `collection_date`
                         ORDER BY `collection_date`";
+                  //      echo $accessionQuery; die;
     $tRes = $db->rawQuery($accessionQuery); //overall result
     $tResult = [];
     foreach ($tRes as $tRow) {
         $receivedTotal += $tRow['count'];
         $tResult[] = array('total' => $tRow['count'], 'date' => $tRow['collection_date']);
     }
-
+//echo $receivedTotal; die;
     //Samples Tested
     if ($table == "form_vl") {
         $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
