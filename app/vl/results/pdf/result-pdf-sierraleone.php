@@ -584,9 +584,21 @@ if (!empty($result)) {
           $page++;
      }
      if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
+          $sampleCode = 'sample_code';
+          if ($_SESSION['instance']['type'] == 'remoteuser') {
+               $sampleCode = 'remote_sample_code';
+               if (!empty($result['remote_sample']) && $result['remote_sample'] == 'yes') {
+                    $sampleCode = 'remote_sample_code';
+               } else {
+                    $sampleCode = 'sample_code';
+               }
+          }
+          $sampleId = (isset($result[$sampleCode]) && !empty($result[$sampleCode])) ? ' sample id ' . $result[$sampleCode] : '';
+          $patientId = (isset($result['patient_art_no']) && !empty($result['patient_art_no'])) ? ' patient id ' . $result['patient_art_no'] : '';
+          $concat = (!empty($sampleId) && !empty($patientId)) ? ' and' : '';
           //Add event log
           $eventType = 'print-result';
-          $action = $_SESSION['userName'] . ' generated the test result PDF with Patient ID/Code ' . $result['patient_art_no'];
+          $action = $_SESSION['userName'] . ' generated the test result PDF with ' . $sampleId . $concat . $patientId;
           $resource = 'print-test-result';
           $data = array(
                'event_type' => $eventType,

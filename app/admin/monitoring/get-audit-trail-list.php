@@ -18,9 +18,7 @@ try {
      $tableName = "activity_log";
      $primaryKey = "log_id";
 
-     /* Array of database columns which should be read and sent back to DataTables. Use a space where
-     * you want to insert a non-database field (for example a counter or static image)
-     */
+
      $aColumns = array('action', 'event_type', 'r.display_name', "DATE_FORMAT(date_time,'%d-%b-%Y')");
      $orderColumns = array('action', 'event_type', 'r.display_name', 'date_time');
 

@@ -26,9 +26,7 @@ $vlsmFormId = (int) $general->getGlobalConfig('vl_form');
 $systemType = (string) $general->getSystemConfig('sc_user_type');
 
 
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
@@ -196,7 +194,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['facility_name'];
      $row[] = $aRow['sample_name'];
      $row[] = $aRow['result'];
-     $row[] = DateUtility::humanReadableDateFormat($aRow['vl.last_modified_datetime'] ?? '', true);
+     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
      $row[] = $status;
      //$row[] = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Result</a>';
 

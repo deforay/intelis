@@ -7,9 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 $tableName = "user_details";
 $primaryKey = "user_id";
 
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
-         * you want to insert a non-database field (for example a counter or static image)
-        */
+
 
 $aColumns = array('ud.user_name', 'ud.login_id', 'ud.email', 'r.role_name', 'ud.status');
 
@@ -42,12 +40,7 @@ if (isset($_POST['iSortCol_0'])) {
     $sOrder = substr_replace($sOrder, "", -2);
 }
 
-/*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-        */
+
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {

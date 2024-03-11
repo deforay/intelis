@@ -20,9 +20,7 @@ try {
      $general = ContainerRegistry::get(CommonService::class);
      $primaryKey = "api_track_id";
 
-     /* Array of database columns which should be read and sent back to DataTables. Use a space where
-     * you want to insert a non-database field (for example a counter or static image)
-     */
+
      $aColumns = array('transaction_id', 'number_of_records', 'request_type', 'test_type', "api_url", "DATE_FORMAT(requested_on,'%d-%b-%Y')");
      $orderColumns = array('transaction_id', 'number_of_records', 'request_type', 'test_type', 'api_url', 'requested_on');
 
