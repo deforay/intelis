@@ -6,6 +6,7 @@ use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\SystemService;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -48,6 +49,7 @@ if (!empty($sInfo['approved_by'])) {
 $configMachineQuery = "SELECT * FROM instrument_machines WHERE instrument_id=?";
 $configMachineInfo = $db->rawQuery($configMachineQuery, [$id]);
 $configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id=?";
+
 $configControlInfo = $db->rawQuery($configControlQuery, [$id]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
@@ -62,12 +64,15 @@ $eid = in_array('eid', $sInfo['supported_tests']) ? "" : "style='display:none;'"
 $covid19 = in_array('covid19', $sInfo['supported_tests']) ? "" : "style='display:none;'";
 $hepatitis = in_array('hapatitis', $sInfo['supported_tests']) ? "" : "style='display:none;'";
 $tb = in_array('tb', $sInfo['supported_tests']) ? "" : "style='display:none;'";
+$cd4 = in_array('cd4', $sInfo['supported_tests']) ? "" : "style='display:none;'";
 $genericTests = in_array('generic-tests', $sInfo['supported_tests']) ? "" : "style='display:none;'";
 $lowerText = "";
 if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['supported_tests'])) {
 	$lowerText = "style='display:none;'";
 }
 $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
+$testTypeList = SystemService::getActiveModules(true);
+
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -137,7 +142,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 									</label>
 									<div class="col-lg-7">
 										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
-											<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
+											<!--<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 												<option value='vl' <?php echo (in_array('vl', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _translate("Viral Load"); ?></option>
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
@@ -154,7 +159,10 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 												<option value='generic-tests' <?php echo (in_array('generic-tests', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _translate("Other Lab Tests"); ?></option>
-											<?php } ?>
+											<?php } ?>--> 
+											<?php foreach($testTypeList as $testType){ ?>
+												<option value="<?= $testType; ?>" <?php echo (in_array($testType, $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?= ucfirst($testType); ?></option>
+												<?php } ?>
 										</select>
 									</div>
 								</div>
@@ -354,6 +362,23 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 													</select>
 												</td>
 											</tr>
+											<?php }
+											 if (SYSTEM_CONFIG['modules']['cd4']) { ?>
+											<tr class="cd4-access user-access-form" style="<?php echo in_array('cd4', $sInfo['supported_tests']) ? "" : "display:none;"; ?>">
+												<td align="left" style="text-align:center;">
+													<?php echo _translate("CD4"); ?><input type="hidden" name="userTestType[]" id="testType1" value="cd4" />
+												</td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByCd4" class="form-control user-cd4 select2" title='<?php echo _translate("Please enter Reviewed By for CD4 Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['cd4'], '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByCd4" class="form-control user-cd4 select2" title='<?php echo _translate("Please enter Approved By for CD4 Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['cd4'], '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>
 											<tr class="generic-access user-access-form" style="<?php echo in_array('generic', $sInfo['supported_tests']) ? "" : "display:none;"; ?>">
@@ -455,6 +480,18 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 												<td><input type="text" value="<?php echo $configControl['tb']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _translate('No of Manufacturer Controls in TB'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in TB'); ?>" />
 												</td>
 												<td><input type="text" value="<?php echo $configControl['tb']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _translate('No of Calibrators in TB'); ?>" title="<?php echo _translate('Please enter No of Calibrators in TB'); ?>" /></td>
+											</tr>
+										<?php }
+										if ((SYSTEM_CONFIG['modules']['cd4'])) { ?>
+											<tr id="cd4Table" class="ctlCalibrator" <?php echo $cd4; ?>>
+												<td align="left">
+													<?php echo _translate("CD4"); ?><input type="hidden" name="testType[]" id="testType1" value="cd4" />
+												</td>
+												<td><input type="text" value="<?php echo $configControl['cd4']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _translate('No of In-House Controls in CD4'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in CD4'); ?>" />
+												</td>
+												<td><input type="text" value="<?php echo $configControl['cd4']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _translate('No of Manufacturer Controls in CD4'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in CD4'); ?>" />
+												</td>
+												<td><input type="text" value="<?php echo $configControl['cd4']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _translate('No of Calibrators in CD4'); ?>" title="<?php echo _translate('Please enter No of Calibrators in CD4'); ?>" /></td>
 											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>

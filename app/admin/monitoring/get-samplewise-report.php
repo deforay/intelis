@@ -20,6 +20,11 @@ try {
 
 
     $testType = $_POST['testType'] ?? 'vl';
+    $resultColumn = "result";
+    if($testType == "cd4")
+    {
+        $resultColumn = "cd4_result";
+    }
 
     $table = TestsService::getTestTableName($testType);
     $testName = TestsService::getTestName($testType);
@@ -53,7 +58,7 @@ try {
         'vl.request_created_datetime',
         'vl.sample_received_at_lab_datetime',
         'b.request_created_datetime',
-        'vl.result',
+        "vl.$resultColumn",
         'vl.sample_tested_datetime',
         'vl.result_approved_datetime',
         'vl.result_sent_to_source_datetime',
@@ -127,7 +132,7 @@ try {
                     vl.request_created_datetime,
                     vl.sample_received_at_lab_datetime,
                     b.request_created_datetime as batch_request_created,
-                    vl.result,vl.result_reviewed_datetime,
+                    vl.$resultColumn,vl.result_reviewed_datetime,
                     vl.result_approved_datetime,
                     vl.result_sent_to_source_datetime,
                     vl.last_modified_datetime

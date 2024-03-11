@@ -289,3 +289,8 @@ JOIN (
     GROUP BY link, parent_id
 ) s2 ON s1.link = s2.link AND s1.parent_id = s2.parent_id
 WHERE s1.id > s2.min_id;
+
+
+-- Jeyabanu 08-Mar-2024
+UPDATE `s_app_menu` SET `link` = '/covid-19/reference/covid19-sample-type.php' WHERE `s_app_menu`.`link` = '/covid-19/reference/eid-sample-type.php';
+

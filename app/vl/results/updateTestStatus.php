@@ -68,10 +68,22 @@ try {
         $db->update($tableName, $status);
         $result = $id[$i];
 
+        $sampleCode = 'sample_code';
+        if ($_SESSION['instance']['type'] == 'remoteuser') {
+            $sampleCode = 'remote_sample_code';
+            if (!empty($vlRow['remote_sample']) && $vlRow['remote_sample'] == 'yes') {
+                $sampleCode = 'remote_sample_code';
+            } else {
+                $sampleCode = 'sample_code';
+            }
+        }
 
-        //Add event log
+        $sampleId = (isset($vlRow[$sampleCode]) && !empty($vlRow[$sampleCode])) ? ' sample id ' . $vlRow[$sampleCode] : '';
+        $patientId = (isset($vlRow['patient_art_no']) && !empty($vlRow['patient_art_no'])) ? ' patient id ' . $vlRow['patient_art_no'] : '';
+        $concat = (!empty($sampleId) && !empty($patientId)) ? ' and' : '';
+        //Add event logs
         $eventType = 'update-sample-status';
-        $action = $_SESSION['userName'] . ' updated VL samples status';
+        $action = $_SESSION['userName'] . ' updated VL samples status for the ' . $sampleId . $concat .  $patientId;
         $resource = 'vl-results';
         $general->activityLog($eventType, $action, $resource);
         echo $result;

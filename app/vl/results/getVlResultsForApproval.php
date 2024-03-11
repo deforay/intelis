@@ -194,7 +194,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['facility_name'];
      $row[] = $aRow['sample_name'];
      $row[] = $aRow['result'];
-     $row[] = DateUtility::humanReadableDateFormat($aRow['vl.last_modified_datetime'] ?? '', true);
+     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
      $row[] = $status;
      //$row[] = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Result</a>';
 

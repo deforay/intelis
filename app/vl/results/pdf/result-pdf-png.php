@@ -292,11 +292,7 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td colspan="4" style="line-height:16px;"></td>';
      $html .= '</tr>';
-     $html .= '<tr>';
-     $html .= '<td colspan="3"></td>';
-     $html .= '<td rowspan="3" style="text-align:left;">' . $smileyContent . '</td>';
-     $html .= '</tr>';
-     $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;VIRAL LOAD RESULT (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '</td></tr>';
+     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;VIRAL LOAD RESULT (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '</td><td>' . $smileyContent . '</td></tr>';
      $html .= '<tr><td colspan="3"></td></tr>';
      $html .= '</table>';
      $html .= '</td>';
@@ -385,9 +381,21 @@ if (!empty($result)) {
           $page++;
      }
      if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
+          $sampleCode = 'sample_code';
+          if ($_SESSION['instance']['type'] == 'remoteuser') {
+               $sampleCode = 'remote_sample_code';
+               if (!empty($result['remote_sample']) && $result['remote_sample'] == 'yes') {
+                    $sampleCode = 'remote_sample_code';
+               } else {
+                    $sampleCode = 'sample_code';
+               }
+          }
+          $sampleId = (isset($result[$sampleCode]) && !empty($result[$sampleCode])) ? ' sample id ' . $result[$sampleCode] : '';
+          $patientId = (isset($result['patient_art_no']) && !empty($result['patient_art_no'])) ? ' patient id ' . $result['patient_art_no'] : '';
+          $concat = (!empty($sampleId) && !empty($patientId)) ? ' and' : '';
           //Add event log
           $eventType = 'print-result';
-          $action = $_SESSION['userName'] . ' printed the test result with Patient ID/Code ' . $result['patient_art_no'];
+          $action = $_SESSION['userName'] . ' printed the test result with ' . $sampleId . $concat . $patientId;
           $resource = 'print-test-result';
           $data = array(
                'event_type' => $eventType,
