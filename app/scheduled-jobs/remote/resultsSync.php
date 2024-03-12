@@ -257,7 +257,7 @@ try {
 
         $cd4LabResult = $db->rawQuery($cd4Query);
 
-        $url = $remoteUrl . '/remote/remote/testResults.php';
+        $url = $remoteUrl . '/remote/remote/cd4-test-results.php';
 
         $payload = [
             "labId" => $labId,

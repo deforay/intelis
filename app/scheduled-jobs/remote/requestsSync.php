@@ -1056,7 +1056,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
  $request = [];
  if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
  
-     $url = $remoteUrl . '/remote/remote/getRequests.php';
+     $url = $remoteUrl . '/remote/remote/cd4-test-requests.php';
      $payload = array(
          'labId' => $labId,
          'module' => 'cd4',
@@ -1084,10 +1084,10 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
          $removeKeys = array(
              'cd4_id',
              'sample_batch_id',
-             'result_value_log',
-             'result_value_absolute',
-             'result_value_absolute_decimal',
-             'result_value_text',
+            // 'result_value_log',
+            // 'result_value_absolute',
+            // 'result_value_absolute_decimal',
+            // 'result_value_text',
              'cd4_result',
              'sample_tested_datetime',
              'sample_received_at_lab_datetime',
@@ -1136,13 +1136,13 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                      'is_sample_rejected',
                      'reason_for_sample_rejection',
                      'rejection_on',
-                     'result_value_absolute',
-                     'result_value_absolute_decimal',
-                     'result_value_text',
+                    // 'result_value_absolute',
+                    // 'result_value_absolute_decimal',
+                   //  'result_value_text',
                      'cd4_result',
-                     'result_value_log',
-                     'result_value_hiv_detection',
-                     'reason_for_failure',
+                    // 'result_value_log',
+                    // 'result_value_hiv_detection',
+                     //'reason_for_failure',
                      'result_reviewed_by',
                      'result_reviewed_datetime',
                      'cd4_focal_person',

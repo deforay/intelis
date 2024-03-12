@@ -59,6 +59,7 @@ $eidDataToSync = [];
 $covid19DataToSync = [];
 $hepatitisDataToSync = [];
 $tbDataToSync = [];
+$cd4DataToSync = [];
 
 
 $payload = array(
@@ -310,6 +311,27 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
     );
 }
 
+if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
+    $payload['cd4RejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_cd4_sample_rejection_reasons');
+    $payload['cd4SampleTypesLastModified'] = $general->getLastModifiedDateTime('r_cd4_sample_types');
+    $payload['cd4ReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_cd4_test_reasons');
+
+    // This array is used to sync data that we will later receive from the API call
+    $vlDataToSync = array(
+        'cd4SampleTypes' => array(
+            'primaryKey' => 'sample_id',
+            'tableName' => 'r_cd4_sample_types',
+        ),
+        'cd4RejectionReasons' => array(
+            'primaryKey' => 'rejection_reason_id',
+            'tableName' => 'r_cd4_sample_rejection_reasons',
+        ),
+        'cd4ReasonForTesting' => array(
+            'primaryKey' => 'test_reason_id',
+            'tableName' => 'r_cd4_test_reasons',
+        )
+    );
+}
 
 $dataToSync = array_merge(
     $commonDataToSync,
@@ -318,7 +340,8 @@ $dataToSync = array_merge(
     $eidDataToSync,
     $covid19DataToSync,
     $hepatitisDataToSync,
-    $tbDataToSync
+    $tbDataToSync,
+    $cd4DataToSync
 );
 
 
