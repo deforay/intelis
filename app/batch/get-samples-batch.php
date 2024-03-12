@@ -68,8 +68,8 @@ if (!empty($_POST['sName'])) {
     $swhere[] = $where[] = " vl.$sampleTypeColumn='" . $_POST['sName'] . "'";
 }
 
-if (!empty($_POST['genericTestType'])) {
-    $swhere[] = $where[] = " vl.test_type = '" . $_POST['genericTestType'] . "'";
+if (!empty($_POST['testType'])) {
+    $swhere[] = $where[] = " vl.test_type = '" . $_POST['testType'] . "'";
 }
 
 if (!empty($_POST['sampleCollectionDate'])) {
