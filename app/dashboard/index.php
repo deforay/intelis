@@ -514,7 +514,7 @@ require_once APPLICATION_PATH . '/header.php';
 		$("#myTabContent div:first-child").addClass("active");
 		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
 
-		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
+		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate,#cd4SampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
@@ -1027,7 +1027,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 		$.post("/cd4/management/get-cd4-monthly-threshold-report.php", {
 				targetType: '1',
-				sampleTestDate: $("#cd4SampleCollectionDate").val(),
+				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
 			function(data) {
 				var data = JSON.parse(data);

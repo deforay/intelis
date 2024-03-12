@@ -128,6 +128,7 @@ try {
         $configFileEID = $configDir . DIRECTORY_SEPARATOR . "eid" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
         $configFileCovid19 = $configDir . DIRECTORY_SEPARATOR . "covid-19" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
         $configFileHepatitis = $configDir . DIRECTORY_SEPARATOR . "hepatitis" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
+        $configFileCD4 = $configDir . DIRECTORY_SEPARATOR . "cd4" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
 
 
         if (!file_exists($configDir)) {
@@ -154,6 +155,12 @@ try {
 
         if (!file_exists($configFileHepatitis)) {
             $fp = fopen($configFileHepatitis, 'w');
+            fwrite($fp, '');
+            fclose($fp);
+        }
+
+        if (!file_exists($configFileCD4)) {
+            $fp = fopen($configFileCD4, 'w');
             fwrite($fp, '');
             fclose($fp);
         }

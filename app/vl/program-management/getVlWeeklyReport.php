@@ -54,12 +54,7 @@ if (isset($_POST['iSortCol_0'])) {
   $sOrder = substr_replace($sOrder, "", -2);
 }
 
-/*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-        */
+
 $sWhere = [];
 $sWhere[] = " vl.lab_id is NOT NULL AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
