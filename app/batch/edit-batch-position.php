@@ -21,6 +21,7 @@ $batchService = ContainerRegistry::get(BatchService::class);
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
+$type = $_GET['type'];
 $testType = $_GET['type'];
 
 $testTableData = TestsService::getAllData($testType);
@@ -190,7 +191,7 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 						<input type="hidden" name="sortOrders" id="sortOrders" value="<?= implode(",", $displayOrder); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-						<a href="batches.php?type=<?php echo $testType; ?>" class="btn btn-default"> Cancel</a>
+						<a href="batches.php?type=<?php echo $type; ?>" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
