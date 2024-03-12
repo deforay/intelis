@@ -3,6 +3,8 @@
     "description": "Open Source LIS",
     "homepage": "https://github.com/deforay/vlsm",
     "type": "project",
+    "license": "AGPL-3.0-or-later",
+    "version": "5.2.9",
     "authors": [
         {
             "name": "Deforay",
