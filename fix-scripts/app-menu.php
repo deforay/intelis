@@ -32,7 +32,7 @@ $insertHeader = $db->rawQuery("INSERT INTO `s_app_menu` (`id`, `module`, `sub_mo
 /** Insert Submenu Of CD4 header */
 $headerId = $db->getInsertId();
 
-$insertRequestMenu = $db->rawQuery("INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'Request Management', NULL, NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeviewrequest', $headerId, 1, 'active', CURRENT_TIMESTAMP);");
+$insertRequestMenu = $db->rawQuery("INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'Request Management', NULL, NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview request', $headerId, 1, 'active', CURRENT_TIMESTAMP);");
 $requestMenuId = $db->getInsertId();
 
 $insertResultMenu = $db->rawQuery("INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'no', 'Test Result Management', NULL, NULL, 'always', 'fa-solid fa-list-check', 'yes', 'treeview test', $headerId, 2, 'active', CURRENT_TIMESTAMP)");
