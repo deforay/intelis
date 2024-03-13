@@ -368,4 +368,20 @@ class MiscUtility
     {
         return array_values(array_diff($array, $removeArray));
     }
+
+    public static function convertEmptyStringToNull($array)
+    {
+        foreach ($array as $key => &$value) {
+            if (is_array($value)) {
+                // If the value is an array, apply the function recursively
+                $value = self::convertEmptyStringToNull($value);
+            } else {
+                // If the value is an empty string, set it to null
+                if ($value === '') {
+                    $value = null;
+                }
+            }
+        }
+        return $array;
+    }
 }
