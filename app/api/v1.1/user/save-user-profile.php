@@ -136,6 +136,7 @@ try {
         }
     }
     $id = false;
+    $data = MiscUtility::convertEmptyStringToNull($data);
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
         $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
