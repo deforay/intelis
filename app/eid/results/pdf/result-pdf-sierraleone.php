@@ -286,7 +286,7 @@ if (!empty($result)) {
         $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['sample_requestor_name']) . '</td>';
     } else {
         $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
-    }    
+    }
     if (!empty($result['facility_mobile_numbers'])) {
         $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_mobile_numbers'] . '</td>';
     } else {
@@ -411,23 +411,23 @@ if (!empty($result)) {
     $html .= '<td colspan="3" style="line-height:22px;"></td>';
     $html .= '</tr>';
 
-    if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-        $html .= '</tr>';
+    // if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
+    //     $html .= '<tr>';
+    //     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
+    //     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+    //     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+    //     $html .= '</tr>';
 
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-        if (!empty($testUserSignaturePath) && MiscUtility::imageExists($testUserSignaturePath)) {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
-        } else {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-        }
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-        $html .= '</tr>';
-    }
+    //     $html .= '<tr>';
+    //     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
+    //     if (!empty($testUserSignaturePath) && MiscUtility::imageExists($testUserSignaturePath)) {
+    //         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
+    //     } else {
+    //         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+    //     }
+    //     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+    //     $html .= '</tr>';
+    // }
 
     if (!empty($reviewedBy)) {
 
@@ -442,7 +442,7 @@ if (!empty($result)) {
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
         if (!empty($reviewedBySignaturePath) && MiscUtility::imageExists($reviewedBySignaturePath)) {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:150px;" /></td>';
         } else {
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         }
@@ -464,7 +464,7 @@ if (!empty($result)) {
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
         if (!empty($approvedBySignaturePath) && MiscUtility::imageExists($approvedBySignaturePath)) {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:50px;" /></td>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:150px;" /></td>';
         } else {
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         }

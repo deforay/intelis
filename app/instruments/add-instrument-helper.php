@@ -1,15 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -38,8 +34,10 @@ try {
                 $configFile = $configDir . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
                 if (!file_exists($configFile)) {
                     $fp = fopen($configFile, 'w');
-                    fwrite($fp, '');
-                    fclose($fp);
+                    if ($fp !== false && !empty($fp)) {
+                        fwrite($fp, '');
+                        fclose($fp);
+                    }
                 }
             }
         }
