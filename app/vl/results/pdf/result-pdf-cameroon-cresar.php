@@ -28,11 +28,20 @@ if (!empty($result)) {
                $testedBy = $testedByRes['user_name'];
           }
      }
+
      $reviewedBy = '';
+     $reviewedByRes = [];
      if (!empty($result['result_reviewed_by'])) {
           $reviewedByRes = $usersService->getUserInfo($result['result_reviewed_by'], array('user_name', 'user_signature'));
           if ($reviewedByRes) {
                $reviewedBy = $reviewedByRes['user_name'];
+          }
+     }else{
+          if(!empty($result['defaultReviewedBy'])){
+               $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
+               if ($reviewedByRes) {
+                   $reviewedBy = $reviewedByRes['user_name'];
+               }
           }
      }
 
@@ -45,7 +54,21 @@ if (!empty($result)) {
           }
      }
 
-     $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = null;
+     $resultApprovedBy = '';
+     $approvedByRes = [];
+     if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
+          $resultApprovedBy = ($result['approvedBy']);
+          $approvedByRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
+     } else {
+          if(!empty($result['defaultApprovedBy'])){
+               $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+               if ($approvedByRes) {
+                   $resultApprovedBy = $approvedByRes['user_name'];
+               }
+          }
+     }
+
+     $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = $approvedSignaturePath = null;
      if (!empty($testedByRes['user_signature'])) {
           $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
      }
@@ -55,30 +78,8 @@ if (!empty($result)) {
      if (!empty($revisedByRes['user_signature'])) {
           $revisedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];
      }
-
-     $resultApprovedBy = '';
-     $userSignaturePath = null;
-     if (!empty($result['result_approved_by'])) {
-          $resultApprovedByRes = $usersService->getUserInfo($result['result_approved_by'], array('user_name', 'user_signature'));
-          if ($resultApprovedByRes) {
-               $resultApprovedBy = $resultApprovedByRes['result_approved_by'] ?? null;
-          }
-          if (!empty($resultApprovedByRes['user_signature'])) {
-               $userSignaturePath =  $resultApprovedByRes['user_signature'];
-          }
-     }
-
-     if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
-          $resultApprovedBy = ($result['approvedBy']);
-          $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
-     } else {
-          $resultApprovedBy  = '';
-     }
-
-     $userSignaturePath = null;
-     if (!empty($userRes['user_signature'])) {
-          //$userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
-          $userSignaturePath = $userRes['user_signature'];
+     if (!empty($approvedByRes['user_signature'])) {
+          $approvedSignaturePath = $approvedByRes['user_signature'];
      }
      $_SESSION['aliasPage'] = $page;
      if (empty($result['labName'])) {
@@ -301,8 +302,8 @@ if (!empty($result)) {
           $signImg = '';
      }
 
-     if (!empty($userSignaturePath) && $pdf->imageExists($userSignaturePath)) {
-          $signImgApproved = '<img src="' . $userSignaturePath . '" style="width:100px;" />';
+     if (!empty($approvedSignaturePath) && $pdf->imageExists($approvedSignaturePath)) {
+          $signImgApproved = '<img src="' . $approvedSignaturePath . '" style="width:100px;" />';
      } else {
           $signImgApproved = '';
      }

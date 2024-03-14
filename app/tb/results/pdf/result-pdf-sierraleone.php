@@ -196,15 +196,15 @@ if (!empty($requestResult)) {
         }
 
         $userApprovedRes = [];
+        $userApprovedSignaturePath = null;
         if (isset($result['result_approved_by']) && trim((string) $result['result_approved_by']) != '') {
             $userApprovedRes = $usersService->getUserInfo($result['result_approved_by'], array('user_signature', 'user_name'));
             $resultApprovedBy = ($userApprovedRes['user_name']);
         } else {
             $resultApprovedBy  = '';
         }
-        $userApprovedSignaturePath = null;
         if (!empty($userApprovedRes['user_signature'])) {
-            $userApprovedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userApprovedRes['user_signature'];
+            $userApprovedSignaturePath = $userApprovedRes['user_signature'];
         }
         $tbResult = '';
         $smileyContent = '';

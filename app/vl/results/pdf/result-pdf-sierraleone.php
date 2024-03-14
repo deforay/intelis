@@ -27,6 +27,7 @@ if (!empty($result)) {
           }
      }
      $reviewedBy = '';
+     $reviewedByRes = [];
      if (!empty($result['result_reviewed_by'])) {
           $reviewedByRes = $usersService->getUserInfo($result['result_reviewed_by'], array('user_name', 'user_signature'));
           if ($reviewedByRes) {
