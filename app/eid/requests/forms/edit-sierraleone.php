@@ -896,8 +896,12 @@ $aResult = $db->query($aQuery);
     });
 
     function getMachine(value) {
-        $.post("/instruments/get-machine-names-by-instrument.php", {
-                instrumentId: value,
+        if (value !== '') {
+            var platForm = value.split("##");
+            var testingPlatform = platForm[0];
+            var instrumentId = platForm[1];
+            $.post("/instruments/get-machine-names-by-instrument.php", {
+                instrumentId: testingPlatform,
                 machine: <?php echo !empty($eidInfo['import_machine_name']) ? $eidInfo['import_machine_name'] : '""'; ?>,
                 testType: 'eid'
             },
@@ -907,6 +911,7 @@ $aResult = $db->query($aQuery);
                     $('#machineName').append(data);
                 }
             });
+        }
     }
 
     function checkRejectionReason() {

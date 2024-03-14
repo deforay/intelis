@@ -429,6 +429,7 @@ try {
         }
 
         $id = false;
+        $eidData = MiscUtility::convertEmptyStringToNull($eidData);
         if (!empty($data['eidSampleId'])) {
             $db->where('eid_id', $data['eidSampleId']);
             $id = $db->update('form_eid', $eidData);
