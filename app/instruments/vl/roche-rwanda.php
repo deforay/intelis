@@ -89,7 +89,7 @@ try {
             $absDecimalVal = "";
             $absVal = "";
             $logVal = "";
-            $txtVal = "";
+            $txtVal = null;
             $resultFlag = "";
             $testingDate = "";
             $lotNumberVal = "";

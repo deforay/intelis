@@ -114,11 +114,11 @@ try {
             } else if ((int)$row[$absValCol] > 0) {
                 $absDecimalVal = $absVal = (int)$row[$absValCol];
                 $logVal = round(log10($absVal), 4);
-                $txtVal = "";
+                $txtVal = null;
             } else {
                 $absDecimalVal = $absVal = "";
                 $logVal = "";
-                $txtVal = "";
+                $txtVal = null;
             }
 
 
