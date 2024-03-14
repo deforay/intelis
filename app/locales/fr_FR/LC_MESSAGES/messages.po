@@ -15509,7 +15509,7 @@ msgid "Imported Results"
 msgstr "Résultats importés"
 
 #: import-result/imported-results.php:174
-msgid "Sample ID/ID not from VLSM"
+msgid "Sample ID not from VLSM"
 msgstr "ID de l'échantillon/ID ne provenant pas du VLSM"
 
 #: import-result/imported-results.php:177
@@ -15535,8 +15535,8 @@ msgstr ""
 "sélectionné"
 
 #: import-result/imported-results.php:200
-msgid "Sample ID/ID"
-msgstr "ID/ID de l'échantillon"
+msgid "Sample ID"
+msgstr "ID de l'échantillon"
 
 #: import-result/imported-results.php:209
 msgid "Clinic/Site Name"

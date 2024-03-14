@@ -14291,7 +14291,7 @@ msgid "Imported Results"
 msgstr ""
 
 #: import-result/imported-results.php:172
-msgid "Sample ID/ID not from VLSM"
+msgid "Sample ID not from VLSM"
 msgstr ""
 
 #: import-result/imported-results.php:175
@@ -14315,7 +14315,7 @@ msgid "Only accepts samples that do not have status field already selected"
 msgstr ""
 
 #: import-result/imported-results.php:198
-msgid "Sample ID/ID"
+msgid "Sample ID"
 msgstr ""
 
 #: import-result/imported-results.php:207

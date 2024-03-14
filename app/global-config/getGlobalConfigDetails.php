@@ -115,9 +115,9 @@ $output = array(
 foreach ($rResult as $aRow) {
     $row = [];
     $row[] = $aRow['display_name'];
-    if ($aRow['display_name'] == 'Patient ART No. Date' && $aRow['value'] == 'no') {
+    if ($aRow['display_name'] == 'Patient ART Number Date' && $aRow['value'] == 'no') {
         $aRow['value'] = 'Month and Year';
-    } elseif ($aRow['display_name'] == 'Patient ART No. Date' && $aRow['value'] == 'yes') {
+    } elseif ($aRow['display_name'] == 'Patient ART Number Date' && $aRow['value'] == 'yes') {
         $aRow['value'] = 'Full Date';
     }
     if ($aRow['name'] == 'vl_form' && trim((string) $aRow['value']) != '') {

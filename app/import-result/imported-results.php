@@ -170,17 +170,17 @@ foreach ($rejectionTypeResult as $type) {
 						<div class="box-header without-border">
 							<div class="box-header with-border">
 								<ul style="list-style: none;float: right;">
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#e8000b;"></em>
-										<?= _translate("Sample ID/ID not from VLSM"); ?>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle" style="color:#e8000b;"></em>
+										<?= _translate("Sample ID not from VLSM"); ?>
 									</li>
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#86c0c8;"></em>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle" style="color:#FFC300;"></em>
 										<?= _translate("Result already exists for this sample"); ?>
 									</li>
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#337ab7;"></em>
-										<?= _translate("Result for sample from VLSM"); ?>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle" style="color:#337ab7;"></em>
+										<?= _translate("Result for Sample ID from VLSM"); ?>
 									</li>
-									<li style="float:left;margin-right:20px;"><em class="fa-solid fa-exclamation" style="color:#7d8388;"></em>
-										<?= _translate("Control"); ?>
+									<li style="float:left;margin-right:20px;"><em class="fa-solid fa-exclamation-circle" style="color:#E0B0FF;"></em>
+										<?= _translate("Control/Calibrator"); ?>
 									</li>
 								</ul>
 							</div>
@@ -197,7 +197,7 @@ foreach ($rejectionTypeResult as $type) {
 								<thead>
 									<tr>
 										<th style="width: 23%;">
-											<?= _translate("Sample ID/ID"); ?>
+											<?= _translate("Sample ID"); ?>
 										</th>
 										<th style="width: 11%;">
 											<?= _translate("Sample Collection Date"); ?>

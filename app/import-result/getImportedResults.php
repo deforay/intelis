@@ -257,16 +257,16 @@ foreach ($rResult as $aRow) {
     //if($aRow['sample_type']=='s' || $aRow['sample_type']=='S'){
     if ($aRow['sample_details'] == 'Result already exists') {
         $rsDetails = 'Existing Result';
-        $color = '<span style="color:#86c0c8;font-weight:bold;"><em class="fa-solid fa-exclamation"></em></span>';
+        $color = '<span style="color:#FFC300;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
     }
     if ($aRow['sample_details'] == 'New Sample') {
         $rsDetails = 'Unknown Sample';
-        $color = '<span style="color:#e8000b;font-weight:bold;"><em class="fa-solid fa-exclamation"></em></span>';
+        $color = '<span style="color:#e8000b;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
     }
     //if($aRow['sample_details']==''){
     else {
         $rsDetails = 'Result for Sample';
-        $color = '<span style="color:#337ab7;font-weight:bold;"><em class="fa-solid fa-exclamation"></em></span>';
+        $color = '<span style="color:#337ab7;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
     }
     //}
     //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['temp_sample_id'] . '"  value="' . $aRow['temp_sample_id'] . '" onclick="toggleTest(this);"  />';
@@ -294,7 +294,7 @@ foreach ($rResult as $aRow) {
         }
     }
     $controlName .= '</select><br><br>';
-    $row[] = '<input style="width:90%;" type="text" name="sampleCode" id="sampleCode' . $aRow['temp_sample_id'] . '" title="' . $rsDetails . '" value="' . $aRow['sample_code'] . '" onchange="updateSampleCode(this,' . $sampleCode . ',' . $aRow['temp_sample_id'] . ');"/>&nbsp;&nbsp;' . $color;
+    $row[] = '<input style="width:90%;" type="text" name="sampleCode" id="sampleCode' . $aRow['temp_sample_id'] . '" title="' . $rsDetails . '" value="' . $aRow['sample_code'] . '" onchange="updateSampleCode(this,' . $sampleCode . ',' . $aRow['temp_sample_id'] . ');"/> ' . $color;
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['sample_tested_datetime'];
     $row[] = $aRow['facility_name'];

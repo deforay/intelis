@@ -25,7 +25,7 @@ $key = $arr['key'] ?? "";
 if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) != "") {
 
     $output = [];
-    $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART no.", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status");
+    $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status");
     if ($_SESSION['instance']['type'] == 'standalone') {
         $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
     }
