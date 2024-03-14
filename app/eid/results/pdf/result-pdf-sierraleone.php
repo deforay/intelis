@@ -125,24 +125,45 @@ if (!empty($result)) {
             $testedBy = $testedByRes['user_name'];
         }
     }
+    $sampleTestedDatetime = '';
+    if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+        $expStr = explode(" ", (string) $result['sample_tested_datetime']);
+        $sampleTestedDatetime = $expStr[0];
+        $result['sample_tested_datetime'] = date('d/M/Y', strtotime($expStr[0]));
+    } else {
+        $result['sample_tested_datetime'] = '';
+    }
 
     $checkDateIsset = strpos((string) $result['result_approved_datetime'], "0000-00-00");
     if ($checkDateIsset !== false) {
         $result['result_approved_datetime'] = null;
     }
+    $resultApprovedBy = '';
     if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
         $resultApprovedBy = ($result['approvedBy']);
     } else {
-        $resultApprovedBy = '';
+        if(!empty($result['defaultApprovedBy'])){
+            $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+            if ($approvedByRes) {
+                $resultApprovedBy = $approvedByRes['user_name'];
+                $result['approvedBySignature'] = $approvedByRes['user_signature'];
+                $result['result_approved_datetime'] = $sampleTestedDatetime;
+            }
+        }
     }
 
     $reviewedBy = '';
     if (!empty($result['reviewedBy'])) {
         $reviewedBy = $result['reviewedBy'];
     } else {
-        $reviewedBy = $resultApprovedBy;
-        $result['reviewedBySignature'] = $result['approvedBySignature'];
-        $result['result_reviewed_datetime'] = $result['result_approved_datetime'];
+        if(!empty($result['defaultReviewedBy'])){
+            $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
+            if ($reviewedByRes) {
+                $reviewedBy = $reviewedByRes['user_name'];
+                $result['reviewedBySignature'] = $reviewedByRes['user_signature'];
+                $result['result_reviewed_datetime'] = $sampleTestedDatetime;
+            }
+        }
     }
 
     $revisedBy = '';
@@ -166,13 +187,6 @@ if (!empty($result)) {
     }
     if (!empty($revisedByRes['user_signature'])) {
         $revisedSignaturePath = $revisedByRes['user_signature'];
-    }
-
-    if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", (string) $result['sample_tested_datetime']);
-        $result['sample_tested_datetime'] = date('d/M/Y', strtotime($expStr[0]));
-    } else {
-        $result['sample_tested_datetime'] = '';
     }
 
     if (!isset($result['child_gender']) || trim((string) $result['child_gender']) == '') {
@@ -431,9 +445,6 @@ if (!empty($result)) {
 
     if (!empty($reviewedBy)) {
 
-        $html .= '<tr>';
-        $html .= '<td colspan="3" style="line-height:22px;"></td>';
-        $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REVIEWED BY</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
