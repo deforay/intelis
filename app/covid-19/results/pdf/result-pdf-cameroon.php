@@ -233,7 +233,7 @@ if (!empty($requestResult)) {
 
         $testUserSignaturePath = null;
         if (!empty($testedByRes['user_signature'])) {
-            $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
+            $testUserSignaturePath = $testedByRes['user_signature'];
         }
 
         if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
@@ -257,7 +257,7 @@ if (!empty($requestResult)) {
         $userSignaturePath = null;
 
         if (!empty($userRes['user_signature'])) {
-            $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+            $userSignaturePath = $userRes['user_signature'];
         }
         $vlResult = '';
         $smileyContent = '';

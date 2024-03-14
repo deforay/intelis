@@ -631,14 +631,6 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6 vlResult">
-                                                                      <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) </label>
                                                                       <div class="col-lg-7 resultInputContainer">
                                                                            <input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
@@ -647,10 +639,21 @@ $sFormat = '';
                                                                            </datalist>
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 
                                                                  <div class="vlLog col-md-6">
                                                                       <label class="col-lg-5 control-label  labels" for="vlLog">Viral Load (Log) </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load result in Log" style="width:100%;" onchange="calculateLogValue(this);" />
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="reviewedBy" id="reviewedBy" class="select2 form-control labels" title="Please choose reviewed by" style="width: 100%;">
+                                                                                <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                                           </select>
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -678,22 +681,13 @@ $sFormat = '';
                                                             </div>
                                                             <hr>
                                                             <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="reviewedBy" id="reviewedBy" class="select2 form-control labels" title="Please choose reviewed by" style="width: 100%;">
-                                                                                <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
+                                                                 
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="testedBy">Tested By </label>
                                                                       <div class="col-lg-7">
@@ -702,6 +696,9 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -710,12 +707,19 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" title="Please choose Approved On" name="approvedOnDateTime" placeholder="<?= _translate("Please enter date"); ?>" style="width:100%;" />
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 
+                                                                 <div class="col-md-6 vlResult">
+                                                                      <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">

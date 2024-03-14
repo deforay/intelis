@@ -452,16 +452,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row" class="labels">Results Dispatched Date</th>
-                                            <td>
-                                                <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
-                                            </td>
+
                                             <th scope="row" class="labels">Tested By</th>
                                             <td>
                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by">
                                                     <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
+                                            <th scope="row"></th>
+                                            <td></td>
                                         </tr>
                                         <tr>
                                             <th scope="row" class="labels">Reviewed By</th>
@@ -486,12 +485,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
+                                            <th scope="row" class="labels">Results Dispatched Date</th>
+                                            <td>
+                                                <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
+                                            </td>
                                             <th scope="row" class="labels">Lab Tech. Comments </th>
                                             <td style="width:25%;">
                                                 <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Comments from the Lab Technician " title="Please Comments from the Lab Technician "></textarea>
                                             </td>
-                                            <th scope="row"></th>
-                                            <td></td>
+                                           
                                         </tr>
                                     </table>
                                 </div>

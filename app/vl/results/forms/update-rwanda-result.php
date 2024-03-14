@@ -623,15 +623,6 @@ $disable = "disabled = 'disabled'";
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date
-														Results Dispatched </label>
-													<div class="col-lg-7">
-														<input type="text" class="form-control labSection" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
-													</div>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="isSampleRejected"> Is Sample Rejected? </label>
 													<div class="col-lg-7">
 														<select name="isSampleRejected" id="isSampleRejected" class="form-control isRequired" title="Please check if sample is rejected or not">
@@ -641,6 +632,9 @@ $disable = "disabled = 'disabled'";
 														</select>
 													</div>
 												</div>
+											</div>
+											<div class="row">
+												
 												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
@@ -687,8 +681,6 @@ $disable = "disabled = 'disabled'";
 														<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?= ($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
 													</div>
 												</div>
-											</div>
-											<div class="row">
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By
 													</label>
@@ -698,6 +690,9 @@ $disable = "disabled = 'disabled'";
 														</select>
 													</div>
 												</div>
+											</div>
+											<div class="row">
+												
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On
 													</label>
@@ -721,13 +716,21 @@ $disable = "disabled = 'disabled'";
 														</select>
 													</div>
 												</div>
-											</div>
-											<br>
-											<div class="row">
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
 													<div class="col-lg-7">
 														<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" title="Please enter the Approved on" />
+													</div>
+												</div>
+											</div>
+											<br>
+											<div class="row">
+												
+												<div class="col-md-4">
+													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date
+														Results Dispatched </label>
+													<div class="col-lg-7">
+														<input type="text" class="form-control labSection" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">

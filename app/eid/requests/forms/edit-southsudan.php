@@ -476,40 +476,43 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row" class="labels">Results Dispatched Date</th>
-                                            <td>
-                                                <input type="text" value="<?php echo $eidInfo['result_dispatched_datetime']; ?>" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
-                                            </td>
                                             <th scope="row" class="labels">Tested By</th>
                                             <td>
                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by">
                                                     <?= $general->generateSelectOptions($userInfo, $eidInfo['tested_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="labels">Reviewed By</th>
                                             <td>
                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th scope="row" class="labels">Reviewed on</th>
-                                            <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter reviewed on" /></td>
                                         </tr>
                                         <tr>
+                                           
+                                            <th scope="row" class="labels">Reviewed on</th>
+                                            <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter reviewed on" /></td>
                                             <th scope="row" class="labels">Approved By</th>
                                             <td>
                                                 <select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
                                                     <?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <tr>
+                                           
                                             <th scope="row" class="labels">Approved On</th>
                                             <td style="width:25%;">
                                                 <input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _translate("Please enter date"); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" title="Please select approved on" />
                                             </td>
+                                            <th scope="row" class="labels">Results Dispatched Date</th>
+                                            <td>
+                                                <input type="text" value="<?php echo $eidInfo['result_dispatched_datetime']; ?>" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
+                                            </td>
                                         </tr>
                                         <tr>
+                                           
                                             <th scope="row" class="labels">Lab Tech. Comments </th>
                                             <td style="width:25%;">
                                                 <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Comments from the Lab Technician " title="Please Comments from the Lab Technician "><?= htmlspecialchars((string) $eidInfo['lab_tech_comments']); ?></textarea>

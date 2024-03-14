@@ -536,14 +536,7 @@ $sFormat = '';
                                                                            <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
+                                                              
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? </label>
                                                                       <div class="col-lg-7">
@@ -554,6 +547,9 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
+                                                               
 
                                                                  <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
@@ -586,18 +582,19 @@ $sFormat = '';
                                                                            </datalist>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
                                                                       <div class="col-lg-7">
                                                                            <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+                                                                           <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" <?php echo $labFieldDisabled; ?> style="width:100%; margin-bottom:5px;" onchange="calculateLogValue(this);" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">
@@ -606,16 +603,17 @@ $sFormat = '';
                                                                            <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+                                                                           <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%; margin-top:5px;">
                                                                                 <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                                            </select>
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                
 
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
@@ -623,8 +621,6 @@ $sFormat = '';
                                                                            <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" />
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
                                                                       <div class="col-lg-7">
@@ -634,6 +630,14 @@ $sFormat = '';
                                                                                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
                                                                                 <?php } ?>
                                                                            </select>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                            <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">
