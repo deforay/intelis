@@ -740,6 +740,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 															<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
 														</div>
 													</div>
+													<br>
 													<div class="col-md-4 rejectionReason" style="display:none;">
 														<label class="col-lg-5 control-label labels" for="correctiveAction">Recommended Corrective Action </label>
 														<div class="col-lg-7">
@@ -809,15 +810,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</div>
 													</div>
 												<?php } ?>
-												<div class="col-md-4 vlResult">
-													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date
-														Results Dispatched </label>
-													<div class="col-lg-7">
-														<input type="text" class="form-control labSection isRequired" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
-													</div>
-												</div>
-												</div>
-												<div class="row">
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By
 															<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
@@ -827,6 +819,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 															</select>
 														</div>
 													</div>
+												</div>
+												<div class="row">
+													
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On
 															<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
@@ -842,8 +837,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 															</select>
 														</div>
 													</div>
-												</div>
-												<div class="row">
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="approvedBy">Approved By
 															<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
@@ -853,6 +846,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 															</select>
 														</div>
 													</div>
+												</div>
+												<div class="row">
+													
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
@@ -861,6 +857,13 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 												<div class="row">
+													<div class="col-md-4 vlResult">
+														<label class="col-lg-5 control-label" for="resultDispatchedOn">Date
+															Results Dispatched </label>
+														<div class="col-lg-7">
+															<input type="text" class="form-control labSection isRequired" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
+														</div>
+													</div>
 													<div class="col-md-6">
 														<label class="col-lg-6 control-label" for="labComments">Lab Tech.
 															Comments<span class="mandatory">*</span> </label>

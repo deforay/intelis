@@ -557,12 +557,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
 
                                                             </div>
                                                             <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn"><?= _translate('Date Results Dispatched'); ?> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="<?= _translate('Result Dispatched Date'); ?>" title="<?= _translate('Please select result dispatched date'); ?>" <?php echo $labFieldDisabled; ?> />
-                                                                      </div>
-                                                                 </div>
+                                                                
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="isSampleRejected"><?= _translate('Is Sample Rejected?'); ?> </label>
                                                                       <div class="col-lg-7">
@@ -573,9 +568,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-
-                                                            <div class="row">
                                                                  <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label" for="rejectionReason"><?= _translate('Rejection Reason'); ?> </label>
                                                                       <div class="col-lg-7">
@@ -595,6 +587,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                                            </select>
                                                                       </div>
                                                                  </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                               
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlResult"><?= _translate('Viral Load Result (copies/ml)'); ?> </label>
                                                                       <div class="col-lg-7 resultInputContainer">
@@ -612,16 +608,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                                            <input type="checkbox" class="specialResults" name="invalid" value="yes" title="Please check invalid" <?php echo $labFieldDisabled; ?>> Invalid-->
                                                                       </div>
                                                                  </div>
-                                                            </div>
-
-
-                                                            <div class="row">
                                                                  <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionDate"><?= _translate('Rejection Date'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="<?= _translate('Select Rejection Date'); ?>" title="<?= _translate('Please select rejection date'); ?>" />
                                                                       </div>
                                                                  </div>
+                                                            </div>
+
+
+                                                            <div class="row">
+                                                                 
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlLog"><?= _translate('Viral Load (Log)'); ?> </label>
                                                                       <div class="col-lg-7">
@@ -634,8 +631,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                                            <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="<?= _translate('Reviewed on'); ?>" title="<?= _translate('Please enter the Reviewed on'); ?>" />
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy"><?= _translate('Reviewed By'); ?> </label>
                                                                       <div class="col-lg-7">
@@ -644,15 +639,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                                            </select>
                                                                       </div>
                                                                  </div>
-
+                                                            </div>
+                                                            <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="approvedOnDateTime"><?= _translate('Approved On'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="<?= _translate('Approved on'); ?>" title="<?= _translate('Please enter the Approved on'); ?>" />
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="approvedBy"><?= _translate('Approved By'); ?> </label>
                                                                       <div class="col-lg-7">
@@ -662,6 +656,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                                                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
                                                                                 <?php } ?>
                                                                            </select>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn"><?= _translate('Date Results Dispatched'); ?> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="<?= _translate('Result Dispatched Date'); ?>" title="<?= _translate('Please select result dispatched date'); ?>" <?php echo $labFieldDisabled; ?> />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">

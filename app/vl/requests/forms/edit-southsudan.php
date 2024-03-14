@@ -742,14 +742,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<input type="text" class="form-control dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
 													</div>
 												</div>
-												<div class="col-md-6 vlResult">
-													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
-													<div class="col-lg-7">
-														<input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
-													</div>
-												</div>
-											</div>
-											<div class="row">
 												<div class="col-md-6 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 													<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
 													<div class="col-lg-7 resultInputContainer">
@@ -759,10 +751,21 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</datalist>
 													</div>
 												</div>
+											</div>
+											<div class="row">
+												
 												<div class="col-md-6 vlLog" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 													<label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load in log" value="<?= ($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+													</div>
+												</div>
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
+													<div class="col-lg-7">
+														<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
+														</select>
 													</div>
 												</div>
 											</div>
@@ -790,22 +793,13 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 											<hr>
 											<div class="row">
-												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
-													<div class="col-lg-7">
-														<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
-															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
-														</select>
-													</div>
-												</div>
+												
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
 													</div>
 												</div>
-											</div>
-											<div class="row">
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="testedBy">Tested By </label>
 													<div class="col-lg-7">
@@ -814,6 +808,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</select>
 													</div>
 												</div>
+											</div>
+											<div class="row">
+												
 												<?php $styleStatus = '';
 												if ((($_SESSION['accessType'] == 'collection-site') && $vlQueryInfo['result_status'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) || ($sCode != '')) {
 													$styleStatus = "display:none"; ?>
@@ -827,12 +824,19 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</select>
 													</div>
 												</div>
-											</div>
-											<div class="row">
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="approvedOn">Approved On<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOnDateTime" placeholder="<?= _translate("Please enter date"); ?>" style="width:100%;" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												
+												<div class="col-md-6 vlResult">
+													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
+													<div class="col-lg-7">
+														<input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
