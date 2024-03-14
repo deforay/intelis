@@ -15,6 +15,10 @@ if (!empty($result)) {
 
      $currentTime = DateUtility::getCurrentDateTime();
 
+     $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
+     $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? '', true);
+     $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true);
+
      $testedBy = '';
      if (!empty($result['tested_by'])) {
           $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
@@ -28,6 +32,16 @@ if (!empty($result)) {
           if ($reviewedByRes) {
                $reviewedBy = $reviewedByRes['user_name'];
           }
+     } else {
+          if(!empty($result['defaultReviewedBy'])){
+               $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
+               if ($reviewedByRes) {
+                   $reviewedBy = $reviewedByRes['user_name'];
+               }
+               if(empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_reviewed_datetime'] = $result['sample_tested_datetime'] ;
+               }
+          }
      }
 
      $revisedBy = '';
@@ -39,7 +53,24 @@ if (!empty($result)) {
           }
      }
 
-     $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = null;
+     $resultApprovedBy = '';
+     $approvedByRes = [];
+     if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '' && !empty($result['result_approved_by'])) {
+          $resultApprovedBy = ($result['approvedBy']);
+          $approvedByRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
+     } else {
+          if(!empty($result['defaultApprovedBy'])){
+               $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+               if ($approvedByRes) {
+                   $resultApprovedBy = $approvedByRes['user_name'];
+               }
+               if(empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_approved_datetime'] = $result['sample_tested_datetime'] ;
+               }
+          }
+     }
+
+     $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = $approvedSignaturePath = null;
      if (!empty($testedByRes['user_signature'])) {
           $testUserSignaturePath = $testedByRes['user_signature'];
      }
@@ -49,30 +80,10 @@ if (!empty($result)) {
      if (!empty($revisedByRes['user_signature'])) {
           $revisedSignaturePath = $revisedByRes['user_signature'];
      }
-
-     $resultApprovedBy = '';
-     $userSignaturePath = null;
-     if (!empty($result['result_approved_by'])) {
-          $resultApprovedByRes = $usersService->getUserInfo($result['result_approved_by'], array('user_name', 'user_signature'));
-          if ($resultApprovedByRes) {
-               $resultApprovedBy = $resultApprovedByRes['result_approved_by'] ?? null;
-          }
-          if (!empty($resultApprovedByRes['user_signature'])) {
-               $userSignaturePath =  $resultApprovedByRes['user_signature'];
-          }
+     if (!empty($approvedByRes['user_signature'])) {
+          $approvedSignaturePath =  $approvedByRes['user_signature'];
      }
-
-     if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
-          $resultApprovedBy = ($result['approvedBy']);
-          $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
-     } else {
-          $resultApprovedBy  = '';
-     }
-
-     $userSignaturePath = null;
-     if (!empty($userRes['user_signature'])) {
-          $userSignaturePath =  $userRes['user_signature'];
-     }
+     
      $_SESSION['aliasPage'] = $page;
      if (!isset($result['labName'])) {
           $result['labName'] = '';
@@ -170,10 +181,6 @@ if (!empty($result)) {
      } else {
           $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($currentTime ?? '', true);
      }
-
-     $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
-     $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? '', true);
-     $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true);
 
      if (isset($result['last_viral_load_date']) && trim((string) $result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
           $result['last_viral_load_date'] = date('d/M/Y', strtotime((string) $result['last_viral_load_date']));
@@ -510,8 +517,8 @@ if (!empty($result)) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-          if (!empty($userSignaturePath) && $pdf->imageExists(($userSignaturePath))) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
+          if (!empty($approvedSignaturePath) && $pdf->imageExists(($approvedSignaturePath))) {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedSignaturePath . '" style="width:50px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }

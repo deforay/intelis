@@ -146,8 +146,10 @@ try {
 
         if (!file_exists($configFileCovid19)) {
             $fp = fopen($configFileCovid19, 'w');
-            fwrite($fp, '');
-            fclose($fp);
+            if ($fp !== false && !empty($fp)) {
+                fwrite($fp, '');
+                fclose($fp);
+            }
         }
 
         if (!file_exists($configFileHepatitis)) {
