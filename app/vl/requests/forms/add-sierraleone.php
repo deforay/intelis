@@ -782,14 +782,6 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                             <?php } ?>
-                                                            <div class="col-md-4 vlResult">
-                                                                 <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
-                                                                 </div>
-                                                            </div>
-                                                       </div>
-                                                       <div class="row">
                                                             <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="review-approve-span mandatory" style="display: none;">*</span> </label>
                                                                  <div class="col-lg-7">
@@ -798,6 +790,9 @@ $sFormat = '';
                                                                       </select>
                                                                  </div>
                                                             </div>
+                                                       </div>
+                                                       <div class="row">
+                                                           
                                                             <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="review-approve-span mandatory" style="display: none;">*</span> </label>
                                                                  <div class="col-lg-7">
@@ -812,8 +807,6 @@ $sFormat = '';
                                                                       </select>
                                                                  </div>
                                                             </div>
-                                                       </div>
-                                                       <div class="row">
                                                             <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label labels" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                  <div class="col-lg-7">
@@ -822,10 +815,19 @@ $sFormat = '';
                                                                       </select>
                                                                  </div>
                                                             </div>
+                                                       </div>
+                                                       <div class="row">
+                                                           
                                                             <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label labels" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" title="Please choose Approved On" name="approvedOnDateTime" placeholder="<?= _translate("Please enter date"); ?>" style="width:100%;" />
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-4 vlResult">
+                                                                 <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">

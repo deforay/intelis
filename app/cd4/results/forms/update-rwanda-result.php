@@ -636,10 +636,12 @@ $disable = "disabled = 'disabled'";
                                                                            <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" value="<?php echo $cd4QueryInfo['sample_tested_datetime']; ?>"/>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
+																 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Tested By </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> value="<?php echo $cd4QueryInfo['result_dispatched_datetime']; ?>"/>
+                                                                           <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
+                                                                                <?= $general->generateSelectOptions($userInfo,$cd4QueryInfo['tested_by'], '-- Select --'); ?>
+                                                                           </select>
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -701,23 +703,12 @@ $disable = "disabled = 'disabled'";
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Tested By </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
-                                                                                <?= $general->generateSelectOptions($userInfo,$cd4QueryInfo['tested_by'], '-- Select --'); ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-
-                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" value="<?php echo $cd4QueryInfo['result_approved_datetime']; ?>"/>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
+																 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
@@ -726,6 +717,15 @@ $disable = "disabled = 'disabled'";
                                                                                      <option value="<?php echo $uName['user_id']; ?>" <?php echo ($cd4QueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?> ><?php echo ($uName['user_name']); ?></option>
                                                                                 <?php } ?>
                                                                            </select>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                
+																 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> value="<?php echo $cd4QueryInfo['result_dispatched_datetime']; ?>"/>
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">

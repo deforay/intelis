@@ -616,26 +616,11 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                                 <input type="text" class="form-control labSection dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
                                                                            </div>
                                                                       </div>
+<br>
+                                                                     
                                                                  </div>
                                                                  <div class="row">
 
-                                                                      <div class="col-md-4">
-                                                                           <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
-                                                                           <div class="col-lg-7">
-                                                                                <input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" <?php echo $labFieldDisabled; ?> />
-                                                                           </div>
-                                                                      </div>
-
-                                                                      <div class="col-md-4">
-                                                                           <label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? </label>
-                                                                           <div class="col-lg-7">
-                                                                                <select name="isSampleRejected" id="isSampleRejected" class="form-control" title="Please check if sample is rejected or not">
-                                                                                     <option value="">-- Select --</option>
-                                                                                     <option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
-                                                                                     <option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
-                                                                                </select>
-                                                                           </div>
-                                                                      </div>
                                                                       <div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
                                                                            <label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason <span class="mandatory">*</span></label>
                                                                            <div class="col-lg-7">
@@ -667,15 +652,26 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                                 </datalist>
                                                                            </div>
                                                                       </div>
-                                                                 </div>
-                                                                 <div class="row">
-
                                                                       <div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
                                                                            <label class="col-lg-5 control-label" for="vlLog">Viral Load Log </label>
                                                                            <div class="col-lg-7">
                                                                                 <input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?= ($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
                                                                            </div>
                                                                       </div>
+                                                                      <div class="col-md-4">
+                                                                           <label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? </label>
+                                                                           <div class="col-lg-7">
+                                                                                <select name="isSampleRejected" id="isSampleRejected" class="form-control" title="Please check if sample is rejected or not">
+                                                                                     <option value="">-- Select --</option>
+                                                                                     <option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
+                                                                                     <option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
+                                                                                </select>
+                                                                           </div>
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="row">
+
+                                                                     
                                                                       <div class="col-md-4">
                                                                            <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
                                                                            <div class="col-lg-7">
@@ -690,15 +686,15 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                                 </select>
                                                                            </div>
                                                                       </div>
-                                                                 </div>
-                                                                 <div class="row">
-
                                                                       <div class="col-md-4">
                                                                            <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
                                                                            <div class="col-lg-7">
                                                                                 <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" title="Please enter the Approved on" />
                                                                            </div>
                                                                       </div>
+                                                                 </div>
+                                                                 <div class="row">
+
                                                                       <div class="col-md-4">
                                                                            <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
                                                                            <div class="col-lg-7">
@@ -708,6 +704,12 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                                           <option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
                                                                                      <?php } ?>
                                                                                 </select>
+                                                                           </div>
+                                                                      </div>
+                                                                      <div class="col-md-4">
+                                                                           <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
+                                                                           <div class="col-lg-7">
+                                                                                <input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" <?php echo $labFieldDisabled; ?> />
                                                                            </div>
                                                                       </div>
                                                                       <div class="col-md-4">
