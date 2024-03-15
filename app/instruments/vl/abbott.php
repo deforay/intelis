@@ -10,6 +10,8 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
+use PhpMyAdmin\SqlParser\Utils\Misc;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -84,11 +86,9 @@ try {
                     $num = count($sheetData);
                     $row++;
                     if ($row < $skip) {
-                        if ($row == 5) {
-                            $cvNumberVar = explode(' ', (string) $sheetData[1]);
-                            $cvNumber = $cvNumberVar[1];
-                        }
-                        if ($row == 8) {
+                        if (in_array(strtoupper($sheetData[0]), ['PLATE NUMBER', 'PLATE NAME'])) {
+                            $cvNumber = $sheetData[1] ?? null;
+                        } elseif (in_array(strtoupper($sheetData[0]), ['RUN COMPLETION TIME'])) {
                             $testingDateArray = $testResultsService->abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
                             $dateFormat = $testingDateArray['dateFormat'];
                             $testingDate = $testingDateArray['testingDate'];
@@ -110,8 +110,6 @@ try {
                     //$batchCode = $sheetData[$batchCodeCol];
                     $resultFlag = $sheetData[$flagCol];
                     //$reviewBy = $sheetData[$reviewByCol];
-
-                    // //Changing date to European format for strtotime - https://stackoverflow.com/a/5736255
 
                     if (str_contains((string)$sheetData[$resultCol], 'Log')) {
 
