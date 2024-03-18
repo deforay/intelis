@@ -7,6 +7,8 @@ use Exception;
 use DateTimeImmutable;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -59,7 +61,7 @@ abstract class AbstractTestService
             $userType = $this->commonService->getSystemConfig('sc_user_type');
 
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
-            $provinceCode = $params['provinceCode'] ?? null;
+            $provinceCode = $params['provinceCode'] ?? '';
             //$provinceId = $params['provinceId'] ?? null;
             $sampleCodeFormat = $params['sampleCodeFormat'] ?? 'MMYY';
             $prefix = $params['prefix'] ?? 'T';
@@ -142,7 +144,7 @@ abstract class AbstractTestService
             if ($formId == COUNTRY\PNG) {
                 $remotePrefix = $remotePrefix . "R";
             }
-
+            MiscUtility::dumpToErrorLog($provinceCode);
 
             if ($sampleCodeFormat == 'auto') {
                 $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;

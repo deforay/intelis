@@ -294,3 +294,18 @@ WHERE s1.id > s2.min_id;
 -- Jeyabanu 08-Mar-2024
 UPDATE `s_app_menu` SET `link` = '/covid-19/reference/covid19-sample-type.php' WHERE `s_app_menu`.`link` = '/covid-19/reference/eid-sample-type.php';
 
+
+-- Jeyabanu 14-Mar-2024
+CREATE TABLE `lab_storage` (
+  `storage_id` char(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `storage_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `lab_id` int NOT NULL,
+  `lab_storage_status` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`storage_id`),
+  KEY `lab_id` (`lab_id`),
+  CONSTRAINT `lab_storage_ibfk_1` FOREIGN KEY (`lab_id`) REFERENCES `facility_details` (`facility_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'common-reference', '/common/reference/lab-storage.php', '[\"/common/reference/add-lab-storage.php\", \"/common/reference/edit-lab-storage.php\"]', 'Manage Lab Storage', NULL, 'always');
