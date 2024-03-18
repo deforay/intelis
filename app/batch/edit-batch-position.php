@@ -187,7 +187,7 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<input type="hidden" name="type" id="type" value="<?php echo $testType; ?>" />
+						<input type="hidden" name="type" id="type" value="<?php echo $type; ?>" />
 						<input type="hidden" name="sortOrders" id="sortOrders" value="<?= implode(",", $displayOrder); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
