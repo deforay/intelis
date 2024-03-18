@@ -175,7 +175,7 @@ if (!empty($result)) {
         }
     }
 
-    $revisedSignaturePath = $reviewedBySignaturePath = $testUserSignaturePath = null;
+    $revisedSignaturePath = $reviewedBySignaturePath = $testUserSignaturePath = $approvedBySignaturePath = null;
     if (!empty($testedByRes['user_signature'])) {
         $testUserSignaturePath = $testedByRes['user_signature'];
     }

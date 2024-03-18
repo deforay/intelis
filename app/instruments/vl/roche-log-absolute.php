@@ -119,7 +119,7 @@ try {
                     $absDecimalVal = $absVal = trim((string) $row[$absValCol]);
 
                     $logVal = round(log10($absVal), 4);
-                    $txtVal = "";
+                    $txtVal = null;
                 } else {
                     $absDecimalVal = $absVal = "";
                     $logVal = "";

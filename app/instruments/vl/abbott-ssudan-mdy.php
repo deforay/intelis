@@ -96,7 +96,7 @@ try {
                     $absDecimalVal = "";
                     $absVal = "";
                     $logVal = "";
-                    $txtVal = "";
+                    $txtVal = null;
                     $resultFlag = "";
 
                     $sampleCode = $sheetData[$sampleIdCol];

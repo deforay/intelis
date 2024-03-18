@@ -137,12 +137,13 @@ try {
                         $txtVal = $absVal = trim($vlResult);
                         $logVal = "";
                     } else {
+                        $vlResult = (float) $vlResult;
                         $resInNumberFormat = number_format($vlResult, 0, '', '');
-                        if ($resInNumberFormat > 0) {
+                        if ($vlResult > 0) {
                             $absVal = $resInNumberFormat;
-                            $absDecimalVal = (float) trim($resInNumberFormat);
-                            $logVal = round(log10($absDecimalVal), 2);
-                            $txtVal = "";
+                            $absDecimalVal = $vlResult;
+                            $logVal = round(log10($vlResult), 2);
+                            $txtVal = null;
                         } else {
                             $absVal = $txtVal = trim($vlResult);
                             $absDecimalVal = $logVal = "";
@@ -154,7 +155,7 @@ try {
                         $absVal = trim((string) $row[$absValCol]);
                         $absDecimalVal = $vlResult;
                         $logVal = round(log10($absDecimalVal), 4);
-                        $txtVal = "";
+                        $txtVal = null;
                     } else {
                         $logVal = $absDecimalVal = $absVal = "";
                         $txtVal = trim((string) $row[$absValCol]);

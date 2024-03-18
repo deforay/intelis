@@ -95,7 +95,7 @@ try {
             $absDecimalVal = "";
             $absVal = "";
             $logVal = "";
-            $txtVal = "";
+            $txtVal = null;
             $resultFlag = "";
             $testingDate = "";
             $lotNumberVal = "";
@@ -120,7 +120,7 @@ try {
                     } else {
                         $logVal = round(log10($absDecimalVal), 4);
                     }
-                    $txtVal = "";
+                    $txtVal = null;
                 } else {
                     $absDecimalVal = $absVal = "";
                     $logVal = "";
