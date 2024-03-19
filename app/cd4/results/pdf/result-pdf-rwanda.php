@@ -141,7 +141,7 @@ if (!empty($result)) {
 
      $smileyContent = '';
      $showMessage = '';
-     $tndMessage = '';
+     $tndMessage = ''; 
      $messageTextSize = '15px';
 
      if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
