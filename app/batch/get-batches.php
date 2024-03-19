@@ -33,6 +33,13 @@ try {
 
     $refTable = TestsService::getTestTableName($_POST['type']);
 
+    $formConfigQuery = "SELECT * from global_config where name='batch_pdf_layout'";
+    $configResult = $db->query($formConfigQuery);
+    $pdfLayout = '';
+    if(!empty($configResult)){
+        $pdfLayout = $configResult[0]['value'];
+    }
+
     $aColumns = ['b.batch_code', 'b.batch_code', null, "DATE_FORMAT(vl.sample_tested_datetime, '%d-%b-%Y')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')"];
     $orderColumns = ['b.batch_code', 'b.batch_code', null, 'last_tested_date', 'b.last_modified_datetime'];
 
@@ -122,7 +129,11 @@ try {
             }
         }
         if ($pdf) {
-            $printBarcode = '<a href="/batch/generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Batch PDF") . '</a>';
+            if(!empty($pdfLayout) && $pdfLayout == 'compact'){
+                $printBarcode = '<a href="/batch/generate-compact-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Batch PDF") . '</a>';
+            }else{
+                $printBarcode = '<a href="/batch/generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Batch PDF") . '</a>';
+            }
         }
 
         if (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete) {

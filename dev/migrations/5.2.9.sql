@@ -294,3 +294,5 @@ WHERE s1.id > s2.min_id;
 -- Jeyabanu 08-Mar-2024
 UPDATE `s_app_menu` SET `link` = '/covid-19/reference/covid19-sample-type.php' WHERE `s_app_menu`.`link` = '/covid-19/reference/eid-sample-type.php';
 
+-- Brindha 18-Mar-2024
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Batch Pdf Layout', 'batch_pdf_layout', 'standard', 'general', 'no', NULL, NULL, 'active');

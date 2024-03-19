@@ -912,6 +912,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           });
           //hivDetectionChange();
+          var text = $('#testingPlatform').val();
+          if (text) {
+               $("#vlResult").attr("disabled", false);
+          }
+          
      });
 
      function hivDetectionChange() {
