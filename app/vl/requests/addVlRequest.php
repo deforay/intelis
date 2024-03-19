@@ -33,7 +33,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 
 $healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('vl', false, true);
 
-
+$storageList = $vlService->getLabStorage();
 //get import config
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
@@ -151,7 +151,9 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
     function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
         $.blockUI();
         let formData = $("#" + formId).serialize();
-        formData += "&provinceCode=" + encodeURIComponent(provinceCode);
+        if(provinceCode != null && provinceCode != ''){
+            formData += "&provinceCode=" + encodeURIComponent(provinceCode);
+        }
         formData += "&provinceId=" + encodeURIComponent(provinceId);
         formData += "&countryId=" + encodeURIComponent(countryId);
 

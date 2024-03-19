@@ -200,7 +200,7 @@ try {
      }
 
      $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
-
+    
      $vlData = array(
           'vlsm_instance_id' => $instanceId,
           'vlsm_country_id' => $formId,
@@ -296,7 +296,16 @@ try {
           'manual_result_entry' => 'yes',
           'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'] ?? null
      );
-     //$db->select('result');
+     
+     $formAttributes = [
+          'applicationVersion' => $general->getSystemConfig('sc_version'),
+          'ip_address' => $general->getClientIpAddress(),
+          'storage' => array("freezer"=>$_POST['freezer'],"freezerCode"=>$_POST['freezerCode'],"rack"=>$_POST['rack'],"box"=>$_POST['box'],"position"=>$_POST['position']),
+     ];
+
+     $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+     $vlData['form_attributes'] = $db->func($formAttributes);
+
      $db->where('vl_sample_id', $_POST['vlSampleId']);
      $getPrevResult = $db->getOne('form_vl');
      if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult) {

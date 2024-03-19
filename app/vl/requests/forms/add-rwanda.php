@@ -870,13 +870,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function generateSampleCode() {
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
-          var provinceCode = $("#province").find(":selected").attr("data-code");
+        //  var provinceCode = $("#province").find(":selected").attr("data-code");
 
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           if (pName != '' && sDate != '') {
                $.post("/vl/requests/generateSampleCode.php", {
                          sampleCollectionDate: sDate,
-                         provinceCode: provinceCode
+                         //provinceCode: provinceCode
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);
