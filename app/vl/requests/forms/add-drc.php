@@ -425,7 +425,7 @@ $sFormat = '';
 								</table>
 							</div>
 						</div>
-						<?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
+						<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
@@ -443,6 +443,33 @@ $sFormat = '';
 												<select name="labId" id="labId" class="form-control" title="Please choose laboratoire" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
 												</select>
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> :
+												</label></td>
+											<td style="width: 25%;">
+												<select name="freezer" id="freezer" class="form-control" title="<?php echo _translate('Please choose Freezer'); ?>" style="width:100%;">
+													<?= $general->generateSelectOptions($storageList, null, '-- Sélectionner --'); ?>
+												</select>
+												<input type="hidden" name="freezerCode" id="freezerCode" />
+											</td>
+											<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>
+											<td style="width: 25%;">
+											<input type="text" class="form-control" id="rack" name="rack" placeholder="<?php echo _translate('rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Box'); ?> :
+												</label></td>
+											<td style="width: 25%;">
+											<input type="text" class="form-control" id="box" name="box" placeholder="<?php echo _translate('box'); ?>" title="<?php echo _translate('Please enter box'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
+											<td style="width: 25%;"><label for="position"><?php echo _translate('Position'); ?> : </label> </td>
+											<td style="width: 25%;">
+											<input type="text" class="form-control" id="position" name="position" placeholder="<?php echo _translate('Position'); ?>" title="<?php echo _translate('Please enter position'); ?>" <?php echo $labFieldDisabled; ?>  style="width:100%;" />
+
 											</td>
 										</tr>
 										<tr>
@@ -897,6 +924,11 @@ $sFormat = '';
 
 
 	$(document).ready(function() {
+
+		$("#freezer").on('change', function(){
+			storage = $("#freezer option:selected").text().split('-');
+			$("#freezerCode").val($.trim(storage[0]));
+		});
 
 		$("#artNo").on('input', function() {
 

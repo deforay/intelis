@@ -208,13 +208,13 @@ try {
           $row = [];
           if (isset($_POST['vlPrint'])) {
                if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
-                    $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedRow(this);"  />';
+                    $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['cd4_id'] . '"  value="' . $aRow['cd4_id'] . '" onclick="checkedRow(this);"  />';
                } else {
-                    $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
+                    $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['cd4_id'] . '"  value="' . $aRow['cd4_id'] . '" onclick="checkedPrintedRow(this);"  />';
                }
-               $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
+               $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="convertResultToPdf(' . $aRow['cd4_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
           } else {
-               $print = '<a href="updateVlTestResult.php?id=' . base64_encode((string) $aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
+               $print = '<a href="updateVlTestResult.php?id=' . base64_encode((string) $aRow['cd4_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                     if (!_isAllowed("/vl/requests/edit-locked-vl-samples")) {
                          $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';

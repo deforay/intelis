@@ -511,11 +511,13 @@ class VlService extends AbstractTestService
 
                 $formAttributes = [
                     'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
-                    'ip_address' => $this->commonService->getClientIpAddress()
+                    'ip_address' => $this->commonService->getClientIpAddress(),
+                    'storage' => array("freezer"=>$params['freezer'],"freezerCode"=>$params['freezerCode'],"rack"=>$params['rack'],"box"=>$params['box'],"position"=>$params['position']),
                 ];
 
                 $formAttributes = $this->commonService->jsonToSetString(json_encode($formAttributes), 'form_attributes');
                 $tesRequestData['form_attributes'] = $this->db->func($formAttributes);
+                
                 $this->db->insert("form_vl", $tesRequestData);
 
                 $id = $this->db->getInsertId();
@@ -635,5 +637,25 @@ class VlService extends AbstractTestService
         }
 
         return null;
+    }
+
+    public function getLabStorage($labId = null, $onlyActive = true)
+    {
+
+            if ($onlyActive) {
+                $this->db->where('status', 'active');
+            }
+            if ($labId) {
+                $this->db->where('lab_id', $labId);
+            }
+            $this->db->join("facility_details f", "f.facility_id=s.lab_id", "INNER");
+
+           
+                $response = [];
+                $results = $this->db->get("lab_storage s");
+                foreach ($results as $row) {
+                    $response[$row['storage_id']] = $row['storage_code']." - ".$row['facility_name'];
+                }
+                return $response;
     }
 }

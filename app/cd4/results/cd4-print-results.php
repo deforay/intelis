@@ -804,7 +804,7 @@ $state = $geolocationService->getProvinces("yes");
         $.unblockUI();
     }
 
-    function resultPDF(id, newData) {
+    function convertResultToPdf(id, newData) {
         // $.blockUI();
         <?php
         $path = '';
@@ -827,6 +827,7 @@ $state = $geolocationService->getProvinces("yes");
                 }
             });
     }
+   
 
     function convertSearchResultToPdf(id, newData = null) {
         $.blockUI();
