@@ -87,6 +87,12 @@ if ($mysqlConnected) {
 }
 
 
+
+
+$additionalColumns = [
+    'form_hepatitis' => ['hepatitis_test_type'],
+];
+
 $numberOfResults = 0;
 if (!empty($interfaceData)) {
 
@@ -112,11 +118,25 @@ if (!empty($interfaceData)) {
         //     continue;
         // }
 
+
         $tableInfo = [];
-        foreach ($availableModules as $individualIdColumn => $individualTableName) {
-            $tableQuery = "SELECT $individualIdColumn FROM $individualTableName WHERE (sample_code = ? OR remote_sample_code = ?) OR (sample_code = ? OR remote_sample_code = ?)";
+        foreach ($availableModules as $primaryKeyColumn => $individualTableName) {
+
+            $columnsToSelect = $primaryKeyColumn;
+
+            // If the table name is there in $additionalColumns, add the additional columns
+            if (array_key_exists($individualTableName, $additionalColumns)) {
+                $extraColumnsString = implode(', ', $additionalColumns[$individualTableName]);
+                $columnsToSelect = "$primaryKeyColumn, $extraColumnsString";
+            }
+
+            $tableQuery = "SELECT $columnsToSelect FROM $individualTableName WHERE (sample_code = ? OR remote_sample_code = ?) OR (sample_code = ? OR remote_sample_code = ?)";
+
+            // Execute the query
             $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id'], $result['order_id'], $result['test_id'], $result['test_id']]);
-            if (!empty($tableInfo[$individualIdColumn])) {
+
+            // If we found the information, break out of the loop
+            if (!empty($tableInfo[$primaryKeyColumn])) {
                 break;
             }
         }

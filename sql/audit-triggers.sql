@@ -186,7 +186,7 @@ CREATE TRIGGER form_generic_data__bd BEFORE DELETE ON `form_generic` FOR EACH RO
 
 
 
---- CD4 Tests
+-- CD4 Tests
 
 CREATE TABLE `audit_form_cd4` SELECT * from `form_cd4` WHERE 1=0;
 
