@@ -309,3 +309,7 @@ CREATE TABLE `lab_storage` (
 
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'common-reference', '/common/reference/lab-storage.php', '[\"/common/reference/add-lab-storage.php\", \"/common/reference/edit-lab-storage.php\"]', 'Manage Lab Storage', NULL, 'always');
+
+-- Jeyabanu 20-Mar-2024
+UPDATE `privileges` SET `shared_privileges` = '[\"/vl/requests/upload-storage.php\"]' WHERE `privileges`.`privilege_name` = "/vl/requests/vl-requests.php"
+
