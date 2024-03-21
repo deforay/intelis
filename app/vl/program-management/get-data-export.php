@@ -98,6 +98,7 @@ try {
                vl.cv_number,
                vl.line_of_treatment,
                vl.vl_test_platform,
+               vl.form_attributes,
                vl.vl_result_category,
                vl.result_value_hiv_detection,
                s.sample_name as sample_name,

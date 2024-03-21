@@ -487,6 +487,7 @@ foreach ($srcResults as $list) {
 									</a>
 								<?php }
 								?>
+								
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span>
 										<?php echo _translate("Manage Columns"); ?>
 									</span></button>
@@ -504,7 +505,13 @@ foreach ($srcResults as $list) {
 					<table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
-
+								<?php
+								if (_isAllowed("/vl/requests/vl-requests.php")) { ?>
+									<a href="/vl/requests/upload-storage.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+										<?php echo _translate("Storage Bulk Upload"); ?>
+									</a>
+								<?php }
+								?>
 								<?php
 								if (_isAllowed("/vl/requests/addVlRequest.php") && !$hidesrcofreq) { ?>
 									<a href="/vl/requests/addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
@@ -512,6 +519,7 @@ foreach ($srcResults as $list) {
 									</a>
 								<?php }
 								?>
+								
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span>
 										<?php echo _translate("Manage Columns"); ?>
 									</span></button>
