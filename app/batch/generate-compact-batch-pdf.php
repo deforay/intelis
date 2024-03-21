@@ -253,7 +253,7 @@ if (!empty($id)) {
                         $label = str_replace("in house", "In-House", $label);
                         $label = (str_replace("no of ", " ", $label));
                         $tbl .= '<td colspan="3" align="center">';
-                        $tbl .= 'Sample ID : ' . $label . '<br>';
+                        $tbl .= $label . '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';
@@ -336,7 +336,7 @@ if (!empty($id)) {
                         $label = str_replace("in house", "In-House", $label);
                         $label = (str_replace("no of ", " ", $label));
                         $tbl .= '<td colspan="3" align="center">';
-                        $tbl .= 'Sample ID : ' . $label . '<br>';
+                        $tbl .= $label . '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';

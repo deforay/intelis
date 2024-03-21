@@ -309,4 +309,6 @@ CREATE TABLE `lab_storage` (
 
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'common-reference', '/common/reference/lab-storage.php', '[\"/common/reference/add-lab-storage.php\", \"/common/reference/edit-lab-storage.php\"]', 'Manage Lab Storage', NULL, 'always');
+
+-- Brindha 18-Mar-2024
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Batch Pdf Layout', 'batch_pdf_layout', 'standard', 'general', 'no', NULL, NULL, 'active');
