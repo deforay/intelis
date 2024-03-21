@@ -26,6 +26,11 @@ $scriptName = basename(__FILE__);
 /** DELETE CD4 menus IF already There */
 
 $deleteCd4 = $db->rawQuery("DELETE FROM s_app_menu WHERE module='cd4'");
+$getCD4Config = $db->rawQueryOne("SELECT id FROM s_app_menu WHERE display_text='CD4 Config'");
+$getCD4ConfigIdDelete = $getCD4Config['id'];
+
+$deleteCd4ConfigChildren = $db->rawQuery("DELETE FROM s_app_menu WHERE parent_id = $getCD4ConfigIdDelete");
+$deleteCd4Config = $db->rawQuery("DELETE FROM s_app_menu WHERE id = $getCD4ConfigIdDelete");
 
 /** Insert CD4 Header Menu */
 $insertHeader = $db->rawQuery("INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'cd4', NULL, 'yes', 'CLUSTERS OF DIFFERENTIATION 4', NULL, NULL, 'always', NULL, 'yes', 'header', '0', '179', 'active', CURRENT_TIMESTAMP)");
