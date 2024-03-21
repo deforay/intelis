@@ -168,7 +168,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
-                                                       <label for="province"><?= _translate('Province'); ?> <span class="mandatory">*</span></label>
+                                                       <label for="province"><?= _translate('Region'); ?> <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" name="province" id="province" title="<?= _translate('Please choose a province'); ?>" style="width:100%;" onchange="getProvinceDistricts(this);">
                                                             <?php echo $province; ?>
                                                        </select>
@@ -184,7 +184,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
-                                                       <label for="facilityId"><?= _translate('Clinic/Health Center'); ?> <span class="mandatory">*</span></label>
+                                                       <label for="facilityId"><?= _translate('Facility'); ?> <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" id="facilityId" name="facilityId" title="<?= _translate('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="fillFacilityDetails();">
                                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                             <?php //echo $facility;
@@ -199,7 +199,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
-                                                       <label for="facilityCode"><?= _translate('Clinic/Health Center Code'); ?> </label>
+                                                       <label for="facilityCode"><?= _translate('Facility code'); ?> </label>
                                                        <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>" value="<?php echo $facilityResult[0]['facility_code']; ?>">
                                                   </div>
                                              </div>
