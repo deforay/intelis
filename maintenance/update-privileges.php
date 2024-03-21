@@ -80,6 +80,7 @@ $sharedVLPrivileges = [
     '/batch/generate-batch-pdf.php?type=vl' => '/batch/batches.php?type=vl',
     '/batch/add-batch-position.php?type=vl' => '/batch/add-batch.php?type=vl',
     '/batch/edit-batch-position.php?type=vl' => '/batch/edit-batch.php?type=vl',
+    '/vl/requests/upload-storage.php' => '/vl/requests/vl-requests.php',
     '/vl/results/updateVlTestResult.php' => '/vl/results/vlTestResult.php',
     '/vl/results/vl-failed-results.php' => '/vl/results/vlTestResult.php',
     '/vl/results/email-results.php' => '/vl/results/email-results.php',
