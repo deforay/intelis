@@ -206,7 +206,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 							<div class="row">
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
-										<label for="province"><?= _translate('State'); ?> <span class="mandatory">*</span></label>
+										<label for="province"><?= _translate('Region'); ?> <span class="mandatory">*</span></label>
 										<select class="form-control " name="province" id="province" title="<?= _translate('Please choose state'); ?>" <?php echo $disable; ?> style="width:100%;" onchange="getfacilityDetails(this);">
 											<option value=""> <?= _translate('-- Select --'); ?> </option>
 											<?php foreach ($pdResult as $provinceName) { ?>
@@ -232,7 +232,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								</div>
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
-										<label for="facilityId"><?= _translate('Clinic/Health Center'); ?> <span class="mandatory">*</span></label>
+										<label for="facilityId"><?= _translate('Facility'); ?> <span class="mandatory">*</span></label>
 										<select class="form-control " id="facilityId" name="facilityId" title="<?= _translate('Please select clinic/health center name'); ?>" <?php echo $disable; ?> style="width:100%;" onchange="autoFillFacilityCode();">
 											<?= $facility; ?>
 										</select>
@@ -240,7 +240,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								</div>
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
-										<label for="facilityCode"><?= _translate('Clinic/Health Center Code'); ?> </label>
+										<label for="facilityCode"><?= _translate('Facility Code'); ?> </label>
 										<input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>" value="<?php echo $facilityResult[0]['facility_code']; ?>" <?php echo $disable; ?>>
 									</div>
 								</div>

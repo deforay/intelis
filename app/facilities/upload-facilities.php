@@ -126,7 +126,7 @@ if (isset($_GET['total'])) {
 										<?= _translate("Upload File"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-8">
-										<input type="file" class="form-control isRequired" id="facilitiesInfo" name="facilitiesInfo" placeholder="<?php echo _translate('Facility Name'); ?>" title="<?= _translate('Click to upload file'); ?>" onblur='checkNameValidation("facility_details","facility_name",this,null,"<?php echo _translate("The facility name that you entered already exists.Enter another name"); ?>",null)' />
+										<input type="file" class="form-control isRequired" id="facilitiesInfo" name="facilitiesInfo" placeholder="<?php echo _translate('Facility Name'); ?>" title="<?= _translate('Click to upload file'); ?>" />
 										<a class="text-primary" style="text-decoration:underline;" href="/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx" download><?= _translate("Click here to download the Excel format for uploading facilities in bulk"); ?></a>
 									</div>
 								</div>

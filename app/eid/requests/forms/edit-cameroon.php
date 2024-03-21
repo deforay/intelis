@@ -114,7 +114,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td style="width:25%"><label for="province"><?= _translate('Province'); ?> </label><span class="mandatory">*</span></br>
+                                        <td style="width:25%"><label for="province"><?= _translate('Region'); ?> </label><span class="mandatory">*</span></br>
                                             <select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
@@ -124,7 +124,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                             </select>
                                         </td>
-                                        <td style="width:25%"><label for="facilityId"><?= _translate('Health Facility'); ?> </label><span class="mandatory">*</span><br>
+                                        <td style="width:25%"><label for="facilityId"><?= _translate('Facility'); ?> </label><span class="mandatory">*</span><br>
                                             <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php //echo $facility;
@@ -137,7 +137,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                             </select>
                                         </td>
                                         <td style="width:25%">
-                                            <label for="facilityCode"><?= _translate('Clinic/Health Center Code'); ?> </label><br>
+                                            <label for="facilityCode"><?= _translate('Facility Code'); ?> </label><br>
                                             <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>" value="<?php echo $facilityResult[0]['facility_code']; ?>">
                                         </td>
                                     </tr>

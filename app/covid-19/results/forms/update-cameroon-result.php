@@ -150,7 +150,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><label for="province"><?= _translate("Health Facility/POE State"); ?> </label><span class="mandatory">*</span></td>
+                                        <td><label for="province"><?= _translate("Region"); ?> </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control select2" name="province" id="province" title="<?= _translate("Please choose State"); ?>" style="width:100%;">
                                                 <?php echo $province; ?>
@@ -162,7 +162,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <option value=""> <?= _translate("-- Select --"); ?> </option>
                                             </select>
                                         </td>
-                                        <td><label for="facilityId"><?= _translate("Health Facility/POE"); ?> </label><span class="mandatory">*</span></td>
+                                        <td><label for="facilityId"><?= _translate("Facility"); ?> </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control select2" name="facilityId" id="facilityId" title="<?= _translate("Please choose facility"); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
                                                 <?php echo $facility; ?>
