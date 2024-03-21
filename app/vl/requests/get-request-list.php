@@ -95,6 +95,7 @@ try {
                vl.locked,
                vl.data_sync,
                vl.is_encrypted,
+               vl.form_attributes,
                s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
