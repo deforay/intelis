@@ -376,7 +376,7 @@ $sFormat = '';
 										<td><label for="">Date du prélèvement <span class="mandatory">*</span></label>
 										</td>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du prélèvement" onchange="checkSampleTestingDate();generateSampleCode();" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du prélèvement" onchange="generateSampleCode();" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>

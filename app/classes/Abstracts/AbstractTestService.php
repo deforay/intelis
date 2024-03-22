@@ -136,7 +136,8 @@ abstract class AbstractTestService
                 'sampleCodeFormat' => $sampleCodeFormat,
                 'sampleCodeKey' => $maxId,
                 'maxId' => $maxId,
-                'mnthYr' => $month . $year,
+                'monthYear' => $month . $year,
+                'year' => $year,
                 'auto' => $year . $month . $day
             ];
 
@@ -150,8 +151,10 @@ abstract class AbstractTestService
                 $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
             } elseif ($sampleCodeFormat == 'auto2') {
                 $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $year . $provinceCode . $prefix;
-            } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
-                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'];
+            } elseif ($sampleCodeFormat == 'MMYY') {
+                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['monthYear'];
+            } elseif ($sampleCodeFormat == 'YY') {
+                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['year'];
             }
 
             $sampleCodeGenerator['sampleCode'] = $sampleCodeGenerator['sampleCodeFormat'] . $sampleCodeGenerator['maxId'];
