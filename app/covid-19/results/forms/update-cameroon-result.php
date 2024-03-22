@@ -234,13 +234,17 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th scope="row"><?= _translate('Universal Health Coverage'); ?></th>
+                                        <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" value="<?= $covid19Info['health_insurance_code']; ?>" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/></td>
+
                                         <th scope="row"><?= _translate("Phone number"); ?></th>
                                         <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="<?= _translate("Phone Number"); ?>" title="<?= _translate("Phone Number"); ?>" style="width:100%;" value="<?php echo $covid19Info['patient_phone_number']; ?>" /></td>
 
-                                        <th scope="row"><?= _translate("Case address"); ?></th>
-                                        <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="<?= _translate("Address"); ?>" title="<?= _translate("Address"); ?>" style="width:100%;" onchange=""><?php echo $covid19Info['patient_address']; ?></textarea></td>
                                     </tr>
                                     <tr>
+                                        <th scope="row"><?= _translate("Case address"); ?></th>
+                                        <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="<?= _translate("Address"); ?>" title="<?= _translate("Address"); ?>" style="width:100%;" onchange=""><?php echo $covid19Info['patient_address']; ?></textarea></td>
+
                                         <th scope="row"><?= _translate("Case State"); ?></th>
                                         <td>
                                             <select class="form-control select2" name="patientProvince" id="patientProvince" title="<?= _translate("Please Case State"); ?>" onchange="getPatientDistrictDetails(this.value);" style="width:100%;">
@@ -248,17 +252,20 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </select>
                                         </td>
 
+                                    </tr>
+                                    <tr>
                                         <th scope="row"><?= _translate("County"); ?></th>
                                         <td>
                                             <select class="form-control select2" name="patientDistrict" id="patientDistrict" title="Please Case County" style="width:100%;">
                                                 <option value=""><?= _translate("--Select--"); ?></option>
                                             </select>
                                         </td>
-                                    </tr>
-                                    <tr>
+
                                         <th scope="row"><?= _translate("City/Village"); ?></th>
                                         <td><input class="form-control" value="<?php echo $covid19Info['patient_city']; ?>" id="patientCity" name="patientCity" placeholder="<?= _translate("Case City/Village"); ?>" title="<?= _translate("Please enter the Case City/Village"); ?>" style="width:100%;"></td>
-                                        <th scope="row"><?= _translate("Nationality"); ?></th>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row"><?= _translate("Nationality"); ?></th>
                                         <td>
                                             <select name="patientNationality" id="patientNationality" class="form-control" title="<?= _translate('Please choose nationality'); ?>" style="width:100%">
                                                 <?= $general->generateSelectOptions($nationalityList, $covid19Info['patient_nationality'], '-- Select --'); ?>

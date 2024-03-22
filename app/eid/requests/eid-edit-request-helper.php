@@ -335,6 +335,7 @@ try {
 		'child_name' => $_POST['childName'] ?? null,
 		'child_dob' => $_POST['childDob'] ?? null,
 		'child_gender' => $_POST['childGender'] ?? null,
+		'health_insurance_code' => $_POST['healthInsuranceCode'] ?? null,
 		'child_age' => $_POST['childAge'] ?? null,
 		'child_treatment' => isset($_POST['childTreatment']) ? implode(",", $_POST['childTreatment']) : null,
 		'child_treatment_other' => $_POST['childTreatmentOther'] ?? null,

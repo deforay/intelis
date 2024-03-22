@@ -316,3 +316,12 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 -- Jeyabanu 20-Mar-2024
 UPDATE `privileges` SET `shared_privileges` = '[\"/vl/requests/upload-storage.php\"]' WHERE `privileges`.`privilege_name` = "/vl/requests/vl-requests.php"
 
+-- Jeyabanu 22-Mar-2024
+ALTER TABLE `form_vl` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
+ALTER TABLE `audit_form_vl` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
+
+ALTER TABLE `form_eid` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `child_gender`;
+ALTER TABLE `audit_form_eid` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `child_gender`;
+
+ALTER TABLE `form_covid19` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
+ALTER TABLE `audit_form_covid19` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;

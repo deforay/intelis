@@ -278,11 +278,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
+                                                       <label for="healthInsuranceCode"><?= _translate('Universal Health Coverage'); ?></label>
+                                                       <input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/>
+                                                  </div>
+                                             </div>
+                                             </div>
+                                             <div class="row">
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
                                                        <label for="patientPhoneNumber"><?= _translate('Phone Number'); ?></label>
                                                        <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" placeholder="<?= _translate('Enter Phone Number'); ?>" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" title="<?= _translate('Enter phone number'); ?>" />
                                                   </div>
                                              </div>
-
+                                            
                                         </div>
                                         <div class="row femaleSection" style="display:none;">
                                              <div class="col-xs-3 col-md-3">

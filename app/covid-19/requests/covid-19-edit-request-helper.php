@@ -190,6 +190,7 @@ try {
 		'patient_surname' => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
 		'patient_dob' => !empty($_POST['dob']) ? DateUtility::isoDateFormat($_POST['dob']) : null,
 		'patient_gender' => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
+		'health_insurance_code' => $_POST['healthInsuranceCode'] ?? null,
 		'is_patient_pregnant' => !empty($_POST['isPatientPregnant']) ? $_POST['isPatientPregnant'] : null,
 		'patient_age' => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
 		'patient_phone_number' => !empty($_POST['patientPhoneNumber']) ? $_POST['patientPhoneNumber'] : null,

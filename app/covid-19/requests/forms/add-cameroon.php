@@ -248,42 +248,49 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                             </select>
                                         </td>
-                                        <th scope="row"><?= _translate("Phone number"); ?></th>
-                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Case Phone Number'); ?>" style="width:100%;" onchange="" /></td>
+                                        <th scope="row"><?= _translate('Universal Health Coverage'); ?></th>
+                                        <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/></td>
+
                                     </tr>
                                     <tr>
+                                        <th scope="row"><?= _translate("Phone number"); ?></th>
+                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Case Phone Number'); ?>" style="width:100%;" onchange="" /></td>
+
                                         <th scope="row"><?= _translate("Address"); ?></th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="<?= _translate('Address'); ?>" title="<?= _translate('Case Address'); ?>" style="width:100%;" onchange=""></textarea></td>
 
-                                        <th scope="row"><?= _translate("State"); ?></th>
+                                    </tr>
+                                    <tr>
+                                        
+                                    <th scope="row"><?= _translate("State"); ?></th>
                                         <td>
                                             <select class="form-control " name="patientProvince" id="patientProvince" title="<?= _translate('Please Case State'); ?>" onchange="getPatientDistrictDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
-                                    </tr>
-                                    <tr>
                                         <th scope="row"><?= _translate("County"); ?></th>
                                         <td>
                                             <select class="form-control select2" name="patientDistrict" id="patientDistrict" title="Please Case County" style="width:100%;">
                                                 <option value=""> <?= _translate("-- Select --"); ?> </option>
                                             </select>
                                         </td>
-                                        <th scope="row"><?= _translate("Payam"); ?></th>
-                                        <td><input class="form-control" id="patientZone" name="patientZone" placeholder="<?= _translate('Case Payam'); ?>" title="<?= _translate('Please enter the Case Payam'); ?>" style="width:100%;"></td>
 
                                     </tr>
                                     <tr>
+                                    <th scope="row"><?= _translate("Payam"); ?></th>
+                                        <td><input class="form-control" id="patientZone" name="patientZone" placeholder="<?= _translate('Case Payam'); ?>" title="<?= _translate('Please enter the Case Payam'); ?>" style="width:100%;"></td>
+
                                         <th scope="row"><?= _translate("Boma/Village"); ?></th>
                                         <td><input class="form-control" id="patientCity" name="patientCity" placeholder="<?= _translate('Case Boma/Village'); ?>" title="<?= _translate('Please enter the Case Boma/Village'); ?>" style="width:100%;"></td>
+                                    </tr>
+                                    <tr>
                                         <th scope="row"><?= _translate("Nationality"); ?></th>
                                         <td>
                                             <select name="patientNationality" id="patientNationality" class="form-control" title="<?= _translate('Please choose nationality'); ?>" style="width:100%">
                                                 <?= $general->generateSelectOptions($nationalityList, null, '-- Select --'); ?>
                                             </select>
                                         </td>
-                                    </tr>
-                                    <tr>
+
                                         <th scope="row"><?= _translate("Passport Number"); ?></th>
                                         <td><input class="form-control" id="patientPassportNumber" name="patientPassportNumber" placeholder="<?= _translate('Passport Number'); ?>" title="<?= _translate('Please enter Passport Number'); ?>" style="width:100%;"></td>
 

@@ -328,6 +328,14 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
+                                                       <label for="healthInsuranceCode"><?= _translate('Universal Health Coverage'); ?></label>
+                                                       <input type="text" name="healthInsuranceCode" id="healthInsuranceCode" value="<?= ($vlQueryInfo['health_insurance_code']); ?>" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/>
+                                                  </div>
+                                             </div>
+                                                       </div>
+                                                       <div class="row">
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
                                                        <label for="patientPhoneNumber"><?= _translate('Phone Number'); ?></label>
                                                        <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" class="form-control phone-number" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Enter Phone Number'); ?>" title="<?= _translate('Enter phone number'); ?>" />
                                                   </div>
