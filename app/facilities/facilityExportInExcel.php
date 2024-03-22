@@ -68,7 +68,7 @@ $rResult = $db->rawQuery($sQuery);
 /*   Added to activity log */
 $general->activityLog('Export-facilities', $_SESSION['userName'] . ' Exported facilities details to excelsheet' . $_POST['facilityName'], 'facility');
 
-$headings = array("Facility Code", "Facility Name", "Facility Type", "status", "Province/State", "District");
+$headings = array("Facility Name", "Facility Code", "External Facility Code", "Facility Type", "status", "Province/State", "District/County", "Address", "Email", "Phone Number", "Latitude", "Longitude");
 
 $colNo = 1;
 
@@ -89,12 +89,18 @@ foreach ($headings as $field => $value) {
 foreach ($rResult as $aRow) {
 	$row = [];
 
-	$row[] = $aRow['facility_code'];
 	$row[] = $aRow['facility_name'];
+	$row[] = $aRow['facility_code'];
+	$row[] = $aRow['other_id'];
 	$row[] = $aRow['facility_type_name'];
 	$row[] = $aRow['status'];
 	$row[] = $aRow['province'];
 	$row[] = $aRow['district'];
+	$row[] = $aRow['address'];
+	$row[] = $aRow['facility_emails'];
+	$row[] = $aRow['facility_mobile_numbers'];
+	$row[] = $aRow['latitude'];
+	$row[] = $aRow['longitude'];
 	$output[] = $row;
 }
 
