@@ -103,7 +103,7 @@ try {
         $db->update($tableName, $data);
 
         if ($testTypeId != 0) {
-
+            $db->rawQuery("SET FOREIGN_KEY_CHECKS = 0;"); // Disable foreign key checks
             if (!empty($_POST['sampleType'])) {
                 $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName2);
