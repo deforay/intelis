@@ -147,7 +147,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
         "generic_test_result_units_map"
     );
     foreach ($toSyncTables as $table) {
-        $payload[$general->stringToCamelCase($table) . 'LastModified'] = $general->getLastModifiedDateTime('r_generic_sample_types');
+        $payload[$general->stringToCamelCase($table) . 'LastModified'] = $general->getLastModifiedDateTime($table);
 
         $genericDataToSync[$general->stringToCamelCase($table)] = array("primaryKey" => $general->getPrimaryKeyField($table), "tableName" => $table);
     }

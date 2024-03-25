@@ -5,6 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
@@ -235,9 +236,12 @@ $testNames = array(
 );
 /* echo "<pre>";
 print_r($genericTestInfo);die; */
+
+//MiscUtility::dumpToErrorLog($testResultsAttribute);
+
 if (!empty($testResultsAttribute)) {
     foreach ($testResultsAttribute['result_type'] as $key => $resultType) {
-        if (isset($_POST['subTests']) && !empty($_POST['subTests']) && count($_POST['subTests']) > 0 && in_array($testResultsAttribute['sub_test_name'][$key], $_POST['subTests'])) {
+        if (isset($_POST['subTests']) && !empty($_POST['subTests']) && in_array($testResultsAttribute['sub_test_name'][$key], $_POST['subTests'])) {
             $subTest = strtolower((string) $testResultsAttribute['sub_test_name'][$key]);
             $n = 1;
             $resultSection = "";
@@ -248,7 +252,7 @@ if (!empty($testResultsAttribute)) {
             <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
                 <thead>
                     <tr>
-                        <th scope="row" class="text-center">Test No</th>
+                        <th scope="row" class="text-center">Test No.</th>
                         <th scope="row" class="text-center">Test Method</th>
                         <th scope="row" class="text-center">Date of Testing</th>
                         <th scope="row" class="text-center">Test Platform/Test Kit</th>

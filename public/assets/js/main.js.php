@@ -71,15 +71,15 @@
 
         static toSnakeCase(str) {
             return str
-                // Add a space before any uppercase letters (but not at the start of the string)
-                // This handles the conversion of "camelCase" strings to "camel Case"
-                .replace(/([A-Z])/g, ' $1')
+                // Handle sequences of uppercase letters as single words
+                .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
+                // Add an underscore before any uppercase letter followed by lowercase letters,
+                // ensuring it's not the start of the string
+                .replace(/([a-z\d])([A-Z])/g, '$1_$2')
                 // Lowercase the whole string
                 .toLowerCase()
                 // Replace spaces and any non-alphanumeric characters (excluding underscores) with underscores
-                .replace(/(\s+|[^a-zA-Z0-9])/g, '_')
-                // Remove any leading or trailing underscores that might have been added by the replace operation
-                .replace(/^_|_$/g, '');
+                .replace(/[\s]+/g, '_');
         }
 
         /**
