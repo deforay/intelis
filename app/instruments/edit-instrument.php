@@ -145,24 +145,24 @@ $testTypeList = SystemService::getActiveModules(true);
 											<!--<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 												<option value='vl' <?php echo (in_array('vl', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _translate("Viral Load"); ?></option>
 											<?php }
-											if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
+												if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
 												<option value='eid' <?php echo (in_array('eid', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _translate("EID"); ?></option>
 											<?php }
-											if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
+												if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
 												<option value='covid19' <?php echo (in_array('covid19', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _translate("Covid-19"); ?></option>
 											<?php }
-											if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
+												if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
 												<option value='hepatitis' <?php echo (in_array('hepatitis', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _translate("Hepatitis"); ?></option>
 											<?php }
-											if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
+												if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 												<option value='tb' <?php echo (in_array('tb', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _translate("TB"); ?></option>
 											<?php }
-											if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
+												if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 												<option value='generic-tests' <?php echo (in_array('generic-tests', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _translate("Other Lab Tests"); ?></option>
-											<?php } ?>--> 
-											<?php foreach($testTypeList as $testType){ ?>
+											<?php } ?>-->
+											<?php foreach ($testTypeList as $testType) { ?>
 												<option value="<?= $testType; ?>" <?php echo (in_array($testType, $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?= ucfirst($testType); ?></option>
-												<?php } ?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
@@ -231,17 +231,17 @@ $testTypeList = SystemService::getActiveModules(true);
 							</div>
 						<?php } ?>
 						<div class="row additionalText">
-								<div class="col-md-12">
-									<div class="form-group">
-										<label for="additionalText" class="col-lg-2 control-label">
-											<?php echo _translate("Description/Comment to add in Test Result"); ?>
-										</label>
-										<div class="col-lg-7">
-											<textarea class="form-control" id="additionalText" name="additionalText" placeholder='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>' title='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>'><?php echo $sInfo['additional_text']; ?></textarea>
-										</div>
+							<div class="col-md-12">
+								<div class="form-group">
+									<label for="additionalText" class="col-lg-2 control-label">
+										<?php echo _translate("Description/Comment to add in Test Result"); ?>
+									</label>
+									<div class="col-lg-7">
+										<textarea class="form-control" id="additionalText" name="additionalText" placeholder='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>' title='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>'><?php echo $sInfo['additional_text']; ?></textarea>
 									</div>
 								</div>
 							</div>
+						</div>
 						<div class="row">
 							<div class="col-md-6" style="padding-top:20px;">
 								<div class="form-group">
@@ -362,8 +362,8 @@ $testTypeList = SystemService::getActiveModules(true);
 													</select>
 												</td>
 											</tr>
-											<?php }
-											 if (SYSTEM_CONFIG['modules']['cd4']) { ?>
+										<?php }
+										if (SYSTEM_CONFIG['modules']['cd4']) { ?>
 											<tr class="cd4-access user-access-form" style="<?php echo in_array('cd4', $sInfo['supported_tests']) ? "" : "display:none;"; ?>">
 												<td align="left" style="text-align:center;">
 													<?php echo _translate("CD4"); ?><input type="hidden" name="userTestType[]" id="testType1" value="cd4" />
@@ -553,7 +553,7 @@ $testTypeList = SystemService::getActiveModules(true);
 											<tr>
 												<td>
 													<input type="hidden" name="configMachineId[]" value="<?php echo $machine['config_machine_id']; ?>" />
-													<input type="text" name="configMachineName[]" id="configMachineName<?php echo $i; ?>" class="form-control configMachineName isRequired" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" value="<?php echo $machine['config_machine_name']; ?>" onblur="checkDublicateName(this, 'configMachineName');" ; />
+													<input type="text" name="configMachineName[]" id="configMachineName<?php echo $i; ?>" class="form-control configMachineName isRequired" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" value="<?php echo $machine['config_machine_name']; ?>" onblur="checkDuplication(this, 'configMachineName');" ; />
 												</td>
 												<td>
 													<input type="text" value="<?php echo $machine['date_format'] ?: 'd/m/Y H:i'; ?>" name="dateFormat[]" id="dateFormat<?php echo $i; ?>" class="form-control" placeholder='<?php echo _translate("Date Format"); ?>' title='<?php echo _translate("Please enter date format"); ?>' />
@@ -585,7 +585,7 @@ $testTypeList = SystemService::getActiveModules(true);
 										?>
 										<tr>
 											<td>
-												<input type="text" name="configMachineName[]" id="configMachineName0" class="form-control configMachineName isRequired" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDublicateName(this, 'configMachineName');" />
+												<input type="text" name="configMachineName[]" id="configMachineName0" class="form-control configMachineName isRequired" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDuplication(this, 'configMachineName');" />
 											</td>
 											<td>
 												<input type="text" value="d/m/Y H:i" name="dateFormat[]" id="dateFormat0" class="form-control" placeholder='<?php echo _translate("Date Format"); ?>' title='<?php echo _translate("Please enter date format"); ?>' />
@@ -710,7 +710,7 @@ $testTypeList = SystemService::getActiveModules(true);
 		f.setAttribute("align", "center");
 		f.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDublicateName(this, \'configMachineName\');"/ >';
+		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDuplication(this, \'configMachineName\');"/ >';
 		c.innerHTML = '<input type="text" value="d/m/Y H:i" name="dateFormat[]" id="dateFormat' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("Date Format"); ?>" title="<?php echo _translate("Please enter date format"); ?>" />';
 		d.innerHTML = '<input type="text" name="fileName[]" id="fileName' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("File Name"); ?>" title="<?php echo _translate("Please enter file name"); ?>"/>';
 		e.innerHTML = '<div class="col-md-3" >\
@@ -739,7 +739,7 @@ $testTypeList = SystemService::getActiveModules(true);
 		});
 	}
 
-	function checkDublicateName(obj, name) {
+	function checkDuplication(obj, name) {
 		dublicateObj = document.getElementsByName(name + "[]");
 		for (m = 0; m < dublicateObj.length; m++) {
 			if (obj.value != '' && obj.id != dublicateObj[m].id && obj.value == dublicateObj[m].value) {
