@@ -619,7 +619,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                                  <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                             </div>
                                                        </div>
-                                                       <div class="col-md-6 vlResult">
+                                                       <div class="col-md-6 vlResult subTestFields">
                                                             <label class="col-lg-5 control-label labels" for="subTestResult">Sub Test Results</label>
                                                             <div class="col-lg-7">
                                                                  <select class="form-control ms-container multiselect" id="subTestResult" name="subTestResult[]" title="Please select sub tests" multiple onchange="loadSubTests();">
@@ -1571,6 +1571,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
                               width: '100%'
                          });
+                         var length = $('#mySelectList > option').length;
+					if(length > 1){
+						$('.subTestFields').show();
+					}else{
+						$('.subTestFields').hide();
+					}
                     }
                });
      }

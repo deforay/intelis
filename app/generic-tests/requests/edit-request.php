@@ -845,9 +845,9 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 												</div>
 											</div>
 											<div class="col-md-6 vlResult subTestFields">
-												<label class="col-lg-5 control-label labels" for="subTestResult">Sub Test Results</label>
+												<label class="col-lg-5 control-label subTestFields labels" for="subTestResult">Sub Test Results</label>
 												<div class="col-lg-7">
-													<select class="form-control ms-container multiselect" id="subTestResult" name="subTestResult[]" title="Please select sub tests" multiple onchange="loadSubTests();">
+													<select class="form-control ms-container multiselect subTestFields" id="subTestResult" name="subTestResult[]" title="Please select sub tests" multiple onchange="loadSubTests();">
 													</select>
 												</div>
 											</div>
@@ -1695,11 +1695,11 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 						placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
 						width: '100%'
 					});
-					let len = $('#subTestResult > option').length
-					if(len > 0){
-						$('.subTestFields').hide();
-					}else{
+					var length = $('#mySelectList > option').length;
+					if(length > 1){
 						$('.subTestFields').show();
+					}else{
+						$('.subTestFields').hide();
 					}
 				}
 			});
