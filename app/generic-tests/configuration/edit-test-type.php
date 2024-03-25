@@ -50,6 +50,10 @@ $testFailureReasonId = $general->getDataByTableAndFields("generic_test_failure_r
 $rejectionReasonId = $general->getDataByTableAndFields("generic_sample_rejection_reason_map", array("rejection_reason_id", "rejection_reason_id"), true, "test_type_id=$id");
 $testSymptomsId = $general->getDataByTableAndFields("generic_test_symptoms_map", array("symptom_id", "symptom_id"), true, "test_type_id=$id");
 $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units_map", array("unit_id", "unit_id"), true, "test_type_id=$id");
+$i=0;
+foreach($testResultAttribute['result_type'] as $key=>$r){
+	$i++;
+}
 ?>
 <style>
 	.tooltip-inner {
@@ -463,7 +467,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 						<div class="box-body">
 							<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix" id="vlSampleTable">
 								<tbody>
-									<?php if (isset($testResultAttribute['sub_test_name']) && sizeof($testResultAttribute['sub_test_name']) > 0) {
+									<?php if (isset($testResultAttribute['sub_test_name']) && !empty($testResultAttribute['sub_test_name'])) {
 										$label = [];
 										$n = count($testResultAttribute['sub_test_name']);
 										foreach ($testResultAttribute['sub_test_name'] as $key => $resultName) { ?>
@@ -645,7 +649,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 </div>
 <script type="text/javascript">
 	tableRowId = <?php echo $i + 1; ?>;
-	var sampleCounter = <?php echo sizeof($testResultAttribute['result_type']); ?>;
+	var sampleCounter = <?php echo $i; ?>;
 	var otherSectionNames = [];
 
 	function addNewSection(section, rowId) {
