@@ -263,7 +263,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate('Universal Health Coverage'); ?></th>
-                                        <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" value="<?= $covid19Info['health_insurance_code']; ?>" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/></td>
+                                        <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" value="<?= $covid19Info['health_insurance_code']; ?>" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32" /></td>
 
                                     </tr>
                                     <tr>
@@ -275,7 +275,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _translate("Case State"); ?></th>
+                                        <th scope="row"><?= _translate("Case State"); ?></th>
                                         <td>
                                             <select class="form-control select2" name="patientProvince" id="patientProvince" title="<?= _translate("Please Case State"); ?>" onchange="getPatientDistrictDetails(this.value);" style="width:100%;">
                                                 <?= $general->generateSelectOptions($provinceInfo, $covid19Info['patient_province'], '-- Select --'); ?>
@@ -285,7 +285,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <th scope="row">County</th>
                                         <td>
                                             <select class="form-control select2" name="patientDistrict" id="patientDistrict" title="<?= _translate("Please Case County"); ?>" style="width:100%;">
-                                                <option value=""><?= _translate("--Select--"); ?></option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                             </select>
                                         </td>
 
@@ -365,7 +365,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <th scope="row"><label for="testNumber"><?= _translate("Number of Times Tested"); ?></label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="<?= _translate("Number of Times Tested"); ?>" style="width:100%;">
-                                                <option value=""><?= _translate("--Select--"); ?></option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <?php foreach (range(1, 5) as $element) {
                                                     $selected = (isset($covid19Info['test_number']) && $covid19Info['test_number'] == $element) ? "selected='selected'" : "";
                                                     echo '<option value="' . $element . '" ' . $selected . '>' . $element . '</option>';
@@ -403,7 +403,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             <td><label for="specimenQuality"><?= _translate("Specimen Quality"); ?></label></td>
                                             <td>
                                                 <select class="form-control" id="specimenQuality" name="specimenQuality" title="<?= _translate("Please enter the specimen quality"); ?>">
-                                                    <option value=""><?= _translate("--Select--"); ?></option>
+                                                    <option value=""><?= _translate("-- Select --"); ?></option>
                                                     <option value="good" <?php echo (isset($covid19Info['sample_condition']) && $covid19Info['sample_condition'] == 'good') ? "selected='selected'" : ""; ?>><?= _translate("Good"); ?></option>
                                                     <option value="poor" <?php echo (isset($covid19Info['sample_condition']) && $covid19Info['sample_condition'] == 'poor') ? "selected='selected'" : ""; ?>><?= _translate("Poor"); ?></option>
                                                 </select>
@@ -411,7 +411,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             <th scope="row"><label for="labTechnician"><?= _translate("Lab Technician"); ?> </label></th>
                                             <td>
                                                 <select name="labTechnician" id="labTechnician" class="form-control" title="<?= _translate("Please select a Lab Technician"); ?>" style="width:100%;">
-                                                    <option value=""><?= _translate("--Select--"); ?></option>
+                                                    <option value=""><?= _translate("-- Select --"); ?></option>
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['lab_technician'], '-- Select --'); ?>
                                                 </select>
                                             </td>
@@ -490,7 +490,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             $show =  "none";
                                                                         } ?>
                                                                         <select onchange="testMethodChanged(this.value,<?= ($indexKey + 1); ?>)" class="form-control test-name-table-input" id="testName<?= ($indexKey + 1); ?>" name="testName[]" title="<?= _translate("Please enter the name of the Testkit (or) Test Method used"); ?>">
-                                                                            <option value=""><?= _translate("--Select--"); ?></option>
+                                                                            <option value=""><?= _translate("-- Select --"); ?></option>
                                                                             <option value="Real Time RT-PCR" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'Real Time RT-PCR') ? "selected='selected'" : ""; ?>><?= _translate("Real Time RT-PCR"); ?></option>
                                                                             <option value="RDT-Antibody" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>><?= _translate("RDT-Antibody"); ?></option>
                                                                             <option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>><?= _translate("RDT-Antigen"); ?></option>
@@ -507,7 +507,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                                 $display = "";
                                                                                 $span = 6;
                                                                                 $kitShow = true; ?>
-                                                                                <option value=""><?= _translate("--Select--"); ?></option>
+                                                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                                                 <option value="Abbott Panbio™ COVID-19 Ag Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'Abbott Panbio™ COVID-19 Ag Test') ? "selected='selected'" : ""; ?>><?= _translate("Abbott Panbio™ COVID-19 Ag Test"); ?></option>
                                                                                 <option value="STANDARD™ Q COVID-19 Ag Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'STANDARD™ Q COVID-19 Ag Test') ? "selected='selected'" : ""; ?>><?= _translate("STANDARD™ Q COVID-19 Ag Test"); ?></option>
                                                                                 <option value="LumiraDx ™ SARS-CoV-2 Ag Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'LumiraDx ™ SARS-CoV-2 Ag Test') ? "selected='selected'" : ""; ?>><?= _translate("LumiraDx ™ SARS-CoV-2 Ag Test"); ?></option>

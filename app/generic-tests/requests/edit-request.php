@@ -80,11 +80,8 @@ $testReason = $db->query($vlTestReasonQuery);
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
 $genericResultInfo = $db->rawQueryOne($vlQuery, array($id));
 
-if (isset($genericResultInfo['patient_dob']) && trim((string) $genericResultInfo['patient_dob']) != '' && $genericResultInfo['patient_dob'] != '0000-00-00') {
-	$genericResultInfo['patient_dob'] = DateUtility::humanReadableDateFormat($genericResultInfo['patient_dob']);
-} else {
-	$genericResultInfo['patient_dob'] = '';
-}
+$genericResultInfo['patient_dob'] = DateUtility::humanReadableDateFormat($genericResultInfo['patient_dob'] ?? null);
+
 if (isset($genericResultInfo['sample_collection_date']) && trim((string) $genericResultInfo['sample_collection_date']) != '' && $genericResultInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
 	$sampleCollectionDate = $genericResultInfo['sample_collection_date'];
 	$expStr = explode(" ", (string) $genericResultInfo['sample_collection_date']);
@@ -728,7 +725,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 												<label class="col-lg-5 control-label" for="sampleReceivedAtHubOn">Date
 													Sample Received at Hub (PHL) </label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at HUB date" value="<?php echo $genericResultInfo['sample_received_at_hub_datetime']; ?>" onchange="checkSampleReceviedAtHubDate()" />
+													<input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at HUB date" value="<?php echo $genericResultInfo['sample_received_at_hub_datetime']; ?>" />
 												</div>
 											</div>
 

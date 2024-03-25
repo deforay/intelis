@@ -486,7 +486,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 															</td>
 															<td style="width:30%;">
 																<select type="text" name="resultConfig[result_type][<?php echo $key; ?>]" id="testType<?php echo $key; ?>" class="form-control input-sm" title="Please select the type of result" onchange="setResultType(this.value, <?php echo $key; ?>)">
-																	<option value=""> --<?= _translate("select"); ?>-- </option>
+																	<option value=""> <?= _translate("-- Select --"); ?> </option>
 																	<option value="qualitative" <?php echo (isset($testResultAttribute['result_type'][$key]) && !empty($testResultAttribute['result_type'][$key]) && $testResultAttribute['result_type'][$key] == 'qualitative') ? 'selected="selected"' : ''; ?>><?= _translate("Qualitative"); ?></option>
 																	<option value="quantitative" <?php echo (isset($testResultAttribute['result_type'][$key]) && !empty($testResultAttribute['result_type'][$key]) && $testResultAttribute['result_type'][$key] == 'quantitative') ? 'selected="selected"' : ''; ?>><?= _translate("Quantitative"); ?></option>
 																</select>
@@ -565,7 +565,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 										</td>
 										<td style="width:30%;">
 											<select type="text" name="resultConfig[result_type][1]" id="testType1" class="form-control input-sm" title="Please select the type of result" onchange="setResultType(this.value, 1)">
-												<option value=""> --<?= _translate("select"); ?>-- </option>
+												<option value=""> <?= _translate("-- Select --"); ?> </option>
 												<option value="qualitative"><?= _translate("Qualitative"); ?></option>
 												<option value="quantitative"><?= _translate("Quantitative"); ?></option>
 											</select>
@@ -982,7 +982,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 							<td style="width:20%;"><lable for="testType' + sampleCounter + '" class="form-label-control">Select result type</lable></td>\
 							<td style="width:30%;">\
 								<select type="text" name="resultConfig[result_type][' + sampleCounter + ']"id="testType' + sampleCounter + '" class="form-control isRequired input-sm" title="Please select the type of result" onchange="setResultType(this.value, ' + sampleCounter + ')">\
-									<option value=""> --<?= _translate("select"); ?>-- </option>\
+									<option value=""> <?= _translate("-- Select --"); ?> </option>\
 									<option value="qualitative"><?= _translate("Qualitative"); ?></option>\
 									<option value="quantitative"><?= _translate("Quantitative"); ?></option>\
 								</select>\

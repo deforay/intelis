@@ -658,7 +658,7 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn">Date Sample Received at Hub </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" onchange="checkSampleReceviedAtHubDate()" />
+                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
@@ -792,7 +792,7 @@ $sFormat = '';
                                                             </div>
                                                        </div>
                                                        <div class="row">
-                                                           
+
                                                             <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="review-approve-span mandatory" style="display: none;">*</span> </label>
                                                                  <div class="col-lg-7">
@@ -817,7 +817,7 @@ $sFormat = '';
                                                             </div>
                                                        </div>
                                                        <div class="row">
-                                                           
+
                                                             <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label labels" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                  <div class="col-lg-7">

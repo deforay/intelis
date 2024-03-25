@@ -120,7 +120,7 @@ if ($chkUserFcMapResult) {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-     $province .= "<option data-code='" . $provinceName['geo_code'] ."' data-name='" . $provinceName['geo_name'] . "'data-province-id='" . $provinceName['geo_id'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
+     $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-name='" . $provinceName['geo_name'] . "'data-province-id='" . $provinceName['geo_id'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 
@@ -531,7 +531,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                        <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn">Date Sample Received at Hub </label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" onchange="checkSampleReceviedAtHubDate()" />
+                                                                 <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
                                                             </div>
                                                        </div>
                                                        <div class="col-md-6">
@@ -1458,7 +1458,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     function(data) {
                          if (data != undefined && data !== null) {
 
-                              //  //console.log(data);
+                              console.log(data.result);
                               data = JSON.parse(data);
                               $("#facilitySection,#labSection,.subTestResultSection,#otherSection").html('');
                               $('.patientSectionInput').remove();
