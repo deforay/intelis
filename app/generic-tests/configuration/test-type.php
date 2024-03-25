@@ -28,7 +28,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (_isAllowed("/generic-tests/configuration/add-test-type.php")) { ?>
+            <?php if (_isAllowed("/generic-tests/configuration/add-test-type.php") && $_SESSION['instance']['type'] != 'vluser') { ?>
               <a href="add-test-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Type"); ?></a>
             <?php } ?>
           </div>
