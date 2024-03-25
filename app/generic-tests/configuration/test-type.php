@@ -42,7 +42,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
                   <th><?php echo _translate("Short Code"); ?></th>
                   <th><?php echo _translate("LOINC Code"); ?></th>
                   <th><?php echo _translate("Status"); ?></th>
-                  <?php if (_isAllowed("/generic-tests/configuration/edit-test-type.php")) { ?>
+                  <?php if (_isAllowed("/generic-tests/configuration/edit-test-type.php") && $_SESSION['instance']['type'] != 'vluser') { ?>
                     <th><?php echo _translate("Action"); ?></th>
                   <?php } ?>
                 </tr>
@@ -92,11 +92,11 @@ $usersService = ContainerRegistry::get(UsersService::class);
         },
         {
           "sClass": "center"
-        },
+        }<?php if (_isAllowed("/generic-tests/configuration/edit-test-type.php") && $_SESSION['instance']['type'] != 'vluser') { ?> ,
         {
           "sClass": "center",
           "bSortable": false
-        }
+        } <?php } ?>
       ],
       "aaSorting": [
         [0, "asc"]
