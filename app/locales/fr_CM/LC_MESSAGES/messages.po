@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-03-26 16:35+0530\n"
-"PO-Revision-Date: 2024-03-26 16:35+0530\n"
+"POT-Creation-Date: 2024-03-26 16:52+0530\n"
+"PO-Revision-Date: 2024-03-26 17:03+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -21361,41 +21361,48 @@ msgstr "Commentaires du laboratoire"
 #: vl/results/pdf/result-pdf-cameroon.php:610
 msgid ""
 "For a variation in Viral Load to be significant, the difference between two "
-"measurements must be at least 0.5 Log 10 or a reduction or increase of a "
-"factor of 3 in the number of copies/mL"
+"measurements must be at least 0.5 Log<sub>10</sub> or a reduction or "
+"increase of a factor of 3 in the number of copies/mL"
 msgstr ""
 "Pour qu'une variation de la charge virale soit significative, la différence "
-"entre deux mesures doit être d'au moins 0,5 Log 10 ou une réduction ou une "
-"augmentation d'un facteur 3 du nombre de copies/mL"
+"entre deux mesures doit être d'au moins 0,5 <sub>Log10</sub> ou une "
+"réduction ou une augmentation d'un facteur 3 du nombre de copies/mL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:623
+#: vl/results/pdf/result-pdf-cameroon.php:619
+msgid "Detection Limit (DL)"
+msgstr "Limite de détection (LDD)"
+
+#: vl/results/pdf/result-pdf-cameroon.php:619
 msgid ""
-"<u><strong>Detection Limit</strong></u> (DL): < 40 copies/mL (1.60 Log 10 "
-"copies/mL) for Plasma and 839 copies/mL (2.92 Log 10 copies/mL) for DBS"
+"&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 "
+"Log<sub>10</sub>) copies/mL for DBS"
 msgstr ""
-"<u><strong>Limite de détection</strong></u> (DL) : &lt; 40 copies/mL (1,60 "
-"Log 10 copies/mL) pour le plasma et 839 copies/mL (2,92 Log 10 copies/mL) "
-"pour le DBS"
+"&lt; 40 (1,60 <sub>Log10</sub>) copies/mL pour le plasma et 839 (2,92 "
+"<sub>Log10</sub>) copies/mL pour le DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:624
+#: vl/results/pdf/result-pdf-cameroon.php:621
+msgid "Quantification Limits (QL)"
+msgstr "Limites de quantification (LDQ)"
+
+#: vl/results/pdf/result-pdf-cameroon.php:621
 msgid ""
-"<u><strong>Quantification Limits</strong></u> (QL): Between 40 and 10,000000 "
-"copies/mL (1.60 and 7.0 Log 10 copies/mL) for Plasma and 839 and 10,000000 "
-"copies/mL (2.92 and 7.0 Log 10 copies/mL) for DBS "
+"Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for "
+"Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for "
+"DBS"
 msgstr ""
-"<u><strong>Limites de quantification</strong></u> (QL) : Entre 40 et 10 000 "
-"000 copies/mL (1,60 et 7,0 Log 10 copies/mL) pour le plasma et entre 839 et "
-"10 000 000 copies/mL (2,92 et 7,0 Log 10 copies/mL) pour le DBS "
+"Entre 40 et 10 000 000 (1,60 et 7,0 <sub>Log10</sub>) copies/mL pour le "
+"plasma et 839 et 10 000 000 (2,92 et 7,0 <sub>Log10</sub>) copies/mL pour le "
+"DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:641
+#: vl/results/pdf/result-pdf-cameroon.php:638
 msgid "Continue on current regimen"
 msgstr "Poursuivre le protocole actuel"
 
-#: vl/results/pdf/result-pdf-cameroon.php:642
+#: vl/results/pdf/result-pdf-cameroon.php:639
 msgid "Printed on"
 msgstr "Imprimé le"
 
-#: vl/results/pdf/result-pdf-cameroon.php:645
+#: vl/results/pdf/result-pdf-cameroon.php:642
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 
