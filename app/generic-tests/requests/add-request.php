@@ -235,7 +235,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                         <div class="col-md-6">
                                              <label class="col-lg-5" for="testType">Test Type <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <select class="form-control isRequired" name="testType" id="testType" title="Please choose test type" onchange="getTestTypeForm();getSubTestList(this.value);">
+                                                  <select class="form-control isRequired" name="testType" id="testType" title="Please choose test type" onchange="getTestTypeForm();getSubTestList(this.value);loadSubTests();">
                                                        <option value=""> -- Select -- </option>
                                                        <?php foreach ($testTypeResult as $testType) { ?>
                                                             <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
