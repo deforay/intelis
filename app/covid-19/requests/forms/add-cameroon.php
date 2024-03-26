@@ -249,7 +249,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate('Universal Health Coverage'); ?></th>
-                                        <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/></td>
+                                        <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32" /></td>
 
                                     </tr>
                                     <tr>
@@ -261,8 +261,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                     </tr>
                                     <tr>
-                                        
-                                    <th scope="row"><?= _translate("State"); ?></th>
+
+                                        <th scope="row"><?= _translate("State"); ?></th>
                                         <td>
                                             <select class="form-control " name="patientProvince" id="patientProvince" title="<?= _translate('Please Case State'); ?>" onchange="getPatientDistrictDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
@@ -277,7 +277,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _translate("Payam"); ?></th>
+                                        <th scope="row"><?= _translate("Payam"); ?></th>
                                         <td><input class="form-control" id="patientZone" name="patientZone" placeholder="<?= _translate('Case Payam'); ?>" title="<?= _translate('Please enter the Case Payam'); ?>" style="width:100%;"></td>
 
                                         <th scope="row"><?= _translate("Boma/Village"); ?></th>
@@ -351,7 +351,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <th scope="row"><label for="testNumber"><?= _translate("Number of Times Tested"); ?></label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="<?= _translate('Number of Times Tested'); ?>" style="width:100%;">
-                                                <option value=""><?= _translate("--Select--"); ?></option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <?php foreach (range(1, 5) as $element) {
                                                     echo '<option value="' . $element . '">' . $element . '</option>';
                                                 } ?>
@@ -387,7 +387,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <td><label for="specimenQuality"><?= _translate("Specimen Quality"); ?></label></td>
                                             <td>
                                                 <select class="form-control" id="specimenQuality" name="specimenQuality" title="Please enter the specimen quality">
-                                                    <option value=""><?= _translate("--Select--"); ?></option>
+                                                    <option value=""><?= _translate("-- Select --"); ?></option>
                                                     <option value="good"><?= _translate("Good"); ?></option>
                                                     <option value="poor"><?= _translate("Poor"); ?></option>
                                                 </select>
@@ -395,7 +395,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <th scope="row"><label for="labTechnician"><?= _translate("Lab Technician"); ?> </label></th>
                                             <td>
                                                 <select name="labTechnician" id="labTechnician" class="form-control" title="Please select a Lab Technician" style="width:100%;">
-                                                    <option value=""><?= _translate("--Select--"); ?></option>
+                                                    <option value=""><?= _translate("-- Select --"); ?></option>
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $_SESSION['userId'], '-- Select --'); ?>
                                                 </select>
                                             </td>

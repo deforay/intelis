@@ -222,11 +222,11 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 								<tbody id="attributeTable">
 									<tr>
 										<td>
-											<input type="text" name="fieldName[]" id="fieldName1" class="form-control fieldName isRequired" placeholder='<?php echo _translate("Field Name"); ?>' title='<?php echo _translate("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" />
+											<input type="text" name="fieldName[]" id="fieldName1" class="form-control fieldName isRequired" placeholder='<?php echo _translate("Field Name"); ?>' title='<?php echo _translate("Please enter field name"); ?>' onblur="checkDuplication(this, 'fieldName');" />
 											<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control isRequired" />
 										</td>
 										<td>
-											<input type="text" name="fieldCode[]" id="fieldCode1" class="form-control fieldCode isRequired" placeholder='<?php echo _translate("Field Code"); ?>' title='<?php echo _translate("Please enter field code"); ?>' onblur="checkDublicateName(this, 'fieldCode');" onchange="this.value=formatStringToSnakeCase(this.value)" />
+											<input type="text" name="fieldCode[]" id="fieldCode1" class="form-control fieldCode isRequired" placeholder='<?php echo _translate("Field Code"); ?>' title='<?php echo _translate("Please enter field code"); ?>' onblur="checkDuplication(this, 'fieldCode');" onchange="this.value=formatStringToSnakeCase(this.value)" />
 										</td>
 										<td>
 											<select class="form-control isRequired" name="fieldType[]" id="fieldType1" onchange="changeField(this,'1')" title="<?php echo _translate('Please select the field type'); ?>">
@@ -304,7 +304,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 													</td>
 													<td style="width:30%;">
 														<select type="text" name="resultConfig[result_type][1]" id="testType1" class="form-control input-sm" title="Please select the type of result" onchange="setResultType(this.value, 1)">
-															<option value=""> --<?= _translate("select"); ?>-- </option>
+															<option value=""> <?= _translate("-- Select --"); ?> </option>
 															<option value="qualitative"><?= _translate("Qualitative"); ?></option>
 															<option value="quantitative"><?= _translate("Quantitative"); ?></option>
 														</select>
@@ -569,8 +569,8 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 		h.setAttribute("align", "center");
 		h.setAttribute("style", "vertical-align:middle");
 		tagClass = 'container' + tableRowId;
-		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _translate('Field Name'); ?>" title="<?php echo _translate('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
-		c.innerHTML = '<input type="text" name="fieldCode[]" id="fieldCode' + tableRowId + '" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDublicateName(this, \'fieldCode\');" onchange="this.value=formatStringToSnakeCase(this.value)"/>';
+		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _translate('Field Name'); ?>" title="<?php echo _translate('Please enter field name'); ?>" onblur="checkDuplication(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
+		c.innerHTML = '<input type="text" name="fieldCode[]" id="fieldCode' + tableRowId + '" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDuplication(this, \'fieldCode\');" onchange="this.value=formatStringToSnakeCase(this.value)"/>';
 		d.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')">\
                             <option value=""> <?php echo _translate("-- Select --"); ?> </option>\
                             <option value="number"><?php echo _translate("Number"); ?></option>\
@@ -615,7 +615,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 		});
 	}
 
-	function checkDublicateName(obj, name) {
+	function checkDuplication(obj, name) {
 		dublicateObj = document.getElementsByName(name + "[]");
 		for (m = 0; m < dublicateObj.length; m++) {
 			if (obj.value != '' && obj.id != dublicateObj[m].id && obj.value == dublicateObj[m].value) {
@@ -752,7 +752,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							<td style="width:20%;"><lable for="testType' + sampleCounter + '" class="form-label-control">Select result type</lable></td>\
 							<td style="width:30%;">\
 								<select type="text" name="resultConfig[result_type][' + sampleCounter + ']"id="testType' + sampleCounter + '" class="form-control isRequired input-sm" title="Please select the type of result" onchange="setResultType(this.value, ' + sampleCounter + ')">\
-									<option value=""> --<?= _translate("select"); ?>-- </option>\
+									<option value=""> <?= _translate("-- Select --"); ?> </option>\
 									<option value="qualitative"><?= _translate("Qualitative"); ?></option>\
 									<option value="quantitative"><?= _translate("Quantitative"); ?></option>\
 								</select>\

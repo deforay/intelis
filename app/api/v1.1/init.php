@@ -161,7 +161,7 @@ foreach ($modules as $module => $status) {
     $rejectionReason[$module] = $reasons[$module];
     $testReasonName = "test_reason_name";
     $testReasonTable = 'r_' . $module . '_test_reasons';
-    if($module == 'genericTests'){
+    if($module == 'genericTests' || $modules == 'generic-tests'){
         $testReasonTable = 'r_generic_test_reasons';
         $testReasonName = "test_reason";
     }

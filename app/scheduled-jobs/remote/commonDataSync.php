@@ -41,7 +41,6 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
-
 //update common data from remote to lab db
 $remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
 
@@ -72,7 +71,6 @@ $payload = array(
     'partnersLastModified'          => $general->getLastModifiedDateTime('r_implementation_partners'),
     'geoDivisionsLastModified'      => $general->getLastModifiedDateTime('geographical_divisions'),
     'patientsLastModified'          => $general->getLastModifiedDateTime('patients'),
-    'labStorageLastModified'        => $general->getLastModifiedDateTime('labStorage'),
     "Key"                           => "vlsm-get-remote",
 );
 
@@ -117,16 +115,11 @@ $commonDataToSync = array(
     'patients'  => array(
         'primaryKey' => 'system_patient_code',
         'tableName'  =>  'patients',
-    ),
-    'labStorage'  => array(
-        'primaryKey' => 'storage_id',
-        'tableName'  =>  'lab_storage',
     )
 );
 
 
 $url = $remoteUrl . '/remote/remote/commonData.php';
-
 if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
     $toSyncTables = array(
         "r_test_types",
@@ -147,7 +140,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
         "generic_test_result_units_map"
     );
     foreach ($toSyncTables as $table) {
-        $payload[$general->stringToCamelCase($table) . 'LastModified'] = $general->getLastModifiedDateTime('r_generic_sample_types');
+        $payload[$general->stringToCamelCase($table) . 'LastModified'] = $general->getLastModifiedDateTime($table);
 
         $genericDataToSync[$general->stringToCamelCase($table)] = array("primaryKey" => $general->getPrimaryKeyField($table), "tableName" => $table);
     }

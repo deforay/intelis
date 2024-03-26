@@ -327,3 +327,6 @@ ALTER TABLE `audit_form_eid` ADD `health_insurance_code` VARCHAR(32) NULL DEFAUL
 
 ALTER TABLE `form_covid19` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
 ALTER TABLE `audit_form_covid19` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
+
+-- Jeyabanu 26-Mar-2024
+ALTER TABLE `lab_storage` ADD `data_sync` INT NOT NULL DEFAULT '0' AFTER `updated_datetime`;

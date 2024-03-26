@@ -69,6 +69,19 @@
             return succeed;
         }
 
+        static toSnakeCase(str) {
+            return str
+                // Handle sequences of uppercase letters as single words
+                .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
+                // Add an underscore before any uppercase letter followed by lowercase letters,
+                // ensuring it's not the start of the string
+                .replace(/([a-z\d])([A-Z])/g, '$1_$2')
+                // Lowercase the whole string
+                .toLowerCase()
+                // Replace spaces and any non-alphanumeric characters (excluding underscores) with underscores
+                .replace(/[\s]+/g, '_');
+        }
+
         /**
          * Calculates age in years and months from a given date of birth (dob) and an optional format.
          * @param {string} dob - Date of birth.

@@ -290,6 +290,7 @@ try {
 
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
           if (!empty($_POST['testName'])) {
+               $finalResult = "";
                $db->where('generic_id', $_POST['vlSampleId']);
                $db->delete('generic_test_results');
                foreach ($_POST['testName'] as $subTestName => $subTests) {
@@ -313,10 +314,11 @@ try {
                                    'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
                               );
                               $db->insert('generic_test_results', $testData);
+                              $finalResult = $_POST['finalResult'][$subTestName];
                          }
                     }
                }
-               $genericData['result'] = 'Tested';
+               $genericData['result'] = $finalResult;
           }
      } else {
           $db->where('generic_id', $_POST['vlSampleId']);
