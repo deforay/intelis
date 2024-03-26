@@ -297,11 +297,23 @@ try {
           'manual_result_entry' => 'yes',
           'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'] ?? null
      );
-     
+
+     $countChar = substr_count($_POST['freezer'],"-");
+                
+     if(isset($countChar) && $countChar > 2) {
+         $storageId = $_POST['freezer'];
+         $getStorage = $general->getDataFromOneFieldAndValue('lab_storage','storage_code',$_POST['freezer']);
+         $freezerCode = $getStorage['storage_code'];
+     }
+     else{
+         $storageId = $general->generateUUID();
+         $freezerCode = $_POST['freezer'];
+         $storageSave = $general->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $_POST['freezer'], $_POST['labId'], 'active'));
+     }
      $formAttributes = [
-          'applicationVersion' => $general->getSystemConfig('sc_version'),
-          'ip_address' => $general->getClientIpAddress(),
-          'storage' => array("freezer"=>$_POST['freezer'],"freezerCode"=>$_POST['freezerCode'],"rack"=>$_POST['rack'],"box"=>$_POST['box'],"position"=>$_POST['position']),
+         'applicationVersion' => $general->getSystemConfig('sc_version'),
+         'ip_address' => $general->getClientIpAddress(),
+         'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$_POST['rack'],"box"=>$_POST['box'],"position"=>$_POST['position']),
      ];
 
      $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');

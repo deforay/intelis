@@ -347,6 +347,7 @@ $payload['labId'] = $labId;
 
 
 $jsonResponse = $apiService->post($url, $payload);
+
 if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
     $options = [
