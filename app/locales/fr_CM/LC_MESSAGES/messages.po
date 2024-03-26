@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-03-26 16:20+0530\n"
-"PO-Revision-Date: 2024-03-26 16:20+0530\n"
+"POT-Creation-Date: 2024-03-26 16:35+0530\n"
+"PO-Revision-Date: 2024-03-26 16:35+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -21320,45 +21320,45 @@ msgstr ""
 "PCR (seuil de sensibilité : 40 copies/ml pour le plasma et 839 copies/ml "
 "pour le DBS)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:418
+#: vl/results/pdf/result-pdf-cameroon.php:426
 msgid "TEST PLATFORM"
 msgstr "PLATE-FORME D'ESSAI"
 
-#: vl/results/pdf/result-pdf-cameroon.php:470
+#: vl/results/pdf/result-pdf-cameroon.php:494
 msgid "TESTED BY"
 msgstr "TESTÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:471
-#: vl/results/pdf/result-pdf-cameroon.php:492
-#: vl/results/pdf/result-pdf-cameroon.php:513
-#: vl/results/pdf/result-pdf-cameroon.php:534
+#: vl/results/pdf/result-pdf-cameroon.php:495
+#: vl/results/pdf/result-pdf-cameroon.php:516
+#: vl/results/pdf/result-pdf-cameroon.php:537
+#: vl/results/pdf/result-pdf-cameroon.php:558
 msgid "SIGNATURE"
 msgstr "SIGNATURE"
 
-#: vl/results/pdf/result-pdf-cameroon.php:472
-#: vl/results/pdf/result-pdf-cameroon.php:493
-#: vl/results/pdf/result-pdf-cameroon.php:514
-#: vl/results/pdf/result-pdf-cameroon.php:535
+#: vl/results/pdf/result-pdf-cameroon.php:496
+#: vl/results/pdf/result-pdf-cameroon.php:517
+#: vl/results/pdf/result-pdf-cameroon.php:538
+#: vl/results/pdf/result-pdf-cameroon.php:559
 msgid "DATE"
 msgstr "DATE"
 
-#: vl/results/pdf/result-pdf-cameroon.php:491
+#: vl/results/pdf/result-pdf-cameroon.php:515
 msgid "REVIEWED BY"
 msgstr "REVUE PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:512
+#: vl/results/pdf/result-pdf-cameroon.php:536
 msgid "REPORT REVISED BY"
 msgstr "RAPPORT RÉVISÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:533
+#: vl/results/pdf/result-pdf-cameroon.php:557
 msgid "APPROVED BY"
 msgstr "APPROUVÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:569
+#: vl/results/pdf/result-pdf-cameroon.php:593
 msgid "Lab Comments"
 msgstr "Commentaires du laboratoire"
 
-#: vl/results/pdf/result-pdf-cameroon.php:587
+#: vl/results/pdf/result-pdf-cameroon.php:610
 msgid ""
 "For a variation in Viral Load to be significant, the difference between two "
 "measurements must be at least 0.5 Log 10 or a reduction or increase of a "
@@ -21368,35 +21368,34 @@ msgstr ""
 "entre deux mesures doit être d'au moins 0,5 Log 10 ou une réduction ou une "
 "augmentation d'un facteur 3 du nombre de copies/mL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:595
+#: vl/results/pdf/result-pdf-cameroon.php:623
 msgid ""
-"<u><strong>Detection Limit</strong></u> (DL): <strong> < 40 copies/mL (1.60 "
-"Log 10 copies/mL) for Plasma and 839 copies/mL (2.92 Log 10 copies/mL) for "
-"DBS"
+"<u><strong>Detection Limit</strong></u> (DL): < 40 copies/mL (1.60 Log 10 "
+"copies/mL) for Plasma and 839 copies/mL (2.92 Log 10 copies/mL) for DBS"
 msgstr ""
-"<u><strong>Limite de détection</strong></u> (LDD) : <strong> &lt; 40 copies/"
-"mL (1,60 Log 10 copies/mL) pour le plasma et 839 copies/mL (2,92 Log 10 "
-"copies/mL) pour le DBS"
+"<u><strong>Limite de détection</strong></u> (DL) : &lt; 40 copies/mL (1,60 "
+"Log 10 copies/mL) pour le plasma et 839 copies/mL (2,92 Log 10 copies/mL) "
+"pour le DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:596
+#: vl/results/pdf/result-pdf-cameroon.php:624
 msgid ""
-"<u><strong>Quantification Limits</strong></u> (QL) Between <strong> 40 and "
-"10,000000 copies/mL (1.60 and 7.0 Log 10 copies/mL) for Plasma and 839 and "
-"10,000000 copies/mL (2.92 and 7.0 Log 10 copies/mL) for DBS "
+"<u><strong>Quantification Limits</strong></u> (QL): Between 40 and 10,000000 "
+"copies/mL (1.60 and 7.0 Log 10 copies/mL) for Plasma and 839 and 10,000000 "
+"copies/mL (2.92 and 7.0 Log 10 copies/mL) for DBS "
 msgstr ""
-"<u><strong>Limites de quantification</strong></u> (LDQ) Entre <strong> 40 et "
-"10 000 000 copies/mL (1,60 et 7,0 Log 10 copies/mL) pour le plasma et 839 et "
+"<u><strong>Limites de quantification</strong></u> (QL) : Entre 40 et 10 000 "
+"000 copies/mL (1,60 et 7,0 Log 10 copies/mL) pour le plasma et entre 839 et "
 "10 000 000 copies/mL (2,92 et 7,0 Log 10 copies/mL) pour le DBS "
 
-#: vl/results/pdf/result-pdf-cameroon.php:613
+#: vl/results/pdf/result-pdf-cameroon.php:641
 msgid "Continue on current regimen"
 msgstr "Poursuivre le protocole actuel"
 
-#: vl/results/pdf/result-pdf-cameroon.php:614
+#: vl/results/pdf/result-pdf-cameroon.php:642
 msgid "Printed on"
 msgstr "Imprimé le"
 
-#: vl/results/pdf/result-pdf-cameroon.php:617
+#: vl/results/pdf/result-pdf-cameroon.php:645
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 

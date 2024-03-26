@@ -385,7 +385,7 @@ if (!empty($result)) {
      }
      if (str_contains(strtolower((string)$result['vl_test_platform']), 'abbott')) {
           $html .= '<tr>';
-          $html .= "<td colspan='3' style='line-height:10px;font-size:10px;padding-top:10px;'>" . _translate("Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR (Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)") . "</td>";
+          $html .= '<td colspan="3" style="line-height:10px;font-size:10px;padding-top:10px;">' . _translate("Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR (Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)") . '</td>';
           $html .= '</tr>';
      }
      //$html .= '<tr><td colspan="3"></td></tr>';
@@ -408,6 +408,14 @@ if (!empty($result)) {
           $html .= '<td colspan="3" style="line-height:16px;"></td>';
           $html .= '</tr>';
      }
+     // if (trim($result['lab_tech_comments']) != '') {
+     //      $html .= '<tr>';
+     //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">LAB COMMENTS&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ($result['lab_tech_comments']) . '</span></td>';
+     //      $html .= '</tr>';
+     //      $html .= '<tr>';
+     //      $html .= '<td colspan="3" style="line-height:10px;"></td>';
+     //      $html .= '</tr>';
+     // }
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
@@ -417,7 +425,23 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:15px;font-size:11px;font-weight:bold;">' . _translate("TEST PLATFORM") . ' &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ($result['vl_test_platform']) . '</span></td>';
      $html .= '</tr>';
-
+     // $html .= '<tr>';
+     // $html .= '<td colspan="3" style="line-height:8px;"></td>';
+     // $html .= '</tr>';
+     // if (isset($result['last_viral_load_result']) && $result['last_viral_load_result'] != null) {
+     //      $html .= '<tr>';
+     //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">PREVIOUS RESULTS</td>';
+     //      $html .= '</tr>';
+     //      $html .= '<tr>';
+     //      $html .= '<td colspan="3" style="line-height:8px;"></td>';
+     //      $html .= '</tr>';
+     //      $html .= '<tr>';
+     //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Date of Last VL Test&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_date'] . '</span></td>';
+     //      $html .= '</tr>';
+     //      $html .= '<tr>';
+     //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Result of previous viral load(copies/ml)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_result'] . '</span></td>';
+     //      $html .= '</tr>';
+     // }
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
@@ -583,17 +607,21 @@ if (!empty($result)) {
 
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;">';
-
-     $html .= "<u><b>NB</u></b> : " . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log 10 or a reduction or increase of a factor of 3 in the number of copies/mL") . " </td>";
+     $html .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log 10 or a reduction or increase of a factor of 3 in the number of copies/mL") . ' </td>';
      $html .= '</tr>';
 
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;"></td>';
      $html .= '</tr>';
 
+     // $html .= '<tr>';
+     // $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;color:#808080;">(*) <u><b>Limite de détection</b></u> (LDD): <b>&lt;40 copies/mL (1,60 Log 10 copies/mL)</b><br>';
+     // $html .= ' &nbsp;&nbsp;&nbsp;&nbsp;<u><b>Limites de quantifcation</b></u> (LDQ) Comprise entre <b>40 et 10 000 000 copies/mL (1,60 et 7,0 Log 10 copies/mL)</b></td>';
+     // $html .= '</tr>';
+
      $html .= '<tr>';
-     $html .= "<td colspan='3' style='line-height:11px;font-size:11px;text-align:left;color:#808080;'>(*)" . _translate("<u><strong>Detection Limit</strong></u> (DL): <strong> < 40 copies/mL (1.60 Log 10 copies/mL) for Plasma and 839 copies/mL (2.92 Log 10 copies/mL) for DBS") . "</strong><br>";
-     $html .= "&nbsp;&nbsp;&nbsp;&nbsp;" . _translate("<u><strong>Quantification Limits</strong></u> (QL) Between <strong> 40 and 10,000000 copies/mL (1.60 and 7.0 Log 10 copies/mL) for Plasma and 839 and 10,000000 copies/mL (2.92 and 7.0 Log 10 copies/mL) for DBS ") . "</strong></td>";
+     $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;color:#808080;">(*)' . _translate("<u><strong>Detection Limit</strong></u> (DL): < 40 copies/mL (1.60 Log 10 copies/mL) for Plasma and 839 copies/mL (2.92 Log 10 copies/mL) for DBS") . '<br>';
+     $html .= ' &nbsp;&nbsp;&nbsp;&nbsp;' . _translate("<u><strong>Quantification Limits</strong></u> (QL): Between 40 and 10,000000 copies/mL (1.60 and 7.0 Log 10 copies/mL) for Plasma and 839 and 10,000000 copies/mL (2.92 and 7.0 Log 10 copies/mL) for DBS ") . '</td>';
      $html .= '</tr>';
 
      $html .= '<tr>';
