@@ -1341,4 +1341,9 @@ class CommonService
 
         return $sheet;
     }
+
+    public function quickInsert($table, $fields, $values)
+    {
+        return $this->db->insert($table, array_combine($fields, $values));
+    }
 }

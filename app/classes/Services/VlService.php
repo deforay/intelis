@@ -5,6 +5,7 @@ namespace App\Services;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
+use App\Services\StorageService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
@@ -509,10 +510,22 @@ class VlService extends AbstractTestService
                     $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                 }
 
+                $countChar = substr_count($params['freezer'],"-");
+                
+                if(isset($countChar) && $countChar > 2) {
+                    $storageId = $params['freezer'];
+                    $getStorage = $this->commonService->getDataFromOneFieldAndValue('lab_storage','storage_code',$params['freezer']);
+                    $freezerCode = $getStorage['storage_code'];
+                }
+                else{
+                    $storageId = $this->commonService->generateUUID();
+                    $freezerCode = $params['freezer'];
+                    $storageSave = $this->commonService->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $params['freezer'], $params['labId'], 'active'));
+                }
                 $formAttributes = [
                     'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address' => $this->commonService->getClientIpAddress(),
-                    'storage' => array("freezer"=>$params['freezer'],"freezerCode"=>$params['freezerCode'],"rack"=>$params['rack'],"box"=>$params['box'],"position"=>$params['position']),
+                    'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$params['rack'],"box"=>$params['box'],"position"=>$params['position']),
                 ];
 
                 $formAttributes = $this->commonService->jsonToSetString(json_encode($formAttributes), 'form_attributes');
@@ -649,7 +662,6 @@ class VlService extends AbstractTestService
                 $this->db->where('lab_id', $labId);
             }
             $this->db->join("facility_details f", "f.facility_id=s.lab_id", "INNER");
-
            
                 $response = [];
                 $results = $this->db->get("lab_storage s");

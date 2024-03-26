@@ -3,10 +3,13 @@
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-
+use App\Services\StorageService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var StorageService $storageService */
+$storageService = ContainerRegistry::get(StorageService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -50,6 +53,12 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 
 $duVisibility = (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((string) $vlQueryInfo['is_patient_new']) == "no") ? 'hidden' : 'visible';
 $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'none' : 'block';
+
+$formAttributes = json_decode($vlQueryInfo['form_attributes']);
+$storageObj = json_decode($formAttributes->storage);
+
+$storageInfo = $storageService->getLabStorage();
+
 ?>
 
 <style>
@@ -449,6 +458,31 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 										</td>
 									</tr>
 									<tr>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?>  <em class="fas fa-edit"></em> :
+												</label></td>
+											<td style="width: 25%;">
+											<select class="form-control select2 editableSelect" id="freezer" name="freezer" placeholder="<?php echo _translate('Enter Freezer'); ?>" title="<?php echo _translate('Please enter Freezer'); ?>">
+												<?= $general->generateSelectOptions($storageInfo, $storageObj->storageId, '-- Select --') ?>
+											</select>
+
+											<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control" id="rack" name="rack" value="<?= $storageObj->rack; ?>" placeholder="<?php echo _translate('rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" value="<?= $storageObj->rack; ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Box'); ?> :
+												</label></td>
+											<td style="width: 25%;">
+											<input type="text" class="form-control" id="box" name="box" value="<?= $storageObj->box; ?>" placeholder="<?php echo _translate('box'); ?>" title="<?php echo _translate('Please enter box'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
+											<td style="width: 25%;"><label for="position"><?php echo _translate('Position'); ?> : </label> </td>
+											<td style="width: 25%;">
+											<input type="text" class="form-control" id="position" name="position" value="<?= $storageObj->position; ?>" placeholder="<?php echo _translate('Position'); ?>" title="<?php echo _translate('Please enter position'); ?>" <?php echo $labFieldDisabled; ?>  style="width:100%;" />
+
+											</td>
+										</tr>
+									<tr>
 										<td><label for="">Date de réalisation de la charge virale <span class="mandatory">*</span></label></td>
 										<td>
 											<input type="text" class="form-control dateTime isRequired" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
@@ -590,6 +624,13 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 <script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$(".select2").select2();
+		$(".select2").select2({
+			tags: true
+		});
+
+		storageEditableSelect('freezer', 'storage_code', 'storage_id','lab_storage', 'Storage Code');
+
 		getVlResults($("#testingPlatform").val());
 		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');
 
@@ -738,6 +779,46 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 					$("#possibleVlResults").html(data);
 				}
 			});
+	}
+
+	function storageEditableSelect(id, _fieldName, fieldId, table, _placeholder) {
+		$("#" + id).select2({
+			placeholder: _placeholder,
+			minimumInputLength: 0,
+			width: '100%',
+			allowClear: true,
+			id: function(bond) {
+				return bond._id;
+			},
+			ajax: {
+				placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+				url: "/includes/get-data-list-for-generic.php",
+				dataType: 'json',
+				delay: 250,
+				data: function(params) {
+					return {
+						fieldName: _fieldName,
+						fieldId: fieldId,
+						tableName: table,
+						q: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function(data, params) {
+					params.page = params.page || 1;
+					return {
+						results: data.result,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				//cache: true
+			},
+			escapeMarkup: function(markup) {
+				return markup;
+			}
+		});
 	}
 </script>
 <?php

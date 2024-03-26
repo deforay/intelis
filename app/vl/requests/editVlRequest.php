@@ -36,9 +36,6 @@ $healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('vl', fals
 
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 
-$storageList = $vlService->getLabStorage();
-
-
 $reasonForFailure = $vlService->getReasonForFailure();
 
 // Sanitized values from $request object

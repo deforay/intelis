@@ -164,8 +164,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="fundingSource"><?= _translate("Project Name"); ?></label>
-                                                       <select class="form-control" name="fundingSource" id="fundingSource" title="<?= _translate('Please choose implementing partner'); ?>" style="width:100%;">
+                                                  <label for="fundingSource">Funding Source</label>
+                                                       <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
                                                             <?php
                                                             foreach ($fundingSourceList as $fundingSource) {
@@ -282,7 +282,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                        <input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/>
                                                   </div>
                                              </div>
-                                             </div>
+                                                       </div>
                                              <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
