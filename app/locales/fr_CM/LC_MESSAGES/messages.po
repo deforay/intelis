@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-03-26 16:52+0530\n"
-"PO-Revision-Date: 2024-03-26 17:03+0530\n"
+"POT-Creation-Date: 2024-03-26 22:59+0530\n"
+"PO-Revision-Date: 2024-03-26 23:00+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -164,13 +164,13 @@ msgstr ""
 #: vl/requests/forms/add-png.php:40 vl/requests/forms/add-rwanda.php:77
 #: vl/requests/forms/add-sierraleone.php:72
 #: vl/requests/forms/add-southsudan.php:79 vl/requests/forms/add-who.php:68
-#: vl/requests/forms/edit-cameroon.php:126 vl/requests/forms/edit-drc.php:78
+#: vl/requests/forms/edit-cameroon.php:126 vl/requests/forms/edit-drc.php:85
 #: vl/requests/forms/edit-png.php:177 vl/requests/forms/edit-rwanda.php:128
 #: vl/requests/forms/edit-sierraleone.php:184
 #: vl/requests/forms/edit-southsudan.php:166 vl/requests/forms/edit-who.php:170
 #: vl/requests/upload-storage.php:69 vl/results/email-results.php:75
 #: vl/results/forms/update-cameroon-result.php:169
-#: vl/results/forms/update-drc-result.php:81
+#: vl/results/forms/update-drc-result.php:90
 #: vl/results/forms/update-png-result.php:162
 #: vl/results/forms/update-rwanda-result.php:109
 #: vl/results/forms/update-sierraleone-result.php:168
@@ -1190,6 +1190,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: global-config/editGlobalConfig.php:872
 #: global-config/editGlobalConfig.php:883
 #: global-config/editGlobalConfig.php:972
+#: global-config/editGlobalConfig.php:1527
 #: hepatitis/management/hepatitis-clinic-report.php:103
 #: hepatitis/management/hepatitis-clinic-report.php:116
 #: hepatitis/management/hepatitis-clinic-report.php:131
@@ -1358,9 +1359,9 @@ msgstr "Veuillez sélectionner les types de tests"
 #: vl/requests/forms/add-drc.php:104 vl/requests/forms/add-drc.php:128
 #: vl/requests/forms/add-drc.php:146 vl/requests/forms/add-drc.php:228
 #: vl/requests/forms/add-drc.php:273 vl/requests/forms/add-drc.php:334
-#: vl/requests/forms/add-drc.php:389 vl/requests/forms/add-drc.php:485
-#: vl/requests/forms/add-drc.php:497 vl/requests/forms/add-drc.php:505
-#: vl/requests/forms/add-drc.php:730 vl/requests/forms/add-drc.php:733
+#: vl/requests/forms/add-drc.php:389 vl/requests/forms/add-drc.php:484
+#: vl/requests/forms/add-drc.php:496 vl/requests/forms/add-drc.php:504
+#: vl/requests/forms/add-drc.php:729 vl/requests/forms/add-drc.php:732
 #: vl/requests/forms/edit-cameroon.php:181
 #: vl/requests/forms/edit-cameroon.php:189
 #: vl/requests/forms/edit-cameroon.php:220
@@ -1374,14 +1375,14 @@ msgstr "Veuillez sélectionner les types de tests"
 #: vl/requests/forms/edit-cameroon.php:687
 #: vl/requests/forms/edit-cameroon.php:769
 #: vl/requests/forms/edit-cameroon.php:981
-#: vl/requests/forms/edit-cameroon.php:994 vl/requests/forms/edit-drc.php:22
-#: vl/requests/forms/edit-drc.php:132 vl/requests/forms/edit-drc.php:142
-#: vl/requests/forms/edit-drc.php:169 vl/requests/forms/edit-drc.php:186
-#: vl/requests/forms/edit-drc.php:205 vl/requests/forms/edit-drc.php:302
-#: vl/requests/forms/edit-drc.php:367 vl/requests/forms/edit-drc.php:423
-#: vl/requests/forms/edit-drc.php:515 vl/requests/forms/edit-drc.php:527
-#: vl/requests/forms/edit-drc.php:535 vl/requests/forms/edit-drc.php:843
-#: vl/requests/forms/edit-drc.php:846 vl/requests/vl-requests.php:151
+#: vl/requests/forms/edit-cameroon.php:994 vl/requests/forms/edit-drc.php:26
+#: vl/requests/forms/edit-drc.php:139 vl/requests/forms/edit-drc.php:149
+#: vl/requests/forms/edit-drc.php:176 vl/requests/forms/edit-drc.php:193
+#: vl/requests/forms/edit-drc.php:212 vl/requests/forms/edit-drc.php:309
+#: vl/requests/forms/edit-drc.php:374 vl/requests/forms/edit-drc.php:430
+#: vl/requests/forms/edit-drc.php:521 vl/requests/forms/edit-drc.php:533
+#: vl/requests/forms/edit-drc.php:541 vl/requests/forms/edit-drc.php:852
+#: vl/requests/forms/edit-drc.php:855 vl/requests/vl-requests.php:151
 #: vl/requests/vl-requests.php:178 vl/requests/vl-requests.php:224
 #: vl/requests/vl-requests.php:243 vl/requests/vl-requests.php:259
 #: vl/requests/vl-requests.php:284 vl/requests/vl-requests.php:305
@@ -1404,18 +1405,18 @@ msgstr "Veuillez sélectionner les types de tests"
 #: vl/results/forms/update-cameroon-result.php:697
 #: vl/results/forms/update-cameroon-result.php:708
 #: vl/results/forms/update-cameroon-result.php:778
-#: vl/results/forms/update-drc-result.php:17
-#: vl/results/forms/update-drc-result.php:112
-#: vl/results/forms/update-drc-result.php:122
-#: vl/results/forms/update-drc-result.php:152
-#: vl/results/forms/update-drc-result.php:169
-#: vl/results/forms/update-drc-result.php:225
-#: vl/results/forms/update-drc-result.php:238
-#: vl/results/forms/update-drc-result.php:305
-#: vl/results/forms/update-drc-result.php:390
-#: vl/results/forms/update-drc-result.php:459
-#: vl/results/forms/update-drc-result.php:471
-#: vl/results/forms/update-drc-result.php:481
+#: vl/results/forms/update-drc-result.php:20
+#: vl/results/forms/update-drc-result.php:121
+#: vl/results/forms/update-drc-result.php:131
+#: vl/results/forms/update-drc-result.php:161
+#: vl/results/forms/update-drc-result.php:178
+#: vl/results/forms/update-drc-result.php:234
+#: vl/results/forms/update-drc-result.php:247
+#: vl/results/forms/update-drc-result.php:314
+#: vl/results/forms/update-drc-result.php:399
+#: vl/results/forms/update-drc-result.php:493
+#: vl/results/forms/update-drc-result.php:505
+#: vl/results/forms/update-drc-result.php:515
 #: vl/results/getVlResultsForApproval.php:167
 #: vl/results/vl-failed-results.php:68 vl/results/vl-failed-results.php:94
 #: vl/results/vlPrintResult.php:92 vl/results/vlPrintResult.php:108
@@ -1696,7 +1697,7 @@ msgstr "Action"
 #: global-config/editGlobalConfig.php:1205
 #: global-config/editGlobalConfig.php:1334
 #: global-config/editGlobalConfig.php:1463
-#: global-config/editGlobalConfig.php:1702
+#: global-config/editGlobalConfig.php:1718
 #: hepatitis/management/hepatitis-clinic-report.php:180
 #: hepatitis/management/hepatitis-clinic-report.php:285
 #: hepatitis/management/hepatitis-clinic-report.php:381
@@ -1805,7 +1806,7 @@ msgstr "ID de l'échantillon"
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:65
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:76
 #: generic-tests/requests/add-samples-from-manifest.php:43
-#: global-config/editGlobalConfig.php:1732
+#: global-config/editGlobalConfig.php:1748
 #: hepatitis/reference/add-hepatitis-comorbidities.php:56
 #: hepatitis/reference/add-hepatitis-results.php:55
 #: hepatitis/reference/add-hepatitis-risk-factors.php:55
@@ -2418,7 +2419,7 @@ msgstr "Veuillez choisir Région"
 #: generic-tests/results/generic-test-results.php:120
 #: generic-tests/results/generic-test-results.php:186
 #: generic-tests/results/generic-test-results.php:242
-#: global-config/editGlobalConfig.php:1701
+#: global-config/editGlobalConfig.php:1717
 #: hepatitis/management/get-rejected-samples.php:100
 #: hepatitis/management/hepatitis-clinic-report.php:184
 #: hepatitis/management/hepatitis-clinic-report.php:289
@@ -2856,8 +2857,8 @@ msgstr "Nom du Labo"
 #: global-config/editGlobalConfig.php:1314
 #: global-config/editGlobalConfig.php:1429
 #: global-config/editGlobalConfig.php:1443
-#: global-config/editGlobalConfig.php:1558
-#: global-config/editGlobalConfig.php:1572
+#: global-config/editGlobalConfig.php:1574
+#: global-config/editGlobalConfig.php:1588
 #: hepatitis/requests/forms/add-rwanda.php:81
 #: hepatitis/requests/forms/edit-rwanda.php:110 patients/add-patient.php:46
 #: patients/add-patient.php:224 patients/edit-patient.php:63
@@ -2876,7 +2877,7 @@ msgstr "Nom du Labo"
 #: vl/requests/forms/add-sierraleone.php:212
 #: vl/requests/forms/add-southsudan.php:219
 #: vl/requests/forms/edit-cameroon.php:268
-#: vl/requests/forms/edit-cameroon.php:445 vl/requests/forms/edit-drc.php:227
+#: vl/requests/forms/edit-cameroon.php:445 vl/requests/forms/edit-drc.php:234
 #: vl/requests/forms/edit-png.php:289 vl/requests/forms/edit-rwanda.php:227
 #: vl/requests/forms/edit-sierraleone.php:316
 #: vl/requests/forms/edit-southsudan.php:297
@@ -3359,7 +3360,7 @@ msgstr "Échantillons entrés par"
 #: generic-tests/results/generic-result-approval.php:118
 #: generic-tests/results/generic-result-approval.php:226
 #: generic-tests/results/generic-test-results.php:90
-#: global-config/editGlobalConfig.php:1703
+#: global-config/editGlobalConfig.php:1719
 #: hepatitis/management/hepatitis-clinic-report.php:187
 #: hepatitis/management/hepatitis-clinic-report.php:292
 #: hepatitis/management/hepatitis-clinic-report.php:307
@@ -3588,7 +3589,7 @@ msgstr "Alphanumérique"
 #: generic-tests/results/generic-test-results.php:110
 #: generic-tests/results/generic-test-results.php:192
 #: generic-tests/results/generic-test-results.php:248
-#: global-config/editGlobalConfig.php:1707
+#: global-config/editGlobalConfig.php:1723
 #: hepatitis/management/hepatitis-clinic-report.php:113
 #: hepatitis/management/hepatitis-clinic-report.php:222
 #: hepatitis/management/hepatitis-clinic-report.php:324
@@ -3789,7 +3790,7 @@ msgstr "Sauvegarder et Suivant"
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:66
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:77
 #: generic-tests/results/email-results.php:333
-#: global-config/editGlobalConfig.php:1733
+#: global-config/editGlobalConfig.php:1749
 #: hepatitis/reference/add-hepatitis-comorbidities.php:57
 #: hepatitis/reference/add-hepatitis-results.php:56
 #: hepatitis/reference/add-hepatitis-risk-factors.php:56
@@ -4745,7 +4746,7 @@ msgstr "Femme"
 #: generic-tests/results/generic-print-result.php:149
 #: generic-tests/results/generic-print-result.php:368
 #: generic-tests/results/generic-test-results.php:146
-#: generic-tests/results/result-pdf.php:256
+#: generic-tests/results/result-pdf.php:257
 #: hepatitis/management/hepatitis-clinic-report.php:164
 #: hepatitis/management/hepatitis-clinic-report.php:264
 #: hepatitis/management/hepatitis-clinic-report.php:367
@@ -4905,7 +4906,7 @@ msgstr "Noms du patient"
 #: eid/management/eid-clinic-report.php:188
 #: eid/management/eid-sample-status.php:95 eid/requests/eid-requests.php:147
 #: generic-tests/program-management/generic-sample-status.php:121
-#: global-config/editGlobalConfig.php:1706
+#: global-config/editGlobalConfig.php:1722
 #: hepatitis/management/hepatitis-clinic-report.php:188
 #: hepatitis/management/hepatitis-sample-status.php:88
 #: hepatitis/requests/hepatitis-dhis2.php:233
@@ -5191,7 +5192,7 @@ msgstr "Statut"
 #: vl/requests/forms/edit-cameroon.php:684
 #: vl/result-mail/editTestResultEmailConfig.php:113
 #: vl/results/forms/update-cameroon-result.php:705
-#: vl/results/pdf/result-pdf-cameroon.php:384
+#: vl/results/pdf/result-pdf-cameroon.php:391
 msgid "Rejection Reason"
 msgstr "Motif de rejet"
 
@@ -5626,7 +5627,6 @@ msgstr "Partenaires opérationnels"
 #: hepatitis/requests/hepatitis-requests.php:159
 #: tb/management/tb-export-data.php:174 tb/requests/tb-requests.php:162
 #: vl/program-management/vl-export-data.php:293
-#: vl/requests/forms/add-cameroon.php:168
 #: vl/requests/forms/add-cameroon.php:181
 #: vl/requests/forms/edit-cameroon.php:219 vl/requests/vl-requests.php:303
 #: vl/results/forms/update-cameroon-result.php:269
@@ -5761,10 +5761,11 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: global-config/editGlobalConfig.php:1315
 #: global-config/editGlobalConfig.php:1430
 #: global-config/editGlobalConfig.php:1444
-#: global-config/editGlobalConfig.php:1559
-#: global-config/editGlobalConfig.php:1573
-#: global-config/editGlobalConfig.php:1630
-#: global-config/editGlobalConfig.php:1641
+#: global-config/editGlobalConfig.php:1528
+#: global-config/editGlobalConfig.php:1575
+#: global-config/editGlobalConfig.php:1589
+#: global-config/editGlobalConfig.php:1646
+#: global-config/editGlobalConfig.php:1657
 #: hepatitis/management/hepatitis-export-data.php:186
 #: hepatitis/requests/forms/add-rwanda.php:83
 #: hepatitis/requests/forms/edit-rwanda.php:112
@@ -5811,7 +5812,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: vl/requests/forms/edit-cameroon.php:270
 #: vl/requests/forms/edit-cameroon.php:350
 #: vl/requests/forms/edit-cameroon.php:367
-#: vl/requests/forms/edit-cameroon.php:678 vl/requests/forms/edit-drc.php:229
+#: vl/requests/forms/edit-cameroon.php:678 vl/requests/forms/edit-drc.php:236
 #: vl/requests/forms/edit-png.php:291 vl/requests/forms/edit-rwanda.php:229
 #: vl/requests/forms/edit-sierraleone.php:318
 #: vl/requests/forms/edit-southsudan.php:299 vl/requests/vl-requests.php:226
@@ -5923,10 +5924,11 @@ msgstr "Oui"
 #: global-config/editGlobalConfig.php:1316
 #: global-config/editGlobalConfig.php:1431
 #: global-config/editGlobalConfig.php:1445
-#: global-config/editGlobalConfig.php:1560
-#: global-config/editGlobalConfig.php:1574
-#: global-config/editGlobalConfig.php:1631
-#: global-config/editGlobalConfig.php:1642
+#: global-config/editGlobalConfig.php:1529
+#: global-config/editGlobalConfig.php:1576
+#: global-config/editGlobalConfig.php:1590
+#: global-config/editGlobalConfig.php:1647
+#: global-config/editGlobalConfig.php:1658
 #: hepatitis/management/hepatitis-export-data.php:187
 #: hepatitis/requests/forms/add-rwanda.php:82
 #: hepatitis/requests/forms/edit-rwanda.php:111
@@ -5973,7 +5975,7 @@ msgstr "Oui"
 #: vl/requests/forms/edit-cameroon.php:269
 #: vl/requests/forms/edit-cameroon.php:353
 #: vl/requests/forms/edit-cameroon.php:370
-#: vl/requests/forms/edit-cameroon.php:679 vl/requests/forms/edit-drc.php:228
+#: vl/requests/forms/edit-cameroon.php:679 vl/requests/forms/edit-drc.php:235
 #: vl/requests/forms/edit-png.php:290 vl/requests/forms/edit-rwanda.php:228
 #: vl/requests/forms/edit-sierraleone.php:317
 #: vl/requests/forms/edit-southsudan.php:298 vl/requests/vl-requests.php:229
@@ -6820,7 +6822,7 @@ msgstr "Numéro de téléphone portable du patient"
 #: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:340
 #: vl/requests/forms/edit-cameroon.php:390
 #: vl/results/forms/update-cameroon-result.php:423
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:238
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:247
 msgid "Date of Sample Collection"
 msgstr "Date de prélèvement"
 
@@ -7061,7 +7063,7 @@ msgstr "Aperçu du statut des échantillons CD4"
 msgid "CD4 Samples"
 msgstr "Échantillons CD4"
 
-#: cd4/management/get-sample-status.php:349
+#: cd4/management/get-sample-status.php:349 system/translate-strings.php:246
 msgid "CD4 Results"
 msgstr "Résultats des CD4"
 
@@ -8041,14 +8043,14 @@ msgstr "Demande de CD4 ajoutée avec succès"
 #: covid-19/results/covid-19-update-result-helper.php:190
 #: eid/requests/eid-add-request-helper.php:472
 #: eid/requests/eid-edit-request-helper.php:491
-#: generic-tests/requests/add-request-helper.php:383
-#: generic-tests/requests/edit-request-helper.php:342
-#: generic-tests/results/update-generic-test-result-helper.php:213
+#: generic-tests/requests/add-request-helper.php:387
+#: generic-tests/requests/edit-request-helper.php:345
+#: generic-tests/results/update-generic-test-result-helper.php:216
 #: hepatitis/requests/hepatitis-edit-request-helper.php:272
 #: hepatitis/results/hepatitis-update-result-helper.php:105
 #: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:429
-#: vl/requests/editVlRequestHelper.php:407
-#: vl/results/updateVlTestResultHelper.php:220
+#: vl/requests/editVlRequestHelper.php:419
+#: vl/results/updateVlTestResultHelper.php:241
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -8404,7 +8406,7 @@ msgid "Encrypt Patient Identifying Information"
 msgstr "Cryptage des données d'identification des patients"
 
 #: cd4/requests/forms/add-rwanda.php:766 cd4/requests/forms/edit-rwanda.php:863
-#: vl/requests/forms/add-cameroon.php:781 vl/requests/forms/add-drc.php:948
+#: vl/requests/forms/add-cameroon.php:781 vl/requests/forms/add-drc.php:953
 #: vl/requests/forms/add-png.php:659 vl/requests/forms/add-rwanda.php:733
 #: vl/requests/forms/add-sierraleone.php:945
 #: vl/requests/forms/add-southsudan.php:818 vl/requests/forms/add-who.php:783
@@ -8412,7 +8414,7 @@ msgid "No. of times Test Requested for this Patient"
 msgstr "Nombre de fois où le test a été demandé pour ce patient"
 
 #: cd4/requests/forms/add-rwanda.php:769 cd4/requests/forms/edit-rwanda.php:866
-#: vl/requests/forms/add-cameroon.php:784 vl/requests/forms/add-drc.php:951
+#: vl/requests/forms/add-cameroon.php:784 vl/requests/forms/add-drc.php:956
 #: vl/requests/forms/add-png.php:662 vl/requests/forms/add-rwanda.php:736
 #: vl/requests/forms/add-sierraleone.php:948
 #: vl/requests/forms/add-southsudan.php:821 vl/requests/forms/add-who.php:786
@@ -8420,7 +8422,7 @@ msgid "Last Test Request Added On LIS/STS"
 msgstr "Dernière demande envoyée par LIS/STS"
 
 #: cd4/requests/forms/add-rwanda.php:772 cd4/requests/forms/edit-rwanda.php:869
-#: vl/requests/forms/add-cameroon.php:787 vl/requests/forms/add-drc.php:954
+#: vl/requests/forms/add-cameroon.php:787 vl/requests/forms/add-drc.php:959
 #: vl/requests/forms/add-png.php:665 vl/requests/forms/add-rwanda.php:739
 #: vl/requests/forms/add-sierraleone.php:951
 #: vl/requests/forms/add-southsudan.php:824 vl/requests/forms/add-who.php:789
@@ -8428,7 +8430,7 @@ msgid "Sample Collection Date for Last Request"
 msgstr "Date de prélèvement de l'échantillon pour la dernière demande"
 
 #: cd4/requests/forms/add-rwanda.php:775 cd4/requests/forms/edit-rwanda.php:872
-#: vl/requests/forms/add-cameroon.php:790 vl/requests/forms/add-drc.php:957
+#: vl/requests/forms/add-cameroon.php:790 vl/requests/forms/add-drc.php:962
 #: vl/requests/forms/add-png.php:668 vl/requests/forms/add-rwanda.php:742
 #: vl/requests/forms/add-sierraleone.php:954
 #: vl/requests/forms/add-southsudan.php:827 vl/requests/forms/add-who.php:792
@@ -9189,7 +9191,7 @@ msgstr "Choisir le(s) échantillon(s)"
 #: generic-tests/mail/mail-generic-tests-results.php:217
 #: generic-tests/results/email-results.php:309
 #: generic-tests/results/getRequestSampleCodeDetails.php:95
-#: global-config/editGlobalConfig.php:1695
+#: global-config/editGlobalConfig.php:1711
 #: hepatitis/results/email-results.php:309
 #: hepatitis/results/getRequestSampleCodeDetails.php:95
 #: mail/getRequestSampleCodeDetails.php:95 mail/vlResultMail.php:309
@@ -9212,7 +9214,7 @@ msgstr "Tout sélectionner"
 #: generic-tests/mail/mail-generic-tests-results.php:217
 #: generic-tests/results/email-results.php:311
 #: generic-tests/results/getRequestSampleCodeDetails.php:95
-#: global-config/editGlobalConfig.php:1695
+#: global-config/editGlobalConfig.php:1711
 #: hepatitis/results/email-results.php:311
 #: hepatitis/results/getRequestSampleCodeDetails.php:95
 #: mail/getRequestSampleCodeDetails.php:95 mail/vlResultMail.php:311
@@ -9775,6 +9777,7 @@ msgstr "Stockage en laboratoire"
 
 #: common/reference/add-lab-storage.php:22
 #: common/reference/edit-lab-storage.php:31 common/reference/lab-storage.php:25
+#: system/translate-strings.php:240
 msgid "Add Lab Storage"
 msgstr "Ajouter un espace de stockage pour les laboratoires"
 
@@ -9894,7 +9897,7 @@ msgstr "Ajouter de nouvelles divisions géographiques"
 #: common/reference/geographical-divisions-details.php:33
 #: facilities/addFacility.php:684 facilities/addFacility.php:1015
 #: facilities/editFacility.php:646 facilities/editFacility.php:685
-#: facilities/editFacility.php:1041 global-config/editGlobalConfig.php:1593
+#: facilities/editFacility.php:1041 global-config/editGlobalConfig.php:1609
 msgid "Name"
 msgstr "Nom"
 
@@ -9929,7 +9932,7 @@ msgstr ""
 msgid "Implementation Partners saved successfully"
 msgstr "Partenaires de mise en œuvre sauvés avec succès"
 
-#: common/reference/save-lab-storage-helper.php:42
+#: common/reference/save-lab-storage-helper.php:34
 msgid "Lab Storage saved successfully"
 msgstr "Lab Storage sauvegardé avec succès"
 
@@ -10015,7 +10018,7 @@ msgstr "S. No."
 #: vl/requests/forms/add-cameroon.php:687
 #: vl/requests/forms/edit-cameroon.php:794
 #: vl/results/forms/update-cameroon-result.php:803
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:282
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:291
 msgid "Tested By"
 msgstr "Testé par"
 
@@ -10588,7 +10591,7 @@ msgstr "COVID 19 Les détails des motifs de l'essai ont été ajoutés avec succ
 #: facilities/editFacility.php:172 facilities/editFacility.php:174
 #: facilities/facilities.php:139 facilities/facilities.php:169
 #: global-config/editGlobalConfig.php:103
-#: global-config/editGlobalConfig.php:1698 tb/reference/tb-sample-type.php:30
+#: global-config/editGlobalConfig.php:1714 tb/reference/tb-sample-type.php:30
 #: vl/results/forms/update-cameroon-result.php:243
 msgid "Facility Code"
 msgstr "Nom et code de la structure"
@@ -10986,7 +10989,6 @@ msgstr "Veuillez choisir l'État"
 #: eid/requests/forms/add-cameroon.php:131
 #: eid/requests/forms/edit-cameroon.php:147
 #: eid/results/forms/update-cameroon-result.php:141
-#: vl/requests/forms/add-cameroon.php:167
 #: vl/requests/forms/edit-cameroon.php:218
 #: vl/results/forms/update-cameroon-result.php:268
 msgid "Project Name"
@@ -11063,8 +11065,8 @@ msgstr "Aucun patient trouvé"
 #: tb/requests/forms/edit-southsudan.php:194
 #: tb/requests/forms/edit-southsudan.php:196 vl/requests/forms/add-drc.php:179
 #: vl/requests/forms/add-png.php:140 vl/requests/forms/add-sierraleone.php:209
-#: vl/requests/forms/add-southsudan.php:216 vl/requests/forms/edit-drc.php:224
-#: vl/requests/forms/edit-drc.php:226 vl/requests/forms/edit-png.php:286
+#: vl/requests/forms/add-southsudan.php:216 vl/requests/forms/edit-drc.php:231
+#: vl/requests/forms/edit-drc.php:233 vl/requests/forms/edit-png.php:286
 #: vl/requests/forms/edit-png.php:288
 msgid "Encrypt PII"
 msgstr "Cryptage des IPI"
@@ -11094,7 +11096,7 @@ msgstr "Veuillez saisir l'identifiant du dossier DHIS2"
 #: covid-19/requests/forms/edit-cameroon.php:238
 #: covid-19/results/forms/update-cameroon-result.php:202
 #: covid-19/results/forms/update-cameroon-result.php:204
-#: global-config/editGlobalConfig.php:1673
+#: global-config/editGlobalConfig.php:1689
 msgid "First Name"
 msgstr "Prénom"
 
@@ -11377,7 +11379,7 @@ msgstr "Réservé à l'usage des laboratoires"
 #: vl/requests/forms/edit-cameroon.php:660
 #: vl/result-mail/editTestResultEmailConfig.php:88
 #: vl/results/forms/update-cameroon-result.php:680
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:262
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:271
 msgid "Sample Received Date"
 msgstr "Date de réception"
 
@@ -11494,24 +11496,24 @@ msgstr "Date de réception"
 #: vl/requests/forms/add-drc.php:302 vl/requests/forms/add-drc.php:327
 #: vl/requests/forms/add-drc.php:352 vl/requests/forms/add-drc.php:379
 #: vl/requests/forms/add-drc.php:415 vl/requests/forms/add-drc.php:439
-#: vl/requests/forms/add-drc.php:479 vl/requests/forms/add-sierraleone.php:824
+#: vl/requests/forms/add-drc.php:478 vl/requests/forms/add-sierraleone.php:824
 #: vl/requests/forms/add-southsudan.php:713 vl/requests/forms/add-who.php:687
-#: vl/requests/forms/edit-drc.php:120 vl/requests/forms/edit-drc.php:181
-#: vl/requests/forms/edit-drc.php:241 vl/requests/forms/edit-drc.php:333
-#: vl/requests/forms/edit-drc.php:360 vl/requests/forms/edit-drc.php:385
-#: vl/requests/forms/edit-drc.php:412 vl/requests/forms/edit-drc.php:450
-#: vl/requests/forms/edit-drc.php:472 vl/requests/forms/edit-drc.php:510
+#: vl/requests/forms/edit-drc.php:127 vl/requests/forms/edit-drc.php:188
+#: vl/requests/forms/edit-drc.php:248 vl/requests/forms/edit-drc.php:340
+#: vl/requests/forms/edit-drc.php:367 vl/requests/forms/edit-drc.php:392
+#: vl/requests/forms/edit-drc.php:419 vl/requests/forms/edit-drc.php:457
+#: vl/requests/forms/edit-drc.php:479 vl/requests/forms/edit-drc.php:516
 #: vl/requests/forms/edit-sierraleone.php:970
 #: vl/requests/forms/edit-southsudan.php:830 vl/requests/forms/edit-who.php:826
-#: vl/results/forms/update-drc-result.php:164
-#: vl/results/forms/update-drc-result.php:190
-#: vl/results/forms/update-drc-result.php:271
-#: vl/results/forms/update-drc-result.php:298
-#: vl/results/forms/update-drc-result.php:328
-#: vl/results/forms/update-drc-result.php:378
-#: vl/results/forms/update-drc-result.php:421
-#: vl/results/forms/update-drc-result.php:442
-#: vl/results/forms/update-drc-result.php:454
+#: vl/results/forms/update-drc-result.php:173
+#: vl/results/forms/update-drc-result.php:199
+#: vl/results/forms/update-drc-result.php:280
+#: vl/results/forms/update-drc-result.php:307
+#: vl/results/forms/update-drc-result.php:337
+#: vl/results/forms/update-drc-result.php:387
+#: vl/results/forms/update-drc-result.php:430
+#: vl/results/forms/update-drc-result.php:451
+#: vl/results/forms/update-drc-result.php:488
 #: vl/results/forms/update-sierraleone-result.php:855
 #: vl/results/forms/update-southsudan-result.php:849
 msgid "Please enter date"
@@ -11581,10 +11583,10 @@ msgstr "Veuillez sélectionner le motif du refus"
 #: eid/requests/forms/add-cameroon.php:548
 #: eid/requests/forms/edit-cameroon.php:577
 #: eid/results/forms/update-cameroon-result.php:552
-#: vl/requests/forms/add-cameroon.php:620 vl/requests/forms/add-drc.php:519
-#: vl/requests/forms/edit-cameroon.php:724 vl/requests/forms/edit-drc.php:548
+#: vl/requests/forms/add-cameroon.php:620 vl/requests/forms/add-drc.php:518
+#: vl/requests/forms/edit-cameroon.php:724 vl/requests/forms/edit-drc.php:554
 #: vl/results/forms/update-cameroon-result.php:727
-#: vl/results/forms/update-drc-result.php:490
+#: vl/results/forms/update-drc-result.php:524
 msgid "Rejection Date"
 msgstr "Date de rejet"
 
@@ -11834,9 +11836,9 @@ msgstr "Sélectionner Autorisé par"
 #: covid-19/requests/forms/add-drc.php:186
 #: covid-19/requests/forms/edit-drc.php:222 eid/requests/forms/add-drc.php:173
 #: eid/requests/forms/edit-drc.php:188 vl/requests/forms/add-drc.php:170
-#: vl/requests/forms/add-drc.php:192 vl/requests/forms/edit-drc.php:218
-#: vl/requests/forms/edit-drc.php:237
-#: vl/results/forms/update-drc-result.php:186
+#: vl/requests/forms/add-drc.php:192 vl/requests/forms/edit-drc.php:225
+#: vl/requests/forms/edit-drc.php:244
+#: vl/results/forms/update-drc-result.php:195
 msgid "Please enter the Patient ID"
 msgstr "No Patient"
 
@@ -11868,7 +11870,7 @@ msgstr "Veuillez choisir le comté"
 #: covid-19/results/forms/update-cameroon-result.php:167
 #: eid/requests/forms/add-drc.php:114 eid/requests/forms/edit-drc.php:131
 #: eid/results/forms/update-drc-result.php:113
-#: vl/requests/forms/add-drc.php:110 vl/results/forms/update-drc-result.php:134
+#: vl/requests/forms/add-drc.php:110 vl/results/forms/update-drc-result.php:143
 msgid "Please choose facility"
 msgstr "Veuillez choisir un établissement"
 
@@ -13418,7 +13420,7 @@ msgstr "Veuillez saisir l'adresse approuvée sur"
 #: eid/requests/forms/edit-cameroon.php:610
 #: eid/results/forms/update-cameroon-result.php:586
 #: generic-tests/mail/mail-generic-tests-results.php:247
-#: global-config/editGlobalConfig.php:1710
+#: global-config/editGlobalConfig.php:1726
 #: import-result/imported-results.php:284
 #: vl/requests/forms/add-cameroon.php:659
 #: vl/requests/forms/edit-cameroon.php:766
@@ -13440,7 +13442,7 @@ msgstr "Sélectionner Approuvé par"
 
 #: eid/requests/forms/add-drc.php:146 eid/requests/forms/edit-drc.php:175
 #: eid/results/forms/update-drc-result.php:156
-#: vl/requests/forms/add-drc.php:118 vl/results/forms/update-drc-result.php:142
+#: vl/requests/forms/add-drc.php:118 vl/results/forms/update-drc-result.php:151
 msgid "Please enter requesting clinician name"
 msgstr "Veuillez saisir le nom du clinicien demandeur"
 
@@ -13834,9 +13836,9 @@ msgstr "Veuillez saisir la désignation"
 #: facilities/addFacility.php:686 facilities/editFacility.php:657
 #: facilities/editFacility.php:687 facilities/editFacility.php:1043
 #: users/addUser.php:155 users/editUser.php:201
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:317
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:323
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:333
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:326
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:332
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:342
 msgid "Signature"
 msgstr "Signature"
 
@@ -14103,7 +14105,9 @@ msgstr ""
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identité du patient : "
 
-#: footer.php:415
+#: footer.php:415 vl/requests/forms/add-drc.php:1032
+#: vl/requests/forms/edit-drc.php:1020
+#: vl/results/forms/update-drc-result.php:794
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères à rechercher"
 
@@ -14448,7 +14452,7 @@ msgstr "Texte"
 #: generic-tests/configuration/edit-test-type.php:834
 #: system-admin/log-files/log-files.php:34
 #: system-admin/user-login-history/userLoginIndex.php:29
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:293
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:302
 msgid "Date"
 msgstr "Date"
 
@@ -14598,9 +14602,9 @@ msgstr "Envoie de résultats par email"
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1847
-#: generic-tests/requests/edit-request.php:1731
-#: generic-tests/requests/getTestTypeForm.php:301
-#: generic-tests/requests/getTestTypeForm.php:352
+#: generic-tests/requests/edit-request.php:1730
+#: generic-tests/requests/getTestTypeForm.php:302
+#: generic-tests/requests/getTestTypeForm.php:353
 #: generic-tests/results/update-generic-test-result.php:1704
 msgid "Enter test result unit"
 msgstr "Covid-19-Saisir le résultat manuellement"
@@ -14612,9 +14616,9 @@ msgstr "Covid-19-Saisir le résultat manuellement"
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1847
-#: generic-tests/requests/edit-request.php:1731
-#: generic-tests/requests/getTestTypeForm.php:301
-#: generic-tests/requests/getTestTypeForm.php:352
+#: generic-tests/requests/edit-request.php:1730
+#: generic-tests/requests/getTestTypeForm.php:302
+#: generic-tests/requests/getTestTypeForm.php:353
 #: generic-tests/results/update-generic-test-result.php:1704
 msgid "Please enter test result unit"
 msgstr "Veuillez saisir l'unité de résultat du test"
@@ -15366,7 +15370,7 @@ msgid "Lab ID"
 msgstr "ID lab"
 
 #: generic-tests/mail/mail-generic-tests-results.php:241
-#: global-config/editGlobalConfig.php:1708
+#: global-config/editGlobalConfig.php:1724
 #: vl/requests/forms/add-cameroon.php:541
 #: vl/requests/forms/edit-cameroon.php:644
 #: vl/result-mail/editTestResultEmailConfig.php:107
@@ -15449,11 +15453,11 @@ msgstr "Aperçu de l'état des échantillons (N = "
 msgid "Laboratory Turnaround Time"
 msgstr "Délai d'exécution du laboratoire"
 
-#: generic-tests/requests/add-request-helper.php:337
+#: generic-tests/requests/add-request-helper.php:341
 msgid "Please check your Sample ID"
 msgstr "Veuillez vérifier votre numéro d'identification de l'échantillon"
 
-#: generic-tests/requests/add-request-helper.php:355
+#: generic-tests/requests/add-request-helper.php:359
 msgid "Lab test request added successfully"
 msgstr "Demande de test de laboratoire ajoutée avec succès"
 
@@ -15487,7 +15491,7 @@ msgstr "Sélectionner le type de spécimen"
 msgid "Select any one of the option"
 msgstr "Sélectionnez l'une des options suivantes"
 
-#: generic-tests/requests/edit-request-helper.php:333
+#: generic-tests/requests/edit-request-helper.php:336
 msgid "Request updated successfully"
 msgstr "Demande mise à jour avec succès"
 
@@ -15527,7 +15531,7 @@ msgstr "Imprimer les résultats d'autres tests de laboratoire"
 msgid "Enter Other Lab Tests Result"
 msgstr "Saisir le résultat d'autres tests de laboratoire"
 
-#: generic-tests/results/update-generic-test-result-helper.php:205
+#: generic-tests/results/update-generic-test-result-helper.php:208
 msgid "Lab Tests results updated successfully"
 msgstr "Les résultats des tests de laboratoire ont été mis à jour avec succès"
 
@@ -15789,7 +15793,7 @@ msgstr "Longueur minimale du numéro de téléphone"
 #: global-config/editGlobalConfig.php:1382
 #: global-config/editGlobalConfig.php:1396
 #: global-config/editGlobalConfig.php:1511
-#: global-config/editGlobalConfig.php:1525
+#: global-config/editGlobalConfig.php:1541
 msgid "Min"
 msgstr "Min"
 
@@ -15991,7 +15995,7 @@ msgstr "Veuillez saisir la longueur maximale de l'identifiant de l'échantillon"
 #: global-config/editGlobalConfig.php:1136
 #: global-config/editGlobalConfig.php:1265
 #: global-config/editGlobalConfig.php:1394
-#: global-config/editGlobalConfig.php:1523
+#: global-config/editGlobalConfig.php:1539
 msgid "Minimum Patient ID Length"
 msgstr "No Patient"
 
@@ -16001,7 +16005,7 @@ msgstr "No Patient"
 #: global-config/editGlobalConfig.php:1138
 #: global-config/editGlobalConfig.php:1267
 #: global-config/editGlobalConfig.php:1396
-#: global-config/editGlobalConfig.php:1525
+#: global-config/editGlobalConfig.php:1541
 msgid "Please enter patient id min length"
 msgstr "Veuillez saisir la longueur minimale de l'identifiant du patient"
 
@@ -16041,7 +16045,7 @@ msgstr "VL Objectif mensuel"
 #: global-config/editGlobalConfig.php:1147
 #: global-config/editGlobalConfig.php:1276
 #: global-config/editGlobalConfig.php:1405
-#: global-config/editGlobalConfig.php:1534
+#: global-config/editGlobalConfig.php:1550
 msgid "Sample Expiry Days"
 msgstr "Jours d'expiration de l'échantillon"
 
@@ -16051,7 +16055,7 @@ msgstr "Jours d'expiration de l'échantillon"
 #: global-config/editGlobalConfig.php:1149
 #: global-config/editGlobalConfig.php:1278
 #: global-config/editGlobalConfig.php:1407
-#: global-config/editGlobalConfig.php:1536
+#: global-config/editGlobalConfig.php:1552
 msgid "Enter the sample expiry days"
 msgstr "Saisir les jours d'expiration de l'échantillon"
 
@@ -16061,7 +16065,7 @@ msgstr "Saisir les jours d'expiration de l'échantillon"
 #: global-config/editGlobalConfig.php:1149
 #: global-config/editGlobalConfig.php:1278
 #: global-config/editGlobalConfig.php:1407
-#: global-config/editGlobalConfig.php:1536
+#: global-config/editGlobalConfig.php:1552
 msgid "Please enter the sample expiry days"
 msgstr "Veuillez indiquer les jours d'expiration de l'échantillon"
 
@@ -16071,7 +16075,7 @@ msgstr "Veuillez indiquer les jours d'expiration de l'échantillon"
 #: global-config/editGlobalConfig.php:1158
 #: global-config/editGlobalConfig.php:1287
 #: global-config/editGlobalConfig.php:1416
-#: global-config/editGlobalConfig.php:1545
+#: global-config/editGlobalConfig.php:1561
 msgid "Sample Lock Expiry Days"
 msgstr "Jours d'expiration de l'échantillon de serrures"
 
@@ -16081,7 +16085,7 @@ msgstr "Jours d'expiration de l'échantillon de serrures"
 #: global-config/editGlobalConfig.php:1160
 #: global-config/editGlobalConfig.php:1289
 #: global-config/editGlobalConfig.php:1418
-#: global-config/editGlobalConfig.php:1547
+#: global-config/editGlobalConfig.php:1563
 msgid "Enter the sample lock expiry days"
 msgstr "Saisir les jours d'expiration du verrouillage de l'échantillon"
 
@@ -16091,7 +16095,7 @@ msgstr "Saisir les jours d'expiration du verrouillage de l'échantillon"
 #: global-config/editGlobalConfig.php:1160
 #: global-config/editGlobalConfig.php:1289
 #: global-config/editGlobalConfig.php:1418
-#: global-config/editGlobalConfig.php:1547
+#: global-config/editGlobalConfig.php:1563
 msgid "Please enter the sample lock expiry days"
 msgstr "Veuillez indiquer les jours d'expiration du verrou de l'échantillon"
 
@@ -16405,68 +16409,77 @@ msgstr "eg. Préfixe+mois+année+compteur d'incréments (LAB0517999)"
 msgid "eg. Prefix+Year+Increment Counter (LAB17999)"
 msgstr "eg. Préfixe+année+compteur d'incréments (LAB17999)"
 
-#: global-config/editGlobalConfig.php:1555
+#: global-config/editGlobalConfig.php:1524
+msgid "Show Other Tests table in Results PDF"
+msgstr "Afficher le tableau des autres tests dans les résultats PDF"
+
+#: global-config/editGlobalConfig.php:1526
+msgid "Please select Other Tests method in Results Pdf"
+msgstr ""
+"Veuillez sélectionner la méthode \"Autres tests\" dans les résultats Pdf"
+
+#: global-config/editGlobalConfig.php:1571
 msgid "Auto Approve API Results"
 msgstr "Approbation automatique des résultats de l'API"
 
-#: global-config/editGlobalConfig.php:1557
+#: global-config/editGlobalConfig.php:1573
 msgid "Please select Other Lab Tests Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner Autres tests de laboratoire Approbation automatique "
 "des résultats de l'API"
 
-#: global-config/editGlobalConfig.php:1569
+#: global-config/editGlobalConfig.php:1585
 msgid "Other Lab Tests Show Participant Name in Manifest"
 msgstr ""
 "Autres tests de laboratoire Indiquer le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1571
+#: global-config/editGlobalConfig.php:1587
 msgid "Please select Other Lab Tests Participant Name in Manifest"
 msgstr ""
 "Veuillez sélectionner Autres tests de laboratoire Nom du participant dans le "
 "manifeste"
 
-#: global-config/editGlobalConfig.php:1585
+#: global-config/editGlobalConfig.php:1601
 msgid "Mobile App Settings"
 msgstr "Paramètres de l'application mobile"
 
-#: global-config/editGlobalConfig.php:1591
+#: global-config/editGlobalConfig.php:1607
 msgid "Mobile APP Menu Name"
 msgstr "Nom du menu de l'APP mobile"
 
-#: global-config/editGlobalConfig.php:1593
+#: global-config/editGlobalConfig.php:1609
 msgid "Please enter name"
 msgstr "S'il vous plaît entrer le nom"
 
-#: global-config/editGlobalConfig.php:1602
+#: global-config/editGlobalConfig.php:1618
 msgid "Connect"
 msgstr "Connecter"
 
-#: global-config/editGlobalConfig.php:1608
+#: global-config/editGlobalConfig.php:1624
 msgid "National Dashboard URL"
 msgstr "URL du tableau de bord national"
 
-#: global-config/editGlobalConfig.php:1610
+#: global-config/editGlobalConfig.php:1626
 msgid "Please enter the National Dashboard URL"
 msgstr "Veuillez saisir l'URL du tableau de bord national"
 
-#: global-config/editGlobalConfig.php:1622
+#: global-config/editGlobalConfig.php:1638
 msgid "Viral Load Result PDF Settings"
 msgstr "Résultat de la charge virale PDF Settings"
 
-#: global-config/editGlobalConfig.php:1628
+#: global-config/editGlobalConfig.php:1644
 msgid "Show Emoticon/Smiley"
 msgstr "Afficher l'émoticône/l'émoticône"
 
-#: global-config/editGlobalConfig.php:1639
+#: global-config/editGlobalConfig.php:1655
 msgid "Display VL Log Result"
 msgstr "Afficher le résultat du journal VL"
 
-#: global-config/editGlobalConfig.php:1650
+#: global-config/editGlobalConfig.php:1666
 msgid "High Viral Load Message"
 msgstr "Message sur la charge virale élevée"
 
-#: global-config/editGlobalConfig.php:1652
+#: global-config/editGlobalConfig.php:1668
 msgid ""
 "High Viral Load message that will appear for results >= the VL threshold "
 "limit"
@@ -16474,15 +16487,15 @@ msgstr ""
 "Message de charge virale élevée apparaissant pour les résultats >= au seuil "
 "limite de la charge virale"
 
-#: global-config/editGlobalConfig.php:1652
+#: global-config/editGlobalConfig.php:1668
 msgid "Please enter high viral load message"
 msgstr "Veuillez saisir le message de charge virale élevée"
 
-#: global-config/editGlobalConfig.php:1660
+#: global-config/editGlobalConfig.php:1676
 msgid "Low Viral Load Message"
 msgstr "Message de faible charge virale"
 
-#: global-config/editGlobalConfig.php:1662
+#: global-config/editGlobalConfig.php:1678
 msgid ""
 "Low Viral Load message that will appear for results lesser than the VL "
 "threshold limit"
@@ -16490,83 +16503,83 @@ msgstr ""
 "Message de faible charge virale apparaissant pour les résultats inférieurs "
 "au seuil limite de la charge virale"
 
-#: global-config/editGlobalConfig.php:1662
+#: global-config/editGlobalConfig.php:1678
 msgid "Please enter low viral load message"
 msgstr "Veuillez saisir le message de faible charge virale"
 
-#: global-config/editGlobalConfig.php:1670
+#: global-config/editGlobalConfig.php:1686
 msgid "Patient Name Format"
 msgstr "Format du nom du patient"
 
-#: global-config/editGlobalConfig.php:1672
+#: global-config/editGlobalConfig.php:1688
 msgid "Choose one option"
 msgstr "Choisissez une option"
 
-#: global-config/editGlobalConfig.php:1673
+#: global-config/editGlobalConfig.php:1689
 msgid "Last Name"
 msgstr "Nom"
 
-#: global-config/editGlobalConfig.php:1674 setup/index.php:164
+#: global-config/editGlobalConfig.php:1690 setup/index.php:164
 #: users/addUser.php:80 users/addUser.php:82
 msgid "Full Name"
 msgstr "Nom complet"
 
-#: global-config/editGlobalConfig.php:1675
+#: global-config/editGlobalConfig.php:1691
 msgid "Hide Patient Name"
 msgstr "Cacher le nom du patient"
 
-#: global-config/editGlobalConfig.php:1685
+#: global-config/editGlobalConfig.php:1701
 msgid "Mandatory Fields for COMPLETED Result PDF"
 msgstr "Champs obligatoires pour le résultat COMPLET PDF"
 
-#: global-config/editGlobalConfig.php:1691
+#: global-config/editGlobalConfig.php:1707
 msgid ""
 "If any of the selected fields are incomplete, the Result PDF appears with a"
 msgstr ""
 "Si l'un des champs sélectionnés est incomplet, le PDF Résultat s'affiche "
 "avec une icône"
 
-#: global-config/editGlobalConfig.php:1691
+#: global-config/editGlobalConfig.php:1707
 msgid "DRAFT"
 msgstr "Brouillon"
 
-#: global-config/editGlobalConfig.php:1691
+#: global-config/editGlobalConfig.php:1707
 msgid "watermark. Leave right block blank (Deselect All) to disable this"
 msgstr ""
 "filigrane. Laissez le bloc de droite vide (Désélectionner tout) pour "
 "désactiver ce filigrane"
 
-#: global-config/editGlobalConfig.php:1699
+#: global-config/editGlobalConfig.php:1715
 msgid "Facility Province"
 msgstr "Facilité Région"
 
-#: global-config/editGlobalConfig.php:1700
+#: global-config/editGlobalConfig.php:1716
 msgid "Facility District"
 msgstr "District des installations"
 
-#: global-config/editGlobalConfig.php:1704
+#: global-config/editGlobalConfig.php:1720
 msgid "Patient ART No"
 msgstr "Patient ART No"
 
-#: global-config/editGlobalConfig.php:1705
+#: global-config/editGlobalConfig.php:1721
 #: vl/requests/forms/add-cameroon.php:554
 #: vl/requests/forms/edit-cameroon.php:658
 #: vl/results/forms/update-cameroon-result.php:678
 msgid "Date Sample Received at Testing Lab"
 msgstr "Date de réception de l'échantillon au laboratoire d'essai"
 
-#: global-config/editGlobalConfig.php:1709
+#: global-config/editGlobalConfig.php:1725
 msgid "VL Result"
 msgstr "Résultat VL"
 
-#: global-config/editGlobalConfig.php:1764
-#: global-config/editGlobalConfig.php:1765
+#: global-config/editGlobalConfig.php:1780
+#: global-config/editGlobalConfig.php:1781
 #: vl/result-mail/editTestResultEmailConfig.php:145
 #: vl/result-mail/editTestResultEmailConfig.php:146
 msgid "Enter Field Name"
 msgstr "Saisir le nom du champ"
 
-#: global-config/globalConfigHelper.php:227
+#: global-config/globalConfigHelper.php:239
 msgid "Configuration updated successfully"
 msgstr "La configuration a été mise à jour avec succès"
 
@@ -19122,162 +19135,218 @@ msgid "Email Test Result"
 msgstr "Résultat du test de l'email"
 
 #: system/translate-strings.php:231
+msgid "Export CD4 Requests"
+msgstr "Exporter les demandes de CD4"
+
+#: system/translate-strings.php:232
+msgid "Add CD4 Manifests"
+msgstr "Ajouter les manifestations CD4"
+
+#: system/translate-strings.php:233
+msgid "Edit CD4 Manifests"
+msgstr "Modifier les manifestations CD4"
+
+#: system/translate-strings.php:234
+msgid "View CD4 Manifests"
+msgstr "Voir les manifestes CD4"
+
+#: system/translate-strings.php:235
+msgid "Edit Batches"
+msgstr "Modifier les lots"
+
+#: system/translate-strings.php:236
+msgid "Email Test Results"
+msgstr "Résultats du test de l'email"
+
+#: system/translate-strings.php:237
+msgid "Import Result from Files"
+msgstr "Importer des résultats à partir de fichiers"
+
+#: system/translate-strings.php:238
+msgid "CD4 Clinic Reports"
+msgstr "Rapports des cliniques CD4"
+
+#: system/translate-strings.php:239
+msgid "Manage CD4 Reference Tables"
+msgstr "Gérer les tableaux de référence des CD4"
+
+#: system/translate-strings.php:241
+msgid "Edit Lab Storage"
+msgstr "Modifier le stockage en laboratoire"
+
+#: system/translate-strings.php:242
+msgid "CD4 Batch Management"
+msgstr "Gestion des lots de CD4"
+
+#: system/translate-strings.php:243
+msgid "CD4 Reports"
+msgstr "Rapports sur les CD4"
+
+#: system/translate-strings.php:244
+msgid "CD4 Reference Management"
+msgstr "Gestion de la référence CD4"
+
+#: system/translate-strings.php:245
+msgid "CD4 Requests"
+msgstr "Demandes de CD4"
+
+#: system/translate-strings.php:247
 msgid "Common Reference Tables"
 msgstr "Tableaux de référence communs"
 
-#: system/translate-strings.php:232
+#: system/translate-strings.php:248
 msgid "Covid-19 Batch Management"
 msgstr "Covid-19 Gestion des lots"
 
-#: system/translate-strings.php:233
+#: system/translate-strings.php:249
 msgid "Covid-19 Reports"
 msgstr "Rapports Covid-19"
 
-#: system/translate-strings.php:234
+#: system/translate-strings.php:250
 msgid "Covid-19 Reference Tables"
 msgstr "Covid-19 Tableaux de référence"
 
-#: system/translate-strings.php:235
+#: system/translate-strings.php:251
 msgid "Covid-19 Request Management"
 msgstr "Gestion des demandes Covid-19"
 
-#: system/translate-strings.php:236
+#: system/translate-strings.php:252
 msgid "Covid-19 Result Management"
 msgstr "Covid-19 Gestion des résultats"
 
-#: system/translate-strings.php:237
+#: system/translate-strings.php:253
 msgid "EID Batch Management"
 msgstr "Gestion des lots EID"
 
-#: system/translate-strings.php:238
+#: system/translate-strings.php:254
 msgid "EID Reports"
 msgstr "Rapports de l'EID"
 
-#: system/translate-strings.php:239
+#: system/translate-strings.php:255
 msgid "EID Reference Management"
 msgstr "Gestion des références EID"
 
-#: system/translate-strings.php:240
+#: system/translate-strings.php:256
 msgid "EID Request Management"
 msgstr "Gestion des demandes d'EID"
 
-#: system/translate-strings.php:241
+#: system/translate-strings.php:257
 msgid "EID Result Management"
 msgstr "Gestion des résultats de l'EID"
 
-#: system/translate-strings.php:242
+#: system/translate-strings.php:258
 msgid "Manage Facility"
 msgstr "Gérer l'installation"
 
-#: system/translate-strings.php:243
+#: system/translate-strings.php:259
 msgid "Lab Tests Report Management"
 msgstr "Gestion des rapports de tests de laboratoire"
 
-#: system/translate-strings.php:244
+#: system/translate-strings.php:260
 msgid "Lab Tests Request Management"
 msgstr "Gestion des demandes de tests de laboratoire"
 
-#: system/translate-strings.php:245
+#: system/translate-strings.php:261
 msgid "Lab Tests Result Management"
 msgstr "Gestion des résultats des tests de laboratoire"
 
-#: system/translate-strings.php:246
+#: system/translate-strings.php:262
 msgid "Lab Tests Batch Management"
 msgstr "Gestion des lots de tests de laboratoire"
 
-#: system/translate-strings.php:247
+#: system/translate-strings.php:263
 msgid "Configure Generic Lab Tests"
 msgstr "Configurer les tests génériques de laboratoire"
 
-#: system/translate-strings.php:248
+#: system/translate-strings.php:264
 msgid "Manage General Config"
 msgstr "Gérer la configuration générale"
 
-#: system/translate-strings.php:249
+#: system/translate-strings.php:265
 msgid "Hepatitis Batch Management"
 msgstr "Gestion des lots d'hépatite"
 
-#: system/translate-strings.php:250
+#: system/translate-strings.php:266
 msgid "Hepatitis Reports"
 msgstr "Rapports sur l'hépatite"
 
-#: system/translate-strings.php:251
+#: system/translate-strings.php:267
 msgid "Hepatitis Reference Management"
 msgstr "Gestion de la référence de l'hépatite"
 
-#: system/translate-strings.php:252
+#: system/translate-strings.php:268
 msgid "Hepatitis Request Management"
 msgstr "Gestion des demandes relatives à l'hépatite"
 
-#: system/translate-strings.php:253
+#: system/translate-strings.php:269
 msgid "Hepatitis Results Management"
 msgstr "Gestion des résultats de l'hépatite"
 
-#: system/translate-strings.php:254
+#: system/translate-strings.php:270
 msgid "Manage Instruments"
 msgstr "Gérer les instruments"
 
-#: system/translate-strings.php:255
+#: system/translate-strings.php:271
 msgid "Move Samples"
 msgstr "Déplacer les échantillons"
 
-#: system/translate-strings.php:256
+#: system/translate-strings.php:272
 msgid "Manage Roles"
 msgstr "Gérer les rôles"
 
-#: system/translate-strings.php:257
+#: system/translate-strings.php:273
 msgid "TB Batch Management"
 msgstr "Gestion des lots de la tuberculose"
 
-#: system/translate-strings.php:258
+#: system/translate-strings.php:274
 msgid "TB Reports"
 msgstr "Rapports du CT"
 
-#: system/translate-strings.php:259
+#: system/translate-strings.php:275
 msgid "TB Reference"
 msgstr "Référence TB"
 
-#: system/translate-strings.php:260
+#: system/translate-strings.php:276
 msgid "TB Request Management"
 msgstr "Gestion des demandes de la CT"
 
-#: system/translate-strings.php:261
+#: system/translate-strings.php:277
 msgid "TB Result Management"
 msgstr "Gestion des résultats de la tuberculose"
 
-#: system/translate-strings.php:262
+#: system/translate-strings.php:278
 msgid "Manage Test Request Email Config"
 msgstr "Gérer la configuration des courriels de demande de test"
 
-#: system/translate-strings.php:263
+#: system/translate-strings.php:279
 msgid "Manage Test Result Email Config"
 msgstr "Gérer la configuration des courriels de résultats de tests"
 
-#: system/translate-strings.php:264
+#: system/translate-strings.php:280
 msgid "Manage Test Type"
 msgstr "Gérer le type de test"
 
-#: system/translate-strings.php:265
+#: system/translate-strings.php:281
 msgid "Manage Users"
 msgstr "Gérez les utilisateurs"
 
-#: system/translate-strings.php:266
+#: system/translate-strings.php:282
 msgid "Manage VL Batch"
 msgstr "Gestion des lots VL"
 
-#: system/translate-strings.php:267
+#: system/translate-strings.php:283
 msgid "VL Reference Management"
 msgstr "Gestion des références VL"
 
-#: system/translate-strings.php:268
+#: system/translate-strings.php:284
 msgid "VL Reports"
 msgstr "Rapports VL"
 
-#: system/translate-strings.php:269
+#: system/translate-strings.php:285
 msgid "VL Requests"
 msgstr "Demandes VL"
 
-#: system/translate-strings.php:270 vl/reference/add-vl-results.php:37
+#: system/translate-strings.php:286 vl/reference/add-vl-results.php:37
 #: vl/reference/vl-results.php:2 vl/reference/vl-results.php:13
 msgid "VL Results"
 msgstr "Résultats VL"
@@ -19477,7 +19546,7 @@ msgstr ""
 "adresse électronique"
 
 #: users/addUser.php:100 users/editProfile.php:99 users/editUser.php:142
-#: vl/requests/forms/add-drc.php:122 vl/results/forms/update-drc-result.php:146
+#: vl/requests/forms/add-drc.php:122 vl/results/forms/update-drc-result.php:155
 msgid "Please enter phone number"
 msgstr "Veuillez saisir votre numéro de téléphone"
 
@@ -19683,7 +19752,7 @@ msgstr "Protocole ARV"
 #: vl/requests/forms/add-cameroon.php:535
 #: vl/requests/forms/edit-cameroon.php:638
 #: vl/results/forms/update-cameroon-result.php:658
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:264
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:273
 msgid "CV Number"
 msgstr "Numéro de CV"
 
@@ -19699,7 +19768,8 @@ msgstr "Limite de détection de la plate-forme d'essai"
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
-#: vl/requests/forms/add-drc.php:449 vl/requests/forms/edit-drc.php:482
+#: vl/requests/forms/add-drc.php:449 vl/requests/forms/edit-drc.php:489
+#: vl/results/forms/update-drc-result.php:461
 msgid "Freezer"
 msgstr "Congélateur"
 
@@ -19707,7 +19777,8 @@ msgstr "Congélateur"
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
-#: vl/requests/forms/add-drc.php:457 vl/requests/forms/edit-drc.php:490
+#: vl/requests/forms/add-drc.php:456 vl/requests/forms/edit-drc.php:496
+#: vl/results/forms/update-drc-result.php:468
 msgid "Rack"
 msgstr "Coffret"
 
@@ -19715,7 +19786,8 @@ msgstr "Coffret"
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
-#: vl/requests/forms/add-drc.php:464 vl/requests/forms/edit-drc.php:496
+#: vl/requests/forms/add-drc.php:463 vl/requests/forms/edit-drc.php:502
+#: vl/results/forms/update-drc-result.php:474
 msgid "Box"
 msgstr "Boîte"
 
@@ -19723,8 +19795,10 @@ msgstr "Boîte"
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
-#: vl/requests/forms/add-drc.php:469 vl/requests/forms/add-drc.php:471
-#: vl/requests/forms/edit-drc.php:501 vl/requests/forms/edit-drc.php:503
+#: vl/requests/forms/add-drc.php:468 vl/requests/forms/add-drc.php:470
+#: vl/requests/forms/edit-drc.php:507 vl/requests/forms/edit-drc.php:509
+#: vl/results/forms/update-drc-result.php:479
+#: vl/results/forms/update-drc-result.php:481
 msgid "Position"
 msgstr "Position"
 
@@ -20203,7 +20277,7 @@ msgstr "Ajouter les résultats VL"
 #: vl/reference/vl-results.php:32 vl/requests/forms/add-cameroon.php:605
 #: vl/requests/forms/edit-cameroon.php:709
 #: vl/results/forms/update-cameroon-result.php:735
-#: vl/results/pdf/result-pdf-cameroon.php:380
+#: vl/results/pdf/result-pdf-cameroon.php:387
 msgid "Viral Load Result"
 msgstr "Résultat de la charge virale"
 
@@ -20350,7 +20424,7 @@ msgstr "Raison de l'échec"
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: vl/requests/editVlRequestHelper.php:399
+#: vl/requests/editVlRequestHelper.php:411
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
 
@@ -20861,7 +20935,7 @@ msgstr ""
 "essayer un autre ID d'échantillon"
 
 #: vl/requests/forms/add-drc.php:87 vl/requests/forms/add-drc.php:89
-#: vl/requests/forms/edit-drc.php:114 vl/requests/forms/edit-drc.php:116
+#: vl/requests/forms/edit-drc.php:121 vl/requests/forms/edit-drc.php:123
 msgid "Recency ID"
 msgstr "ID de récence"
 
@@ -20869,73 +20943,84 @@ msgstr "ID de récence"
 msgid "Please enter the Date of Birth"
 msgstr "Veuillez saisir la date de naissance"
 
-#: vl/requests/forms/add-drc.php:203 vl/requests/forms/edit-drc.php:247
+#: vl/requests/forms/add-drc.php:203 vl/requests/forms/edit-drc.php:254
 msgid "Please enter Patient age"
 msgstr "Veuillez indiquer l'âge du patient"
 
 #: vl/requests/forms/add-drc.php:217 vl/requests/forms/add-drc.php:221
-#: vl/requests/forms/add-drc.php:225 vl/results/forms/update-drc-result.php:208
-#: vl/results/forms/update-drc-result.php:212
-#: vl/results/forms/update-drc-result.php:216
+#: vl/requests/forms/add-drc.php:225 vl/results/forms/update-drc-result.php:217
+#: vl/results/forms/update-drc-result.php:221
+#: vl/results/forms/update-drc-result.php:225
 msgid "Please select a gender"
 msgstr "Veuillez sélectionner un sexe"
 
-#: vl/requests/forms/add-drc.php:229 vl/requests/forms/edit-drc.php:259
-#: vl/results/forms/update-drc-result.php:219
+#: vl/requests/forms/add-drc.php:229 vl/requests/forms/edit-drc.php:266
+#: vl/results/forms/update-drc-result.php:228
 msgid "M"
 msgstr "M"
 
-#: vl/requests/forms/add-drc.php:230 vl/requests/forms/edit-drc.php:260
-#: vl/results/forms/update-drc-result.php:220
+#: vl/requests/forms/add-drc.php:230 vl/requests/forms/edit-drc.php:267
+#: vl/results/forms/update-drc-result.php:229
 msgid "F"
 msgstr "F"
 
-#: vl/requests/forms/add-drc.php:235 vl/requests/forms/edit-drc.php:265
-#: vl/results/forms/update-drc-result.php:224
+#: vl/requests/forms/add-drc.php:235 vl/requests/forms/edit-drc.php:272
+#: vl/results/forms/update-drc-result.php:233
 msgid "Please choose KP"
 msgstr "Veuillez choisir KP"
 
-#: vl/requests/forms/add-drc.php:452 vl/requests/forms/edit-drc.php:485
-msgid "Please choose Freezer"
-msgstr "Veuillez choisir Congélateur"
+#: vl/requests/forms/add-drc.php:452 vl/requests/forms/edit-drc.php:492
+#: vl/results/forms/update-drc-result.php:464
+msgid "Enter Freezer"
+msgstr "Entrer dans le congélateur"
 
-#: vl/requests/forms/add-drc.php:459 vl/requests/forms/edit-drc.php:492
+#: vl/requests/forms/add-drc.php:452 vl/requests/forms/edit-drc.php:492
+#: vl/results/forms/update-drc-result.php:464
+msgid "Please enter Freezer"
+msgstr "Veuillez entrer Congélateur"
+
+#: vl/requests/forms/add-drc.php:458 vl/requests/forms/edit-drc.php:498
+#: vl/results/forms/update-drc-result.php:470
 msgid "rack"
 msgstr "coffret"
 
-#: vl/requests/forms/add-drc.php:459 vl/requests/forms/edit-drc.php:492
+#: vl/requests/forms/add-drc.php:458 vl/requests/forms/edit-drc.php:498
+#: vl/results/forms/update-drc-result.php:470
 msgid "Please enter rack"
 msgstr "Veuillez entrer le rack"
 
-#: vl/requests/forms/add-drc.php:467 vl/requests/forms/edit-drc.php:499
+#: vl/requests/forms/add-drc.php:466 vl/requests/forms/edit-drc.php:505
+#: vl/results/forms/update-drc-result.php:477
 msgid "box"
 msgstr "boite"
 
-#: vl/requests/forms/add-drc.php:467 vl/requests/forms/edit-drc.php:499
+#: vl/requests/forms/add-drc.php:466 vl/requests/forms/edit-drc.php:505
+#: vl/results/forms/update-drc-result.php:477
 msgid "Please enter box"
 msgstr "Veuillez entrer dans la case"
 
-#: vl/requests/forms/add-drc.php:471 vl/requests/forms/edit-drc.php:503
+#: vl/requests/forms/add-drc.php:470 vl/requests/forms/edit-drc.php:509
+#: vl/results/forms/update-drc-result.php:481
 msgid "Please enter position"
 msgstr "Veuillez saisir la position"
 
-#: vl/requests/forms/add-drc.php:542 vl/requests/forms/edit-drc.php:572
-#: vl/results/forms/update-drc-result.php:511
+#: vl/requests/forms/add-drc.php:541 vl/requests/forms/edit-drc.php:578
+#: vl/results/forms/update-drc-result.php:545
 msgid "Reason for Failure"
 msgstr "Raison de l'échec"
 
-#: vl/requests/forms/add-drc.php:730 vl/requests/forms/edit-drc.php:843
-#: vl/results/forms/update-drc-result.php:226
+#: vl/requests/forms/add-drc.php:729 vl/requests/forms/edit-drc.php:852
+#: vl/results/forms/update-drc-result.php:235
 msgid "PS"
 msgstr "PS"
 
-#: vl/requests/forms/add-drc.php:733 vl/requests/forms/edit-drc.php:846
-#: vl/results/forms/update-drc-result.php:227
+#: vl/requests/forms/add-drc.php:732 vl/requests/forms/edit-drc.php:855
+#: vl/results/forms/update-drc-result.php:236
 msgid "CPS"
 msgstr "CPS"
 
-#: vl/requests/forms/add-drc.php:733 vl/requests/forms/edit-drc.php:846
-#: vl/results/forms/update-drc-result.php:228
+#: vl/requests/forms/add-drc.php:732 vl/requests/forms/edit-drc.php:855
+#: vl/results/forms/update-drc-result.php:237
 msgid "MSM"
 msgstr "MSM"
 
@@ -20951,9 +21036,9 @@ msgstr "Unique ART (TRACNET) No."
 msgid "Enter new reason of testing"
 msgstr "Saisir un nouveau motif de contrôle"
 
-#: vl/requests/forms/edit-drc.php:608 vl/requests/forms/edit-drc.php:612
-#: vl/results/forms/update-drc-result.php:550
-#: vl/results/forms/update-drc-result.php:557
+#: vl/requests/forms/edit-drc.php:614 vl/requests/forms/edit-drc.php:618
+#: vl/results/forms/update-drc-result.php:584
+#: vl/results/forms/update-drc-result.php:591
 msgid "Enter reason for changing the result"
 msgstr "Indiquer la raison de la modification du résultat"
 
@@ -21043,9 +21128,9 @@ msgid "Viral Load Result(copiesl/ml)"
 msgstr "Résultat de la charge virale (copiesl/ml)"
 
 #: vl/result-mail/editTestResultEmailConfig.php:111
-#: vl/results/pdf/result-pdf-cameroon.php:367
-#: vl/results/pdf/result-pdf-cameroon.php:371
+#: vl/results/pdf/result-pdf-cameroon.php:374
 #: vl/results/pdf/result-pdf-cameroon.php:378
+#: vl/results/pdf/result-pdf-cameroon.php:385
 msgid "Log Value"
 msgstr "Valeur logarithmique"
 
@@ -21127,11 +21212,11 @@ msgstr "Saisir le nom du patient"
 msgid "Please check gender"
 msgstr "Veuillez cocher le sexe"
 
-#: vl/results/forms/update-drc-result.php:470
+#: vl/results/forms/update-drc-result.php:504
 msgid "Please select if sample is rejected"
 msgstr "Veuillez sélectionner si l'échantillon est rejeté"
 
-#: vl/results/forms/update-drc-result.php:480
+#: vl/results/forms/update-drc-result.php:514
 msgid "Please select reason for rejection"
 msgstr "Veuillez sélectionner la raison du rejet"
 
@@ -21151,77 +21236,82 @@ msgstr "Code ART"
 msgid "Sex : "
 msgstr "Sexe : "
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:234
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:237
+#: vl/results/pdf/result-pdf-cameroon.php:327
+msgid "HEALTH INSURANCE CODE"
+msgstr "CODE DE L'ASSURANCE MALADIE"
+
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:243
 msgid "Type of Sample"
 msgstr "Type d'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:235
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:244
 msgid "Contact"
 msgstr "Contact"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:239
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:248
 msgid "Collected By"
 msgstr "Recueilli par"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:242
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:251
 msgid "Name of Requester"
 msgstr "Nom du demandeur"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:243
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:252
 msgid "Contact of Requester"
 msgstr "Contact du demandeur"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:246
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:255
 msgid "Treatment center"
 msgstr "Centre de traitement"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:247
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:256
 msgid "ARV initiation date"
 msgstr "Date d'initiation aux ARV"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:252
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:261
 msgid "Modified"
 msgstr "Modifier"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:270
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:279
 msgid "Test Name"
 msgstr "Nom du test"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:272
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:281
 msgid "Test Date"
 msgstr "Date du test"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:278
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:287
 msgid "Result (copies/ml)"
 msgstr "Résultat (copies/ml)"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:280
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:289
 msgid "Results (log)"
 msgstr "Résultats (log)"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:291
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:300
 msgid "Comment, if applicable"
 msgstr "Commentaire, le cas échéant"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:312
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:321
 msgid "Validated by"
 msgstr "Validé par"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:313
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:322
 msgid "Authorized by"
 msgstr "Autorisé par"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:329
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:338
 msgid "Authorized and Validated by"
 msgstr "Autorisé et validé par"
 
 #: vl/results/pdf/result-pdf-cameroon.php:231
-msgid "HEALTH CENTRE"
-msgstr "FORMATION SANITAIRE"
+msgid "FACILITY"
+msgstr "Facilité"
 
 #: vl/results/pdf/result-pdf-cameroon.php:232
-msgid "HEALTH FACILITY CODE"
-msgstr "CODE DES ÉTABLISSEMENTS DE SANTÉ"
+msgid "FACILITY CODE"
+msgstr "CODE DE LA FACILITÉ"
 
 #: vl/results/pdf/result-pdf-cameroon.php:233
 msgid "REGION"
@@ -21283,35 +21373,35 @@ msgstr "ÉTAT DE GROSSESSE"
 msgid "PATIENT'S CONTACT"
 msgstr "CONTACT DU PATIENT"
 
-#: vl/results/pdf/result-pdf-cameroon.php:331
+#: vl/results/pdf/result-pdf-cameroon.php:338
 msgid "SAMPLE ID"
 msgstr "ID de l'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon.php:332
+#: vl/results/pdf/result-pdf-cameroon.php:339
 msgid "SAMPLE COLLECTION DATE"
 msgstr "Date de prélèvement de l'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon.php:333
+#: vl/results/pdf/result-pdf-cameroon.php:340
 msgid "SAMPLE RECEIPT DATE"
 msgstr "DATE DE RÉCEPTION DE L'ÉCHANTILLON"
 
-#: vl/results/pdf/result-pdf-cameroon.php:341
+#: vl/results/pdf/result-pdf-cameroon.php:348
 msgid "SAMPLE REJECTED?"
 msgstr "ÉCHANTILLON REJETÉ ?"
 
-#: vl/results/pdf/result-pdf-cameroon.php:342
+#: vl/results/pdf/result-pdf-cameroon.php:349
 msgid "SAMPLE TEST DATE"
 msgstr "Date du test de l'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon.php:343
+#: vl/results/pdf/result-pdf-cameroon.php:350
 msgid "RESULT RELEASE DATE"
 msgstr "DATE DE PUBLICATION DES RÉSULTATS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:353
+#: vl/results/pdf/result-pdf-cameroon.php:360
 msgid "SAMPLE TYPE"
 msgstr "Type d'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon.php:388
+#: vl/results/pdf/result-pdf-cameroon.php:395
 msgid ""
 "Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR "
 "(Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)"
@@ -21320,45 +21410,45 @@ msgstr ""
 "PCR (seuil de sensibilité : 40 copies/ml pour le plasma et 839 copies/ml "
 "pour le DBS)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:426
+#: vl/results/pdf/result-pdf-cameroon.php:433
 msgid "TEST PLATFORM"
 msgstr "PLATE-FORME D'ESSAI"
 
-#: vl/results/pdf/result-pdf-cameroon.php:494
+#: vl/results/pdf/result-pdf-cameroon.php:501
 msgid "TESTED BY"
 msgstr "TESTÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:495
-#: vl/results/pdf/result-pdf-cameroon.php:516
-#: vl/results/pdf/result-pdf-cameroon.php:537
-#: vl/results/pdf/result-pdf-cameroon.php:558
+#: vl/results/pdf/result-pdf-cameroon.php:502
+#: vl/results/pdf/result-pdf-cameroon.php:523
+#: vl/results/pdf/result-pdf-cameroon.php:544
+#: vl/results/pdf/result-pdf-cameroon.php:565
 msgid "SIGNATURE"
 msgstr "SIGNATURE"
 
-#: vl/results/pdf/result-pdf-cameroon.php:496
-#: vl/results/pdf/result-pdf-cameroon.php:517
-#: vl/results/pdf/result-pdf-cameroon.php:538
-#: vl/results/pdf/result-pdf-cameroon.php:559
+#: vl/results/pdf/result-pdf-cameroon.php:503
+#: vl/results/pdf/result-pdf-cameroon.php:524
+#: vl/results/pdf/result-pdf-cameroon.php:545
+#: vl/results/pdf/result-pdf-cameroon.php:566
 msgid "DATE"
 msgstr "DATE"
 
-#: vl/results/pdf/result-pdf-cameroon.php:515
+#: vl/results/pdf/result-pdf-cameroon.php:522
 msgid "REVIEWED BY"
 msgstr "REVUE PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:536
+#: vl/results/pdf/result-pdf-cameroon.php:543
 msgid "REPORT REVISED BY"
 msgstr "RAPPORT RÉVISÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:557
+#: vl/results/pdf/result-pdf-cameroon.php:564
 msgid "APPROVED BY"
 msgstr "APPROUVÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:593
+#: vl/results/pdf/result-pdf-cameroon.php:600
 msgid "Lab Comments"
 msgstr "Commentaires du laboratoire"
 
-#: vl/results/pdf/result-pdf-cameroon.php:610
+#: vl/results/pdf/result-pdf-cameroon.php:617
 msgid ""
 "For a variation in Viral Load to be significant, the difference between two "
 "measurements must be at least 0.5 Log<sub>10</sub> or a reduction or "
@@ -21368,11 +21458,11 @@ msgstr ""
 "entre deux mesures doit être d'au moins 0,5 <sub>Log10</sub> ou une "
 "réduction ou une augmentation d'un facteur 3 du nombre de copies/mL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:619
+#: vl/results/pdf/result-pdf-cameroon.php:626
 msgid "Detection Limit (DL)"
 msgstr "Limite de détection (LDD)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:619
+#: vl/results/pdf/result-pdf-cameroon.php:626
 msgid ""
 "&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 "
 "Log<sub>10</sub>) copies/mL for DBS"
@@ -21380,11 +21470,11 @@ msgstr ""
 "&lt; 40 (1,60 <sub>Log10</sub>) copies/mL pour le plasma et 839 (2,92 "
 "<sub>Log10</sub>) copies/mL pour le DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:621
+#: vl/results/pdf/result-pdf-cameroon.php:628
 msgid "Quantification Limits (QL)"
 msgstr "Limites de quantification (LDQ)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:621
+#: vl/results/pdf/result-pdf-cameroon.php:628
 msgid ""
 "Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for "
 "Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for "
@@ -21394,19 +21484,19 @@ msgstr ""
 "plasma et 839 et 10 000 000 (2,92 et 7,0 <sub>Log10</sub>) copies/mL pour le "
 "DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:638
+#: vl/results/pdf/result-pdf-cameroon.php:645
 msgid "Continue on current regimen"
 msgstr "Poursuivre le protocole actuel"
 
-#: vl/results/pdf/result-pdf-cameroon.php:639
+#: vl/results/pdf/result-pdf-cameroon.php:646
 msgid "Printed on"
 msgstr "Imprimé le"
 
-#: vl/results/pdf/result-pdf-cameroon.php:642
+#: vl/results/pdf/result-pdf-cameroon.php:649
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 
-#: vl/results/updateVlTestResultHelper.php:205
+#: vl/results/updateVlTestResultHelper.php:226
 msgid "VL result updated successfully"
 msgstr "Les résultats de la VL ont été mis à jour avec succès"
 
@@ -21415,6 +21505,12 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Please choose Freezer"
+#~ msgstr "Veuillez choisir Congélateur"
+
+#~ msgid "HEALTH CENTRE"
+#~ msgstr "FORMATION SANITAIRE"
 
 #~ msgid ""
 #~ "at least 0.5 Log 10 or a reduction or increase of a factor of 3 in the "

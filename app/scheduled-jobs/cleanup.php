@@ -8,18 +8,18 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
-use App\Services\DatabaseService;
 use App\Utilities\MiscUtility;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-// Default global duration to delete in days
-$defaultDurationToDeleteDays = 30;
+$duration = (isset($argv[1]) && is_numeric($argv[1])) ? (int)$argv[1] : 30;
+
 
 // Directory specific durations in days (key-value pairs)
 $directoryDurations = [
-    ROOT_PATH . DIRECTORY_SEPARATOR . 'backups' => 30, // 30 days for backups
-    WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary' => 7,  // 7 days for temporary files
-    // Add more directories and their durations here
+    ROOT_PATH . DIRECTORY_SEPARATOR . 'backups' => $duration, // Use parameter or default for backups
+    WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary' => 3,  // Keep fixed duration for temporary files or adjust as needed
+    // Adjust or add more directories and their durations here
 ];
 
 $cleanup = [
@@ -33,7 +33,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 foreach ($cleanup as $folder) {
     // Determine the duration for the current directory, or use the default
-    $days = $directoryDurations[$folder] ?? $defaultDurationToDeleteDays;
+    $days = $directoryDurations[$folder] ?? $duration;
     $durationToDelete = $days * 86400; // Convert days to seconds
 
     if (file_exists($folder)) {

@@ -466,11 +466,13 @@ spinner "$pid"
 wait $pid
 echo "Remote data sync completed."
 
-if [ -f "${vlsm_path}/cache/CompiledContainer.php" ]; then
-    rm "${vlsm_path}/cache/CompiledContainer.php"
-fi
+sudo -u www-data composer purge-cache &
+pid=$!
+spinner "$pid"
+wait $pid
+echo "Cache Purged."
 
-# Old startup.php file is no longer needed, but if it exists, make sure it is empty
+# The old startup.php file is no longer needed, but if it exists, make sure it is empty
 if [ -f "${vlsm_path}/startup.php" ]; then
     rm "${vlsm_path}/startup.php"
     touch "${vlsm_path}/startup.php"
