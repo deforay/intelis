@@ -478,4 +478,6 @@ fi
 
 service apache2 restart
 
+setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
+
 echo "VLSM update complete."

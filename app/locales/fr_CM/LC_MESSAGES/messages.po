@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-03-26 16:03+0530\n"
-"PO-Revision-Date: 2024-03-26 16:04+0530\n"
+"POT-Creation-Date: 2024-03-26 16:20+0530\n"
+"PO-Revision-Date: 2024-03-26 16:20+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -21358,31 +21358,45 @@ msgstr "APPROUVÉ PAR"
 msgid "Lab Comments"
 msgstr "Commentaires du laboratoire"
 
-#: vl/results/pdf/result-pdf-cameroon.php:589
+#: vl/results/pdf/result-pdf-cameroon.php:587
 msgid ""
 "For a variation in Viral Load to be significant, the difference between two "
-"measurements must be"
+"measurements must be at least 0.5 Log 10 or a reduction or increase of a "
+"factor of 3 in the number of copies/mL"
 msgstr ""
-"Pour qu’une variation de la charge virale soit significative, il faut que la "
-"différence entre deux mesures soit"
+"Pour qu'une variation de la charge virale soit significative, la différence "
+"entre deux mesures doit être d'au moins 0,5 Log 10 ou une réduction ou une "
+"augmentation d'un facteur 3 du nombre de copies/mL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:590
+#: vl/results/pdf/result-pdf-cameroon.php:595
 msgid ""
-"at least 0.5 Log 10 or a reduction or increase of a factor of 3 in the "
-"number of copies/ml"
+"<u><strong>Detection Limit</strong></u> (DL): <strong> < 40 copies/mL (1.60 "
+"Log 10 copies/mL) for Plasma and 839 copies/mL (2.92 Log 10 copies/mL) for "
+"DBS"
 msgstr ""
-"d’au moins 0,5 Log 10 soit une réduction ou une augmentation d’un facteur 3 "
-"du nombre de copies/mL"
+"<u><strong>Limite de détection</strong></u> (LDD) : <strong> &lt; 40 copies/"
+"mL (1,60 Log 10 copies/mL) pour le plasma et 839 copies/mL (2,92 Log 10 "
+"copies/mL) pour le DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:616
+#: vl/results/pdf/result-pdf-cameroon.php:596
+msgid ""
+"<u><strong>Quantification Limits</strong></u> (QL) Between <strong> 40 and "
+"10,000000 copies/mL (1.60 and 7.0 Log 10 copies/mL) for Plasma and 839 and "
+"10,000000 copies/mL (2.92 and 7.0 Log 10 copies/mL) for DBS "
+msgstr ""
+"<u><strong>Limites de quantification</strong></u> (LDQ) Entre <strong> 40 et "
+"10 000 000 copies/mL (1,60 et 7,0 Log 10 copies/mL) pour le plasma et 839 et "
+"10 000 000 copies/mL (2,92 et 7,0 Log 10 copies/mL) pour le DBS "
+
+#: vl/results/pdf/result-pdf-cameroon.php:613
 msgid "Continue on current regimen"
 msgstr "Poursuivre le protocole actuel"
 
-#: vl/results/pdf/result-pdf-cameroon.php:617
+#: vl/results/pdf/result-pdf-cameroon.php:614
 msgid "Printed on"
 msgstr "Imprimé le"
 
-#: vl/results/pdf/result-pdf-cameroon.php:620
+#: vl/results/pdf/result-pdf-cameroon.php:617
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 
@@ -21395,6 +21409,13 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid ""
+#~ "at least 0.5 Log 10 or a reduction or increase of a factor of 3 in the "
+#~ "number of copies/ml"
+#~ msgstr ""
+#~ "d’au moins 0,5 Log 10 soit une réduction ou une augmentation d’un facteur "
+#~ "3 du nombre de copies/mL"
 
 #~ msgid "select"
 #~ msgstr "sélectionner"
