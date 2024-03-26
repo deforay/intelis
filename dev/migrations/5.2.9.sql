@@ -300,7 +300,7 @@ CREATE TABLE `lab_storage` (
   `storage_id` char(36) COLLATE utf8mb4_general_ci NOT NULL,
   `storage_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `lab_id` int NOT NULL,
-  `storage_status` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `lab_storage_status` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`storage_id`),
   KEY `lab_id` (`lab_id`),
@@ -328,6 +328,6 @@ ALTER TABLE `audit_form_eid` ADD `health_insurance_code` VARCHAR(32) NULL DEFAUL
 ALTER TABLE `form_covid19` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
 ALTER TABLE `audit_form_covid19` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
 
--- Thana 26-Mar-2024
+-- Jeyabanu 26-Mar-2024
 ALTER TABLE `lab_storage` ADD `data_sync` INT NOT NULL DEFAULT '0' AFTER `updated_datetime`;
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Other Tests Table in Results Pdf', 'generic_tests_table_in_results_pdf', 'no', 'generic-tests', 'yes', '2024-03-26 20:15:07', NULL, 'active');
+ALTER TABLE `lab_storage` RENAME COLUMN `lab_storage_status` TO `storage_status`;
