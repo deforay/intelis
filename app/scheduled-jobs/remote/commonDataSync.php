@@ -71,7 +71,7 @@ $payload = array(
     'partnersLastModified'          => $general->getLastModifiedDateTime('r_implementation_partners'),
     'geoDivisionsLastModified'      => $general->getLastModifiedDateTime('geographical_divisions'),
     'patientsLastModified'          => $general->getLastModifiedDateTime('patients'),
-    // 'labStorageLastModified'        => $general->getLastModifiedDateTime('labStorage'),
+    'labStorageLastModified'        => $general->getLastModifiedDateTime('lab_storage'),
     "Key"                           => "vlsm-get-remote",
 );
 
@@ -352,7 +352,6 @@ $payload['labId'] = $labId;
 
 
 $jsonResponse = $apiService->post($url, $payload);
-die($jsonResponse);
 if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
     $options = [
