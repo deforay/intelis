@@ -300,7 +300,7 @@ CREATE TABLE `lab_storage` (
   `storage_id` char(36) COLLATE utf8mb4_general_ci NOT NULL,
   `storage_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `lab_id` int NOT NULL,
-  `lab_storage_status` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `storage_status` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`storage_id`),
   KEY `lab_id` (`lab_id`),
