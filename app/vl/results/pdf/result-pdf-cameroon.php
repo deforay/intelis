@@ -64,14 +64,14 @@ if (!empty($result)) {
           if ($reviewedByRes) {
                $reviewedBy = $reviewedByRes['user_name'];
           }
-     }else{
-          if(!empty($result['defaultReviewedBy'])){
+     } else {
+          if (!empty($result['defaultReviewedBy'])) {
                $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
                if ($reviewedByRes) {
-                   $reviewedBy = $reviewedByRes['user_name'];
+                    $reviewedBy = $reviewedByRes['user_name'];
                }
-               if(empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
-                    $result['result_reviewed_datetime'] = $result['sample_tested_datetime'] ;
+               if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
                }
           }
      }
@@ -91,13 +91,13 @@ if (!empty($result)) {
           $resultApprovedBy = ($result['approvedBy']);
           $approvedByRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
      } else {
-          if(!empty($result['defaultApprovedBy'])){
+          if (!empty($result['defaultApprovedBy'])) {
                $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
                if ($approvedByRes) {
-                   $resultApprovedBy = $approvedByRes['user_name'];
+                    $resultApprovedBy = $approvedByRes['user_name'];
                }
-               if(empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
-                    $result['result_approved_datetime'] = $result['sample_tested_datetime'] ;
+               if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_approved_datetime'] = $result['sample_tested_datetime'];
                }
           }
      }
@@ -385,7 +385,7 @@ if (!empty($result)) {
      }
      if (str_contains(strtolower((string)$result['vl_test_platform']), 'abbott')) {
           $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:10px;font-size:10px;padding-top:10px;">Technique : Quantification de l&#39;ARN du VIH circulant par RT-PCR Temps réel Abbott (Seuil de sensibilité 40 Copies/ml)</td>';
+          $html .= "<td colspan='3' style='line-height:10px;font-size:10px;padding-top:10px;'>" . _translate("Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR (Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)") . "</td>";
           $html .= '</tr>';
      }
      //$html .= '<tr><td colspan="3"></td></tr>';
@@ -408,14 +408,6 @@ if (!empty($result)) {
           $html .= '<td colspan="3" style="line-height:16px;"></td>';
           $html .= '</tr>';
      }
-     // if (trim($result['lab_tech_comments']) != '') {
-     //      $html .= '<tr>';
-     //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">LAB COMMENTS&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ($result['lab_tech_comments']) . '</span></td>';
-     //      $html .= '</tr>';
-     //      $html .= '<tr>';
-     //      $html .= '<td colspan="3" style="line-height:10px;"></td>';
-     //      $html .= '</tr>';
-     // }
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
@@ -425,23 +417,7 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:15px;font-size:11px;font-weight:bold;">' . _translate("TEST PLATFORM") . ' &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ($result['vl_test_platform']) . '</span></td>';
      $html .= '</tr>';
-     // $html .= '<tr>';
-     // $html .= '<td colspan="3" style="line-height:8px;"></td>';
-     // $html .= '</tr>';
-     // if (isset($result['last_viral_load_result']) && $result['last_viral_load_result'] != null) {
-     //      $html .= '<tr>';
-     //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">PREVIOUS RESULTS</td>';
-     //      $html .= '</tr>';
-     //      $html .= '<tr>';
-     //      $html .= '<td colspan="3" style="line-height:8px;"></td>';
-     //      $html .= '</tr>';
-     //      $html .= '<tr>';
-     //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Date of Last VL Test&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_date'] . '</span></td>';
-     //      $html .= '</tr>';
-     //      $html .= '<tr>';
-     //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Result of previous viral load(copies/ml)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_result'] . '</span></td>';
-     //      $html .= '</tr>';
-     // }
+
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
@@ -607,8 +583,9 @@ if (!empty($result)) {
 
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;">';
-     $html .= '<u><b>NB</u></b> : Pour qu’une variation de la charge virale soit significative, il faut que la différence entre deux mesures soit<br>';
-     $html .= 'd’au moins 0,5 Log 10 soit une réduction ou une augmentation d’un facteur 3 du nombre de copies/ml </td>';
+
+     $html .= "<u><b>NB</u></b>:" . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be") . "<br>";
+     $html .=  _translate("at least 0.5 Log 10 or a reduction or increase of a factor of 3 in the number of copies/mL") . " </td>";
      $html .= '</tr>';
 
      $html .= '<tr>';

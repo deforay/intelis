@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-03-22 15:19+0530\n"
-"PO-Revision-Date: 2024-03-22 15:20+0530\n"
+"POT-Creation-Date: 2024-03-26 16:03+0530\n"
+"PO-Revision-Date: 2024-03-26 16:04+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -94,7 +94,7 @@ msgstr ""
 #: facilities/upload-facilities.php:93
 #: generic-tests/configuration/add-test-type.php:68
 #: generic-tests/configuration/clone-test-type.php:105
-#: generic-tests/configuration/edit-test-type.php:104
+#: generic-tests/configuration/edit-test-type.php:108
 #: generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:21
 #: generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php:34
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:23
@@ -114,7 +114,7 @@ msgstr ""
 #: generic-tests/mail/mail-generic-tests-results.php:71
 #: generic-tests/requests/add-request.php:224
 #: generic-tests/requests/clone-request.php:396
-#: generic-tests/requests/edit-request.php:398
+#: generic-tests/requests/edit-request.php:395
 #: generic-tests/results/email-results.php:75
 #: generic-tests/results/update-generic-test-result.php:390
 #: hepatitis/mail/mail-hepatitis-results.php:50
@@ -293,7 +293,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: facilities/upload-facilities.php:80
 #: generic-tests/configuration/add-test-type.php:58
 #: generic-tests/configuration/clone-test-type.php:97
-#: generic-tests/configuration/edit-test-type.php:96
+#: generic-tests/configuration/edit-test-type.php:100
 #: generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:12
 #: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:19
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:13
@@ -909,6 +909,9 @@ msgstr "Veuillez sélectionner les types de tests"
 #: covid-19/requests/forms/add-cameroon.php:243
 #: covid-19/requests/forms/add-cameroon.php:274
 #: covid-19/requests/forms/add-cameroon.php:318
+#: covid-19/requests/forms/add-cameroon.php:354
+#: covid-19/requests/forms/add-cameroon.php:390
+#: covid-19/requests/forms/add-cameroon.php:398
 #: covid-19/requests/forms/add-cameroon.php:414
 #: covid-19/requests/forms/add-cameroon.php:423
 #: covid-19/requests/forms/add-cameroon.php:453
@@ -932,11 +935,17 @@ msgstr "Veuillez sélectionner les types de tests"
 #: covid-19/requests/forms/edit-cameroon.php:187
 #: covid-19/requests/forms/edit-cameroon.php:197
 #: covid-19/requests/forms/edit-cameroon.php:257
+#: covid-19/requests/forms/edit-cameroon.php:288
 #: covid-19/requests/forms/edit-cameroon.php:332
 #: covid-19/requests/forms/edit-cameroon.php:342
 #: covid-19/requests/forms/edit-cameroon.php:361
+#: covid-19/requests/forms/edit-cameroon.php:368
+#: covid-19/requests/forms/edit-cameroon.php:406
+#: covid-19/requests/forms/edit-cameroon.php:414
 #: covid-19/requests/forms/edit-cameroon.php:430
 #: covid-19/requests/forms/edit-cameroon.php:439
+#: covid-19/requests/forms/edit-cameroon.php:493
+#: covid-19/requests/forms/edit-cameroon.php:510
 #: covid-19/requests/forms/edit-cameroon.php:524
 #: covid-19/requests/forms/edit-cameroon.php:545
 #: covid-19/requests/forms/edit-cameroon.php:580
@@ -975,11 +984,17 @@ msgstr "Veuillez sélectionner les types de tests"
 #: covid-19/results/forms/update-cameroon-result.php:175
 #: covid-19/results/forms/update-cameroon-result.php:185
 #: covid-19/results/forms/update-cameroon-result.php:227
+#: covid-19/results/forms/update-cameroon-result.php:260
 #: covid-19/results/forms/update-cameroon-result.php:295
 #: covid-19/results/forms/update-cameroon-result.php:305
 #: covid-19/results/forms/update-cameroon-result.php:324
+#: covid-19/results/forms/update-cameroon-result.php:331
+#: covid-19/results/forms/update-cameroon-result.php:367
+#: covid-19/results/forms/update-cameroon-result.php:375
 #: covid-19/results/forms/update-cameroon-result.php:391
 #: covid-19/results/forms/update-cameroon-result.php:400
+#: covid-19/results/forms/update-cameroon-result.php:454
+#: covid-19/results/forms/update-cameroon-result.php:471
 #: covid-19/results/forms/update-cameroon-result.php:489
 #: covid-19/results/forms/update-cameroon-result.php:508
 #: covid-19/results/forms/update-cameroon-result.php:543
@@ -1114,8 +1129,10 @@ msgstr "Veuillez sélectionner les types de tests"
 #: facilities/facilities.php:114
 #: generic-tests/configuration/add-test-type.php:233
 #: generic-tests/configuration/add-test-type.php:256
+#: generic-tests/configuration/add-test-type.php:307
 #: generic-tests/configuration/add-test-type.php:575
 #: generic-tests/configuration/add-test-type.php:588
+#: generic-tests/configuration/add-test-type.php:755
 #: generic-tests/configuration/clone-test-type.php:281
 #: generic-tests/configuration/clone-test-type.php:311
 #: generic-tests/configuration/clone-test-type.php:345
@@ -1125,14 +1142,17 @@ msgstr "Veuillez sélectionner les types de tests"
 #: generic-tests/configuration/clone-test-type.php:461
 #: generic-tests/configuration/clone-test-type.php:801
 #: generic-tests/configuration/clone-test-type.php:814
-#: generic-tests/configuration/edit-test-type.php:279
-#: generic-tests/configuration/edit-test-type.php:309
-#: generic-tests/configuration/edit-test-type.php:343
-#: generic-tests/configuration/edit-test-type.php:373
-#: generic-tests/configuration/edit-test-type.php:406
-#: generic-tests/configuration/edit-test-type.php:429
-#: generic-tests/configuration/edit-test-type.php:818
+#: generic-tests/configuration/edit-test-type.php:283
+#: generic-tests/configuration/edit-test-type.php:313
+#: generic-tests/configuration/edit-test-type.php:347
+#: generic-tests/configuration/edit-test-type.php:377
+#: generic-tests/configuration/edit-test-type.php:410
+#: generic-tests/configuration/edit-test-type.php:433
+#: generic-tests/configuration/edit-test-type.php:489
+#: generic-tests/configuration/edit-test-type.php:568
 #: generic-tests/configuration/edit-test-type.php:831
+#: generic-tests/configuration/edit-test-type.php:844
+#: generic-tests/configuration/edit-test-type.php:985
 #: generic-tests/program-management/generic-export-data.php:93
 #: generic-tests/program-management/generic-export-data.php:151
 #: generic-tests/program-management/generic-export-data.php:161
@@ -1144,7 +1164,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: generic-tests/program-management/generic-export-data.php:222
 #: generic-tests/program-management/generic-sample-status.php:87
 #: generic-tests/program-management/generic-tests-clinic-report.php:61
-#: generic-tests/requests/getTestTypeForm.php:87
+#: generic-tests/requests/getTestTypeForm.php:88
 #: generic-tests/results/email-results.php:151
 #: generic-tests/results/email-results.php:176
 #: generic-tests/results/email-results.php:213
@@ -1273,8 +1293,8 @@ msgstr "Veuillez sélectionner les types de tests"
 #: tb/results/tb-result-status.php:77 tb/results/tb-result-status.php:96
 #: tb/results/tb-result-status.php:112 users/addUser.php:228
 #: users/addUser.php:238 users/addUser.php:263 users/addUser.php:273
-#: users/editUser.php:270 users/editUser.php:301 users/editUser.php:311
-#: users/editUser.php:341 users/editUser.php:351
+#: users/editProfile.php:73 users/editUser.php:270 users/editUser.php:301
+#: users/editUser.php:311 users/editUser.php:341 users/editUser.php:351
 #: vl/program-management/getHighVlResultDetails.php:230
 #: vl/program-management/highViralLoad.php:162
 #: vl/program-management/highViralLoad.php:175
@@ -1559,7 +1579,7 @@ msgstr "Synchronisé sur"
 #: facilities/editFacility.php:639 facilities/facilities.php:176
 #: generic-tests/configuration/add-test-type.php:219
 #: generic-tests/configuration/clone-test-type.php:258
-#: generic-tests/configuration/edit-test-type.php:257
+#: generic-tests/configuration/edit-test-type.php:261
 #: generic-tests/configuration/test-type.php:46
 #: generic-tests/requests/view-requests.php:201
 #: generic-tests/results/generic-failed-results.php:212
@@ -1768,7 +1788,7 @@ msgstr "ID de l'échantillon"
 #: facilities/upload-facilities.php:145
 #: generic-tests/configuration/add-test-type.php:372
 #: generic-tests/configuration/clone-test-type.php:615
-#: generic-tests/configuration/edit-test-type.php:632
+#: generic-tests/configuration/edit-test-type.php:636
 #: generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:73
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:64
 #: generic-tests/configuration/sample-types/generic-edit-sample-type.php:77
@@ -2789,26 +2809,11 @@ msgstr "Nom du Labo"
 #: common/reference/edit-lab-storage.php:75
 #: common/reference/edit-recommended-corrective-action.php:67
 #: covid-19/requests/forms/add-cameroon.php:206
-#: covid-19/requests/forms/add-cameroon.php:354
-#: covid-19/requests/forms/add-cameroon.php:390
-#: covid-19/requests/forms/add-cameroon.php:398
 #: covid-19/requests/forms/add-png.php:202
 #: covid-19/requests/forms/add-rwanda.php:155
 #: covid-19/requests/forms/add-sierraleone.php:175
 #: covid-19/requests/forms/add-southsudan.php:186
 #: covid-19/requests/forms/edit-cameroon.php:221
-#: covid-19/requests/forms/edit-cameroon.php:288
-#: covid-19/requests/forms/edit-cameroon.php:368
-#: covid-19/requests/forms/edit-cameroon.php:406
-#: covid-19/requests/forms/edit-cameroon.php:414
-#: covid-19/requests/forms/edit-cameroon.php:493
-#: covid-19/requests/forms/edit-cameroon.php:510
-#: covid-19/results/forms/update-cameroon-result.php:260
-#: covid-19/results/forms/update-cameroon-result.php:331
-#: covid-19/results/forms/update-cameroon-result.php:367
-#: covid-19/results/forms/update-cameroon-result.php:375
-#: covid-19/results/forms/update-cameroon-result.php:454
-#: covid-19/results/forms/update-cameroon-result.php:471
 #: eid/requests/forms/add-cameroon.php:172 eid/requests/forms/add-png.php:198
 #: eid/requests/forms/add-rwanda.php:166
 #: eid/requests/forms/add-sierraleone.php:186
@@ -2860,8 +2865,8 @@ msgstr "Nom du Labo"
 #: tb/requests/forms/add-southsudan.php:168
 #: tb/requests/forms/edit-sierraleone.php:232
 #: tb/requests/forms/edit-southsudan.php:197 users/addUser.php:109
-#: users/addUser.php:143 users/editProfile.php:73 users/editUser.php:152
-#: users/editUser.php:189 vl/reference/add-vl-art-code-details.php:69
+#: users/addUser.php:143 users/editUser.php:152 users/editUser.php:189
+#: vl/reference/add-vl-art-code-details.php:69
 #: vl/reference/add-vl-art-code-details.php:80
 #: vl/reference/add-vl-test-failure-reason.php:44
 #: vl/reference/edit-vl-test-failure-reason.php:53
@@ -3146,10 +3151,10 @@ msgstr "Afficher la recherche avancée"
 #: generic-tests/configuration/clone-test-type.php:376
 #: generic-tests/configuration/clone-test-type.php:432
 #: generic-tests/configuration/clone-test-type.php:815
-#: generic-tests/configuration/edit-test-type.php:310
-#: generic-tests/configuration/edit-test-type.php:374
-#: generic-tests/configuration/edit-test-type.php:430
-#: generic-tests/configuration/edit-test-type.php:832
+#: generic-tests/configuration/edit-test-type.php:314
+#: generic-tests/configuration/edit-test-type.php:378
+#: generic-tests/configuration/edit-test-type.php:434
+#: generic-tests/configuration/edit-test-type.php:845
 #: generic-tests/program-management/generic-tests-clinic-report.php:72
 #: hepatitis/management/hepatitis-clinic-report.php:140
 #: hepatitis/management/hepatitis-clinic-report.php:249
@@ -3767,7 +3772,7 @@ msgstr "Sauvegarder et Suivant"
 #: facilities/mapTestType.php:131 facilities/upload-facilities.php:148
 #: generic-tests/configuration/add-test-type.php:373
 #: generic-tests/configuration/clone-test-type.php:616
-#: generic-tests/configuration/edit-test-type.php:633
+#: generic-tests/configuration/edit-test-type.php:637
 #: generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:74
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:65
 #: generic-tests/configuration/sample-types/generic-edit-sample-type.php:78
@@ -3822,7 +3827,7 @@ msgstr "Annuler"
 #: facilities/editFacility.php:758 facilities/editFacility.php:1070
 #: generic-tests/requests/add-request.php:793
 #: generic-tests/requests/clone-request.php:1137
-#: generic-tests/requests/edit-request.php:1023
+#: generic-tests/requests/edit-request.php:1020
 #: generic-tests/requests/view-requests.php:292
 #: generic-tests/results/update-generic-test-result.php:1002
 #: specimen-referral-manifest/move-manifest.php:310
@@ -5056,7 +5061,7 @@ msgstr "Résultat CD4"
 #: facilities/facilities.php:172
 #: generic-tests/configuration/add-test-type.php:196
 #: generic-tests/configuration/clone-test-type.php:233
-#: generic-tests/configuration/edit-test-type.php:232
+#: generic-tests/configuration/edit-test-type.php:236
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:49
 #: generic-tests/configuration/sample-types/generic-edit-sample-type.php:62
 #: generic-tests/configuration/sample-types/generic-sample-type.php:40
@@ -5722,10 +5727,10 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: generic-tests/configuration/clone-test-type.php:369
 #: generic-tests/configuration/clone-test-type.php:425
 #: generic-tests/configuration/clone-test-type.php:810
-#: generic-tests/configuration/edit-test-type.php:303
-#: generic-tests/configuration/edit-test-type.php:367
-#: generic-tests/configuration/edit-test-type.php:423
-#: generic-tests/configuration/edit-test-type.php:827
+#: generic-tests/configuration/edit-test-type.php:307
+#: generic-tests/configuration/edit-test-type.php:371
+#: generic-tests/configuration/edit-test-type.php:427
+#: generic-tests/configuration/edit-test-type.php:840
 #: generic-tests/program-management/generic-export-data.php:152
 #: generic-tests/program-management/generic-export-data.php:162
 #: generic-tests/program-management/generic-export-data.php:170
@@ -5884,10 +5889,10 @@ msgstr "Oui"
 #: generic-tests/configuration/clone-test-type.php:370
 #: generic-tests/configuration/clone-test-type.php:426
 #: generic-tests/configuration/clone-test-type.php:811
-#: generic-tests/configuration/edit-test-type.php:304
-#: generic-tests/configuration/edit-test-type.php:368
-#: generic-tests/configuration/edit-test-type.php:424
-#: generic-tests/configuration/edit-test-type.php:828
+#: generic-tests/configuration/edit-test-type.php:308
+#: generic-tests/configuration/edit-test-type.php:372
+#: generic-tests/configuration/edit-test-type.php:428
+#: generic-tests/configuration/edit-test-type.php:841
 #: generic-tests/program-management/generic-export-data.php:153
 #: generic-tests/program-management/generic-export-data.php:163
 #: generic-tests/program-management/generic-export-data.php:171
@@ -6422,10 +6427,10 @@ msgstr "Résultat de rejet"
 #: generic-tests/configuration/clone-test-type.php:379
 #: generic-tests/configuration/clone-test-type.php:435
 #: generic-tests/configuration/clone-test-type.php:818
-#: generic-tests/configuration/edit-test-type.php:313
-#: generic-tests/configuration/edit-test-type.php:377
-#: generic-tests/configuration/edit-test-type.php:433
-#: generic-tests/configuration/edit-test-type.php:835
+#: generic-tests/configuration/edit-test-type.php:317
+#: generic-tests/configuration/edit-test-type.php:381
+#: generic-tests/configuration/edit-test-type.php:437
+#: generic-tests/configuration/edit-test-type.php:848
 #: generic-tests/program-management/sample-rejection-report.php:65
 #: hepatitis/management/hepatitis-sample-rejection-report.php:54
 #: tb/management/tb-sample-rejection-report.php:52
@@ -7030,7 +7035,7 @@ msgstr "Catégorie de motif"
 #: eid/management/get-rejected-samples.php:130
 #: generic-tests/configuration/add-test-type.php:174
 #: generic-tests/configuration/clone-test-type.php:210
-#: generic-tests/configuration/edit-test-type.php:209
+#: generic-tests/configuration/edit-test-type.php:213
 #: generic-tests/program-management/get-rejection-result.php:154
 #: hepatitis/management/get-rejected-samples.php:138
 #: system/translate-strings.php:34 tb/management/get-rejected-samples.php:142
@@ -7385,7 +7390,7 @@ msgstr "Veuillez saisir le statut du motif de rejet"
 #: facilities/editFacility.php:702 facilities/editFacility.php:1058
 #: generic-tests/configuration/add-test-type.php:199
 #: generic-tests/configuration/clone-test-type.php:236
-#: generic-tests/configuration/edit-test-type.php:235
+#: generic-tests/configuration/edit-test-type.php:239
 #: generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:61
 #: generic-tests/configuration/sample-rejection-reasons/get-generic-sample-rejection-reasons-helper.php:128
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:53
@@ -7485,7 +7490,7 @@ msgstr "Actif"
 #: facilities/editFacility.php:703 facilities/editFacility.php:1059
 #: generic-tests/configuration/add-test-type.php:200
 #: generic-tests/configuration/clone-test-type.php:237
-#: generic-tests/configuration/edit-test-type.php:236
+#: generic-tests/configuration/edit-test-type.php:240
 #: generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:62
 #: generic-tests/configuration/sample-rejection-reasons/get-generic-sample-rejection-reasons-helper.php:129
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:54
@@ -10693,7 +10698,7 @@ msgstr "EID-Modifier la demande de test"
 #: eid/requests/eid-edit-request.php:234
 #: generic-tests/requests/add-request.php:1379
 #: generic-tests/requests/clone-request.php:1348
-#: generic-tests/requests/edit-request.php:1234
+#: generic-tests/requests/edit-request.php:1231
 #: generic-tests/results/update-generic-test-result.php:1216
 #: hepatitis/requests/hepatitis-add-request.php:180
 #: hepatitis/requests/hepatitis-edit-request.php:177
@@ -11450,7 +11455,7 @@ msgstr "Date de réception"
 #: eid/results/forms/update-southsudan-result.php:492
 #: generic-tests/requests/add-request.php:683
 #: generic-tests/requests/clone-request.php:1027
-#: generic-tests/requests/edit-request.php:906
+#: generic-tests/requests/edit-request.php:903
 #: generic-tests/results/update-generic-test-result.php:887
 #: hepatitis/requests/forms/add-rwanda.php:276
 #: hepatitis/requests/forms/add-rwanda.php:288
@@ -11716,10 +11721,10 @@ msgstr "Personne à contacter"
 #: generic-tests/configuration/clone-test-type.php:380
 #: generic-tests/configuration/clone-test-type.php:436
 #: generic-tests/configuration/clone-test-type.php:819
-#: generic-tests/configuration/edit-test-type.php:314
-#: generic-tests/configuration/edit-test-type.php:378
-#: generic-tests/configuration/edit-test-type.php:434
-#: generic-tests/configuration/edit-test-type.php:836 users/addUser.php:421
+#: generic-tests/configuration/edit-test-type.php:318
+#: generic-tests/configuration/edit-test-type.php:382
+#: generic-tests/configuration/edit-test-type.php:438
+#: generic-tests/configuration/edit-test-type.php:849 users/addUser.php:421
 #: users/editUser.php:513
 msgid "Other"
 msgstr "Autre"
@@ -13679,7 +13684,7 @@ msgstr "Rapport hebdomadaire du labo VL"
 #: facilities/editFacility.php:701 facilities/editFacility.php:1057
 #: generic-tests/configuration/add-test-type.php:198
 #: generic-tests/configuration/clone-test-type.php:235
-#: generic-tests/configuration/edit-test-type.php:234 roles/addRole.php:218
+#: generic-tests/configuration/edit-test-type.php:238 roles/addRole.php:218
 #: roles/editRole.php:206 system-admin/reset-password/get-user.php:51
 #: users/editUser.php:269
 msgid "Please select the status"
@@ -13934,7 +13939,7 @@ msgstr "Commentaires utilisateurs"
 #: facilities/getSampleType.php:71
 #: generic-tests/configuration/add-test-type.php:128
 #: generic-tests/configuration/clone-test-type.php:165
-#: generic-tests/configuration/edit-test-type.php:164
+#: generic-tests/configuration/edit-test-type.php:168
 #: generic-tests/configuration/test-categories/generic-add-test-categories.php:13
 #: generic-tests/configuration/test-categories/generic-add-test-categories.php:32
 #: generic-tests/configuration/test-categories/generic-add-test-categories.php:34
@@ -14116,20 +14121,20 @@ msgstr "Ajouter un type de test"
 #: generic-tests/configuration/add-test-type.php:80
 #: generic-tests/configuration/clone-test-type.php:115
 #: generic-tests/configuration/clone-test-type.php:117
-#: generic-tests/configuration/edit-test-type.php:114
-#: generic-tests/configuration/edit-test-type.php:116
+#: generic-tests/configuration/edit-test-type.php:118
+#: generic-tests/configuration/edit-test-type.php:120
 msgid "Test Standard Name"
 msgstr "Nom du département"
 
 #: generic-tests/configuration/add-test-type.php:80
 #: generic-tests/configuration/clone-test-type.php:117
-#: generic-tests/configuration/edit-test-type.php:116
+#: generic-tests/configuration/edit-test-type.php:120
 msgid "Please enter standard name"
 msgstr "Veuillez saisir le nom standard"
 
 #: generic-tests/configuration/add-test-type.php:80
 #: generic-tests/configuration/clone-test-type.php:117
-#: generic-tests/configuration/edit-test-type.php:116
+#: generic-tests/configuration/edit-test-type.php:120
 msgid ""
 "This test standard name that you entered already exists.Try another name"
 msgstr ""
@@ -14140,20 +14145,20 @@ msgstr ""
 #: generic-tests/configuration/add-test-type.php:89
 #: generic-tests/configuration/clone-test-type.php:125
 #: generic-tests/configuration/clone-test-type.php:127
-#: generic-tests/configuration/edit-test-type.php:124
-#: generic-tests/configuration/edit-test-type.php:126
+#: generic-tests/configuration/edit-test-type.php:128
+#: generic-tests/configuration/edit-test-type.php:130
 msgid "Test Generic Name"
 msgstr "Test Nom générique"
 
 #: generic-tests/configuration/add-test-type.php:89
 #: generic-tests/configuration/clone-test-type.php:127
-#: generic-tests/configuration/edit-test-type.php:126
+#: generic-tests/configuration/edit-test-type.php:130
 msgid "Please enter the test generic name"
 msgstr "Veuillez saisir le nom générique du test"
 
 #: generic-tests/configuration/add-test-type.php:89
 #: generic-tests/configuration/clone-test-type.php:127
-#: generic-tests/configuration/edit-test-type.php:126
+#: generic-tests/configuration/edit-test-type.php:130
 msgid "This test generic name that you entered already exists.Try another name"
 msgstr "Le nom générique de ce test que vous avez saisi existe déjà"
 
@@ -14161,52 +14166,52 @@ msgstr "Le nom générique de ce test que vous avez saisi existe déjà"
 #: generic-tests/configuration/add-test-type.php:100
 #: generic-tests/configuration/clone-test-type.php:136
 #: generic-tests/configuration/clone-test-type.php:138
-#: generic-tests/configuration/edit-test-type.php:135
-#: generic-tests/configuration/edit-test-type.php:137
+#: generic-tests/configuration/edit-test-type.php:139
+#: generic-tests/configuration/edit-test-type.php:141
 msgid "Test Short Code"
 msgstr "Test Short Code"
 
 #: generic-tests/configuration/add-test-type.php:100
 #: generic-tests/configuration/clone-test-type.php:138
-#: generic-tests/configuration/edit-test-type.php:137
+#: generic-tests/configuration/edit-test-type.php:141
 msgid "Please enter short code"
 msgstr "Veuillez saisir le code court"
 
 #: generic-tests/configuration/add-test-type.php:100
 #: generic-tests/configuration/clone-test-type.php:138
-#: generic-tests/configuration/edit-test-type.php:137
+#: generic-tests/configuration/edit-test-type.php:141
 msgid "This test short code that you entered already exists.Try another code"
 msgstr ""
 "Ce code court de test que vous avez entré existe déjà. Essayez un autre code"
 
 #: generic-tests/configuration/add-test-type.php:107
 #: generic-tests/configuration/clone-test-type.php:145
-#: generic-tests/configuration/edit-test-type.php:144
+#: generic-tests/configuration/edit-test-type.php:148
 msgid "LOINC Codes"
 msgstr "Codes LOINC"
 
 #: generic-tests/configuration/add-test-type.php:109
 #: generic-tests/configuration/clone-test-type.php:147
-#: generic-tests/configuration/edit-test-type.php:146
+#: generic-tests/configuration/edit-test-type.php:150
 msgid "Test LOINC Code"
 msgstr "Test Code LOINC"
 
 #: generic-tests/configuration/add-test-type.php:109
 #: generic-tests/configuration/clone-test-type.php:147
-#: generic-tests/configuration/edit-test-type.php:146
+#: generic-tests/configuration/edit-test-type.php:150
 msgid "Please enter test loinc code"
 msgstr "Veuillez saisir le code du test"
 
 #: generic-tests/configuration/add-test-type.php:109
 #: generic-tests/configuration/clone-test-type.php:147
-#: generic-tests/configuration/edit-test-type.php:146
+#: generic-tests/configuration/edit-test-type.php:150
 msgid "This test loinc code that you entered already exists.Try another code"
 msgstr ""
 "Ce code de test loinc que vous avez saisi existe déjà, essayez un autre code"
 
 #: generic-tests/configuration/add-test-type.php:118
 #: generic-tests/configuration/clone-test-type.php:155
-#: generic-tests/configuration/edit-test-type.php:154
+#: generic-tests/configuration/edit-test-type.php:158
 #: generic-tests/configuration/test-methods/generic-add-test-methods.php:3
 #: generic-tests/configuration/test-methods/generic-edit-test-methods.php:6
 #: generic-tests/configuration/test-methods/generic-edit-test-methods.php:26
@@ -14219,43 +14224,43 @@ msgstr "Motifs du test"
 
 #: generic-tests/configuration/add-test-type.php:120
 #: generic-tests/configuration/clone-test-type.php:157
-#: generic-tests/configuration/edit-test-type.php:156
+#: generic-tests/configuration/edit-test-type.php:160
 msgid "Please select the test methods"
 msgstr "Veuillez sélectionner le statut"
 
 #: generic-tests/configuration/add-test-type.php:130
 #: generic-tests/configuration/clone-test-type.php:167
-#: generic-tests/configuration/edit-test-type.php:166
+#: generic-tests/configuration/edit-test-type.php:170
 msgid "Please select the test categories"
 msgstr "Veuillez sélectionner le statut"
 
 #: generic-tests/configuration/add-test-type.php:141
 #: generic-tests/configuration/clone-test-type.php:178
-#: generic-tests/configuration/edit-test-type.php:177
+#: generic-tests/configuration/edit-test-type.php:181
 msgid "Sample/Specimen Types"
 msgstr "Manifeste d'échantillons"
 
 #: generic-tests/configuration/add-test-type.php:143
 #: generic-tests/configuration/clone-test-type.php:180
-#: generic-tests/configuration/edit-test-type.php:179
+#: generic-tests/configuration/edit-test-type.php:183
 msgid "Please select the sample type"
 msgstr "Type d'échantillon"
 
 #: generic-tests/configuration/add-test-type.php:151
 #: generic-tests/configuration/clone-test-type.php:188
-#: generic-tests/configuration/edit-test-type.php:187
+#: generic-tests/configuration/edit-test-type.php:191
 msgid "Reasons for Testing"
 msgstr "Raisons des tests"
 
 #: generic-tests/configuration/add-test-type.php:153
 #: generic-tests/configuration/clone-test-type.php:190
-#: generic-tests/configuration/edit-test-type.php:189
+#: generic-tests/configuration/edit-test-type.php:193
 msgid "Please select the testing reason"
 msgstr "Veuillez sélectionner le motif du test"
 
 #: generic-tests/configuration/add-test-type.php:164
 #: generic-tests/configuration/clone-test-type.php:200
-#: generic-tests/configuration/edit-test-type.php:199
+#: generic-tests/configuration/edit-test-type.php:203
 #: generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php:2
 #: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:2
 #: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:20
@@ -14265,19 +14270,19 @@ msgstr "Raisons de l'échec des tests"
 
 #: generic-tests/configuration/add-test-type.php:166
 #: generic-tests/configuration/clone-test-type.php:202
-#: generic-tests/configuration/edit-test-type.php:201
+#: generic-tests/configuration/edit-test-type.php:205
 msgid "Please select the test failure reason"
 msgstr "Veuillez sélectionner la raison de l'échec du test"
 
 #: generic-tests/configuration/add-test-type.php:176
 #: generic-tests/configuration/clone-test-type.php:212
-#: generic-tests/configuration/edit-test-type.php:211
+#: generic-tests/configuration/edit-test-type.php:215
 msgid "Please select the sample rejection reason"
 msgstr "Veuillez sélectionner le motif de rejet de l'échantillon"
 
 #: generic-tests/configuration/add-test-type.php:186
 #: generic-tests/configuration/clone-test-type.php:223
-#: generic-tests/configuration/edit-test-type.php:222
+#: generic-tests/configuration/edit-test-type.php:226
 #: generic-tests/configuration/symptoms/generic-add-symptoms.php:2
 #: generic-tests/configuration/symptoms/generic-add-symptoms.php:13
 #: generic-tests/configuration/symptoms/generic-edit-symptoms.php:5
@@ -14290,13 +14295,13 @@ msgstr "Symptomes"
 
 #: generic-tests/configuration/add-test-type.php:188
 #: generic-tests/configuration/clone-test-type.php:225
-#: generic-tests/configuration/edit-test-type.php:224
+#: generic-tests/configuration/edit-test-type.php:228
 msgid "Please select the symptoms"
 msgstr "Veuillez sélectionner les symptômes"
 
 #: generic-tests/configuration/add-test-type.php:207
 #: generic-tests/configuration/clone-test-type.php:245
-#: generic-tests/configuration/edit-test-type.php:244
+#: generic-tests/configuration/edit-test-type.php:248
 msgid "Form Configuration"
 msgstr "Configuration du formulaire"
 
@@ -14308,11 +14313,11 @@ msgstr "Configuration du formulaire"
 #: generic-tests/configuration/clone-test-type.php:337
 #: generic-tests/configuration/clone-test-type.php:400
 #: generic-tests/configuration/clone-test-type.php:798
-#: generic-tests/configuration/edit-test-type.php:251
-#: generic-tests/configuration/edit-test-type.php:271
-#: generic-tests/configuration/edit-test-type.php:335
-#: generic-tests/configuration/edit-test-type.php:398
-#: generic-tests/configuration/edit-test-type.php:815
+#: generic-tests/configuration/edit-test-type.php:255
+#: generic-tests/configuration/edit-test-type.php:275
+#: generic-tests/configuration/edit-test-type.php:339
+#: generic-tests/configuration/edit-test-type.php:402
+#: generic-tests/configuration/edit-test-type.php:828
 msgid "Field Name"
 msgstr "Nom du champ"
 
@@ -14324,29 +14329,29 @@ msgstr "Nom du champ"
 #: generic-tests/configuration/clone-test-type.php:341
 #: generic-tests/configuration/clone-test-type.php:404
 #: generic-tests/configuration/clone-test-type.php:799
-#: generic-tests/configuration/edit-test-type.php:252
-#: generic-tests/configuration/edit-test-type.php:275
-#: generic-tests/configuration/edit-test-type.php:339
-#: generic-tests/configuration/edit-test-type.php:402
-#: generic-tests/configuration/edit-test-type.php:816
+#: generic-tests/configuration/edit-test-type.php:256
+#: generic-tests/configuration/edit-test-type.php:279
+#: generic-tests/configuration/edit-test-type.php:343
+#: generic-tests/configuration/edit-test-type.php:406
+#: generic-tests/configuration/edit-test-type.php:829
 msgid "Field Code"
 msgstr "Code du champ"
 
 #: generic-tests/configuration/add-test-type.php:215
 #: generic-tests/configuration/clone-test-type.php:254
-#: generic-tests/configuration/edit-test-type.php:253
+#: generic-tests/configuration/edit-test-type.php:257
 msgid "Field Type"
 msgstr "Type de champ"
 
 #: generic-tests/configuration/add-test-type.php:216
 #: generic-tests/configuration/clone-test-type.php:255
-#: generic-tests/configuration/edit-test-type.php:254
+#: generic-tests/configuration/edit-test-type.php:258
 msgid "Is it Mandatory?"
 msgstr "Est-il obligatoire ?"
 
 #: generic-tests/configuration/add-test-type.php:217
 #: generic-tests/configuration/clone-test-type.php:256
-#: generic-tests/configuration/edit-test-type.php:255
+#: generic-tests/configuration/edit-test-type.php:259
 msgid "Section"
 msgstr "Section"
 
@@ -14358,11 +14363,11 @@ msgstr "Section"
 #: generic-tests/configuration/clone-test-type.php:385
 #: generic-tests/configuration/clone-test-type.php:441
 #: generic-tests/configuration/clone-test-type.php:822
-#: generic-tests/configuration/edit-test-type.php:256
-#: generic-tests/configuration/edit-test-type.php:319
-#: generic-tests/configuration/edit-test-type.php:383
-#: generic-tests/configuration/edit-test-type.php:439
-#: generic-tests/configuration/edit-test-type.php:839
+#: generic-tests/configuration/edit-test-type.php:260
+#: generic-tests/configuration/edit-test-type.php:323
+#: generic-tests/configuration/edit-test-type.php:387
+#: generic-tests/configuration/edit-test-type.php:443
+#: generic-tests/configuration/edit-test-type.php:852
 msgid "Field Order"
 msgstr "Ordre du champ"
 
@@ -14372,10 +14377,10 @@ msgstr "Ordre du champ"
 #: generic-tests/configuration/clone-test-type.php:337
 #: generic-tests/configuration/clone-test-type.php:400
 #: generic-tests/configuration/clone-test-type.php:798
-#: generic-tests/configuration/edit-test-type.php:271
-#: generic-tests/configuration/edit-test-type.php:335
-#: generic-tests/configuration/edit-test-type.php:398
-#: generic-tests/configuration/edit-test-type.php:815
+#: generic-tests/configuration/edit-test-type.php:275
+#: generic-tests/configuration/edit-test-type.php:339
+#: generic-tests/configuration/edit-test-type.php:402
+#: generic-tests/configuration/edit-test-type.php:828
 msgid "Please enter field name"
 msgstr "Veuillez entrer le nom du champ"
 
@@ -14385,10 +14390,10 @@ msgstr "Veuillez entrer le nom du champ"
 #: generic-tests/configuration/clone-test-type.php:341
 #: generic-tests/configuration/clone-test-type.php:404
 #: generic-tests/configuration/clone-test-type.php:799
-#: generic-tests/configuration/edit-test-type.php:275
-#: generic-tests/configuration/edit-test-type.php:339
-#: generic-tests/configuration/edit-test-type.php:402
-#: generic-tests/configuration/edit-test-type.php:816
+#: generic-tests/configuration/edit-test-type.php:279
+#: generic-tests/configuration/edit-test-type.php:343
+#: generic-tests/configuration/edit-test-type.php:406
+#: generic-tests/configuration/edit-test-type.php:829
 msgid "Please enter field code"
 msgstr "Veuillez saisir le code du champ"
 
@@ -14398,10 +14403,10 @@ msgstr "Veuillez saisir le code du champ"
 #: generic-tests/configuration/clone-test-type.php:344
 #: generic-tests/configuration/clone-test-type.php:407
 #: generic-tests/configuration/clone-test-type.php:800
-#: generic-tests/configuration/edit-test-type.php:278
-#: generic-tests/configuration/edit-test-type.php:342
-#: generic-tests/configuration/edit-test-type.php:405
-#: generic-tests/configuration/edit-test-type.php:817
+#: generic-tests/configuration/edit-test-type.php:282
+#: generic-tests/configuration/edit-test-type.php:346
+#: generic-tests/configuration/edit-test-type.php:409
+#: generic-tests/configuration/edit-test-type.php:830
 msgid "Please select the field type"
 msgstr "Veuillez sélectionner le type de champ"
 
@@ -14411,10 +14416,10 @@ msgstr "Veuillez sélectionner le type de champ"
 #: generic-tests/configuration/clone-test-type.php:346
 #: generic-tests/configuration/clone-test-type.php:409
 #: generic-tests/configuration/clone-test-type.php:802
-#: generic-tests/configuration/edit-test-type.php:280
-#: generic-tests/configuration/edit-test-type.php:344
-#: generic-tests/configuration/edit-test-type.php:407
-#: generic-tests/configuration/edit-test-type.php:819
+#: generic-tests/configuration/edit-test-type.php:284
+#: generic-tests/configuration/edit-test-type.php:348
+#: generic-tests/configuration/edit-test-type.php:411
+#: generic-tests/configuration/edit-test-type.php:832
 msgid "Number"
 msgstr "Nombre"
 
@@ -14424,10 +14429,10 @@ msgstr "Nombre"
 #: generic-tests/configuration/clone-test-type.php:347
 #: generic-tests/configuration/clone-test-type.php:410
 #: generic-tests/configuration/clone-test-type.php:803
-#: generic-tests/configuration/edit-test-type.php:281
-#: generic-tests/configuration/edit-test-type.php:345
-#: generic-tests/configuration/edit-test-type.php:408
-#: generic-tests/configuration/edit-test-type.php:820
+#: generic-tests/configuration/edit-test-type.php:285
+#: generic-tests/configuration/edit-test-type.php:349
+#: generic-tests/configuration/edit-test-type.php:412
+#: generic-tests/configuration/edit-test-type.php:833
 msgid "Text"
 msgstr "Texte"
 
@@ -14437,10 +14442,10 @@ msgstr "Texte"
 #: generic-tests/configuration/clone-test-type.php:348
 #: generic-tests/configuration/clone-test-type.php:411
 #: generic-tests/configuration/clone-test-type.php:804
-#: generic-tests/configuration/edit-test-type.php:282
-#: generic-tests/configuration/edit-test-type.php:346
-#: generic-tests/configuration/edit-test-type.php:409
-#: generic-tests/configuration/edit-test-type.php:821
+#: generic-tests/configuration/edit-test-type.php:286
+#: generic-tests/configuration/edit-test-type.php:350
+#: generic-tests/configuration/edit-test-type.php:413
+#: generic-tests/configuration/edit-test-type.php:834
 #: system-admin/log-files/log-files.php:34
 #: system-admin/user-login-history/userLoginIndex.php:29
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:293
@@ -14453,10 +14458,10 @@ msgstr "Date"
 #: generic-tests/configuration/clone-test-type.php:349
 #: generic-tests/configuration/clone-test-type.php:412
 #: generic-tests/configuration/clone-test-type.php:805
-#: generic-tests/configuration/edit-test-type.php:283
-#: generic-tests/configuration/edit-test-type.php:347
-#: generic-tests/configuration/edit-test-type.php:410
-#: generic-tests/configuration/edit-test-type.php:822
+#: generic-tests/configuration/edit-test-type.php:287
+#: generic-tests/configuration/edit-test-type.php:351
+#: generic-tests/configuration/edit-test-type.php:414
+#: generic-tests/configuration/edit-test-type.php:835
 msgid "Dropdown"
 msgstr "Liste déroulante"
 
@@ -14465,21 +14470,21 @@ msgstr "Liste déroulante"
 #: generic-tests/configuration/clone-test-type.php:286
 #: generic-tests/configuration/clone-test-type.php:350
 #: generic-tests/configuration/clone-test-type.php:413
-#: generic-tests/configuration/edit-test-type.php:284
-#: generic-tests/configuration/edit-test-type.php:348
-#: generic-tests/configuration/edit-test-type.php:411
+#: generic-tests/configuration/edit-test-type.php:288
+#: generic-tests/configuration/edit-test-type.php:352
+#: generic-tests/configuration/edit-test-type.php:415
 msgid "Multiselect Dropdown"
 msgstr "Multiselect Dropdown"
 
 #: generic-tests/configuration/add-test-type.php:240
 #: generic-tests/configuration/clone-test-type.php:415
-#: generic-tests/configuration/edit-test-type.php:413
+#: generic-tests/configuration/edit-test-type.php:417
 msgid "Drop down values as , separated"
 msgstr "Valeurs de la liste déroulante : , séparées"
 
 #: generic-tests/configuration/add-test-type.php:240
 #: generic-tests/configuration/clone-test-type.php:415
-#: generic-tests/configuration/edit-test-type.php:413
+#: generic-tests/configuration/edit-test-type.php:417
 msgid "Please drop down values as comma separated"
 msgstr "Veuillez indiquer les valeurs en les séparant par des virgules"
 
@@ -14489,10 +14494,10 @@ msgstr "Veuillez indiquer les valeurs en les séparant par des virgules"
 #: generic-tests/configuration/clone-test-type.php:368
 #: generic-tests/configuration/clone-test-type.php:424
 #: generic-tests/configuration/clone-test-type.php:809
-#: generic-tests/configuration/edit-test-type.php:302
-#: generic-tests/configuration/edit-test-type.php:366
-#: generic-tests/configuration/edit-test-type.php:422
-#: generic-tests/configuration/edit-test-type.php:826
+#: generic-tests/configuration/edit-test-type.php:306
+#: generic-tests/configuration/edit-test-type.php:370
+#: generic-tests/configuration/edit-test-type.php:426
+#: generic-tests/configuration/edit-test-type.php:839
 msgid "Please select is it mandatory"
 msgstr "Veuillez sélectionner s'il s'agit d'une obligation"
 
@@ -14502,10 +14507,10 @@ msgstr "Veuillez sélectionner s'il s'agit d'une obligation"
 #: generic-tests/configuration/clone-test-type.php:374
 #: generic-tests/configuration/clone-test-type.php:430
 #: generic-tests/configuration/clone-test-type.php:813
-#: generic-tests/configuration/edit-test-type.php:308
-#: generic-tests/configuration/edit-test-type.php:372
-#: generic-tests/configuration/edit-test-type.php:428
-#: generic-tests/configuration/edit-test-type.php:830
+#: generic-tests/configuration/edit-test-type.php:312
+#: generic-tests/configuration/edit-test-type.php:376
+#: generic-tests/configuration/edit-test-type.php:432
+#: generic-tests/configuration/edit-test-type.php:843
 msgid "Please select the section"
 msgstr "Veuillez sélectionner la section"
 
@@ -14515,10 +14520,10 @@ msgstr "Veuillez sélectionner la section"
 #: generic-tests/configuration/clone-test-type.php:377
 #: generic-tests/configuration/clone-test-type.php:433
 #: generic-tests/configuration/clone-test-type.php:816
-#: generic-tests/configuration/edit-test-type.php:311
-#: generic-tests/configuration/edit-test-type.php:375
-#: generic-tests/configuration/edit-test-type.php:431
-#: generic-tests/configuration/edit-test-type.php:833
+#: generic-tests/configuration/edit-test-type.php:315
+#: generic-tests/configuration/edit-test-type.php:379
+#: generic-tests/configuration/edit-test-type.php:435
+#: generic-tests/configuration/edit-test-type.php:846
 msgid "Patient"
 msgstr "Patient"
 
@@ -14528,10 +14533,10 @@ msgstr "Patient"
 #: generic-tests/configuration/clone-test-type.php:378
 #: generic-tests/configuration/clone-test-type.php:434
 #: generic-tests/configuration/clone-test-type.php:817
-#: generic-tests/configuration/edit-test-type.php:312
-#: generic-tests/configuration/edit-test-type.php:376
-#: generic-tests/configuration/edit-test-type.php:432
-#: generic-tests/configuration/edit-test-type.php:834
+#: generic-tests/configuration/edit-test-type.php:316
+#: generic-tests/configuration/edit-test-type.php:380
+#: generic-tests/configuration/edit-test-type.php:436
+#: generic-tests/configuration/edit-test-type.php:847
 msgid "Specimen"
 msgstr "Spécimen"
 
@@ -14541,10 +14546,10 @@ msgstr "Spécimen"
 #: generic-tests/configuration/clone-test-type.php:382
 #: generic-tests/configuration/clone-test-type.php:438
 #: generic-tests/configuration/clone-test-type.php:821
-#: generic-tests/configuration/edit-test-type.php:316
-#: generic-tests/configuration/edit-test-type.php:380
-#: generic-tests/configuration/edit-test-type.php:436
-#: generic-tests/configuration/edit-test-type.php:838
+#: generic-tests/configuration/edit-test-type.php:320
+#: generic-tests/configuration/edit-test-type.php:384
+#: generic-tests/configuration/edit-test-type.php:440
+#: generic-tests/configuration/edit-test-type.php:851
 msgid "Section Other"
 msgstr "Section Autres"
 
@@ -14554,10 +14559,10 @@ msgstr "Section Autres"
 #: generic-tests/configuration/clone-test-type.php:382
 #: generic-tests/configuration/clone-test-type.php:438
 #: generic-tests/configuration/clone-test-type.php:821
-#: generic-tests/configuration/edit-test-type.php:316
-#: generic-tests/configuration/edit-test-type.php:380
-#: generic-tests/configuration/edit-test-type.php:436
-#: generic-tests/configuration/edit-test-type.php:838
+#: generic-tests/configuration/edit-test-type.php:320
+#: generic-tests/configuration/edit-test-type.php:384
+#: generic-tests/configuration/edit-test-type.php:440
+#: generic-tests/configuration/edit-test-type.php:851
 msgid "Please enter section other"
 msgstr "Veuillez indiquer une autre section"
 
@@ -14567,113 +14572,105 @@ msgstr "Veuillez indiquer une autre section"
 #: generic-tests/configuration/clone-test-type.php:385
 #: generic-tests/configuration/clone-test-type.php:441
 #: generic-tests/configuration/clone-test-type.php:822
-#: generic-tests/configuration/edit-test-type.php:319
-#: generic-tests/configuration/edit-test-type.php:383
-#: generic-tests/configuration/edit-test-type.php:439
-#: generic-tests/configuration/edit-test-type.php:839
+#: generic-tests/configuration/edit-test-type.php:323
+#: generic-tests/configuration/edit-test-type.php:387
+#: generic-tests/configuration/edit-test-type.php:443
+#: generic-tests/configuration/edit-test-type.php:852
 msgid "Please enter field order"
 msgstr "Veuillez saisir le nom de l'échantillon"
 
 #: generic-tests/configuration/add-test-type.php:278
 #: generic-tests/configuration/clone-test-type.php:452
-#: generic-tests/configuration/edit-test-type.php:451
+#: generic-tests/configuration/edit-test-type.php:455
 msgid "Test Results Configuration"
 msgstr "Résultats des tests Configuration"
 
 #: generic-tests/configuration/add-test-type.php:281
 #: generic-tests/configuration/clone-test-type.php:565
-#: generic-tests/configuration/edit-test-type.php:454
+#: generic-tests/configuration/edit-test-type.php:458
 msgid "Test Result Unit"
 msgstr "Envoie de résultats par email"
 
 #: generic-tests/configuration/add-test-type.php:283
 #: generic-tests/configuration/clone-test-type.php:567
-#: generic-tests/configuration/edit-test-type.php:456
-#: generic-tests/requests/add-request.php:1605
+#: generic-tests/configuration/edit-test-type.php:460
+#: generic-tests/requests/add-request.php:1611
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1847
-#: generic-tests/requests/edit-request.php:1728
-#: generic-tests/requests/getTestTypeForm.php:297
-#: generic-tests/requests/getTestTypeForm.php:348
+#: generic-tests/requests/edit-request.php:1731
+#: generic-tests/requests/getTestTypeForm.php:301
+#: generic-tests/requests/getTestTypeForm.php:352
 #: generic-tests/results/update-generic-test-result.php:1704
 msgid "Enter test result unit"
 msgstr "Covid-19-Saisir le résultat manuellement"
 
 #: generic-tests/configuration/add-test-type.php:283
 #: generic-tests/configuration/clone-test-type.php:567
-#: generic-tests/configuration/edit-test-type.php:456
-#: generic-tests/requests/add-request.php:1605
+#: generic-tests/configuration/edit-test-type.php:460
+#: generic-tests/requests/add-request.php:1611
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1847
-#: generic-tests/requests/edit-request.php:1728
-#: generic-tests/requests/getTestTypeForm.php:297
-#: generic-tests/requests/getTestTypeForm.php:348
+#: generic-tests/requests/edit-request.php:1731
+#: generic-tests/requests/getTestTypeForm.php:301
+#: generic-tests/requests/getTestTypeForm.php:352
 #: generic-tests/results/update-generic-test-result.php:1704
 msgid "Please enter test result unit"
 msgstr "Veuillez saisir l'unité de résultat du test"
 
-#: generic-tests/configuration/add-test-type.php:307
-#: generic-tests/configuration/add-test-type.php:755
-#: generic-tests/configuration/edit-test-type.php:485
-#: generic-tests/configuration/edit-test-type.php:564
-#: generic-tests/configuration/edit-test-type.php:972
-msgid "select"
-msgstr "sélectionner"
-
 #: generic-tests/configuration/add-test-type.php:308
 #: generic-tests/configuration/add-test-type.php:756
 #: generic-tests/configuration/clone-test-type.php:462
-#: generic-tests/configuration/edit-test-type.php:486
-#: generic-tests/configuration/edit-test-type.php:565
-#: generic-tests/configuration/edit-test-type.php:973
+#: generic-tests/configuration/edit-test-type.php:490
+#: generic-tests/configuration/edit-test-type.php:569
+#: generic-tests/configuration/edit-test-type.php:986
 msgid "Qualitative"
 msgstr "Qualitative"
 
 #: generic-tests/configuration/add-test-type.php:309
 #: generic-tests/configuration/add-test-type.php:757
 #: generic-tests/configuration/clone-test-type.php:463
-#: generic-tests/configuration/edit-test-type.php:487
-#: generic-tests/configuration/edit-test-type.php:566
-#: generic-tests/configuration/edit-test-type.php:974
+#: generic-tests/configuration/edit-test-type.php:491
+#: generic-tests/configuration/edit-test-type.php:570
+#: generic-tests/configuration/edit-test-type.php:987
 msgid "Quantitative"
 msgstr "Quantitative"
 
 #: generic-tests/configuration/add-test-type.php:405
 #: generic-tests/configuration/clone-test-type.php:658
-#: generic-tests/configuration/edit-test-type.php:668
+#: generic-tests/configuration/edit-test-type.php:681
 #: generic-tests/results/generic-print-result.php:555
 msgid "Select Sample Type"
 msgstr "Sélectionner le type d'échantillon"
 
 #: generic-tests/configuration/add-test-type.php:408
 #: generic-tests/configuration/clone-test-type.php:661
-#: generic-tests/configuration/edit-test-type.php:671
+#: generic-tests/configuration/edit-test-type.php:684
 msgid "Select Testing Reason"
 msgstr "Sélectionner la raison du test"
 
 #: generic-tests/configuration/add-test-type.php:411
 #: generic-tests/configuration/clone-test-type.php:664
-#: generic-tests/configuration/edit-test-type.php:674
+#: generic-tests/configuration/edit-test-type.php:687
 msgid "Select Test Failure Reason"
 msgstr "Sélectionner la raison de l'échec du test"
 
 #: generic-tests/configuration/add-test-type.php:414
 #: generic-tests/configuration/clone-test-type.php:667
-#: generic-tests/configuration/edit-test-type.php:677
+#: generic-tests/configuration/edit-test-type.php:690
 msgid "Select Rejection Reason"
 msgstr "Sélectionner le motif de rejet"
 
 #: generic-tests/configuration/add-test-type.php:417
 #: generic-tests/configuration/clone-test-type.php:670
-#: generic-tests/configuration/edit-test-type.php:680
+#: generic-tests/configuration/edit-test-type.php:693
 msgid "Select Symptoms"
 msgstr "Sélectionner les symptômes"
 
 #: generic-tests/configuration/add-test-type.php:420
 #: generic-tests/configuration/clone-test-type.php:673
-#: generic-tests/configuration/edit-test-type.php:683
+#: generic-tests/configuration/edit-test-type.php:696
 msgid "Select Test Result Unit"
 msgstr "Configuration de l'e-mail des résultats"
 
@@ -14683,8 +14680,8 @@ msgstr "Type de test ajouté avec succès"
 
 #: generic-tests/configuration/clone-test-type.php:95
 #: generic-tests/configuration/clone-test-type.php:98
-#: generic-tests/configuration/edit-test-type.php:94
-#: generic-tests/configuration/edit-test-type.php:97
+#: generic-tests/configuration/edit-test-type.php:98
+#: generic-tests/configuration/edit-test-type.php:101
 #: system/translate-strings.php:171
 msgid "Edit Test Type"
 msgstr "Modifier le profil"
@@ -14777,21 +14774,21 @@ msgid "Please enter above threshold"
 msgstr "Veuillez saisir une valeur supérieure au seuil"
 
 #: generic-tests/configuration/clone-test-type.php:806
-#: generic-tests/configuration/edit-test-type.php:823
+#: generic-tests/configuration/edit-test-type.php:836
 msgid "multiple Dropdown"
 msgstr "plusieurs listes déroulantes"
 
-#: generic-tests/configuration/edit-test-type.php:287
-#: generic-tests/configuration/edit-test-type.php:351
-#: generic-tests/configuration/edit-test-type.php:415
-#: generic-tests/configuration/edit-test-type.php:825
+#: generic-tests/configuration/edit-test-type.php:291
+#: generic-tests/configuration/edit-test-type.php:355
+#: generic-tests/configuration/edit-test-type.php:419
+#: generic-tests/configuration/edit-test-type.php:838
 msgid "Enter options..."
 msgstr "Saisir les options..."
 
-#: generic-tests/configuration/edit-test-type.php:287
-#: generic-tests/configuration/edit-test-type.php:351
-#: generic-tests/configuration/edit-test-type.php:415
-#: generic-tests/configuration/edit-test-type.php:825
+#: generic-tests/configuration/edit-test-type.php:291
+#: generic-tests/configuration/edit-test-type.php:355
+#: generic-tests/configuration/edit-test-type.php:419
+#: generic-tests/configuration/edit-test-type.php:838
 msgid "Please enter the options"
 msgstr "Veuillez saisir les options"
 
@@ -15462,8 +15459,8 @@ msgstr "Demande de test de laboratoire ajoutée avec succès"
 
 #: generic-tests/requests/add-request.php:770
 #: generic-tests/requests/add-request.php:1571
-#: generic-tests/requests/edit-request.php:968
-#: generic-tests/requests/edit-request.php:1695
+#: generic-tests/requests/edit-request.php:965
+#: generic-tests/requests/edit-request.php:1692
 #: generic-tests/results/update-generic-test-result.php:952
 #: generic-tests/results/update-generic-test-result.php:1671
 msgid "Select Sub Tests"
@@ -15471,7 +15468,7 @@ msgstr "Sélectionner les tests secondaires"
 
 #: generic-tests/requests/add-request.php:789
 #: generic-tests/requests/clone-request.php:1129
-#: generic-tests/requests/edit-request.php:1015
+#: generic-tests/requests/edit-request.php:1012
 msgid "Select Specimen Type"
 msgstr "Sélectionner le type de spécimen"
 
@@ -15479,10 +15476,10 @@ msgstr "Sélectionner le type de spécimen"
 #: generic-tests/requests/add-request.php:1494
 #: generic-tests/requests/clone-request.php:1774
 #: generic-tests/requests/clone-request.php:1778
-#: generic-tests/requests/edit-request.php:1583
-#: generic-tests/requests/edit-request.php:1587
-#: generic-tests/requests/edit-request.php:1666
-#: generic-tests/requests/edit-request.php:1670
+#: generic-tests/requests/edit-request.php:1580
+#: generic-tests/requests/edit-request.php:1584
+#: generic-tests/requests/edit-request.php:1663
+#: generic-tests/requests/edit-request.php:1667
 #: generic-tests/results/update-generic-test-result.php:1572
 #: generic-tests/results/update-generic-test-result.php:1576
 #: generic-tests/results/update-generic-test-result.php:1648
@@ -15494,11 +15491,11 @@ msgstr "Sélectionnez l'une des options suivantes"
 msgid "Request updated successfully"
 msgstr "Demande mise à jour avec succès"
 
-#: generic-tests/requests/getTestTypeForm.php:67
+#: generic-tests/requests/getTestTypeForm.php:68
 msgid "Please select an option"
 msgstr "Veuillez sélectionner une option"
 
-#: generic-tests/requests/getTestTypeForm.php:70
+#: generic-tests/requests/getTestTypeForm.php:71
 msgid "Please select one or more options"
 msgstr "Veuillez sélectionner une ou plusieurs options"
 
@@ -21314,53 +21311,78 @@ msgstr "DATE DE PUBLICATION DES RÉSULTATS"
 msgid "SAMPLE TYPE"
 msgstr "Type d'échantillon"
 
-#: vl/results/pdf/result-pdf-cameroon.php:426
+#: vl/results/pdf/result-pdf-cameroon.php:388
+msgid ""
+"Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR "
+"(Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)"
+msgstr ""
+"Technique : Quantification de l'ARN du VIH circulant par Abbott Real-Time RT-"
+"PCR (seuil de sensibilité : 40 copies/ml pour le plasma et 839 copies/ml "
+"pour le DBS)"
+
+#: vl/results/pdf/result-pdf-cameroon.php:418
 msgid "TEST PLATFORM"
 msgstr "PLATE-FORME D'ESSAI"
 
-#: vl/results/pdf/result-pdf-cameroon.php:494
+#: vl/results/pdf/result-pdf-cameroon.php:470
 msgid "TESTED BY"
 msgstr "TESTÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:495
-#: vl/results/pdf/result-pdf-cameroon.php:516
-#: vl/results/pdf/result-pdf-cameroon.php:537
-#: vl/results/pdf/result-pdf-cameroon.php:558
+#: vl/results/pdf/result-pdf-cameroon.php:471
+#: vl/results/pdf/result-pdf-cameroon.php:492
+#: vl/results/pdf/result-pdf-cameroon.php:513
+#: vl/results/pdf/result-pdf-cameroon.php:534
 msgid "SIGNATURE"
 msgstr "SIGNATURE"
 
-#: vl/results/pdf/result-pdf-cameroon.php:496
-#: vl/results/pdf/result-pdf-cameroon.php:517
-#: vl/results/pdf/result-pdf-cameroon.php:538
-#: vl/results/pdf/result-pdf-cameroon.php:559
+#: vl/results/pdf/result-pdf-cameroon.php:472
+#: vl/results/pdf/result-pdf-cameroon.php:493
+#: vl/results/pdf/result-pdf-cameroon.php:514
+#: vl/results/pdf/result-pdf-cameroon.php:535
 msgid "DATE"
 msgstr "DATE"
 
-#: vl/results/pdf/result-pdf-cameroon.php:515
+#: vl/results/pdf/result-pdf-cameroon.php:491
 msgid "REVIEWED BY"
 msgstr "REVUE PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:536
+#: vl/results/pdf/result-pdf-cameroon.php:512
 msgid "REPORT REVISED BY"
 msgstr "RAPPORT RÉVISÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:557
+#: vl/results/pdf/result-pdf-cameroon.php:533
 msgid "APPROVED BY"
 msgstr "APPROUVÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:593
+#: vl/results/pdf/result-pdf-cameroon.php:569
 msgid "Lab Comments"
 msgstr "Commentaires du laboratoire"
 
-#: vl/results/pdf/result-pdf-cameroon.php:637
+#: vl/results/pdf/result-pdf-cameroon.php:589
+msgid ""
+"For a variation in Viral Load to be significant, the difference between two "
+"measurements must be"
+msgstr ""
+"Pour qu’une variation de la charge virale soit significative, il faut que la "
+"différence entre deux mesures soit"
+
+#: vl/results/pdf/result-pdf-cameroon.php:590
+msgid ""
+"at least 0.5 Log 10 or a reduction or increase of a factor of 3 in the "
+"number of copies/ml"
+msgstr ""
+"d’au moins 0,5 Log 10 soit une réduction ou une augmentation d’un facteur 3 "
+"du nombre de copies/mL"
+
+#: vl/results/pdf/result-pdf-cameroon.php:616
 msgid "Continue on current regimen"
 msgstr "Poursuivre le protocole actuel"
 
-#: vl/results/pdf/result-pdf-cameroon.php:638
+#: vl/results/pdf/result-pdf-cameroon.php:617
 msgid "Printed on"
 msgstr "Imprimé le"
 
-#: vl/results/pdf/result-pdf-cameroon.php:641
+#: vl/results/pdf/result-pdf-cameroon.php:620
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 
@@ -21373,6 +21395,9 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "select"
+#~ msgstr "sélectionner"
 
 #~ msgid "Patient Name (First Name, Last Name)"
 #~ msgstr "Nom du patient (prénom, nom)"
