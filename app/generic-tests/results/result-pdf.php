@@ -21,6 +21,7 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 $resultFilename = '';
 if (!empty($requestResult)) {
      $_SESSION['rVal'] = $general->generateRandomString(6);
+     $showHideTable = (string) $general->getGlobalConfig('generic_tests_table_in_results_pdf');
      $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
      MiscUtility::makeDirectory($pathFront);
      $pages = [];
@@ -436,7 +437,7 @@ if (!empty($requestResult)) {
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
           $html .= '</tr></table>';
 
-          if (!empty($genericTestInfo)) {
+          if (!empty($genericTestInfo) && $showHideTable == 'yes') {
                if(isset($result['sub_tests']) && !empty($result['sub_tests'])){
                     $titleTest = "Range";
                }else{
