@@ -245,7 +245,7 @@ if (!empty($testResultsAttribute)) {
             $subTest = strtolower((string) $testResultsAttribute['sub_test_name'][$key]);
             $n = 1;
             $resultSection = "";
-            $subTestResultSection =  $finalTestResultsText = "";
+            $subTestResultSection = "";
             $finalTestResults = [];
 
             $resultSection .= '<div class="row"><div class="col-md-12"><h3>' . $testResultsAttribute['sub_test_name'][$key] . '</h3>
@@ -263,10 +263,9 @@ if (!empty($testResultsAttribute)) {
                 </thead>
                 <tbody id="testKitNameTable' . $key . '">';
             // if (isset($genericTestInfo) && !empty($genericTestInfo) && count($genericTestInfo) > 0  && in_array(strtolower((string) $testResultsAttribute['sub_test_name'][$key]), $subTestLabels)) {
-            if ((isset($genericTestInfo) && !empty($genericTestInfo) && count($genericTestInfo) > 0)  || (in_array(strtolower((string) $testResultsAttribute['sub_test_name'][$key]), $subTestLabels))) {
+            if (isset($genericTestInfo) && !empty($genericTestInfo)) {
                 $i = 1;
                 foreach ($genericTestInfo as $ikey => $row) {
-                    $finalTestResultsText = $row['final_result'];
                     // if ($row['sub_test_name'] == strtolower((string) $testResultsAttribute['sub_test_name'][$key])) {
                         // $finalTestResults[$row['sub_test_name']] = $row;
                         $resultSection .= '<tr>
@@ -372,7 +371,7 @@ if (!empty($testResultsAttribute)) {
                 if (!empty($testResultsAttribute[$resultType])) {
                     foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
                         // $selected = isset($finalTestResults[strtolower($subTest)]['final_result']) && $finalTestResults[strtolower($subTest)]['final_result'] == trim((string) $r) ? "selected='selected'" : "";
-                        $selected = (isset($finalTestResultsText) && ($finalTestResultsText == trim((string) $r))) ? "selected='selected'" : "";
+                        $selected = (isset($_POST['result']) && ($_POST['result'] == trim((string) $r))) ? "selected='selected'" : "";
                         $subTestResultSection .= '<option value="' . trim((string) $r) . '" ' . $selected . '>' . ($r) . '</option>';
                     }
                 }
@@ -385,7 +384,7 @@ if (!empty($testResultsAttribute)) {
                     if (!empty($testResultsAttribute['quantitative_result'])) {
                         foreach ($testResultsAttribute['quantitative_result'] as $qkey => $qrow) {
                             // $selected = isset($finalTestResults[strtolower($subTest)]['final_result']) && $finalTestResults[strtolower($subTest)]['final_result'] == trim((string) $qrow) ? "selected='selected'" : "";
-                            $selected = (isset($finalTestResultsText) && strtolower($finalTestResultsText) == trim((string) $qrow)) ? "selected='selected'" : "";
+                            $selected = (isset($_POST['result']) && strtolower($_POST['result']) == trim((string) $qrow)) ? "selected='selected'" : "";
                             $subTestResultSection .= '<option value="' . trim((string) $qrow) . '" ' . $selected . ' data-interpretation="' . $testResultsAttribute['quantitative_result_interpretation'][$qkey] . '"> ' . ($qrow) . ' </option>';
                         }
                         $subTestResultSection .= '</datalist></td></tr>';
