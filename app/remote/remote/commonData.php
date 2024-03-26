@@ -29,7 +29,6 @@ $payload = [];
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $data = $apiService->getJsonFromRequest($request, true);
-
 $counter = 0;
 
 $transactionId = $general->generateUUID();

@@ -41,7 +41,6 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
-
 //update common data from remote to lab db
 $remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
 
@@ -72,7 +71,7 @@ $payload = array(
     'partnersLastModified'          => $general->getLastModifiedDateTime('r_implementation_partners'),
     'geoDivisionsLastModified'      => $general->getLastModifiedDateTime('geographical_divisions'),
     'patientsLastModified'          => $general->getLastModifiedDateTime('patients'),
-    'labStorageLastModified'        => $general->getLastModifiedDateTime('labStorage'),
+    // 'labStorageLastModified'        => $general->getLastModifiedDateTime('labStorage'),
     "Key"                           => "vlsm-get-remote",
 );
 
@@ -126,7 +125,6 @@ $commonDataToSync = array(
 
 
 $url = $remoteUrl . '/remote/remote/commonData.php';
-
 if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
     $toSyncTables = array(
         "r_test_types",
@@ -354,7 +352,7 @@ $payload['labId'] = $labId;
 
 
 $jsonResponse = $apiService->post($url, $payload);
-
+die($jsonResponse);
 if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
     $options = [
