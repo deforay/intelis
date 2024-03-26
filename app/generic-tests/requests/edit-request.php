@@ -1707,6 +1707,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		$('.ins-row-' + row + subrow).attr('disabled', true);
 		$('.ins-row-' + row + subrow).addClass('disabled');
 		testCounter = (subrow + 1);
+		options = $("#finalResult"+row).html();
 		let rowString = `<tr>
                     <td class="text-center">${(subrow+1)}</td>
                     <td>
@@ -1724,9 +1725,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                     <td><select name="testingPlatform[${subTest}][]" id="testingPlatform${row}${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
                     <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[${subTest}][]" id="lotNo${row}${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
                     <td class="kitlabels" style="display: none;"><input type="text" name="expDate[${subTest}][]" id="expDate${row}${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
-                    <td>
-                         <input type="text" id="testResult${row}${testCounter}" name="testResult[${subTest}][]" class="form-control" placeholder="Enter result" title="Please enter final results">
-                    </td>
+                    <td><select class="form-control result-select" name="testResult[${subTest}][]" id="testResult${row}${testCounter}" title="Enter result">${options}</select></td>
                     <td class="testResultUnit">
                     <select class="form-control resultUnit" id="testResultUnit${row}${testCounter}" name="testResultUnit[${subTest}][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
                <option value="">--Select--</option>

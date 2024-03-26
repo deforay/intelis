@@ -223,6 +223,18 @@ try {
             ));
         }
     }
+    if (isset($_POST['genericTestsTableInResultsPdf']) && trim((string) $_POST['genericTestsTableInResultsPdf']) != "") {
+        $data = array('value' => trim((string) $_POST['genericTestsTableInResultsPdf']));
+        $db->where('name', 'generic_tests_table_in_results_pdf');
+        $id = $db->update("global_config", $data);
+        if ($id) {
+            $db->where('name', 'logo');
+            $db->update("global_config", array(
+                "updated_on" => $currentDateTime,
+                "updated_by" => $_SESSION['userId']
+            ));
+        }
+    }
 
     $_SESSION['alertMsg'] = _translate("Configuration updated successfully");
 
