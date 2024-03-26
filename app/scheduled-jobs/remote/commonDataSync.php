@@ -71,7 +71,6 @@ $payload = array(
     'partnersLastModified'          => $general->getLastModifiedDateTime('r_implementation_partners'),
     'geoDivisionsLastModified'      => $general->getLastModifiedDateTime('geographical_divisions'),
     'patientsLastModified'          => $general->getLastModifiedDateTime('patients'),
-    // 'labStorageLastModified'        => $general->getLastModifiedDateTime('labStorage'),
     "Key"                           => "vlsm-get-remote",
 );
 
@@ -116,10 +115,6 @@ $commonDataToSync = array(
     'patients'  => array(
         'primaryKey' => 'system_patient_code',
         'tableName'  =>  'patients',
-    ),
-    'labStorage'  => array(
-        'primaryKey' => 'storage_id',
-        'tableName'  =>  'lab_storage',
     )
 );
 
