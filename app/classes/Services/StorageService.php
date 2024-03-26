@@ -25,7 +25,7 @@ class StorageService
     public function getLabStorage($allColumns = false, $condition = null, $onlyActive = true)
     {
         return once(function () use ($allColumns, $condition, $onlyActive) {
-            
+
             if ($onlyActive) {
                 $this->db->where('storage_status', 'active');
             }
@@ -52,30 +52,30 @@ class StorageService
     public function saveLabStorage($params)
     {
         try {
-            
-            if (isset($params['storageId']) && $params['storageId'] != "") {
+
+            if (isset($params['storageId']) && $params['storageId'] != "" && !empty($params['storageCode'])) {
                 $data = array(
-                    'storage_code' 	=> $params['storageCode'],
-                    'lab_id' 	=> $params['labId'],
+                    'storage_code'     => $params['storageCode'],
+                    'lab_id'     => $params['labId'],
                     'storage_status' => $params['storageStatus'],
-                    'updated_datetime'	=> DateUtility::getCurrentDateTime()
+                    'updated_datetime'    => DateUtility::getCurrentDateTime()
                 );
                 $this->db->where('storage_id', base64_decode((string) $params['storageId']));
                 $save = $this->db->update($this->table, $data);
             } else {
                 $data = array(
                     'storage_id' => $this->commonService->generateUUID(),
-                    'storage_code' 	=> $params['storageCode'],
-                    'lab_id' 	=> $params['labId'],
+                    'storage_code'     => $params['storageCode'],
+                    'lab_id'     => $params['labId'],
                     'storage_status' => $params['storageStatus'],
                     'updated_datetime' => DateUtility::getCurrentDateTime()
                 );
                 $save = $this->db->insert($this->table, $data);
             }
-    
+
             $this->db->commitTransaction();
             return $save;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->db->rollbackTransaction();
             throw $e;
         }
@@ -94,5 +94,4 @@ class StorageService
             return $return;
         });
     }
-
 }
