@@ -331,3 +331,4 @@ ALTER TABLE `audit_form_covid19` ADD `health_insurance_code` VARCHAR(32) NULL DE
 -- Jeyabanu 26-Mar-2024
 ALTER TABLE `lab_storage` ADD `data_sync` INT NOT NULL DEFAULT '0' AFTER `updated_datetime`;
 ALTER TABLE `lab_storage` RENAME COLUMN `lab_storage_status` TO `storage_status`;
+ALTER TABLE `lab_storage` CHANGE `storage_id` `storage_id` CHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
