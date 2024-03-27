@@ -76,6 +76,7 @@ try {
         vl.child_surname                                     as childSurName,
         vl.child_dob                                         as childDob,
         vl.child_gender                                      as childGender,
+        vl.health_insurance_code                             as healthInsuranceCode,
         vl.child_age                                         as childAge,
         vl.child_treatment                                   as childTreatment,
         vl.child_treatment_other                             as childTreatmentOther,
