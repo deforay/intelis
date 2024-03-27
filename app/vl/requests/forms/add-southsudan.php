@@ -1321,6 +1321,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function validateNow() {
+          if($('#isSampleRejected').val() == "yes"){
+               $('.vlResult, #vlResult').removeClass('isRequired');
+          }
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
@@ -1349,6 +1352,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function validateSaveNow() {
+          if($('#isSampleRejected').val() == "yes"){
+               $('.vlResult, #vlResult').removeClass('isRequired');
+          }
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
