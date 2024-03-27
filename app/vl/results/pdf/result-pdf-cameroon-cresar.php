@@ -234,7 +234,7 @@ if (!empty($result)) {
      if($result['health_insurance_code'] != "" || $result['health_insurance_code'] != NULL )
      {
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . _translate("HEALTH INSURANCE CODE") . " : " . $result['health_insurance_code'] . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . _translate("Health Insurance Code") . " : " . $result['health_insurance_code'] . '</td>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">&nbsp;</td>';
           $html .= '</tr>';
      }
