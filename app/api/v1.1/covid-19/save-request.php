@@ -336,6 +336,7 @@ try {
             'patient_surname' => !empty($data['lastName']) ? $data['lastName'] : null,
             'patient_dob' => !empty($data['dob']) ? DateUtility::isoDateFormat($data['dob']) : null,
             'patient_gender' => !empty($data['patientGender']) ? $data['patientGender'] : null,
+            'health_insurance_code' => $data['healthInsuranceCode'] ?? null,
             'patient_email' => !empty($data['patientEmail']) ? $data['patientEmail'] : null,
             'is_patient_pregnant' => !empty($data['isPatientPregnant']) ? $data['isPatientPregnant'] : null,
             'patient_age' => !empty($data['patientAge']) ? $data['patientAge'] : null,

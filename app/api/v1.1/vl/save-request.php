@@ -265,6 +265,7 @@ try {
             'sample_reordered' => $data['sampleReordered'] ?? 'no',
             'facility_id' => $data['facilityId'] ?? null,
             'patient_gender' => $data['patientGender'] ?? null,
+            'health_insurance_code' => $data['healthInsuranceCode'] ?? null,
             'patient_dob' => DateUtility::isoDateFormat($data['dob'] ?? ''),
             'patient_age_in_years' => $data['ageInYears'] ?? null,
             'patient_age_in_months' => $data['ageInMonths'] ?? null,

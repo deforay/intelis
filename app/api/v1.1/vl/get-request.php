@@ -65,6 +65,7 @@ try {
             vl.patient_last_name                                 as patientLastName,
             vl.patient_gender                                    as gender,
             vl.patient_gender                                    as patientGender,
+            vl.health_insurance_code                             as healthInsuranceCode,
             vl.patient_dob                                       as dob,
             vl.patient_dob                                       as patientDob,
             vl.patient_age_in_years                              as ageInYears,
