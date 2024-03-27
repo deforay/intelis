@@ -510,27 +510,37 @@ class VlService extends AbstractTestService
                     $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                 }
 
-                $countChar = substr_count($params['freezer'],"-");
-                
-                if(isset($countChar) && $countChar > 2) {
-                    $storageId = $params['freezer'];
-                    $getStorage = $this->commonService->getDataFromOneFieldAndValue('lab_storage','storage_code',$params['freezer']);
-                    $freezerCode = $getStorage['storage_code'];
+                if(isset($params['freezer']) && $params['freezer']!=""){
+
+                    $countChar = substr_count($params['freezer'],"-");
+                    
+                    if(isset($countChar) && $countChar > 2) {
+                        $storageId = $params['freezer'];
+                        $getStorage = $this->commonService->getDataFromOneFieldAndValue('lab_storage','storage_code',$params['freezer']);
+                        $freezerCode = $getStorage['storage_code'];
+                    }
+                    else{
+                        $storageId = $this->commonService->generateUUID();
+                        $freezerCode = $params['freezer'];
+                        $storageSave = $this->commonService->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $params['freezer'], $params['labId'], 'active'));
+                    }
+
+                    $formAttributes = [
+                        'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                        'ip_address' => $this->commonService->getClientIpAddress(),
+                        'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$params['rack'],"box"=>$params['box'],"position"=>$params['position']),
+                    ];
+
                 }
                 else{
-                    $storageId = $this->commonService->generateUUID();
-                    $freezerCode = $params['freezer'];
-                    $storageSave = $this->commonService->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $params['freezer'], $params['labId'], 'active'));
+                    $formAttributes = [
+                        'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                        'ip_address' => $this->commonService->getClientIpAddress()
+                    ];
                 }
-                $formAttributes = [
-                    'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
-                    'ip_address' => $this->commonService->getClientIpAddress(),
-                    'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$params['rack'],"box"=>$params['box'],"position"=>$params['position']),
-                ];
-
                 $formAttributes = $this->commonService->jsonToSetString(json_encode($formAttributes), 'form_attributes');
                 $tesRequestData['form_attributes'] = $this->db->func($formAttributes);
-                
+
                 $this->db->insert("form_vl", $tesRequestData);
 
                 $id = $this->db->getInsertId();
