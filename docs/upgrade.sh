@@ -231,6 +231,9 @@ sudo dpkg --configure -a
 # Clean up
 apt-get autoremove -y
 
+echo "Installing basic packages..."
+apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole
+
 setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
 spinner() {
@@ -465,12 +468,6 @@ pid=$!
 spinner "$pid"
 wait $pid
 echo "Remote data sync completed."
-
-sudo -u www-data composer purge-cache &
-pid=$!
-spinner "$pid"
-wait $pid
-echo "Cache Purged."
 
 # The old startup.php file is no longer needed, but if it exists, make sure it is empty
 if [ -f "${vlsm_path}/startup.php" ]; then
