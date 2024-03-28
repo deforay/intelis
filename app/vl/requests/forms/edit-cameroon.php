@@ -1269,7 +1269,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function validateNow() {
-
+          if($('#isSampleRejected').val() == "yes"){
+               $('.vlResult, #vlResult').removeClass('isRequired');
+          }
           var dob = $("#dob").val();
           var age = $("#ageInYears").val();
 

@@ -120,9 +120,9 @@ try {
     /* if(isset($_POST['resultType']) && isset($_POST['testType']) && !empty($_POST['resultType']) && !empty($_POST['testType'])){
         $interpretationResult = $genericTestsService->getInterpretationResults($_POST['testType'], $_POST['result']);
     } */
-    if (!empty($_POST['resultInterpretation'])) {
+    /* if (!empty($_POST['resultInterpretation'])) {
         $interpretationResult = $_POST['resultInterpretation'];
-    }
+    } */
 
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
@@ -200,9 +200,10 @@ try {
         $covid19Data['sample_tested_datetime'] = null;
     }
 
+    // echo "<pre>";print_r($vldata);die;
     $db->where('sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);
-    //var_dump($db->getLastError());die;
+    // var_dump($db->getLastError());die;
     $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("Lab Tests results updated successfully");

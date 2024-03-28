@@ -458,7 +458,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 								<label for="resultUnit" class="col-lg-4 control-label"><?php echo _translate("Test Result Unit"); ?> </label>
 								<div class="col-lg-7">
 									<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>' multiple>
-										<?= $general->generateSelectOptions($testResultUnitInfo, $testResultUnitId, '-- Select --') ?>
+										<?= $general->generateSelectOptions($testResultUnitInfo, $testResultUnitId, false) ?>
 									</select>
 								</div>
 							</div>

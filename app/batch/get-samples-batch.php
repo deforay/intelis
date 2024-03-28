@@ -52,7 +52,7 @@ $query = "(SELECT vl.sample_code,
                     FROM $table as vl
                     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
 
-$where[] = " (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.$resultColumn is NULL or vl.$resultColumn = '') AND (vl.sample_code NOT LIKE '' AND vl.sample_code IS NOT NULL)";
+$where[] = " (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no' OR IFNULL(vl.is_sample_rejected, 'no') = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.$resultColumn is NULL or vl.$resultColumn = '') AND (vl.sample_code NOT LIKE '' AND vl.sample_code IS NOT NULL)";
 
 if (isset($_POST['batchId'])) {
     $where[] = " (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";

@@ -1378,6 +1378,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 
 	function validateNow() {
+		if($('#isSampleRejected').val() == "yes"){
+			$('.vlResult, #vlResult').removeClass('isRequired');
+		}
 		flag = deforayValidator.init({
 			formId: 'vlRequestFormRwd'
 		});

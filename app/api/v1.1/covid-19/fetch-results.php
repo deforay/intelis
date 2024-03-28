@@ -148,9 +148,7 @@ try {
         vl.last_modified_datetime               as updatedOn,
         u_d.user_name                           as reviewedBy,
         vl.lab_technician                       as labTechnician,
-        lt_u_d.user_name                        as labTechnicianName,
         vl.tested_by                            as testedBy,
-        t_b.user_name                           as testedByName,
         rs.rejection_reason_name                as rejectionReason,
         vl.rejection_on                         as rejectionDate,
         vl.funding_source                       as fundingSource,
@@ -168,9 +166,13 @@ try {
         ts.status_name                          as resultStatusName,
         vl.revised_by                           as revisedBy,
         r_r_b.user_name                         as revisedByName,
+        a_u_d.user_name                         as approvedByName,
+        lt_u_d.user_name                        as labTechnicianName,
+        u_d.user_name                           as reviewedByName,
+        t_b.user_name                           as testedByName,
         vl.revised_on                           as revisedOn,
         vl.patient_nationality                  as patientNationality,
-        CONCAT_WS('',c.iso_name, ' (', c.iso3,')') as patientNationalityName,
+        CONCAT_WS('',c.iso_name,' (', c.iso3,')') as patientNationalityName,
         vl.reason_for_changing                  as reasonForCovid19ResultChanges
 
         FROM form_covid19 as vl

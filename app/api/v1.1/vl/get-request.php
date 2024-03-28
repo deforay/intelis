@@ -126,8 +126,6 @@ try {
             l_f.facility_name                                    as labName,
             f.facility_district                                  as district,
             u_d.user_name                                        as reviewedBy,
-            lt_u_d.user_name                                     as labTechnicianName,
-            t_b.user_name                                        as testedByName,
             rs.rejection_reason_name                             as rejectionReason,
             g.geo_id                                             as provinceId,
             g.geo_name                                           as provinceName,
@@ -140,11 +138,15 @@ try {
             vl.result_approved_datetime                          as approvedOn,
             vl.revised_by                                        as revisedBy,
             r_r_b.user_name                                      as revisedByName,
+            a_u_d.user_name                                      as approvedByName,
+            lt_u_d.user_name                                     as labTechnicianName,
+            u_d.user_name                                        as reviewedByName,
+            t_b.user_name                                        as testedByName,
             vl.revised_on                                        as revisedOn,
             vl.external_sample_code                              as serialNo,
             vl.is_patient_new                                    as isPatientNew,
             vl.has_patient_changed_regimen                       as hasChangedRegimen,
-            vl.sample_dispatched_datetime                as dateDispatchedFromClinicToLab,
+            vl.sample_dispatched_datetime                        as dateDispatchedFromClinicToLab,
             vl.vl_test_number                                    as viralLoadNo,
             vl.last_viral_load_result                            as lastViralLoadResult,
             vl.last_viral_load_date                              as lastViralLoadTestDate,
@@ -152,7 +154,7 @@ try {
             vl.date_test_ordered_by_physician                    as dateOfDemand,
             vl.result_reviewed_by                                as reviewedBy,
             vl.result_reviewed_datetime                          as reviewedOn,
-            vl.reason_for_result_changes                      as reasonForVlResultChanges
+            vl.reason_for_result_changes                         as reasonForVlResultChanges
 
             FROM form_vl as vl
             LEFT JOIN geographical_divisions as g ON vl.province_id=g.geo_id

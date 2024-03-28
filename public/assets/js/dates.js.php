@@ -92,11 +92,21 @@
             });
 
             $('#sampleCollectionDate').on('change', function() {
-                $('#sampleReceivedDate').val('');
-                $('#sampleReceivedAtHubOn').val('');
-                $('#sampleDispatchedDate').val('');
 
                 var selectedDate = $(this).datetimepicker('getDate');
+                var currentReceivedAtHubOn = $('#sampleReceivedAtHubOn').datetimepicker('getDate');
+                var currentReceivedDate = $('#sampleReceivedDate').datetimepicker('getDate');
+                var currentDispatchedDate = $('#sampleDispatchedDate').datetimepicker('getDate');
+
+                if (selectedDate > currentReceivedAtHubOn) {
+                    $('#sampleReceivedAtHubOn').val('');
+                }
+                if (selectedDate > currentReceivedDate) {
+                    $('#sampleReceivedDate').val('');
+                }
+                if (selectedDate > currentDispatchedDate) {
+                    $('#sampleDispatchedDate').val('');
+                }
 
                 $('#sampleReceivedAtHubOn').datetimepicker('option', 'minDate', selectedDate);
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', selectedDate);

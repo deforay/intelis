@@ -6,9 +6,9 @@ if (php_sapi_name() == 'cli') {
 }
 
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 ini_set('memory_limit', -1);
@@ -25,10 +25,18 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
+$vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
+
+if (empty($vldashboardUrl)) {
+    exit(0);
+}
+
 $data = [];
 
 // if forceSync is set as true, we will drop and create tables on VL Dashboard DB
 $data['forceSync'] = false;
+
+$lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_vldash_sync');
 
 
 $referenceTables = [
@@ -87,7 +95,7 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
 try {
 
     foreach ($referenceTables as $table) {
-        if ($data['forceSync']) {
+        if ($data['forceSync'] === true) {
             $createResult = $db->rawQueryOne("SHOW CREATE TABLE `$table`");
             $data[$table]['tableStructure'] = "SET FOREIGN_KEY_CHECKS=0;" . PHP_EOL;
             $data[$table]['tableStructure'] .= "ALTER TABLE `$table` DISABLE KEYS ;" . PHP_EOL;
@@ -97,13 +105,17 @@ try {
             $data[$table]['tableStructure'] .= "SET FOREIGN_KEY_CHECKS=1;" . PHP_EOL;
         }
         $data[$table]['lastModifiedTime'] = $general->getLastModifiedDateTime($table);
+
+
+        if (!empty($lastUpdatedOn)) {
+            $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+        }
+        $db = $db->orderBy("updated_datetime", "ASC");
         $data[$table]['tableData'] = $db->get($table);
     }
 
 
-
     $currentDate = DateUtility::getCurrentDateTime();
-
 
     $filename = 'reference-data-' . $currentDate . '.json';
     $fp = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'w');
@@ -111,8 +123,7 @@ try {
     fclose($fp);
 
 
-    $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
-    $url = rtrim((string) $vldashboardUrl, "/") . "/api/vlsm-reference-tables";
+    $url = rtrim((string) $vldashboardUrl, "/") . "/api/vlsm-metadata";
 
     $params = [
         [
@@ -132,6 +143,29 @@ try {
     $response  = $apiService->postFile($url, 'referenceFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
 
     unlink(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+
+
+    $latestDateTime = null;
+
+    foreach ($referenceTables as $table) {
+        // Build the SQL query to fetch the latest updated_datetime for each table
+        $query = "SELECT MAX(updated_datetime) AS latest_update FROM `$table`";
+        // Execute the query. Make sure to adjust this line to use your actual method for executing the query.
+        $result = $db->rawQueryOne($query); // This method might vary depending on your DatabaseService class.
+        // Extract the latest_update value from the result.
+        $tableLatestDateTime = $result['latest_update'];
+
+        // Update $latestDateTime if this table's latest update is more recent.
+        if (!empty($tableLatestDateTime) && (is_null($latestDateTime) || $tableLatestDateTime > $latestDateTime)) {
+            $latestDateTime = $tableLatestDateTime;
+        }
+    }
+
+    $data = [
+        'last_vldash_sync' => $latestDateTime ?? DateUtility::getCurrentDateTime()
+    ];
+
+    $db->update('s_vlsm_instance', $data);
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
