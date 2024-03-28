@@ -509,18 +509,6 @@ $reasonForChange = $reasonForChangeArr[1];
 											</select>
 										</div>
 									</div>
-									<div class="col-md-6">
-										<label class="col-lg-5" for="labId">Testing Lab <span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<select name="labId" id="labId" class="form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
-												<option value="">-- Select --</option>
-												<?php foreach ($lResult as $labName) { ?>
-													<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($genericResultInfo['lab_id']) && $genericResultInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>>
-														<?php echo ($labName['facility_name']); ?></option>
-												<?php } ?>
-											</select>
-										</div>
-									</div>
 								</div>
 								<div class="row" id="facilitySection"></div>
 							</div>
@@ -686,6 +674,18 @@ $reasonForChange = $reasonForChangeArr[1];
 									<div class="box-body labSectionBody">
 										<div class="row">
 											<div class="col-md-6">
+												<label class="col-lg-5" for="labId">Testing Lab <span class="mandatory">*</span></label>
+												<div class="col-lg-7">
+													<select name="labId" id="labId" class="form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
+														<option value="">-- Select --</option>
+														<?php foreach ($lResult as $labName) { ?>
+															<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($genericResultInfo['lab_id']) && $genericResultInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>>
+																<?php echo ($labName['facility_name']); ?></option>
+														<?php } ?>
+													</select>
+												</div>
+											</div>
+											<div class="col-md-6">
 												<label class="col-lg-5" for="vlFocalPerson" class="col-lg-5 control-label"> Focal Person
 												</label>
 												<div class="col-lg-7">
@@ -696,6 +696,8 @@ $reasonForChange = $reasonForChangeArr[1];
 													</select>
 												</div>
 											</div>
+										</div>
+										<div class="row" style="margin-top: 10px;">
 											<div class="col-md-6">
 												<label class="col-lg-5" for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">
 													Focal Person Phone Number</label>
@@ -703,8 +705,6 @@ $reasonForChange = $reasonForChangeArr[1];
 													<input type="text" class="form-control phone-number labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" value="<?= htmlspecialchars((string) $genericResultInfo['testing_lab_focal_person_phone_number']); ?>" />
 												</div>
 											</div>
-										</div>
-										<div class="row" style="margin-top: 10px;">
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label" for="sampleReceivedAtHubOn">Date
 													Sample Received at Hub (PHL) </label>
@@ -713,6 +713,8 @@ $reasonForChange = $reasonForChangeArr[1];
 												</div>
 											</div>
 
+										</div>
+										<div class="row" style="margin-top: 10px;">
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label" for="sampleReceivedDate">Date
 													Sample Received at Testing Lab </label>
@@ -720,8 +722,6 @@ $reasonForChange = $reasonForChangeArr[1];
 													<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $genericResultInfo['sample_received_at_testing_lab_datetime']; ?>" />
 												</div>
 											</div>
-										</div>
-										<div class="row" style="margin-top: 10px;">
 											<div class="col-md-6">
 												<label class="col-lg-5" for="testPlatform" class="col-lg-5 control-label"> Testing
 													Platform <span class="mandatory result-span">*</span></label>
@@ -733,6 +733,15 @@ $reasonForChange = $reasonForChangeArr[1];
 																<?php echo $mName['machine_name']; ?></option>
 														<?php } ?>
 													</select>
+												</div>
+											</div>
+										</div>
+										<div class="row" style="margin-top: 10px;">
+											<div class="col-md-6">
+												<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample
+													Testing Date <span class="mandatory result-span">*</span></label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control dateTime result-fieldsform-control result-fields labSection <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $genericResultInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -785,15 +794,7 @@ $reasonForChange = $reasonForChangeArr[1];
 										</div>
 										<div class="row" style="margin-top: 10px;">
 											<div class="col-md-6">
-												<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample
-													Testing Date <span class="mandatory result-span">*</span></label>
-												<div class="col-lg-7">
-													<input type="text" class="form-control dateTime result-fieldsform-control result-fields labSection <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $genericResultInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
-												</div>
-											</div>
-											<div class="col-md-6">
-												<label class="col-lg-5 control-label labels" for="reasonForTesting">Reason
-													For Testing <span class="mandatory result-span">*</span></label>
+												<label class="col-lg-5 control-label labels" for="reasonForTesting">Reason For Testing <span class="mandatory result-span">*</span></label>
 												<div class="col-lg-7">
 													<select name="reasonForTesting" id="reasonForTesting" class="form-control result-optional" title="Please choose reason for testing">
 														<option value="">-- Select --</option>
@@ -804,31 +805,16 @@ $reasonForChange = $reasonForChangeArr[1];
 													</select>
 												</div>
 											</div>
-										</div>
-
-										<div class="row" style="margin-top: 10px;">
-											<!--<?php if (count($reasonForFailure) > 0) { ?>
-												<div class="col-md-6 labSection" style="<?php echo (!isset($genericResultInfo['result']) || $genericResultInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
-													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for
-														Failure </label>
-													<div class="col-lg-7">
-														<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
-															<?= $general->generateSelectOptions($reasonForFailure, $genericResultInfo['reason_for_failure'], '-- Select --'); ?>
-														</select>
-													</div>
-												</div>
-											<?php } ?>--->
 											<div class="col-md-6 vlResult">
-												<label class="col-lg-5 control-label" for="resultDispatchedOn">Date
-													Results Dispatched </label>
+												<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $genericResultInfo['result_dispatched_datetime']; ?>" />
 												</div>
 											</div>
-											<div class="col-md-6 vlResult">
-												<label class="col-lg-5 control-label labels" for="subTestResult">Sub Test Results</label>
+											<div class="col-md-6 vlResult subTestFields">
+												<label class="col-lg-5 control-label subTestFields labels" for="subTestResult">Tests Performed</label>
 												<div class="col-lg-7">
-													<select class="form-control ms-container multiselect" id="subTestResult" name="subTestResult[]" title="Please select sub tests" multiple onchange="loadSubTests();">
+													<select class="form-control ms-container subTestFields multiselect" id="subTestResult" name="subTestResult[]" title="Please select sub tests" multiple onchange="loadSubTests();">
 													</select>
 												</div>
 											</div>
@@ -837,8 +823,7 @@ $reasonForChange = $reasonForChangeArr[1];
 										</div>
 										<div class="row">
 											<div class="col-md-6">
-												<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By
-													<span class="mandatory review-approve-span" style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
+												<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
 													<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
 														<?= $general->generateSelectOptions($userInfo, $genericResultInfo['result_reviewed_by'], '-- Select --'); ?>
@@ -913,8 +898,8 @@ $reasonForChange = $reasonForChangeArr[1];
 										<?php } ?>
 										<div class="row" id="labSection"></div>
 									</div>
-								<?php } ?>
-								</div>
+							<?php } ?>
+							</div>
 						</div>
 					</div>
 					<div class="box-footer">
@@ -929,12 +914,10 @@ $reasonForChange = $reasonForChangeArr[1];
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 						<a href="generic-test-results.php" class="btn btn-default"> Cancel</a>
 					</div>
+				</form>
 			</div>
 		</div>
-</div>
-</form>
-</div>
-</section>
+	</section>
 </div>
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
@@ -953,7 +936,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			width: '100%'
 		});
 		var testType = $("#testType").val();
-		getTestTypeConfigList(testType);
+		//getTestTypeConfigList(testType);
 
 		initDatePicker();
 		initDateTimePicker();
@@ -1315,7 +1298,6 @@ $reasonForChange = $reasonForChangeArr[1];
 	}
 
 	function getFacilities(obj) {
-		//alert(obj);
 		$.blockUI();
 		var dName = $("#district").val();
 		var cName = $("#facilityId").val();
@@ -1422,7 +1404,8 @@ $reasonForChange = $reasonForChangeArr[1];
 			$(".result-fields").val("");
 			$(".result-fields").attr("disabled", true);
 			$(".result-fields").removeClass("isRequired");
-			$(".result-span").hide();
+			$(".result-span, #resultSection").hide();
+			$("#resultSection input, #resultSection select").removeClass('isRequired');
 			$(".review-approve-span").show();
 			$('#rejectionReason').addClass('isRequired');
 			$('#rejectionDate').addClass('isRequired');
@@ -1436,7 +1419,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			$(".result-fields").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
 			$(".result-span").show();
-			$(".review-approve-span").show();
+			$(".review-approve-span, #resultSection").show();
 			$('.vlResult').css('display', 'block');
 			$('.rejectionReason').hide();
 			$('#rejectionReason').removeClass('isRequired');
@@ -1671,6 +1654,12 @@ $reasonForChange = $reasonForChangeArr[1];
 						placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
 						width: '100%'
 					});
+					var length = $('#mySelectList > option').length;
+					if (length > 1) {
+						$('.subTestFields').show();
+					} else {
+						$('.subTestFields').hide();
+					}
 				}
 			});
 	}
@@ -1680,6 +1669,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		$('.ins-row-' + row + subrow).attr('disabled', true);
 		$('.ins-row-' + row + subrow).addClass('disabled');
 		testCounter = (subrow + 1);
+		options = $("#finalResult" + row).html();
 		let rowString = `<tr>
                     <td class="text-center">${(subrow+1)}</td>
                     <td>
@@ -1697,9 +1687,7 @@ $reasonForChange = $reasonForChangeArr[1];
                     <td><select name="testingPlatform[${subTest}][]" id="testingPlatform${row}${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
                     <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[${subTest}][]" id="lotNo${row}${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
                     <td class="kitlabels" style="display: none;"><input type="text" name="expDate[${subTest}][]" id="expDate${row}${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
-                    <td>
-                         <input type="text" id="testResult${row}${testCounter}" name="testResult[${subTest}][]" class="form-control" placeholder="Enter result" title="Please enter final results">
-                    </td>
+					<td><select class="form-control result-select" name="testResult[${subTest}][]" id="testResult${row}${testCounter}" title="Enter result">${options}</select></td>
                     <td class="testResultUnit">
                     <select class="form-control resultUnit" id="testResultUnit${row}${testCounter}" name="testResultUnit[${subTest}][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
 						<option value="">--Select--</option>
@@ -1760,7 +1748,6 @@ $reasonForChange = $reasonForChangeArr[1];
 					testType: $('#testType').val()
 				},
 				function(interpretation) {
-					alert(interpretation);
 					if (interpretation != "") {
 						$('#resultInterpretation' + subTest).val(interpretation);
 					} else {

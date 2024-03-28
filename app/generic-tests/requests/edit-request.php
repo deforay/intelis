@@ -264,7 +264,6 @@ foreach ($pdResult as $provinceName) {
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $genericResultInfo['facility_id'], '-- Select --');
-
 //facility details
 if (isset($genericResultInfo['facility_id']) && $genericResultInfo['facility_id'] > 0) {
 	$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
@@ -966,7 +965,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			width: '100%'
 		});
 		var testType = $("#testType").val();
-		getTestTypeConfigList(testType);
+		//getTestTypeConfigList(testType);
 
 		initDatePicker();
 		initDateTimePicker();
