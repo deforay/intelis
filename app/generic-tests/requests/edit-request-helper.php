@@ -287,8 +287,9 @@ try {
      //Update patient Information in Patients Table
      $patientsService->updatePatient($_POST, 'form_generic');
 
-
+     // echo "<pre>";print_r($_POST);die;
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+          $finalResult = "";
           if (!empty($_POST['testName'])) {
                $db->where('generic_id', $_POST['vlSampleId']);
                $db->delete('generic_test_results');
@@ -313,17 +314,19 @@ try {
                                    'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
                               );
                               $db->insert('generic_test_results', $testData);
+                              if(isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])){
+                                   $finalResult = $_POST['finalResult'][$subTestName];
+                              }
                          }
                     }
                }
-               $genericData['result'] = 'Tested';
+               $genericData['result'] = $finalResult;
           }
      } else {
           $db->where('generic_id', $_POST['vlSampleId']);
           $db->delete('generic_test_results');
           $genericData['sample_tested_datetime'] = null;
      }
-
      $genericData['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $genericData['patient_id']);
      $db->where('sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $genericData);

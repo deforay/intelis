@@ -162,8 +162,6 @@ try {
             'facility_name' => $data['facilityName'],
             'facility_code' => $data['facilityCode'],
             'facility_type' => $data['facilityType'],
-            'email' => $data['email'],
-            //'other_id' => $data['otherId'],
             'facility_emails' => $data['facilityEmails'],
             'report_email' => $email,
             'contact_person' => $data['contactPerson'],

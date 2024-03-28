@@ -72,6 +72,7 @@ try {
         vl.child_surname                                     as childSurName,
         vl.child_dob                                         as childDob,
         vl.child_gender                                      as childGender,
+        vl.health_insurance_code                             as healthInsuranceCode,
         vl.child_age                                         as childAge,
         vl.child_treatment                                   as childTreatment,
         vl.child_treatment_other                             as childTreatmentOther,
@@ -113,8 +114,6 @@ try {
         f.facility_name                                      as facilityName,
         u_d.user_name                                        as reviewedBy,
         vl.result_reviewed_datetime                          as resultReviewedDatetime,
-        lt_u_d.user_name                                     as labTechnicianName,
-        t_b.user_name                                        as testedByName,
         vl.reason_for_sample_rejection                       as sampleRejectionReason,
         vl.request_created_datetime                          as requestCreatedDatetime,
         vl.rejection_on                                      as rejectionDate,
@@ -124,6 +123,10 @@ try {
         ts.status_name                                       as resultStatusName,
         vl.revised_by                                        as revisedBy,
         r_r_b.user_name                                      as revisedByName,
+        a_u_d.user_name                                      as approvedByName,
+        lt_u_d.user_name                                     as labTechnicianName,
+        u_d.user_name                                        as reviewedByName,
+        t_b.user_name                                        as testedByName,
         vl.revised_on                                        as revisedOn,
         vl.reason_for_changing                               as reasonForEidResultChanges
 

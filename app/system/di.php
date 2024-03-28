@@ -34,6 +34,7 @@ use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
+use App\Services\StorageService;
 use Psr\Container\ContainerInterface;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\Api\ApiAuthMiddleware;
@@ -108,7 +109,8 @@ $builder->addDefinitions([
     InstrumentsService::class => DI\autowire(),
     PatientsService::class => DI\autowire(),
     ApiService::class => DI\autowire(),
-    TestsService::class => DI\autowire()
+    TestsService::class => DI\autowire(),
+    StorageService::class => DI\autowire()
 ]);
 
 // Middlewares

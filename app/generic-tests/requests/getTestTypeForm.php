@@ -5,6 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
@@ -235,9 +236,12 @@ $testNames = array(
 );
 /* echo "<pre>";
 print_r($genericTestInfo);die; */
+
+//MiscUtility::dumpToErrorLog($testResultsAttribute);
+
 if (!empty($testResultsAttribute)) {
     foreach ($testResultsAttribute['result_type'] as $key => $resultType) {
-        if (isset($_POST['subTests']) && !empty($_POST['subTests']) && count($_POST['subTests']) > 0 && in_array($testResultsAttribute['sub_test_name'][$key], $_POST['subTests'])) {
+        if (isset($_POST['subTests']) && !empty($_POST['subTests']) && in_array($testResultsAttribute['sub_test_name'][$key], $_POST['subTests'])) {
             $subTest = strtolower((string) $testResultsAttribute['sub_test_name'][$key]);
             $n = 1;
             $resultSection = "";
@@ -248,7 +252,7 @@ if (!empty($testResultsAttribute)) {
             <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
                 <thead>
                     <tr>
-                        <th scope="row" class="text-center">Test No</th>
+                        <th scope="row" class="text-center">Test No.</th>
                         <th scope="row" class="text-center">Test Method</th>
                         <th scope="row" class="text-center">Date of Testing</th>
                         <th scope="row" class="text-center">Test Platform/Test Kit</th>
@@ -258,11 +262,12 @@ if (!empty($testResultsAttribute)) {
                     </tr>
                 </thead>
                 <tbody id="testKitNameTable' . $key . '">';
-            if (isset($genericTestInfo) && !empty($genericTestInfo) && count($genericTestInfo) > 0  && in_array(strtolower((string) $testResultsAttribute['sub_test_name'][$key]), $subTestLabels)) {
+            // if (isset($genericTestInfo) && !empty($genericTestInfo) && count($genericTestInfo) > 0  && in_array(strtolower((string) $testResultsAttribute['sub_test_name'][$key]), $subTestLabels)) {
+            if (isset($genericTestInfo) && !empty($genericTestInfo)) {
                 $i = 1;
                 foreach ($genericTestInfo as $ikey => $row) {
-                    if ($row['sub_test_name'] == strtolower((string) $testResultsAttribute['sub_test_name'][$key])) {
-                        $finalTestResults[$row['sub_test_name']] = $row;
+                    // if ($row['sub_test_name'] == strtolower((string) $testResultsAttribute['sub_test_name'][$key])) {
+                        // $finalTestResults[$row['sub_test_name']] = $row;
                         $resultSection .= '<tr>
                                 <td class="text-center">' . $i . '</td>
                                 <td>
@@ -308,7 +313,7 @@ if (!empty($testResultsAttribute)) {
                                 </td>
                             </tr>';
                         $i++;
-                    }
+                    // }
                 }
             } else {
                 $resultSection .= '<tr>
@@ -365,7 +370,8 @@ if (!empty($testResultsAttribute)) {
                 $subTestResultSection .= '<option value="">-- Select --</option>';
                 if (!empty($testResultsAttribute[$resultType])) {
                     foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
-                        $selected = isset($finalTestResults[strtolower($subTest)]['final_result']) && $finalTestResults[strtolower($subTest)]['final_result'] == trim((string) $r) ? "selected='selected'" : "";
+                        // $selected = isset($finalTestResults[strtolower($subTest)]['final_result']) && $finalTestResults[strtolower($subTest)]['final_result'] == trim((string) $r) ? "selected='selected'" : "";
+                        $selected = (isset($_POST['result']) && ($_POST['result'] == trim((string) $r))) ? "selected='selected'" : "";
                         $subTestResultSection .= '<option value="' . trim((string) $r) . '" ' . $selected . '>' . ($r) . '</option>';
                     }
                 }
@@ -377,7 +383,8 @@ if (!empty($testResultsAttribute)) {
                     $subTestResultSection .= '<datalist id="resultList">';
                     if (!empty($testResultsAttribute['quantitative_result'])) {
                         foreach ($testResultsAttribute['quantitative_result'] as $qkey => $qrow) {
-                            $selected = isset($finalTestResults[strtolower($subTest)]['final_result']) && $finalTestResults[strtolower($subTest)]['final_result'] == trim((string) $qrow) ? "selected='selected'" : "";
+                            // $selected = isset($finalTestResults[strtolower($subTest)]['final_result']) && $finalTestResults[strtolower($subTest)]['final_result'] == trim((string) $qrow) ? "selected='selected'" : "";
+                            $selected = (isset($_POST['result']) && strtolower($_POST['result']) == trim((string) $qrow)) ? "selected='selected'" : "";
                             $subTestResultSection .= '<option value="' . trim((string) $qrow) . '" ' . $selected . ' data-interpretation="' . $testResultsAttribute['quantitative_result_interpretation'][$qkey] . '"> ' . ($qrow) . ' </option>';
                         }
                         $subTestResultSection .= '</datalist></td></tr>';

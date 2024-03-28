@@ -372,6 +372,7 @@ try {
             'child_surname' => $data['childSurName'] ?? null,
             'child_dob' => $data['childDob'] ?? null,
             'child_gender' => $data['childGender'] ?? null,
+            'health_insurance_code' => $data['healthInsuranceCode'] ?? null,
             'child_age' => $data['childAge'] ?? null,
             'child_treatment' => isset($data['childTreatment']) ? implode(",", $data['childTreatment']) : null,
             'child_treatment_other' => isset($data['childTreatmentOther']) ? implode(",", $data['childTreatmentOther']) : null,

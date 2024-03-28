@@ -67,7 +67,7 @@ fi
 
 # Ask user for VLSM installation path with a 15-second timeout and default path as fallback
 echo "Enter the VLSM installation path [press enter to select /var/www/vlsm]: "
-read -t 15 -p "" vlsm_path
+read -t 60 -p "" vlsm_path
 vlsm_path="${vlsm_path:-/var/www/vlsm}"
 
 # Check if VLSM folder exists
@@ -230,6 +230,9 @@ sudo dpkg --configure -a
 
 # Clean up
 apt-get autoremove -y
+
+echo "Installing basic packages..."
+apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole
 
 setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
@@ -466,16 +469,14 @@ spinner "$pid"
 wait $pid
 echo "Remote data sync completed."
 
-if [ -f "${vlsm_path}/cache/CompiledContainer.php" ]; then
-    rm "${vlsm_path}/cache/CompiledContainer.php"
-fi
-
-# Old startup.php file is no longer needed, but if it exists, make sure it is empty
+# The old startup.php file is no longer needed, but if it exists, make sure it is empty
 if [ -f "${vlsm_path}/startup.php" ]; then
     rm "${vlsm_path}/startup.php"
     touch "${vlsm_path}/startup.php"
 fi
 
 service apache2 restart
+
+setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
 echo "VLSM update complete."

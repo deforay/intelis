@@ -709,7 +709,7 @@ $reasonForChange = $reasonForChangeArr[1];
 												<label class="col-lg-5 control-label" for="sampleReceivedAtHubOn">Date
 													Sample Received at Hub (PHL) </label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at HUB date" value="<?php echo $genericResultInfo['sample_received_at_hub_datetime']; ?>" onchange="checkSampleReceviedAtHubDate()" />
+													<input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at HUB date" value="<?php echo $genericResultInfo['sample_received_at_hub_datetime']; ?>" />
 												</div>
 											</div>
 
@@ -925,7 +925,7 @@ $reasonForChange = $reasonForChangeArr[1];
 						<input type="hidden" name="oldStatus" value="<?= htmlspecialchars((string) $genericResultInfo['result_status']); ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 						<input type="hidden" name="sampleCode" id="sampleCode" value="<?= ($genericResultInfo[$sampleCode]); ?>" />
-					    <input type="hidden" name="artNo" id="artNo" value="<?= ($genericResultInfo['patient_id']); ?>" />
+						<input type="hidden" name="artNo" id="artNo" value="<?= ($genericResultInfo['patient_id']); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 						<a href="generic-test-results.php" class="btn btn-default"> Cancel</a>
 					</div>

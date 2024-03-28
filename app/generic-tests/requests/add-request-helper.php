@@ -285,6 +285,7 @@ try {
     // $patientsService->savePatient($_POST,'form_generic');
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         if (!empty($_POST['testName'])) {
+            $finalResult = "";
             foreach ($_POST['testName'] as $subTestName => $subTests) {
                 foreach ($subTests as $testKey => $testKitName) {
                     if (!empty($testKitName)) {
@@ -306,10 +307,13 @@ try {
                             'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
                         );
                         $db->insert('generic_test_results', $testData);
+                        if(isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])){
+                            $finalResult = $_POST['finalResult'][$subTestName];
+                       }
                     }
                 }
             }
-            $genericData['result'] = 'Tested';
+            $genericData['result'] = $finalResult;
         }
     } else {
         $db->where('generic_id', $_POST['vlSampleId']);

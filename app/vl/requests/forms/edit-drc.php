@@ -2,9 +2,13 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Services\StorageService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var StorageService $storageService */
+$storageService = ContainerRegistry::get(StorageService::class);
 
 
 //check remote user
@@ -48,6 +52,9 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 
 $formAttributes = json_decode($vlQueryInfo['form_attributes']);
 $storageObj = json_decode($formAttributes->storage);
+
+$storageInfo = $storageService->getLabStorage();
+
 ?>
 
 <style>
@@ -479,14 +486,13 @@ $storageObj = json_decode($formAttributes->storage);
 											</td>
 										</tr>
 										<tr>
-											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> :
+											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?>  <em class="fas fa-edit"></em> :
 												</label></td>
 											<td style="width: 25%;">
-												<select name="freezer" id="freezer" class="form-control" title="<?php echo _translate('Please choose Freezer'); ?>" style="width:100%;">
-													<?= $general->generateSelectOptions($storageList, $storageObj->freezer, '-- Sélectionner --'); ?>
-												</select>
-												<input type="hidden" name="freezerCode" id="freezerCode" value="<?= $storageObj->freezerCode; ?>" />
-											</td>
+											<select class="form-control select2 editableSelect" id="freezer" name="freezer" placeholder="<?php echo _translate('Enter Freezer'); ?>" title="<?php echo _translate('Please enter Freezer'); ?>">
+												<?= $general->generateSelectOptions($storageInfo, $storageObj->storageId, '-- Select --') ?>
+											</select>
+
 											<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control" id="rack" name="rack" value="<?= $storageObj->rack; ?>" placeholder="<?php echo _translate('rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" value="<?= $storageObj->rack; ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
@@ -652,10 +658,13 @@ $storageObj = json_decode($formAttributes->storage);
 
 	$(document).ready(function() {
 
-		$("#freezer").on('change', function(){
-			storage = $("#freezer option:selected").text().split('-');
-			$("#freezerCode").val($.trim(storage[0]));
+		$(".select2").select2();
+		$(".select2").select2({
+			tags: true
 		});
+
+		storageEditableSelect('freezer', 'storage_code', 'storage_id','lab_storage', 'Storage Code');
+
 
 		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');
 
@@ -997,4 +1006,45 @@ $storageObj = json_decode($formAttributes->storage);
 				}
 			});
 	}
+
+	function storageEditableSelect(id, _fieldName, fieldId, table, _placeholder) {
+		$("#" + id).select2({
+			placeholder: _placeholder,
+			minimumInputLength: 0,
+			width: '100%',
+			allowClear: true,
+			id: function(bond) {
+				return bond._id;
+			},
+			ajax: {
+				placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+				url: "/includes/get-data-list-for-generic.php",
+				dataType: 'json',
+				delay: 250,
+				data: function(params) {
+					return {
+						fieldName: _fieldName,
+						fieldId: fieldId,
+						tableName: table,
+						q: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function(data, params) {
+					params.page = params.page || 1;
+					return {
+						results: data.result,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				//cache: true
+			},
+			escapeMarkup: function(markup) {
+				return markup;
+			}
+		});
+	}
+
 </script>

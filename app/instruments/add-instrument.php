@@ -105,9 +105,9 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 									</label>
 									<div class="col-lg-7">
 										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
-											<?php foreach($testTypeList as $testType){ ?>
+											<?php foreach ($testTypeList as $testType) { ?>
 												<option value="<?= $testType; ?>"><?= ucfirst($testType); ?></option>
-												<?php } ?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
@@ -175,18 +175,18 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 								</div>
 							</div>
 						<?php } ?>
-							<div class="row additionalText">
-								<div class="col-md-12">
-									<div class="form-group">
-										<label for="additionalText" class="col-lg-2 control-label">
-											<?php echo _translate("Description/Comment to add in Test Result"); ?>
-										</label>
-										<div class="col-lg-7">
-											<textarea class="form-control" id="additionalText" name="additionalText" placeholder='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>' title='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>'></textarea>
-										</div>
+						<div class="row additionalText">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label for="additionalText" class="col-lg-2 control-label">
+										<?php echo _translate("Description/Comment to add in Test Result"); ?>
+									</label>
+									<div class="col-lg-7">
+										<textarea class="form-control" id="additionalText" name="additionalText" placeholder='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>' title='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>'></textarea>
 									</div>
 								</div>
 							</div>
+						</div>
 						<!-- <div class="box-header">
 							<h3 class="box-title ">Machine Names</h3>
 						</div> -->
@@ -291,7 +291,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 													</select>
 												</td>
 											</tr>
-										<?php } 
+										<?php }
 										if (SYSTEM_CONFIG['modules']['cd4']) { ?>
 											<tr class="cd4-access user-access-form" style="display: none;">
 												<td style="text-align:center;">
@@ -308,7 +308,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 													</select>
 												</td>
 											</tr>
-										<?php }?>
+										<?php } ?>
 									</tbody>
 								</table>
 								<br>
@@ -452,7 +452,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 								<tbody id="machineTable">
 									<tr>
 										<td>
-											<input type="text" name="configMachineName[]" id="configMachineName1" class="form-control configMachineName isRequired" placeholder='<?php echo _translate("Machine Name"); ?>' title='<?php echo _translate("Please enter machine name"); ?>' onblur="checkDublicateName(this, 'configMachineName');" />
+											<input type="text" name="configMachineName[]" id="configMachineName1" class="form-control configMachineName isRequired" placeholder='<?php echo _translate("Machine Name"); ?>' title='<?php echo _translate("Please enter machine name"); ?>' onblur="checkDuplication(this, 'configMachineName');" />
 										</td>
 										<td>
 											<input type="text" name="dateFormat[]" id="dateFormat1" class="form-control" placeholder='<?php echo _translate("Date Format"); ?>' title='<?php echo _translate("Please enter date format"); ?>' value='d/m/Y H:i' />
@@ -608,7 +608,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 		f.setAttribute("align", "center");
 		f.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDublicateName(this, \'configMachineName\');"/ >';
+		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDuplication(this, \'configMachineName\');"/ >';
 		c.innerHTML = '<input type="text" value="d/m/Y H:i" name="dateFormat[]" id="dateFormat' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("Date Format"); ?>" title="<?php echo _translate("Please enter date format"); ?>" />';
 		d.innerHTML = '<input type="text" name="fileName[]" id="fileName' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("File Name"); ?>" title="<?php echo _translate("Please enter file name"); ?>"/>';
 		e.innerHTML = '<div class="col-md-3" >\
@@ -637,7 +637,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 		});
 	}
 
-	function checkDublicateName(obj, name) {
+	function checkDuplication(obj, name) {
 		dublicateObj = document.getElementsByName(name + "[]");
 		for (m = 0; m < dublicateObj.length; m++) {
 			if (obj.value != '' && obj.id != dublicateObj[m].id && obj.value == dublicateObj[m].value) {

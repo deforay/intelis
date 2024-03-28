@@ -309,6 +309,8 @@ CREATE TABLE `lab_storage` (
 
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'common-reference', '/common/reference/lab-storage.php', '[\"/common/reference/add-lab-storage.php\", \"/common/reference/edit-lab-storage.php\"]', 'Manage Lab Storage', NULL, 'always');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'common-reference', '/common/reference/add-lab-storage.php', NULL, 'Add Lab Storage', NULL, 'always'), (NULL, 'common-reference', '/common/reference/edit-lab-storage.php', NULL, 'Edit Lab Storage', NULL, 'always');
+
 
 -- Brindha 18-Mar-2024
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Batch Pdf Layout', 'batch_pdf_layout', 'standard', 'general', 'no', NULL, NULL, 'active');
@@ -316,3 +318,20 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 -- Jeyabanu 20-Mar-2024
 UPDATE `privileges` SET `shared_privileges` = '[\"/vl/requests/upload-storage.php\"]' WHERE `privileges`.`privilege_name` = "/vl/requests/vl-requests.php"
 
+-- Jeyabanu 22-Mar-2024
+ALTER TABLE `form_vl` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
+ALTER TABLE `audit_form_vl` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
+
+ALTER TABLE `form_eid` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `child_gender`;
+ALTER TABLE `audit_form_eid` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `child_gender`;
+
+ALTER TABLE `form_covid19` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
+ALTER TABLE `audit_form_covid19` ADD `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
+
+-- Jeyabanu 26-Mar-2024
+ALTER TABLE `lab_storage` ADD `data_sync` INT NOT NULL DEFAULT '0' AFTER `updated_datetime`;
+ALTER TABLE `lab_storage` RENAME COLUMN `lab_storage_status` TO `storage_status`;
+ALTER TABLE `lab_storage` CHANGE `storage_id` `storage_id` CHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
+-- Jeyabanu 27-Mar-2024
+UPDATE `s_app_menu` SET `inner_pages` = NULL WHERE `module` = 'generic-tests' AND `link` = '/generic-tests/requests/add-samples-from-manifest.php';

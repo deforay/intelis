@@ -157,21 +157,21 @@ foreach ($modules as $module => $status) {
                 $reasons[$module][$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
             }
         }
+        $rejectionReason[$module] = $reasons[$module];
+        $testReasonName = "test_reason_name";
+        $testReasonTable = 'r_' . $module . '_test_reasons';
+        if($module == 'genericTests' || $modules == 'generic-tests' || $modules == 'generic'){
+            $testReasonTable = 'r_generic_test_reasons';
+            $testReasonName = "test_reason";
+        }
+        $testReasonsResult = $general->getDataByTableAndFields($testReasonTable, array('test_reason_id', $testReasonName), false, " test_reason_status like 'active' ", $testReasonName);
+        // print_r($testReasonsResult);die;
+        foreach ($testReasonsResult as $subKey => $reject) {
+            $testReasons[$module]['testReasons'][$subKey]['value'] = $reject['test_reason_id'];
+            $testReasons[$module]['testReasons'][$subKey]['show'] = ($reject[$testReasonName]);
+        }
+        $testReason[$module] = $testReasons[$module];
     }
-    $rejectionReason[$module] = $reasons[$module];
-    $testReasonName = "test_reason_name";
-    $testReasonTable = 'r_' . $module . '_test_reasons';
-    if($module == 'genericTests'){
-        $testReasonTable = 'r_generic_test_reasons';
-        $testReasonName = "test_reason";
-    }
-    $testReasonsResult = $general->getDataByTableAndFields($testReasonTable, array('test_reason_id', $testReasonName), false, " test_reason_status like 'active' ", $testReasonName);
-    // print_r($testReasonsResult);die;
-    foreach ($testReasonsResult as $subKey => $reject) {
-        $testReasons[$module]['testReasons'][$subKey]['value'] = $reject['test_reason_id'];
-        $testReasons[$module]['testReasons'][$subKey]['show'] = ($reject[$testReasonName]);
-    }
-    $testReason[$module] = $testReasons[$module];
 }
 // print_r($responseRejections);die;
 

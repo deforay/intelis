@@ -64,14 +64,14 @@ if (!empty($result)) {
           if ($reviewedByRes) {
                $reviewedBy = $reviewedByRes['user_name'];
           }
-     }else{
-          if(!empty($result['defaultReviewedBy'])){
+     } else {
+          if (!empty($result['defaultReviewedBy'])) {
                $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
                if ($reviewedByRes) {
-                   $reviewedBy = $reviewedByRes['user_name'];
+                    $reviewedBy = $reviewedByRes['user_name'];
                }
-               if(empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
-                    $result['result_reviewed_datetime'] = $result['sample_tested_datetime'] ;
+               if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
                }
           }
      }
@@ -91,13 +91,13 @@ if (!empty($result)) {
           $resultApprovedBy = ($result['approvedBy']);
           $approvedByRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
      } else {
-          if(!empty($result['defaultApprovedBy'])){
+          if (!empty($result['defaultApprovedBy'])) {
                $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
                if ($approvedByRes) {
-                   $resultApprovedBy = $approvedByRes['user_name'];
+                    $resultApprovedBy = $approvedByRes['user_name'];
                }
-               if(empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
-                    $result['result_approved_datetime'] = $result['sample_tested_datetime'] ;
+               if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_approved_datetime'] = $result['sample_tested_datetime'];
                }
           }
      }
@@ -228,8 +228,8 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:2px;">';
      $html .= '<tr>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH CENTRE") . '</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH FACILITY CODE") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("FACILITY") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("FACILITY CODE") . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("REGION") . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DISTRICT") . '</td>';
      $html .= '</tr>';
@@ -320,8 +320,15 @@ if (!empty($result)) {
      }
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['patient_mobile_number'] ?? '-') . '</td>';
      $html .= '</tr>';
-
      $html .= '</table>';
+     if(!empty($result['health_insurance_code']))
+     {
+          $html .= '<table style="padding:8px 4px 2px 2px;">';
+          $html .= '<tr><td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH INSURANCE CODE") . '</td></tr>';
+          $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['health_insurance_code']) . '</td></tr>';
+          $html .= '</table>';
+     }
+
      $html .= '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
@@ -385,7 +392,7 @@ if (!empty($result)) {
      }
      if (str_contains(strtolower((string)$result['vl_test_platform']), 'abbott')) {
           $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:10px;font-size:10px;padding-top:10px;">Technique : Quantification de l&#39;ARN du VIH circulant par RT-PCR Temps réel Abbott (Seuil de sensibilité 40 Copies/ml)</td>';
+          $html .= '<td colspan="3" style="line-height:10px;font-size:10px;padding-top:10px;">' . _translate("Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR (Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)") . '</td>';
           $html .= '</tr>';
      }
      //$html .= '<tr><td colspan="3"></td></tr>';
@@ -607,18 +614,19 @@ if (!empty($result)) {
 
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;">';
-     $html .= '<u><b>NB</u></b> : Pour qu’une variation de la charge virale soit significative, il faut que la différence entre deux mesures soit<br>';
-     $html .= 'd’au moins 0,5 Log 10 soit une réduction ou une augmentation d’un facteur 3 du nombre de copies/ml </td>';
+     $html .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log<sub>10</sub> or a reduction or increase of a factor of 3 in the number of copies/mL") . ' </td>';
      $html .= '</tr>';
 
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;"></td>';
      $html .= '</tr>';
 
-     $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;color:#808080;">(*) <u><b>Limite de détection</b></u> (LDD): <b>&lt;40 copies/mL (1,60 Log 10 copies/mL)</b><br>';
-     $html .= ' &nbsp;&nbsp;&nbsp;&nbsp;<u><b>Limites de quantifcation</b></u> (LDQ) Comprise entre <b>40 et 10 000 000 copies/mL (1,60 et 7,0 Log 10 copies/mL)</b></td>';
-     $html .= '</tr>';
+
+     $html .= '<tr><td colspan="3" style="line-height:11px;font-size:11px;text-align:left;color:#808080;">(*)&nbsp;';
+     $html .= '<u><strong>' . _translate("Detection Limit (DL)") . '</strong></u> : ' . _translate("&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 Log<sub>10</sub>) copies/mL for DBS");
+     $html .= '<br> &nbsp;&nbsp;&nbsp;&nbsp;';
+     $html .= '<u><strong>' . _translate("Quantification Limits (QL)") . '</strong></u> : ' .  _translate("Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for DBS");
+     $html .= '</td></tr>';
 
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;"></td>';

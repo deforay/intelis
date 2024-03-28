@@ -94,7 +94,7 @@ if (!empty(SYSTEM_CONFIG['remoteURL'])) {
 // DASHBOARD JOBS START
 
 if (!empty($vldashboardUrl)) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-reference-tables.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-metadata.php")
         ->cron('*/20 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()

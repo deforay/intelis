@@ -560,7 +560,7 @@ $sFormat = '';
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" onchange="checkSampleReceviedAtHubDate()" />
+                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">
@@ -641,7 +641,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 
+
                                                                  <div class="vlLog col-md-6">
                                                                       <label class="col-lg-5 control-label  labels" for="vlLog">Viral Load (Log) </label>
                                                                       <div class="col-lg-7">
@@ -681,7 +681,7 @@ $sFormat = '';
                                                             </div>
                                                             <hr>
                                                             <div class="row">
-                                                                 
+
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -698,7 +698,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                
+
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -715,7 +715,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 
+
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
                                                                       <div class="col-lg-7">
@@ -1321,6 +1321,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function validateNow() {
+          if($('#isSampleRejected').val() == "yes"){
+               $('.vlResult, #vlResult').removeClass('isRequired');
+          }
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
@@ -1349,6 +1352,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function validateSaveNow() {
+          if($('#isSampleRejected').val() == "yes"){
+               $('.vlResult, #vlResult').removeClass('isRequired');
+          }
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';

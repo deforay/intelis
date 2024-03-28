@@ -70,7 +70,7 @@ $data = $db->get("user_login_history", 25);
                   <label for="locale" class="col-lg-4 control-label"><?php echo _translate("Preferred Language"); ?> <span class="mandatory">*</span> </label>
                   <div class="col-lg-8">
                     <select class="form-control isRequired" name="userLocale" id="userLocale" title="<?php echo _translate('Please select your Locale'); ?>">
-                      <option value=""><?= _translate("--Select--"); ?></option>
+                      <option value=""><?= _translate("-- Select --"); ?></option>
                       <?php
                       $selectedLocale = $userInfo['user_locale'] ?? $globalConfig['app_locale'] ?? 'en_US';
                       foreach ($localeLists as $locale => $localeName) { ?>

@@ -182,6 +182,28 @@ try {
         'qc_tech_sign' => $_POST['qcTechSign'] ?? null,
     );
 
+    if(isset($_POST['freezer']) && $_POST['freezer']!=""){
+        $countChar = substr_count($_POST['freezer'],"-");
+                    
+        if(isset($countChar) && $countChar > 2) {
+            $storageId = $_POST['freezer'];
+            $getStorage = $general->getDataFromOneFieldAndValue('lab_storage','storage_code',$_POST['freezer']);
+            $freezerCode = $getStorage['storage_code'];
+        }
+        else{
+            $storageId = $general->generateUUID();
+            $freezerCode = $_POST['freezer'];
+            $storageSave = $general->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $_POST['freezer'], $_POST['labId'], 'active'));
+        }
+        $formAttributes = [
+            'applicationVersion' => $general->getSystemConfig('sc_version'),
+            'ip_address' => $general->getClientIpAddress(),
+            'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$_POST['rack'],"box"=>$_POST['box'],"position"=>$_POST['position']),
+        ];
+
+        $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+        $vlData['form_attributes'] = $db->func($formAttributes);
+    }
     $db->where('vl_sample_id', $_POST['vlSampleId']);
     $getPrevResult = $db->getOne('form_vl');
     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult) {

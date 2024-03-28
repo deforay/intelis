@@ -962,10 +962,10 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 										</div>
 									</div>
 
+									<?php if (isset($arr['covid19_tests_table_in_results_pdf']) && $arr['covid19_tests_table_in_results_pdf'] != '') { ?>
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<?php if (isset($arr['covid19_tests_table_in_results_pdf']) && $arr['covid19_tests_table_in_results_pdf'] != '') { ?>
 													<label for="covid19TestsTableInResultsPdf" class="col-lg-2 control-label"><?php echo _translate("Show Covid19 Tests table in Results PDF"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select name="covid19TestsTableInResultsPdf" id="covid19TestsTableInResultsPdf" class="form-control readPage isRequired" title="<?php echo _translate('Please select covid19 Tests method in Results Pdf'); ?>">
@@ -974,10 +974,10 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 															<option value='no' <?php echo ($arr['covid19_tests_table_in_results_pdf'] == 'no') ? "selected='selected'" : ""; ?>> <?php echo _translate("No"); ?> </option>
 														</select>
 													</div>
-												<?php } ?>
+												</div>
 											</div>
-										</div>
 									</div>
+									<?php } ?>
 									<div class="row">
 										<div class="col-md-12">
 											<?php if (isset($arr['lock_approved_covid19_samples']) && $arr['lock_approved_covid19_samples'] != '') { ?>
@@ -1517,6 +1517,22 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 											</div>
 										</div>
 									</div>
+									<?php if (isset($arr['generic_tests_table_in_results_pdf']) && $arr['generic_tests_table_in_results_pdf'] != '') { ?>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+													<label for="covid19TestsTableInResultsPdf" class="col-lg-2 control-label"><?php echo _translate("Show Other Tests table in Results PDF"); ?><span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<select name="genericTestsTableInResultsPdf" id="genericTestsTableInResultsPdf" class="form-control readPage isRequired" title="<?php echo _translate('Please select Other Tests method in Results Pdf'); ?>">
+															<option value=""><?php echo _translate("-- Select --"); ?></option>
+															<option value='yes' <?php echo ($arr['generic_tests_table_in_results_pdf'] == 'yes') ? "selected='selected'" : ""; ?>> <?php echo _translate("Yes"); ?> </option>
+															<option value='no' <?php echo ($arr['generic_tests_table_in_results_pdf'] == 'no') ? "selected='selected'" : ""; ?>> <?php echo _translate("No"); ?> </option>
+														</select>
+													</div>
+												</div>
+											</div>
+									</div>
+									<?php } ?>
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">

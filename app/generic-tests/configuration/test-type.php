@@ -28,7 +28,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (_isAllowed("/generic-tests/configuration/add-test-type.php")) { ?>
+            <?php if (_isAllowed("/generic-tests/configuration/add-test-type.php") && $_SESSION['instance']['type'] != 'vluser') { ?>
               <a href="add-test-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Type"); ?></a>
             <?php } ?>
           </div>
@@ -42,7 +42,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
                   <th><?php echo _translate("Short Code"); ?></th>
                   <th><?php echo _translate("LOINC Code"); ?></th>
                   <th><?php echo _translate("Status"); ?></th>
-                  <?php if (_isAllowed("/generic-tests/configuration/edit-test-type.php")) { ?>
+                  <?php if (_isAllowed("/generic-tests/configuration/edit-test-type.php") && $_SESSION['instance']['type'] != 'vluser') { ?>
                     <th><?php echo _translate("Action"); ?></th>
                   <?php } ?>
                 </tr>
@@ -92,11 +92,11 @@ $usersService = ContainerRegistry::get(UsersService::class);
         },
         {
           "sClass": "center"
-        },
+        }<?php if (_isAllowed("/generic-tests/configuration/edit-test-type.php") && $_SESSION['instance']['type'] != 'vluser') { ?> ,
         {
           "sClass": "center",
           "bSortable": false
-        }
+        } <?php } ?>
       ],
       "aaSorting": [
         [0, "asc"]

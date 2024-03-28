@@ -120,7 +120,7 @@ if ($chkUserFcMapResult) {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-     $province .= "<option data-code='" . $provinceName['geo_code'] ."' data-name='" . $provinceName['geo_name'] . "'data-province-id='" . $provinceName['geo_id'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
+     $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-name='" . $provinceName['geo_name'] . "'data-province-id='" . $provinceName['geo_id'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 
@@ -235,7 +235,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                         <div class="col-md-6">
                                              <label class="col-lg-5" for="testType">Test Type <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <select class="form-control isRequired" name="testType" id="testType" title="Please choose test type" onchange="getTestTypeForm();getSubTestList(this.value);">
+                                                  <select class="form-control isRequired" name="testType" id="testType" title="Please choose test type" onchange="getTestTypeForm();getSubTestList(this.value);loadSubTests();">
                                                        <option value=""> -- Select -- </option>
                                                        <?php foreach ($testTypeResult as $testType) { ?>
                                                             <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
@@ -531,7 +531,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                        <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn">Date Sample Received at Hub </label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" onchange="checkSampleReceviedAtHubDate()" />
+                                                                 <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
                                                             </div>
                                                        </div>
                                                        <div class="col-md-6">
@@ -619,8 +619,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                                  <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                             </div>
                                                        </div>
-                                                       <div class="col-md-6 vlResult">
-                                                            <label class="col-lg-5 control-label labels" for="subTestResult">Sub Test Results</label>
+                                                       <div class="col-md-6 vlResult subTestFields">
+                                                            <label class="col-lg-5 control-label labels" for="subTestResult">Tests Performed</label>
                                                             <div class="col-lg-7">
                                                                  <select class="form-control ms-container multiselect" id="subTestResult" name="subTestResult[]" title="Please select sub tests" multiple onchange="loadSubTests();">
                                                                  </select>
@@ -1458,7 +1458,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     function(data) {
                          if (data != undefined && data !== null) {
 
-                              //  //console.log(data);
+                              console.log(data.result);
                               data = JSON.parse(data);
                               $("#facilitySection,#labSection,.subTestResultSection,#otherSection").html('');
                               $('.patientSectionInput').remove();
@@ -1571,6 +1571,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
                               width: '100%'
                          });
+                         var length = $('#mySelectList > option').length;
+					if(length > 1){
+						$('.subTestFields').show();
+					}else{
+						$('.subTestFields').hide();
+					}
                     }
                });
      }

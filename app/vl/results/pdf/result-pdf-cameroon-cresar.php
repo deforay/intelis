@@ -230,6 +230,15 @@ if (!empty($result)) {
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Patient Name") . " : " . $patientFname . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Age") . " : " . $age . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . _translate("Sex : ") . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
      $html .= '</tr>';
+
+     if($result['health_insurance_code'] != "" || $result['health_insurance_code'] != NULL )
+     {
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . _translate("Health Insurance Code") . " : " . $result['health_insurance_code'] . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">&nbsp;</td>';
+          $html .= '</tr>';
+     }
+
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' .  _translate("Type of Sample") . " : " . $result['sample_name'] . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Contact") . " : " . $result['patient_mobile_number'] . '</td>';
