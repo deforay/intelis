@@ -335,3 +335,18 @@ ALTER TABLE `lab_storage` CHANGE `storage_id` `storage_id` CHAR(50) CHARACTER SE
 
 -- Jeyabanu 27-Mar-2024
 UPDATE `s_app_menu` SET `inner_pages` = NULL WHERE `module` = 'generic-tests' AND `link` = '/generic-tests/requests/add-samples-from-manifest.php';
+
+-- Jeyabanu 28-Mar-2024
+DELETE s1 FROM generic_test_sample_type_map s1
+JOIN (
+    SELECT sample_type_id, test_type_id, MIN(map_id) as min_id
+    FROM generic_test_sample_type_map
+    GROUP BY sample_type_id, test_type_id
+) s2 ON s1.sample_type_id = s2.sample_type_id AND s1.test_type_id = s2.test_type_id
+WHERE s1.map_id > s2.min_id;
+
+ALTER TABLE generic_test_sample_type_map ADD UNIQUE INDEX idx_sample_type_id_test_type_id (sample_type_id, test_type_id);
+
+DELETE s1 FROM generic_test_reason_map s1 JOIN ( SELECT test_reason_id, test_type_id, MIN(map_id) as min_id FROM generic_test_reason_map GROUP BY test_reason_id, test_type_id ) s2 ON s1.test_reason_id = s2.test_reason_id AND s1.test_type_id = s2.test_type_id WHERE s1.map_id > s2.min_id;
+
+ALTER TABLE generic_test_reason_map ADD UNIQUE INDEX idx_test_reason_id_test_type_id (test_reason_id, test_type_id);

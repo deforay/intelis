@@ -72,7 +72,7 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 //get active sample types
 $condition1 = "sample_type_status = 'active'";
 $sResult = $general->fetchDataFromTable('r_generic_sample_types', $condition1);
-
+//echo '<pre>'; print_r($sResult); die;
 //get vltest reason details
 $testReason = $general->fetchDataFromTable('r_generic_test_reasons');
 $pdResult = $general->fetchDataFromTable('geographical_divisions');

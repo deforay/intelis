@@ -127,7 +127,6 @@ if (isset($genericResultInfo['sample_received_at_hub_datetime']) && trim((string
 	$genericResultInfo['sample_received_at_hub_datetime'] = '';
 }
 
-
 if (isset($genericResultInfo['sample_received_at_testing_lab_datetime']) && trim((string) $genericResultInfo['sample_received_at_testing_lab_datetime']) != '' && $genericResultInfo['sample_received_at_testing_lab_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $genericResultInfo['sample_received_at_testing_lab_datetime']);
 	$genericResultInfo['sample_received_at_testing_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
@@ -972,7 +971,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		initDateTimePicker();
 		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
 		$('.date').mask(dateFormatMask);
-		$('.dateTime').mask(dateFormatMask + ' 99:99');
+		//$('.dateTime').mask(dateFormatMask + ' 99:99');
 
 		$('.result-focus').change(function(e) {
 			var status = false;
