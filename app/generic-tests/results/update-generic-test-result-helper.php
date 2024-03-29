@@ -188,7 +188,9 @@ try {
                             'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
                         );
                         $db->insert('generic_test_results', $testData);
-                        $finalResult = $_POST['finalResult'][$subTestName];
+                        if(isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])){
+                            $finalResult = $_POST['finalResult'][$subTestName];
+                       }
                     }
                 }
             }

@@ -301,8 +301,8 @@
     }
 
     function checkSampleTestingDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val().trim();
-        var sampleTestingDate = $("#sampleTestingDateAtLab").val().trim();
+        var sampleCollectionDate = $("#sampleCollectionDate").val();
+        var sampleTestingDate = $("#sampleTestingDateAtLab").val();
 
         if (sampleCollectionDate && sampleTestingDate) {
             var date1 = new Date(sampleCollectionDate);

@@ -333,5 +333,12 @@ ALTER TABLE `lab_storage` ADD `data_sync` INT NOT NULL DEFAULT '0' AFTER `update
 ALTER TABLE `lab_storage` RENAME COLUMN `lab_storage_status` TO `storage_status`;
 ALTER TABLE `lab_storage` CHANGE `storage_id` `storage_id` CHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 
+-- Thana 26-Mar-2024
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`,`updated_on`, `updated_by`, `status`) VALUES ('Other Tests Table in Results Pdf', 'generic_tests_table_in_results_pdf', 'no', 'generic-tests', 'yes', '2024-03-26 20:15:07', NULL, 'active');
+
 -- Jeyabanu 27-Mar-2024
 UPDATE `s_app_menu` SET `inner_pages` = NULL WHERE `module` = 'generic-tests' AND `link` = '/generic-tests/requests/add-samples-from-manifest.php';
+
+-- Thana 29-Mar-2024
+UPDATE `s_app_menu` SET `inner_pages` = null WHERE `s_app_menu`.`link` = '/vl/program-management/vl-sample-status.php' AND `s_app_menu`.`module` = 'vl';
+
