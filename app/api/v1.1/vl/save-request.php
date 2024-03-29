@@ -46,6 +46,10 @@ try {
     $origJson = $request->getBody()->getContents();
 
     $appVersion = null;
+
+    $updatedLabs = [];
+
+
     try {
         $appVersion = Items::fromString($origJson, [
             'pointer' => '/appVersion',
@@ -420,6 +424,10 @@ try {
         $payloadStatus = 'success';
     }
 
+    if (!empty($data['lab_id'])) {
+        $updatedLabs[] = $data['lab_id'];
+    }
+
     $payload = [
         'status' => $payloadStatus,
         'timestamp' => time(),
@@ -448,4 +456,7 @@ try {
 
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+
+$general->updateResultSyncDateTime('vl', null, $updatedLabs);
+
 echo $payload;

@@ -341,6 +341,6 @@ $sql = 'UPDATE facility_details
             SET facility_attributes
                 = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastHeartBeat", ?)
             WHERE facility_id = ?';
-$db->rawQuery($sql, array(DateUtility::getCurrentDateTime(), $labId));
+$db->rawQuery($sql, [DateUtility::getCurrentDateTime(), $labId]);
 
 echo $apiService->sendJsonResponse($payload);
