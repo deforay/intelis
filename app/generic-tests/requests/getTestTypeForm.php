@@ -263,10 +263,10 @@ if (!empty($testResultsAttribute)) {
                     </tr>
                 </thead>
                 <tbody id="testKitNameTable' . $key . '">';
-            if ((isset($genericTestInfo) && !empty($genericTestInfo))  && (in_array(strtolower((string) $testResultsAttribute['sub_test_name'][$key]), $subTestLabels))) {
+            if ((isset($genericTestInfo) && !empty($genericTestInfo)) || (in_array(strtolower((string) $testResultsAttribute['sub_test_name'][$key]), $subTestLabels))) {
                 $i = 1;
                 foreach ($genericTestInfo as $ikey => $row) {
-                    if ($row['sub_test_name'] == strtolower((string) $testResultsAttribute['sub_test_name'][$key])) {
+                    if (($row['sub_test_name'] == strtolower((string) $testResultsAttribute['sub_test_name'][$key])) || (!isset($row['sub_test_name']) && empty($row['sub_test_name']) || empty($testResultsAttribute['sub_test_name'][$key]))) {
                         $finalTestResults[$row['sub_test_name']] = $row;
                         $resultSection .= '<tr>
                                 <td class="text-center">' . $i . '</td>
@@ -363,7 +363,14 @@ if (!empty($testResultsAttribute)) {
                         </td>
                     </tr>';
             }
-            // print_r($finalResult);die;
+            $finalInterpretationResult = $finalResult = "";
+            foreach($finalTestResults as $d){
+                if(isset($d['final_result']) && isset($d['final_result_interpretation']) && !empty($d['final_result']) && !empty($d['final_result_interpretation'])){
+                    $finalResult = $d['final_result'];
+                    $finalInterpretationResult = $d['final_result_interpretation'];
+                }
+            }
+            // print_r($finalTestResults);die;
             if ($resultType == 'qualitative') {
                 $subTestResultSection .= '<tr><th scope="row" colspan="5" class="text-right final-result-row">Final Result</th>';
                 $subTestResultSection .= '<td><select class="form-control result-select" name="finalResult[' . $subTest . ']" id="finalResult' . $key . '" onchange="updateInterpretationResult(this, \'' . strtolower($subTest) . '\');">';
@@ -371,7 +378,8 @@ if (!empty($testResultsAttribute)) {
                 if (!empty($testResultsAttribute[$resultType])) {
                     foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
                         $selected = isset($finalTestResults[strtolower($subTest)]['final_result']) && $finalTestResults[strtolower($subTest)]['final_result'] == trim((string) $r) ? "selected='selected'" : "";
-                        // $selected = (isset($_POST['result']) && ($_POST['result'] == trim((string) $r))) ? "selected='selected'" : "";
+                        $selectedResult = (isset($_POST['result']) && ($_POST['result'] == trim((string) $r))) ? "selected='selected'" : "";
+                        $selected = $selectedResult ?? $selected;
                         $subTestResultSection .= '<option value="' . trim((string) $r) . '" ' . $selected . '>' . ($r) . '</option>';
                     }
                 }
@@ -384,7 +392,9 @@ if (!empty($testResultsAttribute)) {
                     if (!empty($testResultsAttribute['quantitative_result'])) {
                         foreach ($testResultsAttribute['quantitative_result'] as $qkey => $qrow) {
                             $selected = isset($finalTestResults[strtolower($subTest)]['final_result']) && $finalTestResults[strtolower($subTest)]['final_result'] == trim((string) $qrow) ? "selected='selected'" : "";
-                            // $selected = (isset($_POST['result']) && strtolower($_POST['result']) == trim((string) $qrow)) ? "selected='selected'" : "";
+                            $selectedResult = (isset($_POST['result']) && strtolower($_POST['result']) == trim((string) $qrow)) ? "selected='selected'" : "";
+
+                            $selected = $selectedResult ?? $selected;
                             $subTestResultSection .= '<option value="' . trim((string) $qrow) . '" ' . $selected . ' data-interpretation="' . $testResultsAttribute['quantitative_result_interpretation'][$qkey] . '"> ' . ($qrow) . ' </option>';
                         }
                         $subTestResultSection .= '</datalist></td></tr>';
@@ -402,9 +412,10 @@ if (!empty($testResultsAttribute)) {
                     <tfoot id="resultSection">';
             $resultSection .= $subTestResultSection;
 
+            $interpretationResult = $finalTestResults[strtolower($subTest)]['final_result_interpretation'] ?? $finalInterpretationResult;
             $resultSection .= '</select></td></tr>';
             $resultSection .= '<tr><th scope="row" colspan="5" class="text-right final-result-row">Result Interpretation</th>';
-            $resultSection .= '<td><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation' . $key . '" value="' . $finalTestResults[strtolower($subTest)]['final_result_interpretation'] . '" name="resultInterpretation[' . $subTest . ']"></input>';
+            $resultSection .= '<td><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation' . $key . '" value="' . $interpretationResult . '" name="resultInterpretation[' . $subTest . ']"></input>';
             $resultSection .= '<input type="hidden" id="resultType" name="resultType[' . $subTest . ']" class="form-control result-text" value="' . $testResultsAttribute['final_result_interpretation'][$key] . '"></td></tr>';
 
             $resultSection .= '</tfoot>

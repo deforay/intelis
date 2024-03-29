@@ -199,13 +199,15 @@ try {
      if (isset($_POST['treatmentIndication']) && $_POST['treatmentIndication'] == "Other") {
           $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
      }
-     // $interpretationResult = null;
+     $interpretationResult = null;
+     if (!empty($_POST['resultInterpretation'])) {
+          foreach($_POST['resultInterpretation'] as $row){
+               $interpretationResult = $row;
+          }
+     }
      /* if(isset($_POST['resultType']) && isset($_POST['testType']) && !empty($_POST['resultType']) && !empty($_POST['testType'])){
           $interpretationResult = $genericTestsService->getInterpretationResults($_POST['testType'], $_POST['result']);
      } */
-     // if (!empty($_POST['resultInterpretation'])) {
-     //      $interpretationResult = $_POST['resultInterpretation'];
-     // }
 
      if (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) {
           $_POST['subTestResult'] = implode("##", $_POST['subTestResult']);
@@ -252,6 +254,7 @@ try {
           'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : null,
           'rejection_on' => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
           'result' => $_POST['result'] ?? null,
+          'final_result_interpretation' => $interpretationResult,
           'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
           'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
           'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,
@@ -328,6 +331,8 @@ try {
           $genericData['sample_tested_datetime'] = null;
      }
      $genericData['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $genericData['patient_id']);
+
+     // echo "<pre>";print_r($genericData);die;
      $db->where('sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $genericData);
      error_log($db->getLastError());
