@@ -43,6 +43,8 @@ try {
 
     $noOfFailedRecords = 0;
 
+    $updatedLabs = [];
+
     $origJson = $request->getBody()->getContents();
 
     $appVersion = null;
@@ -466,6 +468,11 @@ try {
         $payloadStatus = 'success';
     }
 
+
+    if (!empty($data['lab_id'])) {
+        $updatedLabs[] = $data['lab_id'];
+    }
+
     $payload = [
         'status' => $payloadStatus,
         'timestamp' => time(),
@@ -489,4 +496,7 @@ try {
 }
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+
+$general->updateResultSyncDateTime('eid', null, $updatedLabs);
+
 echo $payload;

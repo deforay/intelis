@@ -241,8 +241,8 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', count($hepLabResult), 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
-      // CD4 TEST RESULTS
-      if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
+    // CD4 TEST RESULTS
+    if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
         $cd4Query = "SELECT cd4.*, a.user_name as 'approved_by_name'
             FROM `form_cd4` AS cd4
             LEFT JOIN `user_details` AS a ON cd4.result_approved_by = a.user_id

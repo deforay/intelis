@@ -784,16 +784,25 @@ class CommonService
             $currentDateTime = DateUtility::getCurrentDateTime();
 
             if (!empty($facilityIds)) {
-                $facilityIdsStr = implode(",", array_unique(array_filter($facilityIds)));
+
                 $facilityAttributes = [
                     "remote{$syncType}Sync" => $currentDateTime,
                     "{$testType}Remote{$syncType}Sync" => $currentDateTime
                 ];
+
                 $facilityAttributes = $this->jsonToSetString(json_encode($facilityAttributes), 'facility_attributes');
+
                 $data = [
                     'facility_attributes' => $this->db->func($facilityAttributes)
                 ];
-                $this->db->where('facility_id', [$facilityIdsStr], 'IN');
+
+                if (is_array($facilityIds)) {
+                    $facilityIds = implode(",", array_unique(array_filter($facilityIds)));
+                    $this->db->where('facility_id', [$facilityIds], 'IN');
+                } else {
+                    $this->db->where('facility_id', $facilityIds);
+                }
+
                 $this->db->update('facility_details', $data);
             }
 
@@ -806,7 +815,13 @@ class CommonService
                 $data = [
                     'facility_attributes' => $this->db->func($facilityAttributes)
                 ];
-                $this->db->where('facility_id', $labId);
+
+                if (is_array($labId)) {
+                    $facilityIds = implode(",", array_unique(array_filter($labId)));
+                    $this->db->where('facility_id', [$labId], 'IN');
+                } else {
+                    $this->db->where('facility_id', $labId);
+                }
                 $this->db->update('facility_details', $data);
             }
         } catch (Throwable $exc) {
