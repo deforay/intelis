@@ -741,7 +741,7 @@ $reasonForChange = $reasonForChangeArr[1];
 												<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample
 													Testing Date <span class="mandatory result-span">*</span></label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control dateTime result-fieldsform-control result-fields labSection <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $genericResultInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
+													<input type="text" class="form-control dateTime result-fieldsform-control result-fields labSection <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateTimeAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $genericResultInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -1381,7 +1381,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			$('.femaleSection').show();
 		}
 	});
-	$("#sampleTestingDateAtLab").change(function() {
+	$("#sampleTestingDateTimeAtLab").change(function() {
 		if ($(this).val() != "") {
 			$(".result-fields").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
@@ -1400,7 +1400,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult').css('display', 'none');
-			$("#sampleTestingDateAtLab, #vlResult").val("");
+			$("#sampleTestingDateTimeAtLab, #vlResult").val("");
 			$(".result-fields").val("");
 			$(".result-fields").attr("disabled", true);
 			$(".result-fields").removeClass("isRequired");
