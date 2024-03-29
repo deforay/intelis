@@ -96,6 +96,7 @@ try {
                vl.data_sync,
                vl.is_encrypted,
                vl.form_attributes,
+               vl.health_insurance_code,
                s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
@@ -341,6 +342,7 @@ try {
           $row[] = $aRow['facility_state'];
           $row[] = $aRow['facility_district'];
           $row[] = $aRow['sample_name'];
+          $row[] = $aRow['health_insurance_code'];
           $row[] = $aRow['result'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
           $row[] = $aRow['status_name'];

@@ -572,6 +572,9 @@ foreach ($srcResults as $list) {
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label>
 								</div>
 								<div class="col-md-3">
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
+								</div>
+								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
 								</div>
 								<div class="col-md-3">
@@ -582,6 +585,9 @@ foreach ($srcResults as $list) {
 								</div>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label>
+								</div>
+								<div class="col-md-3">
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="health_insurance_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Health Insurance Code"); ?></label>
 								</div>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
@@ -635,6 +641,9 @@ foreach ($srcResults as $list) {
 									</th>
 									<th>
 										<?php echo _translate("Sample Type"); ?>
+									</th>
+									<th>
+										<?php echo _translate("Health Insurance Code"); ?>
 									</th>
 									<th>
 										<?php echo _translate("Result"); ?>
@@ -887,6 +896,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				},
 				{
 					"sClass": "center"
+				},
+				{
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
 					"sClass": "center"
