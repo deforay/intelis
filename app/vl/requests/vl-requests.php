@@ -46,6 +46,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$formId = $general->getGlobalConfig('vl_form');
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -574,6 +575,9 @@ foreach ($srcResults as $list) {
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label>
 								</div>
 								<div class="col-md-3">
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
+								</div>
+								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
 								</div>
 								<div class="col-md-3">
@@ -585,6 +589,11 @@ foreach ($srcResults as $list) {
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label>
 								</div>
+								<?php if ($formId == COUNTRY\CAMEROON) { ?>
+									<div class="col-md-3">
+										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="health_insurance_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Health Insurance Code"); ?></label>
+									</div>
+								<?php } ?>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
 								</div>
@@ -638,6 +647,11 @@ foreach ($srcResults as $list) {
 									<th>
 										<?php echo _translate("Sample Type"); ?>
 									</th>
+									<?php if ($formId == COUNTRY\CAMEROON) { ?>
+										<th>
+											<?php echo _translate("Health Insurance Code"); ?>
+										</th>
+									<?php } ?>
 									<th>
 										<?php echo _translate("Result"); ?>
 									</th>
@@ -890,6 +904,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				{
 					"sClass": "center"
 				},
+				<?php if ($formId == COUNTRY\CAMEROON) { ?>
+					{
+						"sClass": "center",
+						"bVisible": false
+					},
+				<?php } ?>
 				{
 					"sClass": "center"
 				},
