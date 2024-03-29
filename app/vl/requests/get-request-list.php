@@ -20,6 +20,7 @@ try {
 
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
+     $formId = $general->getGlobalConfig('vl_form');
 
      /** @var FacilitiesService $facilitiesService */
      $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -342,7 +343,9 @@ try {
           $row[] = $aRow['facility_state'];
           $row[] = $aRow['facility_district'];
           $row[] = $aRow['sample_name'];
-          $row[] = $aRow['health_insurance_code'];
+          if ($formId == COUNTRY\CAMEROON) {
+               $row[] = $aRow['health_insurance_code'];
+          }
           $row[] = $aRow['result'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
           $row[] = $aRow['status_name'];
