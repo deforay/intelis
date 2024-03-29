@@ -374,6 +374,9 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	#sampleCode {
 		background-color: #fff;
 	}
+	select#subTestResult {
+		display: none !important;
+	}
 </style>
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -1691,7 +1694,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 						placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
 						width: '100%'
 					});
-					var length = $('#mySelectList > option').length;
+					var length = $('#subTestResult > option').length;
 					if(length > 1){
 						$('.subTestFields').show();
 					}else{
@@ -1727,10 +1730,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                     <td><select class="form-control result-select" name="testResult[${subTest}][]" id="testResult${row}${testCounter}" title="Enter result">${options}</select></td>
                     <td class="testResultUnit">
                     <select class="form-control resultUnit" id="testResultUnit${row}${testCounter}" name="testResultUnit[${subTest}][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
-               <option value="">--Select--</option>
-               <?php foreach ($testResultUnits as $key => $unit) { ?>
-                    <option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
-               <?php } ?>
+						<option value="">--Select--</option>
+						<?php foreach ($testResultUnits as $key => $unit) { ?>
+								<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
+						<?php } ?>
                     </select>
                     </td>
                     <td style="vertical-align:middle;text-align: center;width:100px;">

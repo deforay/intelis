@@ -293,11 +293,11 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 										<td>
 											<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">
 												<tr>
-													<td class="hide firstSubTest" style="width:20%;">
+													<td class="firstSubTest" style="width:20%;">
 														<lable for="resultSubGroup1" class="form-label-control">Enter the test name</lable>
 													</td>
-													<td class="hide firstSubTest" style="width:30%;">
-														<input type="text" name="resultConfig[sub_test_name][1]" id="resultSubGroup1" class="form-control input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for 1st row" />
+													<td class="firstSubTest" style="width:30%;">
+														<input type="text" name="resultConfig[sub_test_name][1]" id="resultSubGroup1" class="form-control subtestname input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for 1st row" />
 													</td>
 													<td style="width:20%;">
 														<lable for="testType1" class="form-label-control">Select result type</lable>
@@ -321,13 +321,13 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 															</tr>
 															<tr>
 																<td>
-																	<input type="text" name="resultConfig[qualitative][expectedResult][1][1]" class="form-control qualitative-input-11 input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />
+																	<input type="text" name="resultConfig[qualitative][expectedResult][1][1]" class="form-control result-inputs qualitative-input-11 input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />
 																</td>
 																<td>
-																	<input type="text" name="resultConfig[qualitative][resultCode][1][1]" class="form-control qualitative-input-11 input-sm" placeholder="Enter the result code" title="Please enter the result code" />
+																	<input type="text" name="resultConfig[qualitative][resultCode][1][1]" class="form-control result-inputs qualitative-input-11 input-sm" placeholder="Enter the result code" title="Please enter the result code" />
 																</td>
 																<td>
-																	<input type="text" name="resultConfig[qualitative][sortOrder][1][1]" class="form-control qualitative-input-11 input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />
+																	<input type="text" name="resultConfig[qualitative][sortOrder][1][1]" class="form-control result-inputs qualitative-input-11 input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />
 																</td>
 																<td style="text-align:center;">
 																	<a href="javascript:void(0);" onclick="addQualitativeRow(this, 1,2);" class="btn btn-xs btn-info qualitative-insrow-11"><i class="fa-solid fa-plus"></i></a>
@@ -346,13 +346,13 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 															</tr>
 															<tr>
 																<td>
-																	<input type="text" name="resultConfig[quantitative][high_range][1]" class="form-control quantitative-input-11 input-sm" placeholder="Enter the high value" title="Please enter the high value" />
+																	<input type="text" name="resultConfig[quantitative][high_range][1]" class="form-control result-inputs quantitative-input-11 input-sm" placeholder="Enter the high value" title="Please enter the high value" />
 																</td>
 																<td>
-																	<input type="text" name="resultConfig[quantitative][threshold_range][1]" class="form-control quantitative-input-11 input-sm" placeholder="Enter the threshold value" title="Please enter the threshold value" />
+																	<input type="text" name="resultConfig[quantitative][threshold_range][1]" class="form-control result-inputs quantitative-input-11 input-sm" placeholder="Enter the threshold value" title="Please enter the threshold value" />
 																</td>
 																<td>
-																	<input type="text" name="resultConfig[quantitative][low_range][1]" class="form-control quantitative-input-11 input-sm" placeholder="Enter the low value" title="Please enter the low value" />
+																	<input type="text" name="resultConfig[quantitative][low_range][1]" class="form-control result-inputs quantitative-input-11 input-sm" placeholder="Enter the low value" title="Please enter the low value" />
 																</td>
 															</tr>
 														</table>
@@ -510,6 +510,11 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 	}
 
 	function validateNow() {
+		$('.result-inputs').each(function(index, value){
+			if(value != ""){
+				$('.subtestname').addClass('isRequired');				
+			}
+		});
 		flag = deforayValidator.init({
 			formId: 'addTestTypeForm'
 		});
@@ -724,13 +729,13 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 		$(obj).attr('disabled', true);
 		var html = '<tr align="center"> \
 			<td>\
-				<input type="text" name="resultConfig[qualitative][expectedResult][' + row1 + '][' + row2 + ']" class="form-control qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />\
+				<input type="text" name="resultConfig[qualitative][expectedResult][' + row1 + '][' + row2 + ']" class="form-control result-inputs qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />\
 			</td>\
 			<td>\
-				<input type="text" name="resultConfig[qualitative][resultCode][' + row1 + '][' + row2 + ']" class="form-control qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the result code" title="Please enter the result code" />\
+				<input type="text" name="resultConfig[qualitative][resultCode][' + row1 + '][' + row2 + ']" class="form-control result-inputs qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the result code" title="Please enter the result code" />\
 			</td>\
 			<td>\
-				<input type="text" name="resultConfig[qualitative][sortOrder][' + row1 + '][' + row2 + ']" class="form-control qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />\
+				<input type="text" name="resultConfig[qualitative][sortOrder][' + row1 + '][' + row2 + ']" class="form-control result-inputs qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />\
 			</td>\
 			<td><a href="javascript:void(0);" onclick="addQualitativeRow(this, ' + row1 + ',' + (row2 + 1) + ');" class="btn btn-xs btn-info qualitative-insrow-' + row1 + row2 + '"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a  href="javascript:void(0);" onclick="removeQualitativeRow(this, ' + row1 + ', ' + (row2 - 1) + ')" class="btn btn-xs btn-danger"  title="Remove this row completely" alt="Remove this row completely"><i class="fa-solid fa-minus"></i></a></td> \
 		</tr>'
@@ -738,7 +743,6 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 	}
 
 	function addTbRow(obj) {
-		$('.firstSubTest').removeClass('hide');
 		$('#resultSubGroup1').addClass('isRequired');
 		sampleCounter++;
 		var html = '<tr class="result-type">\
@@ -747,7 +751,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<tr>\
 							<td style="width:20%;"><lable for="resultSubGroup' + sampleCounter + '" class="form-label-control">Enter the test name</lable></td>\
 							<td style="width:30%;">\
-								<input type="text" name="resultConfig[sub_test_name][' + sampleCounter + ']"id="resultSubGroup' + sampleCounter + '" class="form-control isRequired input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for ' + sampleCounter + ' row"/>\
+								<input type="text" name="resultConfig[sub_test_name][' + sampleCounter + ']"id="resultSubGroup' + sampleCounter + '" class="form-control subtestname isRequired input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for ' + sampleCounter + ' row"/>\
 							</td>\
 							<td style="width:20%;"><lable for="testType' + sampleCounter + '" class="form-label-control">Select result type</lable></td>\
 							<td style="width:30%;">\
@@ -769,13 +773,13 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 									</tr>\
 									<tr>\
 										<td>\
-											<input type="text" name="resultConfig[qualitative][expectedResult][' + sampleCounter + '][1]" class="form-control qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />\
+											<input type="text" name="resultConfig[qualitative][expectedResult][' + sampleCounter + '][1]" class="form-control result-inputs qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />\
 										</td>\
 										<td>\
-											<input type="text" name="resultConfig[qualitative][resultCode][' + sampleCounter + '][1]" class="form-control qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the result code" title="Please enter the result code" />\
+											<input type="text" name="resultConfig[qualitative][resultCode][' + sampleCounter + '][1]" class="form-control result-inputs qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the result code" title="Please enter the result code" />\
 										</td>\
 										<td>\
-											<input type="text" name="resultConfig[qualitative][sortOrder][' + sampleCounter + '][1]" class="form-control qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />\
+											<input type="text" name="resultConfig[qualitative][sortOrder][' + sampleCounter + '][1]" class="form-control result-inputs qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />\
 										</td>\
 										<td style="text-align:center;">\
 											<a href="javascript:void(0);" onclick="addQualitativeRow(this, ' + sampleCounter + ', 2);" class="btn btn-xs btn-info qualitative-insrow-' + sampleCounter + '1"><i class="fa-solid fa-plus"></i></a>\
@@ -794,13 +798,13 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 									</tr>\
 									<tr>\
 										<td>\
-											<input type="text" name="resultConfig[quantitative][high_range][' + sampleCounter + ']" class="form-control quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the high value" title="Please enter the high value" />\
+											<input type="text" name="resultConfig[quantitative][high_range][' + sampleCounter + ']" class="form-control result-inputs quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the high value" title="Please enter the high value" />\
 										</td>\
 										<td>\
-											<input type="text" name="resultConfig[quantitative][threshold_range][' + sampleCounter + ']" class="form-control quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the threshold value" title="Please enter the threshold value" />\
+											<input type="text" name="resultConfig[quantitative][threshold_range][' + sampleCounter + ']" class="form-control result-inputs quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the threshold value" title="Please enter the threshold value" />\
 										</td>\
 										<td>\
-											<input type="text" name="resultConfig[quantitative][low_range][' + sampleCounter + ']" class="form-control quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the low value" title="Please enter the low value" />\
+											<input type="text" name="resultConfig[quantitative][low_range][' + sampleCounter + ']" class="form-control result-inputs quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the low value" title="Please enter the low value" />\
 										</td>\
 									</tr>\
 								</table>\
@@ -832,14 +836,14 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 
 	function setResultType(id, row) {
 		if (id == 'qualitative') {
-			$('.quantitative-input' + row).removeClass('isRequired');
+			$(' result-inputs.quantitative-input' + row).removeClass('isRequired');
 			$('#qualitativeRow' + row).removeClass('hide');
-			$('.qualitative-input' + row).addClass('isRequired');
+			$(' result-inputs.qualitative-input' + row).addClass('isRequired');
 			$('#quantitativeRow' + row).addClass('hide');
 		} else if (id == 'quantitative') {
-			$('.qualitative-input' + row).removeClass('isRequired');
+			$(' result-inputs.qualitative-input' + row).removeClass('isRequired');
 			$('#quantitativeRow' + row).removeClass('hide');
-			$('.quantitative-input' + row).addClass('isRequired');
+			$(' result-inputs.quantitative-input' + row).addClass('isRequired');
 			$('#qualitativeRow' + row).addClass('hide');
 		}
 	}
