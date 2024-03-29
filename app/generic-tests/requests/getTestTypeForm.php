@@ -263,10 +263,11 @@ if (!empty($testResultsAttribute)) {
                     </tr>
                 </thead>
                 <tbody id="testKitNameTable' . $key . '">';
-            if ((isset($genericTestInfo) && !empty($genericTestInfo)) || (in_array(strtolower((string) $testResultsAttribute['sub_test_name'][$key]), $subTestLabels))) {
+            if ((isset($genericTestInfo) && !empty($genericTestInfo))) {
+            // if ((isset($genericTestInfo) && !empty($genericTestInfo)) || (in_array(strtolower((string) $testResultsAttribute['sub_test_name'][$key]), $subTestLabels))) {
                 $i = 1;
                 foreach ($genericTestInfo as $ikey => $row) {
-                    if (($row['sub_test_name'] == strtolower((string) $testResultsAttribute['sub_test_name'][$key])) || (!isset($row['sub_test_name']) && empty($row['sub_test_name']) || empty($testResultsAttribute['sub_test_name'][$key]))) {
+                    if (($row['sub_test_name'] == strtolower((string) $testResultsAttribute['sub_test_name'][$key])) || (empty($row['sub_test_name']) || empty($testResultsAttribute['sub_test_name'][$key]))) {
                         $finalTestResults[$row['sub_test_name']] = $row;
                         $resultSection .= '<tr>
                                 <td class="text-center">' . $i . '</td>
