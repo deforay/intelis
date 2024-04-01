@@ -1586,10 +1586,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
 					if ($('#resultType').val() == 'qualitative') {
-						$('.final-result-row').attr('colspan', 4)
+						// $('.final-result-row').attr('colspan', 4)
 						$('.testResultUnit').hide();
 					} else {
-						$('.final-result-row').attr('colspan', 5)
+						// $('.final-result-row').attr('colspan', 5)
 						$('.testResultUnit').show();
 					}
 				});
@@ -1669,10 +1669,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
 					if ($('#resultType').val() == 'qualitative') {
-						$('.final-result-row').attr('colspan', 4)
+						// $('.final-result-row').attr('colspan', 4)
 						$('.testResultUnit').hide();
 					} else {
-						$('.final-result-row').attr('colspan', 5)
+						// $('.final-result-row').attr('colspan', 5)
 						$('.testResultUnit').show();
 					}
 				});
@@ -1777,10 +1777,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			$('.kitlabels').show();
 		}
 		if ($('#resultType').val() == 'qualitative') {
-			$('.final-result-row').attr('colspan', 4)
+			// $('.final-result-row').attr('colspan', 4)
 			$('.testResultUnit').hide();
 		} else {
-			$('.final-result-row').attr('colspan', 5)
+			// $('.final-result-row').attr('colspan', 5)
 			$('.testResultUnit').show();
 		}
 	}
