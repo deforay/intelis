@@ -1361,4 +1361,15 @@ class CommonService
     {
         return $this->db->insert($table, array_combine($fields, $values));
     }
+
+    public function getTableFieldsAsArray($tableName)
+    {
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+                        WHERE TABLE_SCHEMA = ? AND table_name= ?";
+        $allColResult = $this->db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db'], $tableName]);
+        $columnNames = array_column($allColResult, 'COLUMN_NAME');
+
+        // Create an array with all column names set to null
+        return array_fill_keys($columnNames, null);
+    }
 }

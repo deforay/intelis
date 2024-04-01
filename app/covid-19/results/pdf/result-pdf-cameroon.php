@@ -34,7 +34,7 @@ if (!empty($requestResult)) {
 
     $displayPageNoInFooter = true;
     $displaySignatureTable = true;
-    $reportTopMargin = 17;
+    $reportTopMargin = 14;
 
     if (!empty($result['vl_facility_attributes'])) {
         $vlFacilityAttributes = json_decode($result['vl_facility_attributes'], true);
@@ -90,9 +90,10 @@ if (!empty($requestResult)) {
 
         $reportTemplatePath = $resultPdfService->getReportTemplate($result['lab_id']);
 
+        $pdf = new Covid19ResultPDFHelper(orientation: PDF_PAGE_ORIENTATION, unit: PDF_UNIT, format: PDF_PAGE_FORMAT, unicode: true, encoding: 'UTF-8', diskCache: false, pdfTemplatePath: $reportTemplatePath, enableFooter: $displayPageNoInFooter);
+
         if (empty($reportTemplatePath)) {
             // create new PDF document
-            $pdf = new Covid19ResultPDFHelper(orientation: PDF_PAGE_ORIENTATION, unit: PDF_UNIT, format: PDF_PAGE_FORMAT, unicode: true, encoding: 'UTF-8', diskCache: false, pdfTemplatePath: $reportTemplatePath, enableFooter: $displayPageNoInFooter);
             if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
                 $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
             } else {
@@ -117,7 +118,7 @@ if (!empty($requestResult)) {
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $pdf->SetMargins(10, PDF_MARGIN_TOP + 14, 10);
+        $pdf->SetMargins(10, PDF_MARGIN_TOP + $reportTopMargin, 10);
         $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -399,7 +400,7 @@ if (!empty($requestResult)) {
         $html .= '</tr>';
         $html .= '</table>';
 
-        if (!empty($signResults)) {
+        if (!empty($signResults) && $displaySignatureTable) {
             $lh = 20;
             $html .= '<table align="center" style="min-height:120px">';
             $html .= '<tr>';

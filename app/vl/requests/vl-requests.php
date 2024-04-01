@@ -446,7 +446,7 @@ foreach ($srcResults as $list) {
 										<?php echo _translate("Include Recency Samples"); ?>&nbsp;:
 									</strong></td>
 								<td>
-									<select name="recencySamples" id="recencySamples" class="form-control" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
+									<select name="recencySamples" id="recencySamples" class="form-control" title="<?php echo _translate('Include Recency Samples'); ?>" style="width:100%;">
 										<option value="yes">
 											<?php echo _translate("Yes"); ?>
 										</option>
@@ -904,13 +904,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				{
 					"sClass": "center"
 				},
-				<?php if ($formId == COUNTRY\CAMEROON) { ?>
-					{
+				<?php
+				if ($formId == COUNTRY\CAMEROON) {
+					echo '{
 						"sClass": "center",
 						"bVisible": false
-					},
-				<?php } ?>
-				{
+					},';
+				}
+				?> {
 					"sClass": "center"
 				},
 				{
