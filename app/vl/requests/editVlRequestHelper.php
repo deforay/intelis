@@ -298,18 +298,18 @@ try {
           'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'] ?? null
      );
 
-     if(isset($_POST['freezer']) && $_POST['freezer']!=""){
+     if(isset($_POST['freezer']) && $_POST['freezer']!="" && $_POST['freezer'] != null){
           $countChar = substr_count($_POST['freezer'],"-");
                     
           if(isset($countChar) && $countChar > 2) {
-          $storageId = $_POST['freezer'];
-          $getStorage = $general->getDataFromOneFieldAndValue('lab_storage','storage_code',$_POST['freezer']);
-          $freezerCode = $getStorage['storage_code'];
+               $storageId = $_POST['freezer'];
+               $getStorage = $general->getDataFromOneFieldAndValue('lab_storage','storage_code',$_POST['freezer']);
+               $freezerCode = $getStorage['storage_code'];
           }
           else{
-          $storageId = $general->generateUUID();
-          $freezerCode = $_POST['freezer'];
-          $storageSave = $general->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $_POST['freezer'], $_POST['labId'], 'active'));
+               $storageId = $general->generateUUID();
+               $freezerCode = $_POST['freezer'];
+               $storageSave = $general->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $_POST['freezer'], $_POST['labId'], 'active'));
           }
           $formAttributes = [
           'applicationVersion' => $general->getSystemConfig('sc_version'),

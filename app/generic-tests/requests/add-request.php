@@ -1567,10 +1567,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                function(data) {
                     if (data != "") {
                          $("#subTestResult").append(data);
-                         $("#subTestResult").multipleSelect({
+                        /* $("#subTestResult").multipleSelect({
                               placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
                               width: '100%'
-                         });
+                         });*/
                          var length = $('#mySelectList > option').length;
 					if(length > 1){
 						$('.subTestFields').show();

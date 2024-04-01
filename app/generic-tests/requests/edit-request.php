@@ -303,6 +303,7 @@ $minPatientIdLength = 0;
 if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_length'] != "") {
 	$minPatientIdLength = $arr['generic_min_patient_id_length'];
 }
+
 ?><!-- Content Wrapper. Contains page content -->
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
 <style>
@@ -664,7 +665,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 										<div class="col-md-6">
 											<label class="col-lg-5" for="">Date of Sample Collection <span class="mandatory">*</span></label>
 											<div class="col-lg-7">
-												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $genericResultInfo['sample_collection_date']; ?>" onchange="checkSampleTestingDate();">
+												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $genericResultInfo['sample_collection_date']; ?>" >
 											</div>
 										</div>
 										<div class="col-md-6">
@@ -802,7 +803,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 												<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample
 													Testing Date <span class="mandatory result-span">*</span></label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control dateTime result-fieldsform-control result-fields labSection <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $genericResultInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
+													<input type="text" class="form-control labSection dateTime <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $genericResultInfo['sample_tested_datetime']; ?>" />
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -970,7 +971,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		initDateTimePicker();
 		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
 		$('.date').mask(dateFormatMask);
-		//$('.dateTime').mask(dateFormatMask + ' 99:99');
+		$('.dateTime').mask(dateFormatMask + ' 99:99');
 
 		$('.result-focus').change(function(e) {
 			var status = false;
@@ -1064,7 +1065,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			$("#isSampleRejected").trigger('change');
 			// just triggering sample collection date is enough,
 			// it will automatically do everything that labId and facilityId changes will do
-			$("#sampleCollectionDate").trigger('change');
+			//$("#sampleCollectionDate").trigger('change');
 			__clone = $(".labSectionBody").clone();
 			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 			resultValue = $("#vlResult").val();

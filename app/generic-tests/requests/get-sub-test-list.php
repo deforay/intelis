@@ -19,9 +19,11 @@ $testTypeResult = $db->rawQueryOne($testTypeQuery, [$_POST['testTypeId']]);
 $testResultsAttribute = json_decode((string) $testTypeResult['test_results_config'], true);
 $options = ""; $n = count($testResultsAttribute['sub_test_name']);
 if(isset($testResultsAttribute['sub_test_name']) && count($testResultsAttribute['sub_test_name']) > 0){
-    foreach($testResultsAttribute['sub_test_name'] as $key => $testName){
-        $selected = (in_array($testName, $subTestSArray) || ($n == 1))? "selected='selected'":"";
-        $options .= '<option value="'.$testName.'" '.$selected.'>'.$testName.'</option>';
+    if($testResultsAttribute['sub_test_name']!=""){
+        foreach($testResultsAttribute['sub_test_name'] as $key => $testName){
+            $selected = (in_array($testName, $subTestSArray) || ($n == 1))? "selected='selected'":"";
+            $options .= '<option value="'.$testName.'" '.$selected.'>'.$testName.'</option>';
+        }
     }
 }
 echo $options;

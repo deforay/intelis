@@ -510,7 +510,7 @@ class VlService extends AbstractTestService
                     $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                 }
 
-                if(isset($params['freezer']) && $params['freezer']!=""){
+                if(isset($params['freezer']) && $params['freezer'] != "" && $params['freezer'] != null){
 
                     $countChar = substr_count($params['freezer'],"-");
                     
