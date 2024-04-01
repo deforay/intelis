@@ -83,7 +83,7 @@ try {
             $row = 1;
             if (($handle = fopen(realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName), "r")) !== false) {
                 while (($sheetData = fgetcsv($handle, 10000, "\t")) !== false) {
-                    $num = count($sheetData);
+                    //$num = count($sheetData);
                     $row++;
                     if ($row < $skip) {
                         if (in_array(strtoupper($sheetData[0]), ['PLATE NUMBER', 'PLATE NAME'])) {

@@ -438,6 +438,7 @@ if (!empty($requestResult)) {
           $html .= '</tr></table>';
 
           if (!empty($genericTestInfo) && $showHideTable == 'yes') {
+               $w = 25;
                if(isset($result['sub_tests']) && !empty($result['sub_tests'])){
                     $titleTest = "Range";
                }else{
@@ -446,10 +447,10 @@ if (!empty($requestResult)) {
                /* Test Result Section */
                $innerHtml .= '<table border="0" style="padding:5px;">';
                $innerHtml .= '<tr>
-                    <th align="left" style="width:25%;line-height:15px;font-size:11px;font-weight:bold;border-right-color:white;border-bottom-color:black;border-top-color:black;">Test Name</th>
-                    <th align="left" style="width:25%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-right-color:white;border-bottom-color:black;border-top-color:black;">Result</th>';
-                    $innerHtml .= '<th align="left" style="width:25%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-right-color:white;border-bottom-color:black;border-top-color:black;">'.$titleTest.'</th>';
-                    $innerHtml .= '<th align="left" style="width:25%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-bottom-color:black;border-top-color:black;">Unit</th>
+                    <th align="left" style="width:'.$w.'%;line-height:15px;font-size:11px;font-weight:bold;border-right-color:white;border-bottom-color:black;border-top-color:black;">Test Name</th>
+                    <th align="left" style="width:'.$w.'%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-right-color:white;border-bottom-color:black;border-top-color:black;">Result</th>';
+                    $innerHtml .= '<th align="left" style="width:'.$w.'%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-right-color:white;border-bottom-color:black;border-top-color:black;">'.$titleTest.'</th>';
+                    $innerHtml .= '<th align="left" style="width:'.$w.'%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-bottom-color:black;border-top-color:black;">Unit</th>
                </tr>';
                if(isset($result['sub_tests']) && !empty($result['sub_tests'])){
                     $subTestsList = explode("##", $result['sub_tests']);

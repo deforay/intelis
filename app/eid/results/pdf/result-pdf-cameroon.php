@@ -3,11 +3,34 @@
 // this file is included in eid/results/generate-result-pdf.php
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\ResultPdfService;
 use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\EIDResultPDFHelper;
 
 
+/** @var ResultPdfService $resultPdfService */
+$resultPdfService = ContainerRegistry::get(ResultPdfService::class);
+
+
 if (!empty($result)) {
+
+    $displayPageNoInFooter = true;
+    $displaySignatureTable = true;
+    $reportTopMargin = 14;
+
+    if (!empty($result['vl_facility_attributes'])) {
+        $vlFacilityAttributes = json_decode($result['vl_facility_attributes'], true);
+        if (!empty($vlFacilityAttributes) && isset($vlFacilityAttributes['display_page_number_in_footer'])) {
+            $displayPageNoInFooter = ($vlFacilityAttributes['display_page_number_in_footer']) == 'yes';
+        }
+        if (!empty($vlFacilityAttributes) && isset($vlFacilityAttributes['display_signature_table'])) {
+            $displaySignatureTable = ($vlFacilityAttributes['display_signature_table']) == 'yes';
+        }
+        if (!empty($vlFacilityAttributes) && isset($vlFacilityAttributes['report_top_margin'])) {
+            $reportTopMargin = (isset($vlFacilityAttributes['report_top_margin'])) ? $vlFacilityAttributes['report_top_margin'] : $reportTopMargin;
+        }
+    }
 
     $currentTime = DateUtility::getCurrentDateTime();
     $_SESSION['aliasPage'] = $page;
@@ -22,15 +45,21 @@ if (!empty($result)) {
             break;
         }
     }
-    // create new PDF document
-    $pdf = new EIDResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-    if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
-        $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
-    } else {
-        $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
-    }
 
-    $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'EARLY INFANT DIAGNOSIS PATIENT REPORT');
+    $reportTemplatePath = $resultPdfService->getReportTemplate($result['lab_id']);
+
+    // create new PDF document
+    $pdf = new EIDResultPDFHelper(orientation: PDF_PAGE_ORIENTATION, unit: PDF_UNIT, format: PDF_PAGE_FORMAT, unicode: true, encoding: 'UTF-8', diskCache: false, pdfTemplatePath: $reportTemplatePath, enableFooter: $displayPageNoInFooter);
+
+    if (empty($reportTemplatePath)) {
+        if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+            $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
+        } else {
+            $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
+        }
+
+        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'EARLY INFANT DIAGNOSIS PATIENT REPORT');
+    }
     // set document information
     $pdf->SetCreator('VLSM');
     $pdf->SetTitle('Early Infant Diagnosis Patient Report');
@@ -48,7 +77,7 @@ if (!empty($result)) {
     $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
     // set margins
-    $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 14, PDF_MARGIN_RIGHT);
+    $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + $reportTopMargin, PDF_MARGIN_RIGHT);
     $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
     $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -142,7 +171,7 @@ if (!empty($result)) {
     if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
         $resultApprovedBy = ($result['approvedBy']);
     } else {
-        if(!empty($result['defaultApprovedBy'])){
+        if (!empty($result['defaultApprovedBy'])) {
             $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
             if ($approvedByRes) {
                 $resultApprovedBy = $approvedByRes['user_name'];
@@ -156,7 +185,7 @@ if (!empty($result)) {
     if (!empty($result['reviewedBy'])) {
         $reviewedBy = $result['reviewedBy'];
     } else {
-        if(!empty($result['defaultReviewedBy'])){
+        if (!empty($result['defaultReviewedBy'])) {
             $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
             if ($reviewedByRes) {
                 $reviewedBy = $reviewedByRes['user_name'];
@@ -409,7 +438,7 @@ if (!empty($result)) {
     $html .= '<td colspan="3" style="line-height:22px;"></td>';
     $html .= '</tr>';
 
-    if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
+    if (!empty($testedBy) && !empty($result['sample_tested_datetime']) && $displaySignatureTable) {
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
@@ -427,7 +456,7 @@ if (!empty($result)) {
         $html .= '</tr>';
     }
 
-    if (!empty($reviewedBy)) {
+    if (!empty($reviewedBy) && $displaySignatureTable) {
 
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:22px;"></td>';
@@ -449,7 +478,7 @@ if (!empty($result)) {
     }
 
 
-    if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
+    if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime']) && $displaySignatureTable) {
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:22px;"></td>';
         $html .= '</tr>';
@@ -478,7 +507,7 @@ if (!empty($result)) {
     // $html .= '</tr>';
 
 
-    if (!empty($revisedBy)) {
+    if (!empty($revisedBy) && $displaySignatureTable) {
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:22px;"></td>';
         $html .= '</tr>';

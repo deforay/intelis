@@ -117,12 +117,11 @@ try {
     }
 
     $interpretationResult = null;
-    /* if(isset($_POST['resultType']) && isset($_POST['testType']) && !empty($_POST['resultType']) && !empty($_POST['testType'])){
-        $interpretationResult = $genericTestsService->getInterpretationResults($_POST['testType'], $_POST['result']);
-    } */
-    /* if (!empty($_POST['resultInterpretation'])) {
-        $interpretationResult = $_POST['resultInterpretation'];
-    } */
+    if (!empty($_POST['resultInterpretation'])) {
+         foreach($_POST['resultInterpretation'] as $row){
+              $interpretationResult = $row;
+         }
+    }
 
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
@@ -188,7 +187,9 @@ try {
                             'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
                         );
                         $db->insert('generic_test_results', $testData);
-                        $finalResult = $_POST['finalResult'][$subTestName];
+                        if(isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])){
+                            $finalResult = $_POST['finalResult'][$subTestName];
+                       }
                     }
                 }
             }

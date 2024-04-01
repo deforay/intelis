@@ -78,6 +78,12 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
         }
         $response['vlRejectionReasons'] = $general->fetchDataFromTable('r_vl_sample_rejection_reasons', $condition);
 
+        $condition = null;
+        if (!empty($data['vlTestReasonsLastModified'])) {
+            $condition = "updated_datetime > '" . $data['vlTestReasonsLastModified'] . "'";
+        }
+        $response['vlTestReasons'] = $general->fetchDataFromTable('r_vl_test_reasons', $condition);
+
 
         $condition = null;
         if (!empty($data['vlSampleTypesLastModified'])) {
@@ -341,6 +347,6 @@ $sql = 'UPDATE facility_details
             SET facility_attributes
                 = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastHeartBeat", ?)
             WHERE facility_id = ?';
-$db->rawQuery($sql, array(DateUtility::getCurrentDateTime(), $labId));
+$db->rawQuery($sql, [DateUtility::getCurrentDateTime(), $labId]);
 
 echo $apiService->sendJsonResponse($payload);

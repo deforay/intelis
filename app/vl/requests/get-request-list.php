@@ -20,6 +20,7 @@ try {
 
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
+     $formId = $general->getGlobalConfig('vl_form');
 
      /** @var FacilitiesService $facilitiesService */
      $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -97,6 +98,7 @@ try {
                vl.data_sync,
                vl.is_encrypted,
                vl.form_attributes,
+               vl.health_insurance_code,
                s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
@@ -250,9 +252,6 @@ try {
      if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
           $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
      }
-     if (empty($_POST['recencySamples']) || $_POST['recencySamples'] === 'no') {
-          $sWhere[] = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
-     }
      if (!empty($_POST['rejectedSamples']) && $_POST['rejectedSamples'] == 'no') {
           $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";
      }
@@ -342,6 +341,9 @@ try {
           $row[] = $aRow['facility_state'];
           $row[] = $aRow['facility_district'];
           $row[] = $aRow['sample_name'];
+          if ($formId == COUNTRY\CAMEROON) {
+               $row[] = $aRow['health_insurance_code'];
+          }
           $row[] = $aRow['result'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
           $row[] = $aRow['status_name'];

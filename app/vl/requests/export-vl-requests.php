@@ -120,6 +120,9 @@ foreach ($resultSet as $aRow) {
 	}
 	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 	$row[] = $aRow['sample_name'] ?? null;
+	if ($formId == COUNTRY\CAMEROON) {
+		$row[] = $aRow['health_insurance_code'] ?? null;
+	}
 	$row[] = DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date'] ?? '');
 	$row[] = $aRow['current_regimen'];
 	$row[] = DateUtility::humanReadableDateFormat($aRow['date_of_initiation_of_current_regimen'] ?? '');

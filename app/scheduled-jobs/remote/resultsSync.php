@@ -5,12 +5,11 @@ if (php_sapi_name() == 'cli') {
 }
 
 //this file gets the data from the local database and updates the remote database
-
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
@@ -241,8 +240,8 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', count($hepLabResult), 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
-      // CD4 TEST RESULTS
-      if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
+    // CD4 TEST RESULTS
+    if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
         $cd4Query = "SELECT cd4.*, a.user_name as 'approved_by_name'
             FROM `form_cd4` AS cd4
             LEFT JOIN `user_details` AS a ON cd4.result_approved_by = a.user_id
@@ -277,7 +276,7 @@ try {
     }
 
     /* Lab Storage Sync Start */
-    $url = $remoteUrl . '/remote/remote/system-reference-sync.php';
+    $url = $remoteUrl . '/remote/remote/system-metadata-sync.php';
 
     $payload = [
         "labId" => $labId,

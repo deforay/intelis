@@ -148,6 +148,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
     $payload['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
     $payload['vlRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
+    $payload['vlTestReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_test_reasons');
     $payload['vlSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_type');
     $payload['vlFailureReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_test_failure_reasons');
     $payload['vlResultsLastModified'] = $general->getLastModifiedDateTime('r_vl_results');
@@ -165,6 +166,10 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
         'vlRejectionReasons' => array(
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_vl_sample_rejection_reasons',
+        ),
+        'vlTestReasons' => array(
+            'primaryKey' => 'test_reason_id',
+            'tableName' => 'r_vl_test_reasons',
         ),
         'vlFailureReasons' => array(
             'primaryKey' => 'failure_id',

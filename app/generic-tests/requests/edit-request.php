@@ -374,6 +374,9 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	#sampleCode {
 		background-color: #fff;
 	}
+	select#subTestResult {
+		display: none !important;
+	}
 </style>
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -1414,7 +1417,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			$('.femaleSection').show();
 		}
 	});
-	$("#sampleTestingDateAtLab").change(function() {
+	$("#sampleTestingDateTimeAtLab").change(function() {
 		if ($(this).val() != "") {
 			$(".result-fields").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
@@ -1433,7 +1436,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult').css('display', 'none');
-			$("#sampleTestingDateAtLab, #vlResult").val("");
+			$("#sampleTestingDateTimeAtLab, #vlResult").val("");
 			$(".result-fields").val("");
 			$(".result-fields").attr("disabled", true);
 			$(".result-fields").removeClass("isRequired");
@@ -1583,10 +1586,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
 					if ($('#resultType').val() == 'qualitative') {
-						$('.final-result-row').attr('colspan', 4)
+						// $('.final-result-row').attr('colspan', 4)
 						$('.testResultUnit').hide();
 					} else {
-						$('.final-result-row').attr('colspan', 5)
+						// $('.final-result-row').attr('colspan', 5)
 						$('.testResultUnit').show();
 					}
 				});
@@ -1666,10 +1669,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
 					if ($('#resultType').val() == 'qualitative') {
-						$('.final-result-row').attr('colspan', 4)
+						// $('.final-result-row').attr('colspan', 4)
 						$('.testResultUnit').hide();
 					} else {
-						$('.final-result-row').attr('colspan', 5)
+						// $('.final-result-row').attr('colspan', 5)
 						$('.testResultUnit').show();
 					}
 				});
@@ -1691,7 +1694,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 						placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
 						width: '100%'
 					});
-					var length = $('#mySelectList > option').length;
+					var length = $('#subTestResult > option').length;
 					if(length > 1){
 						$('.subTestFields').show();
 					}else{
@@ -1727,10 +1730,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                     <td><select class="form-control result-select" name="testResult[${subTest}][]" id="testResult${row}${testCounter}" title="Enter result">${options}</select></td>
                     <td class="testResultUnit">
                     <select class="form-control resultUnit" id="testResultUnit${row}${testCounter}" name="testResultUnit[${subTest}][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
-               <option value="">--Select--</option>
-               <?php foreach ($testResultUnits as $key => $unit) { ?>
-                    <option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
-               <?php } ?>
+						<option value="">--Select--</option>
+						<?php foreach ($testResultUnits as $key => $unit) { ?>
+								<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
+						<?php } ?>
                     </select>
                     </td>
                     <td style="vertical-align:middle;text-align: center;width:100px;">
@@ -1774,10 +1777,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			$('.kitlabels').show();
 		}
 		if ($('#resultType').val() == 'qualitative') {
-			$('.final-result-row').attr('colspan', 4)
+			// $('.final-result-row').attr('colspan', 4)
 			$('.testResultUnit').hide();
 		} else {
-			$('.final-result-row').attr('colspan', 5)
+			// $('.final-result-row').attr('colspan', 5)
 			$('.testResultUnit').show();
 		}
 	}

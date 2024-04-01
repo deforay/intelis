@@ -157,8 +157,14 @@
             });
 
             $('#sampleReceivedDate').on('change', function() {
-                $('#sampleTestedDateTime, #sampleTestingDateAtLab').val('');
+
                 var selectedDate = $(this).datetimepicker('getDate');
+                var currentTestingDateAtLab = $('#sampleTestingDateAtLab').datetimepicker('getDate');
+
+                if (selectedDate > currentTestingDateAtLab) {
+                    $('#sampleTestingDateAtLab').val('');
+                }
+                $('#sampleTestedDateTime').val('');
                 $('#sampleTestedDateTime, #sampleTestingDateAtLab').datetimepicker('option', 'minDate', selectedDate);
             });
         }
@@ -181,8 +187,13 @@
 
             $('#sampleTestedDateTime, #sampleTestingDateAtLab').on('change', function() {
                 var selectedDate = $(this).datetimepicker('getDate');
+                var currentresultDispatchedOn = $('#resultDispatchedOn').datetimepicker('getDate');
+
+                if (selectedDate > currentresultDispatchedOn) {
+                    $('#resultDispatchedOn').val('');
+                }
                 $('#approvedOnDateTime').val('');
-                $('#resultDispatchedOn').val('');
+
                 $('#approvedOnDateTime').datetimepicker('option', 'minDate', selectedDate);
                 $('#resultDispatchedOn').datetimepicker('option', 'minDate', selectedDate);
             });
@@ -290,8 +301,8 @@
     }
 
     function checkSampleTestingDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val().trim();
-        var sampleTestingDate = $("#sampleTestingDateAtLab").val().trim();
+        var sampleCollectionDate = $("#sampleCollectionDate").val();
+        var sampleTestingDate = $("#sampleTestingDateAtLab").val();
 
         if (sampleCollectionDate && sampleTestingDate) {
             var date1 = new Date(sampleCollectionDate);

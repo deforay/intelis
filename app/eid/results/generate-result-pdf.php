@@ -58,6 +58,7 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
                     l.facility_name as labName,
                     l.report_format as reportFormat,
                     l.facility_logo as facilityLogo,
+                    l.facility_attributes as vl_facility_attributes,
                     rip.i_partner_name,
                     rst.*,
                     rsrr.rejection_reason_name ,

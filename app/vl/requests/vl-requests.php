@@ -46,6 +46,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$formId = $general->getGlobalConfig('vl_form');
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -445,7 +446,7 @@ foreach ($srcResults as $list) {
 										<?php echo _translate("Include Recency Samples"); ?>&nbsp;:
 									</strong></td>
 								<td>
-									<select name="recencySamples" id="recencySamples" class="form-control" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
+									<select name="recencySamples" id="recencySamples" class="form-control" title="<?php echo _translate('Include Recency Samples'); ?>" style="width:100%;">
 										<option value="yes">
 											<?php echo _translate("Yes"); ?>
 										</option>
@@ -487,7 +488,7 @@ foreach ($srcResults as $list) {
 									</a>
 								<?php }
 								?>
-								
+
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span>
 										<?php echo _translate("Manage Columns"); ?>
 									</span></button>
@@ -505,13 +506,7 @@ foreach ($srcResults as $list) {
 					<table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
-								<?php
-								if (_isAllowed("/vl/requests/vl-requests.php")) { ?>
-									<a href="/vl/requests/upload-storage.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
-										<?php echo _translate("Storage Bulk Upload"); ?>
-									</a>
-								<?php }
-								?>
+
 								<?php
 								if (_isAllowed("/vl/requests/addVlRequest.php") && !$hidesrcofreq) { ?>
 									<a href="/vl/requests/addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
@@ -519,7 +514,15 @@ foreach ($srcResults as $list) {
 									</a>
 								<?php }
 								?>
-								
+
+								<?php
+								if (_isAllowed("/vl/requests/vl-requests.php")) { ?>
+									<a href="/vl/requests/upload-storage.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+										<?php echo _translate("Storage Bulk Upload"); ?>
+									</a>
+								<?php }
+								?>
+
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span>
 										<?php echo _translate("Manage Columns"); ?>
 									</span></button>
@@ -572,6 +575,9 @@ foreach ($srcResults as $list) {
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label>
 								</div>
 								<div class="col-md-3">
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
+								</div>
+								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
 								</div>
 								<div class="col-md-3">
@@ -583,6 +589,11 @@ foreach ($srcResults as $list) {
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label>
 								</div>
+								<?php if ($formId == COUNTRY\CAMEROON) { ?>
+									<div class="col-md-3">
+										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="health_insurance_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Health Insurance Code"); ?></label>
+									</div>
+								<?php } ?>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
 								</div>
@@ -636,6 +647,11 @@ foreach ($srcResults as $list) {
 									<th>
 										<?php echo _translate("Sample Type"); ?>
 									</th>
+									<?php if ($formId == COUNTRY\CAMEROON) { ?>
+										<th>
+											<?php echo _translate("Health Insurance Code"); ?>
+										</th>
+									<?php } ?>
 									<th>
 										<?php echo _translate("Result"); ?>
 									</th>
@@ -888,7 +904,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				{
 					"sClass": "center"
 				},
-				{
+				<?php
+				if ($formId == COUNTRY\CAMEROON) {
+					echo '{
+						"sClass": "center",
+						"bVisible": false
+					},';
+				}
+				?> {
 					"sClass": "center"
 				},
 				{
@@ -1294,7 +1317,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			$("#breastFeeding").attr("disabled", false);
 		} else {
 			$('select#patientPregnant').val('');
-        	$('select#breastFeeding').val('');
+			$('select#breastFeeding').val('');
 			$("#patientPregnant").attr("disabled", true);
 			$("#breastFeeding").attr("disabled", true);
 		}

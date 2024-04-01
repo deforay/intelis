@@ -1053,147 +1053,147 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
  */
 
 
- $request = [];
- if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
- 
-     $url = $remoteUrl . '/remote/remote/cd4-test-requests.php';
-     $payload = array(
-         'labId' => $labId,
-         'module' => 'cd4',
-         "Key" => "vlsm-lab-data--",
-     );
-     if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "cd4" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
-         $payload['manifestCode'] = $manifestCode;
-     }
-     $columnList = [];
- 
-     $jsonResponse = $apiService->post($url, $payload);
- 
-     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
- 
-         $options = [
-             'decoder' => new ExtJsonDecoder(true)
-         ];
-         $parsedData = Items::fromString($jsonResponse, $options);
- 
-         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+$request = [];
+if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
+
+    $url = $remoteUrl . '/remote/remote/cd4-test-requests.php';
+    $payload = array(
+        'labId' => $labId,
+        'module' => 'cd4',
+        "Key" => "vlsm-lab-data--",
+    );
+    if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "cd4" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
+        $payload['manifestCode'] = $manifestCode;
+    }
+    $columnList = [];
+
+    $jsonResponse = $apiService->post($url, $payload);
+
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+
+        $options = [
+            'decoder' => new ExtJsonDecoder(true)
+        ];
+        $parsedData = Items::fromString($jsonResponse, $options);
+
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
                              WHERE TABLE_SCHEMA = ? AND table_name='form_cd4'";
-         $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-         $columnList = array_map('current', $allColResult);
- 
-         $removeKeys = array(
-             'cd4_id',
-             'sample_batch_id',
+        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
+        $columnList = array_map('current', $allColResult);
+
+        $removeKeys = array(
+            'cd4_id',
+            'sample_batch_id',
             // 'result_value_log',
             // 'result_value_absolute',
             // 'result_value_absolute_decimal',
             // 'result_value_text',
-             'cd4_result',
-             'sample_tested_datetime',
-             'sample_received_at_lab_datetime',
-             'result_dispatched_datetime',
-             'is_sample_rejected',
-             'reason_for_sample_rejection',
-             'result_approved_by',
-             'result_approved_datetime',
-             //'request_created_datetime',
-             //'request_created_by',
-             //'last_modified_by',
-             'data_sync'
-         );
- 
-         $columnList = array_diff($columnList, $removeKeys);
-         $counter = 0;
-         foreach ($parsedData as $key => $remoteData) {
-             $counter++;
-             $request = [];
-             foreach ($columnList as $colName) {
-                 if (isset($remoteData[$colName])) {
-                     $request[$colName] = $remoteData[$colName];
-                 } else {
-                     $request[$colName] = null;
-                 }
-             }
- 
-             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
- 
-             $existingSampleQuery = "SELECT cd4_id, sample_code
+            'cd4_result',
+            'sample_tested_datetime',
+            'sample_received_at_lab_datetime',
+            'result_dispatched_datetime',
+            'is_sample_rejected',
+            'reason_for_sample_rejection',
+            'result_approved_by',
+            'result_approved_datetime',
+            //'request_created_datetime',
+            //'request_created_by',
+            //'last_modified_by',
+            'data_sync'
+        );
+
+        $columnList = array_diff($columnList, $removeKeys);
+        $counter = 0;
+        foreach ($parsedData as $key => $remoteData) {
+            $counter++;
+            $request = [];
+            foreach ($columnList as $colName) {
+                if (isset($remoteData[$colName])) {
+                    $request[$colName] = $remoteData[$colName];
+                } else {
+                    $request[$colName] = null;
+                }
+            }
+
+            $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+
+            $existingSampleQuery = "SELECT cd4_id, sample_code
                              FROM form_cd4 AS vl WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-             $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-             if (!empty($existingSampleResult)) {
- 
-                 $removeMoreKeys = [
-                     'sample_code',
-                     'sample_code_key',
-                     'sample_code_format',
-                     'sample_batch_id',
-                     'lab_id',
-                     'cd4_test_platform',
-                     'sample_received_at_hub_datetime',
-                     'sample_received_at_lab_datetime',
-                     'sample_tested_datetime',
-                     'result_dispatched_datetime',
-                     'is_sample_rejected',
-                     'reason_for_sample_rejection',
-                     'rejection_on',
+            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+            if (!empty($existingSampleResult)) {
+
+                $removeMoreKeys = [
+                    'sample_code',
+                    'sample_code_key',
+                    'sample_code_format',
+                    'sample_batch_id',
+                    'lab_id',
+                    'cd4_test_platform',
+                    'sample_received_at_hub_datetime',
+                    'sample_received_at_lab_datetime',
+                    'sample_tested_datetime',
+                    'result_dispatched_datetime',
+                    'is_sample_rejected',
+                    'reason_for_sample_rejection',
+                    'rejection_on',
                     // 'result_value_absolute',
                     // 'result_value_absolute_decimal',
-                   //  'result_value_text',
-                     'cd4_result',
+                    //  'result_value_text',
+                    'cd4_result',
                     // 'result_value_log',
                     // 'result_value_hiv_detection',
-                     //'reason_for_failure',
-                     'result_reviewed_by',
-                     'result_reviewed_datetime',
-                     'cd4_focal_person',
-                     'cd4_focal_person_phone_number',
-                     'tested_by',
-                     'result_approved_by',
-                     'result_approved_datetime',
-                     'lab_tech_comments',
-                     'reason_for_result_changes',
-                     'revised_by',
-                     'revised_on',
-                     'last_modified_by',
-                     'last_modified_datetime',
-                     'manual_result_entry',
-                     'result_status',
-                     'data_sync',
-                     'result_printed_datetime'
-                 ];
- 
-                 $request = array_diff_key($request, array_flip($removeMoreKeys));
- 
-                 $formAttributes = $general->jsonToSetString(
-                     $request['form_attributes'],
-                     'form_attributes',
-                     ['syncTransactionId' => $transactionId]
-                 );
-                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
- 
-                 $db->where('cd4_id', $existingSampleResult['cd4_id']);
-                 $id = $db->update('form_cd4', $request);
-             } else {
-                 $request['source_of_request'] = 'vlsts';
-                 if (!empty($request['sample_collection_date'])) {
- 
-                     $request['source_of_request'] = "vlsts";
-                     $formAttributes = $general->jsonToSetString(
-                         $request['form_attributes'],
-                         'form_attributes',
-                         ['syncTransactionId' => $transactionId]
-                     );
-                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
-                     $request['data_sync'] = 0;
-                     $id = $db->insert('form_cd4', $request);
-                 }
-             }
-         }
-         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
-     }
- }
- 
+                    //'reason_for_failure',
+                    'result_reviewed_by',
+                    'result_reviewed_datetime',
+                    'cd4_focal_person',
+                    'cd4_focal_person_phone_number',
+                    'tested_by',
+                    'result_approved_by',
+                    'result_approved_datetime',
+                    'lab_tech_comments',
+                    'reason_for_result_changes',
+                    'revised_by',
+                    'revised_on',
+                    'last_modified_by',
+                    'last_modified_datetime',
+                    'manual_result_entry',
+                    'result_status',
+                    'data_sync',
+                    'result_printed_datetime'
+                ];
+
+                $request = array_diff_key($request, array_flip($removeMoreKeys));
+
+                $formAttributes = $general->jsonToSetString(
+                    $request['form_attributes'],
+                    'form_attributes',
+                    ['syncTransactionId' => $transactionId]
+                );
+                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+
+                $db->where('cd4_id', $existingSampleResult['cd4_id']);
+                $id = $db->update('form_cd4', $request);
+            } else {
+                $request['source_of_request'] = 'vlsts';
+                if (!empty($request['sample_collection_date'])) {
+
+                    $request['source_of_request'] = "vlsts";
+                    $formAttributes = $general->jsonToSetString(
+                        $request['form_attributes'],
+                        'form_attributes',
+                        ['syncTransactionId' => $transactionId]
+                    );
+                    $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $request['data_sync'] = 0;
+                    $id = $db->insert('form_cd4', $request);
+                }
+            }
+        }
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
+    }
+}
+
 
 
 $instanceId = $general->getInstanceId();

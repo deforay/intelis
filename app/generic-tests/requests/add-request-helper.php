@@ -194,13 +194,12 @@ try {
     if (isset($_POST['treatmentIndication']) && $_POST['treatmentIndication'] == "Other") {
         $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
     }
-    // $interpretationResult = null;
-    /* if(isset($_POST['resultType']) && isset($_POST['testType']) && !empty($_POST['resultType']) && !empty($_POST['testType'])){
-        $interpretationResult = $genericTestsService->getInterpretationResults($_POST['testType'], $_POST['result']);
-    } */
-    /* if (!empty($_POST['resultInterpretation'])) {
-        $interpretationResult = $_POST['resultInterpretation'];
-    } */
+    $interpretationResult = null;
+    if (!empty($_POST['resultInterpretation'])) {
+         foreach($_POST['resultInterpretation'] as $row){
+              $interpretationResult = $row;
+         }
+    }
 
     if (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) {
         $_POST['subTestResult'] = implode("##", $_POST['subTestResult']);
@@ -247,7 +246,7 @@ try {
         'rejection_on' => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
         'result' => $_POST['result'] ?? null,
         // 'result_unit' => (isset($_POST['finalTestResultUnit']) && $_POST['finalTestResultUnit'] != "") ? implode("##",$_POST['finalTestResultUnit']) : null,
-        // 'final_result_interpretation' => $interpretationResult,
+        'final_result_interpretation' => $interpretationResult,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,

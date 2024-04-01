@@ -333,8 +333,36 @@ ALTER TABLE `lab_storage` ADD `data_sync` INT NOT NULL DEFAULT '0' AFTER `update
 ALTER TABLE `lab_storage` RENAME COLUMN `lab_storage_status` TO `storage_status`;
 ALTER TABLE `lab_storage` CHANGE `storage_id` `storage_id` CHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 
+-- Thana 26-Mar-2024
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`,`updated_on`, `updated_by`, `status`) VALUES ('Other Tests Table in Results Pdf', 'generic_tests_table_in_results_pdf', 'no', 'generic-tests', 'yes', '2024-03-26 20:15:07', NULL, 'active');
+
 -- Jeyabanu 27-Mar-2024
 UPDATE `s_app_menu` SET `inner_pages` = NULL WHERE `module` = 'generic-tests' AND `link` = '/generic-tests/requests/add-samples-from-manifest.php';
+
+-- Thana 29-Mar-2024
+UPDATE `s_app_menu` SET `inner_pages` = null WHERE `s_app_menu`.`link` = '/vl/program-management/vl-sample-status.php' AND `s_app_menu`.`module` = 'vl';
+
+-- Thana 01-Apr-2024
+TRUNCATE `r_vl_test_reasons;
+INSERT INTO `r_vl_test_reasons` (`test_reason_id`, `test_reason_name`, `parent_reason`, `test_reason_status`, `updated_datetime`, `data_sync`) VALUES
+(1, 'Routine', 0, 'active', '2023-09-22 14:50:40', 0),
+(2, 'Control Vl Testing', 0, 'active', '2023-09-22 14:50:40', 0),
+(3, 'Coinfection', 0, 'active', '2023-09-22 14:50:40', 0),
+(4, 'Recency', 0, 'active', '2023-09-22 14:50:40', 0),
+(5, 'Other', 0, 'active', '2023-09-22 14:50:40', 0),
+(6, '6 Months', 2, 'active', '2023-09-22 14:50:40', 0),
+(7, '12 Months', 2, 'active', '2023-09-22 14:50:40', 0),
+(8, '24 Months', 2, 'active', '2023-09-22 14:50:40', 0),
+(9, '36 Months(3 Years)', 2, 'active', '2023-09-22 14:50:40', 0),
+(10, '>= 4 years', 2, 'active', '2023-09-22 14:50:40', 0),
+(11, '3 months after a VL > 1000cp/ml', 2, 'active', '2023-09-22 14:50:40', 0),
+(12, 'Suspected Treatment Failure', 2, 'active', '2023-09-22 14:50:40', 0),
+(13, 'VL Pregnant Woman', 2, 'active', '2023-09-22 14:50:40', 0),
+(14, 'VL Breastfeeding woman', 2, 'active', '2023-09-22 14:50:40', 0),
+(15, 'Tuberculosis', 3, 'active', '2023-09-22 14:50:40', 0),
+(16, 'Viral Hepatitis', 3, 'active', '2023-09-22 14:50:40', 0);
+
+
 
 -- Jeyabanu 28-Mar-2024
 DELETE s1 FROM generic_test_sample_type_map s1
