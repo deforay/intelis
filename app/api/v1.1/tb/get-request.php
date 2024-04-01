@@ -89,12 +89,8 @@ try {
         vl.request_created_datetime             as requestedDate,
         vl.result_printed_datetime              as resultPrintedDate,
         vl.last_modified_datetime               as updatedOn,
-        u_d.user_name                           as reviewedBy,
         vl.lab_technician                       as labTechnician,
         vl.lab_reception_person                 as labReceptionPerson,
-        lt_u_d.user_name                        as labTechnicianName,
-        vl.tested_by                            as testedBy,
-        t_b.user_name                           as testedByName,
         rs.rejection_reason_name                as rejectionReason,
         vl.rejection_on                         as rejectionDate,
         vl.funding_source                       as fundingSource,
@@ -107,6 +103,15 @@ try {
         vl.revised_by                           as revisedBy,
         r_r_b.user_name                         as revisedByName,
         vl.revised_on                           as revisedOn,
+        vl.tested_by                            as testedBy,
+        t_b.user_name                           as testedByName,
+        vl.result_approved_by                   as approvedBy,
+        a_u_d.user_name                         as approvedByName,
+        vl.result_approved_datetime             as approvedOn,
+        u_d.user_name                           as reviewedBy,
+        u_d.user_name                           as reviewedByName,
+        vl.result_reviewed_datetime             as reviewedOn,
+        lt_u_d.user_name                        as labTechnicianName,
         vl.reason_for_changing                  as reasonFortbResultChanges
 
         FROM form_tb as vl

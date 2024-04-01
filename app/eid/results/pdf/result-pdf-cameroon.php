@@ -17,7 +17,7 @@ if (!empty($result)) {
 
     $displayPageNoInFooter = true;
     $displaySignatureTable = true;
-    $reportTopMargin = 17;
+    $reportTopMargin = 14;
 
     if (!empty($result['vl_facility_attributes'])) {
         $vlFacilityAttributes = json_decode($result['vl_facility_attributes'], true);
@@ -77,7 +77,7 @@ if (!empty($result)) {
     $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
     // set margins
-    $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 14, PDF_MARGIN_RIGHT);
+    $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + $reportTopMargin, PDF_MARGIN_RIGHT);
     $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
     $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -438,7 +438,7 @@ if (!empty($result)) {
     $html .= '<td colspan="3" style="line-height:22px;"></td>';
     $html .= '</tr>';
 
-    if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
+    if (!empty($testedBy) && !empty($result['sample_tested_datetime']) && $displaySignatureTable) {
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
@@ -456,7 +456,7 @@ if (!empty($result)) {
         $html .= '</tr>';
     }
 
-    if (!empty($reviewedBy)) {
+    if (!empty($reviewedBy) && $displaySignatureTable) {
 
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:22px;"></td>';
@@ -478,7 +478,7 @@ if (!empty($result)) {
     }
 
 
-    if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
+    if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime']) && $displaySignatureTable) {
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:22px;"></td>';
         $html .= '</tr>';
@@ -507,7 +507,7 @@ if (!empty($result)) {
     // $html .= '</tr>';
 
 
-    if (!empty($revisedBy)) {
+    if (!empty($revisedBy) && $displaySignatureTable) {
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:22px;"></td>';
         $html .= '</tr>';
