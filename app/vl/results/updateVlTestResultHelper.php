@@ -182,7 +182,7 @@ try {
         'qc_tech_sign' => $_POST['qcTechSign'] ?? null,
     );
 
-    if(isset($_POST['freezer']) && $_POST['freezer']!=""){
+    if(isset($_POST['freezer']) && $_POST['freezer']!="" && $_POST['freezer']!=null){
         $countChar = substr_count($_POST['freezer'],"-");
                     
         if(isset($countChar) && $countChar > 2) {
