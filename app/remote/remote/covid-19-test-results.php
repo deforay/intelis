@@ -46,13 +46,8 @@ try {
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_SCHEMA = ? AND table_name=?";
-        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db'], 'form_covid19']);
-        $columnNames = array_column($allColResult, 'COLUMN_NAME');
-
         // Create an array with all column names set to null
-        $emptyLabArray = array_fill_keys($columnNames, null);
+        $emptyLabArray = $general->getTableFieldsAsArray('form_covid19');
 
         //remove fields that we DO NOT NEED here
         $unwantedColumns = [

@@ -34,22 +34,7 @@ try {
     $request = AppRegistry::get('request');
     $jsonResponse = $apiService->getJsonFromRequest($request);
 
-
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_SCHEMA = ? AND table_name= ?";
-    $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db'], 'lab_storage']);
-    $columnNames = array_column($allColResult, 'COLUMN_NAME');
-
-    // Create an array with all column names set to null
-    $emptyLabArray = array_fill_keys($columnNames, null);
-
-    //remove unwanted columns
-    $unwantedColumns = [
-        'storage_id',
-        'updated_datetime'
-    ];
-
-    $emptyLabArray = MiscUtility::removeFromAssociativeArray($emptyLabArray, $unwantedColumns);
+    $emptyLabArray = $general->getTableFieldsAsArray('lab_storage');
 
     $transactionId = $general->generateUUID();
     $storageId = [];
@@ -74,30 +59,27 @@ try {
             $counter++;
             // Overwrite the values in $emptyLabArray with the values in $resultRow
             $labStorageData = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
-            $labStorageData['updated_datetime'] = DateUtility::getCurrentDateTime();
 
-            $primaryKey = 'storage_id';
+            $primaryKey = $checkColumn = 'storage_id';
             $tableName = 'lab_storage';
             try {
-                // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
-                if (!empty($labStorageData['storage_code'])) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE storage_code=?";
-                    $sResult = $db->rawQueryOne($sQuery, [$labStorageData['storage_code']]);
-                } 
+                if (!empty($labStorageData[$checkColumn])) {
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE $checkColumn =?";
+                    $sResult = $db->rawQueryOne($sQuery, [$labStorageData[$checkColumn]]);
+                }
                 if (!empty($sResult)) {
                     $db->where($primaryKey, $sResult[$primaryKey]);
                     $id = $db->update($tableName, $labStorageData);
                 } else {
-                    //$db->onDuplicate(array_keys($labStorageData), $primaryKey);
                     $id = $db->insert($tableName, $labStorageData);
                 }
             } catch (Throwable $e) {
 
-                //if ($db->getLastErrno() > 0) {
-                error_log($db->getLastErrno());
-                error_log($db->getLastError());
-                error_log($db->getLastQuery());
-                //}
+                if (!empty($db->getLastError())) {
+                    error_log($db->getLastErrno());
+                    error_log($db->getLastError());
+                    error_log($db->getLastQuery());
+                }
                 LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                 continue;
             }
@@ -116,11 +98,11 @@ try {
 
     $payload = json_encode([]);
 
-    //if ($db->getLastErrno() > 0) {
-    error_log('Error in system-reference-sync.php in remote : ' . $db->getLastErrno());
-    error_log('Error in system-reference-sync.php in remote : ' . $db->getLastError());
-    error_log('Error in system-reference-sync.php in remote : ' . $db->getLastQuery());
-    //}
+    if (!empty($db->getLastError())) {
+        error_log('Error in system-metadata-sync.php in remote : ' . $db->getLastErrno());
+        error_log('Error in system-metadata-sync.php in remote : ' . $db->getLastError());
+        error_log('Error in system-metadata-sync.php in remote : ' . $db->getLastQuery());
+    }
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
 

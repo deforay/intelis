@@ -5,12 +5,11 @@ if (php_sapi_name() == 'cli') {
 }
 
 //this file gets the data from the local database and updates the remote database
-
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
@@ -277,7 +276,7 @@ try {
     }
 
     /* Lab Storage Sync Start */
-    $url = $remoteUrl . '/remote/remote/system-reference-sync.php';
+    $url = $remoteUrl . '/remote/remote/system-metadata-sync.php';
 
     $payload = [
         "labId" => $labId,
