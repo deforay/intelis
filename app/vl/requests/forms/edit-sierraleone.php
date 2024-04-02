@@ -450,7 +450,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 													<label for="">How long has this Patient been on treatment?<span class="mandatory">*</span></label>
 													<select class="form-control isRequired" id="treatmentDuration" name="treatmentDuration" title="Please choose treatment duration" style="width:100%;">
 														<option value=""> — Select-- </option>
-														<option value="6 Months - < 1 year" <?php echo ($vlQueryInfo['treatment_duration'] == '6 Months - < 1 year') ? "selected='selected'" : "" ?>> 6 Months - < 1 year </option>
+														<option value="6 Months - 1 year" <?php echo ($vlQueryInfo['treatment_duration'] == '6 Months - 1 year') ? "selected='selected'" : "" ?>> 6 Months - 1 year </option>
 														<option value="1 - 2 years" <?php echo ($vlQueryInfo['treatment_duration'] == '1 - 2 years') ? "selected='selected'" : "" ?>> 1 - 2 years </option>
 														<option value="2 - < 5 years" <?php echo ($vlQueryInfo['treatment_duration'] == '2 - < 5 years') ? "selected='selected'" : "" ?>> 2 - < 5 years </option>
 														<option value="5 years and above" <?php echo ($vlQueryInfo['treatment_duration'] == '5 years and above') ? "selected='selected'" : "" ?>> 5 years and above </option>
