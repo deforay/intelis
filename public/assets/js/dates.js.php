@@ -269,8 +269,8 @@
 
 
     function checkSampleReceivedDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val().trim();
-        var sampleReceivedDate = $("#sampleReceivedDate").val().trim();
+        var sampleCollectionDate = $("#sampleCollectionDate").val();
+        var sampleReceivedDate = $("#sampleReceivedDate").val();
 
         // Proceed only if both dates are provided
         if (sampleCollectionDate && sampleReceivedDate) {
@@ -286,8 +286,8 @@
     }
 
     function checkSampleReceivedAtHubDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val().trim();
-        var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val().trim();
+        var sampleCollectionDate = $("#sampleCollectionDate").val();
+        var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
 
         if (sampleCollectionDate && sampleReceivedAtHubOn) {
             var date1 = new Date(sampleCollectionDate);
