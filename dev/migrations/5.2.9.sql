@@ -356,3 +356,10 @@ ALTER TABLE generic_test_sample_type_map ADD UNIQUE INDEX idx_sample_type_id_tes
 DELETE s1 FROM generic_test_reason_map s1 JOIN ( SELECT test_reason_id, test_type_id, MIN(map_id) as min_id FROM generic_test_reason_map GROUP BY test_reason_id, test_type_id ) s2 ON s1.test_reason_id = s2.test_reason_id AND s1.test_type_id = s2.test_type_id WHERE s1.map_id > s2.min_id;
 
 ALTER TABLE generic_test_reason_map ADD UNIQUE INDEX idx_test_reason_id_test_type_id (test_reason_id, test_type_id);
+
+--Jeyabanu 02-Apr-2024
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privileges`.`privilege_name` = '/common/reference/lab-storage.php';
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privileges`.`privilege_name` = '/common/reference/add-lab-storage.php';
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privileges`.`privilege_name` = '/common/reference/edit-lab-storage.php';
+
+UPDATE `s_app_menu` SET `show_mode` = 'lis' WHERE `s_app_menu`.`display_text` = 'Lab Storage';
