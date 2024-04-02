@@ -14,10 +14,11 @@ $general = ContainerRegistry::get(CommonService::class);
 if (!empty($_GET['labId']) && !empty($_GET['version'])) {
     $labId = (int) $_GET['labId'];
     $version = $_GET['version'];
+    $source = $_GET['source'] ?? 'lis';
     $sql = 'UPDATE facility_details
-                SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.version", ?, "$.lastHeartBeat", ?)
+                SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.version", ?, "$.lastHeartBeat", ?"$.source", ?)
                 WHERE facility_id = ?';
-    $db->rawQuery($sql, [$version, DateUtility::getCurrentDateTime(), $labId]);
+    $db->rawQuery($sql, [$version, DateUtility::getCurrentDateTime(), $labId, $source]);
 }
 
 // return application Version
