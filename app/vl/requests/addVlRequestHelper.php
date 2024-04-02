@@ -68,7 +68,6 @@ try {
     if (empty($_POST) || ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
         $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
         header("Location:/vl/requests/addVlRequest.php");
-        die;
     }
 
     if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
@@ -254,7 +253,7 @@ try {
         'plasma_conservation_duration' => $_POST['durationOfConservation'] ?? null,
         'arv_adherance_percentage' => $_POST['arvAdherence'] ?? null,
         'reason_for_vl_testing' => $_POST['reasonForVLTesting'] ?? null,
-        'control_vl_testing_type' => $_POST['controlVlTestingType'] ?? null,
+        'control_vl_testing_type' => $_POST['controlVlTestingType'][$_POST['reasonForVLTesting']] ?? null,
         'coinfection_type' => $_POST['coinfectionType'] ?? null,
         'reason_for_vl_testing_other' => $_POST['newreasonForVLTesting'] ?? null,
         'last_viral_load_result' => $_POST['lastViralLoadResult'] ?? null,

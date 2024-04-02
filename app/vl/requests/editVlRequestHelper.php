@@ -244,7 +244,7 @@ try {
           'arv_adherance_percentage' => $_POST['arvAdherence'] ?? null,
           'reason_for_vl_testing' => $_POST['reasonForVLTesting'] ?? null,
           'reason_for_vl_testing_other' => $_POST['newreasonForVLTesting'] ?? null,
-          'control_vl_testing_type' => $_POST['controlVlTestingType'] ?? null,
+          'control_vl_testing_type' => $_POST['controlVlTestingType'][$_POST['reasonForVLTesting']] ?? null,
           'coinfection_type' => $_POST['coinfectionType'] ?? null,
           'last_viral_load_result' => $_POST['lastViralLoadResult'] ?? null,
           'last_viral_load_date' => DateUtility::isoDateFormat($_POST['lastViralLoadTestDate'] ?? ''),
@@ -396,7 +396,6 @@ try {
      } else {
           $vlData['is_encrypted'] = NULL;
      }
-
      $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vlData);
      if ($db->getLastErrno() > 0) {
