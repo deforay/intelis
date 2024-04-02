@@ -245,7 +245,7 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display VL Log Result', 'vl_display_page_no_in_footer', 'yes', 'vl', 'no', NULL, NULL, 'active');
 
 -- Amit 21-Feb-2024
-ALTER TABLE `form_eid` CHANGE COLUMN second_DBS_requested_reason second_dbs_requested_reason VARCHAR(256) NULL DEFAULT NULL
+ALTER TABLE `form_eid` CHANGE COLUMN second_DBS_requested_reason second_dbs_requested_reason VARCHAR(256) NULL DEFAULT NULL;
 ALTER TABLE `form_eid` ADD `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_dbs_requested`;
 ALTER TABLE `audit_form_eid`  ADD `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_dbs_requested`;
 

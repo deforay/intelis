@@ -516,7 +516,7 @@ foreach ($srcResults as $list) {
 								?>
 
 								<?php
-								if (_isAllowed("/vl/requests/vl-requests.php")) { ?>
+								if (_isAllowed("/vl/requests/vl-requests.php") && $formId == COUNTRY\DRC) { ?>
 									<a href="/vl/requests/upload-storage.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Storage Bulk Upload"); ?>
 									</a>
