@@ -42,8 +42,11 @@ if ($_SESSION['instance']['type'] == 'remoteuser') {
 $lResult = $facilitiesService->getTestingLabs('vl', true, true);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _translate("-- Select --"); ?>');
-
-
+$testReasonsResult = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = 0 AND test_reason_status like 'active' ", 'test_reason_name');
+$subTestReasons = [];
+foreach($testReasonsResult as $rid=>$row){
+     $subTestReasons[$rid] = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = ".$rid." AND test_reason_status like 'active' ", 'test_reason_name');
+}
 ?>
 <style>
      .table>tbody>tr>td {
@@ -426,92 +429,43 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
                                                        <h3 class="box-title"><?= _translate('Reason of Request of the Viral Load'); ?> <span class="mandatory">*</span></h3><small> <?= _translate('(Please pick one): (To be completed by clinician)'); ?></small>
                                                   </div>
                                                   <div class="box-body">
-                                                       <div class="row">
-                                                            <div class="col-md-6">
-                                                                 <div class="form-group">
-                                                                      <div class="col-lg-12">
-                                                                           <label class="radio-inline">
-                                                                                <input type="radio" class="isRequired" id="rmTesting" name="reasonForVLTesting" value="controlVlTesting" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting');">
-                                                                                <strong><?= _translate('Control VL Testing'); ?></strong>
-                                                                           </label>
+                                                       <?php if(isset($testReasonsResult) && !empty($testReasonsResult)){ 
+                                                            foreach($testReasonsResult as $key => $title){?>
+                                                                 <div class="row">
+                                                                      <div class="col-md-6">
+                                                                           <div class="form-group">
+                                                                                <div class="col-lg-12">
+                                                                                     <label class="radio-inline">
+                                                                                          <input type="radio" class="isRequired" id="rmTesting<?php echo $key;?>" name="reasonForVLTesting" value="<?php echo $key;?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key;?>');">
+                                                                                          <strong><?= _translate($title); ?></strong>
+                                                                                     </label>
+                                                                                </div>
+                                                                           </div>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                       </div>
-                                                       <div class="row rmTesting hideTestData well" style="display:none;">
-                                                            <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
-                                                                 <div class="col-lg-7">
-
-                                                                      <select name="controlVlTestingType" id="controlVlType" class="form-control" title="<?= _translate('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                           <option value=""> <?= _translate("-- Select --"); ?> </option>
-                                                                           <option value="6 Months"><?= _translate('6 Months'); ?></option>
-                                                                           <option value="12 Months"><?= _translate('12 Months'); ?></option>
-                                                                           <option value="24 Months"><?= _translate('24 Months'); ?></option>
-                                                                           <option value="36 Months(3 Years)"><?= _translate('36 Months(3 Years)'); ?></option>
-                                                                           <option value=">= 4 years"><?= _translate('>= 4 years'); ?></option>
-                                                                           <option value="3 months after a VL > 1000cp/ml"><?= _translate('3 months after a VL > 1000cp/ml'); ?></option>
-                                                                           <option value="Suspected Treatment Failure"><?= _translate('Suspected Treatment Failure'); ?></option>
-                                                                           <option value="VL Pregnant Woman"><?= _translate('VL Pregnant Woman'); ?></option>
-                                                                           <option value="VL Breastfeeding woman"><?= _translate('VL Breastfeeding woman'); ?></option>
-                                                                      </select>
-                                                                 </div>
-                                                            </div>
-
-                                                       </div>
-                                                       <div class="row">
-                                                            <div class="col-md-6">
-                                                                 <div class="form-group">
-                                                                      <div class="col-lg-12">
-                                                                           <label class="radio-inline">
-                                                                                <input type="radio" class="" id="suspendTreatment" name="reasonForVLTesting" value="coinfection" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('suspendTreatment');">
-                                                                                <strong><?= _translate('Co-infection'); ?></strong>
-                                                                           </label>
+                                                                 <?php if(isset($subTestReasons[$key]) && !empty($subTestReasons[$key])){  ?>
+                                                                      <div class="row rmTesting<?php echo $key;?> hideTestData well" style="display:none;">
+                                                                           <div class="col-md-6">
+                                                                                <label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
+                                                                                <div class="col-lg-7">
+                                                                                     <select name="controlVlTestingType" id="controlVlType" class="form-control" title="<?= _translate('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
+                                                                                     <option value=""> <?= _translate("-- Select --"); ?> </option>
+                                                                                          <?php foreach($subTestReasons[$key] as $testReasonId => $row){?>
+                                                                                               <option value="<?php echo $testReasonId; ?>"><?php echo ucwords($row); ?></option>
+                                                                                          <?php } ?>
+                                                                                     </select>
+                                                                                </div>
+                                                                           </div>
                                                                       </div>
-                                                                 </div>
-                                                            </div>
-                                                       </div>
-                                                       <div class="row suspendTreatment hideTestData well" style="display: none;margin-bottom:20px;">
-                                                            <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label"><?= _translate('Types of Co-infection'); ?></label>
-                                                                 <div class="col-lg-7">
-                                                                      <select name="coinfectionType" id="coinfectionType" class="form-control" title="<?= _translate('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                           <option value=""> <?= _translate("-- Select --"); ?> </option>
-                                                                           <option value="Tuberculosis"><?= _translate('Tuberculosis'); ?></option>
-                                                                           <option value="Viral Hepatitis"><?= _translate('Viral Hepatitis'); ?></option>
-                                                                      </select>
-                                                                 </div>
-                                                            </div>
-                                                       </div>
-                                                       <div class="row">
-                                                            <div class="col-md-8">
-                                                                 <div class="form-group">
-                                                                      <div class="col-lg-12">
-                                                                           <label class="radio-inline">
-                                                                                <input type="radio" class="" id="repeatTesting" name="reasonForVLTesting" value="other" title="<?= _translate('Please check reason for viral load request'); ?>" onclick="showTesting('repeatTesting');">
-                                                                                <strong><?= _translate('Other reasons') ?> </strong>
-                                                                           </label>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                       </div>
-                                                       <div class="row repeatTesting hideTestData well" style="display:none;">
-                                                            <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
-                                                                 </div>
-                                                            </div>
-
-                                                       </div>
-
-                                                       <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
+                                                            <?php }
+                                                            } 
+                                                       } if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
                                                             <div class="row">
                                                                  <div class="col-md-6">
                                                                       <div class="form-group">
                                                                            <div class="col-lg-12">
                                                                                 <label class="radio-inline">
-                                                                                     <input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('recency')">
+                                                                                     <input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="999" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('recency')">
                                                                                      <strong><?= _translate('Confirmation Test for Recency'); ?></strong>
                                                                                 </label>
                                                                            </div>
