@@ -1,5 +1,7 @@
 <?php
 
+// Request STS to send metadata
+
 require_once(__DIR__ . "/../../../bootstrap.php");
 
 use JsonMachine\Items;
@@ -61,7 +63,7 @@ $tbDataToSync = [];
 $cd4DataToSync = [];
 
 
-$payload = array(
+$payload = [
     'globalConfigLastModified'      => $general->getLastModifiedDateTime('global_config', 'updated_on'),
     'provinceLastModified'          => $general->getLastModifiedDateTime('geographical_divisions'),
     'facilityLastModified'          => $general->getLastModifiedDateTime('facility_details'),
@@ -72,56 +74,57 @@ $payload = array(
     'geoDivisionsLastModified'      => $general->getLastModifiedDateTime('geographical_divisions'),
     'patientsLastModified'          => $general->getLastModifiedDateTime('patients'),
     "Key"                           => "vlsm-get-remote",
-);
+];
 
 // This array is used to sync data that we will later receive from the API call
-$commonDataToSync = array(
-    'globalConfig'  => array(
+$commonDataToSync = [
+    'globalConfig'  => [
         'primaryKey' => 'name',
-        'tableName' => 'global_config',
-    ),
-    'province'  => array(
+        'tableName' => 'global_config'
+    ],
+    'province'  => [
         'primaryKey' => 'geo_id',
-        'tableName' => 'geographical_divisions',
-    ),
-    'users'  => array(
+        'tableName' => 'geographical_divisions'
+    ],
+    'users'  => [
         'primaryKey' => 'user_id',
-        'tableName' => 'user_details',
-    ),
-    'facilities'  => array(
+        'tableName' => 'user_details'
+    ],
+    'facilities'  => [
         'primaryKey' => 'facility_id',
-        'tableName' => 'facility_details',
-    ),
-    'healthFacilities'  => array(
+        'tableName' => 'facility_details'
+    ],
+    'healthFacilities'  => [
         'primaryKey' => 'facility_id',
-        'tableName' => 'health_facilities',
-    ),
-    'testingLabs'  => array(
+        'tableName' => 'health_facilities'
+    ],
+    'testingLabs'  => [
         'primaryKey' => 'facility_id',
-        'tableName' => 'testing_labs',
-    ),
-    'fundingSources'  => array(
+        'tableName' => 'testing_labs'
+    ],
+    'fundingSources'  => [
         'primaryKey' => 'funding_source_id',
-        'tableName' => 'r_funding_sources',
-    ),
-    'partners'  => array(
+        'tableName' => 'r_funding_sources'
+    ],
+    'partners'  => [
         'primaryKey' => 'i_partner_id',
         'tableName' => 'r_implementation_partners',
-    ),
-    'geoDivisions'  => array(
+    ],
+    'geoDivisions'  => [
         'primaryKey' => 'geo_id',
-        'tableName' => 'geographical_divisions',
-    ),
-    'patients'  => array(
+        'tableName' => 'geographical_divisions'
+    ],
+    'patients'  => [
         'primaryKey' => 'system_patient_code',
-        'tableName'  =>  'patients',
-    )
-);
+        'tableName'  =>  'patients'
+    ]
+];
 
+// Receive data from STS
+$url = $remoteUrl . '/remote/remote/sts-metadata-sender.php';
 
-$url = $remoteUrl . '/remote/remote/commonData.php';
 if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
-    $toSyncTables = array(
+    $toSyncTables = [
         "r_test_types",
         "r_generic_test_methods",
         "r_generic_test_categories",
@@ -138,14 +141,15 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
         "generic_sample_rejection_reason_map",
         "generic_test_symptoms_map",
         "generic_test_result_units_map"
-    );
+    ];
     foreach ($toSyncTables as $table) {
         $payload[$general->stringToCamelCase($table) . 'LastModified'] = $general->getLastModifiedDateTime($table);
 
-        $genericDataToSync[$general->stringToCamelCase($table)] = array("primaryKey" => $general->getPrimaryKeyField($table), "tableName" => $table);
+        $genericDataToSync[$general->stringToCamelCase($table)] = ["primaryKey" => $general->getPrimaryKeyField($table), "tableName" => $table];
     }
 }
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
+
     $payload['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
     $payload['vlRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
     $payload['vlTestReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_test_reasons');
@@ -154,32 +158,32 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
     $payload['vlResultsLastModified'] = $general->getLastModifiedDateTime('r_vl_results');
 
     // This array is used to sync data that we will later receive from the API call
-    $vlDataToSync = array(
-        'vlSampleTypes' => array(
+    $vlDataToSync = [
+        'vlSampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_vl_sample_type',
-        ),
-        'vlArtCodes' => array(
+        ],
+        'vlArtCodes' => [
             'primaryKey' => 'art_id',
             'tableName' => 'r_vl_art_regimen',
-        ),
-        'vlRejectionReasons' => array(
+        ],
+        'vlRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_vl_sample_rejection_reasons',
-        ),
-        'vlTestReasons' => array(
+        ],
+        'vlTestReasons' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_vl_test_reasons',
-        ),
-        'vlFailureReasons' => array(
+        ],
+        'vlFailureReasons' => [
             'primaryKey' => 'failure_id',
             'tableName' => 'r_vl_test_failure_reasons',
-        ),
-        'vlResults' => array(
+        ],
+        'vlResults' => [
             'primaryKey' => 'result_id',
             'tableName' => 'r_vl_results',
-        )
-    );
+        ]
+    ];
 }
 
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
@@ -190,28 +194,29 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
 
     // This array is used to sync data that we will later receive from the API call
-    $eidDataToSync = array(
-        'eidRejectionReasons' => array(
+    $eidDataToSync = [
+        'eidRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_eid_sample_rejection_reasons',
-        ),
-        'eidSampleTypes' => array(
+        ],
+        'eidSampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_eid_sample_type',
-        ),
-        'eidResults' => array(
+        ],
+        'eidResults' => [
             'primaryKey' => 'result_id',
             'tableName' => 'r_eid_results',
-        ),
-        'eidReasonForTesting' => array(
+        ],
+        'eidReasonForTesting' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_eid_test_reasons',
-        )
-    );
+        ]
+    ];
 }
 
 
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
+
     $payload['covid19RejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_rejection_reasons');
     $payload['covid19SampleTypesLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_type');
     $payload['covid19ComorbiditiesLastModified'] = $general->getLastModifiedDateTime('r_covid19_comorbidities');
@@ -223,36 +228,36 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
 
     // This array is used to sync data that we will later receive from the API call
-    $covid19DataToSync = array(
-        'covid19RejectionReasons' => array(
+    $covid19DataToSync = [
+        'covid19RejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_covid19_sample_rejection_reasons',
-        ),
-        'covid19SampleTypes' => array(
+        ],
+        'covid19SampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_covid19_sample_type',
-        ),
-        'covid19Comorbidities' => array(
+        ],
+        'covid19Comorbidities' => [
             'primaryKey' => 'comorbidity_id',
             'tableName' => 'r_covid19_comorbidities',
-        ),
-        'covid19Results' => array(
+        ],
+        'covid19Results' => [
             'primaryKey' => 'result_id',
             'tableName' => 'r_covid19_results',
-        ),
-        'covid19Symptoms' => array(
+        ],
+        'covid19Symptoms' => [
             'primaryKey' => 'symptom_id',
             'tableName' => 'r_covid19_symptoms',
-        ),
-        'covid19ReasonForTesting' => array(
+        ],
+        'covid19ReasonForTesting' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_covid19_test_reasons',
-        ),
-        'covid19QCTestKits' => array(
+        ],
+        'covid19QCTestKits' => [
             'primaryKey' => 'testkit_id',
             'tableName' => 'r_covid19_qc_testkits',
-        )
-    );
+        ]
+    ];
 }
 
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
@@ -263,28 +268,28 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     $payload['hepatitisReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_test_reasons');
 
     // This array is used to sync data that we will later receive from the API call
-    $hepatitisDataToSync = array(
-        'hepatitisReasonForTesting' => array(
+    $hepatitisDataToSync = [
+        'hepatitisReasonForTesting' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_hepatitis_test_reasons',
-        ),
-        'hepatitisResults' => array(
+        ],
+        'hepatitisResults' => [
             'primaryKey' => 'result_id',
             'tableName' => 'r_hepatitis_results',
-        ),
-        'hepatitisComorbidities' => array(
+        ],
+        'hepatitisComorbidities' => [
             'primaryKey' => 'comorbidity_id',
             'tableName' => 'r_hepatitis_comorbidities',
-        ),
-        'hepatitisSampleTypes' => array(
+        ],
+        'hepatitisSampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_hepatitis_sample_type',
-        ),
-        'hepatitisRejectionReasons' => array(
+        ],
+        'hepatitisRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_hepatitis_sample_rejection_reasons',
-        )
-    );
+        ]
+    ];
 }
 
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
@@ -294,24 +299,24 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
     $payload['tbReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_tb_test_reasons');
 
     // This array is used to sync data that we will later receive from the API call
-    $tbDataToSync = array(
-        'tbReasonForTesting' => array(
+    $tbDataToSync = [
+        'tbReasonForTesting' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_tb_test_reasons',
-        ),
-        'tbResults' => array(
+        ],
+        'tbResults' => [
             'primaryKey' => 'result_id',
             'tableName' => 'r_tb_results',
-        ),
-        'tbSampleTypes' => array(
+        ],
+        'tbSampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_tb_sample_type',
-        ),
-        'tbRejectionReasons' => array(
+        ],
+        'tbRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_tb_sample_rejection_reasons',
-        )
-    );
+        ]
+    ];
 }
 
 if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
@@ -320,20 +325,20 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
     $payload['cd4ReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_cd4_test_reasons');
 
     // This array is used to sync data that we will later receive from the API call
-    $vlDataToSync = array(
-        'cd4SampleTypes' => array(
+    $cd4DataToSync = [
+        'cd4SampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_cd4_sample_types',
-        ),
-        'cd4RejectionReasons' => array(
+        ],
+        'cd4RejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_cd4_sample_rejection_reasons',
-        ),
-        'cd4ReasonForTesting' => array(
+        ],
+        'cd4ReasonForTesting' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_cd4_test_reasons',
-        )
-    );
+        ]
+    ];
 }
 
 $dataToSync = array_merge(
@@ -392,7 +397,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
                 // For users table, we do not want to sync password and few other fields
                 if ($dataType === 'users') {
-                    $userColumnList = array('user_id', 'user_name', 'phone_number', 'email', 'updated_datetime');
+                    $userColumnList = ['user_id', 'user_name', 'phone_number', 'email', 'updated_datetime'];
                     $tableData = array_intersect_key($tableData, array_flip($userColumnList));
                 }
 
@@ -473,4 +478,4 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
 $instanceId = $general->getInstanceId();
 $db->where('vlsm_instance_id', $instanceId);
-$id = $db->update('s_vlsm_instance', array('last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()));
+$id = $db->update('s_vlsm_instance', ['last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()]);

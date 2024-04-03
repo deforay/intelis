@@ -241,7 +241,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-						url: "/scheduled-jobs/remote/requestsSync.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
+						url: "/scheduled-jobs/remote/requests-receiver.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
 					})
 					.done(function(data) {
 						////console.log(data);
