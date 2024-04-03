@@ -809,7 +809,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date </label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
+														<input type="text" class="form-control dateTime result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
 													</div>
 												</div>
 
@@ -1137,7 +1137,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 			$("#hivDetection, #isSampleRejected").trigger('change');
 			// just triggering sample collection date is enough,
 			// it will automatically do everything that labId and facilityId changes will do
-			$("#sampleCollectionDate").trigger('change');
+			//$("#sampleCollectionDate").trigger('change');
 			__clone = $(".labSectionBody").clone();
 			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 			resultValue = $("#vlResult").val();
