@@ -68,9 +68,6 @@ try {
                 $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
                 header("Location:/vl/requests/upload-storage.php");
             }
-            if (!in_array($rowData['F'], ['1', '2', '3'], true)) {
-                $rowData['F'] = 1;
-            }
 
             $instanceId = '';
             if (isset($_SESSION['instanceId'])) {
@@ -101,7 +98,7 @@ try {
             try {
                     if(!isset($formAttributes->storage) && empty($formAttributes->storage))
                     {
-                        $formAttributes->storage = array("freezer"=>$storageId,"freezerCode"=>$rowData['B'],"rack"=>$rowData['C'],"box"=>$rowData['D'],"position"=>$rowData['E']);
+                        $formAttributes->storage = array("storageId"=>$storageId,"storageCode"=>$rowData['B'],"rack"=>$rowData['C'],"box"=>$rowData['D'],"position"=>$rowData['E'],"volume"=>$rowData['F']);
                         $vlData['form_attributes'] = json_encode($formAttributes);
                         $db->where('vl_sample_id', $getSample['vl_sample_id']);
                         $id = $db->update('form_vl', $vlData);

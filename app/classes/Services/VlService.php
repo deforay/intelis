@@ -528,7 +528,7 @@ class VlService extends AbstractTestService
                     $formAttributes = [
                         'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
                         'ip_address' => $this->commonService->getClientIpAddress(),
-                        'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$params['rack'],"box"=>$params['box'],"position"=>$params['position']),
+                        'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$params['rack'],"box"=>$params['box'],"position"=>$params['position'],"volume"=>$params['volume']),
                     ];
 
                 }

@@ -198,7 +198,7 @@ try {
         $formAttributes = [
             'applicationVersion' => $general->getSystemConfig('sc_version'),
             'ip_address' => $general->getClientIpAddress(),
-            'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$_POST['rack'],"box"=>$_POST['box'],"position"=>$_POST['position']),
+            'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$_POST['rack'],"box"=>$_POST['box'],"position"=>$_POST['position'],"volume"=>$_POST['volume']),
         ];
 
         $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');

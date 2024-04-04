@@ -483,10 +483,18 @@ $storageInfo = $storageService->getLabStorage();
 											</td>
 										</tr>
 									<tr>
+										<td style="width: 25%;"><label for=""><?php echo _translate('Volume (ml)'); ?> :
+												</label></td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control" id="volume" name="volume" value="<?= $storageObj->volume; ?>" placeholder="<?php echo _translate('Volume'); ?>" title="<?php echo _translate('Please enter volume'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
 										<td><label for="">Date de réalisation de la charge virale <span class="mandatory">*</span></label></td>
 										<td>
 											<input type="text" class="form-control dateTime isRequired" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 										</td>
+										
+									</tr>
+									<tr>
 										<td><label for="testingPlatform">Technique utilisée <span class="mandatory">*</span></label></td>
 										<td>
 											<select name="testingPlatform" id="testingPlatform" class="form-control isRequired" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
@@ -497,8 +505,6 @@ $storageInfo = $storageService->getLabStorage();
 												<?php } ?>
 											</select>
 										</td>
-									</tr>
-									<tr>
 										<td><label for="">Décision prise <span class="mandatory">*</span></label></td>
 										<td>
 											<select class="form-control result-focus isRequired" id="isSampleRejected" name="isSampleRejected" title="<?= _translate('Please select if sample is rejected'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
