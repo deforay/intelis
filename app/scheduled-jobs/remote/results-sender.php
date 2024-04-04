@@ -275,24 +275,6 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', count($cd4LabResult), 'send-results', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
-    /* Lab Storage Sync Start */
-    $url = $remoteUrl . '/remote/remote/system-metadata-sync.php';
-
-    $payload = [
-        "labId" => $labId,
-        "result" => $db->get('lab_storage'),
-        "Key" => "vlsm-lab-data--",
-    ];
-
-    $jsonResponse = $apiService->post($url, $payload);
-    $result = json_decode($jsonResponse, true);
-
-    if (!empty($result)) {
-        $db->where('storage_code', $result, 'IN');
-        $id = $db->update('lab_storage', ['data_sync' => 1]);
-    }
-    /* Lab Storage Sync End */
-
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);

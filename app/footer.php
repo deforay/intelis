@@ -151,10 +151,10 @@ if (empty($syncLatestTime)) {
 					message: "<h3><?= _translate("Preparing for STS sync.", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
 				});
 				$.ajax({
-						url: "/scheduled-jobs/remote/commonDataSync.php",
+						url: "/scheduled-jobs/remote/sts-metadata-receiver.php",
 					})
 					.done(function(data) {
-						console.log("Common Data Synced | STS -> LIS");
+						console.log("Metadata Synced | STS -> LIS");
 						$.unblockUI();
 					})
 					.fail(function() {
@@ -175,7 +175,7 @@ if (empty($syncLatestTime)) {
 
 			if (remoteSync) {
 				$.ajax({
-						url: "/scheduled-jobs/remote/resultsSync.php",
+						url: "/scheduled-jobs/remote/results-sender.php",
 					})
 					.done(function(data) {
 						console.log("Results Synced | LIS -> STS");
@@ -199,7 +199,7 @@ if (empty($syncLatestTime)) {
 
 			if (remoteSync) {
 				$.ajax({
-						url: "/scheduled-jobs/remote/requestsSync.php",
+						url: "/scheduled-jobs/remote/requests-receiver.php",
 					})
 					.done(function(data) {
 						console.log("Requests Synced | STS -> LIS");
@@ -270,7 +270,7 @@ if (empty($syncLatestTime)) {
 			(function getLastRemoteSyncDateTime() {
 				let currentDateTime = new Date();
 				$.ajax({
-					url: '/scheduled-jobs/remote/getLastSyncTime.php',
+					url: '/scheduled-jobs/remote/get-last-sts-sync-datetime.php',
 					cache: false,
 					success: function(lastSyncDateString) {
 						if (lastSyncDateString != null && lastSyncDateString != undefined) {

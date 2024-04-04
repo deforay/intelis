@@ -176,7 +176,7 @@ if (isset($eidInfo['result_dispatched_datetime']) && trim((string) $eidInfo['res
 $condition = "status ='active' AND test_type='eid'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
-if (!empty($eidInfo['is_encrypted']) && $eidInfo['is_encrypted'] == 'yes') {
+if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($eidInfo['is_encrypted']) && $eidInfo['is_encrypted'] == 'yes') {
     $key = (string) $general->getGlobalConfig('key');
     $eidInfo['child_id'] = $general->crypto('decrypt', $eidInfo['child_id'], $key);
     $eidInfo['mother_id'] = $general->crypto('decrypt', $eidInfo['mother_id'], $key);

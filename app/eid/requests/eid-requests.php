@@ -212,7 +212,7 @@ foreach ($srcResults as $list) {
 									<?php echo _translate("Gender"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;" >
+								<select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
@@ -888,7 +888,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-						url: "/scheduled-jobs/remote/resultsSync.php?sampleCode=" + sampleCode + "&forceSyncModule=eid",
+						url: "/scheduled-jobs/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=eid",
 					})
 					.done(function(data) {
 						////console.log(data);

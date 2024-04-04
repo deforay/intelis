@@ -69,23 +69,29 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-vl-
 
 // REMOTE SYNC JOBS START
 if (!empty(SYSTEM_CONFIG['remoteURL'])) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/commonDataSync.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/sts-metadata-receiver.php")
         ->everyFiveMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
-        ->description('Syncing common/reference data from remote system');
+        ->description('Syncing metadata from STS');
 
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/requestsSync.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/requests-receiver.php")
         ->everyFifteenMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
-        ->description('Syncing requests from remote system');
+        ->description('Syncing requests from STS');
 
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/resultsSync.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/results-sender.php")
         ->everyTenMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
-        ->description('Syncing results to remote system');
+        ->description('Syncing results to STS');
+
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/lab-metadata-sender.php")
+        ->everyThirtyMinutes()
+        ->timezone($timeZone)
+        ->preventOverlapping()
+        ->description('Syncing results to STS');
 }
 // REMOTE SYNC JOBS END
 

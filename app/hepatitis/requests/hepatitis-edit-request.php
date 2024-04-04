@@ -128,7 +128,7 @@ foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
-if (!empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 'yes') {
+if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 'yes') {
     $key = (string) $general->getGlobalConfig('key');
     $hepatitisInfo['patient_id'] = $general->crypto('decrypt', $hepatitisInfo['patient_id'], $key);
     if ($hepatitisInfo['patient_name'] != '') {

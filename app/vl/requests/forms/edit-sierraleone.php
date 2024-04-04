@@ -450,7 +450,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 													<label for="">How long has this Patient been on treatment?<span class="mandatory">*</span></label>
 													<select class="form-control isRequired" id="treatmentDuration" name="treatmentDuration" title="Please choose treatment duration" style="width:100%;">
 														<option value=""> — Select-- </option>
-														<option value="6 Months - < 1 year" <?php echo ($vlQueryInfo['treatment_duration'] == '6 Months - < 1 year') ? "selected='selected'" : "" ?>> 6 Months - < 1 year </option>
+														<option value="6 Months - 1 year" <?php echo ($vlQueryInfo['treatment_duration'] == '6 Months - 1 year') ? "selected='selected'" : "" ?>> 6 Months - 1 year </option>
 														<option value="1 - 2 years" <?php echo ($vlQueryInfo['treatment_duration'] == '1 - 2 years') ? "selected='selected'" : "" ?>> 1 - 2 years </option>
 														<option value="2 - < 5 years" <?php echo ($vlQueryInfo['treatment_duration'] == '2 - < 5 years') ? "selected='selected'" : "" ?>> 2 - < 5 years </option>
 														<option value="5 years and above" <?php echo ($vlQueryInfo['treatment_duration'] == '5 years and above') ? "selected='selected'" : "" ?>> 5 years and above </option>
@@ -809,7 +809,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date </label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
+														<input type="text" class="form-control dateTime result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
 													</div>
 												</div>
 
@@ -1137,7 +1137,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 			$("#hivDetection, #isSampleRejected").trigger('change');
 			// just triggering sample collection date is enough,
 			// it will automatically do everything that labId and facilityId changes will do
-			$("#sampleCollectionDate").trigger('change');
+			//$("#sampleCollectionDate").trigger('change');
 			__clone = $(".labSectionBody").clone();
 			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 			resultValue = $("#vlResult").val();

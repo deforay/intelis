@@ -155,7 +155,7 @@ if (isset($tbInfo['result_approved_datetime']) && trim((string) $tbInfo['result_
 $condition = "status ='active' AND test_type='tb'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
-if (!empty($tbInfo['is_encrypted']) && $tbInfo['is_encrypted'] == 'yes') {
+if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($tbInfo['is_encrypted']) && $tbInfo['is_encrypted'] == 'yes') {
     $key = (string) $general->getGlobalConfig('key');
     $tbInfo['patient_id'] = $general->crypto('decrypt', $tbInfo['patient_id'], $key);
     if ($tbInfo['patient_name'] != '') {

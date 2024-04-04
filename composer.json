@@ -81,10 +81,10 @@
         "fix-privileges": "php maintenance/update-privileges.php",
         "fix-audit-tables": "php maintenance/fix-audit-tables.php",
         "migrate": "php app/system/migrate.php -yq",
-        "metadata-sync": "php app/scheduled-jobs/remote/commonDataSync.php",
-        "sts-sync": "php app/scheduled-jobs/remote/resultsSync.php && php app/scheduled-jobs/remote/requestsSync.php",
+        "metadata-sync": "php app/scheduled-jobs/remote/sts-metadata-receiver.php && php app/scheduled-jobs/remote/lab-metadata-sender.php",
+        "sts-sync": "php app/scheduled-jobs/remote/results-sender.php && php app/scheduled-jobs/remote/requests-receiver.php && php app/scheduled-jobs/remote/lab-metadata-sender.php",
         "generate-translation-strings": "php app/system/generate-translation-strings.php",
-        "post-install": "php app/system/migrate.php -yq && php maintenance/update-privileges.php && php app/scheduled-jobs/remote/commonDataSync.php",
-        "post-update": "php app/system/migrate.php -yq && php maintenance/update-privileges.php && php app/includes/clear-cache.php"
+        "post-install": "php app/system/migrate.php -yq && php maintenance/update-privileges.php && php fix-scripts/app-menu.php && php app/scheduled-jobs/remote/sts-metadata-receiver.php && php app/scheduled-jobs/remote/lab-metadata-sender.php",
+        "post-update": "php app/system/migrate.php -yq && php maintenance/update-privileges.php && php fix-scripts/app-menu.php && php app/includes/clear-cache.php"
     }
 }

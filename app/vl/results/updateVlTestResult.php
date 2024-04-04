@@ -214,7 +214,7 @@ $patientMiddleName = $vlQueryInfo['patient_middle_name'] ?? '';
 $patientLastName = $vlQueryInfo['patient_last_name'] ?? '';
 
 
-if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
+if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
 	$key = (string) $general->getGlobalConfig('key');
 	$vlQueryInfo['patient_art_no'] = $general->crypto('decrypt', $vlQueryInfo['patient_art_no'], $key);
 	if ($patientFirstName != '') {
