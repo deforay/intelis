@@ -41,7 +41,7 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
 
     if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) {
 
-        $toSyncTables = array(
+        $toSyncTables = [
             "r_test_types",
             "r_generic_test_methods",
             "r_generic_test_categories",
@@ -58,7 +58,7 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
             "generic_sample_rejection_reason_map",
             "generic_test_symptoms_map",
             "generic_test_result_units_map"
-        );
+        ];
         foreach ($toSyncTables as $table) {
             $condition = null;
             if (!empty($data[$general->stringToCamelCase($table) . 'LastModified'])) {
@@ -338,7 +338,7 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
         $payload = json_encode([]);
     }
 } else {
-    $payload =  json_encode(array('status' => 'error', 'message' => 'Invalid request'));
+    $payload =  json_encode(['status' => 'error', 'message' => 'Invalid request']);
 }
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
