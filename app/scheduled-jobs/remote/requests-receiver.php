@@ -1118,7 +1118,8 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
             $existingSampleQuery = "SELECT cd4_id, sample_code
-                             FROM form_cd4 AS vl WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                                    FROM form_cd4 AS vl
+                                    WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
             $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
             if (!empty($existingSampleResult)) {
 
