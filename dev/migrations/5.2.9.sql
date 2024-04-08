@@ -363,3 +363,6 @@ UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privileges`.`privilege_name` 
 UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privileges`.`privilege_name` = '/common/reference/edit-lab-storage.php';
 
 UPDATE `s_app_menu` SET `show_mode` = 'lis' WHERE `s_app_menu`.`display_text` = 'Lab Storage';
+
+--Jeyabanu 05-Apr-2024
+ALTER TABLE `batch_details` ADD `control_names` JSON NULL DEFAULT NULL AFTER `label_order`;

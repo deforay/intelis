@@ -171,5 +171,6 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
                 }
             });
     }
+
 </script>
 <?php include APPLICATION_PATH . '/footer.php';
