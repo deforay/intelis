@@ -503,7 +503,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                            <div class="form-group">
                                                                                 <div class="col-lg-12">
                                                                                      <label class="radio-inline">
-                                                                                          <input type="radio" <?php echo (in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "checked='checked'" : ""; ?> class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>');">
+                                                                                          <input type="radio" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "checked='checked'" : ""; ?> class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>');">
                                                                                           <strong><?= _translate($title); ?></strong>
                                                                                      </label>
                                                                                 </div>
@@ -512,7 +512,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                  </div>
                                                                  <?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) {
                                                                       if ($key == 5) { ?>
-                                                                           <div class="row rmTesting5 well" style="display:<?php echo (isset($vlQueryInfo['reason_for_vl_testing_other']) && !empty($vlQueryInfo['reason_for_vl_testing_other'])) ? "bloack" : "none"; ?>;">
+                                                                           <div class="row rmTesting5 well" style="display:<?php echo (isset($vlQueryInfo['reason_for_vl_testing_other']) && !empty($vlQueryInfo['reason_for_vl_testing_other'])) ? "block" : "none"; ?>;">
                                                                                 <div class="col-md-6">
                                                                                      <label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
                                                                                      <div class="col-lg-7">
@@ -521,7 +521,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                                 </div>
                                                                            </div>
                                                                       <?php } else { ?>
-                                                                           <div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:<?php echo (in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "bloack" : "none"; ?>;">
+                                                                           <div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:<?php echo (in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "block" : "none"; ?>;">
                                                                                 <div class="col-md-6">
                                                                                      <label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
                                                                                      <div class="col-lg-7">
@@ -539,20 +539,6 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                  }
                                                             }
                                                        } ?>
-                                                       <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <div class="form-group">
-                                                                           <div class="col-lg-12">
-                                                                                <label class="radio-inline">
-                                                                                     <input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" onclick="showTesting('recency')">
-                                                                                     <strong><?= _translate('Confirmation Test for Recency'); ?></strong>
-                                                                                </label>
-                                                                           </div>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                       <?php } ?>
                                                        <hr>
 
                                                   </div>
