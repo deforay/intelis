@@ -138,7 +138,7 @@ class CommonService
         $attempts = 0;
         while ($attempts < 3) {
             try {
-                return bin2hex(random_bytes($length / 2));
+                return substr(bin2hex(random_bytes($length / 2)), 0, $length);
             } catch (Throwable $e) {
                 error_log($e->getMessage());
                 $attempts++;

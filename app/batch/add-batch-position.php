@@ -150,19 +150,19 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 	if (isset($configControl[$testType]['noHouseCtrl']) && trim((string) $configControl[$testType]['noHouseCtrl']) != '' && $configControl[$testType]['noHouseCtrl'] > 0) {
 		foreach (range(1, $configControl[$testType]['noHouseCtrl']) as $h) {
 			$displayOrder[] = "no_of_in_house_controls_" . $h;
-			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Controls ' . $h . '</li>';
+			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Control ' . $h . '</li>';
 		}
 	}
 	if (isset($configControl[$testType]['noManufacturerCtrl']) && trim((string) $configControl[$testType]['noManufacturerCtrl']) != '' && $configControl[$testType]['noManufacturerCtrl'] > 0) {
 		foreach (range(1, $configControl[$testType]['noManufacturerCtrl']) as $m) {
 			$displayOrder[] = "no_of_manufacturer_controls_" . $m;
-			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '">Manufacturer Controls ' . $m . '</li>';
+			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '">Manufacturer Control ' . $m . '</li>';
 		}
 	}
 	if (isset($configControl[$testType]['noCalibrators']) && trim((string) $configControl[$testType]['noCalibrators']) != '' && $configControl[$testType]['noCalibrators'] > 0) {
 		foreach (range(1, $configControl[$testType]['noCalibrators']) as $c) {
 			$displayOrder[] = "no_of_calibrators_" . $c;
-			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
+			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrator ' . $c . '</li>';
 		}
 	}
 	$samplesQuery = "SELECT $primaryKeyColumn, $patientIdColumn, sample_code

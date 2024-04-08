@@ -43,8 +43,7 @@ $primaryKey = $testTableData['primaryKey'];
 $patientFirstName = $testTableData['patientFirstName'];
 $patientLastName = $testTableData['patientLastName'];
 $resultColumn = 'result';
-if($_GET['type']=='cd4')
-{
+if ($_GET['type'] == 'cd4') {
     $resultColumn = 'cd4_result';
 }
 
@@ -375,7 +374,7 @@ if (!empty($id)) {
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                     $tbl .= '<tr nobr="true" style="width:100%;">
                             <td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333">' . $i . '.</td>
-                            <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('In-House Controls') . ' ' . $i . '</td>
+                            <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('In-House Control') . ' ' . $i . '</td>
                             <td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                             <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                             <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
@@ -392,7 +391,7 @@ if (!empty($id)) {
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                     $tbl .= '<tr nobr="true" style="width:100%;">
                     <td align="center" width="6%" style="vertical-align:middle;">' . $sNo . '.</td>
-                    <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('Manfacturing Controls') . ' ' . $i . '</td>
+                    <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('Manufacturer Control') . ' ' . $i . '</td>
                     <td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                     <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                     <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
@@ -409,7 +408,7 @@ if (!empty($id)) {
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                     $tbl .= '<tr nobr="true" style="width:100%;">
                     <td align="center" width="6%" style="vertical-align:middle;">' . $sNo . '.</td>
-                    <td align="center" width="20%" style="vertical-align:middle;">' . _translate('Calibrators') . ' ' . $i . '</td>
+                    <td align="center" width="20%" style="vertical-align:middle;">' . _translate('Calibrator') . ' ' . $i . '</td>
                     <td align="center" width="35%" style="vertical-align:middle;"></td>
                     <td align="center" width="13%" style="vertical-align:middle;"></td>
                     <td align="center" width="13%" style="vertical-align:middle;"></td>
