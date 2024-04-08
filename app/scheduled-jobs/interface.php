@@ -125,7 +125,7 @@ if (!empty($interfaceData)) {
             $columnsToSelect = $primaryKeyColumn;
 
             // If the table name is there in $additionalColumns, add the additional columns
-            if (array_key_exists($individualTableName, $additionalColumns)) {
+            if (!empty($additionalColumns) && array_key_exists($individualTableName, $additionalColumns)) {
                 $extraColumnsString = implode(', ', $additionalColumns[$individualTableName]);
                 $columnsToSelect = "$primaryKeyColumn, $extraColumnsString";
             }

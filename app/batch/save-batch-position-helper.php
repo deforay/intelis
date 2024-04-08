@@ -47,11 +47,11 @@ try {
             }
         }
 
-        for($a=0;$a < count($orderArray);$a++)
-        {
-            if(array_key_exists($orderArray[$a],$_POST))
-            {
-                $orderArray[$a] = $_POST[$orderArray[$a]];
+        if (!empty($orderArray)) {
+            for ($a = 0; $a < count($orderArray); $a++) {
+                if (!empty($_POST) && array_key_exists($orderArray[$a], $_POST)) {
+                    $orderArray[$a] = $_POST[$orderArray[$a]];
+                }
             }
         }
         $labelOrder = json_encode($orderArray, JSON_FORCE_OBJECT);
