@@ -86,7 +86,7 @@ try {
             vl.specimen_type                                     as specimenType,
             vl.arv_adherance_percentage                          as arvAdherence,
             vl.reason_for_vl_testing                             as reasonForVLTesting,
-            vl.reason_for_test_other                             as reasonForVLTestingOther,
+            vl.reason_for_testing_other                             as reasonForVLTestingOther,
             vl.community_sample                                  as communitySample,
             vl.last_vl_date_routine                              as rmTestingLastVLDate,
             vl.last_vl_result_routine                            as rmTestingVlValue,
