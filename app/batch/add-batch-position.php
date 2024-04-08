@@ -40,11 +40,13 @@ if (!isset($id) || trim($id) == '') {
 
 $content = '';
 $newContent = '';
+$labelNewContent = '';
 $displayOrder = [];
 $batchQuery = "SELECT * FROM batch_details as b_d
 				INNER JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
 				WHERE batch_id= ? ";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
+
 // Config control
 $configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id= ? ";
 $configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['instrument_id']]);
@@ -76,11 +78,16 @@ if (isset($configControl[$testType]['noCalibrators']) && trim((string) $configCo
 	}
 }
 //Get machine's prev. label order
-$machine = intval($batchInfo[0]['machine']);
+$machine = $batchInfo[0]['machine'];
 $prevLabelQuery = "SELECT label_order from batch_details as b_d WHERE b_d.machine = ? AND b_d.batch_id!= ? ORDER BY b_d.request_created_datetime DESC LIMIT 0,1";
 $prevlabelInfo = $db->rawQuery($prevLabelQuery, [$machine, $id]);
+
+
 if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['label_order']) != '') {
 	$jsonToArray = json_decode((string) $prevlabelInfo[0]['label_order'], true);
+	$batchControlNames = json_decode((string) $batchInfo[0]['control_names'], true);
+	//echo '<pre>'; print_r($jsonToArrayControlNames); die;
+
 	$prevDisplaySampleArray = [];
 	for ($j = 0; $j < count($jsonToArray); $j++) {
 		$xplodJsonToArray = explode("_", (string) $jsonToArray[$j]);
@@ -88,6 +95,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 			$prevDisplaySampleArray[] = $xplodJsonToArray[1];
 		}
 	}
+	
 	//Get display sample only
 	$displaySampleOrderArray = [];
 	$samplesQuery = "SELECT $primaryKeyColumn, $patientIdColumn, sample_code
@@ -102,6 +110,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 	$sCount = 0;
 	$displayNonSampleArray = [];
 	$displaySampleArray = [];
+	//echo 
 	for ($j = 0; $j < count($jsonToArray); $j++) {
 		$xplodJsonToArray = explode("_", (string) $jsonToArray[$j]);
 		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
@@ -136,7 +145,17 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 		$label = str_replace("_", " ", $remainNewArray[$n]);
 		$label = str_replace("in house", "In-House", $label);
 		$label = (str_replace("no of ", " ", $label));
-		$newContent .= '<li class="ui-state-default" id="' . $remainNewArray[$n] . '">' . $label . '</li>';
+		if(isset($batchControlNames[$remainNewArray[$n]]) && $batchControlNames[$remainNewArray[$n]]!=""){
+			$existingValue = $batchControlNames[$remainNewArray[$n]];
+			$liLabel = $existingValue;
+		}
+		else{
+			$liLabel = $label;
+			$existingValue = "";
+		}
+		$newContent .= '<li class="ui-state-default" id="' . $remainNewArray[$n] . '">' . $liLabel . '</li>';
+		
+		$labelNewContent .= ' <tr><th>'.$label.' :</th><td> <input class="form-control" type="text" name="controls['.$remainNewArray[$n].']" value="'.$existingValue.'" placeholder="Enter label name"/></td></tr>';
 	}
 	//For new samples
 	for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
@@ -228,9 +247,12 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 							<div class="col-lg-12">
 								<ul id="sortableRow">
 									<?php
-									echo $content . $newContent;
+										echo $content . $newContent;
 									?>
 								</ul>
+								<table class="table" style="width:50%; margin-left:300px;">
+									<?php echo $labelNewContent; ?>
+								</table>
 							</div>
 						</div>
 					</div>

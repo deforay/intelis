@@ -135,4 +135,10 @@
         }
         $.unblockUI();
     }
+
+    function getTreatmentLine(artRegimen)
+    {
+        var char = artRegimen.charAt(0);
+        $("#lineOfTreatment").val(char);
+    }
 </script>

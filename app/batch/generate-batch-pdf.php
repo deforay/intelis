@@ -269,9 +269,17 @@ if (!empty($id)) {
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     } else {
-                        $label = str_replace("_", " ", (string) $jsonToArray[$alphaNumeric[$j]]);
-                        $label = str_replace("in house", "In-House", $label);
-                        $label = (str_replace("no of ", " ", $label));
+                      //  echo $bResult['control_names']; die;
+                        $controlNamesArr = json_decode((string) $bResult['control_names'], true);
+                        if(array_key_exists($jsonToArray[$alphaNumeric[$j]],$controlNamesArr) && $controlNamesArr[$jsonToArray[$alphaNumeric[$j]]]!=""){
+                            $label = $controlNamesArr[$jsonToArray[$alphaNumeric[$j]]];
+                        }
+                        else{
+                            $label = str_replace("_", " ", (string) $jsonToArray[$alphaNumeric[$j]]);
+                            $label = str_replace("in house", "In-House", $label);
+                            $label = (str_replace("no of ", " ", $label));
+                            }
+
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                         $tbl .= '<tr nobr="true" style="width:100%;">';
                         $tbl .= '<td align="center" width="6%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
@@ -349,9 +357,16 @@ if (!empty($id)) {
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     } else {
-                        $label = str_replace("_", " ", (string) $jsonToArray[$j]);
-                        $label = str_replace("in house", "In-House", $label);
-                        $label = (str_replace("no of ", " ", $label));
+                      //  echo $bResult['control_names']; die;
+                        $controlNamesArr = json_decode((string) $bResult['control_names'], true);
+                        if(array_key_exists($jsonToArray[$j],$controlNamesArr) && $controlNamesArr[$jsonToArray[$j]]!=""){
+                            $label = $controlNamesArr[$jsonToArray[$j]];
+                        }
+                        else{
+                            $label = str_replace("_", " ", (string) $jsonToArray[$j]);
+                            $label = str_replace("in house", "In-House", $label);
+                            $label = (str_replace("no of ", " ", $label));
+                        }
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                         $tbl .= '<tr nobr="true" style="width:100%;">';
                         $tbl .= '<td align="center" width="6%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';

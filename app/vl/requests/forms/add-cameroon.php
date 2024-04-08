@@ -393,6 +393,28 @@ foreach($testReasonsResult as $rid=>$row){
                                                                  <input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="<?= _translate('Treatment Start Date'); ?>" title="<?= _translate('Treatment Start Date'); ?>" style="width:100%;" onchange="checkARTInitiationDate();">
                                                             </div>
                                                        </div>
+                                                      
+                                                       <div class="col-xs-3 col-md-3">
+                                                            <div class="form-group">
+                                                                 <label for=""> <?= _translate('Current ARV Protocol'); ?></label>
+                                                                 <select class="select2 form-control" id="artRegimen" name="artRegimen" title="<?= _translate('Please choose ART Regimen'); ?>" style="width:100%;" onchange="checkARTRegimenValue(); getTreatmentLine(this.value)">
+                                                                      <option value=""><?= _translate('-- Select --'); ?></option>
+                                                                      <?php foreach ($artRegimenResult as $heading) { ?>
+                                                                           <optgroup label="<?= $heading['headings']; ?>">
+                                                                                <?php
+                                                                                foreach ($aResult as $regimen) {
+                                                                                     if ($heading['headings'] == $regimen['headings']) {
+                                                                                ?>
+                                                                                <option value="<?php echo $regimen['art_code']; ?>"><?php echo $regimen['art_code']; ?></option>
+                                                                                <?php
+                                                                                     }
+                                                                                }
+                                                                                ?>
+                                                                           </optgroup>
+                                                                      <?php } ?>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for="lineOfTreatment" class="labels"><?= _translate('Line of Treatment'); ?> </label>
@@ -402,27 +424,6 @@ foreach($testReasonsResult as $rid=>$row){
                                                                       <option value="2"><?= _translate('2nd Line'); ?></option>
                                                                       <option value="3"><?= _translate('3rd Line'); ?></option>
                                                                       <option value="n/a"><?= _translate('N/A'); ?></option>
-                                                                 </select>
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for=""> <?= _translate('Current ARV Protocol'); ?></label>
-                                                                 <select class="select2 form-control" id="artRegimen" name="artRegimen" title="<?= _translate('Please choose ART Regimen'); ?>" style="width:100%;" onchange="checkARTRegimenValue();">
-                                                                      <option value=""><?= _translate('-- Select --'); ?></option>
-                                                                      <?php foreach ($artRegimenResult as $heading) { ?>
-                                                                           <optgroup label="<?= $heading['headings']; ?>">
-                                                                                <?php
-                                                                                foreach ($aResult as $regimen) {
-                                                                                     if ($heading['headings'] == $regimen['headings']) {
-                                                                                ?>
-                                                                                          <option value="<?php echo $regimen['art_code']; ?>"><?php echo $regimen['art_code']; ?></option>
-                                                                                <?php
-                                                                                     }
-                                                                                }
-                                                                                ?>
-                                                                           </optgroup>
-                                                                      <?php } ?>
                                                                  </select>
                                                             </div>
                                                        </div>
