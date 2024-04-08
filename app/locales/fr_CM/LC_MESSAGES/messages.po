@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-04-08 21:05+0530\n"
-"PO-Revision-Date: 2024-04-08 21:06+0530\n"
+"POT-Creation-Date: 2024-04-08 21:31+0530\n"
+"PO-Revision-Date: 2024-04-08 21:31+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -20711,7 +20711,6 @@ msgid "Please check viral load indication testing type"
 msgstr "Veuillez vérifier le type de test d'indication de la charge virale"
 
 #: vl/requests/forms/add-cameroon.php:455
-#: vl/requests/forms/edit-cameroon.php:526
 #: vl/results/forms/update-cameroon-result.php:548
 msgid "Types Of Control VL Testing"
 msgstr "Types de tests de contrôle VL"
@@ -20720,8 +20719,8 @@ msgstr "Types de tests de contrôle VL"
 #: vl/requests/forms/edit-cameroon.php:480
 #: vl/requests/forms/edit-cameroon.php:528
 #: vl/results/forms/update-cameroon-result.php:550
-msgid "Please choose reason of request of VL"
-msgstr "Veuillez choisir le motif de la demande de VL"
+msgid "Please choose a reason for VL testing"
+msgstr "Veuillez choisir une raison pour le test VL"
 
 #: vl/requests/forms/add-cameroon.php:469
 #: vl/requests/forms/edit-cameroon.php:517
@@ -20959,6 +20958,10 @@ msgstr "Motif de la demande de charge virale"
 #: vl/requests/forms/edit-cameroon.php:489
 msgid "Enter new reason of testing"
 msgstr "Saisir un nouveau motif de contrôle"
+
+#: vl/requests/forms/edit-cameroon.php:526
+msgid "Choose reason for testing"
+msgstr "Choisir la raison du test"
 
 #: vl/requests/forms/edit-drc.php:621 vl/requests/forms/edit-drc.php:625
 #: vl/results/forms/update-drc-result.php:590
@@ -21457,6 +21460,9 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Please choose reason of request of VL"
+#~ msgstr "Veuillez choisir le motif de la demande de VL"
 
 #~ msgid "6 Months"
 #~ msgstr "6 mois"

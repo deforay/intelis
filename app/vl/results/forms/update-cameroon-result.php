@@ -547,7 +547,7 @@ foreach ($testReasonsResult as $rid => $row) {
 														<div class="col-md-6">
 															<label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
 															<div class="col-lg-7">
-																<select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control" title="<?= _translate('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
+																<select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
 																	<option value=""> <?= _translate("-- Select --"); ?> </option>
 																	<?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
 																		<option value="<?php echo $testReasonId; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $testReasonId) ? "selected='selected'" : ""; ?>><?php echo ucwords($row); ?></option>
