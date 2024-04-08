@@ -117,7 +117,7 @@ try {
         r_f_s.funding_source_name                            as fundingSourceName,
         r_i_p.i_partner_name                                 as implementingPartnerName,
         ts.status_name                                       as resultStatusName,
-        
+
         vl.revised_by                                        as revisedBy,
         r_r_b.user_name                                      as revisedByName,
         vl.revised_on                                        as revisedOn,
@@ -222,5 +222,5 @@ try {
     error_log($exc->getTraceAsString());
 }
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'get-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'get-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

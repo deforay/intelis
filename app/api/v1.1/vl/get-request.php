@@ -147,7 +147,7 @@ try {
             u_d.user_name                                        as reviewedByName,
             vl.result_reviewed_datetime                          as reviewedOn,
             lt_u_d.user_name                                     as labTechnicianName,
-            
+
             vl.external_sample_code                              as serialNo,
             vl.is_patient_new                                    as isPatientNew,
             vl.has_patient_changed_regimen                       as hasChangedRegimen,
@@ -246,5 +246,5 @@ try {
     error_log($exc->getTraceAsString());
 }
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'get-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'get-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

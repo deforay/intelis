@@ -90,7 +90,7 @@ try {
                 continue;
 
 
-            $num = count($rowData);
+            $num = count($rowData ?? []);
             $row++;
 
             $sampleCode = "";
