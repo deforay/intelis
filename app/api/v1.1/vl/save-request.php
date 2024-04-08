@@ -293,6 +293,7 @@ try {
             'last_vl_result_routine' => $data['rmTestingVlValue'] ?? null,
             'last_vl_date_failure_ac' => DateUtility::isoDateFormat($data['repeatTestingLastVLDate'] ?? ''),
             'last_vl_result_failure_ac' => $data['repeatTestingVlValue'] ?? null,
+            'line_of_treatment' => $data['lineOfTreatment'] ?? null,
             'last_vl_date_failure' => DateUtility::isoDateFormat($data['suspendTreatmentLastVLDate'] ?? ''),
             'last_vl_result_failure' => $data['suspendTreatmentVlValue'] ?? null,
             'request_clinician_name' => $data['reqClinician'] ?? null,
