@@ -154,7 +154,7 @@ if (empty($syncLatestTime)) {
 						url: "/scheduled-jobs/remote/sts-metadata-receiver.php",
 					})
 					.done(function(data) {
-						console.log("Common Data Synced | STS -> LIS");
+						console.log("Metadata Synced | STS -> LIS");
 						$.unblockUI();
 					})
 					.fail(function() {

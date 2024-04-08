@@ -40,7 +40,6 @@ try {
 
     $transactionId = $general->generateUUID();
 
-    /* Lab Storage Sync Start */
     $url = $remoteUrl . '/remote/remote/lab-metadata-receiver.php';
 
     $payload = [
@@ -56,7 +55,7 @@ try {
         $db->where('storage_code', $result, 'IN');
         $id = $db->update('lab_storage', ['data_sync' => 1]);
     }
-    /* Lab Storage Sync End */
+
 
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
