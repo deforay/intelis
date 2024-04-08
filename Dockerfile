@@ -39,6 +39,8 @@ COPY . /var/www/html/
 # Install project dependencies using composer
 RUN composer install --no-dev --optimize-autoloader --no-progress
 
+RUN composer dump-autoload --optimize
+
 # Fix permissions
 RUN setfacl -R -m u:www-data:rwx /var/www/html;
 

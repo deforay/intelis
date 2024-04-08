@@ -152,7 +152,7 @@ $state = $geolocationService->getProvinces("yes");
                                                                 <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
                                                             </div>
                                                         <?php } ?>
-                                                        
+
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
                                                         </div>
@@ -827,7 +827,7 @@ $state = $geolocationService->getProvinces("yes");
                 }
             });
     }
-   
+
 
     function convertSearchResultToPdf(id, newData = null) {
         $.blockUI();
