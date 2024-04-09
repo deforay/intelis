@@ -293,7 +293,7 @@ if (!empty($id)) {
                     $sampleCounter = $alphaNumeric[($j + 1)];
                 } else {
                     $xplodJsonToArray = explode("_", (string) $jsonToArray[$j]);
-                    if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+                    if (!empty($xplodJsonToArray) && count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if ((isset($_GET['type']) && $_GET['type'] == 'tb') || (isset($_GET['type']) && $_GET['type'] == 'cd4')) {
                             $sampleQuery = "SELECT sample_code,
                                             remote_sample_code,
@@ -358,7 +358,7 @@ if (!empty($id)) {
                     } else {
                         //  echo $bResult['control_names']; die;
                         $controlNamesArr = json_decode((string) $bResult['control_names'], true);
-                        if (array_key_exists($jsonToArray[$j], $controlNamesArr) && $controlNamesArr[$jsonToArray[$j]] != "") {
+                        if (!empty($controlNamesArr) && array_key_exists($jsonToArray[$j], $controlNamesArr) && $controlNamesArr[$jsonToArray[$j]] != "") {
                             $label = $controlNamesArr[$jsonToArray[$j]];
                         } else {
                             $label = str_replace("_", " ", (string) $jsonToArray[$j]);
