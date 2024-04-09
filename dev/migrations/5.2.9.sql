@@ -384,7 +384,7 @@ CREATE TABLE `lab_storage_history` (
   `updated_datetime` timestamp NOT NULL,
   `updated_by` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`history_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 -- Amit 09-Apr-2024
