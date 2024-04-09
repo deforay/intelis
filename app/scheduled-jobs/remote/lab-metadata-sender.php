@@ -71,24 +71,37 @@ try {
         $payload["patients"] = $patients;
     }
 
-    // // INSTRUMENTS
-    // if (!empty($lastUpdatedOn)) {
-    //     $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
-    // }
-    // $instruments = $db->get('instruments');
+    // INSTRUMENTS
+    if (!empty($lastUpdatedOn)) {
+        $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+    }
+    $instruments = $db->get('instruments');
 
-    // if (!empty($instruments)) {
-    //     $payload["instruments"] = $instruments;
-    // }
-
-    $jsonResponse = $apiService->post($url, $payload);
-    $result = json_decode($jsonResponse, true);
-
-    if (!empty($result)) {
-        $db->where('storage_code', $result, 'IN');
-        $id = $db->update('lab_storage', ['data_sync' => 1]);
+    if (!empty($instruments)) {
+        $payload["instruments"] = $instruments;
     }
 
+    // INSTRUMENT MACHINES
+    if (!empty($lastUpdatedOn)) {
+        $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+    }
+    $instruments = $db->get('instrument_machines');
+
+    if (!empty($instruments)) {
+        $payload["instrumentMachines"] = $instruments;
+    }
+
+    // INSTRUMENT CONTROLS
+    if (!empty($lastUpdatedOn)) {
+        $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+    }
+    $instruments = $db->get('instrument_controls');
+
+    if (!empty($instruments)) {
+        $payload["instrumentControls"] = $instruments;
+    }
+
+    $jsonResponse = $apiService->post($url, $payload);
 
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);

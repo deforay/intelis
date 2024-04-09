@@ -48,7 +48,9 @@ $updatedOn = DateUtility::getCurrentDateTime();
 
 foreach ($instrumentResult as $row) {
 
+    $oldInstrumentId = null;
     if (is_numeric($row['instrument_id'])) {
+        $oldInstrumentId = $row['instrument_id'];
         $instrumentId = $general->generateUUID();
         $db->where("instrument_id", $row['instrument_id']);
         $db->update('instruments', ['instrument_id' => $instrumentId, 'updated_datetime' => $updatedOn]);
@@ -63,19 +65,34 @@ foreach ($instrumentResult as $row) {
     }
 
     $db->where("vl_test_platform", $row["machine_name"]);
-    $db->update('form_vl', array('instrument_id' => $instrumentId));
+    if (!empty($oldInstrumentId)) {
+        $db->orWhere("instrument_id", $oldInstrumentId);
+    }
+    $db->update('form_vl', ['instrument_id' => $instrumentId]);
 
     $db->where("eid_test_platform", $row["machine_name"]);
-    $db->update('form_eid', array('instrument_id' => $instrumentId));
+    if (!empty($oldInstrumentId)) {
+        $db->orWhere("instrument_id", $oldInstrumentId);
+    }
+    $db->update('form_eid', ['instrument_id' => $instrumentId]);
 
     $db->where("testing_platform", $row["machine_name"]);
-    $db->update('covid19_tests', array('instrument_id' => $instrumentId));
+    if (!empty($oldInstrumentId)) {
+        $db->orWhere("instrument_id", $oldInstrumentId);
+    }
+    $db->update('covid19_tests', ['instrument_id' => $instrumentId]);
 
     $db->where("hepatitis_test_platform", $row["machine_name"]);
-    $db->update('form_hepatitis', array('instrument_id' => $instrumentId));
+    if (!empty($oldInstrumentId)) {
+        $db->orWhere("instrument_id", $oldInstrumentId);
+    }
+    $db->update('form_hepatitis', ['instrument_id' => $instrumentId]);
 
     $db->where("tb_test_platform", $row["machine_name"]);
-    $db->update('form_tb', array('instrument_id' => $instrumentId));
+    if (!empty($oldInstrumentId)) {
+        $db->orWhere("instrument_id", $oldInstrumentId);
+    }
+    $db->update('form_tb', ['instrument_id' => $instrumentId]);
 }
 
 // After successful execution, log the script run

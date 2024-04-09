@@ -55,6 +55,10 @@ try {
                 $labStorageData = $data;
             } elseif ($name === 'instruments') {
                 $instrumentsData = $data;
+            } elseif ($name === 'instrumentMachines') {
+                $instrumentMachinesData = $data;
+            } elseif ($name === 'instrumentControls') {
+                $instrumentControlsData = $data;
             } elseif ($name === 'patients') {
                 $patientsData = $data;
             }
@@ -80,9 +84,9 @@ try {
                     }
                     if (!empty($sResult)) {
                         $db->where($primaryKey, $sResult[$primaryKey]);
-                        $id = $db->update($tableName, $labStorageData);
+                        $db->update($tableName, $labStorageData);
                     } else {
-                        $id = $db->insert($tableName, $labStorageData);
+                        $db->insert($tableName, $labStorageData);
                     }
                 } catch (Throwable $e) {
 
