@@ -387,3 +387,6 @@ CREATE TABLE `lab_storage_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 
+-- Amit 09-Apr-2024
+ALTER TABLE `instrument_controls` ADD `updated_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `number_of_calibrators`;
+ALTER TABLE `s_vlsm_instance` ADD `last_lab_metadata_sync` DATETIME NULL DEFAULT NULL AFTER `last_vldash_sync`;

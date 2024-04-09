@@ -3776,16 +3776,6 @@ CREATE TABLE `instrument_controls` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `instrument_controls`
---
-
-LOCK TABLES `instrument_controls` WRITE;
-/*!40000 ALTER TABLE `instrument_controls` DISABLE KEYS */;
-INSERT INTO `instrument_controls` VALUES ('covid-19','3',0,0,0),('eid','2',0,0,0),('eid','3',0,2,0),('hepatitis','2',0,0,0),('hepatitis','3',0,0,0),('vl','2',0,0,0),('vl','3',0,3,0);
-/*!40000 ALTER TABLE `instrument_controls` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `instrument_machines`
 --
 
@@ -3806,15 +3796,6 @@ CREATE TABLE `instrument_machines` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `instrument_machines`
---
-
-LOCK TABLES `instrument_machines` WRITE;
-/*!40000 ALTER TABLE `instrument_machines` DISABLE KEYS */;
-INSERT INTO `instrument_machines` VALUES (1,'1','Roche 1',NULL,'roche-rwanda.php',NULL,NULL,NULL,NULL),(2,'3','Abbott',NULL,'abbott.php','no','','','2022-02-23 11:18:02');
-/*!40000 ALTER TABLE `instrument_machines` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `instruments`
@@ -3844,16 +3825,6 @@ CREATE TABLE `instruments` (
   PRIMARY KEY (`instrument_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `instruments`
---
-
-LOCK TABLES `instruments` WRITE;
-/*!40000 ALTER TABLE `instruments` DISABLE KEYS */;
-INSERT INTO `instruments` VALUES ('1','Roche',NULL,NULL,'roche-rwanda.php',20,10000000,21,0,3,0,NULL,NULL,NULL,NULL,'active',NULL),('2','Biomerieux',NULL,NULL,'biomerieux.php',30,10000000,10,2,3,1,'',NULL,NULL,NULL,'active',NULL),('3','Abbott',NULL,'[\"vl\"]','abbott.php',20,10000000,96,0,3,0,'',NULL,NULL,NULL,'active',NULL);
-/*!40000 ALTER TABLE `instruments` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `lab_report_signatories`

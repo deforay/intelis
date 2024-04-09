@@ -34,9 +34,9 @@ try {
     $request = AppRegistry::get('request');
     $jsonResponse = $apiService->getJsonFromRequest($request);
 
-    $emptyLabArray = $general->getTableFieldsAsArray('lab_storage');
+    $counter = 0;
 
-    $transactionId = $general->generateUUID();
+
     //$storageId = [];
     $labId = null;
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
@@ -47,7 +47,9 @@ try {
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $name => $data) {
-            if ($name === 'labId') {
+            if ($name === 'transactionId') {
+                $transactionId = $data;
+            } elseif ($name === 'labId') {
                 $labId = $data;
             } elseif ($name === 'labStorage') {
                 $labStorageData = $data;
@@ -58,13 +60,16 @@ try {
             }
         }
 
+        $transactionId = $transactionId ?? $general->generateUUID();
 
-        $counter = 0;
         if (!empty($labStorageData)) {
+
+            $emptyLabStorageArray = $general->getTableFieldsAsArray('lab_storage');
+
             foreach ($labStorageData as $key => $resultRow) {
                 $counter++;
                 // Overwrite the values in $emptyLabArray with the values in $resultRow
-                $labStorageData = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
+                $labStorageData = array_merge($emptyLabStorageArray, array_intersect_key($resultRow, $emptyLabStorageArray));
 
                 $primaryKey = $checkColumn = 'storage_id';
                 $tableName = 'lab_storage';
