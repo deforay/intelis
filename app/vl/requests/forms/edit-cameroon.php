@@ -127,6 +127,7 @@ foreach ($testReasonsResult as $rid => $row) {
      </section>
      <!-- Main content -->
      <section class="content">
+          <!-- <pre><?php print_r($vlQueryInfo['reason_for_vl_testing']);?></pre> -->
           <div class="box box-default">
                <div class="box-header with-border">
                     <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate('indicates required fields'); ?> &nbsp;</div>
@@ -525,7 +526,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                                 <div class="col-md-6">
                                                                                      <label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>
                                                                                      <div class="col-lg-7">
-                                                                                          <select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control isRequired" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
+                                                                                          <select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
                                                                                                <option value=""> <?= _translate("-- Select --"); ?> </option>
                                                                                                <?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
                                                                                                     <option value="<?php echo $testReasonId; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $testReasonId) ? "selected='selected'" : ""; ?>><?php echo ucwords($row); ?></option>
@@ -535,7 +536,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                                 </div>
                                                                            </div>
 
-                                                       <?php }
+                                                                 <?php }
                                                                  }
                                                             }
                                                        } ?>

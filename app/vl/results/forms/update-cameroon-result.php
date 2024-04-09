@@ -520,61 +520,47 @@ foreach ($testReasonsResult as $rid => $row) {
 								<div class="box-body">
 									<?php if (isset($testReasonsResult) && !empty($testReasonsResult)) {
 										foreach ($testReasonsResult as $key => $title) { ?>
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
-														<div class="col-lg-12">
-															<label class="radio-inline">
-																<input type="radio" <?php echo (in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "checked='checked'" : ""; ?> class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>');">
-																<strong><?= _translate($title); ?></strong>
-															</label>
+												<div class="row">
+													<div class="col-md-6">
+														<div class="form-group">
+															<div class="col-lg-12">
+																	<label class="radio-inline">
+																		<input type="radio" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "checked='checked'" : ""; ?> class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>');">
+																		<strong><?= _translate($title); ?></strong>
+																	</label>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-											<?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) {
-												if ($key == 5) { ?>
-													<div class="row rmTesting5 well" style="display:<?php echo (isset($vlQueryInfo['reason_for_vl_testing_other']) && !empty($vlQueryInfo['reason_for_vl_testing_other'])) ? "block" : "none"; ?>;">
-														<div class="col-md-6">
-															<label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
-															<div class="col-lg-7">
-																<input type="text" value="<?php echo $vlQueryInfo['reason_for_vl_testing_other'] ?? null; ?>" class="form-control" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
+												<?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) {
+													if ($key == 5) { ?>
+														<div class="row rmTesting5 well" style="display:<?php echo (isset($vlQueryInfo['reason_for_vl_testing_other']) && !empty($vlQueryInfo['reason_for_vl_testing_other'])) ? "block" : "none"; ?>;">
+															<div class="col-md-6">
+																	<label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
+																	<div class="col-lg-7">
+																		<input type="text" value="<?php echo $vlQueryInfo['reason_for_vl_testing_other'] ?? null; ?>" class="form-control" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
+																	</div>
 															</div>
 														</div>
-													</div>
-												<?php } else { ?>
-													<div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:<?php echo (in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "block" : "none"; ?>;">
-														<div class="col-md-6">
-															<label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
-															<div class="col-lg-7">
-																<select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
-																	<option value=""> <?= _translate("-- Select --"); ?> </option>
-																	<?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
-																		<option value="<?php echo $testReasonId; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $testReasonId) ? "selected='selected'" : ""; ?>><?php echo ucwords($row); ?></option>
-																	<?php } ?>
-																</select>
+													<?php } else { ?>
+														<div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:<?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "block" : "none"; ?>;">
+															<div class="col-md-6">
+																	<label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>
+																	<div class="col-lg-7">
+																		<select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
+																			<option value=""> <?= _translate("-- Select --"); ?> </option>
+																			<?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
+																				<option value="<?php echo $testReasonId; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $testReasonId) ? "selected='selected'" : ""; ?>><?php echo ucwords($row); ?></option>
+																			<?php } ?>
+																		</select>
+																	</div>
 															</div>
 														</div>
-													</div>
 
-									<?php }
-											}
+												<?php }
+												}
 										}
 									} ?>
-									<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<div class="col-lg-12">
-														<label class="radio-inline">
-															<input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" onclick="showTesting('recency')" <?php echo $disable; ?>>
-															<strong><?= _translate('Confirmation Test for Recency'); ?></strong>
-														</label>
-													</div>
-												</div>
-											</div>
-										</div>
-									<?php } ?>
 									<hr>
 
 								</div>
