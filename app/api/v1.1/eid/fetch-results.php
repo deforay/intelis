@@ -114,7 +114,7 @@ try {
         f.facility_district_id                               as districtId,
         f.facility_name                                      as facilityName,
         vl.result_reviewed_datetime                          as resultReviewedDatetime,
-        
+
         vl.revised_by                                        as revisedBy,
         r_r_b.user_name                                      as revisedByName,
         vl.revised_on                                        as revisedOn,
@@ -234,5 +234,5 @@ try {
     error_log($exc->getTraceAsString());
 }
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-results', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

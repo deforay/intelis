@@ -263,6 +263,6 @@ try {
     error_log($exc->getTraceAsString());
 }
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'get-request', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'get-request', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 http_response_code(200);
 echo $payload;

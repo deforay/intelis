@@ -61,9 +61,8 @@ for phpini in /usr/local/etc/php/php.ini; do
     }' $phpini >temp.ini && mv temp.ini $phpini
 done
 
-# Run migrations
-echo "Running migrations..."
-php /var/www/html/app/system/migrate.php -yq
+cd /var/www/html/
+composer post-install
 
 # Start the cron service
 service cron start

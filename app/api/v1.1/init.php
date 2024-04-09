@@ -128,7 +128,8 @@ $data['sampleStatusList'] = $general->generateSelectOptionsAPI($statusList);
 $statusFilterList = $general->generateSelectOptionsAPI($general->getSampleStatus(true));
 $modules = SYSTEM_CONFIG['modules'];
 
-$rejectionReason = []; $testReason = [];
+$rejectionReason = [];
+$testReason = [];
 foreach ($modules as $module => $status) {
     $rejectionResult = [];
     $rejectionTypeResult = [];
@@ -144,7 +145,7 @@ foreach ($modules as $module => $status) {
             $condition .= " AND updated_datetime >= '$updatedDateTime'";
         }
         $rejectionTypeResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', array('rejection_type'), false, $condition, 'rejection_type');
-        
+
         foreach ($rejectionTypeResult as $key => $type) {
             $reasons[$module][$key]['show'] = ucwords((string) $type['rejection_type']);
             $condition = " rejection_reason_status ='active' AND rejection_type LIKE '" . $type['rejection_type'] . "'";
@@ -160,13 +161,14 @@ foreach ($modules as $module => $status) {
         $rejectionReason[$module] = $reasons[$module];
         $testReasonName = "test_reason_name";
         $testReasonTable = 'r_' . $module . '_test_reasons';
-        if($module == 'genericTests' || $modules == 'generic-tests' || $modules == 'generic'){
+        if ($module == 'genericTests' || $modules == 'generic-tests' || $modules == 'generic') {
             $testReasonTable = 'r_generic_test_reasons';
             $testReasonName = "test_reason";
         }
-        $testReasonsResult = $general->getDataByTableAndFields($testReasonTable, array('test_reason_id', $testReasonName), false, " test_reason_status like 'active' ", $testReasonName);
+        $testReasonsResult = $general->getDataByTableAndFields($testReasonTable, array('test_reason_id', $testReasonName, 'parent_reason'), false, " test_reason_status like 'active' ", $testReasonName);
         // print_r($testReasonsResult);die;
         foreach ($testReasonsResult as $subKey => $reject) {
+            $testReasons[$module]['testReasons'][$subKey]['parent'] = $reject['parent_reason'] ?? 0;
             $testReasons[$module]['testReasons'][$subKey]['value'] = $reject['test_reason_id'];
             $testReasons[$module]['testReasons'][$subKey]['show'] = ($reject[$testReasonName]);
         }
@@ -417,7 +419,7 @@ if (isset($applicationConfig['modules']['generic-tests']) && $applicationConfig[
     /* Rejected Reason*/
     $data['genericTests']['rejectedReasonList'] = $rejectionReason['generic-tests'];
     $data['genericTests']['testReasonList'] = $testReason['generic-tests']['testReasons'];
-    
+
     /* Testing Platform Details */
     $testPlatformList = [];
     $testPlatformResult = $general->getTestingPlatforms('generic-tests');

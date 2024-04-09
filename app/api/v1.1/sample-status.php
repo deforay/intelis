@@ -90,5 +90,5 @@ try {
 }
 
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'sample-status', $input['testType'], $requestUrl, $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'sample-status', $input['testType'], $requestUrl, $origJson, $payload, 'json');
 echo $payload;

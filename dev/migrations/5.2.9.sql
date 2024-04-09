@@ -367,6 +367,9 @@ UPDATE `s_app_menu` SET `show_mode` = 'lis' WHERE `s_app_menu`.`display_text` = 
 --Jeyabanu 05-Apr-2024
 ALTER TABLE `batch_details` ADD `control_names` JSON NULL DEFAULT NULL AFTER `label_order`;
 
+
+-- Amit 08-Apr-2024
+ALTER TABLE `r_generic_test_reasons` ADD `parent_reason` INT NULL DEFAULT NULL AFTER `test_reason`;
 -- Jeyabanu 09-Apr-2024
 CREATE TABLE `lab_storage_history` (
   `history_id` int NOT NULL AUTO_INCREMENT,
@@ -382,4 +385,5 @@ CREATE TABLE `lab_storage_history` (
   `updated_by` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
 

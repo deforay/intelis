@@ -43,8 +43,7 @@ $primaryKey = $testTableData['primaryKey'];
 $patientFirstName = $testTableData['patientFirstName'];
 $patientLastName = $testTableData['patientLastName'];
 $resultColumn = 'result';
-if($_GET['type']=='cd4')
-{
+if ($_GET['type'] == 'cd4') {
     $resultColumn = 'cd4_result';
 }
 
@@ -270,16 +269,15 @@ if (!empty($id)) {
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     } else {
-                      //  echo $bResult['control_names']; die;
+                        //  echo $bResult['control_names']; die;
                         $controlNamesArr = json_decode((string) $bResult['control_names'], true);
-                        if(array_key_exists($jsonToArray[$alphaNumeric[$j]],$controlNamesArr) && $controlNamesArr[$jsonToArray[$alphaNumeric[$j]]]!=""){
+                        if (!empty($controlNamesArr) && array_key_exists($jsonToArray[$alphaNumeric[$j]], $controlNamesArr) && $controlNamesArr[$jsonToArray[$alphaNumeric[$j]]] != "") {
                             $label = $controlNamesArr[$jsonToArray[$alphaNumeric[$j]]];
-                        }
-                        else{
+                        } else {
                             $label = str_replace("_", " ", (string) $jsonToArray[$alphaNumeric[$j]]);
                             $label = str_replace("in house", "In-House", $label);
                             $label = (str_replace("no of ", " ", $label));
-                            }
+                        }
 
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                         $tbl .= '<tr nobr="true" style="width:100%;">';
@@ -295,7 +293,7 @@ if (!empty($id)) {
                     $sampleCounter = $alphaNumeric[($j + 1)];
                 } else {
                     $xplodJsonToArray = explode("_", (string) $jsonToArray[$j]);
-                    if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+                    if (!empty($xplodJsonToArray) && count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if ((isset($_GET['type']) && $_GET['type'] == 'tb') || (isset($_GET['type']) && $_GET['type'] == 'cd4')) {
                             $sampleQuery = "SELECT sample_code,
                                             remote_sample_code,
@@ -358,12 +356,11 @@ if (!empty($id)) {
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     } else {
-                      //  echo $bResult['control_names']; die;
+                        //  echo $bResult['control_names']; die;
                         $controlNamesArr = json_decode((string) $bResult['control_names'], true);
-                        if(array_key_exists($jsonToArray[$j],$controlNamesArr) && $controlNamesArr[$jsonToArray[$j]]!=""){
+                        if (!empty($controlNamesArr) && array_key_exists($jsonToArray[$j], $controlNamesArr) && $controlNamesArr[$jsonToArray[$j]] != "") {
                             $label = $controlNamesArr[$jsonToArray[$j]];
-                        }
-                        else{
+                        } else {
                             $label = str_replace("_", " ", (string) $jsonToArray[$j]);
                             $label = str_replace("in house", "In-House", $label);
                             $label = (str_replace("no of ", " ", $label));
@@ -390,7 +387,7 @@ if (!empty($id)) {
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                     $tbl .= '<tr nobr="true" style="width:100%;">
                             <td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333">' . $i . '.</td>
-                            <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('In-House Controls') . ' ' . $i . '</td>
+                            <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('In-House Control') . ' ' . $i . '</td>
                             <td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                             <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                             <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
@@ -407,7 +404,7 @@ if (!empty($id)) {
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                     $tbl .= '<tr nobr="true" style="width:100%;">
                     <td align="center" width="6%" style="vertical-align:middle;">' . $sNo . '.</td>
-                    <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('Manfacturing Controls') . ' ' . $i . '</td>
+                    <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('Manufacturer Control') . ' ' . $i . '</td>
                     <td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                     <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                     <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
@@ -424,7 +421,7 @@ if (!empty($id)) {
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                     $tbl .= '<tr nobr="true" style="width:100%;">
                     <td align="center" width="6%" style="vertical-align:middle;">' . $sNo . '.</td>
-                    <td align="center" width="20%" style="vertical-align:middle;">' . _translate('Calibrators') . ' ' . $i . '</td>
+                    <td align="center" width="20%" style="vertical-align:middle;">' . _translate('Calibrator') . ' ' . $i . '</td>
                     <td align="center" width="35%" style="vertical-align:middle;"></td>
                     <td align="center" width="13%" style="vertical-align:middle;"></td>
                     <td align="center" width="13%" style="vertical-align:middle;"></td>

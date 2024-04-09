@@ -44,11 +44,11 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _translate("-- Select --"); ?>');
 $testReasonsResult = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = 0 AND test_reason_status like 'active' ", 'test_reason_name');
 $subTestReasons = [];
-foreach($testReasonsResult as $rid=>$row){
-     if($rid == 5){
+foreach ($testReasonsResult as $rid => $row) {
+     if ($rid == 5) {
           $subTestReasons[$rid] = [0 => 'Other'];
-     }else{
-          $subTestReasons[$rid] = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = ".$rid." AND test_reason_status like 'active' ", 'test_reason_name');
+     } else {
+          $subTestReasons[$rid] = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = " . $rid . " AND test_reason_status like 'active' ", 'test_reason_name');
      }
 }
 ?>
@@ -171,7 +171,7 @@ foreach($testReasonsResult as $rid=>$row){
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                  <label for="fundingSource">Funding Source</label>
+                                                       <label for="fundingSource">Funding Source</label>
                                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
                                                             <?php
@@ -286,18 +286,18 @@ foreach($testReasonsResult as $rid=>$row){
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="healthInsuranceCode"><?= _translate('Universal Health Coverage'); ?></label>
-                                                       <input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/>
+                                                       <input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32" />
                                                   </div>
                                              </div>
-                                                       </div>
-                                             <div class="row">
+                                        </div>
+                                        <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="patientPhoneNumber"><?= _translate('Phone Number'); ?></label>
                                                        <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" placeholder="<?= _translate('Enter Phone Number'); ?>" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" title="<?= _translate('Enter phone number'); ?>" />
                                                   </div>
                                              </div>
-                                            
+
                                         </div>
                                         <div class="row femaleSection" style="display:none;">
                                              <div class="col-xs-3 col-md-3">
@@ -393,7 +393,7 @@ foreach($testReasonsResult as $rid=>$row){
                                                                  <input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="<?= _translate('Treatment Start Date'); ?>" title="<?= _translate('Treatment Start Date'); ?>" style="width:100%;" onchange="checkARTInitiationDate();">
                                                             </div>
                                                        </div>
-                                                      
+
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for=""> <?= _translate('Current ARV Protocol'); ?></label>
@@ -405,7 +405,7 @@ foreach($testReasonsResult as $rid=>$row){
                                                                                 foreach ($aResult as $regimen) {
                                                                                      if ($heading['headings'] == $regimen['headings']) {
                                                                                 ?>
-                                                                                <option value="<?php echo $regimen['art_code']; ?>"><?php echo $regimen['art_code']; ?></option>
+                                                                                          <option value="<?php echo $regimen['art_code']; ?>"><?php echo $regimen['art_code']; ?></option>
                                                                                 <?php
                                                                                      }
                                                                                 }
@@ -431,65 +431,52 @@ foreach($testReasonsResult as $rid=>$row){
                                              </div>
                                              <div class="box box-primary">
                                                   <div class="box-header with-border">
-                                                       <h3 class="box-title"><?= _translate('Reason of Request of the Viral Load'); ?> <span class="mandatory">*</span></h3><small> <?= _translate('(Please pick one): (To be completed by clinician)'); ?></small>
+                                                       <h3 class="box-title"><?= _translate('Reason for Viral Load Testing'); ?> <span class="mandatory">*</span></h3><small> <?= _translate('(Please pick one): (To be completed by clinician)'); ?></small>
                                                   </div>
                                                   <div class="box-body">
-                                                  <?php if(isset($testReasonsResult) && !empty($testReasonsResult)){ 
-                                                            foreach($testReasonsResult as $key => $title){?>
+                                                       <?php if (isset($testReasonsResult) && !empty($testReasonsResult)) {
+                                                            foreach ($testReasonsResult as $key => $title) { ?>
                                                                  <div class="row">
                                                                       <div class="col-md-6">
                                                                            <div class="form-group">
                                                                                 <div class="col-lg-12">
                                                                                      <label class="radio-inline">
-                                                                                          <input type="radio" class="isRequired" id="rmTesting<?php echo $key;?>" name="reasonForVLTesting" value="<?php echo $key;?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key;?>');">
+                                                                                          <input type="radio" class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>');">
                                                                                           <strong><?= _translate($title); ?></strong>
                                                                                      </label>
                                                                                 </div>
                                                                            </div>
                                                                       </div>
                                                                  </div>
-                                                                 <?php if(isset($subTestReasons[$key]) && !empty($subTestReasons[$key])){  
-                                                                      if($key != 5){ ?>
-                                                                      <div class="row rmTesting<?php echo $key;?> hideTestData well" style="display:none;">
-                                                                           <div class="col-md-6">
-                                                                                <label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
-                                                                                <div class="col-lg-7">
-                                                                                     <select name="controlVlTestingType[<?php echo $key;?>]" id="controlVlType" class="form-control" title="<?= _translate('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                                     <option value=""> <?= _translate("-- Select --"); ?> </option>
-                                                                                          <?php foreach($subTestReasons[$key] as $testReasonId => $row){?>
-                                                                                               <option value="<?php echo $testReasonId; ?>"><?php echo ucwords($row); ?></option>
-                                                                                          <?php } ?>
-                                                                                     </select>
+                                                                 <?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) {
+                                                                      if ($key != 5) { ?>
+                                                                           <div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:none;">
+                                                                                <div class="col-md-6">
+                                                                                     <label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
+                                                                                     <div class="col-lg-7">
+                                                                                          <select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
+                                                                                               <option value=""> <?= _translate("-- Select --"); ?> </option>
+                                                                                               <?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
+                                                                                                    <option value="<?php echo $testReasonId; ?>"><?php echo ucwords($row); ?></option>
+                                                                                               <?php } ?>
+                                                                                          </select>
+                                                                                     </div>
                                                                                 </div>
                                                                            </div>
-                                                                      </div>
-                                                                      <?php }elseif($key == 5){ ?>
-                                                                      <div class="row rmTesting5 hideTestData well" style="display:none;">
-                                                                           <div class="col-md-6">
-                                                                                <label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
-                                                                                <div class="col-lg-7">
-                                                                                     <input type="text" class="form-control" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
+                                                                      <?php } elseif ($key == 5) { ?>
+                                                                           <div class="row rmTesting5 hideTestData well" style="display:none;">
+                                                                                <div class="col-md-6">
+                                                                                     <label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
+                                                                                     <div class="col-lg-7">
+                                                                                          <input type="text" class="form-control" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
+                                                                                     </div>
                                                                                 </div>
                                                                            </div>
-                                                                      </div>
-                                                                      <?php }
+                                                       <?php }
                                                                  }
                                                             }
-                                                       }?>
-                                                       <?php  if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <div class="form-group">
-                                                                           <div class="col-lg-12">
-                                                                                <label class="radio-inline">
-                                                                                     <input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="999" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('recency')">
-                                                                                     <strong><?= _translate('Confirmation Test for Recency'); ?></strong>
-                                                                                </label>
-                                                                           </div>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                       <?php } ?>
+                                                       } ?>
+
                                                        <hr>
 
                                                   </div>
@@ -536,7 +523,7 @@ foreach($testReasonsResult as $rid=>$row){
 
                                                             </div>
                                                             <div class="row">
-                                                                
+
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="isSampleRejected"><?= _translate('Is Sample Rejected?'); ?> </label>
                                                                       <div class="col-lg-7">
@@ -569,7 +556,7 @@ foreach($testReasonsResult as $rid=>$row){
                                                             </div>
 
                                                             <div class="row">
-                                                               
+
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlResult"><?= _translate('Viral Load Result (copies/ml)'); ?> </label>
                                                                       <div class="col-lg-7 resultInputContainer">
@@ -597,7 +584,7 @@ foreach($testReasonsResult as $rid=>$row){
 
 
                                                             <div class="row">
-                                                                 
+
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlLog"><?= _translate('Viral Load (Log)'); ?> </label>
                                                                       <div class="col-lg-7">
@@ -639,7 +626,7 @@ foreach($testReasonsResult as $rid=>$row){
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                
+
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="resultDispatchedOn"><?= _translate('Date Results Dispatched'); ?> </label>
                                                                       <div class="col-lg-7">
@@ -1122,7 +1109,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
      function validateNow() {
-          if($('#isSampleRejected').val() == "yes"){
+          if ($('#isSampleRejected').val() == "yes") {
                $('.vlResult, #vlResult').removeClass('isRequired');
           }
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
@@ -1168,7 +1155,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function validateSaveNow() {
-          if($('#isSampleRejected').val() == "yes"){
+          if ($('#isSampleRejected').val() == "yes") {
                $('.vlResult, #vlResult').removeClass('isRequired');
           }
           var format = '<?php echo $arr['sample_code']; ?>';
