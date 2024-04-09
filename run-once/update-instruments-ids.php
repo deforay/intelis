@@ -44,12 +44,20 @@ if (!$forceRun) {
 $query = "SELECT * FROM instruments";
 $instrumentResult = $db->rawQuery($query);
 
+$updatedOn = DateUtility::getCurrentDateTime();
+
 foreach ($instrumentResult as $row) {
 
-    if (is_int($row['instrument_id'])) {
+    if (is_numeric($row['instrument_id'])) {
         $instrumentId = $general->generateUUID();
         $db->where("instrument_id", $row['instrument_id']);
-        $db->update('instruments', array('instrument_id' => $instrumentId));
+        $db->update('instruments', ['instrument_id' => $instrumentId, 'updated_datetime' => $updatedOn]);
+
+        $db->where("instrument_id", $row['instrument_id']);
+        $db->update('instrument_controls', ['instrument_id' => $instrumentId, 'updated_datetime' => $updatedOn]);
+
+        $db->where("instrument_id", $row['instrument_id']);
+        $db->update('instrument_machines', ['instrument_id' => $instrumentId, 'updated_datetime' => $updatedOn]);
     } else {
         $instrumentId = $row['instrument_id'];
     }

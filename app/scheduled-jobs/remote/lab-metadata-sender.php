@@ -26,6 +26,8 @@ $version = VERSION;
 // putting this into a variable to make this editable
 $systemConfig = SYSTEM_CONFIG;
 
+$lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_lab_metadata_sync');
+
 if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     error_log("Please check if STS URL is set");
     exit(0);
@@ -40,13 +42,44 @@ try {
 
     $transactionId = $general->generateUUID();
 
+    $payload = [
+        "transactionId" => $transactionId,
+        "labId" => $labId,
+        "x-api-key" => $general->generateUUID(),
+    ];
+
     $url = $remoteUrl . '/remote/remote/lab-metadata-receiver.php';
 
-    $payload = [
-        "labId" => $labId,
-        "labStorage" => $db->get('lab_storage'),
-        "Key" => "vlsm-lab-data--",
-    ];
+    // LAB STORAGE
+    if (!empty($lastUpdatedOn)) {
+        $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+    }
+    $labStorage = $db->get('lab_storage');
+
+    if (!empty($labStorage)) {
+        $payload["labStorage"] = $labStorage;
+    }
+
+
+    // PATIENTS
+    if (!empty($lastUpdatedOn)) {
+        $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+    }
+    $patients = $db->get('patients');
+
+    if (!empty($patients)) {
+        $payload["patients"] = $patients;
+    }
+
+    // // INSTRUMENTS
+    // if (!empty($lastUpdatedOn)) {
+    //     $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+    // }
+    // $instruments = $db->get('instruments');
+
+    // if (!empty($instruments)) {
+    //     $payload["instruments"] = $instruments;
+    // }
 
     $jsonResponse = $apiService->post($url, $payload);
     $result = json_decode($jsonResponse, true);
@@ -59,7 +92,7 @@ try {
 
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
-    $id = $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
+    $id = $db->update('s_vlsm_instance', ['last_lab_metadata_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Exception $exc) {
     error_log($db->getLastError());
     error_log($exc->getMessage());
