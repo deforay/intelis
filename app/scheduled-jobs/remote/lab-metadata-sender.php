@@ -102,7 +102,6 @@ try {
     }
 
     $jsonResponse = $apiService->post($url, $payload);
-
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_lab_metadata_sync' => DateUtility::getCurrentDateTime()]);
