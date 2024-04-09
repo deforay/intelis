@@ -525,7 +525,7 @@ foreach ($testReasonsResult as $rid => $row) {
 														<div class="form-group">
 															<div class="col-lg-12">
 																	<label class="radio-inline">
-																		<input type="radio" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "checked='checked'" : ""; ?> class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>');">
+																		<input type="radio" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "checked='checked'" : ""; ?> class="reasonfortest isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>');">
 																		<strong><?= _translate($title); ?></strong>
 																	</label>
 															</div>
@@ -538,7 +538,7 @@ foreach ($testReasonsResult as $rid => $row) {
 															<div class="col-md-6">
 																	<label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
 																	<div class="col-lg-7">
-																		<input type="text" value="<?php echo $vlQueryInfo['reason_for_vl_testing_other'] ?? null; ?>" class="form-control" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
+																		<input type="text" value="<?php echo $vlQueryInfo['reason_for_vl_testing_other'] ?? null; ?>" class="form-control reasonfortest" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
 																	</div>
 															</div>
 														</div>
@@ -547,7 +547,7 @@ foreach ($testReasonsResult as $rid => $row) {
 															<div class="col-md-6">
 																	<label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>
 																	<div class="col-lg-7">
-																		<select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
+																		<select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control reasonfortest" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
 																			<option value=""> <?= _translate("-- Select --"); ?> </option>
 																			<?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
 																				<option value="<?php echo $testReasonId; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $testReasonId) ? "selected='selected'" : ""; ?>><?php echo ucwords($row); ?></option>
@@ -821,7 +821,7 @@ foreach ($testReasonsResult as $rid => $row) {
 			});
 
 		}, 500);
-
+		$('.reasonfortest').attr('disabled', true);
 
 	});
 

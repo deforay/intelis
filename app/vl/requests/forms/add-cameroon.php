@@ -441,7 +441,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                            <div class="form-group">
                                                                                 <div class="col-lg-12">
                                                                                      <label class="radio-inline">
-                                                                                          <input type="radio" class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>');">
+                                                                                          <input type="radio" class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>', <?php echo $key; ?>);">
                                                                                           <strong><?= _translate($title); ?></strong>
                                                                                      </label>
                                                                                 </div>
@@ -454,7 +454,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                                 <div class="col-md-6">
                                                                                      <label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
                                                                                      <div class="col-lg-7">
-                                                                                          <select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
+                                                                                          <select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType<?php echo $key; ?>" class="form-control controlVlTypeFields" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
                                                                                                <option value=""> <?= _translate("-- Select --"); ?> </option>
                                                                                                <?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
                                                                                                     <option value="<?php echo $testReasonId; ?>"><?php echo ucwords($row); ?></option>
@@ -472,7 +472,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                                      </div>
                                                                                 </div>
                                                                            </div>
-                                                       <?php }
+                                                                      <?php }
                                                                  }
                                                             }
                                                        } ?>
@@ -819,7 +819,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      }
 
-     function showTesting(chosenClass) {
+     function showTesting(chosenClass, id) {
+          $('.controlVlTypeFields').removeClass('isRequired');
+          if($('#controlVlType' + id).length){
+               $('#controlVlType' + id).addClass('isRequired');
+          }
           $(".viralTestData").val('');
           $(".hideTestData").hide();
           $("." + chosenClass).show();
