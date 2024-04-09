@@ -127,6 +127,7 @@ foreach ($testReasonsResult as $rid => $row) {
      </section>
      <!-- Main content -->
      <section class="content">
+          <!-- <pre><?php print_r($vlQueryInfo['reason_for_vl_testing']);?></pre> -->
           <div class="box box-default">
                <div class="box-header with-border">
                     <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate('indicates required fields'); ?> &nbsp;</div>
