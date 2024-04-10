@@ -42,13 +42,13 @@ if ($_SESSION['instance']['type'] == 'remoteuser') {
 $lResult = $facilitiesService->getTestingLabs('vl', true, true);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _translate("-- Select --"); ?>');
-$testReasonsResult = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = 0 AND test_reason_status like 'active' ", 'test_reason_name');
-$subTestReasons = [];
-foreach ($testReasonsResult as $rid => $row) {
-     if ($rid == 5) {
-          $subTestReasons[$rid] = [0 => 'Other'];
-     } else {
-          $subTestReasons[$rid] = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = " . $rid . " AND test_reason_status like 'active' ", 'test_reason_name');
+$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name', 'parent_reason'), false, " test_reason_status like 'active' ", 'test_reason_name');
+$subTestReasons = $testReasonsResult = [];
+foreach ($testReasonsResultDetails as $row) {
+     if($row['parent_reason'] == 0){
+          $testReasonsResult[$row['test_reason_id']] = $row['test_reason_name'];
+     }else{
+          $subTestReasons[$row['parent_reason']][$row['test_reason_id']] = $row['test_reason_name'];
      }
 }
 ?>
