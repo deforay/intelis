@@ -84,8 +84,8 @@ try {
         if (!empty($tableInfo)) {
             foreach ($tableInfo['table'] as $j => $table) {
                 $emptyDataArray = $general->getTableFieldsAsArray($table);
+                $deletedId = [];
                 foreach ($tableInfo['data'][$j] as $key => $resultRow) {
-                    $deletedId = [];
                     $counter++;
                     // Overwrite the values in $emptyLabArray with the values in $resultRow
                     $data = array_merge($emptyDataArray, array_intersect_key($resultRow, $emptyDataArray));
@@ -97,14 +97,16 @@ try {
                             $sQuery = "SELECT $primaryKey FROM $tableName WHERE $checkColumn =?";
                             $sResult = $db->rawQueryOne($sQuery, [$data[$checkColumn]]);
                         }
-                        if (!empty($sResult) && $r != 'instrument_controls') {
-                            $db->where($primaryKey, $sResult[$primaryKey]);
-                            $id = $db->update($tableName, $data);
-                        } else {
-                            if($r == 'instrument_controls' && !in_array($data['instrument_id'], $deletedId)){
+                        if ($r == 'instrument_controls' || $r == 'instrument_machines') {
+                            if (!in_array($data['instrument_id'], $deletedId)) {
                                 $deletedId[] = $data['instrument_id'];
                                 $db->delete($r, "instrument_id = " . $data['instrument_id']);
                             }
+                            $id = $db->insert($tableName, $data);
+                        }elseif (!empty($sResult)) {
+                            $db->where($primaryKey, $sResult[$primaryKey]);
+                            $id = $db->update($tableName, $data);
+                        }else{
                             $id = $db->insert($tableName, $data);
                         }
                     } catch (Throwable $e) {
