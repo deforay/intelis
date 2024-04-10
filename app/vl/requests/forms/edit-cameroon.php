@@ -92,13 +92,13 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
      $rch .= '</tbody>';
      $rch .= '</table>';
 }
-$testReasonsResult = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = 0 AND test_reason_status like 'active' ", 'test_reason_name');
-$subTestReasons = [];
-foreach ($testReasonsResult as $rid => $row) {
-     if ($rid == 5) {
-          $subTestReasons[$rid] = [0 => 'Other'];
-     } else {
-          $subTestReasons[$rid] = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = " . $rid . " AND test_reason_status like 'active' ", 'test_reason_name');
+$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name', 'parent_reason'), false, " test_reason_status like 'active' ");
+$subTestReasons = $testReasonsResult = [];
+foreach ($testReasonsResultDetails as $row) {
+     if($row['parent_reason'] == 0){
+          $testReasonsResult[$row['test_reason_id']] = $row['test_reason_name'];
+     }else{
+          $subTestReasons[$row['parent_reason']][$row['test_reason_id']] = $row['test_reason_name'];
      }
 }
 ?>
@@ -127,7 +127,6 @@ foreach ($testReasonsResult as $rid => $row) {
      </section>
      <!-- Main content -->
      <section class="content">
-          <!-- <pre><?php print_r($vlQueryInfo['reason_for_vl_testing']); ?></pre> -->
           <div class="box box-default">
                <div class="box-header with-border">
                     <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate('indicates required fields'); ?> &nbsp;</div>
@@ -504,7 +503,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                            <div class="form-group">
                                                                                 <div class="col-lg-12">
                                                                                      <label class="radio-inline">
-                                                                                          <input type="radio" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "checked='checked'" : ""; ?> class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>', <?php echo $key; ?>);">
+                                                                                          <input type="radio" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || (isset($subTestReasons[$key]) && in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key])))) ? "checked='checked'" : ""; ?> class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>', <?php echo $key; ?>);">
                                                                                           <strong><?= _translate($title); ?></strong>
                                                                                      </label>
                                                                                 </div>
