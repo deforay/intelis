@@ -23,4 +23,5 @@ namespace COUNTRY {
     const PNG = 5;
     const WHO = 6;
     const RWANDA = 7;
+    const BURKINA_FASO = 8;
 }

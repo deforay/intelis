@@ -390,3 +390,6 @@ CREATE TABLE `lab_storage_history` (
 -- Amit 09-Apr-2024
 ALTER TABLE `instrument_controls` ADD `updated_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `number_of_calibrators`;
 ALTER TABLE `s_vlsm_instance` ADD `last_lab_metadata_sync` DATETIME NULL DEFAULT NULL AFTER `last_vldash_sync`;
+
+-- Amit 10-Apr-2024
+INSERT INTO `s_available_country_forms` (`vlsm_country_id`, `form_name`, `short_name`) VALUES ('8', 'Burkina Faso', 'burkina-faso');

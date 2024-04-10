@@ -42,7 +42,7 @@ if ($_SESSION['instance']['type'] == 'remoteuser') {
 } else {
      $sampleCode = 'sample_code';
 }
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '<?= _translate("-- Select --"); ?>');
 
@@ -127,7 +127,7 @@ foreach ($testReasonsResult as $rid => $row) {
      </section>
      <!-- Main content -->
      <section class="content">
-          <!-- <pre><?php print_r($vlQueryInfo['reason_for_vl_testing']);?></pre> -->
+          <!-- <pre><?php print_r($vlQueryInfo['reason_for_vl_testing']); ?></pre> -->
           <div class="box box-default">
                <div class="box-header with-border">
                     <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate('indicates required fields'); ?> &nbsp;</div>
@@ -536,7 +536,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                                 </div>
                                                                            </div>
 
-                                                                 <?php }
+                                                       <?php }
                                                                  }
                                                             }
                                                        } ?>
@@ -875,7 +875,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      function showTesting(chosenClass, id) {
           $('.controlVlTypeFields').removeClass('isRequired');
-          if($('#controlVlType' + id).length){
+          if ($('#controlVlType' + id).length) {
                $('#controlVlType' + id).addClass('isRequired');
           }
           $(".viralTestData").val('');

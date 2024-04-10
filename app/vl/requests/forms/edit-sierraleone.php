@@ -9,7 +9,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 
 
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 	$sampleClass = '';

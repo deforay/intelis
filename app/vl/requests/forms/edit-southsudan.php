@@ -8,7 +8,7 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 	$sampleClass = '';
@@ -1378,7 +1378,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 
 	function validateNow() {
-		if($('#isSampleRejected').val() == "yes"){
+		if ($('#isSampleRejected').val() == "yes") {
 			$('.vlResult, #vlResult').removeClass('isRequired');
 		}
 		flag = deforayValidator.init({

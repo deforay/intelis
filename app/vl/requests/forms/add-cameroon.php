@@ -1,8 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -39,7 +40,12 @@ if ($_SESSION['instance']['type'] == 'remoteuser') {
      $sampleCode = 'sample_code';
      $rKey = '';
 }
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _translate("-- Select --"); ?>');
 $testReasonsResult = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = 0 AND test_reason_status like 'active' ", 'test_reason_name');
@@ -51,6 +57,7 @@ foreach ($testReasonsResult as $rid => $row) {
           $subTestReasons[$rid] = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = " . $rid . " AND test_reason_status like 'active' ", 'test_reason_name');
      }
 }
+
 ?>
 <style>
      .table>tbody>tr>td {
@@ -472,7 +479,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                                      </div>
                                                                                 </div>
                                                                            </div>
-                                                                      <?php }
+                                                       <?php }
                                                                  }
                                                             }
                                                        } ?>
@@ -821,7 +828,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      function showTesting(chosenClass, id) {
           $('.controlVlTypeFields').removeClass('isRequired');
-          if($('#controlVlType' + id).length){
+          if ($('#controlVlType' + id).length) {
                $('#controlVlType' + id).addClass('isRequired');
           }
           $(".viralTestData").val('');
