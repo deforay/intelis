@@ -40,7 +40,7 @@ try {
     $labId = null;
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
-        $labStorageData = [];
+        $data = [];
         $options = [
             'decoder' => new ExtJsonDecoder(true)
         ];
@@ -55,60 +55,57 @@ try {
 
                 $tableInfo['primaryKey'][$i] = 'storage_id';
                 $tableInfo['table'][$i] = 'lab_storage';
-                $labStorageData = $data;
             } elseif ($name === 'instruments') {
 
                 $tableInfo['primaryKey'][$i] = 'instrument_id';
                 $tableInfo['table'][$i] = 'instruments';
-                $tableInfo[$i]['instrumentsData'] = $data;
+                // $tableInfo[$i]['instrumentsData'] = $data;
             } elseif ($name === 'instrumentMachines') {
 
                 $tableInfo['primaryKey'][$i] = 'config_machine_id';
                 $tableInfo['table'][$i] = 'instrument_machines';
-                $tableInfo[$i]['instrumentMachinesData'] = $data;
+                // $tableInfo[$i]['instrumentMachinesData'] = $data;
             } elseif ($name === 'instrumentControls') {
 
                 $tableInfo['primaryKey'][$i] = 'instrument_id';
                 $tableInfo['table'][$i] = 'instrument_controls';
-                $tableInfo[$i]['instrumentControlsData'] = $data;
+                // $tableInfo[$i]['instrumentControlsData'] = $data;
             } elseif ($name === 'patients') {
 
                 $tableInfo['primaryKey'][$i] = 'system_patient_code';
                 $tableInfo['table'][$i] = 'patients';
-                $tableInfo[$i]['patientsData'] = $data;
+                // $tableInfo[$i]['patientsData'] = $data;
             }
+            $tableInfo['data'][$i] = $data;
             $i++;
         }
         
         $transactionId = $transactionId ?? $general->generateUUID();
-        
-        if (!empty($labStorageData)) {
-            
-            
-            foreach ($tableInfo['table'] as $j => $r) {
-                $emptyLabStorageArray = $general->getTableFieldsAsArray($tableInfo['table'][$j]);
-                foreach ($r as $key => $resultRow) {
+        if (!empty($tableInfo)) {
+            foreach ($tableInfo['table'] as $j => $table) {
+                $emptyDataArray = $general->getTableFieldsAsArray($table);
+                foreach ($tableInfo['data'][$j] as $key => $resultRow) {
                     $deletedId = [];
                     $counter++;
                     // Overwrite the values in $emptyLabArray with the values in $resultRow
-                    $labStorageData = array_merge($emptyLabStorageArray, array_intersect_key($resultRow, $emptyLabStorageArray));
-                    
+                    $data = array_merge($emptyDataArray, array_intersect_key($resultRow, $emptyDataArray));
+                    $data['updated_datetime'] = DateUtility::getCurrentDateTime();
                     $primaryKey = $checkColumn = $tableInfo['primaryKey'][$j];
                     $tableName = $tableInfo['table'][$j];
                     try {
-                        if (!empty($labStorageData[$checkColumn])) {
+                        if (!empty($data[$checkColumn])) {
                             $sQuery = "SELECT $primaryKey FROM $tableName WHERE $checkColumn =?";
-                            $sResult = $db->rawQueryOne($sQuery, [$labStorageData[$checkColumn]]);
+                            $sResult = $db->rawQueryOne($sQuery, [$data[$checkColumn]]);
                         }
                         if (!empty($sResult) && $r != 'instrument_controls') {
                             $db->where($primaryKey, $sResult[$primaryKey]);
-                            $id = $db->update($tableName, $labStorageData);
+                            $id = $db->update($tableName, $data);
                         } else {
-                            if($r == 'instrument_controls' && !in_array($labStorageData['instrument_id'], $deletedId)){
-                                $deletedId[] = $labStorageData['instrument_id'];
-                                $db->delete($r, "instrument_id = " . $labStorageData['instrument_id']);
+                            if($r == 'instrument_controls' && !in_array($data['instrument_id'], $deletedId)){
+                                $deletedId[] = $data['instrument_id'];
+                                $db->delete($r, "instrument_id = " . $data['instrument_id']);
                             }
-                            $id = $db->insert($tableName, $labStorageData);
+                            $id = $db->insert($tableName, $data);
                         }
                     } catch (Throwable $e) {
 

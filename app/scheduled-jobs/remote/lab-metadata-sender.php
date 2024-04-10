@@ -27,7 +27,6 @@ $version = VERSION;
 $systemConfig = SYSTEM_CONFIG;
 
 $lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_lab_metadata_sync');
-
 if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     error_log("Please check if STS URL is set");
     exit(0);
@@ -52,18 +51,16 @@ try {
 
     // LAB STORAGE
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $labStorage = $db->get('lab_storage');
-
     if (!empty($labStorage)) {
         $payload["labStorage"] = $labStorage;
     }
 
-
     // PATIENTS
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $patients = $db->get('patients');
 
@@ -73,34 +70,32 @@ try {
 
     // INSTRUMENTS
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $instruments = $db->get('instruments');
-
     if (!empty($instruments)) {
         $payload["instruments"] = $instruments;
     }
 
     // INSTRUMENT MACHINES
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
-    $instruments = $db->get('instrument_machines');
+    $instrumentMachines = $db->get('instrument_machines');
 
-    if (!empty($instruments)) {
-        $payload["instrumentMachines"] = $instruments;
+    if (!empty($instrumentMachines)) {
+        $payload["instrumentMachines"] = $instrumentMachines;
     }
 
     // INSTRUMENT CONTROLS
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
-    $instruments = $db->get('instrument_controls');
+    $instrumentControls = $db->get('instrument_controls');
 
-    if (!empty($instruments)) {
-        $payload["instrumentControls"] = $instruments;
+    if (!empty($instrumentControls)) {
+        $payload["instrumentControls"] = $instrumentControls;
     }
-
     $jsonResponse = $apiService->post($url, $payload);
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
