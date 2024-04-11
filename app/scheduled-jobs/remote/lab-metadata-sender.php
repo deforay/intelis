@@ -26,6 +26,7 @@ $version = VERSION;
 // putting this into a variable to make this editable
 $systemConfig = SYSTEM_CONFIG;
 
+$lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_lab_metadata_sync');
 if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     error_log("Please check if STS URL is set");
     exit(0);
@@ -40,26 +41,65 @@ try {
 
     $transactionId = $general->generateUUID();
 
-    $url = $remoteUrl . '/remote/remote/lab-metadata-receiver.php';
-
     $payload = [
+        "transactionId" => $transactionId,
         "labId" => $labId,
-        "labStorage" => $db->get('lab_storage'),
-        "Key" => "vlsm-lab-data--",
+        "x-api-key" => $general->generateUUID(),
     ];
 
-    $jsonResponse = $apiService->post($url, $payload);
-    $result = json_decode($jsonResponse, true);
+    $url = $remoteUrl . '/remote/remote/lab-metadata-receiver.php';
 
-    if (!empty($result)) {
-        $db->where('storage_code', $result, 'IN');
-        $id = $db->update('lab_storage', ['data_sync' => 1]);
+    // LAB STORAGE
+    if (!empty($lastUpdatedOn)) {
+        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+    }
+    $labStorage = $db->get('lab_storage');
+    if (!empty($labStorage)) {
+        $payload["labStorage"] = $labStorage;
     }
 
+    // PATIENTS
+    if (!empty($lastUpdatedOn)) {
+        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+    }
+    $patients = $db->get('patients');
 
+    if (!empty($patients)) {
+        $payload["patients"] = $patients;
+    }
+
+    // INSTRUMENTS
+    if (!empty($lastUpdatedOn)) {
+        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+    }
+    $instruments = $db->get('instruments');
+    if (!empty($instruments)) {
+        $payload["instruments"] = $instruments;
+    }
+
+    // INSTRUMENT MACHINES
+    if (!empty($lastUpdatedOn)) {
+        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+    }
+    $instrumentMachines = $db->get('instrument_machines');
+
+    if (!empty($instrumentMachines)) {
+        $payload["instrumentMachines"] = $instrumentMachines;
+    }
+
+    // INSTRUMENT CONTROLS
+    if (!empty($lastUpdatedOn)) {
+        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+    }
+    $instrumentControls = $db->get('instrument_controls');
+
+    if (!empty($instrumentControls)) {
+        $payload["instrumentControls"] = $instrumentControls;
+    }
+    $jsonResponse = $apiService->post($url, $payload);
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
-    $id = $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
+    $id = $db->update('s_vlsm_instance', ['last_lab_metadata_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Exception $exc) {
     error_log($db->getLastError());
     error_log($exc->getMessage());

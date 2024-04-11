@@ -1,8 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -39,18 +40,24 @@ if ($_SESSION['instance']['type'] == 'remoteuser') {
      $sampleCode = 'sample_code';
      $rKey = '';
 }
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _translate("-- Select --"); ?>');
-$testReasonsResult = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = 0 AND test_reason_status like 'active' ", 'test_reason_name');
-$subTestReasons = [];
-foreach ($testReasonsResult as $rid => $row) {
-     if ($rid == 5) {
-          $subTestReasons[$rid] = [0 => 'Other'];
-     } else {
-          $subTestReasons[$rid] = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name'), true, " parent_reason = " . $rid . " AND test_reason_status like 'active' ", 'test_reason_name');
+$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name', 'parent_reason'), false, " test_reason_status like 'active' ");
+$subTestReasons = $testReasonsResult = [];
+foreach ($testReasonsResultDetails as $row) {
+     if($row['parent_reason'] == 0){
+          $testReasonsResult[$row['test_reason_id']] = $row['test_reason_name'];
+     }else{
+          $subTestReasons[$row['parent_reason']][$row['test_reason_id']] = $row['test_reason_name'];
      }
 }
+
 ?>
 <style>
      .table>tbody>tr>td {
@@ -441,7 +448,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                            <div class="form-group">
                                                                                 <div class="col-lg-12">
                                                                                      <label class="radio-inline">
-                                                                                          <input type="radio" class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>');">
+                                                                                          <input type="radio" class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>', <?php echo $key; ?>);">
                                                                                           <strong><?= _translate($title); ?></strong>
                                                                                      </label>
                                                                                 </div>
@@ -454,7 +461,7 @@ foreach ($testReasonsResult as $rid => $row) {
                                                                                 <div class="col-md-6">
                                                                                      <label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
                                                                                      <div class="col-lg-7">
-                                                                                          <select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
+                                                                                          <select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType<?php echo $key; ?>" class="form-control controlVlTypeFields" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
                                                                                                <option value=""> <?= _translate("-- Select --"); ?> </option>
                                                                                                <?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
                                                                                                     <option value="<?php echo $testReasonId; ?>"><?php echo ucwords($row); ?></option>
@@ -819,7 +826,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      }
 
-     function showTesting(chosenClass) {
+     function showTesting(chosenClass, id) {
+          $('.controlVlTypeFields').removeClass('isRequired');
+          if ($('#controlVlType' + id).length) {
+               $('#controlVlType' + id).addClass('isRequired');
+          }
           $(".viralTestData").val('');
           $(".hideTestData").hide();
           $("." + chosenClass).show();

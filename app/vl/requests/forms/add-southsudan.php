@@ -10,7 +10,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
      $sampleClass = '';
@@ -1321,7 +1321,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function validateNow() {
-          if($('#isSampleRejected').val() == "yes"){
+          if ($('#isSampleRejected').val() == "yes") {
                $('.vlResult, #vlResult').removeClass('isRequired');
           }
           var format = '<?php echo $arr['sample_code']; ?>';
@@ -1352,7 +1352,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function validateSaveNow() {
-          if($('#isSampleRejected').val() == "yes"){
+          if ($('#isSampleRejected').val() == "yes") {
                $('.vlResult, #vlResult').removeClass('isRequired');
           }
           var format = '<?php echo $arr['sample_code']; ?>';

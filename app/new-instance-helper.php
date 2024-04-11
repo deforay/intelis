@@ -121,7 +121,7 @@ try {
 				}
 			}
 			//Add event log
-			$eventType = 'add-instance';
+			$eventType = 'new-instance';
 			$action = $_SESSION['userName'] . ' added instance id';
 			$resource = 'instance-details';
 
@@ -133,7 +133,7 @@ try {
 			$_SESSION['alertMsg'] = "Something went wrong! Please try adding the instance again.";
 		}
 	}
-	header("Location:addInstanceDetails.php");
+	header("Location:/new-instance.php");
 } catch (Exception $exc) {
 	throw new SystemException($exc->getMessage(), 500, $exc);
 }

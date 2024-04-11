@@ -386,10 +386,19 @@ CREATE TABLE `lab_storage_history` (
   `updated_datetime` timestamp NOT NULL,
   `updated_by` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`history_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+-- Amit 09-Apr-2024
+ALTER TABLE `instrument_controls` ADD `updated_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `number_of_calibrators`;
+ALTER TABLE `s_vlsm_instance` ADD `last_lab_metadata_sync` DATETIME NULL DEFAULT NULL AFTER `last_vldash_sync`;
+
+-- Amit 10-Apr-2024
+INSERT INTO `s_available_country_forms` (`vlsm_country_id`, `form_name`, `short_name`) VALUES ('8', 'Burkina Faso', 'burkina-faso');
+
+-- Jeyabanu 11-Apr-2024
 UPDATE `privileges` SET `shared_privileges` = '[\"/vl/requests/upload-storage.php\",\"/vl/requests/sample-storage.php\"]' WHERE `privileges`.`privilege_name` = '/vl/requests/vl-requests.php';
 
 ALTER TABLE `lab_storage_history` ADD `date_out` DATE NULL DEFAULT NULL AFTER `sample_status`;
 ALTER TABLE `lab_storage_history` ADD `comments` TEXT NULL DEFAULT NULL AFTER `date_out`;
+

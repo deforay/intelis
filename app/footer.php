@@ -324,7 +324,7 @@ if (empty($syncLatestTime)) {
 
 		if (empty($_SESSION['instance']['facilityName']) || ($_SESSION['instance']['type'] == 'vluser' && ($_SESSION['instance']['labId'] == null))) {
 		?>
-			showModal('/addInstanceDetails.php', 900, 420);
+			showModal('/new-instance.php', 900, 420);
 		<?php } ?>
 
 		let phoneNumberDebounceTimeout;

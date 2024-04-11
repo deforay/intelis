@@ -33,66 +33,94 @@ try {
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
     $jsonResponse = $apiService->getJsonFromRequest($request);
+    $counter = 0;
 
-    $emptyLabArray = $general->getTableFieldsAsArray('lab_storage');
 
-    $transactionId = $general->generateUUID();
     //$storageId = [];
     $labId = null;
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
-        $labStorageData = [];
+        $data = [];
         $options = [
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
+        $tableInfo = [];$i = 1;
         foreach ($parsedData as $name => $data) {
-            if ($name === 'labId') {
+            if ($name === 'transactionId') {
+                $transactionId = $data;
+            } elseif ($name === 'labId') {
                 $labId = $data;
             } elseif ($name === 'labStorage') {
-                $labStorageData = $data;
+
+                $tableInfo['primaryKey'][$i] = 'storage_id';
+                $tableInfo['table'][$i] = 'lab_storage';
             } elseif ($name === 'instruments') {
-                $instrumentsData = $data;
+
+                $tableInfo['primaryKey'][$i] = 'instrument_id';
+                $tableInfo['table'][$i] = 'instruments';
+                // $tableInfo[$i]['instrumentsData'] = $data;
+            } elseif ($name === 'instrumentMachines') {
+
+                $tableInfo['primaryKey'][$i] = 'config_machine_id';
+                $tableInfo['table'][$i] = 'instrument_machines';
+                // $tableInfo[$i]['instrumentMachinesData'] = $data;
+            } elseif ($name === 'instrumentControls') {
+
+                $tableInfo['primaryKey'][$i] = 'instrument_id';
+                $tableInfo['table'][$i] = 'instrument_controls';
+                // $tableInfo[$i]['instrumentControlsData'] = $data;
             } elseif ($name === 'patients') {
-                $patientsData = $data;
+
+                $tableInfo['primaryKey'][$i] = 'system_patient_code';
+                $tableInfo['table'][$i] = 'patients';
+                // $tableInfo[$i]['patientsData'] = $data;
             }
+            $tableInfo['data'][$i] = $data;
+            $i++;
         }
+        
+        $transactionId = $transactionId ?? $general->generateUUID();
+        if (!empty($tableInfo)) {
+            foreach ($tableInfo['table'] as $j => $table) {
+                $emptyDataArray = $general->getTableFieldsAsArray($table);
+                $deletedId = [];
+                foreach ($tableInfo['data'][$j] as $key => $resultRow) {
+                    $counter++;
+                    // Overwrite the values in $emptyLabArray with the values in $resultRow
+                    $data = array_merge($emptyDataArray, array_intersect_key($resultRow, $emptyDataArray));
+                    $data['updated_datetime'] = DateUtility::getCurrentDateTime();
+                    $primaryKey = $checkColumn = $tableInfo['primaryKey'][$j];
+                    $tableName = $tableInfo['table'][$j];
+                    try {
+                        if (!empty($data[$checkColumn])) {
+                            $sQuery = "SELECT $primaryKey FROM $tableName WHERE $checkColumn =?";
+                            $sResult = $db->rawQueryOne($sQuery, [$data[$checkColumn]]);
+                        }
+                        if ($r == 'instrument_controls' || $r == 'instrument_machines') {
+                            if (!in_array($data['instrument_id'], $deletedId)) {
+                                $deletedId[] = $data['instrument_id'];
+                                $db->delete($r, "instrument_id = " . $data['instrument_id']);
+                            }
+                            $id = $db->insert($tableName, $data);
+                        }elseif (!empty($sResult)) {
+                            $db->where($primaryKey, $sResult[$primaryKey]);
+                            $id = $db->update($tableName, $data);
+                        }else{
+                            $id = $db->insert($tableName, $data);
+                        }
+                    } catch (Throwable $e) {
 
-
-        $counter = 0;
-        if (!empty($labStorageData)) {
-            foreach ($labStorageData as $key => $resultRow) {
-                $counter++;
-                // Overwrite the values in $emptyLabArray with the values in $resultRow
-                $labStorageData = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
-
-                $primaryKey = $checkColumn = 'storage_id';
-                $tableName = 'lab_storage';
-                try {
-                    if (!empty($labStorageData[$checkColumn])) {
-                        $sQuery = "SELECT $primaryKey FROM $tableName WHERE $checkColumn =?";
-                        $sResult = $db->rawQueryOne($sQuery, [$labStorageData[$checkColumn]]);
+                        if (!empty($db->getLastError())) {
+                            error_log($db->getLastErrno());
+                            error_log($db->getLastError());
+                            error_log($db->getLastQuery());
+                        }
+                        LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
+                        continue;
                     }
-                    if (!empty($sResult)) {
-                        $db->where($primaryKey, $sResult[$primaryKey]);
-                        $id = $db->update($tableName, $labStorageData);
-                    } else {
-                        $id = $db->insert($tableName, $labStorageData);
-                    }
-                } catch (Throwable $e) {
-
-                    if (!empty($db->getLastError())) {
-                        error_log($db->getLastErrno());
-                        error_log($db->getLastError());
-                        error_log($db->getLastQuery());
-                    }
-                    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
-                    continue;
+                    
                 }
-
-                // if ($id === true && isset($labStorageData['storage_code'])) {
-                //     $storageId[] = $labStorageData['storage_code'];
-                // }
             }
         }
     }

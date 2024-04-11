@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2024-04-08 21:31+0530\n"
-"PO-Revision-Date: 2024-04-08 21:31+0530\n"
+"PO-Revision-Date: 2024-04-09 19:18+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -21254,7 +21254,7 @@ msgstr "Facilité"
 
 #: vl/results/pdf/result-pdf-cameroon.php:232
 msgid "FACILITY CODE"
-msgstr "CODE DE LA FACILITÉ"
+msgstr "CODE DE LA FOSA"
 
 #: vl/results/pdf/result-pdf-cameroon.php:233
 msgid "REGION"
@@ -21282,7 +21282,7 @@ msgstr "EMAIL"
 
 #: vl/results/pdf/result-pdf-cameroon.php:263
 msgid "PATIENT NAME"
-msgstr "Nom du patient"
+msgstr "NOM DU PATIENT"
 
 #: vl/results/pdf/result-pdf-cameroon.php:264
 msgid "PATIENT IDENTIFIER"
@@ -21314,7 +21314,7 @@ msgstr "SEXE"
 
 #: vl/results/pdf/result-pdf-cameroon.php:303
 msgid "BREASTFEEDING"
-msgstr "Allaitement"
+msgstr "ALLAITEMENT"
 
 #: vl/results/pdf/result-pdf-cameroon.php:304
 msgid "PREGNANCY STATUS"
@@ -21326,15 +21326,15 @@ msgstr "CONTACT DU PATIENT"
 
 #: vl/results/pdf/result-pdf-cameroon.php:327
 msgid "HEALTH INSURANCE CODE"
-msgstr "CODE DE L'ASSURANCE MALADIE"
+msgstr "COUVERTURE SANTÉ UNIVERSELLE"
 
 #: vl/results/pdf/result-pdf-cameroon.php:338
 msgid "SAMPLE ID"
-msgstr "ID de l'échantillon"
+msgstr "ID DE L'ÉCHANTILLON"
 
 #: vl/results/pdf/result-pdf-cameroon.php:339
 msgid "SAMPLE COLLECTION DATE"
-msgstr "Date de prélèvement de l'échantillon"
+msgstr "DATE DE PRÉLÈVEMENT DE L'ÉCHANTILLON"
 
 #: vl/results/pdf/result-pdf-cameroon.php:340
 msgid "SAMPLE RECEIPT DATE"
@@ -21346,7 +21346,7 @@ msgstr "ÉCHANTILLON REJETÉ ?"
 
 #: vl/results/pdf/result-pdf-cameroon.php:349
 msgid "SAMPLE TEST DATE"
-msgstr "Date du test de l'échantillon"
+msgstr "DATE DU TEST DE L’ÉCHANTILLON"
 
 #: vl/results/pdf/result-pdf-cameroon.php:350
 msgid "RESULT RELEASE DATE"
@@ -21354,7 +21354,7 @@ msgstr "DATE DE PUBLICATION DES RÉSULTATS"
 
 #: vl/results/pdf/result-pdf-cameroon.php:360
 msgid "SAMPLE TYPE"
-msgstr "Type d'échantillon"
+msgstr "TYPE D’ÉCHANTILLON"
 
 #: vl/results/pdf/result-pdf-cameroon.php:395
 msgid ""

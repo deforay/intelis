@@ -252,7 +252,7 @@ try {
         'plasma_conservation_temperature' => $_POST['conservationTemperature'] ?? null,
         'plasma_conservation_duration' => $_POST['durationOfConservation'] ?? null,
         'arv_adherance_percentage' => $_POST['arvAdherence'] ?? null,
-        'reason_for_vl_testing' => $_POST['controlVlTestingType'][$_POST['reasonForVLTesting']] ?? null,
+        'reason_for_vl_testing' => $_POST['controlVlTestingType'][$_POST['reasonForVLTesting']] ?? $_POST['reasonForVLTesting'],
         /* 'control_vl_testing_type' => $_POST['controlVlTestingType'][$_POST['reasonForVLTesting']] ?? null,
         'coinfection_type' => $_POST['coinfectionType'] ?? null, */
         'reason_for_vl_testing_other' => $_POST['newreasonForVLTesting'] ?? null,
