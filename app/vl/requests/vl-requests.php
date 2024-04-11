@@ -520,6 +520,9 @@ foreach ($srcResults as $list) {
 									<a href="/vl/requests/upload-storage.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Storage Bulk Upload"); ?>
 									</a>
+									<a href="/vl/requests/sample-storage.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+										<?php echo _translate("Add Sample to Storage"); ?>
+									</a>
 								<?php }
 								?>
 

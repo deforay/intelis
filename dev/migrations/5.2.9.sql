@@ -370,6 +370,8 @@ ALTER TABLE `batch_details` ADD `control_names` JSON NULL DEFAULT NULL AFTER `la
 
 -- Amit 08-Apr-2024
 ALTER TABLE `r_generic_test_reasons` ADD `parent_reason` INT NULL DEFAULT NULL AFTER `test_reason`;
+
+
 -- Jeyabanu 09-Apr-2024
 CREATE TABLE `lab_storage_history` (
   `history_id` int NOT NULL AUTO_INCREMENT,
@@ -387,3 +389,7 @@ CREATE TABLE `lab_storage_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 
+UPDATE `privileges` SET `shared_privileges` = '[\"/vl/requests/upload-storage.php\",\"/vl/requests/sample-storage.php\"]' WHERE `privileges`.`privilege_name` = '/vl/requests/vl-requests.php';
+
+ALTER TABLE `lab_storage_history` ADD `date_out` DATE NULL DEFAULT NULL AFTER `sample_status`;
+ALTER TABLE `lab_storage_history` ADD `comments` TEXT NULL DEFAULT NULL AFTER `date_out`;
