@@ -455,8 +455,17 @@ foreach ($testReasonsResultDetails as $row) {
                                                                            </div>
                                                                       </div>
                                                                  </div>
-                                                                 <?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) {
-                                                                      if ($key != 5) { ?>
+                                                                 <?php if ($key == 5) { ?>
+                                                                      <div class="row rmTesting5 hideTestData well" style="display:none;">
+                                                                           <div class="col-md-6">
+                                                                                <label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
+                                                                                <div class="col-lg-7">
+                                                                                     <input type="text" class="form-control" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
+                                                                                </div>
+                                                                           </div>
+                                                                      </div>
+                                                                 <?php } ?>
+                                                                 <?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) { ?>
                                                                            <div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:none;">
                                                                                 <div class="col-md-6">
                                                                                      <label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
@@ -470,22 +479,11 @@ foreach ($testReasonsResultDetails as $row) {
                                                                                      </div>
                                                                                 </div>
                                                                            </div>
-                                                                      <?php } elseif ($key == 5) { ?>
-                                                                           <div class="row rmTesting5 hideTestData well" style="display:none;">
-                                                                                <div class="col-md-6">
-                                                                                     <label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
-                                                                                     <div class="col-lg-7">
-                                                                                          <input type="text" class="form-control" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
-                                                                                     </div>
-                                                                                </div>
-                                                                           </div>
-                                                       <?php }
+                                                                      <?php 
                                                                  }
                                                             }
                                                        } ?>
-
                                                        <hr>
-
                                                   </div>
                                              </div>
 

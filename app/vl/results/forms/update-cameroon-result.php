@@ -532,33 +532,31 @@ foreach ($testReasonsResultDetails as $row) {
 														</div>
 													</div>
 												</div>
-												<?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) {
-													if ($key == 5) { ?>
-														<div class="row rmTesting5 well" style="display:<?php echo (isset($vlQueryInfo['reason_for_vl_testing_other']) && !empty($vlQueryInfo['reason_for_vl_testing_other'])) ? "block" : "none"; ?>;">
-															<div class="col-md-6">
-																	<label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
-																	<div class="col-lg-7">
-																		<input type="text" value="<?php echo $vlQueryInfo['reason_for_vl_testing_other'] ?? null; ?>" class="form-control reasonfortest" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
-																	</div>
-															</div>
+												<?php if ($key == 5) { ?>
+													<div class="row rmTesting5 well" style="display:<?php echo (isset($vlQueryInfo['reason_for_vl_testing_other']) && !empty($vlQueryInfo['reason_for_vl_testing_other'])) ? "block" : "none"; ?>;">
+														<div class="col-md-6">
+																<label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
+																<div class="col-lg-7">
+																	<input type="text" value="<?php echo $vlQueryInfo['reason_for_vl_testing_other'] ?? null; ?>" class="form-control reasonfortest" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
+																</div>
 														</div>
-													<?php } else { ?>
-														<div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:<?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "block" : "none"; ?>;">
-															<div class="col-md-6">
-																	<label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>
-																	<div class="col-lg-7">
-																		<select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control reasonfortest" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
-																			<option value=""> <?= _translate("-- Select --"); ?> </option>
-																			<?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
-																				<option value="<?php echo $testReasonId; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $testReasonId) ? "selected='selected'" : ""; ?>><?php echo ucwords($row); ?></option>
-																			<?php } ?>
-																		</select>
-																	</div>
-															</div>
+													</div>
+												<?php } ?>
+												<?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) { ?>
+													<div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:<?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "block" : "none"; ?>;">
+														<div class="col-md-6">
+																<label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>
+																<div class="col-lg-7">
+																	<select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control reasonfortest" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
+																		<option value=""> <?= _translate("-- Select --"); ?> </option>
+																		<?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
+																			<option value="<?php echo $testReasonId; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $testReasonId) ? "selected='selected'" : ""; ?>><?php echo ucwords($row); ?></option>
+																		<?php } ?>
+																	</select>
+																</div>
 														</div>
-
+													</div>
 												<?php }
-												}
 										}
 									} ?>
 									<hr>
