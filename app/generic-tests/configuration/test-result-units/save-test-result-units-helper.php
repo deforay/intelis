@@ -36,7 +36,7 @@ try {
             }
         }
     }
-    error_log($db->getLastError());
+    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     header("location:generic-test-result-units.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

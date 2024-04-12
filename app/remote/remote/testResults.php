@@ -153,9 +153,9 @@ try {
                 // $facilityIds[] = $lab['facility_id'];
 
                 //if ($db->getLastErrno() > 0) {
-                error_log($db->getLastErrno());
-                error_log($db->getLastError());
-                error_log($db->getLastQuery());
+                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
+                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
                 //}
                 LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                 continue;
@@ -179,11 +179,11 @@ try {
 
     $payload = json_encode([]);
 
-    //if ($db->getLastErrno() > 0) {
-    error_log('Error in testResults.php in remote : ' . $db->getLastErrno());
-    error_log('Error in testResults.php in remote : ' . $db->getLastError());
-    error_log('Error in testResults.php in remote : ' . $db->getLastQuery());
-    //}
+    if (!empty($db->getLastError())) {
+        error_log('Error in testResults.php in remote : ' . $db->getLastErrno());
+        error_log('Error in testResults.php in remote : ' . $db->getLastError());
+        error_log('Error in testResults.php in remote : ' . $db->getLastQuery());
+    }
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
 

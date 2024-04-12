@@ -135,8 +135,8 @@ try {
                 }
             } catch (Throwable $e) {
                 $facilityNotAdded[] = $rowData;
-                error_log($db->getLastError());
-                error_log($db->getLastQuery());
+                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
             }
         }
 

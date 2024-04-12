@@ -51,7 +51,7 @@ try {
 
     // LAB STORAGE
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $labStorage = $db->get('lab_storage');
     if (!empty($labStorage)) {
@@ -60,7 +60,7 @@ try {
 
     // PATIENTS
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $patients = $db->get('patients');
 
@@ -70,7 +70,7 @@ try {
 
     // INSTRUMENTS
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $instruments = $db->get('instruments');
     if (!empty($instruments)) {
@@ -79,7 +79,7 @@ try {
 
     // INSTRUMENT MACHINES
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $instrumentMachines = $db->get('instrument_machines');
 
@@ -89,7 +89,7 @@ try {
 
     // INSTRUMENT CONTROLS
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where(' (updated_datetime > "'. $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $instrumentControls = $db->get('instrument_controls');
 
@@ -101,7 +101,7 @@ try {
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_lab_metadata_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Exception $exc) {
-    error_log($db->getLastError());
+    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }

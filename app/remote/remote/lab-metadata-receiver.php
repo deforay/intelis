@@ -45,7 +45,8 @@ try {
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
-        $tableInfo = [];$i = 1;
+        $tableInfo = [];
+        $i = 1;
         foreach ($parsedData as $name => $data) {
             if ($name === 'transactionId') {
                 $transactionId = $data;
@@ -79,7 +80,7 @@ try {
             $tableInfo['data'][$i] = $data;
             $i++;
         }
-        
+
         $transactionId = $transactionId ?? $general->generateUUID();
         if (!empty($tableInfo)) {
             foreach ($tableInfo['table'] as $j => $table) {
@@ -103,23 +104,22 @@ try {
                                 $db->delete($r, "instrument_id = " . $data['instrument_id']);
                             }
                             $id = $db->insert($tableName, $data);
-                        }elseif (!empty($sResult)) {
+                        } elseif (!empty($sResult)) {
                             $db->where($primaryKey, $sResult[$primaryKey]);
                             $id = $db->update($tableName, $data);
-                        }else{
+                        } else {
                             $id = $db->insert($tableName, $data);
                         }
                     } catch (Throwable $e) {
 
                         if (!empty($db->getLastError())) {
-                            error_log($db->getLastErrno());
-                            error_log($db->getLastError());
-                            error_log($db->getLastQuery());
+                            error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
+                            error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+                            error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
                         }
                         LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                         continue;
                     }
-                    
                 }
             }
         }

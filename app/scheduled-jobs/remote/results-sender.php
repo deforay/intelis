@@ -279,7 +279,7 @@ try {
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Exception $exc) {
-    error_log($db->getLastError());
+    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }

@@ -140,9 +140,9 @@ try {
                 }
             } catch (Throwable $e) {
                 if ($db->getLastErrno() > 0) {
-                    error_log($db->getLastErrno());
-                    error_log($db->getLastError());
-                    error_log($db->getLastQuery());
+                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
+                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
                 }
                 LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                 continue;
@@ -169,9 +169,9 @@ try {
     $payload = json_encode([]);
 
     if ($db->getLastErrno() > 0) {
-        error_log($db->getLastErrno());
-        error_log($db->getLastError());
-        error_log($db->getLastQuery());
+        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
+        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
     }
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }

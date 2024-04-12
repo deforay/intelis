@@ -104,13 +104,13 @@ try {
     'last_modified_datetime' => DateUtility::getCurrentDateTime()
   );
 
-    $db->where('eid_id', $_POST['eidSampleId']);
-		$getPrevResult = $db->getOne('form_eid');
-		if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
-			$eidData['result_modified'] = "yes";
-		} else {
-			$eidData['result_modified'] = "no";
-		}
+  $db->where('eid_id', $_POST['eidSampleId']);
+  $getPrevResult = $db->getOne('form_eid');
+  if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+    $eidData['result_modified'] = "yes";
+  } else {
+    $eidData['result_modified'] = "no";
+  }
 
 
   if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
@@ -122,7 +122,7 @@ try {
 
   $db->where('eid_id', $_POST['eidSampleId']);
   $id = $db->update($tableName, $eidData);
-  error_log($db->getLastError());
+  error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
 
   $_SESSION['alertMsg'] = _translate("EID result updated successfully");
   //Add event log
