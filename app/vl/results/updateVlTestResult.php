@@ -292,6 +292,8 @@ if ($formId == COUNTRY\SOUTH_SUDAN) {
 	include('forms/update-png-result.php');
 } else if ($formId == COUNTRY\RWANDA) {
 	include('forms/update-rwanda-result.php');
+} else if ($formId == COUNTRY\BURKINA_FASO) {
+	include('forms/update-burkina-faso-result.php');
 }
 
 ?>

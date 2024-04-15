@@ -1385,9 +1385,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			formId: 'vlRequestFormRwd'
 		});
 
-		/* $('.isRequired').each(function() {
-			($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
-		}); */
 		if (flag) {
 			$.blockUI();
 			document.getElementById('vlRequestFormRwd').submit();
