@@ -112,14 +112,15 @@ try {
                 $conditions = [];
                 $params = [];
 
-                // Build the query dynamically based on available data
                 if (!empty($lab['unique_id'])) {
                     $conditions[] = "unique_id = ?";
                     $params[] = $lab['unique_id'];
-                } elseif (!empty($lab['remote_sample_code'])) {
+                }
+                if (!empty($lab['remote_sample_code'])) {
                     $conditions[] = "remote_sample_code = ?";
                     $params[] = $lab['remote_sample_code'];
-                } elseif (!empty($lab['sample_code'])) {
+                }
+                if (!empty($lab['sample_code'])) {
                     if (!empty($lab['lab_id'])) {
                         $conditions[] = "sample_code = ? AND lab_id = ?";
                         $params[] = $lab['sample_code'];
@@ -134,6 +135,7 @@ try {
                 if (!empty($conditions)) {
                     $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions);
                     $sResult = $db->rawQueryOne($sQuery, $params);
+                    //LoggerUtility::log('info', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
                 }
 
 
@@ -147,22 +149,25 @@ try {
                     //$db->onDuplicate(array_keys($lab), $primaryKey);
                     $id = $db->insert($tableName, $lab);
                 }
+
+                if ($id === true && isset($lab['sample_code'])) {
+                    $sampleCodes[] = $lab['sample_code'];
+                    $facilityIds[] = $lab['facility_id'];
+                }
             } catch (Throwable $e) {
 
                 // $sampleCodes[] = $lab['sample_code'];
                 // $facilityIds[] = $lab['facility_id'];
 
-                //if ($db->getLastErrno() > 0) {
-                LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno() . ":" . $db->getLastError());
-                LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
-                //}
-                LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
+                if (!empty($db->getLastError()) || $db->getLastErrno() > 0) {
+                    LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno() . ":" . $db->getLastError());
+                    LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+                }
+                LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
+                    'line' => __LINE__,
+                    'file' => __FILE__
+                ]);
                 continue;
-            }
-
-            if ($id === true && isset($lab['sample_code'])) {
-                $sampleCodes[] = $lab['sample_code'];
-                $facilityIds[] = $lab['facility_id'];
             }
         }
     }
