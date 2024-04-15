@@ -860,64 +860,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ?>
           getfacilityProvinceDetails($("#facilityId").val());
           // BARCODESTUFF END
-
-          $("#reqClinician").select2({
-               placeholder: "Enter Requesting Clinician Name",
-               minimumInputLength: 0,
-               width: '100%',
-               allowClear: true,
-               id: function(bond) {
-                    return bond._id;
-               },
-               ajax: {
-                    placeholder: "Type one or more character to search",
-                    url: "/includes/get-data-list.php",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                         return {
-                              fieldName: 'request_clinician_name',
-                              tableName: 'form_vl',
-                              q: params.term, // search term
-                              page: params.page
-                         };
-                    },
-                    processResults: function(data, params) {
-                         params.page = params.page || 1;
-                         return {
-                              results: data.result,
-                              pagination: {
-                                   more: (params.page * 30) < data.total_count
-                              }
-                         };
-                    },
-                    //cache: true
-               },
-               escapeMarkup: function(markup) {
-                    return markup;
-               }
-          });
-
-          $("#reqClinician").change(function() {
-               $.blockUI();
-               var search = $(this).val();
-               if ($.trim(search) != '') {
-                    $.get("/includes/get-data-list.php", {
-                              fieldName: 'request_clinician_name',
-                              tableName: 'form_vl',
-                              returnField: 'request_clinician_phone_number',
-                              limit: 1,
-                              q: search,
-                         },
-                         function(data) {
-                              if (data != "") {
-                                   $("#reqClinicianPhoneNumber").val(data);
-                              }
-                         });
-               }
-               $.unblockUI();
-          });
-
           $("#vlFocalPerson").select2({
                placeholder: "Enter Request Focal name",
                minimumInputLength: 0,
