@@ -109,13 +109,18 @@ try {
             $tableName = 'form_cd4';
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
+                $conditions = [];
+                $params = [];
+
                 if (!empty($lab['unique_id'])) {
                     $conditions[] = "unique_id = ?";
                     $params[] = $lab['unique_id'];
-                } elseif (!empty($lab['remote_sample_code'])) {
+                }
+                if (!empty($lab['remote_sample_code'])) {
                     $conditions[] = "remote_sample_code = ?";
                     $params[] = $lab['remote_sample_code'];
-                } elseif (!empty($lab['sample_code'])) {
+                }
+                if (!empty($lab['sample_code'])) {
                     if (!empty($lab['lab_id'])) {
                         $conditions[] = "sample_code = ? AND lab_id = ?";
                         $params[] = $lab['sample_code'];
