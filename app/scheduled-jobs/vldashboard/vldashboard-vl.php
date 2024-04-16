@@ -58,6 +58,7 @@ try {
     $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
 
     if (empty($vldashboardUrl)) {
+        echo "VL Dashboard URL not set";
         exit(0);
     }
 

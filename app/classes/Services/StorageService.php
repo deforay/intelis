@@ -41,7 +41,7 @@ class StorageService
             } else {
                 $response = [];
                 $results = $this->db->get("lab_storage", null, "storage_id,storage_code");
-                error_log($this->db->getLastQuery());
+                //error_log($this->db->getLastQuery());
                 foreach ($results as $row) {
                     $response[$row['storage_id']] = $row['storage_code'];
                 }
@@ -61,7 +61,6 @@ class StorageService
             if (isset($params['storageId']) && $params['storageId'] != "" && !empty($params['storageId'])) {
                 $data = array(
                     'storage_code'     => $params['storageCode'],
-                    'lab_id'     => $params['labId'],
                     'storage_status' => $params['storageStatus'],
                     'updated_datetime'    => DateUtility::getCurrentDateTime()
                 );
@@ -71,7 +70,7 @@ class StorageService
                 $data = array(
                     'storage_id' => $this->commonService->generateUUID(),
                     'storage_code'     => $params['storageCode'],
-                    'lab_id'     => $params['labId'],
+                    'lab_id'     => $_SESSION['instance']['labId'],
                     'storage_status' => $params['storageStatus'],
                     'updated_datetime' => DateUtility::getCurrentDateTime()
                 );

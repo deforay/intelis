@@ -21,8 +21,8 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("/common/reference/add-lab-storage.php") && $_SESSION['instance']['type'] != 'vluser') { ?>
-							<a href="/common/reference/add-lab-storage.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Lab Storage"); ?></a>
+						<?php if (_isAllowed("/common/reference/add-lab-storage.php") && $_SESSION['instance']['type'] == 'vluser') { ?>
+							<a href="/common/reference/add-lab-storage.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Lab Freezer/Storage"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -30,7 +30,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<table aria-describedby="table" id="labStorageTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _translate("Storage Code"); ?></th>
+									<th scope="row"><?php echo _translate("Freezer/Storage Code"); ?></th>
 									<th scope="row"><?php echo _translate("Testing Lab"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<th scope="row"><?php echo _translate("Action"); ?></th>
