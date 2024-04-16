@@ -335,7 +335,7 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_name']) . '</td>';
      $html .= '</tr>';
-     $html .= '<tr>';
+     /* $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
 
@@ -370,7 +370,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['last_cd4_date'] . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['last_cd8_result'] . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['last_cd8_date'] . '</td>';
-     $html .= '</tr>';
+     $html .= '</tr>'; */
 
      $html .= '<tr>';
      $html .= '<td colspan="3">';

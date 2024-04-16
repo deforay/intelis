@@ -1513,7 +1513,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
                     var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
                     if (absVal != 'Infinity' && !isNaN(absVal)) {
-                         $("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
+                         let result = Math.round(Math.pow(10, logValue) * 100) / 100;
+                         $("#vlResult").val(result.toFixed(3));
                     }
                } else {
                     $("#vlResult").val('');
