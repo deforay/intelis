@@ -94,21 +94,25 @@ try {
                     $primaryKey = $checkColumn = $tableInfo['primaryKey'][$j];
                     $tableName = $tableInfo['table'][$j];
                     try {
-                        if (!empty($data[$checkColumn])) {
-                            $sQuery = "SELECT $primaryKey FROM $tableName WHERE $checkColumn =?";
-                            $sResult = $db->rawQueryOne($sQuery, [$data[$checkColumn]]);
-                        }
+
                         if ($r == 'instrument_controls' || $r == 'instrument_machines') {
                             if (!in_array($data['instrument_id'], $deletedId)) {
                                 $deletedId[] = $data['instrument_id'];
                                 $db->delete($r, "instrument_id = " . $data['instrument_id']);
                             }
                             $id = $db->insert($tableName, $data);
-                        } elseif (!empty($sResult)) {
-                            $db->where($primaryKey, $sResult[$primaryKey]);
-                            $id = $db->update($tableName, $data);
                         } else {
-                            $id = $db->insert($tableName, $data);
+                            $sResult = [];
+                            if (!empty($data[$checkColumn])) {
+                                $sQuery = "SELECT $primaryKey FROM $tableName WHERE $checkColumn =?";
+                                $sResult = $db->rawQueryOne($sQuery, [$data[$checkColumn]]);
+                            }
+                            if (!empty($sResult)) {
+                                $db->where($primaryKey, $sResult[$primaryKey]);
+                                $id = $db->update($tableName, $data);
+                            } else {
+                                $id = $db->insert($tableName, $data);
+                            }
                         }
                     } catch (Throwable $e) {
 

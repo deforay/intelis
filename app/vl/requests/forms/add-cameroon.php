@@ -51,9 +51,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _trans
 $testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name', 'parent_reason'), false, " test_reason_status like 'active' ");
 $subTestReasons = $testReasonsResult = [];
 foreach ($testReasonsResultDetails as $row) {
-     if($row['parent_reason'] == 0){
+     if ($row['parent_reason'] == 0) {
           $testReasonsResult[$row['test_reason_id']] = $row['test_reason_name'];
-     }else{
+     } else {
           $subTestReasons[$row['parent_reason']][$row['test_reason_id']] = $row['test_reason_name'];
      }
 }
@@ -466,20 +466,20 @@ foreach ($testReasonsResultDetails as $row) {
                                                                       </div>
                                                                  <?php } ?>
                                                                  <?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) { ?>
-                                                                           <div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:none;">
-                                                                                <div class="col-md-6">
-                                                                                     <label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
-                                                                                     <div class="col-lg-7">
-                                                                                          <select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType<?php echo $key; ?>" class="form-control controlVlTypeFields" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
-                                                                                               <option value=""> <?= _translate("-- Select --"); ?> </option>
-                                                                                               <?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
-                                                                                                    <option value="<?php echo $testReasonId; ?>"><?php echo ucwords($row); ?></option>
-                                                                                               <?php } ?>
-                                                                                          </select>
-                                                                                     </div>
+                                                                      <div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:none;">
+                                                                           <div class="col-md-6">
+                                                                                <label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>
+                                                                                <div class="col-lg-7">
+                                                                                     <select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType<?php echo $key; ?>" class="form-control controlVlTypeFields" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
+                                                                                          <option value=""> <?= _translate("-- Select --"); ?> </option>
+                                                                                          <?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
+                                                                                               <option value="<?php echo $testReasonId; ?>"><?php echo ucwords($row); ?></option>
+                                                                                          <?php } ?>
+                                                                                     </select>
                                                                                 </div>
                                                                            </div>
-                                                                      <?php 
+                                                                      </div>
+                                                       <?php
                                                                  }
                                                             }
                                                        } ?>
