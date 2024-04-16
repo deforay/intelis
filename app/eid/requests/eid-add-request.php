@@ -110,7 +110,8 @@ $fileArray = array(
     COUNTRY\CAMEROON => 'forms/add-cameroon.php',
     COUNTRY\PNG => 'forms/add-png.php',
     COUNTRY\WHO => 'forms/add-who.php',
-    COUNTRY\RWANDA => 'forms/add-rwanda.php'
+    COUNTRY\RWANDA => 'forms/add-rwanda.php',
+    COUNTRY\BURKINA_FASO => 'forms/add-burkina-faso.php'
 );
 
 require_once($fileArray[$arr['vl_form']]);
@@ -237,6 +238,10 @@ require_once($fileArray[$arr['vl_form']]);
     function calculateAgeInMonths() {
         var dateOfBirth = moment($("#childDob").val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
         $("#childAge").val(moment().diff(dateOfBirth, 'months'));
+    }
+    function calculateAgeInYears(calcFrom, calcTo) {
+        var dateOfBirth = moment($("#"+calcFrom).val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
+        $("#"+calcTo).val(moment().diff(dateOfBirth, 'years'));
     }
 </script>
 

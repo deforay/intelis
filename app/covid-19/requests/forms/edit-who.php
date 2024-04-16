@@ -633,16 +633,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         }
     }
 
-    function updateMotherViralLoad() {
-        var motherVl = $("#motherViralLoadCopiesPerMl").val();
-        var motherVlText = $("#motherViralLoadText").val();
-        if (motherVlText != '') {
-            $("#motherViralLoadCopiesPerMl").val('');
-        }
-    }
-
-
-
     $(document).ready(function() {
         $('.result-focus').change(function(e) {
             var status = false;
@@ -678,13 +668,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             updateMotherViralLoad();
         <?php } ?>
 
-        $("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
-            var motherVl = $("#motherViralLoadCopiesPerMl").val();
-            //var motherVlText = $("#motherViralLoadText").val();
-            if (motherVl != '') {
-                $("#motherViralLoadText").val('');
-            }
-        });
         $('#isResultAuthorized').change(function(e) {
             checkIsResultAuthorized();
         });

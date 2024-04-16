@@ -682,14 +682,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         }
     }
 
-    function updateMotherViralLoad() {
-        var motherVl = $("#motherViralLoadCopiesPerMl").val();
-        var motherVlText = $("#motherViralLoadText").val();
-        if (motherVlText != '') {
-            $("#motherViralLoadCopiesPerMl").val('');
-        }
-    }
-
     $(document).ready(function() {
 
         $('.result-focus').change(function(e) {

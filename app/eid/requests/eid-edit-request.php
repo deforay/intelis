@@ -126,6 +126,7 @@ foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
+$eidInfo['child_dob'] = DateUtility::humanReadableDateFormat($eidInfo['child_dob']);
 
 if (isset($eidInfo['sample_collection_date']) && trim((string) $eidInfo['sample_collection_date']) != '' && $eidInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $eidInfo['sample_collection_date'];
@@ -210,7 +211,8 @@ $fileArray = array(
     COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
     COUNTRY\PNG => 'forms/edit-png.php',
     COUNTRY\WHO => 'forms/edit-who.php',
-    COUNTRY\RWANDA => 'forms/edit-rwanda.php'
+    COUNTRY\RWANDA => 'forms/edit-rwanda.php',
+    COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'
 );
 
 require_once($fileArray[$arr['vl_form']]);

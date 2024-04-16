@@ -1080,14 +1080,6 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
         }
     }
 
-    function updateMotherViralLoad() {
-        var motherVl = $("#motherViralLoadCopiesPerMl").val();
-        var motherVlText = $("#motherViralLoadText").val();
-        if (motherVlText != '') {
-            $("#motherViralLoadCopiesPerMl").val('');
-        }
-    }
-
 
     $('#isResultAuthorized').change(function(e) {
         checkIsResultAuthorized();
@@ -1166,14 +1158,6 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                 $('.comorbidities-row').show();
             } else {
                 $('.comorbidities-row').hide();
-            }
-        });
-
-        $("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
-            var motherVl = $("#motherViralLoadCopiesPerMl").val();
-            //var motherVlText = $("#motherViralLoadText").val();
-            if (motherVl != '') {
-                $("#motherViralLoadText").val('');
             }
         });
         <?php if (isset($covid19Info['result']) && $covid19Info['result'] != "") { ?>

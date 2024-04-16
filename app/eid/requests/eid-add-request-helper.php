@@ -309,6 +309,7 @@ try {
 		'mother_name' => $_POST['mothersName'] ?? null,
 		'mother_surname' => $_POST['mothersSurname'] ?? null,
 		'mother_dob' => $_POST['mothersDob'] ?? null,
+		'mother_age_in_years' => $_POST['motherAgeInYears'] ?? null,
 		'mother_marital_status' => $_POST['mothersMaritalStatus'] ?? null,
 		'mother_treatment' => is_array($_POST['motherTreatment']) ? implode(",", $_POST['motherTreatment']) : $_POST['motherTreatment'] ?? null,
 		'mother_regimen' => (isset($_POST['motherRegimen']) && $_POST['motherRegimen'] != '') ? $_POST['motherRegimen'] : null,
