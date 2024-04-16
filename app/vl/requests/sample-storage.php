@@ -82,13 +82,15 @@ if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != ''
 }
 
 if (isset($sWhere) && !empty($sWhere)) {
-	$sWhere = ' where ' . implode(" AND ", $sWhere);
+	$sWhere =  ' AND ' . implode(" AND ", $sWhere);
 }
-
-$vlQuery = "SELECT vl.*,f.facility_name , s.storage_code, h.* FROM form_vl as vl
+else{
+	$sWhere = "";
+}
+$vlQuery = "SELECT vl.*,f.facility_name,s.storage_code,h.* FROM form_vl as vl
             LEFT JOIN lab_storage_history as h ON h.sample_unique_id = vl.unique_id
 			LEFT JOIN lab_storage as s ON s.storage_id = h.freezer_id
-            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id ";
+            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE vl.sample_code IS NOT NULL ";
 
 $vlQuery = $vlQuery . $sWhere;
 
