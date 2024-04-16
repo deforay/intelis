@@ -936,7 +936,7 @@ $sFormat = '';
 		$(".select2").select2({
 			tags: true
 		});
-		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Storage Code');
+		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Freezer Code');
 
 		$("#freezer").on('change', function() {
 			storage = $("#freezer option:selected").text().split('-');

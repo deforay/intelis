@@ -41,6 +41,7 @@ class StorageService
             } else {
                 $response = [];
                 $results = $this->db->get("lab_storage", null, "storage_id,storage_code");
+                error_log($this->db->getLastQuery());
                 foreach ($results as $row) {
                     $response[$row['storage_id']] = $row['storage_code'];
                 }
@@ -53,7 +54,11 @@ class StorageService
     {
         try {
 
-            if (isset($params['storageId']) && $params['storageId'] != "" && !empty($params['storageCode'])) {
+            if (empty($params['storageCode'])) {
+                return false;
+            }
+
+            if (isset($params['storageId']) && $params['storageId'] != "" && !empty($params['storageId'])) {
                 $data = array(
                     'storage_code'     => $params['storageCode'],
                     'lab_id'     => $params['labId'],
@@ -107,7 +112,7 @@ class StorageService
                 $this->db->where('sample_unique_id', $uniqueId);
                 $this->db->where('freezer_id', $storageId);
                 $save = $this->db->update('lab_storage_history', $data);
-            } 
+            }
 
             $this->db->commitTransaction();
             return $save;
