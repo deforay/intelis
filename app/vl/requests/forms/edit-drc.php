@@ -670,7 +670,7 @@ $storageInfo = $storageService->getLabStorage();
 			tags: true
 		});
 
-		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Storage Code');
+		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Freezer Code');
 
 
 		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');
