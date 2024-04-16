@@ -1138,7 +1138,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function fillFacilityDetails() {
-          getfacilityProvinceDetails(obj)
+          getfacilityProvinceDetails(obj);
           $("#facilityCode").val($('#facilityId').find(':selected').data('code'));
           var femails = $('#facilityId').find(':selected').data('emails');
           var fmobilenos = $('#facilityId').find(':selected').data('mobile-nos');

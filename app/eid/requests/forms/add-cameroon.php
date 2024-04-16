@@ -770,14 +770,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         }
     }
 
-    function updateMotherViralLoad() {
-        //var motherVl = $("#motherViralLoadCopiesPerMl").val();
-        var motherVlText = $("#motherViralLoadText").val();
-        if (motherVlText != '') {
-            $("#motherViralLoadCopiesPerMl").val('');
-        }
-    }
-
     function setRelatedField(pcrVal) {
         if (pcrVal == 'yes') {
             $('#previousPCRTestDate').addClass('isRequired');
@@ -873,13 +865,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         // $('#province').select2({
         //     placeholder: "Province"
         // });
-        $("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
-            var motherVl = $("#motherViralLoadCopiesPerMl").val();
-            //var motherVlText = $("#motherViralLoadText").val();
-            if (motherVl != '') {
-                $("#motherViralLoadText").val('');
-            }
-        });
 
         $('#isChildOnCotrim').change(function() {
             if ($(this).val() == "no") {

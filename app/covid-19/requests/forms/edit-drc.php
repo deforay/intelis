@@ -1364,16 +1364,6 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
         }
     }
 
-    function updateMotherViralLoad() {
-        var motherVl = $("#motherViralLoadCopiesPerMl").val();
-        var motherVlText = $("#motherViralLoadText").val();
-        if (motherVlText != '') {
-            $("#motherViralLoadCopiesPerMl").val('');
-        }
-    }
-
-
-
     $(document).ready(function() {
 
 
@@ -1437,14 +1427,6 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                 $('.comorbidities-row').show();
             } else {
                 $('.comorbidities-row').hide();
-            }
-        });
-
-        $("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
-            var motherVl = $("#motherViralLoadCopiesPerMl").val();
-            //var motherVlText = $("#motherViralLoadText").val();
-            if (motherVl != '') {
-                $("#motherViralLoadText").val('');
             }
         });
         $('#isResultAuthorized').change(function(e) {

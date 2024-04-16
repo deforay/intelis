@@ -411,11 +411,14 @@ ADD `last_cd8_result` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_percentage`,
 ADD `last_cd4_date` DATE NULL DEFAULT NULL AFTER `last_cd8_result`,
 ADD `last_cd8_date` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_date`;
 
--- Thana 15-Apr-2024
-ALTER TABLE `audit_form_vl`
-ADD `treatment_duration_precise` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration`,
-ADD `last_cd4_result` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration_precise`,
-ADD `last_cd4_percentage` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_result`,
-ADD `last_cd8_result` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_percentage`,
-ADD `last_cd4_date` DATE NULL DEFAULT NULL AFTER `last_cd8_result`,
+ALTER TABLE `audit_form_vl` 
+ADD `treatment_duration_precise` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration`, 
+ADD `last_cd4_result` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration_precise`, 
+ADD `last_cd4_percentage` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_result`, 
+ADD `last_cd8_result` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_percentage`, 
+ADD `last_cd4_date` DATE NULL DEFAULT NULL AFTER `last_cd8_result`, 
 ADD `last_cd8_date` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_date`;
+
+-- Thana 16-Apr-2024
+ALTER TABLE `form_eid` ADD `mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
+ALTER TABLE `audit_form_eid` ADD `mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
