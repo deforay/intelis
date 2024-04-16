@@ -54,6 +54,10 @@ class StorageService
     {
         try {
 
+            if (empty($params['storageCode'])) {
+                return false;
+            }
+
             if (isset($params['storageId']) && $params['storageId'] != "" && !empty($params['storageId'])) {
                 $data = array(
                     'storage_code'     => $params['storageCode'],
