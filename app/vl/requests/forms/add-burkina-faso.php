@@ -441,7 +441,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                  <div class="col-md-6">
                                                                       <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label labels"><?= _translate("VL Focal Person Phone Number"); ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control phone-number" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" />
+                                                                           <input type="text" class="form-control" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" />
                                                                       </div>
                                                                  </div>
                                                             </div>

@@ -180,7 +180,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                     <tr>
                                         <th style="width:15%" scope="row" class="labels"><?= _translate("Caretaker phone number");?></th>
-                                        <td style="width:35%"><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;"  /></td>
+                                        <td style="width:35%"><input type="text" class="form-control" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;"  /></td>
 
                                         <th style="width:15%" scope="row" class="labels"><?= _translate("Infant caretaker address");?></th>
                                         <td style="width:35%"><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" ></textarea></td>
@@ -194,7 +194,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15%" class="labels"><?= _translate("Mother Alive");?>:</th>
+                                        <th scope="row" style="width:15%" class="labels"><?= _translate("Is Mother Alive?");?>:</th>
                                         <td style="width:35%">
                                             <select class="form-control" name="mothersHIVStatus" id="mothersHIVStatus" title="Please select the Alive or not" style="width:100%;">
                                                 <option value=''> -- Select -- </option>

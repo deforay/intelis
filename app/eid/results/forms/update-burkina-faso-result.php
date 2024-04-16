@@ -49,7 +49,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
         <h1><em class="fa-solid fa-pen-to-square"></em> <?= _translate("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM");?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?= _translate("Home");?></a></li>
-            <li class="active"><?= _translate("Edit EID Request");?></li>
+            <li class="active"><?= _translate("Update Test Result");?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -62,10 +62,9 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
             <!-- /.box-header -->
             <div class="box-body">
                 <!-- form start -->
-                <form class="form-horizontal" method="post" name="editEIDRequestForm" id="editEIDRequestForm" autocomplete="off" action="eid-edit-request-helper.php">
                     <div class="box-body">
                         <div class="box box-default">
-                            <div class="box-body">
+                            <div class="box-body disabledForm">
                                 <div class="box-header with-border">
                                     <h3 class="box-title"><?= _translate("SITE INFORMATION");?></h3>
                                 </div>
@@ -358,6 +357,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                 </table>
                             </div>
                         </div>
+                        <form class="form-horizontal" method="post" name="updateEIDresultForm" id="updateEIDresultForm" autocomplete="off" action="eid-update-result-helper.php">
                         <?php if (_isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
@@ -476,14 +476,14 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                             <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
                         <?php } ?>
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?= _translate("Save");?></a>
+                        <input type="hidden" class="" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" />
                         <input type="hidden" name="revised" id="revised" value="no" />
                         <input type="hidden" name="formId" id="formId" value="1" />
-                        <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?= htmlspecialchars((string) $eidInfo['eid_id']); ?>" />
-                        <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
-                        <input type="hidden" name="oldStatus" id="oldStatus" value="<?= htmlspecialchars((string) $eidInfo['result_status']); ?>" />
-                        <input type="hidden" name="provinceCode" id="provinceCode" />
-                        <input type="hidden" name="provinceId" id="provinceId" />
-                        <a href="/eid/requests/eid-requests.php" class="btn btn-default"> <?= _translate("Cancel");?></a>
+                        <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
+                        <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
+                        <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
+                        <input type="hidden" id="childId" name="childId"  value="<?php echo $eidInfo['child_id']; ?>" />
+                        <a href="/eid/results/eid-manual-results.php" class="btn btn-default"> <?= _translate("Cancel");?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>
@@ -642,10 +642,10 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
         flag = deforayValidator.init({
-            formId: 'editEIDRequestForm'
+            formId: 'updateEIDresultForm'
         });
         if (flag) {
-            document.getElementById('editEIDRequestForm').submit();
+            document.getElementById('updateEIDresultForm').submit();
         }
     }
     function updateMotherViralLoad() {
@@ -722,7 +722,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                 getMachine(this.value);
             }
         });
-
+        $('.disabledForm input, .disabledForm select , .disabledForm textarea ').attr('disabled', true);
     });
 
     function getMachine(value) {
