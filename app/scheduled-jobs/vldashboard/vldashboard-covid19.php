@@ -29,6 +29,15 @@ $output = [];
 
 try {
 
+    $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
+
+    if (empty($vldashboardUrl)) {
+        echo "VL Dashboard URL not set";
+        exit(0);
+    }
+
+    $url = rtrim((string) $vldashboardUrl, "/") . "/api/vlsm-covid19";
+
     $instanceUpdateOn = $db->getValue('s_vlsm_instance', 'covid19_last_dash_sync');
 
     if (!empty($instanceUpdateOn)) {
@@ -52,8 +61,7 @@ try {
     fclose($fp);
 
 
-    $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
-    $url = rtrim((string) $vldashboardUrl, "/") . "/api/vlsm-covid19";
+
 
     $params = [
         [

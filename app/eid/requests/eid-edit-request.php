@@ -126,8 +126,15 @@ foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
-$eidInfo['child_dob'] = DateUtility::humanReadableDateFormat($eidInfo['child_dob']);
 
+if (isset($eidInfo['sample_dispatched_datetime']) && trim((string) $eidInfo['sample_dispatched_datetime']) != '' && $eidInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+    $sampleCollectionDate = $eidInfo['sample_dispatched_datetime'];
+    $expStr = explode(" ", (string) $eidInfo['sample_dispatched_datetime']);
+    $eidInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+} else {
+    $sampleCollectionDate = '';
+    $eidInfo['sample_dispatched_datetime'] = '';
+}
 if (isset($eidInfo['sample_collection_date']) && trim((string) $eidInfo['sample_collection_date']) != '' && $eidInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $eidInfo['sample_collection_date'];
     $expStr = explode(" ", (string) $eidInfo['sample_collection_date']);
