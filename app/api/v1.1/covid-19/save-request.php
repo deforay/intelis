@@ -434,7 +434,7 @@ try {
                     $symptomData["symptom_details"] = (!empty($data['symptomDetails'][$data['symptomId'][$i]])) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
                     //var_dump($symptomData);
                     $db->insert("covid19_patient_symptoms", $symptomData);
-                    error_log($db->getLastError());
+                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
                 }
             }
         }
@@ -448,7 +448,7 @@ try {
             $reasonData["reasons_detected"] = "yes";
             $reasonData["reason_details"] = json_encode($data['reasonDetails']);
             $db->insert("covid19_reasons_for_testing", $reasonData);
-            error_log($db->getLastError());
+            error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
         }
 
         $db->where('covid19_id', $data['covid19SampleId']);
@@ -460,7 +460,7 @@ try {
                 $comorbidityData["comorbidity_id"] = $data['comorbidityId'][$i];
                 $comorbidityData["comorbidity_detected"] = $data['comorbidityDetected'][$i];
                 $db->insert("covid19_patient_comorbidities", $comorbidityData);
-                error_log($db->getLastError());
+                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
             }
         }
         if (isset($data['covid19SampleId']) && $data['covid19SampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {

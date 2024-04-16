@@ -55,7 +55,6 @@ $customFilters = [
 $_POST = _sanitizeInput($_POST, $customFilters);
 
 $instanceId = $general->getInstanceId();
-
 try {
 
     $db->beginTransaction();
@@ -239,6 +238,12 @@ try {
         'treatment_duration' => $_POST['treatmentDuration'] ?? null,
         'treatment_indication' => $_POST['treatmentIndication'] ?? null,
         'treatment_initiated_date' => DateUtility::isoDateFormat($_POST['dateOfArtInitiation'] ?? ''),
+        'treatment_duration_precise' => (isset($_POST['treatmentDurationPrecise']) && $_POST['treatmentDurationPrecise'] != "More then 12 Months") ?  $_POST['treatmentDurationPrecise'] : $_POST['treatmentDurationPrecise1'],
+        'last_cd4_result' => $_POST['cd4Result'] ?? null,
+        'last_cd4_percentage' => $_POST['cd4Percentage'] ?? null,
+        'last_cd4_date' => DateUtility::isoDateFormat($_POST['cd4Date'] ?? ''),
+        'last_cd8_result' => $_POST['cd8Result'] ?? null,
+        'last_cd8_date' => DateUtility::isoDateFormat($_POST['cd8Date'] ?? ''),
         'current_regimen' => $_POST['artRegimen'] ?? null,
         'has_patient_changed_regimen' => $_POST['hasChangedRegimen'] ?? null,
         'reason_for_regimen_change' => $_POST['reasonForArvRegimenChange'] ?? null,
@@ -388,6 +393,7 @@ try {
     }
 
     $id = 0;
+    // echo "<pre>";print_r($vlData);die;
 
     $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);

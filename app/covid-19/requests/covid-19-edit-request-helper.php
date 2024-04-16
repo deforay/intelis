@@ -322,7 +322,7 @@ try {
 		$reasonData["reasons_detected"] = "yes";
 		$reasonData["reason_details"] = json_encode($_POST['reasonDetails']);
 		$db->insert("covid19_reasons_for_testing", $reasonData);
-	}else{
+	} else {
 		if (!empty($_POST['reasonForCovid19Test'])) {
 			$reasonData = [];
 			$reasonData["covid19_id"] = $_POST['covid19SampleId'];
@@ -407,7 +407,7 @@ try {
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '') {
 		$db->where('covid19_id', $_POST['covid19SampleId']);
 		$id = $db->update($tableName, $covid19Data);
-		error_log($db->getLastError());
+		error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
 	}
 
 	if ($id > 0 || $sid > 0 || $pid > 0) {
@@ -421,7 +421,7 @@ try {
 	} else {
 		$_SESSION['alertMsg'] = _translate("Please try again later");
 	}
-	error_log($db->getLastError());
+	error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
 	header("Location:/covid-19/requests/covid-19-requests.php");
 } catch (Exception $exc) {
 	throw new SystemException($exc->getMessage(), $exc->getCode(), $exc);

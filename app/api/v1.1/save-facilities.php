@@ -186,7 +186,7 @@ try {
 
 
         $id = $db->insert('facility_details', $facilityFulldata);
-        error_log($db->getLastError());
+        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
 
         if ($id) {
             $responseData[$rootKey] = [
@@ -228,9 +228,9 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    error_log($db->getLastError());
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+    error_log(__FILE__ . ":" . __LINE__ . ":" . $exc->getMessage());
+    error_log(__FILE__ . ":" . __LINE__ . ":" . $exc->getTraceAsString());
     LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }
 

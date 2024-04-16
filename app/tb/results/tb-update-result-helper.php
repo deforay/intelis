@@ -228,7 +228,7 @@ try {
     if (!empty($_POST['tbSampleId'])) {
         $db->where('tb_id', $_POST['tbSampleId']);
         $id = $db->update($tableName, $tbData);
-        error_log($db->getLastError());
+        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     }
 
     if ($id === true) {

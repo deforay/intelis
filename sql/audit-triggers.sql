@@ -214,3 +214,11 @@ CREATE TRIGGER form_cd4_data__bd BEFORE DELETE ON `form_cd4` FOR EACH ROW
     INSERT INTO `audit_form_cd4` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_cd4` AS d WHERE d.cd4_id = OLD.cd4_id;
 
+-- Thana 15-Apr-2024
+ALTER TABLE `audit_form_vl` 
+ADD `treatment_duration_precise` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration`, 
+ADD `last_cd4_result` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration_precise`, 
+ADD `last_cd4_percentage` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_result`, 
+ADD `last_cd8_result` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_percentage`, 
+ADD `last_cd4_date` DATE NULL DEFAULT NULL AFTER `last_cd8_result`, 
+ADD `last_cd8_date` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_date`;

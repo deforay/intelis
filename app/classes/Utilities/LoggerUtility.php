@@ -20,9 +20,32 @@ class LoggerUtility
         return self::$logger;
     }
 
+    public static function getCallerInfo($index = 1)
+    {
+        $backtrace = debug_backtrace();
+
+        $callerInfo = [
+            'file' => '',
+            'line' => 0
+        ];
+        $index = 1;
+        if (isset($backtrace[$index])) {
+            $callerInfo['file'] = $backtrace[$index]['file'];
+            $callerInfo['line'] = $backtrace[$index]['line'];
+        }
+
+        return $callerInfo;
+    }
+
     public static function log($level, $message, array $context = []): void
     {
+
         $logger = self::getLogger();
+
+        $callerInfo = self::getCallerInfo(1);
+
+        $context['file'] = $callerInfo['file'] ?? $context['file'] ?? '';
+        $context['line'] =  $callerInfo['line'] ?? $context['line'] ?? '';
         $logger->log($level, $message, $context);
     }
 }

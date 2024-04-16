@@ -97,7 +97,7 @@ try {
                     $value = array('sample_type_id' => $val, 'test_type_id' => $lastId);
                     // echo '<pre>'; print_r($value); die;
                     $db->insert($tableName2, $value);
-                    error_log($db->getLastError());
+                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
                 }
             }
 
@@ -156,7 +156,7 @@ try {
         }
         $_SESSION['alertMsg'] = _translate("Test type added successfully");
     }
-    //error_log($db->getLastError());
+    //error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     header("Location:test-type.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

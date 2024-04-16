@@ -402,3 +402,11 @@ UPDATE `privileges` SET `shared_privileges` = '[\"/vl/requests/upload-storage.ph
 ALTER TABLE `lab_storage_history` ADD `date_out` DATE NULL DEFAULT NULL AFTER `sample_status`;
 ALTER TABLE `lab_storage_history` ADD `comments` TEXT NULL DEFAULT NULL AFTER `date_out`;
 
+-- Thana 15-Apr-2024
+ALTER TABLE `form_vl` 
+ADD `treatment_duration_precise` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration`, 
+ADD `last_cd4_result` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration_precise`, 
+ADD `last_cd4_percentage` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_result`, 
+ADD `last_cd8_result` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_percentage`, 
+ADD `last_cd4_date` DATE NULL DEFAULT NULL AFTER `last_cd8_result`, 
+ADD `last_cd8_date` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_date`;

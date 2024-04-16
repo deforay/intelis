@@ -180,7 +180,7 @@ try {
         }
         $_SESSION['alertMsg'] = _translate("Test type updated successfully");
     }
-    //error_log($db->getLastError());
+    //error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     header("Location:test-type.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

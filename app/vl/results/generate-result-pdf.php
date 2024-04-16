@@ -108,6 +108,7 @@ $fileArray = array(
 	COUNTRY\PNG => 'pdf/result-pdf-png.php',
 	COUNTRY\WHO => 'pdf/result-pdf-who.php',
 	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
+	COUNTRY\BURKINA_FASO => 'pdf/result-pdf-burkina-faso.php'
 );
 
 $randomFolderName = time() . '-' . $general->generateRandomString(6);
