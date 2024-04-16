@@ -25,6 +25,8 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 /** @var StorageService $storageService */
 $storageService = ContainerRegistry::get(StorageService::class);
 
+$formId = $general->getGlobalConfig('vl_form');
+
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -84,14 +86,15 @@ if(isset($sWhere) && !empty($sWhere)){
 	$sWhere = ' where '. implode(" AND ", $sWhere);
 }
 
-$vlQuery = "SELECT vl.*,f.facility_name ,h.sample_status FROM form_vl as vl 
-            LEFT JOIN lab_storage_history as h ON h.sample_unique_id=vl.unique_id 
+$vlQuery = "SELECT vl.*,f.facility_name , s.storage_code, h.* FROM form_vl as vl 
+            LEFT JOIN lab_storage_history as h ON h.sample_unique_id = vl.unique_id 
+			LEFT JOIN lab_storage as s ON s.storage_id = h.freezer_id 
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id ";
 
 $vlQuery = $vlQuery . $sWhere;
 
 //echo $vlQuery;  die;
-
+$_SESSION['sampleStorageQuery'] = $vlQuery;
 $vlQueryInfo = $db->rawQuery($vlQuery);
 
 $storageInfo = $storageService->getLabStorage();
@@ -117,6 +120,7 @@ if(!empty($sampleUniqueId)){
 		width: auto;
 		overflow-y: scroll !important;
 	}
+
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -144,9 +148,9 @@ if(!empty($sampleUniqueId)){
 								</strong>
 							</td>
 							<td>
-							<select type="text" name="freezerCode" id="freezerCode" class="form-control">
-										<?= $general->generateSelectOptions($storageInfo, $_POST['freezerCode'], '-- Select --') ?>
-                                	</select>
+								<select type="text" name="freezerCode" id="freezerCode" class="form-control freezerSelect" style="width:250px;">
+									<?= $general->generateSelectOptions($storageInfo, $_POST['freezerCode'], '-- Select --') ?>
+                                </select>
 							</td>
 							<td><strong>
 									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
@@ -198,6 +202,17 @@ if(!empty($sampleUniqueId)){
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location" type="reset"><span>
 										<?php echo _translate("Clear Search"); ?>
 									</span></button>
+
+									&nbsp;<button class="btn btn-success btn-sm" style="margin-right:5px;" href="javascript:void(0);" onclick="exportStorageSamples();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+									<?php echo _translate("Export Excel"); ?></button>
+
+									<?php
+								if (_isAllowed("/vl/requests/vl-requests.php") && $formId == COUNTRY\DRC) { ?>
+									<a href="/vl/requests/upload-storage.php" class="btn btn-primary btn-sm"> <em class="fa-solid fa-plus"></em>
+										<?php echo _translate("Storage Bulk Upload"); ?>
+									</a>
+								<?php }
+								?>
 							</td>
 						</tr>
 					</table>
@@ -316,7 +331,7 @@ if(!empty($sampleUniqueId)){
 										<input type="text" name="volume[<?= $i; ?>]" id="volume<?= $i; ?>" class="form-control" size="5"/>
 									</td>
                                     <td class="dataTables_empty">
-                                    <select type="text" name="freezer[<?= $i; ?>]" id="freezer<?= $i; ?>" class="form-control" onchange="showSamples(<?= $i; ?>);">
+                                    <select type="text" name="freezer[<?= $i; ?>]" id="freezer<?= $i; ?>" class="form-control freezerSelect" onchange="showSamples(<?= $i; ?>);" style="width:70px;">
 										<?= $general->generateSelectOptions($storageInfo, null, '-- Select --') ?>
                                 	</select>
 									</td>
@@ -385,6 +400,10 @@ if(!empty($sampleUniqueId)){
 		$("#facilityName").select2({
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
+		$(".freezerSelect").select2({
+			placeholder: "<?php echo _translate("Select Freezer"); ?>"
+		});
+		
 		$('.daterangefield').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
@@ -484,6 +503,20 @@ if(!empty($sampleUniqueId)){
 			function(data) {
 				if(data!='')
 					alert("Sample is removed from this freezer");
+			});
+	}
+
+	function exportStorageSamples() {
+		
+		$.blockUI();
+		$.post("/vl/requests/export-sample-storage.php", 
+			function(data) {
+				$.unblockUI();
+				if (data === "" || data === null || data === undefined) {
+					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+				} else {
+					window.open('/download.php?d=a&f=' + data, '_blank');
+				}
 			});
 	}
 
