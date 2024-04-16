@@ -14,9 +14,9 @@ class TestResultsService
     {
         $this->db = $db;
     }
-    public function clearPreviousImportsByUser($userId, $module = null)
+    public function clearPreviousImportsByUser($userId = null, $module = null)
     {
-        $userId = $userId ?? $_SESSION['userId'];
+        $userId = $userId ?? $_SESSION['userId'] ?? null;
         $this->db->where('imported_by', $userId);
         if (!empty($module)) {
             $this->db->where('module', $module);

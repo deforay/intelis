@@ -293,6 +293,7 @@ try {
             'last_vl_result_routine' => $data['rmTestingVlValue'] ?? null,
             'last_vl_date_failure_ac' => DateUtility::isoDateFormat($data['repeatTestingLastVLDate'] ?? ''),
             'last_vl_result_failure_ac' => $data['repeatTestingVlValue'] ?? null,
+            'line_of_treatment' => $data['lineOfTreatment'] ?? null,
             'last_vl_date_failure' => DateUtility::isoDateFormat($data['suspendTreatmentLastVLDate'] ?? ''),
             'last_vl_result_failure' => $data['suspendTreatmentVlValue'] ?? null,
             'request_clinician_name' => $data['reqClinician'] ?? null,
@@ -392,7 +393,7 @@ try {
         if (!empty($data['vlSampleId'])) {
             $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
-            //error_log($db->getLastError());
+            //error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
         }
 
         if ($id === true) {
@@ -446,8 +447,8 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    error_log($db->getLastError());
-    error_log($db->getLastQuery());
+    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
     LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);

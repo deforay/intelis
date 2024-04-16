@@ -26,6 +26,10 @@ $tableName = "batch_details";
 try {
     $labelOrder = '';
     if (isset($_POST['sortOrders']) && trim((string) $_POST['sortOrders']) != '') {
+
+        //Saving names of controls
+        $controlNames = json_encode($_POST['controls'], JSON_FORCE_OBJECT);
+
         $xplodSortOrders = explode(",", (string) $_POST['sortOrders']);
         $orderArray = [];
         if (isset($_POST['positions']) && $_POST['positions'] == 'alpha-numeric') {
@@ -42,9 +46,18 @@ try {
                 $orderArray[$o] = $xplodSortOrders[$o];
             }
         }
+
+        if (!empty($orderArray)) {
+            for ($a = 0; $a < count($orderArray); $a++) {
+                if (!empty($_POST) && array_key_exists($orderArray[$a], $_POST)) {
+                    $orderArray[$a] = $_POST[$orderArray[$a]];
+                }
+            }
+        }
         $labelOrder = json_encode($orderArray, JSON_FORCE_OBJECT);
         $data = [
             'label_order' => $labelOrder,
+            'control_names' => $controlNames,
             'last_modified_by' => $_SESSION['userId'],
             'last_modified_datetime' => DateUtility::getCurrentDateTime()
         ];

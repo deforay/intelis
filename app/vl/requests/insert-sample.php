@@ -24,10 +24,9 @@ try {
 } catch (Throwable $exception) {
     // Rollback transaction in case of error
     $db->rollbackTransaction();
-    if ($db->getLastErrno() > 0) {
-        error_log($db->getLastErrno());
-        error_log($db->getLastError());
-        error_log($db->getLastQuery());
+    if (!empty($db->getLastError())) {
+        LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno() . ":" . $db->getLastError());
+        LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
     }
     LoggerUtility::log('error', $exception->getFile() . ':' . $exception->getLine()  . ':' .  $exception->getMessage(), [
         'exception' => $exception,

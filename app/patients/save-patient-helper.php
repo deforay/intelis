@@ -79,7 +79,7 @@ try {
         $id = $db->insert($tableName, $patientData);
     }
 
-    //error_log($db->getLastError());
+    //error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
 
     if ($id > 0) {
         $_SESSION['alertMsg'] = _translate("Patient information saved successfully");

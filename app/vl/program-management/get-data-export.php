@@ -67,6 +67,7 @@ try {
                vl.patient_dob,
                vl.patient_gender,
                vl.key_population,
+               vl.health_insurance_code,
                vl.patient_mobile_number,
                vl.patient_age_in_years,
                vl.sample_collection_date,

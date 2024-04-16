@@ -28,6 +28,7 @@ $configId = (int) base64_decode((string) $_POST['configId']);
 $configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id=?";
 $configControlInfo = $db->rawQuery($configControlQuery, [$configId]);
 // echo "<pre>";print_r($_POST);die;
+//echo $configId; die;
 try {
     if (trim((string) $_POST['configurationName']) != "") {
 

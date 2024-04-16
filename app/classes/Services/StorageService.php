@@ -94,4 +94,26 @@ class StorageService
             return $return;
         });
     }
+
+    public function updateSampleStorageStatus($storageId, $uniqueId, $status)
+    {
+        try {
+
+            if (isset($storageId) && $storageId != "" && !empty($uniqueId)) {
+                $data = array(
+                    'sample_status' => $status,
+                    'updated_datetime' => DateUtility::getCurrentDateTime()
+                );
+                $this->db->where('sample_unique_id', $uniqueId);
+                $this->db->where('freezer_id', $storageId);
+                $save = $this->db->update('lab_storage_history', $data);
+            } 
+
+            $this->db->commitTransaction();
+            return $save;
+        } catch (\Exception $e) {
+            $this->db->rollbackTransaction();
+            throw $e;
+        }
+    }
 }

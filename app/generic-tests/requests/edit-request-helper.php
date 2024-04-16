@@ -201,7 +201,7 @@ try {
      }
      $interpretationResult = null;
      if (!empty($_POST['resultInterpretation'])) {
-          foreach($_POST['resultInterpretation'] as $row){
+          foreach ($_POST['resultInterpretation'] as $row) {
                $interpretationResult = $row;
           }
      }
@@ -317,7 +317,7 @@ try {
                                    'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
                               );
                               $db->insert('generic_test_results', $testData);
-                              if(isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])){
+                              if (isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])) {
                                    $finalResult = $_POST['finalResult'][$subTestName];
                               }
                          }
@@ -335,7 +335,7 @@ try {
      // echo "<pre>";print_r($genericData);die;
      $db->where('sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $genericData);
-     error_log($db->getLastError());
+     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
      $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';
      if ($id === true) {
           $_SESSION['alertMsg'] = _translate("Request updated successfully");

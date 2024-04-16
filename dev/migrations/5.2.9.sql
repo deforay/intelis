@@ -245,7 +245,7 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display VL Log Result', 'vl_display_page_no_in_footer', 'yes', 'vl', 'no', NULL, NULL, 'active');
 
 -- Amit 21-Feb-2024
-ALTER TABLE `form_eid` CHANGE COLUMN second_DBS_requested_reason second_dbs_requested_reason VARCHAR(256) NULL DEFAULT NULL
+ALTER TABLE `form_eid` CHANGE COLUMN second_DBS_requested_reason second_dbs_requested_reason VARCHAR(256) NULL DEFAULT NULL;
 ALTER TABLE `form_eid` ADD `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_dbs_requested`;
 ALTER TABLE `audit_form_eid`  ADD `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_dbs_requested`;
 
@@ -342,3 +342,71 @@ UPDATE `s_app_menu` SET `inner_pages` = NULL WHERE `module` = 'generic-tests' AN
 -- Thana 29-Mar-2024
 UPDATE `s_app_menu` SET `inner_pages` = null WHERE `s_app_menu`.`link` = '/vl/program-management/vl-sample-status.php' AND `s_app_menu`.`module` = 'vl';
 
+-- Jeyabanu 28-Mar-2024
+DELETE s1 FROM generic_test_sample_type_map s1
+JOIN (
+    SELECT sample_type_id, test_type_id, MIN(map_id) as min_id
+    FROM generic_test_sample_type_map
+    GROUP BY sample_type_id, test_type_id
+) s2 ON s1.sample_type_id = s2.sample_type_id AND s1.test_type_id = s2.test_type_id
+WHERE s1.map_id > s2.min_id;
+
+ALTER TABLE generic_test_sample_type_map ADD UNIQUE INDEX idx_sample_type_id_test_type_id (sample_type_id, test_type_id);
+
+DELETE s1 FROM generic_test_reason_map s1 JOIN ( SELECT test_reason_id, test_type_id, MIN(map_id) as min_id FROM generic_test_reason_map GROUP BY test_reason_id, test_type_id ) s2 ON s1.test_reason_id = s2.test_reason_id AND s1.test_type_id = s2.test_type_id WHERE s1.map_id > s2.min_id;
+
+ALTER TABLE generic_test_reason_map ADD UNIQUE INDEX idx_test_reason_id_test_type_id (test_reason_id, test_type_id);
+
+--Jeyabanu 02-Apr-2024
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privileges`.`privilege_name` = '/common/reference/lab-storage.php';
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privileges`.`privilege_name` = '/common/reference/add-lab-storage.php';
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privileges`.`privilege_name` = '/common/reference/edit-lab-storage.php';
+
+UPDATE `s_app_menu` SET `show_mode` = 'lis' WHERE `s_app_menu`.`display_text` = 'Lab Storage';
+
+--Jeyabanu 05-Apr-2024
+ALTER TABLE `batch_details` ADD `control_names` JSON NULL DEFAULT NULL AFTER `label_order`;
+
+
+-- Amit 08-Apr-2024
+ALTER TABLE `r_generic_test_reasons` ADD `parent_reason` INT NULL DEFAULT NULL AFTER `test_reason`;
+
+
+-- Jeyabanu 09-Apr-2024
+CREATE TABLE `lab_storage_history` (
+  `history_id` int NOT NULL AUTO_INCREMENT,
+  `test_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `sample_unique_id` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
+  `volume` decimal(10,2) NOT NULL,
+  `freezer_id` char(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `rack` int NOT NULL,
+  `box` int NOT NULL,
+  `position` int NOT NULL,
+  `sample_status` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `updated_datetime` timestamp NOT NULL,
+  `updated_by` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`history_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+-- Amit 09-Apr-2024
+ALTER TABLE `instrument_controls` ADD `updated_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `number_of_calibrators`;
+ALTER TABLE `s_vlsm_instance` ADD `last_lab_metadata_sync` DATETIME NULL DEFAULT NULL AFTER `last_vldash_sync`;
+
+-- Amit 10-Apr-2024
+INSERT INTO `s_available_country_forms` (`vlsm_country_id`, `form_name`, `short_name`) VALUES ('8', 'Burkina Faso', 'burkina-faso');
+
+-- Jeyabanu 11-Apr-2024
+UPDATE `privileges` SET `shared_privileges` = '[\"/vl/requests/upload-storage.php\",\"/vl/requests/sample-storage.php\"]' WHERE `privileges`.`privilege_name` = '/vl/requests/vl-requests.php';
+
+ALTER TABLE `lab_storage_history` ADD `date_out` DATE NULL DEFAULT NULL AFTER `sample_status`;
+ALTER TABLE `lab_storage_history` ADD `comments` TEXT NULL DEFAULT NULL AFTER `date_out`;
+
+-- Thana 15-Apr-2024
+ALTER TABLE `form_vl` 
+ADD `treatment_duration_precise` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration`, 
+ADD `last_cd4_result` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration_precise`, 
+ADD `last_cd4_percentage` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_result`, 
+ADD `last_cd8_result` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_percentage`, 
+ADD `last_cd4_date` DATE NULL DEFAULT NULL AFTER `last_cd8_result`, 
+ADD `last_cd8_date` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_date`;

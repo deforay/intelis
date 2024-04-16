@@ -383,7 +383,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                         <div class="col-md-5">
                                              <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
                                                   <?php foreach ($preselectedFacilities as $value) {
-                                                       if (array_key_exists($value, $activeFacilities)) { ?>
+                                                       if (!empty($activeFacilities) && array_key_exists($value, $activeFacilities)) { ?>
                                                             <option value="<?php echo $value; ?>"><?php echo $activeFacilities[$value]; ?> </option>
                                                   <?php }
                                                   } ?>

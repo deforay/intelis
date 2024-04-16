@@ -14,7 +14,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 
 
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
@@ -61,7 +61,7 @@ if (trim((string) $stateName) != '') {
 	/* $facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2'";
 	$lResult = $db->query($facilityQuery); */
 }
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 //set reason for changes history
 $rch = '';
 $allChange = [];
@@ -135,7 +135,15 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}
 	}
 }
-
+$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name', 'parent_reason'), false, " test_reason_status like 'active' ");
+$subTestReasons = $testReasonsResult = [];
+foreach ($testReasonsResultDetails as $row) {
+     if($row['parent_reason'] == 0){
+          $testReasonsResult[$row['test_reason_id']] = $row['test_reason_name'];
+     }else{
+          $subTestReasons[$row['parent_reason']][$row['test_reason_id']] = $row['test_reason_name'];
+     }
+}
 ?>
 <style>
 	.table>tbody>tr>td {
@@ -340,11 +348,11 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="patientLastName"><?= _translate('Patient Last Name'); ?> </label>
-                                                       <input type="text" name="patientLastName" id="patientLastName" value="<?= $vlQueryInfo['patient_last_name'] ?>" class="form-control" placeholder="<?= _translate('Enter Patient Last Name'); ?>" title="<?= _translate('Enter patient last name'); ?>"  <?php echo $disable; ?>/>
-                                                  </div>
-                                             </div>
+									<div class="form-group">
+										<label for="patientLastName"><?= _translate('Patient Last Name'); ?> </label>
+										<input type="text" name="patientLastName" id="patientLastName" value="<?= $vlQueryInfo['patient_last_name'] ?>" class="form-control" placeholder="<?= _translate('Enter Patient Last Name'); ?>" title="<?= _translate('Enter patient last name'); ?>" <?php echo $disable; ?> />
+									</div>
+								</div>
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="gender"><?= _translate('Gender'); ?></label><br>
@@ -361,12 +369,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="healthInsuranceCode"><?= _translate('Universal Health Coverage'); ?></label>
-                                                       <input type="text" name="healthInsuranceCode" id="healthInsuranceCode" value="<?= ($vlQueryInfo['health_insurance_code']); ?>" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" <?php echo $disable; ?> title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/>
-                                                  </div>
-                                             </div>
-							
+									<div class="form-group">
+										<label for="healthInsuranceCode"><?= _translate('Universal Health Coverage'); ?></label>
+										<input type="text" name="healthInsuranceCode" id="healthInsuranceCode" value="<?= ($vlQueryInfo['health_insurance_code']); ?>" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" <?php echo $disable; ?> title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32" />
+									</div>
+								</div>
+
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="patientPhoneNumber"><?= _translate('Phone Number'); ?></label>
@@ -510,138 +518,47 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<h3 class="box-title"><?= _translate('Reason of Request of the Viral Load'); ?> <span class="mandatory">*</span></h3><small> <?= _translate('(Please pick one): (To be completed by clinician)'); ?></small>
 								</div>
 								<div class="box-body">
-									<div class="row">
-										<div class="col-md-6">
-											<div class="form-group">
-												<div class="col-lg-12">
-													<label class="radio-inline">
-														<?php
-														$vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "'";
-														$vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
-														$checked = '';
-														$display = '';
-														$vlValue = '';
-														if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'controlVlTesting' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'controlVlTesting') {
-															$checked = 'checked="checked"';
-															$display = 'block';
-														} else {
-															$checked = '';
-															$display = 'none';
-														}
-														?>
-														<input type="radio" class="isRequired" id="rmTesting" name="reasonForVLTesting" value="controlVlTesting" title="<?= _translate('Please check viral load indication testing type'); ?>" <?php echo $checked; ?> onclick="showTesting('rmTesting');" <?php echo $disable; ?>>
-														<strong><?= _translate('Control VL Testing'); ?></strong>
-													</label>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row rmTesting hideTestData well" style="display:<?php echo $display; ?>;">
-										<div class="col-md-6">
-											<label class="col-lg-5 control-label"><?= _translate('Types Of Control VL Testing'); ?></label>
-											<div class="col-lg-7">
-
-												<select name="controlVlTestingType" id="controlVlType" class="form-control" title="<?= _translate('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();" <?php echo $disable; ?>>
-													<option value=""> <?= _translate("-- Select --"); ?> </option>
-													<option value="6 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '6 Months') ? "selected='selected' " : "" ?>><?= _translate('6 Months'); ?></option>
-													<option value="12 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '12 Months') ? "selected='selected' " : "" ?>><?= _translate('12 Months'); ?></option>
-													<option value="24 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '24 Months') ? "selected='selected' " : "" ?>><?= _translate('24 Months'); ?></option>
-													<option value="36 Months(3 Years)" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '36 Months(3 Years)') ? "selected='selected' " : "" ?>><?= _translate('36 Months(3 Years)'); ?></option>
-													<option value=">= 4 years" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '>= 4 years') ? "selected='selected' " : "" ?>><?= _translate('>= 4 years'); ?></option>
-													<option value="3 months after a VL > 1000cp/ml" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '3 months after a VL > 1000cp/ml') ? "selected='selected' " : "" ?>><?= _translate('3 months after a VL > 1000cp/ml'); ?></option>
-													<option value="Suspected Treatment Failure" <?php echo ($vlQueryInfo['control_vl_testing_type'] == 'Suspected Treatment Failure') ? "selected='selected' " : "" ?>><?= _translate('Suspected Treatment Failure'); ?></option>
-													<option value="VL Pregnant Woman" <?php echo ($vlQueryInfo['control_vl_testing_type'] == 'VL Pregnant Woman') ? "selected='selected' " : "" ?>><?= _translate('VL Pregnant Woman'); ?></option>
-													<option value="VL Breastfeeding woman" <?php echo ($vlQueryInfo['control_vl_testing_type'] == 'VL Breastfeeding woman') ? "selected='selected' " : "" ?>><?= _translate('VL Breastfeeding woman'); ?></option>
-												</select>
-											</div>
-										</div>
-
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<div class="form-group">
-												<div class="col-lg-12">
-													<label class="radio-inline">
-														<?php
-														$checked = '';
-														$display = '';
-														$vlValue = '';
-														if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'coinfection' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'coinfection') {
-															$checked = 'checked="checked"';
-															$display = 'block';
-														} else {
-															$checked = '';
-															$display = 'none';
-														}
-														?>
-														<input type="radio" class="" id="suspendTreatment" name="reasonForVLTesting" value="coinfection" title="<?= _translate('Please check viral load indication testing type'); ?>" <?= $checked; ?> onclick="showTesting('suspendTreatment');" <?php echo $disable; ?>>
-														<strong><?= _translate('Co-infection'); ?></strong>
-													</label>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row suspendTreatment hideTestData well" style="display: <?php echo $display; ?>;">
-										<div class="col-md-6">
-											<label class="col-lg-5 control-label"><?= _translate('Types of Co-infection'); ?></label>
-											<div class="col-lg-7">
-												<select name="coinfectionType" id="coinfectionType" class="form-control" title="<?= _translate('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();" <?php echo $disable; ?>>
-													<option value=""> <?= _translate("-- Select --"); ?> </option>
-													<option value="Tuberculosis" <?php echo ($vlQueryInfo['coinfection_type'] == 'Tuberculosis') ? "selected='selected' " : "" ?>><?= _translate('Tuberculosis'); ?></option>
-													<option value="Viral Hepatitis" <?php echo ($vlQueryInfo['coinfection_type'] == 'Viral Hepatitis') ? "selected='selected' " : "" ?>><?= _translate('Viral Hepatitis'); ?></option>
-												</select>
-											</div>
-										</div>
-
-									</div>
-									<div class="row">
-										<div class="col-md-8">
-											<div class="form-group">
-												<div class="col-lg-12">
-													<label class="radio-inline">
-														<?php
-														$checked = '';
-														$display = '';
-														$vlValue = '';
-														if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'other' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'other') {
-															$checked = 'checked="checked"';
-															$display = 'block';
-														} else {
-															$checked = '';
-															$display = 'none';
-														}
-														?>
-														<input type="radio" class="" id="repeatTesting" name="reasonForVLTesting" value="other" title="<?= _translate('Please check reason for viral load request'); ?>" <?= $checked; ?> onclick="showTesting('repeatTesting');" <?php echo $disable; ?>>
-														<strong><?= _translate('Other reasons') ?> </strong>
-													</label>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row repeatTesting hideTestData well" style="display: <?php echo $display; ?>;">
-										<div class="col-md-6">
-											<label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
-											<div class="col-lg-7">
-												<input type="text" value="<?php echo ($vlQueryInfo['reason_for_vl_testing_other']); ?>" class="form-control" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" <?php echo $disable; ?> />
-											</div>
-										</div>
-
-									</div>
-
-									<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<div class="col-lg-12">
-														<label class="radio-inline">
-															<input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" onclick="showTesting('recency')" <?php echo $disable; ?>>
-															<strong><?= _translate('Confirmation Test for Recency'); ?></strong>
-														</label>
+									<?php if (isset($testReasonsResult) && !empty($testReasonsResult)) {
+										foreach ($testReasonsResult as $key => $title) { ?>
+												<div class="row">
+													<div class="col-md-6">
+														<div class="form-group">
+															<div class="col-lg-12">
+																	<label class="radio-inline">
+																	<input type="radio" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || (isset($subTestReasons[$key]) && in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key])))) ? "checked='checked'" : ""; ?> class="isRequired" id="rmTesting<?php echo $key; ?>" name="reasonForVLTesting" value="<?php echo $key; ?>" title="<?= _translate('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting<?php echo $key; ?>', <?php echo $key; ?>);">
+																		<strong><?= _translate($title); ?></strong>
+																	</label>
+															</div>
+														</div>
 													</div>
 												</div>
-											</div>
-										</div>
-									<?php } ?>
+												<?php if ($key == 5) { ?>
+													<div class="row rmTesting5 well" style="display:<?php echo (isset($vlQueryInfo['reason_for_vl_testing_other']) && !empty($vlQueryInfo['reason_for_vl_testing_other'])) ? "block" : "none"; ?>;">
+														<div class="col-md-6">
+																<label class="col-lg-5 control-label"><?= _translate('Please specify other reasons'); ?></label>
+																<div class="col-lg-7">
+																	<input type="text" value="<?php echo $vlQueryInfo['reason_for_vl_testing_other'] ?? null; ?>" class="form-control reasonfortest" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _translate('Please specify other test reason') ?>" title="<?= _translate('Please specify other test reason') ?>" />
+																</div>
+														</div>
+													</div>
+												<?php } ?>
+												<?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) { ?>
+													<div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:<?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "block" : "none"; ?>;">
+														<div class="col-md-6">
+																<label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>
+																<div class="col-lg-7">
+																	<select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType" class="form-control reasonfortest" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
+																		<option value=""> <?= _translate("-- Select --"); ?> </option>
+																		<?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
+																			<option value="<?php echo $testReasonId; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $testReasonId) ? "selected='selected'" : ""; ?>><?php echo ucwords($row); ?></option>
+																		<?php } ?>
+																	</select>
+																</div>
+														</div>
+													</div>
+												<?php }
+										}
+									} ?>
 									<hr>
 
 								</div>
@@ -689,7 +606,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 											</div>
 											<div class="row">
-												
+
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="isSampleRejected"><?= _translate('Is Sample Rejected?'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
@@ -722,7 +639,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 											</div>
 											<div class="row">
-												
+
 												<div class="col-md-6 rejectionReason" style="display:none;">
 													<label class="col-lg-5 control-label labels" for="rejectionDate"><?= _translate('Rejection Date'); ?> </label>
 													<div class="col-lg-7">
@@ -740,7 +657,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 											</div>
 											<div class="row">
-												
+
 												<div class="col-md-6 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 													<label class="col-lg-5 control-label" for="vlLog"><?= _translate('Viral Load (Log)'); ?> </label>
 													<div class="col-lg-7">
@@ -763,7 +680,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 											</div>
 											<div class="row">
-												
+
 
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="approvedOnDateTime"><?= _translate('Approved On'); ?> <span class="mandatory">*</span></label>
@@ -784,7 +701,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 											</div>
 											<div class="row">
-												
+
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="resultDispatchedOn"><?= _translate('Date Results Dispatched'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
@@ -816,7 +733,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 							<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
 							<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_result_changes']); ?>" />
 							<input type="hidden" name="sampleCode" id="sampleCode" value="<?= ($vlQueryInfo['sample_code']); ?>" />
-					        <input type="hidden" name="artNo" id="artNo" value="<?= ($vlQueryInfo['patient_art_no']); ?>" />
+							<input type="hidden" name="artNo" id="artNo" value="<?= ($vlQueryInfo['patient_art_no']); ?>" />
 							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 							<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
 						</div>
@@ -902,7 +819,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			});
 
 		}, 500);
-
+		$('.reasonfortest').attr('disabled', true);
 
 	});
 
@@ -1064,7 +981,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 
 	function validateNow() {
-		if($('#isSampleRejected').val() == "yes"){
+		if ($('#isSampleRejected').val() == "yes") {
 			$('.vlResult, #vlResult').removeClass('isRequired');
 		}
 		if ($('#failed').prop('checked')) {

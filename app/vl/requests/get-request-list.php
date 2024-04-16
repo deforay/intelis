@@ -68,6 +68,7 @@ try {
                vl.patient_dob,
                vl.patient_gender,
                vl.key_population,
+               vl.health_insurance_code,
                vl.patient_age_in_years,
                vl.sample_collection_date,
                vl.treatment_initiated_date,
@@ -250,9 +251,6 @@ try {
      }
      if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
           $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
-     }
-     if (empty($_POST['recencySamples']) || $_POST['recencySamples'] === 'no') {
-          $sWhere[] = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
      }
      if (!empty($_POST['rejectedSamples']) && $_POST['rejectedSamples'] == 'no') {
           $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";

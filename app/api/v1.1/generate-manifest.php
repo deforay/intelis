@@ -72,7 +72,7 @@ try {
             'module'                    => $input['testType'],
             'added_by'                  => $user['user_id'],
             'lab_id'                    => $input['labId'],
-            'number_of_samples'         => count($rowData),
+            'number_of_samples'         => count($rowData ?? []),
             'package_status'            => 'pending',
             'request_created_datetime'  => DateUtility::getCurrentDateTime(),
             'last_modified_datetime'    => DateUtility::getCurrentDateTime()
@@ -102,7 +102,7 @@ try {
     }
     $missiedSamples = array_values(array_diff($input['sampleCode'], $avilableSamples));
     // print_r($sQuery);die;
-    // error_log($db->getLastQuery());
+    // error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
     $payload = [
         'status' => 'success',
         'timestamp' => time(),
@@ -124,5 +124,5 @@ try {
 }
 
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'cancel-requests', $input['testType'], $requestUrl, $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'manifest', $input['testType'], $requestUrl, $origJson, $payload, 'json');
 echo $payload;

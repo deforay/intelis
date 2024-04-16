@@ -125,7 +125,7 @@ try {
         $post = array(
             'post' => json_encode($_POST),
             'sign' => (!empty($signatureImage) && MiscUtility::imageExists($signatureImage)) ? curl_file_create($signatureImage) : null,
-            'x-api-key' => $general->generateRandomString(18)
+            'x-api-key' => $general->generateUUID()
         );
 
         $ch = curl_init();

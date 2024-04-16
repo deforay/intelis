@@ -486,35 +486,43 @@ $storageInfo = $storageService->getLabStorage();
 											</td>
 										</tr>
 										<tr>
-											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?>  <em class="fas fa-edit"></em> :
+											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :
 												</label></td>
 											<td style="width: 25%;">
-											<select class="form-control select2 editableSelect" id="freezer" name="freezer" placeholder="<?php echo _translate('Enter Freezer'); ?>" title="<?php echo _translate('Please enter Freezer'); ?>">
-												<?= $general->generateSelectOptions($storageInfo, $storageObj->storageId, '-- Select --') ?>
-											</select>
+												<select class="form-control select2 editableSelect" id="freezer" name="freezer" placeholder="<?php echo _translate('Enter Freezer'); ?>" title="<?php echo _translate('Please enter Freezer'); ?>">
+													<?= $general->generateSelectOptions($storageInfo, $storageObj->storageId, '-- Select --') ?>
+												</select>
 
 											<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>
 											<td style="width: 25%;">
-												<input type="text" class="form-control" id="rack" name="rack" value="<?= $storageObj->rack; ?>" placeholder="<?php echo _translate('rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" value="<?= $storageObj->rack; ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+												<input type="text" class="form-control" id="rack" name="rack" value="<?= $storageObj->rack; ?>" placeholder="<?php echo _translate('Rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" value="<?= $storageObj->rack; ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
 											<td style="width: 25%;"><label for=""><?php echo _translate('Box'); ?> :
 												</label></td>
 											<td style="width: 25%;">
-											<input type="text" class="form-control" id="box" name="box" value="<?= $storageObj->box; ?>" placeholder="<?php echo _translate('box'); ?>" title="<?php echo _translate('Please enter box'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+												<input type="text" class="form-control" id="box" name="box" value="<?= $storageObj->box; ?>" placeholder="<?php echo _translate('Box'); ?>" title="<?php echo _translate('Please enter box'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
 											<td style="width: 25%;"><label for="position"><?php echo _translate('Position'); ?> : </label> </td>
 											<td style="width: 25%;">
-											<input type="text" class="form-control" id="position" name="position" value="<?= $storageObj->position; ?>" placeholder="<?php echo _translate('Position'); ?>" title="<?php echo _translate('Please enter position'); ?>" <?php echo $labFieldDisabled; ?>  style="width:100%;" />
+												<input type="text" class="form-control" id="position" name="position" value="<?= $storageObj->position; ?>" placeholder="<?php echo _translate('Position'); ?>" title="<?php echo _translate('Please enter position'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 
 											</td>
 										</tr>
 										<tr>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Volume (ml)'); ?> :
+												</label></td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control" id="volume" name="volume" value="<?= $storageObj->volume; ?>" placeholder="<?php echo _translate('Volume'); ?>" title="<?php echo _translate('Please enter volume'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
 											<td><label for="">Date de réalisation de la charge virale </label></td>
 											<td>
 												<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 											</td>
+
+										</tr>
+										<tr>
 											<td><label for="testingPlatform">Technique utilisée </label></td>
 											<td>
 												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
@@ -525,8 +533,6 @@ $storageInfo = $storageService->getLabStorage();
 													<?php } ?>
 												</select>
 											</td>
-										</tr>
-										<tr>
 											<td><label for="">Décision prise </label></td>
 											<td>
 												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
@@ -535,6 +541,9 @@ $storageInfo = $storageService->getLabStorage();
 													<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
 												</select>
 											</td>
+
+										</tr>
+										<tr class="rejectionReason" style="display:<?php echo ($vlQueryInfo['result_status'] == 4) ? '' : 'none'; ?>;">
 											<td class="rejectionReason" style="<?php echo ($vlQueryInfo['is_sample_rejected'] != 'yes') ? 'display: none;' : ''; ?>"><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
 											<td class="rejectionReason" style="<?php echo ($vlQueryInfo['is_sample_rejected'] != 'yes') ? 'display: none;' : ''; ?>">
 												<select class="form-control" id="rejectionReason" name="rejectionReason" title="Please select motifs de rejet" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
@@ -546,8 +555,6 @@ $storageInfo = $storageService->getLabStorage();
 												</select>
 												<input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" />
 											</td>
-										</tr>
-										<tr class="rejectionReason" style="display:<?php echo ($vlQueryInfo['result_status'] == 4) ? '' : 'none'; ?>;">
 											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
 											<td class="newRejectionReason" style="display:none;"><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
 											<th scope="row" class="rejectionReason" style="display:none;">
@@ -663,7 +670,7 @@ $storageInfo = $storageService->getLabStorage();
 			tags: true
 		});
 
-		storageEditableSelect('freezer', 'storage_code', 'storage_id','lab_storage', 'Storage Code');
+		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Storage Code');
 
 
 		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');
@@ -1046,5 +1053,4 @@ $storageInfo = $storageService->getLabStorage();
 			}
 		});
 	}
-
 </script>

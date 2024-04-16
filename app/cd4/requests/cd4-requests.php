@@ -165,7 +165,7 @@ foreach ($srcResults as $list) {
 							<td>
 								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly style="background:#fff;" />
 							</td>
-							
+
 							<td><strong>
 									<?php echo _translate("Last Print Date"); ?>&nbsp;:
 								</strong></td>
@@ -221,7 +221,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-						<td><strong>
+							<td><strong>
 									<?php echo _translate("Sample Type"); ?> :
 								</strong></td>
 							<td>
@@ -424,24 +424,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 
-						<tr>
-							<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true) { ?>
-								<td><strong>
-										<?php echo _translate("Include Recency Samples"); ?>&nbsp;:
-									</strong></td>
-								<td>
-									<select name="recencySamples" id="recencySamples" class="form-control" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
-										<option value="yes">
-											<?php echo _translate("Yes"); ?>
-										</option>
-										<option value="no" selected="selected">
-											<?php echo _translate("No"); ?>
-										</option>
-									</select>
-								</td>
-							<?php } ?>
-							
-						</tr>
+
 
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
@@ -735,7 +718,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		});
 
 		loadVlRequestData();
-		
+
 		$("#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime").daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
@@ -747,7 +730,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
-				beforeShow : function(inst, elem){
+				beforeShow: function(inst, elem) {
 					setCalsClearButton(null, null, elem);
 				},
 				ranges: {
@@ -769,7 +752,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		
+
 		<?php if ((!empty($_GET['daterange']) && isset($_GET['type']) && $_GET['type'] == 'rejection')) { ?>
 			$('#sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
 			$('#sampleCollectionDate').val('<?php echo $_GET['daterange']; ?>');
@@ -1005,10 +988,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					"value": '<?php echo $hidesrcofreq; ?>'
 				});
 				aoData.push({
-					"name": "recencySamples",
-					"value": $("#recencySamples").val()
-				});
-				aoData.push({
 					"name": "rejectedSamples",
 					"value": $("#rejectedSamples").val()
 				});
@@ -1144,7 +1123,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-						url: "/scheduled-jobs/remote/resultsSync.php?sampleCode=" + sampleCode + "&forceSyncModule=cd4",
+						url: "/scheduled-jobs/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=cd4",
 					})
 					.done(function(data) {
 						////console.log(data);
@@ -1261,7 +1240,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			$("#breastFeeding").attr("disabled", false);
 		} else {
 			$('select#patientPregnant').val('');
-        	$('select#breastFeeding').val('');
+			$('select#breastFeeding').val('');
 			$("#patientPregnant").attr("disabled", true);
 			$("#breastFeeding").attr("disabled", true);
 		}

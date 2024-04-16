@@ -91,7 +91,7 @@ try {
 
         $_SESSION['alertMsg'] = _translate("Result Import configuration initited for ") . $_POST['configurationName'] . _translate("Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _translate(" present in instruments folder");
     }
-    error_log($db->getLastError());
+    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     header("Location:/instruments/instruments.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

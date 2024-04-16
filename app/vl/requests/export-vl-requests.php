@@ -25,18 +25,18 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 $output = [];
 
-$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate('KP'), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Health Insurance Code"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Freezer"),_translate("Rack"),_translate("Box"),_translate("Position"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
+$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate('KP'), _translate("Universal Insurance Code"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Freezer"),_translate("Rack"),_translate("Box"),_translate("Position"),_translate("Volume (ml)"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
 
 if ($_SESSION['instance']['type'] == 'standalone') {
 	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
 }
 
 if ($formId != COUNTRY\DRC) {
-	$headings = MiscUtility::removeMatchingElements($headings, [_translate('KP'),_translate('Freezer'),_translate("Rack"),_translate("Box"),_translate("Position")]);
+	$headings = MiscUtility::removeMatchingElements($headings, [_translate('KP'),_translate('Freezer'),_translate("Rack"),_translate("Box"),_translate("Position"),_translate("Volume (ml)")]);
 }
 
 if ($formId != COUNTRY\CAMEROON) {
-	$headings = MiscUtility::removeMatchingElements($headings, [_translate('Health Insurance Code')]);
+	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Universal Insurance Code")]);
 }
 
 $no = 1;
@@ -115,6 +115,9 @@ foreach ($resultSet as $aRow) {
 	if ($formId == COUNTRY\DRC) {
 		$row[] = strtoupper($aRow['key_population']);
 	}
+	if ($formId == COUNTRY\CAMEROON) {
+		$row[] = strtoupper($aRow['health_insurance_code']);
+	}
 	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 	$row[] = $aRow['sample_name'] ?? null;
 	if ($formId == COUNTRY\CAMEROON) {
@@ -131,10 +134,11 @@ foreach ($resultSet as $aRow) {
 	$row[] = DateUtility::humanReadableDateFormat($aRow['test_requested_on'] ?? '');
 	$row[] = $sampleRejection;
 	if ($formId == COUNTRY\DRC) {
-		$row[] = $storageObj->freezerCode;
+		$row[] = $storageObj->storageCode;
 		$row[] = $storageObj->rack;
 		$row[] = $storageObj->box;
 		$row[] = $storageObj->position;
+		$row[] = $storageObj->volume;
 	}
 	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 	$row[] = $aRow['result'];

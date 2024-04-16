@@ -59,7 +59,7 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='addInstance' id='addInstance' enctype="multipart/form-data" autocomplete="off" action="addInstanceHelper.php">
+				<form class="form-horizontal" method='post' name='newInstance' id='newInstance' enctype="multipart/form-data" autocomplete="off" action="/new-instance-helper.php">
 					<div class="row">
 						<div class="col-xs-12">
 							<div class="box">
@@ -182,11 +182,11 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 			$('#userType').focus();
 		}
 		flag = deforayValidator.init({
-			formId: 'addInstance'
+			formId: 'newInstance'
 		});
 
 		if (flag) {
-			document.getElementById('addInstance').submit();
+			document.getElementById('newInstance').submit();
 		}
 	}
 

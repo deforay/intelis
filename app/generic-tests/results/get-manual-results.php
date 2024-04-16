@@ -239,7 +239,7 @@ if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPa
 if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
      $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
 } else {
-     $sWhere[] = " vl.result_status = " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+     $sWhere[] = " vl.result_status = " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 }
 if (!empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";

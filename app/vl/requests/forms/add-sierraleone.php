@@ -1,7 +1,7 @@
 <?php
 
 
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
      $sampleClass = '';
@@ -348,7 +348,7 @@ $sFormat = '';
                                                                  <label for="">How long has this Patient been on treatment?<span class="mandatory">*</span></label>
                                                                  <select class="form-control" id="treatmentDuration" name="treatmentDuration" title="Please choose treatment duration" style="width:100%;">
                                                                       <option value=""> — Select-- </option>
-                                                                      <option value="6 Months - < 1 year"> 6 Months - < 1 year </option>
+                                                                      <option value="6 Months - 1 year"> 6 Months - 1 year </option>
                                                                       <option value="1 - 2 years"> 1 - 2 years </option>
                                                                       <option value="2 - < 5 years"> 2 - < 5 years </option>
                                                                       <option value="5 years and above"> 5 years and above </option>

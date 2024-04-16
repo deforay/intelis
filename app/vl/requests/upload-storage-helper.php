@@ -68,9 +68,6 @@ try {
                 $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
                 header("Location:/vl/requests/upload-storage.php");
             }
-            if (!in_array($rowData['F'], ['1', '2', '3'], true)) {
-                $rowData['F'] = 1;
-            }
 
             $instanceId = '';
             if (isset($_SESSION['instanceId'])) {
@@ -79,41 +76,37 @@ try {
             }
             $getSample = $general->getDataFromOneFieldAndValue('form_vl', 'sample_code', $rowData['A']);
             $freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_code', $rowData['B']);
-            
+
             if (empty($freezerCheck)) {
                 $data = array(
                     'storage_id' => $general->generateUUID(),
-                    'storage_code' 	=> $rowData['B'],
-                    'lab_id' 	=> $getSample['lab_id'],
+                    'storage_code'     => $rowData['B'],
+                    'lab_id'     => $getSample['lab_id'],
                     'storage_status' => "active",
-                    'updated_datetime'	=> DateUtility::getCurrentDateTime()
+                    'updated_datetime'    => DateUtility::getCurrentDateTime()
                 );
                 $db->insert('lab_storage', $data);
                 $storageId = $data['storage_id'];
-            }
-            else{
+            } else {
                 $storageId = $freezerCheck['storage_id'];
             }
 
-                $formAttributes = json_decode($getSample['form_attributes']);
-                
+            $formAttributes = json_decode($getSample['form_attributes']);
+
 
             try {
-                    if(!isset($formAttributes->storage) && empty($formAttributes->storage))
-                    {
-                        $formAttributes->storage = array("freezer"=>$storageId,"freezerCode"=>$rowData['B'],"rack"=>$rowData['C'],"box"=>$rowData['D'],"position"=>$rowData['E']);
-                        $vlData['form_attributes'] = json_encode($formAttributes);
-                        $db->where('vl_sample_id', $getSample['vl_sample_id']);
-                        $id = $db->update('form_vl', $vlData);
-                    }  
-                    else {
-                        $storageNotAdded[] = $rowData;
-                    }
-
+                if (!isset($formAttributes->storage) && empty($formAttributes->storage)) {
+                    $formAttributes->storage = array("storageId" => $storageId, "storageCode" => $rowData['B'], "rack" => $rowData['C'], "box" => $rowData['D'], "position" => $rowData['E'], "volume" => $rowData['F']);
+                    $vlData['form_attributes'] = json_encode($formAttributes);
+                    $db->where('vl_sample_id', $getSample['vl_sample_id']);
+                    $id = $db->update('form_vl', $vlData);
+                } else {
+                    $storageNotAdded[] = $rowData;
+                }
             } catch (Throwable $e) {
                 $storageNotAdded[] = $rowData;
-                error_log($db->getLastError());
-                error_log($db->getLastQuery());
+                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
             }
         }
 

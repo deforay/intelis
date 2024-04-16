@@ -86,11 +86,13 @@ try {
             vl.specimen_type                                     as specimenType,
             vl.arv_adherance_percentage                          as arvAdherence,
             vl.reason_for_vl_testing                             as reasonForVLTesting,
+            vl.reason_for_vl_testing_other                             as reasonForVLTestingOther,
             vl.community_sample                                  as communitySample,
             vl.last_vl_date_routine                              as rmTestingLastVLDate,
             vl.last_vl_result_routine                            as rmTestingVlValue,
             vl.last_vl_date_failure_ac                           as repeatTestingLastVLDate,
             vl.last_vl_result_failure_ac                         as repeatTestingVlValue,
+            vl.line_of_treatment                                 as lineOfTreatment,
             vl.last_vl_date_failure                              as suspendTreatmentLastVLDate,
             vl.last_vl_result_failure                            as suspendTreatmentVlValue,
             vl.request_clinician_name                            as reqClinician,
@@ -145,7 +147,7 @@ try {
             u_d.user_name                                        as reviewedByName,
             vl.result_reviewed_datetime                          as reviewedOn,
             lt_u_d.user_name                                     as labTechnicianName,
-            
+
             vl.external_sample_code                              as serialNo,
             vl.is_patient_new                                    as isPatientNew,
             vl.has_patient_changed_regimen                       as hasChangedRegimen,
@@ -244,5 +246,5 @@ try {
     error_log($exc->getTraceAsString());
 }
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'get-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'get-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

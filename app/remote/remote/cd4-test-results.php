@@ -38,14 +38,8 @@ try {
     $request = AppRegistry::get('request');
     $jsonResponse = $apiService->getJsonFromRequest($request);
 
-
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_SCHEMA = ? AND table_name= ?";
-    $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db'], 'form_cd4']);
-    $columnNames = array_column($allColResult, 'COLUMN_NAME');
-
     // Create an array with all column names set to null
-    $emptyLabArray = array_fill_keys($columnNames, null);
+    $emptyLabArray = $general->getTableFieldsAsArray('form_cd4');
 
     //remove unwanted columns
     $unwantedColumns = [
@@ -115,18 +109,32 @@ try {
             $tableName = 'form_cd4';
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
+                $conditions = [];
+                $params = [];
+
                 if (!empty($lab['unique_id'])) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE unique_id=?";
-                    $sResult = $db->rawQueryOne($sQuery, [$lab['unique_id']]);
-                } elseif (!empty($lab['remote_sample_code'])) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE remote_sample_code= ?";
-                    $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
-                } elseif (!empty($lab['sample_code']) && !empty($lab['lab_id'])) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE sample_code=? AND lab_id = ?";
-                    $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['lab_id']]);
-                } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id'])) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE sample_code=? AND facility_id = ?";
-                    $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                    $conditions[] = "unique_id = ?";
+                    $params[] = $lab['unique_id'];
+                }
+                if (!empty($lab['remote_sample_code'])) {
+                    $conditions[] = "remote_sample_code = ?";
+                    $params[] = $lab['remote_sample_code'];
+                }
+                if (!empty($lab['sample_code'])) {
+                    if (!empty($lab['lab_id'])) {
+                        $conditions[] = "sample_code = ? AND lab_id = ?";
+                        $params[] = $lab['sample_code'];
+                        $params[] = $lab['lab_id'];
+                    } elseif (!empty($lab['facility_id'])) {
+                        $conditions[] = "sample_code = ? AND facility_id = ?";
+                        $params[] = $lab['sample_code'];
+                        $params[] = $lab['facility_id'];
+                    }
+                }
+                $sResult = [];
+                if (!empty($conditions)) {
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions);
+                    $sResult = $db->rawQueryOne($sQuery, $params);
                 }
 
                 $formAttributes = $general->jsonToSetString($lab['form_attributes'], 'form_attributes');
@@ -145,9 +153,9 @@ try {
                 // $facilityIds[] = $lab['facility_id'];
 
                 //if ($db->getLastErrno() > 0) {
-                error_log($db->getLastErrno());
-                error_log($db->getLastError());
-                error_log($db->getLastQuery());
+                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
+                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
                 //}
                 LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                 continue;

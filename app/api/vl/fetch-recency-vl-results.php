@@ -112,5 +112,5 @@ try {
 }
 
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-recency-vl-result', 'vl', $requestUrl, $_REQUEST, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-recency-vl-result', 'vl', $requestUrl, $_REQUEST, $payload, 'json');
 echo $payload;

@@ -25,9 +25,9 @@ try {
     // Rollback transaction in case of error
     $db->rollbackTransaction();
     if ($db->getLastErrno() > 0) {
-        error_log($db->getLastErrno());
-        error_log($db->getLastError());
-        error_log($db->getLastQuery());
+        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
+        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
     }
     LoggerUtility::log('error', $exception->getFile() . ':' . $exception->getLine()  . ':' .  $exception->getMessage(), [
         'exception' => $exception,

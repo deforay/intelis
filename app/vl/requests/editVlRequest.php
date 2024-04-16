@@ -138,7 +138,8 @@ $artRegimenResult = $db->rawQuery($artRegimenQuery);
 $aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
 $aResult = $db->query($aQuery);
 
-if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
+
+if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
      $key = (string) $general->getGlobalConfig('key');
      $vlQueryInfo['patient_art_no'] = $general->crypto('decrypt', $vlQueryInfo['patient_art_no'], $key);
      if ($patientFirstName != '') {
@@ -156,6 +157,7 @@ if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes
 } else {
      $patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 }
+
 $minPatientIdLength = 0;
 if (isset($arr['vl_min_patient_id_length']) && $arr['vl_min_patient_id_length'] != "") {
      $minPatientIdLength = $arr['vl_min_patient_id_length'];
@@ -207,7 +209,8 @@ $fileArray = [
      COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
      COUNTRY\PNG => 'forms/edit-png.php',
      COUNTRY\WHO => 'forms/edit-who.php',
-     COUNTRY\RWANDA => 'forms/edit-rwanda.php'
+     COUNTRY\RWANDA => 'forms/edit-rwanda.php',
+     COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'
 ];
 
 require_once($fileArray[$formId]);

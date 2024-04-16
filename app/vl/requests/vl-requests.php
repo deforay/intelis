@@ -446,7 +446,7 @@ foreach ($srcResults as $list) {
 										<?php echo _translate("Include Recency Samples"); ?>&nbsp;:
 									</strong></td>
 								<td>
-									<select name="recencySamples" id="recencySamples" class="form-control" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
+									<select name="recencySamples" id="recencySamples" class="form-control" title="<?php echo _translate('Include Recency Samples'); ?>" style="width:100%;">
 										<option value="yes">
 											<?php echo _translate("Yes"); ?>
 										</option>
@@ -516,9 +516,12 @@ foreach ($srcResults as $list) {
 								?>
 
 								<?php
-								if (_isAllowed("/vl/requests/vl-requests.php")) { ?>
+								if (_isAllowed("/vl/requests/vl-requests.php") && $formId == COUNTRY\DRC) { ?>
 									<a href="/vl/requests/upload-storage.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Storage Bulk Upload"); ?>
+									</a>
+									<a href="/vl/requests/sample-storage.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+										<?php echo _translate("Add Sample to Storage"); ?>
 									</a>
 								<?php }
 								?>
@@ -904,13 +907,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				{
 					"sClass": "center"
 				},
-				<?php if ($formId == COUNTRY\CAMEROON) { ?>
-					{
+				<?php
+				if ($formId == COUNTRY\CAMEROON) {
+					echo '{
 						"sClass": "center",
 						"bVisible": false
-					},
-				<?php } ?>
-				{
+					},';
+				}
+				?> {
 					"sClass": "center"
 				},
 				{
@@ -1199,7 +1203,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-						url: "/scheduled-jobs/remote/resultsSync.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
+						url: "/scheduled-jobs/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
 					})
 					.done(function(data) {
 						////console.log(data);

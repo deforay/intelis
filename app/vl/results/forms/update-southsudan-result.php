@@ -13,7 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
@@ -775,7 +775,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 												<div class="row">
-													
+
 													<div class="col-md-6">
 														<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By
 															<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
@@ -814,7 +814,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<?php } ?>
 												<hr>
 												<div class="row">
-													
+
 													<div class="col-md-6">
 														<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On
 															<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
@@ -833,7 +833,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 												<div class="row">
-													
+
 													<div class="col-md-6">
 														<label class="col-lg-5 control-label" for="approvedBy">Approved By
 															<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
@@ -851,7 +851,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 												<div class="row">
-													
+
 													<div class="col-md-6 vlResult">
 														<label class="col-lg-5 control-label" for="resultDispatchedOn">Date
 															Results Dispatched </label>
@@ -892,7 +892,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
 								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_result_changes']); ?>" />
 								<input type="hidden" name="sampleCode" id="sampleCode" value="<?= ($vlQueryInfo['sample_code']); ?>" />
-					        	<input type="hidden" name="artNo" id="artNo" value="<?= ($vlQueryInfo['patient_art_no']); ?>" />
+								<input type="hidden" name="artNo" id="artNo" value="<?= ($vlQueryInfo['patient_art_no']); ?>" />
 								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 								<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
 							</div>
@@ -1196,7 +1196,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 
 	function validateNow() {
-		if($('#isSampleRejected').val() == "yes"){
+		if ($('#isSampleRejected').val() == "yes") {
 			$('.vlResult, #vlResult').removeClass('isRequired');
 		}
 		if ($('#failed').prop('checked')) {

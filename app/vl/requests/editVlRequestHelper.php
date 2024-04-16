@@ -229,6 +229,12 @@ try {
           'treatment_duration' => $_POST['treatmentDuration'] ?? null,
           'treatment_indication' => $_POST['treatmentIndication'] ?? null,
           'treatment_initiated_date' => DateUtility::isoDateFormat($_POST['dateOfArtInitiation'] ?? ''),
+          'treatment_duration_precise' => (isset($_POST['treatmentDurationPrecise']) && $_POST['treatmentDurationPrecise'] != "More then 12 Months") ?  $_POST['treatmentDurationPrecise'] : $_POST['treatmentDurationPrecise1'],
+          'last_cd4_result' => $_POST['cd4Result'] ?? null,
+          'last_cd4_percentage' => $_POST['cd4Percentage'] ?? null,
+          'last_cd4_date' => DateUtility::isoDateFormat($_POST['cd4Date'] ?? ''),
+          'last_cd8_result' => $_POST['cd8Result'] ?? null,
+          'last_cd8_date' => DateUtility::isoDateFormat($_POST['cd8Date'] ?? ''),
           'current_regimen' => $_POST['artRegimen'] ?? null,
           'has_patient_changed_regimen' => $_POST['hasChangedRegimen'] ?? null,
           'reason_for_regimen_change' => $_POST['reasonForArvRegimenChange'] ?? null,
@@ -242,10 +248,10 @@ try {
           'plasma_conservation_temperature' => $_POST['conservationTemperature'] ?? null,
           'plasma_conservation_duration' => $_POST['durationOfConservation'] ?? null,
           'arv_adherance_percentage' => $_POST['arvAdherence'] ?? null,
-          'reason_for_vl_testing' => $_POST['reasonForVLTesting'] ?? null,
+          'reason_for_vl_testing' => $_POST['controlVlTestingType'][$_POST['reasonForVLTesting']] ?? $_POST['reasonForVLTesting'],
           'reason_for_vl_testing_other' => $_POST['newreasonForVLTesting'] ?? null,
-          'control_vl_testing_type' => $_POST['controlVlTestingType'] ?? null,
-          'coinfection_type' => $_POST['coinfectionType'] ?? null,
+          /* 'control_vl_testing_type' => $_POST['controlVlTestingType'][$_POST['reasonForVLTesting']] ?? null,
+          'coinfection_type' => $_POST['coinfectionType'] ?? null, */
           'last_viral_load_result' => $_POST['lastViralLoadResult'] ?? null,
           'last_viral_load_date' => DateUtility::isoDateFormat($_POST['lastViralLoadTestDate'] ?? ''),
           'community_sample' => $_POST['communitySample'] ?? null,
@@ -298,23 +304,23 @@ try {
           'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'] ?? null
      );
 
-     if(isset($_POST['freezer']) && $_POST['freezer']!=""){
+     if(isset($_POST['freezer']) && $_POST['freezer']!="" && $_POST['freezer'] != null){
           $countChar = substr_count($_POST['freezer'],"-");
                     
           if(isset($countChar) && $countChar > 2) {
-          $storageId = $_POST['freezer'];
-          $getStorage = $general->getDataFromOneFieldAndValue('lab_storage','storage_code',$_POST['freezer']);
-          $freezerCode = $getStorage['storage_code'];
+               $storageId = $_POST['freezer'];
+               $getStorage = $general->getDataFromOneFieldAndValue('lab_storage','storage_code',$_POST['freezer']);
+               $freezerCode = $getStorage['storage_code'];
           }
           else{
-          $storageId = $general->generateUUID();
-          $freezerCode = $_POST['freezer'];
-          $storageSave = $general->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $_POST['freezer'], $_POST['labId'], 'active'));
+               $storageId = $general->generateUUID();
+               $freezerCode = $_POST['freezer'];
+               $storageSave = $general->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $_POST['freezer'], $_POST['labId'], 'active'));
           }
           $formAttributes = [
           'applicationVersion' => $general->getSystemConfig('sc_version'),
           'ip_address' => $general->getClientIpAddress(),
-          'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$_POST['rack'],"box"=>$_POST['box'],"position"=>$_POST['position']),
+          'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$_POST['rack'],"box"=>$_POST['box'],"position"=>$_POST['position'],"volume"=>$_POST['volume']),
           ];
 
           $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
@@ -396,7 +402,6 @@ try {
      } else {
           $vlData['is_encrypted'] = NULL;
      }
-
      $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vlData);
      if ($db->getLastErrno() > 0) {

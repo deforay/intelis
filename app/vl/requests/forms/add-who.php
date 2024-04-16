@@ -1,7 +1,7 @@
 <?php
 
 
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
      $sampleClass = '';

@@ -494,8 +494,16 @@ if [ "$install_as_default" = "yes" ]; then
 else
     echo "Installing VLSM alongside other apps..."
     vhost_file="/etc/apache2/sites-available/${hostname}.conf"
-    echo "<VirtualHost *:80>\nServerName ${hostname}\nDocumentRoot /var/www/html\n</VirtualHost>" >"$vhost_file"
-    configure_vhost "$vhost_file"
+    echo "<VirtualHost *:80>
+    ServerName ${hostname}
+    DocumentRoot ${vlsm_path}/public
+    <Directory ${vlsm_path}/public>
+        AddDefaultCharset UTF-8
+        Options -Indexes -MultiViews +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>" >"$vhost_file"
     a2ensite "${hostname}.conf"
 fi
 
