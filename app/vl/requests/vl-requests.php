@@ -391,7 +391,7 @@ foreach ($srcResults as $list) {
 									<?php echo _translate("District/County"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _translate('Please select Province/State'); ?>">
+								<select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _translate('Please select District/County'); ?>">
 								</select>
 							</td>
 							<td><strong>
@@ -1287,7 +1287,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				provinceId: provinceId,
 				districts: true,
 				facilities: true,
-				labs: true,
 			},
 			function(data) {
 				Obj = $.parseJSON(data);

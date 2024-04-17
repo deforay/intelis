@@ -202,14 +202,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="no"> <?= _translate("No");?> </option>
                                             </select>
                                         </td>
-                                        <th scope="row" style="width:15%"><?= _translate('Mode of Delivery'); ?> </th>
+                                        <th scope="row" style="width:15%"><label for="mothersName"><?= _translate('Mother name'); ?> </label></th>
                                         <td style="width:35%">
-                                            <select class="form-control" name="modeOfDelivery" id="modeOfDelivery" onchange="showOtherOption(this.value)" style="width:100%;">
-                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="Normal"> <?= _translate('Normal'); ?> </option>
-                                                <option value="Caesarean"> <?= _translate('Caesarean'); ?> </option>
-                                                <option value="Unknown"> <?= _translate('Gravidity N*'); ?>' </option>
-                                            </select>
+                                            <input type="text" class="form-control" id="mothersName" name="mothersName" placeholder="<?= _translate('Mother name'); ?>" title="<?= _translate('Please enter Infant Name'); ?>" style="width:100%;"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -294,6 +289,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <th scope="row" class="labels" style="width:15%;"><?= _translate("Age (months) breastfeeding stopped");?> :</th>
                                         <td style="width:35%;">
                                             <input type="number" class="form-control" style="width:100%;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
+                                        </td>
+                                        <th scope="row" style="width:15%"><?= _translate('Mode of Delivery'); ?> </th>
+                                        <td style="width:35%">
+                                            <select class="form-control" name="modeOfDelivery" id="modeOfDelivery" onchange="showOtherOption(this.value)" style="width:100%;">
+                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                <option value="Normal"> <?= _translate('Normal'); ?> </option>
+                                                <option value="Caesarean"> <?= _translate('Caesarean'); ?> </option>
+                                                <option value="Unknown"> <?= _translate('Gravidity N*'); ?>' </option>
+                                            </select>
                                         </td>
                                     </tr>
                                 </table>
