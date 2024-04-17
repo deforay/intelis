@@ -215,14 +215,9 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                                 <option value="yes" <?php echo ($eidInfo['mother_alive'] == "yes") ? 'selected="selected"' : ''; ?>><?= _translate('Yes'); ?></option>
                                             </select>
                                         </td>
-                                        <th scope="row" style="width:15%"><?= _translate('Mode of Delivery'); ?> </th>
+                                        <th scope="row" style="width:15%"><label for="mothersName"><?= _translate('Mother name'); ?> </label></th>
                                         <td style="width:35%">
-                                            <select class="form-control" name="modeOfDelivery" id="modeOfDelivery" style="width:100%;">
-                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="Normal" <?php echo ($eidInfo['mode_of_delivery'] == "Normal") ? 'selected="selected"' : ''; ?>> <?= _translate('Normal'); ?> </option>
-                                                <option value="Caesarean" <?php echo ($eidInfo['mode_of_delivery'] == "Caesarean") ? 'selected="selected"' : ''; ?>> <?= _translate('Caesarean'); ?> </option>
-                                                <option value="Unknown" <?php echo ($eidInfo['mode_of_delivery'] == "Unknown") ? 'selected="selected"' : ''; ?>> <?= _translate('Gravidity N*'); ?>' </option>
-                                            </select>
+                                            <input type="text" class="form-control " id="mothersName" name="mothersName" placeholder="<?= _translate('Mother name'); ?>" title="<?= _translate('Please enter Infant Name'); ?>" style="width:100%;" value="<?= $eidInfo['mother_name'] ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -308,6 +303,15 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                         <td style="width:35%;">
                                             <input type="number" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?? null;?>" class="form-control" style="width:100%;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
                                         </td>
+                                        <th scope="row" style="width:15%"><?= _translate('Mode of Delivery'); ?> </th>
+                                        <td style="width:35%">
+                                            <select class="form-control" name="modeOfDelivery" id="modeOfDelivery" style="width:100%;">
+                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                <option value="Normal" <?php echo ($eidInfo['mode_of_delivery'] == "Normal") ? 'selected="selected"' : ''; ?>> <?= _translate('Normal'); ?> </option>
+                                                <option value="Caesarean" <?php echo ($eidInfo['mode_of_delivery'] == "Caesarean") ? 'selected="selected"' : ''; ?>> <?= _translate('Caesarean'); ?> </option>
+                                                <option value="Unknown" <?php echo ($eidInfo['mode_of_delivery'] == "Unknown") ? 'selected="selected"' : ''; ?>> <?= _translate('Gravidity N*'); ?>' </option>
+                                            </select>
+                                        </td>
                                     </tr>
                                 </table>
 
@@ -368,7 +372,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                         <tr>
                                             <th scope="row" class="labels" style="width:15%;"><?= _translate("Testing Platform");?> </th>
                                             <td style="width:35%;"><select name="eidPlatform" id="eidPlatform" class="form-control result-optional" title="Please select the testing platform">
-                                                    <?= $general->generateSelectOptions($testPlatformList, $eidInfo['lab_id'], '-- Select --'); ?>
+                                                    <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
 

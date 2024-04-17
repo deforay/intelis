@@ -73,70 +73,51 @@ $state = $geolocationService->getProvinces("yes");
                                         <div class="tab-pane fade in active" id="notPrintedData">
                                             <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
-                                                    <td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
-                                                    <td>
-                                                        <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+                                                    <td style="width:10%;"><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
+                                                        <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
                                                     </td>
-                                                    <!-- <td><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
-                                                    <td>
-                                                        <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
-                                                            <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                                            <?php
-                                                            foreach ($batResult as $code) {
-                                                            ?>
-                                                                <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-                                                            <?php
-                                                            }
-                                                            ?>
-                                                        </select>
-                                                    </td>-->
-                                                    <td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
-                                                    <td>
-                                                        <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+                                                    <td style="width:10%;"><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
+                                                        <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>" style="width:100%;">
                                                             <?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
                                                         </select>
                                                     </td>
-
-                                                    <td><strong><?php echo _translate("District/County"); ?> :</strong></td>
-                                                    <td>
-                                                        <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict(this.value)">
+                                                    <td style="width:10%;"><strong><?php echo _translate("District/County"); ?> :</strong></td>
+                                                    <td style="width:20%;">
+                                                        <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict(this.value)" style="width:100%;">
                                                         </select>
                                                     </td>
-
-
                                                 </tr>
                                                 <tr>
-                                                    <td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
-                                                    <td>
-                                                        <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
+                                                    <td style="width:10%;"><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
+                                                        <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:100%;background:#fff;" />
                                                     </td>
-                                                    <td><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
-                                                    <td>
-                                                        <select class="form-control" id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+                                                    <td style="width:10%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
+                                                    <td style="width:20%;">
+                                                        <select class="form-control" id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:100%;">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td><strong><?php echo _translate("Testing Labs"); ?> :</strong></td>
-                                                    <td>
-                                                        <select class="form-control" id="labId" name="labId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+                                                    <td style="width:10%;"><strong><?php echo _translate("Testing Labs"); ?> :</strong></td>
+                                                    <td style="width:20%;">
+                                                        <select class="form-control" id="labId" name="labId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple" style="width:100%;">
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>
-
                                                 </tr>
                                                 <tr>
-                                                    <td><strong><?php echo _translate("Child ID"); ?>&nbsp;:</strong></td>
-                                                    <td>
+                                                    <td style="width:10%;"><strong><?php echo _translate("Child ID"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
                                                         <input type="text" id="childId" name="childId" class="form-control" placeholder="<?php echo _translate('Enter Child ID'); ?>" style="background:#fff;" />
                                                     </td>
-                                                    <td><strong><?php echo _translate("Child Name"); ?>&nbsp;:</strong></td>
-                                                    <td>
+                                                    <td style="width:10%;"><strong><?php echo _translate("Child Name"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
                                                         <input type="text" id="childName" name="childName" class="form-control" placeholder="<?php echo _translate('Enter Child Name'); ?>" style="background:#fff;" />
                                                     </td>
-                                                    <td><strong>
-                                                            <?php echo _translate("Batch Code"); ?>&nbsp;:
-                                                        </strong></td>
-                                                    <td>
+                                                    <td style="width:10%;"><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
                                                         <input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
                                                     </td>
                                                 </tr>
@@ -238,69 +219,53 @@ $state = $geolocationService->getProvinces("yes");
                                         <div class="tab-pane fade" id="printedData">
                                             <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
-                                                    <td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
-                                                    <td>
-                                                        <input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+                                                    <td style="width:10%;"><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
+                                                        <input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
                                                     </td>
-                                                    <!--  <td><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
-                                                    <td>
-                                                        <select class="form-control" id="printBatchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
-                                                            <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                                            <?php
-                                                            foreach ($batResult as $code) {
-                                                            ?>
-                                                                <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-                                                            <?php
-                                                            }
-                                                            ?>
-                                                        </select>
-                                                    </td>-->
-                                                    <td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
-                                                    <td>
-                                                        <select class="form-control select2-element" id="printState" onchange="getByPrintProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+                                                    <td style="width:10%;"><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
+                                                        <select class="form-control select2-element" id="printState" onchange="getByPrintProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>" style="width:100%;">
                                                             <?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
                                                         </select>
                                                     </td>
 
-                                                    <td><strong><?php echo _translate("District/County"); ?> :</strong></td>
-                                                    <td>
-                                                        <select class="form-control select2-element" id="printDistrict" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByPrintDistrict(this.value)">
-                                                        </select>
+                                                    <td style="width:10%;"><strong><?php echo _translate("District/County"); ?> :</strong></td>
+                                                    <td style="width:20%;">
+                                                        <select class="form-control select2-element" id="printDistrict" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByPrintDistrict(this.value)" style="width:100%;"></select>
                                                     </td>
 
                                                 </tr>
                                                 <tr>
-                                                    <td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
-                                                    <td>
-                                                        <input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
+                                                    <td style="width:10%;"><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
+                                                        <input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:100%;background:#fff;" />
                                                     </td>
-                                                    <td><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
-                                                    <td>
-                                                        <select class="form-control" id="printFacility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+                                                    <td style="width:10%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
+                                                    <td style="width:20%;">
+                                                        <select class="form-control" id="printFacility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:100%;">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td><strong><?php echo _translate("Testing Labs"); ?> :</strong></td>
-                                                    <td>
-                                                        <select class="form-control" id="printLabId" name="printLabId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+                                                    <td style="width:10%;"><strong><?php echo _translate("Testing Labs"); ?> :</strong></td>
+                                                    <td style="width:20%;">
+                                                        <select class="form-control" id="printLabId" name="printLabId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple" style="width:100%;">
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>
 
                                                 </tr>
                                                 <tr>
-                                                    <td><strong><?php echo _translate("Child ID"); ?>&nbsp;:</strong></td>
-                                                    <td>
+                                                    <td style="width:10%;"><strong><?php echo _translate("Child ID"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
                                                         <input type="text" id="printChildId" name="childId" class="form-control" placeholder="<?php echo _translate('Enter Child ID'); ?>" style="background:#fff;" />
                                                     </td>
-                                                    <td><strong><?php echo _translate("Child Name"); ?>&nbsp;:</strong></td>
-                                                    <td>
+                                                    <td style="width:10%;"><strong><?php echo _translate("Child Name"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
                                                         <input type="text" id="printChildName" name="childName" class="form-control" placeholder="<?php echo _translate('Enter Child Name'); ?>" style="background:#fff;" />
                                                     </td>
-                                                    <td><strong>
-                                                            <?php echo _translate("Batch Code"); ?>&nbsp;:
-                                                        </strong></td>
-                                                    <td>
+                                                    <td style="width:10%;"><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
+                                                    <td style="width:20%;">
                                                         <input type="text" id="printBatchCode" name="printBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
                                                     </td>
                                                 </tr>
