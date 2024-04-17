@@ -118,9 +118,9 @@ try {
 
     $interpretationResult = null;
     if (!empty($_POST['resultInterpretation'])) {
-         foreach($_POST['resultInterpretation'] as $row){
-              $interpretationResult = $row;
-         }
+        foreach ($_POST['resultInterpretation'] as $row) {
+            $interpretationResult = $row;
+        }
     }
 
     $vldata = array(
@@ -187,9 +187,9 @@ try {
                             'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
                         );
                         $db->insert('generic_test_results', $testData);
-                        if(isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])){
+                        if (isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])) {
                             $finalResult = $_POST['finalResult'][$subTestName];
-                       }
+                        }
                     }
                 }
             }
@@ -221,5 +221,4 @@ try {
     header("Location:generic-test-results.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
 }

@@ -1,10 +1,11 @@
 <?php
 
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 ini_set('memory_limit', -1);
@@ -95,6 +96,9 @@ try {
     }
     MiscUtility::removeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 } catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    LoggerUtility::log("error", $exc->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'trace' => $exc->getTraceAsString(),
+    ]);
 }

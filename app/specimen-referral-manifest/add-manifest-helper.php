@@ -1,10 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -62,7 +63,7 @@ try {
                 } else if ($_POST['module'] == 'cd4') {
                     $db->where('cd4_id', $uniqueSampleId[$j]);
                     $db->update('form_cd4', $value);
-                }else if ($_POST['module'] == 'generic-tests') {
+                } else if ($_POST['module'] == 'generic-tests') {
                     $db->where('sample_id', $uniqueSampleId[$j]);
                     $db->update('form_generic', $value);
                 }
@@ -81,6 +82,5 @@ try {
 
     header("Location:view-manifests.php?t=" . ($_POST['module']));
 } catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    LoggerUtility::log('error', $exc->getMessage());
 }

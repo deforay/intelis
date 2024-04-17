@@ -52,7 +52,6 @@ try {
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
 }
 
 header("Location:/facilities/mapTestType.php?type=$mappingType&test=$testType");

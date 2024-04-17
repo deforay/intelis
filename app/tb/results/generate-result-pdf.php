@@ -109,7 +109,6 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
         $general->trackQRPageViews('tb', $requestResult[0]['tb_id'], $requestResult[0]['sample_code']);
     } catch (Exception $exc) {
         error_log($exc->getMessage());
-        error_log($exc->getTraceAsString());
     }
 }
 

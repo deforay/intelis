@@ -318,5 +318,4 @@ try {
 } catch (Exception $exc) {
     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
 }

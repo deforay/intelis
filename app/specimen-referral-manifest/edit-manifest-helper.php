@@ -101,5 +101,4 @@ try {
     header("Location:view-manifests.php?t=" . ($_POST['module']));
 } catch (Exception $exc) {
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
 }

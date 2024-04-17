@@ -331,5 +331,4 @@ try {
     echo "importedStatistics.php";
 } catch (Exception $exc) {
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
 }

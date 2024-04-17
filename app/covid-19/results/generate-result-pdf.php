@@ -110,7 +110,6 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
 		$general->trackQRPageViews('covid19', $requestResult[0]['covid19_id'], $requestResult[0]['sample_code']);
 	} catch (Exception $exc) {
 		error_log($exc->getMessage());
-		error_log($exc->getTraceAsString());
 	}
 }
 

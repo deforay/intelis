@@ -1,10 +1,12 @@
 <?php
 
-if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-}
+use Exception;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
-
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $tableName1 = "roles";
 $tableName2 = "roles_privileges_map";
@@ -33,6 +35,5 @@ try {
         }
         header("Location:roles.php");
 } catch (Exception $exc) {
-        error_log($exc->getMessage());
-        error_log($exc->getTraceAsString());
+        LoggerUtility::log('error', $exc->getMessage());
 }
