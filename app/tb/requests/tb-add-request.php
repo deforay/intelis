@@ -104,7 +104,8 @@ $fileArray = [
     COUNTRY\CAMEROON => 'forms/add-cameroon.php',
     COUNTRY\PNG => 'forms/add-png.php',
     COUNTRY\WHO => 'forms/add-who.php',
-    COUNTRY\RWANDA => 'forms/add-rwanda.php'
+    COUNTRY\RWANDA => 'forms/add-rwanda.php',
+    COUNTRY\BURKINA_FASO => 'forms/add-burkina-faso.php'
 ];
 require_once($fileArray[$arr['vl_form']]);
 
