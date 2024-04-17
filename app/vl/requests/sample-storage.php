@@ -181,7 +181,7 @@ if (!empty($sampleUniqueId)) {
 										<?php echo _translate("District/County"); ?> :
 									</strong></td>
 								<td>
-									<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict(this.value)">
+									<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict(this.value)">
 									</select>
 								</td>
 								<td><strong>
@@ -235,28 +235,25 @@ if (!empty($sampleUniqueId)) {
 										<th>
 											<?php echo _translate("Patient ID"); ?>
 										</th>
-										<th>
-											<?php echo _translate("Patient's Name"); ?>
-										</th>
-										<th>
+										<th width="5%">
 											<?php echo _translate("Current Storage"); ?>
 										</th>
-										<th>
+										<th width="3%">
 											<?php echo _translate("Volume(ml)"); ?>
 										</th>
-										<th>
+										<th width="10%">
 											<?php echo _translate("Freezer"); ?>
 										</th>
-										<th>
+										<th width="5%">
 											<?php echo _translate("Rack"); ?>
 										</th>
-										<th>
+										<th width="5%">
 											<?php echo _translate("Box"); ?>
 										</th>
-										<th>
+										<th width="5%">
 											<?php echo _translate("Position"); ?>
 										</th>
-										<th>
+										<th width="10%">
 											<?php echo _translate("Date out"); ?>
 										</th>
 										<th>
@@ -275,7 +272,11 @@ if (!empty($sampleUniqueId)) {
 									$i = 0;
 									if (!empty($vlQueryInfo)) {
 										foreach ($vlQueryInfo as $vl) {
-											$patientFirstName = $vl['patient_first_name'] ?? '';
+											if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
+												$key = (string) $general->getGlobalConfig('key');
+												$vl['patient_art_no'] = $general->crypto('decrypt', $vl['patient_art_no'], $key);
+											}
+										/*	$patientFirstName = $vl['patient_first_name'] ?? '';
 											$patientMiddleName = $vl['patient_middle_name'] ?? '';
 											$patientLastName = $vl['patient_last_name'] ?? '';
 											if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
@@ -296,7 +297,7 @@ if (!empty($sampleUniqueId)) {
 											} else {
 												$patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 											}
-
+										*/
 											if (is_array($currentStorage[$i]) && in_array($vl['unique_id'], $currentStorage[$i]) && ($currentStorage[$i]['freezer_id'] != "")) {
 												$existingStorage = $currentStorage[$i]['storage_code'] . '-' . $currentStorage[$i]['rack'] . '-' . $currentStorage[$i]['box'] . '-' . $currentStorage[$i]['position'] . ' ' . $currentStorage[$i]['volume'] . ' ml';
 											} else {
@@ -319,17 +320,14 @@ if (!empty($sampleUniqueId)) {
 													<?php echo $vl['patient_art_no']; ?>
 												</td>
 												<td class="dataTables_empty">
-													<?php echo $patientFullName; ?>
-												</td>
-												<td class="dataTables_empty">
 													<input type="hidden" name="storageId[<?= $i; ?>]" id="storageId<?= $i; ?>" class="form-control" value="<?= $currentStorage[$i]['storage_id']; ?>" size="5" />
 													<?php echo $existingStorage; ?>
 												</td>
 												<td class="dataTables_empty">
-													<input type="text" name="volume[<?= $i; ?>]" id="volume<?= $i; ?>" class="form-control" size="5" />
+													<input type="text" name="volume[<?= $i; ?>]" id="volume<?= $i; ?>" class="form-control" size="2" />
 												</td>
 												<td class="dataTables_empty">
-													<select type="text" name="freezer[<?= $i; ?>]" id="freezer<?= $i; ?>" class="form-control freezerSelect" onchange="showSamples(<?= $i; ?>);" style="width:70px;">
+													<select type="text" name="freezer[<?= $i; ?>]" id="freezer<?= $i; ?>" class="form-control freezerSelect" onchange="showSamples(<?= $i; ?>);" style="width:90px;">
 														<?= $general->generateSelectOptions($storageInfo, null, '-- Select --') ?>
 													</select>
 												</td>
@@ -343,16 +341,18 @@ if (!empty($sampleUniqueId)) {
 													<input type="text" name="position[<?= $i; ?>]" id="position<?= $i; ?>" class="form-control" size="5" />
 												</td>
 												<td class="dataTables_empty">
-													<input type="text" name="dateOut[<?= $i; ?>]" id="dateOut<?= $i; ?>" class="form-control date" size="5" />
+													<input type="text" name="dateOut[<?= $i; ?>]" id="dateOut<?= $i; ?>" class="form-control date" size="23" />
 												</td>
 												<td class="dataTables_empty">
-													<input type="text" name="comments[<?= $i; ?>]" id="comments<?= $i; ?>" class="form-control" size="5" />
+													<input type="text" name="comments[<?= $i; ?>]" id="comments<?= $i; ?>" class="form-control" size="20" />
 												</td>
 												<td class="dataTables_empty">
 													<?php echo ucfirst($vl['sample_status']); ?>
 												</td>
 												<td class="dataTables_empty">
+													<?php if($existingStorage != "" && (strtolower($vl['sample_status'])!="removed")){ ?> 
 													<a href="#" class="btn btn-danger btn-xs" onclick="removeSample(<?= $i; ?>);"><em class="fa-solid fa-xmark"></em>&nbsp; Remove</a>
+													<?php } ?>
 												</td>
 											</tr>
 										<?php $i++;
@@ -390,7 +390,8 @@ if (!empty($sampleUniqueId)) {
 	var selectedTests = [];
 	var selectedTestsId = [];
 	$(document).ready(function() {
-
+		getByProvince($("#state").val());
+		
 		$("#state").select2({
 			placeholder: "<?php echo _translate("Select Province"); ?>"
 		});
@@ -468,7 +469,7 @@ if (!empty($sampleUniqueId)) {
 		$("#facilityName").html('');
 		$.post("/common/get-by-province-id.php", {
 				provinceId: provinceId,
-				districts: true,
+				districts: '<?php if(isset($_POST['district'])) echo $_POST['district']; ?>',
 				facilities: true,
 			},
 			function(data) {
