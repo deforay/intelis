@@ -100,7 +100,7 @@ try {
 			$_POST['testingPoints'] = null;
 		}
 
-		$data = array(
+		$data = [
 			'facility_name' => $_POST['facilityName'],
 			'facility_code' => !empty($_POST['facilityCode']) ? $_POST['facilityCode'] : null,
 			'other_id' => !empty($_POST['otherId']) ? $_POST['otherId'] : null,
@@ -124,7 +124,7 @@ try {
 			'report_format' => (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) ? json_encode($_POST['reportFormat'], true) : null,
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 			'status' => $_POST['status']
-		);
+		];
 
 		//$facilityAttributes = [];
 		if (!empty($_POST['allowResultUpload'])) {
@@ -238,7 +238,7 @@ try {
 		}
 
 
-		if ($lastId > 0 && $sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
+		if ($sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
 
 			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template";
 			MiscUtility::makeDirectory($directoryPath, 0777, true);
@@ -252,14 +252,13 @@ try {
 
 			$facilityAttributes['report_template'] = $fileName;
 		}
+
 		if (!empty($facilityAttributes)) {
 			$data['facility_attributes'] = json_encode($facilityAttributes, true);
 		}
 
-		$db->where('facility_id', $facilityId);
-		$id = $db->update('facility_details', $data);
 
-		if ($lastId > 0 && $sanitizedLabLogo instanceof UploadedFile && $sanitizedLabLogo->getError() === UPLOAD_ERR_OK) {
+		if ($sanitizedLabLogo instanceof UploadedFile && $sanitizedLabLogo->getError() === UPLOAD_ERR_OK) {
 			MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId, 0777, true);
 			$extension = MiscUtility::getFileExtension($sanitizedLabLogo->getClientFilename());
 			$string = $general->generateRandomString(12) . ".";
@@ -276,12 +275,13 @@ try {
 			$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
 
 
-			// Update the database with the image name
-			$image = ['facility_logo' => $imageName];
-
-			$db->where('facility_id', $lastId);
-			$db->update('facility_details', $image);
+			$data['facility_logo'] = $imageName;
 		}
+
+		$db->where('facility_id', $facilityId);
+		$id = $db->update('facility_details', $data);
+
+
 
 		// Uploading signatories
 		if (!empty($sanitizedSignature) && !empty($_POST['signName'])) {

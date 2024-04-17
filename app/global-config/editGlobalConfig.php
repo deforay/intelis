@@ -116,40 +116,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 											</div>
 										</div>
 									</div>
-									<div class="row" style="display:none;">
-										<div class="col-md-7">
-											<div class="form-group">
-												<label for="" class="col-lg-4 control-label"><?php echo _translate("Logo Image"); ?> </label>
-												<div class="col-lg-8">
-													<div class="fileinput fileinput-new instanceLogo" data-provides="fileinput">
-														<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
-															<?php
-															if (isset($instanceResult[0]['instance_facility_logo']) && trim((string) $instanceResult[0]['instance_facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $instanceResult[0]['instance_facility_logo'])) {
-															?>
-																<img src="/uploads/instance-logo/<?php echo $instanceResult[0]['instance_facility_logo']; ?>" alt="Logo image">
-															<?php } else { ?>
 
-															<?php } ?>
-														</div>
-														<div>
-															<span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _translate("Select image"); ?></span><span class="fileinput-exists"><?php echo _translate("Change"); ?></span>
-																<input class="readPage" type="file" id="instanceLogo" name="instanceLogo" title="<?php echo _translate('Please select logo image'); ?>" onchange="getNewInstanceImage('<?php echo $instanceResult[0]['instance_facility_logo']; ?>');">
-															</span>
-															<?php
-															if (isset($instanceResult[0]['instance_facility_logo']) && trim((string) $instanceResult[0]['instance_facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $instanceResult[0]['instance_facility_logo'])) {
-															?>
-																<a id="clearInstanceImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearInstanceImage('<?php echo $instanceResult[0]['instance_facility_logo']; ?>')"><?php echo _translate("Clear"); ?></a>
-															<?php } ?>
-															<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _translate("Remove"); ?></a>
-														</div>
-													</div>
-													<div class="box-body">
-														<?php echo _translate("Please make sure logo image size of"); ?>: <code>80x80</code>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
 									<div class="col-md-7">
 										<div class="form-group">
 											<label for="gui_date_format" class="col-lg-4 control-label"><?php echo _translate("Date Format"); ?> <span class="mandatory">*</span></label>
@@ -450,7 +417,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 											<div class="col-lg-8">
 												<br>
 												<input type="radio" class="readPage" id="standard_batch_pdf_layout" name="batch_pdf_layout" value="standard" <?php echo ($arr['batch_pdf_layout'] == 'standard' || $arr['batch_pdf_layout'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Standard"); ?>&nbsp;&nbsp;
-												<input type="radio" class="readPage" id="compact_batch_pdf_layout" name="batch_pdf_layout" value="compact" <?php echo ($arr['batch_pdf_layout'] == 'compact' ) ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Compact"); ?>
+												<input type="radio" class="readPage" id="compact_batch_pdf_layout" name="batch_pdf_layout" value="compact" <?php echo ($arr['batch_pdf_layout'] == 'compact') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Compact"); ?>
 											</div>
 										</div>
 									</div>
@@ -963,9 +930,9 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 									</div>
 
 									<?php if (isset($arr['covid19_tests_table_in_results_pdf']) && $arr['covid19_tests_table_in_results_pdf'] != '') { ?>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
 													<label for="covid19TestsTableInResultsPdf" class="col-lg-2 control-label"><?php echo _translate("Show Covid19 Tests table in Results PDF"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select name="covid19TestsTableInResultsPdf" id="covid19TestsTableInResultsPdf" class="form-control readPage isRequired" title="<?php echo _translate('Please select covid19 Tests method in Results Pdf'); ?>">
@@ -976,7 +943,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 													</div>
 												</div>
 											</div>
-									</div>
+										</div>
 									<?php } ?>
 									<div class="row">
 										<div class="col-md-12">
@@ -1518,9 +1485,9 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 										</div>
 									</div>
 									<?php if (isset($arr['generic_tests_table_in_results_pdf']) && $arr['generic_tests_table_in_results_pdf'] != '') { ?>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
 													<label for="covid19TestsTableInResultsPdf" class="col-lg-2 control-label"><?php echo _translate("Show Other Tests table in Results PDF"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select name="genericTestsTableInResultsPdf" id="genericTestsTableInResultsPdf" class="form-control readPage isRequired" title="<?php echo _translate('Please select Other Tests method in Results Pdf'); ?>">
@@ -1531,7 +1498,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 													</div>
 												</div>
 											</div>
-									</div>
+										</div>
 									<?php } ?>
 									<div class="row">
 										<div class="col-md-12">
@@ -1744,7 +1711,6 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 						<!-- /.box-body -->
 						<div class="box-footer hideFooter">
 							<input type="hidden" class="readPage" name="removedLogoImage" id="removedLogoImage" />
-							<input type="hidden" class="readPage" name="removedInstanceLogoImage" id="removedInstanceLogoImage" />
 							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
 							<a href="editGlobalConfig.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 						</div>
@@ -1839,21 +1805,11 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 		$("#removedLogoImage").val(img);
 	}
 
-	function clearInstanceImage(img) {
-		$(".instanceLogo").fileinput("clear");
-		$("#clearInstanceImage").addClass("hide");
-		$("#removedInstanceLogoImage").val(img);
-	}
-
 	function getNewImage(img) {
 		$("#clearImage").addClass("hide");
 		$("#removedLogoImage").val(img);
 	}
 
-	function getNewInstanceImage(img) {
-		$("#clearInstanceImage").addClass("hide");
-		$("#removedInstanceLogoImage").val(img);
-	}
 
 	$("input:radio[name=sample_code]").click(function() {
 		if (this.value == 'MMYY' || this.value == 'YY') {
