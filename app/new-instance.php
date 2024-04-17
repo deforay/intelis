@@ -104,23 +104,6 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 												<option value="Both" selected="selected">Both</option>
 											</select>
 										</td>
-										<td style="display:none">&nbsp;<strong>Logo Image&nbsp;</strong></td>
-										<td style="display:none">
-											<div class="fileinput fileinput-new" data-provides="fileinput">
-												<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
-
-												</div>
-												<div>
-													<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
-														<input type="file" id="logo" name="logo" title="Please select logo image">
-													</span>
-													<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-												</div>
-											</div>
-											<div class="box-body">
-												<strong>Please make sure logo image size of:</strong> <code>80x80</code>
-											</div>
-										</td>
 									</tr>
 								</table>
 							</div>

@@ -22,7 +22,7 @@ $cd4Service = ContainerRegistry::get(CD4Service::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-/** @var CommonService $commonService */
+/** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 $formId = (int) $general->getGlobalConfig('vl_form');

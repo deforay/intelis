@@ -383,6 +383,8 @@ sudo composer self-update
 
 sudo -u www-data composer config process-timeout 30000
 
+sudo -u www-data composer clear-cache
+
 sudo -u www-data composer update --no-dev &&
     sudo -u www-data composer dump-autoload -o
 
