@@ -25,7 +25,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
-/** @var CommonService $commonService */
+/** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 

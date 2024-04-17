@@ -76,7 +76,7 @@ $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
-/** @var CommonService $commonService */
+/** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 //Funding source list

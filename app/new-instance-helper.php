@@ -19,7 +19,6 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
 $systemConfigTable = "system_config";
-$sanitizedLogoFile = _sanitizeFiles($_FILES['logo'], ['png', 'jpg', 'jpeg', 'gif']);
 
 $_POST = _sanitizeInput($_POST);
 function getMacLinux(): bool|string
@@ -103,23 +102,7 @@ try {
 
 			$systemInfo = $general->getSystemConfig();
 
-			if (isset($sanitizedLogoFile['name']) && $sanitizedLogoFile['name'] != "") {
 
-				MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo");
-
-				$extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $sanitizedLogoFile['name'], PATHINFO_EXTENSION));
-				$string = $general->generateRandomString(6) . ".";
-				$imageName = "logo" . $string . $extension;
-				if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName)) {
-					$resizeObj = new ImageResizeUtility(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
-					$resizeObj->resizeToWidth(100);
-					$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
-
-					$image = ['instance_facility_logo' => $imageName];
-					$db->where('vlsm_instance_id', $instanceId);
-					$db->update($tableName, $image);
-				}
-			}
 			//Add event log
 			$eventType = 'new-instance';
 			$action = $_SESSION['userName'] . ' added instance id';

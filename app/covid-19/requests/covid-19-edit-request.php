@@ -76,7 +76,7 @@ $covid19Info = $db->rawQueryOne($covid19Query, array($id));
 $covid19TestQuery = "SELECT * from covid19_tests WHERE covid19_id=? ORDER BY test_id ASC";
 $covid19TestInfo = $db->rawQuery($covid19TestQuery, array($id));
 
-/** @var CommonService $commonService */
+/** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 //Funding source list
