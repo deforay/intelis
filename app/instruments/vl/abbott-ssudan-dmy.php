@@ -9,6 +9,7 @@ use App\Utilities\DateUtility;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\LoggerUtility;
 
 try {
     // Sanitized values from $request object
@@ -288,6 +289,5 @@ try {
 
     header("Location:/import-result/imported-results.php?t=$type");
 } catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    LoggerUtility::log('error', $exc->getMessage());
 }

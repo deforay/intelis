@@ -1,12 +1,18 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Services\StorageService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\GeoLocationsService;
-use App\Services\StorageService;
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $title = _translate("Export Data");
 
@@ -83,8 +89,7 @@ if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != ''
 
 if (isset($sWhere) && !empty($sWhere)) {
 	$sWhere =  ' AND ' . implode(" AND ", $sWhere);
-}
-else{
+} else {
 	$sWhere = "";
 }
 $vlQuery = "SELECT vl.*,f.facility_name,s.storage_code,h.* FROM form_vl as vl

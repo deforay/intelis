@@ -450,7 +450,7 @@ try {
     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+
     LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }
 

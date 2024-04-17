@@ -108,7 +108,6 @@ try {
     ];
     http_response_code(500);
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
 }
 
 $payload = json_encode($payload);

@@ -120,7 +120,6 @@ try {
         'data' => []
     ];
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
 }
 
 $payload = json_encode($payload);

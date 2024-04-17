@@ -8,6 +8,7 @@ if (php_sapi_name() == 'cli') {
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -101,7 +102,9 @@ try {
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_lab_metadata_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Exception $exc) {
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    LoggerUtility::log("error", $exc->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'trace' => $exc->getTraceAsString(),
+    ]);
 }

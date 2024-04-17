@@ -4,6 +4,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -94,6 +95,5 @@ try {
     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     header("Location:/instruments/instruments.php");
 } catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    LoggerUtility::log('error', $exc->getMessage());
 }

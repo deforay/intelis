@@ -78,5 +78,4 @@ try {
     header("Location:move-samples.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
 }
