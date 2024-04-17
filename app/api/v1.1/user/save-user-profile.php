@@ -123,6 +123,7 @@ try {
         $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars($sanitizedSignFile->getClientFilename()));
         $imageName = str_replace(" ", "-", $imageName);
         $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
+        $extension = MiscUtility::getFileExtension($sanitizedSignFile->getClientFilename());
         $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;
 
         $signatureImagePath = realpath($signatureImagePath) . DIRECTORY_SEPARATOR . $imageName;

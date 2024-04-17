@@ -384,4 +384,14 @@ class MiscUtility
         }
         return $array;
     }
+
+    public static function getFileExtension($filename)
+    {
+        if (empty($filename)) {
+            return '';
+        }
+
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        return strtolower($extension);
+    }
 }

@@ -29,24 +29,26 @@ $_POST = _sanitizeInput($request->getParsedBody());
 // Get the uploaded files from the request object
 $uploadedFiles = $request->getUploadedFiles();
 
-// Sanitize and validate the uploaded files
-$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'], ['pdf']);
-$sanitizedLabLogo = _sanitizeFiles($uploadedFiles['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
-$sanitizedSignature = _sanitizeFiles($uploadedFiles['signature'], ['png', 'jpg', 'jpeg', 'gif']);
-
-/* For reference we define the table names */
-$tableName = "facility_details";
-$facilityId = base64_decode((string) $_POST['facilityId']);
-$provinceTable = "geographical_divisions";
-$vlUserFacilityMapTable = "user_facility_map";
-$testingLabsTable = "testing_labs";
-$healthFacilityTable = "health_facilities";
-$signTableName = "lab_report_signatories";
-
-$facilityRow = $db->rawQueryOne('SELECT facility_attributes from facility_details where facility_id= ?', [$facilityId]);
-$facilityAttributes = json_decode((string) $facilityRow['facility_attributes'], true);
 
 try {
+	// Sanitize and validate the uploaded files
+	$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'], ['pdf']);
+	$sanitizedLabLogo = _sanitizeFiles($uploadedFiles['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
+	$sanitizedSignature = _sanitizeFiles($uploadedFiles['signature'], ['png', 'jpg', 'jpeg', 'gif']);
+
+	/* For reference we define the table names */
+	$tableName = "facility_details";
+	$facilityId = base64_decode((string) $_POST['facilityId']);
+	$provinceTable = "geographical_divisions";
+	$vlUserFacilityMapTable = "user_facility_map";
+	$testingLabsTable = "testing_labs";
+	$healthFacilityTable = "health_facilities";
+	$signTableName = "lab_report_signatories";
+
+	$facilityRow = $db->rawQueryOne('SELECT facility_attributes from facility_details where facility_id= ?', [$facilityId]);
+	$facilityAttributes = json_decode((string) $facilityRow['facility_attributes'], true);
+
+
 	//Province Table
 	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != "") {
 		if (isset($_POST['provinceNew']) && $_POST['provinceNew'] != "" && $_POST['stateId'] == 'other') {
@@ -142,26 +144,7 @@ try {
 		if (!empty($_POST['reportTopMargin'])) {
 			$facilityAttributes['report_top_margin'] = $_POST['reportTopMargin'];
 		}
-		// Upload Report Template
-		if ($lastId > 0 && $sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
-			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template";
-			MiscUtility::makeDirectory($directoryPath, 0777, true);
-			$string = $general->generateRandomString(12) . ".";
-			$extension = strtolower($sanitizedReportTemplate->getClientMediaType());
-			$fileName = "report-template-" . $string . $extension;
-			$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
 
-			// Move the uploaded file to the desired location
-			$sanitizedReportTemplate->moveTo($filePath);
-
-			$facilityAttributes['report_template'] = $fileName;
-		}
-		if (!empty($facilityAttributes)) {
-			$data['facility_attributes'] = json_encode($facilityAttributes, true);
-		}
-
-		$db->where('facility_id', $facilityId);
-		$id = $db->update($tableName, $data);
 
 		// Mapping facility with users
 		$db->where('facility_id', $facilityId);
@@ -251,12 +234,34 @@ try {
 			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);
 			$data = array('facility_logo' => null);
 			$db->where('facility_id', $lastId);
-			$db->update($tableName, $data);
+			$db->update('facility_details',  $data);
 		}
+
+
+		if ($lastId > 0 && $sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
+
+			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template";
+			MiscUtility::makeDirectory($directoryPath, 0777, true);
+			$string = $general->generateRandomString(12) . ".";
+			$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
+			$fileName = "report-template-" . $string . $extension;
+			$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
+
+			// Move the uploaded file to the desired location
+			$sanitizedReportTemplate->moveTo($filePath);
+
+			$facilityAttributes['report_template'] = $fileName;
+		}
+		if (!empty($facilityAttributes)) {
+			$data['facility_attributes'] = json_encode($facilityAttributes, true);
+		}
+
+		$db->where('facility_id', $facilityId);
+		$id = $db->update('facility_details', $data);
 
 		if ($lastId > 0 && $sanitizedLabLogo instanceof UploadedFile && $sanitizedLabLogo->getError() === UPLOAD_ERR_OK) {
 			MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId, 0777, true);
-			$extension = strtolower($sanitizedLabLogo->getClientMediaType());
+			$extension = MiscUtility::getFileExtension($sanitizedLabLogo->getClientFilename());
 			$string = $general->generateRandomString(12) . ".";
 			$actualImageName = "actual-logo-" . $string . $extension;
 			$imageName = "logo-" . $string . $extension;
@@ -270,10 +275,12 @@ try {
 			$resizeObj->resizeToWidth(100);
 			$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
 
+
 			// Update the database with the image name
-			$image = array('facility_logo' => $imageName);
+			$image = ['facility_logo' => $imageName];
+
 			$db->where('facility_id', $lastId);
-			$db->update($facilityTable, $image);
+			$db->update('facility_details', $image);
 		}
 
 		// Uploading signatories
@@ -293,7 +300,7 @@ try {
 
 					MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures');
 					$pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures' . DIRECTORY_SEPARATOR;
-					$extension = strtolower($sanitizedSignature[$key]->getClientMediaType());
+					$extension = MiscUtility::getFileExtension($sanitizedSignature[$key]->getClientFilename());
 					$imageName = $general->generateRandomString(12) . ".";
 					$imageName = $imageName . $extension;
 
@@ -306,7 +313,7 @@ try {
 					$resizeObj->save($pathname . $imageName);
 					$signData['signature'] = $imageName;
 
-					$db->insert($labSignTable, $signData);
+					$db->insert('lab_report_signatories', $signData);
 				}
 			}
 		}
@@ -316,6 +323,7 @@ try {
 	}
 	header("Location:facilities.php");
 } catch (Exception $e) {
+
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => __FILE__,
 		'line' => __LINE__,
