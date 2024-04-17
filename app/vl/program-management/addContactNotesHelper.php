@@ -35,6 +35,5 @@ try {
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
 }
 echo $result;

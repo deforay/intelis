@@ -352,5 +352,4 @@ try {
      header("Location:view-requests.php");
 } catch (Exception $exc) {
      error_log($exc->getMessage());
-     error_log($exc->getTraceAsString());
 }

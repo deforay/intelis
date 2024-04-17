@@ -216,7 +216,7 @@ try {
 } catch (Exception $exc) {
 
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+
     $_SESSION['alertMsg'] = "Result file could not be imported. Please check if the file is of correct format.";
     header("Location:/import-result/import-file.php?t=" . base64_encode('vl'));
 }

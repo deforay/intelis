@@ -174,5 +174,4 @@ try {
     header("Location:/eid/requests/eid-requests.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
 }

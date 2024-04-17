@@ -29,7 +29,7 @@ function getMacLinux(): bool|string
 		return strtok($mac, ' ') ?? "notfound";
 	} catch (Exception $exc) {
 		error_log($exc->getMessage());
-		error_log($exc->getTraceAsString());
+
 		return "not found";
 	}
 }

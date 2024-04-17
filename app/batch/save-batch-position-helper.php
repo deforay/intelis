@@ -68,5 +68,4 @@ try {
     header("Location:batches.php?type=" . $_POST['type']);
 } catch (Exception $exc) {
     error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
 }
