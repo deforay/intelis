@@ -264,9 +264,9 @@ if (!empty($sampleUniqueId)) {
 										<th>
 											<?php echo _translate("Comments"); ?>
 										</th>
-										<th>
+										<!--<th>
 											<?php echo _translate("Status"); ?>
-										</th>
+										</th>-->
 										<th>
 											<?php echo _translate("Action"); ?>
 										</th>
@@ -351,9 +351,9 @@ if (!empty($sampleUniqueId)) {
 												<td class="dataTables_empty">
 													<input type="text" name="comments[<?= $i; ?>]" id="comments<?= $i; ?>" class="form-control" size="20" />
 												</td>
-												<td class="dataTables_empty">
-													<?php echo ucfirst($vl['sample_status']); ?>
-												</td>
+											<!--	<td class="dataTables_empty">
+													< ?php echo ucfirst($vl['sample_status']); ?>
+												</td>-->
 												<td class="dataTables_empty">
 													<?php if($existingStorage != "" && (strtolower($vl['sample_status'])!="removed")){ ?> 
 													<a href="#" class="btn btn-danger btn-xs" onclick="removeSample(<?= $i; ?>);"><em class="fa-solid fa-xmark"></em>&nbsp; Remove</a>
@@ -499,7 +499,7 @@ if (!empty($sampleUniqueId)) {
 	}
 
 	function removeSample(rowId) {
-		storageId = $("#storageId" + rowId).val();
+		/*storageId = $("#storageId" + rowId).val();
 		sampleUniqueId = $("#sampleUniqueId" + rowId).val();
 		$.post("/vl/requests/update-sample-storage-status.php", {
 				storageId: storageId,
@@ -509,7 +509,8 @@ if (!empty($sampleUniqueId)) {
 			function(data) {
 				if (data != '')
 					alert("Sample is removed from this freezer");
-			});
+			});*/
+			alert("This functionality is under development and this will be available soon");
 	}
 
 	function exportStorageSamples() {
