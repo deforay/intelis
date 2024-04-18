@@ -111,7 +111,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method="post" name="editTbRequestForm" id="editTbRequestForm" autocomplete="off" action="tb-update-result-helper.php">
 					<div class="box-body">
 						<div class="box box-default disabledForm">
 							<div class="box-body">
@@ -222,7 +221,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 										<th scope="row"><label for="dob">Date of Birth </label></th>
 										<td>
-											<input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control" id="dob" name="dob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
+											<input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control" id="dob" name="dob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears('dob', 'patientAge');" />
 										</td>
 									</tr>
 									<tr>
@@ -355,8 +354,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 							</div>
 						</div>
 						<?php if (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
-							<?php // if (false) {
-							?>
+							<form class="form-horizontal" method="post" name="editTbRequestForm" id="editTbRequestForm" autocomplete="off" action="tb-update-result-helper.php">
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">

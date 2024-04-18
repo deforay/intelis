@@ -210,9 +210,9 @@ require_once($fileArray[$arr['vl_form']]);
             });
     }
 
-    function calculateAgeInYears() {
-        var dateOfBirth = moment($("#patientDob").val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
-        $("#patientAge").val(moment().diff(dateOfBirth, 'years'));
+    function calculateAgeInYears(calcFrom, calcTo) {
+        var dateOfBirth = moment($("#" + calcFrom).val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
+        $("#" + calcTo).val(moment().diff(dateOfBirth, 'years'));
     }
 </script>
 <?php
