@@ -384,10 +384,10 @@ $formId = $general->getGlobalConfig('vl_form');
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 												<option value='tb' <?php echo (preg_match("/tb/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("TB"); ?></option>
-											<?php } 
+											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
 												<option value='cd4' <?php echo (preg_match("/cd4/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("CD4"); ?></option>
-											<?php } 
+											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 												<option value='generic-tests' <?php echo (preg_match("/generic-tests/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("Other Lab Tests"); ?></option>
 											<?php } ?>
@@ -568,7 +568,7 @@ $formId = $general->getGlobalConfig('vl_form');
 									?>
 										<span id="reportTemplateSpan" class="form-control">
 											<a href="javascript:void(0);" onclick="showreportTemplateFile();">
-												<span class="alert-danger" style="padding: 2px;border-radius: 30%;float: right; height: 22px;">X</span>
+												<span class="alert-danger" style="padding: 0.4em; border-radius: 50%; float: right; height: 1.6em; width: 1.6em; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1;">X</span>
 											</a>
 											<a href=<?php echo $lmSign; ?> target="_blank"> <?php echo $facilityAttributes->report_template; ?> </a>
 										</span>
@@ -579,7 +579,7 @@ $formId = $general->getGlobalConfig('vl_form');
 							</div>
 						</div>
 					</div>
-					<?php if ($formId == COUNTRY\CAMEROON){ ?>
+					<?php if ($formId == COUNTRY\CAMEROON) { ?>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
@@ -611,17 +611,17 @@ $formId = $general->getGlobalConfig('vl_form');
 							</div>
 						</div>
 						<div class="row">
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="reportTopMargin" class="col-lg-4 control-label">
-												<?php echo _translate("Report Top Margin"); ?>
-											</label>
-											<div class="col-lg-7">
-												<input type="number" value="<?php echo (isset($facilityAttributes->report_top_margin)) ? $facilityAttributes->report_top_margin : '' ?>" class="form-control" name="reportTopMargin" id="reportTopMargin" placeholder="<?php echo _translate('Report Top Margin'); ?>" title="<?php echo _translate('Please enter the report top margin'); ?>">
-											</div>
-										</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="reportTopMargin" class="col-lg-4 control-label">
+										<?php echo _translate("Report Top Margin"); ?>
+									</label>
+									<div class="col-lg-7">
+										<input type="number" value="<?php echo (isset($facilityAttributes->report_top_margin)) ? $facilityAttributes->report_top_margin : '' ?>" class="form-control" name="reportTopMargin" id="reportTopMargin" placeholder="<?php echo _translate('Report Top Margin'); ?>" title="<?php echo _translate('Please enter the report top margin'); ?>">
 									</div>
 								</div>
+							</div>
+						</div>
 					<?php } ?>
 					<div class="row" id="sampleType"></div>
 					<div class="row-item labDiv" style="display:<?php echo $labDiv; ?>;">
@@ -643,20 +643,20 @@ $formId = $general->getGlobalConfig('vl_form');
 								<?php if (!empty($signResults)) {
 									foreach ($signResults as $key => $row) { ?>
 										<tr>
-											<td style="width:14%;"><input type="hidden" name="signId[]" id="signId<?php echo ($key + 1); ?>" value="<?php echo $row['signatory_id'] ?>" /><input value="<?php echo $row['name_of_signatory'] ?>" type="text" class="form-control" name="signName[]" id="signName<?php echo ($key + 1); ?>" placeholder="<?php echo _translate('Name'); ?>" title="<?php echo _translate('Please enter the name'); ?>"></td>
-											<td style="width:14%;"><input value="<?php echo $row['designation'] ?>" type="text" class="form-control" name="designation[]" id="designation<?php echo ($key + 1); ?>" placeholder="<?php echo _translate('Designation'); ?>" title="<?php echo _translate('Please enter the Designation'); ?>"></td>
-											<td style="width:10%;">
+											<td style="vertical-align:middle;width:15%;"><input type="hidden" name="signId[]" id="signId<?php echo ($key + 1); ?>" value="<?php echo $row['signatory_id'] ?>" /><input value="<?php echo $row['name_of_signatory'] ?>" type="text" class="form-control" name="signName[]" id="signName<?php echo ($key + 1); ?>" placeholder="<?php echo _translate('Name'); ?>" title="<?php echo _translate('Please enter the name'); ?>"></td>
+											<td style="vertical-align:middle;width:10%;"><input value="<?php echo $row['designation'] ?>" type="text" class="form-control" name="designation[]" id="designation<?php echo ($key + 1); ?>" placeholder="<?php echo _translate('Designation'); ?>" title="<?php echo _translate('Please enter the Designation'); ?>"></td>
+											<td style="vertical-align:middle;width:10%;">
 												<?php $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
 												$show = "style='display:block'";
 												if (isset($row['signature']) && $row['signature'] != "") {
 													$show = "style='display:none'";
 												?>
-													<span id="spanClass<?php echo ($key + 1); ?>"><a href="javascript:void(0);" onclick="showFile(<?= $key + 1; ?>);"><span class="alert-danger" style="padding: 5px;border-radius: 50%;margin-top: 0px;float: right;">X</span></a><img alt="Facility" src="<?php echo $lmSign; ?>" style="width: 100px;" /></span>
+													<span id="spanClass<?php echo ($key + 1); ?>"><a href="javascript:void(0);" onclick="showFile(<?= $key + 1; ?>);"><span class="alert-danger" style="padding: 0.4em; border-radius: 50%; float: right; height: 1.6em; width: 1.6em; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1;">X</span></a><img alt="Facility" src="<?php echo $lmSign; ?>" style="width: 100px;" /></span>
 												<?php }
 												?>
 												<input <?php echo $show; ?> class="showFile<?php echo ($key + 1); ?>" type="file" name="signature[]" id="signature<?= $key + 1; ?>" placeholder="<?php echo _translate('Signature'); ?>" title="<?php echo _translate('Please enter the Signature'); ?>">
 											</td>
-											<td style="width:14%;">
+											<td style="vertical-align:middle;width:10%;">
 												<select class="select2 testSignType" id="testSignType<?php echo ($key + 1); ?>" name="testSignType[<?= $key + 1; ?>][]" title="<?php echo _translate('Choose one test type'); ?>" multiple>
 													<option value="vl" <?php echo (isset($row['test_types']) && in_array("vl", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Viral Load"); ?></option>
 													<option value="eid" <?php echo (isset($row['test_types']) && in_array("eid", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Early Infant Diagnosis"); ?></option>
@@ -667,14 +667,14 @@ $formId = $general->getGlobalConfig('vl_form');
 													<option value='cd4' <?php echo (isset($row['test_types']) && in_array("cd4", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("CD4"); ?></option>
 												</select>
 											</td>
-											<td style="width:14%;"><input value="<?php echo $row['display_order'] ?>" type="number" class="form-control" name="sortOrder[]" id="sortOrder<?= $key + 1; ?>" placeholder="<?php echo _translate('Display Order'); ?>" title="<?php echo _translate('Please enter the Display Order'); ?>"></td>
-											<td style="width:14%;">
+											<td style="vertical-align:middle;width:5%;"><input value="<?php echo $row['display_order'] ?>" type="number" class="form-control" name="sortOrder[]" id="sortOrder<?= $key + 1; ?>" placeholder="<?php echo _translate('Display Order'); ?>" title="<?php echo _translate('Please enter the Display Order'); ?>"></td>
+											<td style="vertical-align:middle;width:7%;">
 												<select class="form-control" id="signStatus<?= $key + 1; ?>" name="signStatus[]" title="<?php echo _translate('Please select the status'); ?>">
 													<option value="active" <?php echo (isset($row['test_types']) && $row['test_types'] == 'active') ? 'selected="selected"' : ''; ?>><?php echo _translate("Active"); ?></option>
 													<option value="inactive" <?php echo (isset($row['test_types']) && $row['test_types'] == 'inactive') ? 'selected="selected"' : ''; ?>><?php echo _translate("Inactive"); ?></option>
 												</select>
 											</td>
-											<td style="vertical-align:middle;text-align: center;width:10%;">
+											<td style="vertical-align:middle;text-align: center;width:7%;">
 												<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
 												<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);deletedRow(<?php echo $row['signatory_id'] ?>);"><em class="fa-solid fa-minus"></em></a>
 											</td>

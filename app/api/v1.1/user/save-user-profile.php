@@ -120,9 +120,8 @@ try {
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
         MiscUtility::makeDirectory($signatureImagePath);
 
-        $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars($sanitizedSignFile->getClientFilename()));
-        $imageName = str_replace(" ", "-", $imageName);
-        $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
+        $extension = MiscUtility::getFileExtension($sanitizedSignFile->getClientFilename());
+
         $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;
 
         $signatureImagePath = realpath($signatureImagePath) . DIRECTORY_SEPARATOR . $imageName;
@@ -140,6 +139,8 @@ try {
     $id = false;
     $data = MiscUtility::convertEmptyStringToNull($data);
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
+        // Unset the fields that should not be updated
+        unset($data['login_id'], $data['role_id'], $data['password'], $data['hash_algorithm'], $data['status']);
         $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
     } else {
