@@ -1,13 +1,15 @@
 <?php
 
-use App\Registries\AppRegistry;
+use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
@@ -23,6 +25,8 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 $uploadedFiles = $request->getUploadedFiles();
 
+$sanitizedUserSignature = _sanitizeFiles($uploadedFiles['userSignature'], ['png', 'jpg', 'jpeg', 'gif']);
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -34,14 +38,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "user_details";
 $tableName2 = "user_facility_map";
-
-$signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
-
-if (!file_exists($signatureImagePath) && !is_dir($signatureImagePath)) {
-    mkdir($signatureImagePath, 0777, true);
-}
-
-$signatureImagePath = realpath($signatureImagePath);
 
 $signatureImage = null;
 
@@ -66,20 +62,21 @@ try {
         $data['password'] = $password;
         $data['hash_algorithm'] = 'phb';
 
-        if (isset($uploadedFiles['userSignature']) && $uploadedFiles['userSignature']->getError() === UPLOAD_ERR_OK) {
-            $file = $uploadedFiles['userSignature'];
-            $fileName = $file->getClientFilename();
-            $fileExtension = pathinfo((string) $fileName, PATHINFO_EXTENSION);
-            $tmpFilePath = $file->getStream()->getMetadata('uri');
-            $fileSize = $file->getSize();
-            $fileMimeType = $file->getClientMediaType();
-            $signatureImage = "usign-" . $userId . "." . $fileExtension;
-            $newFilePath = $signatureImagePath . DIRECTORY_SEPARATOR . $signatureImage;
-            $file->moveTo($newFilePath);
 
-            $resizeObj = new ImageResizeUtility($newFilePath);
+        $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
+        if ($sanitizedUserSignature instanceof UploadedFile && $sanitizedUserSignature->getError() === UPLOAD_ERR_OK) {
+            MiscUtility::makeDirectory($signatureImagePath);
+            $extension = MiscUtility::getFileExtension($sanitizedUserSignature->getClientFilename());
+            $signatureImage = "usign-" . $userId . "." . $extension;
+            $signatureImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $signatureImage;
+
+            // Move the uploaded file to the desired location
+            $sanitizedUserSignature->moveTo($signatureImagePath);
+
+            $resizeObj = new ImageResizeUtility($signatureImagePath);
             $resizeObj->resizeToWidth(250);
-            $resizeObj->save($newFilePath);
+            $resizeObj->save($filePath);
+
             $data['user_signature'] = $signatureImage;
         }
 
@@ -114,27 +111,50 @@ try {
     }
     $systemType = $general->getSystemConfig('sc_user_type');
     if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $systemType == 'vluser') {
-        $_POST['userId'] = $userId;
-        $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
-        $_POST['password'] = null; // We don't want to unintentionally end up creating admin users on STS
-        $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
-        $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
-        $_POST['status'] = 'inactive';
-        $_POST['userId'] = base64_encode((string) $data['user_id']);
+        $apiData = $_POST;
+        $apiData['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
+        $apiData['password'] = null; // We don't want to unintentionally end up creating admin users on STS
+        $apiData['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
+        $apiData['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
+        $apiData['status'] = 'inactive';
+        $apiData['userId'] = base64_encode((string) $data['user_id']);
         $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
-        $post = array(
-            'post' => json_encode($_POST),
-            'sign' => (!empty($signatureImage) && MiscUtility::imageExists($signatureImage)) ? curl_file_create($signatureImage) : null,
-            'x-api-key' => $general->generateUUID()
-        );
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $apiUrl);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-        $result = curl_exec($ch);
-        curl_close($ch);
-        $deResult = json_decode($result, true);
+
+        $multipart = [
+            [
+                'name' => 'post',
+                'contents' => json_encode($apiData)
+            ],
+            [
+                'name' => 'x-api-key',
+                'contents' => $general->generateRandomString(18)
+            ]
+        ];
+
+        if (!empty($signatureImagePath) && MiscUtility::imageExists($signatureImagePath)) {
+            $multipart[] = [
+                'name' => 'sign',
+                'contents' => fopen($signatureImagePath, 'r')
+            ];
+        }
+
+        $client = new Client();
+        try {
+            $response = $client->post($apiUrl, [
+                'multipart' => $multipart
+            ]);
+
+            // $result = $response->getBody()->getContents();
+            // $deResult = json_decode($result, true);
+        } catch (Throwable $e) {
+            // Handle the exception
+            LoggerUtility::log("error", $e->getMessage(), [
+                'file' => __FILE__,
+                'line' => __LINE__,
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
     }
     //Add event log
     $eventType = 'user-add';
@@ -144,7 +164,7 @@ try {
     $general->activityLog($eventType, $action, $resource);
 
     header("Location:users.php");
-} catch (Exception | SystemException $exc) {
+} catch (Throwable $exc) {
     LoggerUtility::log('error', $exc->getMessage(), [
         'exception' => $exc->getMessage(),
         'line' => __LINE__,

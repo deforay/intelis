@@ -156,7 +156,6 @@ try {
 			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template";
 			MiscUtility::makeDirectory($directoryPath, 0777, true);
 			$string = $general->generateRandomString(12) . ".";
-			$originalFileName = $sanitizedLabLogo->getClientFilename();
 			$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
 			$fileName = "report-template-" . $string . $extension;
 			$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
