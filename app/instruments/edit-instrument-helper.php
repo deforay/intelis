@@ -23,12 +23,12 @@ $importControlTable = "instrument_controls";
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$configId = (int) base64_decode((string) $_POST['configId']);
+$configId = base64_decode((string) $_POST['configId']);
+
 
 $configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id=?";
 $configControlInfo = $db->rawQuery($configControlQuery, [$configId]);
-// echo "<pre>";print_r($_POST);die;
-//echo $configId; die;
+
 try {
     if (trim((string) $_POST['configurationName']) != "") {
 
@@ -75,9 +75,9 @@ try {
             'status' => $_POST['status']
         );
         $db->where('instrument_id', $configId);
-        //print_r($vldata);die;
+
         $db->update($tableName, $importConfigData);
-        if (count($_POST['configMachineName']) > 0) {
+        if (!empty($_POST['configMachineName'])) {
             for ($c = 0; $c < count($_POST['configMachineName']); $c++) {
                 if (trim((string) $_POST['configMachineName'][$c]) != '') {
                     $pocDev = 'no';
@@ -96,7 +96,8 @@ try {
             }
         }
 
-        if ($configId > 0 && !empty($_POST['testType'])) {
+        if (!empty($configId) && !empty($_POST['testType'])) {
+
             if (!empty($configControlInfo)) {
                 foreach ($_POST['testType'] as $key => $val) {
                     $cQuery = "SELECT * FROM instrument_controls WHERE instrument_id= " . $configId . " AND test_type like '" . $val . "'";
@@ -120,7 +121,7 @@ try {
                 }
             }
         }
-        $_SESSION['alertMsg'] = _translate("Import config details updated successfully");
+        $_SESSION['alertMsg'] = _translate("Instrument updated successfully");
         $configDir = __DIR__;
         $configFileVL = $configDir . DIRECTORY_SEPARATOR . "vl" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
         $configFileEID = $configDir . DIRECTORY_SEPARATOR . "eid" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];

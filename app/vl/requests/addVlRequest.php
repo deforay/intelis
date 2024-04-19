@@ -34,7 +34,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 $healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('vl', false, true);
 
 $storageList = $vlService->getLabStorage();
-//get import config
+// get instruments
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
 

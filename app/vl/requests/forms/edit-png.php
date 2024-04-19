@@ -59,7 +59,7 @@ $bQuery = "SELECT * FROM batch_details
 			WHERE test_type like 'vl' or test_type is NULL
 			ORDER BY last_modified_datetime DESC";
 $bResult = $db->rawQuery($bQuery);
-//get import config
+// get instruments
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 

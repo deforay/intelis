@@ -5,6 +5,12 @@ use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
+// only run from command line
+if (php_sapi_name() !== 'cli') {
+    exit(0);
+}
+
+
 require_once(__DIR__ . "/../../bootstrap.php");
 
 include_once(ROOT_PATH . DIRECTORY_SEPARATOR . 'fix-scripts/app-menu.php');
@@ -21,7 +27,6 @@ $fileCache = ContainerRegistry::get(FileCacheUtility::class);
 // unset global config cache so that it can be reloaded with new values
 $fileCache->delete('app_global_config');
 
-$transactionId = $general->generateUUID();
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 // Get the country code from the command line argument (if provided)

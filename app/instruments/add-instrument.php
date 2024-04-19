@@ -509,7 +509,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 	$(document).ready(function() {
 		$(".select2").select2({
 			width: '100%',
-			placeholder: '<?php echo _translate("Select the options"); ?>'
+			placeholder: '<?php echo _translate("-- Select --"); ?>'
 		});
 
 		$("#supportedTests").select2({
@@ -534,6 +534,20 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 	});
 
 	function validateNow() {
+
+
+		$('input[name="fileName[]"]').each(function() {
+			if ($(this).val() === '') {
+				$(this).val($('#configurationFile').val());
+			}
+		});
+
+		$('input[name="configMachineName[]"]').each(function(index) {
+			if ($(this).val() === '') {
+				$(this).val($('#configurationName').val() + ' - ' + (index + 1));
+			}
+		});
+
 		flag = deforayValidator.init({
 			formId: 'addImportConfigForm'
 		});

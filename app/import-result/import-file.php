@@ -115,7 +115,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 													<div class="form-group">
 														<label for="machineName" class="col-lg-4 control-label"><?php echo _translate("Configuration Machine Name"); ?></label>
 														<div class="col-lg-7">
-															<select name="configMachineName" id="configMachineName" class="form-control" title="<?php echo _translate('Please select the import config machine name'); ?>">
+															<select name="configMachineName" id="configMachineName" class="form-control" title="<?php echo _translate('Please select instrument'); ?>">
 																<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															</select>
 														</div>
