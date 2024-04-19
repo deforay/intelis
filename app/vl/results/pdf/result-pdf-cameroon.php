@@ -39,13 +39,13 @@ if (!empty($result)) {
 
      $currentTime = DateUtility::getCurrentDateTime();
 
-     $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? $currentTime, true, 'd/M/Y H:i:s');
-     $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '', true, 'd/M/Y H:i:s');
-     $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true, 'd/M/Y H:i:s');
-     $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true, 'd/M/Y H:i:s');
-     $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? '', true, 'd/M/Y H:i:s');
-     $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true, 'd/M/Y H:i:s');
-     $result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date'] ?? '', true, 'd/M/Y H:i:s');
+     $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? $currentTime, true);
+     $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '', true);
+     $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true);
+     $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
+     $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? '', true);
+     $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true);
+     $result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date'] ?? '', true);
 
      $reportTemplatePath = $resultPdfService->getReportTemplate($result['lab_id']);
 
@@ -310,7 +310,7 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr>';
 
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(_translate($result['patient_gender']) ?? '') . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(_translate($result['patient_gender'])) . '</td>';
      if ($result['patient_gender'] == 'female') {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(_translate($result['is_patient_breastfeeding']) ?? '-') . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(_translate($result['is_patient_pregnant']) ?? '-') . '</td>';
@@ -369,7 +369,7 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:8px 2px 2px 2px;">';
      $logValue = '';
-     if ($result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
+     if (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] === 'yes' && $result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
           $logValue = '&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
      } else {
           if ($isResultNumeric) {
@@ -386,7 +386,7 @@ if (!empty($result)) {
           $vlLogResult = '&nbsp;&nbsp;' . _translate("Viral Load Result") . ' (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']);
      }
      $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">' . $vlLogResult . '<br>' . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
-     if ($result['reason_for_sample_rejection'] != '') {
+     if (!empty($result['reason_for_sample_rejection']) && $result['reason_for_sample_rejection'] != '') {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
      }
      if (str_contains(strtolower((string)$result['vl_test_platform']), 'abbott')) {
@@ -494,7 +494,7 @@ if (!empty($result)) {
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_reviewed_datetime']) ? $result['result_reviewed_datetime'] : $result['sample_tested_datetime']) . '</td>';
           $html .= '</tr>';
      }*/
-     if ($result['is_sample_rejected'] == 'no' && $displaySignatureTable) {
+     if ($result['is_sample_rejected'] === 'no' && $displaySignatureTable) {
           if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
                $html .= '<tr>';
                $html .= '<td style="line-height:8px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("TESTED BY") . '</td>';
@@ -531,7 +531,7 @@ if (!empty($result)) {
           } else {
                $html .= '<td style="line-height:8px;font-size:10px;text-align:left;"></td>';
           }
-          $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . date('d/M/Y', strtotime((string) $result['revised_on'])) . '</td>';
+          $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . DateUtility::humanReadableDateFormat($result['revised_on'] ?? '') . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:1px;"></td>';
