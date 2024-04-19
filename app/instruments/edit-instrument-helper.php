@@ -98,26 +98,13 @@ try {
 
         if (!empty($configId) && !empty($_POST['testType'])) {
 
-            if (!empty($configControlInfo)) {
-                foreach ($_POST['testType'] as $key => $val) {
-                    $cQuery = "SELECT * FROM instrument_controls WHERE instrument_id= " . $configId . " AND test_type like '" . $val . "'";
-                    $cResult = $db->rawQueryOne($cQuery);
-                    if (trim((string) $val) != '' && $cResult) {
-                        $configControlData = array('number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
-                        $db->where('instrument_id', $configId);
-                        $db->where('test_type', $val);
-                        $db->update($importControlTable, $configControlData);
-                    } else {
-                        $configControlData = array('test_type' => $val, 'instrument_id' => $configId, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
-                        $db->insert($importControlTable, $configControlData);
-                    }
-                }
-            } else {
-                foreach ($_POST['testType'] as $key => $val) {
-                    if (trim((string) $val) != '') {
-                        $configControlData = array('test_type' => $val, 'instrument_id' => $configId, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
-                        $db->insert($importControlTable, $configControlData);
-                    }
+            $db->where('instrument_id', $configId);
+            $db->delete($importControlTable);
+
+            foreach ($_POST['testType'] as $key => $val) {
+                if (trim((string) $val) != '') {
+                    $configControlData = array('test_type' => $val, 'instrument_id' => $configId, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
+                    $db->insert($importControlTable, $configControlData);
                 }
             }
         }
@@ -166,7 +153,9 @@ try {
             fclose($fp);
         }
     }
-    header("Location:/instruments/instruments.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
 }
+
+
+header("Location:/instruments/instruments.php");
