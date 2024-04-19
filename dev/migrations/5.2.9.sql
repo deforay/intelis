@@ -420,17 +420,18 @@ ADD `last_cd4_date` DATE NULL DEFAULT NULL AFTER `last_cd8_result`,
 ADD `last_cd8_date` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_date`;
 
 -- Thana 16-Apr-2024
-ALTER TABLE `form_eid` ADD `mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
-ALTER TABLE `audit_form_eid` ADD `mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
+ALTER TABLE `form_eid` ADD `is_mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
+ALTER TABLE `audit_form_eid` ADD `is_mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
+
 -- Amit 18-Apr-2024
 UPDATE `roles` SET `landing_page` = '/dashboard/index.php';
 -- Thana 18-Apr-2024
-ALTER TABLE `form_tb` 
-ADD `patient_weight` DECIMAL(5,2) NULL DEFAULT NULL AFTER `patient_age`, 
-ADD `is_displaced_population` VARCHAR(5) NULL DEFAULT NULL AFTER `patient_address`, 
+ALTER TABLE `form_tb`
+ADD `patient_weight` DECIMAL(5,2) NULL DEFAULT NULL AFTER `patient_age`,
+ADD `is_displaced_population` VARCHAR(5) NULL DEFAULT NULL AFTER `patient_address`,
 ADD `is_referred_by_community_actor` VARCHAR(5) NULL DEFAULT NULL AFTER `is_displaced_population`;
 
-ALTER TABLE `audit_form_tb` 
-ADD `patient_weight` DECIMAL(5,2) NULL DEFAULT NULL AFTER `patient_age`, 
-ADD `is_displaced_population` VARCHAR(5) NULL DEFAULT NULL AFTER `patient_address`, 
+ALTER TABLE `audit_form_tb`
+ADD `patient_weight` DECIMAL(5,2) NULL DEFAULT NULL AFTER `patient_age`,
+ADD `is_displaced_population` VARCHAR(5) NULL DEFAULT NULL AFTER `patient_address`,
 ADD `is_referred_by_community_actor` VARCHAR(5) NULL DEFAULT NULL AFTER `is_displaced_population`;
