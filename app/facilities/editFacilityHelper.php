@@ -60,11 +60,11 @@ try {
 			if (isset($facilityInfo['geo_name'])) {
 				$_POST['state'] = $facilityInfo['geo_name'];
 			} else {
-				$data = array(
+				$geoData = array(
 					'geo_name' => $_POST['provinceNew'],
 					'updated_datetime' => DateUtility::getCurrentDateTime(),
 				);
-				$db->insert($provinceTable, $data);
+				$db->insert($provinceTable, $geoData);
 				$_POST['state'] = $_POST['provinceNew'];
 			}
 		}
@@ -102,19 +102,19 @@ try {
 
 		$data = [
 			'facility_name' => $_POST['facilityName'],
-			'facility_code' => !empty($_POST['facilityCode']) ? $_POST['facilityCode'] : null,
+			'facility_code' => $_POST['facilityCode'] ?? null,
 			'other_id' => !empty($_POST['otherId']) ? $_POST['otherId'] : null,
-			'facility_mobile_numbers' => $_POST['phoneNo'],
-			'address' => $_POST['address'],
-			'country' => $_POST['country'],
-			'facility_state_id' => $_POST['stateId'],
-			'facility_district_id' => $_POST['districtId'],
+			'facility_mobile_numbers' => $_POST['phoneNo'] ?? null,
+			'address' => $_POST['address'] ?? null,
+			'country' => $_POST['country'] ?? null,
+			'facility_state_id' => $_POST['stateId'] ?? null,
+			'facility_district_id' => $_POST['districtId'] ?? null,
 			'facility_state' => (isset($_POST['oldState']) && $_POST['oldState'] != "") ? $_POST['oldState'] : $_POST['state'],
 			'facility_district' => (isset($_POST['oldDistrict']) && $_POST['oldDistrict'] != "") ? $_POST['oldDistrict'] : $_POST['district'],
-			'facility_hub_name' => $_POST['hubName'],
-			'latitude' => $_POST['latitude'],
-			'longitude' => $_POST['longitude'],
-			'facility_emails' => $_POST['email'],
+			'facility_hub_name' => $_POST['hubName'] ?? null,
+			'latitude' => $_POST['latitude'] ?? null,
+			'longitude' => $_POST['longitude'] ?? null,
+			'facility_emails' => $_POST['email'] ?? null,
 			'report_email' => $email,
 			'contact_person' => $_POST['contactPerson'],
 			'facility_type' => $_POST['facilityType'],
@@ -153,11 +153,11 @@ try {
 			$selectedUser = explode(",", (string) $_POST['selectedUser']);
 			if (!empty($_POST['selectedUser'])) {
 				for ($j = 0; $j < count($selectedUser); $j++) {
-					$data = array(
+					$uData = array(
 						'user_id' => $selectedUser[$j],
 						'facility_id' => $facilityId,
 					);
-					$db->insert($vlUserFacilityMapTable, $data);
+					$db->insert($vlUserFacilityMapTable, $uData);
 				}
 			}
 		}
@@ -195,7 +195,7 @@ try {
 						));
 						// Mapping facility as a Testing Lab
 					} else if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
-						$data = array(
+						$facilityTypeData = array(
 							'test_type' => $testType,
 							'facility_id' => $facilityId,
 							'updated_datetime' => DateUtility::getCurrentDateTime()
@@ -206,7 +206,7 @@ try {
 						if (!empty($attributes)) {
 							$data['attributes'] = json_encode($attributes, true);
 						}
-						$tid = $db->insert($testingLabsTable, $data);
+						$tid = $db->insert($testingLabsTable, $facilityTypeData);
 					}
 				}
 			}
@@ -232,9 +232,9 @@ try {
 		if (isset($_POST['removedLabLogoImage']) && trim((string) $_POST['removedLabLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {
 			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage']);
 			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);
-			$data = array('facility_logo' => null);
-			$db->where('facility_id', $lastId);
-			$db->update('facility_details',  $data);
+			$data['facility_logo'] = null;
+			// $db->where('facility_id', $lastId);
+			// $db->update('facility_details',  $data);
 		}
 
 
