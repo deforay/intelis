@@ -104,7 +104,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                         <th class="th-label"><label class="label-control" for="district"><?= _translate("Health Facility/POE County");?> </label><span class="mandatory">*</span></th>
                                         <td class="td-input">
                                             <select class="form-control select2 isRequired" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-                                                <option value=""> -- Select -- </option>
+                                                <option value=""> -- <?= _translate("Select");?> -- </option>
                                             </select>
                                         </td>
                                         <th class="th-label"><label class="label-control" for="facilityId"><?= _translate("Health Facility/POE");?> </label><span class="mandatory">*</span></th>
@@ -183,9 +183,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                         <td class="td-input">
                                             <input type="text" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" />
                                         </td>
-                                        <th scope="row" class="th-label"><label for="dob"><?= _translate("Date of Birth");?> </label></th>
+                                        <th scope="row" class="th-label"><label for="patientDob"><?= _translate("Date of Birth");?> </label></th>
                                         <td class="td-input">
-                                            <input type="text" class="form-control" id="dob" name="dob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
+                                            <input type="text" class="form-control date" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears('dob', 'patientAge');" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -194,7 +194,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                         <th scope="row" class="th-label"><label for="patientGender"><?= _translate("Gender");?> <span class="mandatory">*</span> </label></th>
                                         <td class="td-input">
                                             <select class="form-control isRequired" name="patientGender" id="patientGender" title="Please select the gender">
-                                                <option value=''> -- Select -- </option>
+                                                <option value=''> -- <?= _translate("Select");?> -- </option>
                                                 <option value='male'> <?= _translate("Male");?> </option>
                                                 <option value='female'> <?= _translate("Female");?> </option>
                                                 <option value='other'> <?= _translate("Other");?> </option>
@@ -202,10 +202,22 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th scope="row" class="th-label"><?= _translate("Weight");?> <small>(<?= _translate("kg");?>)</small></th>
+                                        <td class="td-input"><input type="number"class="form-control" id="patientWeight" name="patientWeight" placeholder="Enter the tatient weight" title="Please enter the patient weight" style="width:100%;" /></td>
+                                        <th scope="row" class="th-label"><label for="displacedPopulation"><?= _translate("Displaced Population");?></th>
+                                        <td class="td-input">
+                                            <select class="form-control" name="displacedPopulation" id="displacedPopulation" title="Please select the displaced population">
+                                                <option value=''> -- <?= _translate("Select");?> -- </option>
+                                                <option value='yes'> <?= _translate("Yes");?> </option>
+                                                <option value='no'> <?= _translate("No");?> </option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th scope="row" class="th-label"><label for="typeOfPatient"><?= _translate("Type of patient");?><span class="mandatory">*</span> </label></th>
                                         <td class="td-input">
                                             <select class="select2 form-control isRequired" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" onchange="showOther(this.value,'typeOfPatientOther');" multiple style="width:100%;">
-                                                <option value=''> -- Select -- </option>
+                                                <option value=''> -- <?= _translate("Select");?> -- </option>
                                                 <option value='new'> <?= _translate("New");?> </option>
                                                 <option value='loss-to-follow-up'> <?= _translate("Loss to Follow Up");?> </option>
                                                 <option value='treatment-failure'> <?= _translate("Treatment Failure");?> </option>
@@ -213,6 +225,14 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                                 <option value='other'> <?= _translate("Other");?> </option>
                                             </select>
                                             <input type="text" class="form-control typeOfPatientOther" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
+                                        </td>
+                                        <th scope="row" class="th-label"><label for="isReferredByCommunityActor"><?= _translate("Referred By Community Actor");?></th>
+                                        <td class="td-input">
+                                            <select class="form-control" name="isReferredByCommunityActor" id="isReferredByCommunityActor" title="Please select the referred by community actor">
+                                                <option value=''> -- <?= _translate("Select");?> -- </option>
+                                                <option value='yes'> <?= _translate("Yes");?> </option>
+                                                <option value='no'> <?= _translate("No");?> </option>
+                                            </select>
                                         </td>
                                     </tr>
                                     <tr>
@@ -357,7 +377,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                             <th scope="row" class="th-label"><label class="label-control" for="isSampleRejected"><?= _translate("Is Sample Rejected?");?></label></th>
                                             <td class="td-input">
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
-                                                    <option value=''> -- Select -- </option>
+                                                    <option value=''> -- <?= _translate("Select");?> -- </option>
                                                     <option value="yes"> <?= _translate("Yes");?> </option>
                                                     <option value="no"> <?= _translate("No");?> </option>
                                                 </select>
@@ -367,7 +387,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                             <th scope="row" class="show-rejection th-label" style="display:none;"><label class="label-control" for="sampleRejectionReason"><?= _translate("Reason for Rejection");?><span class="mandatory">*</span></label></th>
                                             <td class="show-rejection td-input" style="display:none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection">
-                                                    <option value=''> -- Select -- </option>
+                                                    <option value=''> -- <?= _translate("Select");?> -- </option>
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
                                             </td>
@@ -538,7 +558,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
             $("#province").html("<?php echo $province; ?>");
             $("#facilityId").html("<?php echo $facility; ?>");
             $("#facilityId").select2("val", "");
-            $("#district").html("<option value=''> -- Select -- </option>");
+            $("#district").html("<option value=''> -- <?= _translate("Select");?> -- </option>");
         }
         $.unblockUI();
     }
@@ -560,7 +580,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                 });
         } else if (pName == '') {
             $(obj).html("<?php echo $province; ?>");
-            $("#patientDistrict").html("<option value=''> -- Select -- </option>");
+            $("#patientDistrict").html("<option value=''> -- <?= _translate("Select");?> -- </option>");
         }
         $.unblockUI();
     }
@@ -612,7 +632,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                     }
                 });
         } else {
-            $("#facilityId").html("<option value=''> -- Select -- </option>");
+            $("#facilityId").html("<option value=''> -- <?= _translate("Select");?> -- </option>");
         }
         $.unblockUI();
     }

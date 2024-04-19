@@ -183,7 +183,8 @@ $fileArray = [
     COUNTRY\CAMEROON => 'forms/update-cameroon.php',
     COUNTRY\PNG => 'forms/update-png.php',
     COUNTRY\WHO => 'forms/update-who.php',
-    COUNTRY\RWANDA => 'forms/update-rwanda.php'
+    COUNTRY\RWANDA => 'forms/update-rwanda.php',
+    COUNTRY\BURKINA_FASO => 'forms/update-burkina-faso.php'
 ];
 
 require_once($fileArray[$arr['vl_form']]);
@@ -296,9 +297,9 @@ require_once($fileArray[$arr['vl_form']]);
     }
 
 
-    function calculateAgeInYears() {
-        var dateOfBirth = moment($("#patientDob").val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
-        $("#patientAge").val(moment().diff(dateOfBirth, 'years'));
+    function calculateAgeInYears(calcFrom, calcTo) {
+        var dateOfBirth = moment($("#" + calcFrom).val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
+        $("#" + calcTo).val(moment().diff(dateOfBirth, 'years'));
     }
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';
