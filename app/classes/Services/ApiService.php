@@ -219,6 +219,10 @@ class ApiService
         }
         $downloadFolder = dirname($downloadPath);
         $fileName = basename($downloadPath);
+        // Check if $fileName is null or empty
+        if (empty($fileName)) {
+            $fileName = basename($fileUrl);
+        }
         // Normalize the safePath and downloadPath to ensure both are absolute and resolved
         $resolvedSafePath = realpath($safePath);
         $resolvedDownloadPath = realpath($downloadFolder);
@@ -226,7 +230,7 @@ class ApiService
         // If realpath returns false, the path does not exist
         if (!$resolvedDownloadPath) {
             // Try creating the directory or handling the error as needed
-            if (!mkdir($downloadFolder, 0777, true) && !is_dir($downloadFolder)) {
+            if (!MiscUtility::makeDirectory($downloadFolder) && !is_dir($downloadFolder)) {
                 $this->logError(new Exception("Invalid path"), "The download path cannot be created or does not exist");
                 return false;
             }

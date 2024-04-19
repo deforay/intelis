@@ -107,7 +107,7 @@ function generateTranslationFile($tablesToTranslate, $filePath, $countryId = nul
         }
         $result = $db->setQueryOption('DISTINCT')->getValue($tableName, $tableInfo['name_column'], null);
         foreach ($result as $string) {
-            $translatableStrings[] = htmlspecialchars((string) $string);
+            $translatableStrings[] = (string) $string;
         }
     }
 
