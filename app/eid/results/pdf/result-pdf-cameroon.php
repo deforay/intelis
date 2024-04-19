@@ -384,28 +384,12 @@ if (!empty($result)) {
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
     $html .= '</tr>';
 
-    // $html .= '<tr>';
-    // $html .= '<td colspan="3" style="line-height:5px;"></td>';
-    // $html .= '</tr>';
-    // $html .= '<tr>';
-    // $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE REJECTION STATUS</td>';
-    // $html .= '</tr>';
-    // // $html .= '<tr>';
-    // // $html .= '<td colspan="3" style="line-height:10px;"></td>';
-    // // $html .= '</tr>';
-    // $html .= '<tr>';
-    // $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ((!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected') . '</td>';
-    // $html .= '</tr>';
-    // $html .= '<tr>';
-    // $html .= '<td colspan="3" style="line-height:5px;"></td>';
-    // $html .= '</tr>';
-
     $html .= '<tr>';
     $html .= '<td colspan="3">';
     $html .= '<br><br><table style="padding:4px 2px 2px 2px;">';
 
     if (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') {
-        $finalResult = 'Rejected';
+        $finalResult = _translate('Rejected');
     } else {
         $finalResult = $eidResults[$result['result']] ?? ucwords((string) $result['result']);
     }
@@ -500,7 +484,7 @@ if (!empty($result)) {
             $html .= '<tr>';
             $html .= '<td colspan="3" style="line-height:22px;"></td>';
             $html .= '</tr>';
-    
+
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
@@ -513,11 +497,11 @@ if (!empty($result)) {
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
             }
-    
+
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_approved_datetime']) ? date('d/M/Y', strtotime((string) $result['result_approved_datetime'])) : '') . '</td>';
             $html .= '</tr>';
         }
-    }else{
+    } else {
         if (!empty($reviewedBy) && $displaySignatureTable) {
 
             $html .= '<tr>';
@@ -539,10 +523,10 @@ if (!empty($result)) {
             $html .= '</tr>';
         }
     }
-    
 
 
-    
+
+
 
 
 

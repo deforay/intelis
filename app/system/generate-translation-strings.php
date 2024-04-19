@@ -1,13 +1,45 @@
 <?php
 
+use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+include_once(ROOT_PATH . DIRECTORY_SEPARATOR . 'fix-scripts/app-menu.php');
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var FileCacheUtility $fileCache */
+$fileCache = ContainerRegistry::get(FileCacheUtility::class);
+
+// unset global config cache so that it can be reloaded with new values
+$fileCache->delete('app_global_config');
+
+$transactionId = $general->generateUUID();
+$formId = (int) $general->getGlobalConfig('vl_form');
+
+// Get the country code from the command line argument (if provided)
+$countryId = isset($argv[1]) ? intval($argv[1]) : null;
+
+// Check if the formId matches the countryId
+if ($countryId !== null && $formId !== $countryId) {
+    echo "The system formId ($formId) does not match the provided countryId ($countryId).\n";
+    echo "Do you still want to proceed? (y/n): ";
+    $confirmation = trim(fgets(STDIN));
+
+    if (strtolower($confirmation) !== 'y') {
+        echo "Translation process aborted.\n";
+        exit;
+    }
+}
+
+// Common Metadata
 $tablesToTranslate = [
     's_app_menu' => [
         'name_column' => 'display_text',
@@ -24,69 +56,71 @@ $tablesToTranslate = [
     'resources' => [
         'name_column' => 'display_name',
         'where_condition' => null,
-    ],
-    // 'r_generic_sample_rejection_reasons' => [
-    //     'name_column' => 'rejection_reason_name',
-    //     'where_condition' => "rejection_reason_status = 'active'",
-    // ],
-    // 'r_generic_sample_types' => [
-    //     'name_column' => 'sample_type_name',
-    //     'where_condition' => "sample_type_status = 'active'",
-    // ],
-    // 'r_generic_symptoms' => [
-    //     'name_column' => 'symptom_name',
-    //     'where_condition' => "symptom_status = 'active'",
-    // ],
-    // 'r_generic_test_categories' => [
-    //     'name_column' => 'test_category_name',
-    //     'where_condition' => "test_category_status = 'active'",
-    // ],
-    // 'r_generic_test_failure_reasons' => [
-    //     'name_column' => 'test_failure_reason',
-    //     'where_condition' => "test_failure_reason_status = 'active'",
-    // ],
-    // 'r_generic_test_methods' => [
-    //     'name_column' => 'test_method_name',
-    //     'where_condition' => "test_method_status = 'active'",
-    // ],
-    // 'r_generic_test_reasons' => [
-    //     'name_column' => 'test_reason',
-    //     'where_condition' => "test_reason_status = 'active'",
-    // ],
-    // 'r_generic_test_result_units' => [
-    //     'name_column' => 'unit_name',
-    //     'where_condition' => "unit_status = 'active'",
-    // ],
+    ]
 ];
 
+// Country-specific Metadata
+$countrySpecificTablesToTranslate = [
+    'r_vl_test_reasons' => [
+        'name_column' => 'test_reason_name',
+        'where_condition' => "test_reason_status = 'active'",
+    ],
+    'r_vl_results' => [
+        'name_column' => 'result',
+        'where_condition' => "status = 'active'",
+    ],
+    'r_vl_sample_rejection_reasons' => [
+        'name_column' => 'rejection_reason_name',
+        'where_condition' => "rejection_reason_status = 'active'",
+    ],
+    'r_vl_sample_type' => [
+        'name_column' => 'sample_name',
+        'where_condition' => "status = 'active'",
+    ],
+];
 
-ob_start();
-echo "<?php\n\n";
-echo "// SYSTEM GENERATED FILE. DO NOT EDIT.\n\n";
-echo "// THIS FILE IS USED TO GENERATE THE STRING TRANSLATIONS.\n\n";
+// Generate translation file for common metadata
+generateTranslationFile($tablesToTranslate, APPLICATION_PATH . "/system/translate-strings.php");
 
-
-$translatableStrings = [];
-foreach ($tablesToTranslate as $tableName => $tableInfo) {
-
-    if (!empty($tableInfo['where_condition'])) {
-        $db->where($tableInfo['where_condition']);
-    }
-    $result = $db->getValue($tableName, $tableInfo['name_column'], null);
-
-    foreach ($result as $string) {
-        $translatableStrings[] = htmlspecialchars((string) $string);
-    }
+// Generate country-specific translation file if country code is provided
+if ($countryId !== null) {
+    generateTranslationFile($countrySpecificTablesToTranslate, APPLICATION_PATH . "/system/translate-strings-country-$countryId.php", $countryId);
 }
-// make $translatableStrings unique and sort it
-$translatableStrings = array_unique($translatableStrings);
 
-foreach ($translatableStrings as $string) {
-    if (!empty($string)) {
-        echo '_translate("' . $string . "\");\n";
+function generateTranslationFile($tablesToTranslate, $filePath, $countryId = null)
+{
+    global $db;
+
+    ob_start();
+    echo "<?php\n\n";
+    echo "// SYSTEM GENERATED FILE. DO NOT EDIT.\n\n";
+    echo "// THIS FILE IS USED TO GENERATE THE STRING TRANSLATIONS";
+    if ($countryId !== null) {
+        echo " FOR COUNTRY ID: $countryId";
     }
-}
+    echo ".\n\n";
 
-// Get the content of the output buffer and write it to the file
-$fileContent = ob_get_clean();
-file_put_contents(APPLICATION_PATH . "/system/translate-strings.php", $fileContent);
+    $translatableStrings = [];
+    foreach ($tablesToTranslate as $tableName => $tableInfo) {
+        if (!empty($tableInfo['where_condition'])) {
+            $db->where($tableInfo['where_condition']);
+        }
+        $result = $db->setQueryOption('DISTINCT')->getValue($tableName, $tableInfo['name_column'], null);
+        foreach ($result as $string) {
+            $translatableStrings[] = htmlspecialchars((string) $string);
+        }
+    }
+
+    // Make $translatableStrings unique and sort it
+    $translatableStrings = array_unique($translatableStrings);
+
+    foreach ($translatableStrings as $string) {
+        if (!empty($string)) {
+            echo '_translate("' . $string . "\");\n";
+        }
+    }
+
+    // Get the content of the output buffer and write it to the file
+    $fileContent = ob_get_clean();
+    file_put_contents($filePath, $fileContent);
+}

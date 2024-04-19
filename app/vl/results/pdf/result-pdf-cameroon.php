@@ -276,10 +276,10 @@ if (!empty($result)) {
      $testReasonType = "";
      if ($result['test_reason_name'] == "coinfection") {
           $result['test_reason_name'] = _translate("Co-infection");
-          $testReasonType = empty($result['coinfection_type']) ? '' : ' - ' . $result['coinfection_type'];
+          $testReasonType = empty($result['coinfection_type']) ? '' : ' - ' . _translate($result['coinfection_type']);
      } elseif ($result['test_reason_name'] == "controlVlTesting") {
           $result['test_reason_name'] = _translate("Control VL Testing");
-          $testReasonType = empty($result['control_vl_testing_type']) ? '' : ' - ' . $result['control_vl_testing_type'];
+          $testReasonType = empty($result['control_vl_testing_type']) ? '' : ' - ' . _translate($result['control_vl_testing_type']);
      } elseif ($result['test_reason_name'] == "other") {
           $result['test_reason_name'] = _translate("Other Reason");
           $testReasonType = empty($result['reason_for_vl_testing_other']) ? '' : ' - ' . $result['reason_for_vl_testing_other'];
@@ -321,8 +321,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['patient_mobile_number'] ?? '-') . '</td>';
      $html .= '</tr>';
      $html .= '</table>';
-     if(!empty($result['health_insurance_code']))
-     {
+     if (!empty($result['health_insurance_code'])) {
           $html .= '<table style="padding:8px 4px 2px 2px;">';
           $html .= '<tr><td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH INSURANCE CODE") . '</td></tr>';
           $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['health_insurance_code']) . '</td></tr>';
@@ -349,7 +348,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:10px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SAMPLE TEST DATE") . '</td>';
      $html .= '<td style="line-height:10px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("RESULT RELEASE DATE") . '</td>';
      $html .= '</tr>';
-     $rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected';
+     $rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? _translate('Rejected') : _translate('Not Rejected');
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate($rejectedStatus) . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
@@ -360,7 +359,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("SAMPLE TYPE") . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_name']) . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate($result['sample_name']) . '</td>';
      $html .= '</tr>';
      // $html .= '<tr>';
      // $html .= '<td colspan="3" style="line-height:10px;"></td>';
@@ -545,7 +544,7 @@ if (!empty($result)) {
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
                $html .= '</tr>';
-     
+
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
                if (!empty($reviewedSignaturePath) && $pdf->imageExists(($reviewedSignaturePath))) {
@@ -565,7 +564,7 @@ if (!empty($result)) {
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
                $html .= '</tr>';
-     
+
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
                if (!empty($approvedSignaturePath) && $pdf->imageExists(($approvedSignaturePath))) {
@@ -573,21 +572,21 @@ if (!empty($result)) {
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
                }
-     
+
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
                $html .= '</tr>';
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:2px;"></td>';
                $html .= '</tr>';
           }
-     }else{
+     } else {
           if (!empty($reviewedBy) && $displaySignatureTable) {
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("REVIEWED AND APPROVED BY") . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
                $html .= '</tr>';
-     
+
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
                if (!empty($reviewedSignaturePath) && $pdf->imageExists(($reviewedSignaturePath))) {

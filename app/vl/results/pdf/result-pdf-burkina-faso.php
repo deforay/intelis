@@ -37,13 +37,13 @@ if (!empty($result)) {
                $reviewedBy = $reviewedByRes['user_name'];
           }
      } else {
-          if(!empty($result['defaultReviewedBy'])){
+          if (!empty($result['defaultReviewedBy'])) {
                $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
                if ($reviewedByRes) {
-                   $reviewedBy = $reviewedByRes['user_name'];
+                    $reviewedBy = $reviewedByRes['user_name'];
                }
-               if(empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
-                    $result['result_reviewed_datetime'] = $result['sample_tested_datetime'] ;
+               if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
                }
           }
      }
@@ -63,13 +63,13 @@ if (!empty($result)) {
           $resultApprovedBy = ($result['approvedBy']);
           $approvedByRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
      } else {
-          if(!empty($result['defaultApprovedBy'])){
+          if (!empty($result['defaultApprovedBy'])) {
                $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
                if ($approvedByRes) {
-                   $resultApprovedBy = $approvedByRes['user_name'];
+                    $resultApprovedBy = $approvedByRes['user_name'];
                }
-               if(empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
-                    $result['result_approved_datetime'] = $result['sample_tested_datetime'] ;
+               if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_approved_datetime'] = $result['sample_tested_datetime'];
                }
           }
      }
@@ -87,7 +87,7 @@ if (!empty($result)) {
      if (!empty($approvedByRes['user_signature'])) {
           $approvedSignaturePath =  $approvedByRes['user_signature'];
      }
-     
+
      $_SESSION['aliasPage'] = $page;
      if (!isset($result['labName'])) {
           $result['labName'] = '';
@@ -322,7 +322,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE TEST DATE</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">RESULT RELEASE DATE</td>';
      $html .= '</tr>';
-     $rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected';
+     $rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? _translate('Rejected') : _translate('Not Rejected');
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $rejectedStatus . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
@@ -333,7 +333,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE TYPE</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_name']) . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate($result['sample_name']) . '</td>';
      $html .= '</tr>';
      /* $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
@@ -349,7 +349,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['date_of_initiation_of_current_regimen'] . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['arv_adherance_percentage'] . '</td>';
      $html .= '</tr>';
-     
+
      $html .= '<tr>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DURATION OF TREATMENT</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LATEST CD4 RESULT</td>';
@@ -360,7 +360,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['last_cd4_result'] . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['last_cd4_percentage'] . '</td>';
      $html .= '</tr>';
-     
+
      $html .= '<tr>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LATEST CD4 DATE</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LAST HIV-1 VIRAL LOAD</td>';
