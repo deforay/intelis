@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-04-19 14:16+0530\n"
-"PO-Revision-Date: 2024-04-19 14:16+0530\n"
+"POT-Creation-Date: 2024-04-19 14:37+0530\n"
+"PO-Revision-Date: 2024-04-19 14:39+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -196,8 +196,10 @@ msgstr "Bienvenue sur la page d’administration"
 #: tb/reference/tb-sample-rejection-reasons.php:16
 #: tb/reference/tb-sample-type.php:16 tb/reference/tb-test-reasons.php:16
 #: tb/requests/addSamplesFromManifest.php:19
-#: tb/requests/forms/add-burkina-faso.php:61 tb/requests/tb-requests.php:108
-#: tb/results/email-results.php:61 tb/results/forms/update-sierraleone.php:101
+#: tb/requests/forms/add-burkina-faso.php:61
+#: tb/requests/forms/edit-burkina-faso.php:81 tb/requests/tb-requests.php:108
+#: tb/results/email-results.php:61 tb/results/forms/update-burkina-faso.php:81
+#: tb/results/forms/update-sierraleone.php:101
 #: tb/results/forms/update-southsudan.php:101
 #: tb/results/tb-failed-results.php:58 tb/results/tb-manual-results.php:77
 #: tb/results/tb-print-results.php:43 tb/results/tb-result-status.php:65
@@ -377,12 +379,15 @@ msgstr "Call to action"
 #: tb/management/tb-clinic-report.php:486 tb/management/tb-export-data.php:205
 #: tb/management/tb-sample-rejection-report.php:72
 #: tb/management/tb-sample-status.php:95
-#: tb/requests/forms/add-burkina-faso.php:158 tb/requests/tb-requests.php:268
-#: tb/results/email-results.php:287 tb/results/tb-failed-results.php:168
-#: tb/results/tb-manual-results.php:122 tb/results/tb-print-results.php:134
-#: tb/results/tb-print-results.php:289 tb/results/tb-result-status.php:131
-#: users/addUser.php:340 users/addUser.php:341 users/editUser.php:436
-#: users/editUser.php:437 vl/program-management/highViralLoad.php:303
+#: tb/requests/forms/add-burkina-faso.php:158
+#: tb/requests/forms/edit-burkina-faso.php:178 tb/requests/tb-requests.php:268
+#: tb/results/email-results.php:287
+#: tb/results/forms/update-burkina-faso.php:177
+#: tb/results/tb-failed-results.php:168 tb/results/tb-manual-results.php:122
+#: tb/results/tb-print-results.php:134 tb/results/tb-print-results.php:289
+#: tb/results/tb-result-status.php:131 users/addUser.php:340
+#: users/addUser.php:341 users/editUser.php:436 users/editUser.php:437
+#: vl/program-management/highViralLoad.php:303
 #: vl/program-management/highViralLoad.php:646
 #: vl/program-management/highViralLoad.php:848
 #: vl/program-management/highViralLoad.php:966
@@ -1577,7 +1582,11 @@ msgstr "Action"
 #: tb/management/tb-export-data.php:265
 #: tb/requests/addSamplesFromManifest.php:54
 #: tb/requests/forms/add-burkina-faso.php:85
-#: tb/requests/forms/add-burkina-faso.php:91 tb/requests/tb-requests.php:304
+#: tb/requests/forms/add-burkina-faso.php:91
+#: tb/requests/forms/edit-burkina-faso.php:105
+#: tb/requests/forms/edit-burkina-faso.php:111 tb/requests/tb-requests.php:304
+#: tb/results/forms/update-burkina-faso.php:104
+#: tb/results/forms/update-burkina-faso.php:110
 #: tb/results/tb-failed-results.php:198 tb/results/tb-manual-results.php:132
 #: tb/results/tb-manual-results.php:185 tb/results/tb-print-results.php:146
 #: tb/results/tb-print-results.php:192 tb/results/tb-print-results.php:301
@@ -2737,9 +2746,10 @@ msgstr "Nom du Labo"
 #: patients/edit-patient.php:240 tb/requests/forms/add-burkina-faso.php:165
 #: tb/requests/forms/add-sierraleone.php:193
 #: tb/requests/forms/add-southsudan.php:168
-#: tb/requests/forms/edit-burkina-faso.php:193
+#: tb/requests/forms/edit-burkina-faso.php:185
 #: tb/requests/forms/edit-sierraleone.php:232
-#: tb/requests/forms/edit-southsudan.php:197 users/addUser.php:109
+#: tb/requests/forms/edit-southsudan.php:197
+#: tb/results/forms/update-burkina-faso.php:184 users/addUser.php:109
 #: users/addUser.php:143 users/editUser.php:152 users/editUser.php:189
 #: vl/reference/add-vl-art-code-details.php:69
 #: vl/reference/add-vl-art-code-details.php:80
@@ -3110,9 +3120,10 @@ msgstr "Créer un lot"
 #: tb/requests/forms/add-burkina-faso.php:70
 #: tb/requests/forms/add-sierraleone.php:84
 #: tb/requests/forms/add-southsudan.php:63
-#: tb/requests/forms/edit-burkina-faso.php:93
+#: tb/requests/forms/edit-burkina-faso.php:90
 #: tb/requests/forms/edit-sierraleone.php:123
 #: tb/requests/forms/edit-southsudan.php:93 tb/results/email-results.php:75
+#: tb/results/forms/update-burkina-faso.php:90
 #: tb/results/forms/update-sierraleone.php:109
 #: tb/results/forms/update-southsudan.php:109 users/addUser.php:70
 #: users/editProfile.php:49 users/editUser.php:111
@@ -3808,7 +3819,7 @@ msgid "Please select machine"
 msgstr "Veuillez sélectionner une machine"
 
 #: batch/add-batch.php:317 eid/requests/forms/add-burkina-faso.php:461
-#: tb/requests/forms/add-burkina-faso.php:456
+#: tb/requests/forms/add-burkina-faso.php:476
 #: vl/requests/forms/add-burkina-faso.php:651
 #: vl/requests/forms/add-cameroon.php:691
 msgid "Save and Next"
@@ -3882,8 +3893,9 @@ msgstr "Sauvegarder et Suivant"
 #: tb/reference/add-tb-sample-rejection-reason.php:75
 #: tb/reference/add-tb-sample-type.php:57
 #: tb/reference/add-tb-test-reasons.php:76
-#: tb/requests/forms/add-burkina-faso.php:459 tb/results/email-results.php:333
-#: users/addUser.php:316 users/editProfile.php:130 users/editUser.php:402
+#: tb/requests/forms/add-burkina-faso.php:479 tb/results/email-results.php:333
+#: tb/results/forms/update-burkina-faso.php:526 users/addUser.php:316
+#: users/editProfile.php:130 users/editUser.php:402
 #: vl/reference/add-vl-art-code-details.php:93
 #: vl/reference/add-vl-results.php:125
 #: vl/reference/add-vl-sample-rejection-reasons.php:75
@@ -4650,8 +4662,9 @@ msgstr "Tout"
 #: tb/management/tb-clinic-report.php:156
 #: tb/management/tb-clinic-report.php:255
 #: tb/management/tb-clinic-report.php:359
-#: tb/requests/forms/add-burkina-faso.php:194 tb/requests/patientModal.php:85
-#: tb/requests/tb-requests.php:179
+#: tb/requests/forms/add-burkina-faso.php:194
+#: tb/requests/forms/edit-burkina-faso.php:214 tb/requests/patientModal.php:85
+#: tb/requests/tb-requests.php:179 tb/results/forms/update-burkina-faso.php:213
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/highViralLoad.php:235
@@ -4745,8 +4758,11 @@ msgstr "Veuillez choisir le sexe"
 #: tb/management/tb-clinic-report.php:160
 #: tb/management/tb-clinic-report.php:259
 #: tb/management/tb-clinic-report.php:363
-#: tb/requests/forms/add-burkina-faso.php:198 tb/requests/tb-requests.php:183
-#: tb/results/email-results.php:179 vl/program-management/highViralLoad.php:243
+#: tb/requests/forms/add-burkina-faso.php:198
+#: tb/requests/forms/edit-burkina-faso.php:218 tb/requests/tb-requests.php:183
+#: tb/results/email-results.php:179
+#: tb/results/forms/update-burkina-faso.php:217
+#: vl/program-management/highViralLoad.php:243
 #: vl/program-management/highViralLoad.php:409
 #: vl/program-management/highViralLoad.php:564
 #: vl/program-management/highViralLoad.php:789
@@ -4798,8 +4814,11 @@ msgstr "Homme"
 #: tb/management/tb-clinic-report.php:161
 #: tb/management/tb-clinic-report.php:260
 #: tb/management/tb-clinic-report.php:364
-#: tb/requests/forms/add-burkina-faso.php:199 tb/requests/tb-requests.php:184
-#: tb/results/email-results.php:182 vl/program-management/highViralLoad.php:246
+#: tb/requests/forms/add-burkina-faso.php:199
+#: tb/requests/forms/edit-burkina-faso.php:219 tb/requests/tb-requests.php:184
+#: tb/results/email-results.php:182
+#: tb/results/forms/update-burkina-faso.php:218
+#: vl/program-management/highViralLoad.php:246
 #: vl/program-management/highViralLoad.php:412
 #: vl/program-management/highViralLoad.php:567
 #: vl/program-management/highViralLoad.php:792
@@ -5620,6 +5639,8 @@ msgstr "Accepté"
 #: eid/management/eid-export-data.php:158 eid/requests/eid-requests.php:243
 #: eid/results/eid-result-status.php:150 eid/results/email-results.php:258
 #: eid/results/get-eid-result-status.php:217
+#: eid/results/pdf/result-pdf-burkina-faso.php:314
+#: eid/results/pdf/result-pdf-cameroon.php:392
 #: generic-tests/program-management/generic-export-data.php:140
 #: generic-tests/results/email-results.php:261
 #: generic-tests/results/generic-result-approval.php:196
@@ -5635,6 +5656,7 @@ msgstr "Accepté"
 #: tb/results/tb-result-status.php:144
 #: vl/program-management/vl-export-data.php:196
 #: vl/results/email-results.php:261 vl/results/getVlResultsForApproval.php:169
+#: vl/results/pdf/result-pdf-burkina-faso.php:325
 #: vl/results/pdf/result-pdf-cameroon.php:351
 #: vl/results/vlResultApproval.php:203 vl/results/vlResultMail.php:261
 msgid "Rejected"
@@ -5921,14 +5943,23 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: patients/edit-patient.php:197 patients/edit-patient.php:208
 #: tb/management/tb-export-data.php:186
 #: tb/requests/forms/add-burkina-faso.php:167
-#: tb/requests/forms/add-burkina-faso.php:361
+#: tb/requests/forms/add-burkina-faso.php:211
+#: tb/requests/forms/add-burkina-faso.php:233
+#: tb/requests/forms/add-burkina-faso.php:381
 #: tb/requests/forms/add-sierraleone.php:195
 #: tb/requests/forms/add-southsudan.php:170
-#: tb/requests/forms/edit-burkina-faso.php:195
+#: tb/requests/forms/edit-burkina-faso.php:187
+#: tb/requests/forms/edit-burkina-faso.php:232
+#: tb/requests/forms/edit-burkina-faso.php:254
+#: tb/requests/forms/edit-burkina-faso.php:402
 #: tb/requests/forms/edit-sierraleone.php:234
 #: tb/requests/forms/edit-southsudan.php:199 tb/requests/tb-requests.php:207
 #: tb/requests/tb-requests.php:244 tb/requests/tb-requests.php:262
-#: tb/results/email-results.php:195 users/addUser.php:144
+#: tb/results/email-results.php:195
+#: tb/results/forms/update-burkina-faso.php:186
+#: tb/results/forms/update-burkina-faso.php:231
+#: tb/results/forms/update-burkina-faso.php:253
+#: tb/results/forms/update-burkina-faso.php:400 users/addUser.php:144
 #: users/editUser.php:190 vl/program-management/getHighVlResultDetails.php:231
 #: vl/program-management/highViralLoad.php:262
 #: vl/program-management/highViralLoad.php:281
@@ -6100,14 +6131,23 @@ msgstr "Oui"
 #: patients/edit-patient.php:200 patients/edit-patient.php:211
 #: tb/management/tb-export-data.php:187
 #: tb/requests/forms/add-burkina-faso.php:166
-#: tb/requests/forms/add-burkina-faso.php:362
+#: tb/requests/forms/add-burkina-faso.php:212
+#: tb/requests/forms/add-burkina-faso.php:234
+#: tb/requests/forms/add-burkina-faso.php:382
 #: tb/requests/forms/add-sierraleone.php:194
 #: tb/requests/forms/add-southsudan.php:169
-#: tb/requests/forms/edit-burkina-faso.php:194
+#: tb/requests/forms/edit-burkina-faso.php:186
+#: tb/requests/forms/edit-burkina-faso.php:231
+#: tb/requests/forms/edit-burkina-faso.php:253
+#: tb/requests/forms/edit-burkina-faso.php:403
 #: tb/requests/forms/edit-sierraleone.php:233
 #: tb/requests/forms/edit-southsudan.php:198 tb/requests/tb-requests.php:208
 #: tb/requests/tb-requests.php:245 tb/requests/tb-requests.php:263
-#: tb/results/email-results.php:196 users/addUser.php:145
+#: tb/results/email-results.php:196
+#: tb/results/forms/update-burkina-faso.php:185
+#: tb/results/forms/update-burkina-faso.php:230
+#: tb/results/forms/update-burkina-faso.php:252
+#: tb/results/forms/update-burkina-faso.php:401 users/addUser.php:145
 #: users/editUser.php:191 vl/program-management/getHighVlResultDetails.php:232
 #: vl/program-management/highViralLoad.php:265
 #: vl/program-management/highViralLoad.php:284
@@ -6460,7 +6500,9 @@ msgstr "Gérer les colonnes"
 #: tb/management/tb-clinic-report.php:443 tb/management/tb-export-data.php:127
 #: tb/management/tb-export-data.php:245 tb/management/tb-export-data.php:274
 #: tb/requests/addSamplesFromManifest.php:65
-#: tb/requests/forms/add-burkina-faso.php:386 tb/requests/tb-requests.php:320
+#: tb/requests/forms/add-burkina-faso.php:406
+#: tb/requests/forms/edit-burkina-faso.php:439 tb/requests/tb-requests.php:320
+#: tb/results/forms/update-burkina-faso.php:437
 #: tb/results/tb-failed-results.php:227 tb/results/tb-manual-results.php:157
 #: tb/results/tb-manual-results.php:193 tb/results/tb-print-results.php:175
 #: tb/results/tb-print-results.php:203 tb/results/tb-print-results.php:330
@@ -6962,6 +7004,8 @@ msgstr "Unique ART No."
 #: eid/results/forms/update-cameroon-result.php:188
 #: eid/results/forms/update-cameroon-result.php:256
 #: tb/requests/forms/add-burkina-faso.php:186
+#: tb/requests/forms/edit-burkina-faso.php:206
+#: tb/results/forms/update-burkina-faso.php:205
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
 #: vl/requests/export-vl-requests.php:28
@@ -7115,7 +7159,9 @@ msgstr "Date de la demande"
 #: eid/results/forms/update-burkina-faso-result.php:385
 #: eid/results/forms/update-cameroon-result.php:526
 #: eid/results/forms/update-drc-result.php:471
-#: tb/requests/forms/add-burkina-faso.php:357
+#: tb/requests/forms/add-burkina-faso.php:377
+#: tb/requests/forms/edit-burkina-faso.php:398
+#: tb/results/forms/update-burkina-faso.php:396
 #: vl/program-management/export-vl-results.php:36
 #: vl/requests/export-vl-requests.php:28
 #: vl/requests/forms/add-burkina-faso.php:475
@@ -8613,6 +8659,8 @@ msgstr ""
 #: patients/edit-patient.php:62 tb/requests/forms/add-burkina-faso.php:164
 #: tb/requests/forms/add-sierraleone.php:192
 #: tb/requests/forms/add-southsudan.php:167
+#: tb/requests/forms/edit-burkina-faso.php:184
+#: tb/results/forms/update-burkina-faso.php:183
 #: vl/requests/forms/add-cameroon.php:229 vl/requests/forms/add-drc.php:185
 #: vl/requests/forms/add-png.php:142 vl/requests/forms/add-rwanda.php:182
 #: vl/requests/forms/add-sierraleone.php:211
@@ -8711,7 +8759,37 @@ msgstr "Synchroniser"
 
 #: cd4/requests/patientModal.php:98 covid-19/requests/patientModal.php:71
 #: eid/requests/patientModal.php:90 generic-tests/requests/patientModal.php:97
-#: tb/requests/patientModal.php:73 vl/requests/facilitiesModal.php:101
+#: tb/requests/forms/add-burkina-faso.php:107
+#: tb/requests/forms/add-burkina-faso.php:197
+#: tb/requests/forms/add-burkina-faso.php:210
+#: tb/requests/forms/add-burkina-faso.php:220
+#: tb/requests/forms/add-burkina-faso.php:232
+#: tb/requests/forms/add-burkina-faso.php:380
+#: tb/requests/forms/add-burkina-faso.php:390
+#: tb/requests/forms/add-burkina-faso.php:561
+#: tb/requests/forms/add-burkina-faso.php:583
+#: tb/requests/forms/add-burkina-faso.php:635
+#: tb/requests/forms/edit-burkina-faso.php:127
+#: tb/requests/forms/edit-burkina-faso.php:217
+#: tb/requests/forms/edit-burkina-faso.php:230
+#: tb/requests/forms/edit-burkina-faso.php:240
+#: tb/requests/forms/edit-burkina-faso.php:252
+#: tb/requests/forms/edit-burkina-faso.php:401
+#: tb/requests/forms/edit-burkina-faso.php:411
+#: tb/requests/forms/edit-burkina-faso.php:610
+#: tb/requests/forms/edit-burkina-faso.php:632
+#: tb/requests/forms/edit-burkina-faso.php:684 tb/requests/patientModal.php:73
+#: tb/results/forms/update-burkina-faso.php:126
+#: tb/results/forms/update-burkina-faso.php:216
+#: tb/results/forms/update-burkina-faso.php:229
+#: tb/results/forms/update-burkina-faso.php:239
+#: tb/results/forms/update-burkina-faso.php:251
+#: tb/results/forms/update-burkina-faso.php:399
+#: tb/results/forms/update-burkina-faso.php:409
+#: tb/results/forms/update-burkina-faso.php:608
+#: tb/results/forms/update-burkina-faso.php:630
+#: tb/results/forms/update-burkina-faso.php:682
+#: vl/requests/facilitiesModal.php:101
 #: vl/requests/forms/add-burkina-faso.php:126
 #: vl/requests/forms/add-burkina-faso.php:158
 #: vl/requests/forms/add-burkina-faso.php:169
@@ -8816,6 +8894,7 @@ msgstr "Perdu"
 #: eid/results/eid-failed-results.php:146
 #: generic-tests/results/generic-failed-results.php:109
 #: hepatitis/results/hepatitis-failed-results.php:144
+#: system/translate-strings-country-4.php:26
 #: tb/results/tb-failed-results.php:145 vl/results/vl-failed-results.php:111
 msgid "Failed"
 msgstr "Echec"
@@ -10302,7 +10381,9 @@ msgstr "S. No."
 #: eid/requests/forms/edit-burkina-faso.php:429
 #: eid/results/forms/update-burkina-faso-result.php:430
 #: import-result/imported-results.php:253
-#: tb/requests/forms/add-burkina-faso.php:351
+#: tb/requests/forms/add-burkina-faso.php:371
+#: tb/requests/forms/edit-burkina-faso.php:392
+#: tb/results/forms/update-burkina-faso.php:390
 #: vl/requests/forms/add-burkina-faso.php:580
 #: vl/requests/forms/add-cameroon.php:650
 #: vl/requests/forms/edit-burkina-faso.php:657
@@ -10577,7 +10658,9 @@ msgstr "Statut du spécimen"
 #: covid-19/requests/forms/add-cameroon.php:345
 #: covid-19/requests/forms/edit-cameroon.php:358
 #: covid-19/results/forms/update-cameroon-result.php:321
-#: tb/requests/forms/add-burkina-faso.php:275
+#: tb/requests/forms/add-burkina-faso.php:295
+#: tb/requests/forms/edit-burkina-faso.php:315
+#: tb/results/forms/update-burkina-faso.php:314
 msgid "Specimen Type"
 msgstr "Type de spécimen"
 
@@ -10958,7 +11041,7 @@ msgstr ""
 #: covid-19/requests/covid-19-add-request.php:202
 #: eid/requests/eid-add-request.php:205
 #: hepatitis/requests/hepatitis-quick-add.php:161
-#: tb/results/tb-update-result.php:206 vl/vl.js.php:95
+#: tb/results/tb-update-result.php:207 vl/vl.js.php:95
 msgid "This Sample ID already exists"
 msgstr "Ce numéro d'identification d'échantillon existe déjà"
 
@@ -10997,7 +11080,7 @@ msgstr "EID-Modifier la demande de test"
 #: generic-tests/results/update-generic-test-result.php:1199
 #: hepatitis/requests/hepatitis-add-request.php:180
 #: hepatitis/requests/hepatitis-edit-request.php:177
-#: tb/requests/tb-add-request.php:179 tb/requests/tb-edit-request.php:207
+#: tb/requests/tb-add-request.php:179 tb/requests/tb-edit-request.php:208
 msgid "This Sample Code already exists"
 msgstr "Cet exemple de code existe déjà"
 
@@ -11128,6 +11211,8 @@ msgstr "Sources de financement"
 #: eid/requests/forms/edit-burkina-faso.php:97
 #: eid/results/forms/update-burkina-faso-result.php:96
 #: tb/requests/forms/add-burkina-faso.php:104
+#: tb/requests/forms/edit-burkina-faso.php:124
+#: tb/results/forms/update-burkina-faso.php:123
 msgid "Health Facility/POE County"
 msgstr "Établissement de santé/POE Comté"
 
@@ -11137,6 +11222,8 @@ msgstr "Établissement de santé/POE Comté"
 #: eid/requests/forms/edit-burkina-faso.php:89
 #: eid/results/forms/update-burkina-faso-result.php:88
 #: tb/requests/forms/add-burkina-faso.php:96
+#: tb/requests/forms/edit-burkina-faso.php:116
+#: tb/results/forms/update-burkina-faso.php:115
 msgid "Health Facility/POE State"
 msgstr "Établissement de santé/POE État"
 
@@ -11146,6 +11233,8 @@ msgstr "Établissement de santé/POE État"
 #: eid/requests/forms/edit-burkina-faso.php:104
 #: eid/results/forms/update-burkina-faso-result.php:103
 #: tb/requests/forms/add-burkina-faso.php:110
+#: tb/requests/forms/edit-burkina-faso.php:130
+#: tb/results/forms/update-burkina-faso.php:129
 msgid "Health Facility/POE"
 msgstr "Établissement de santé/POE"
 
@@ -11257,6 +11346,8 @@ msgstr "Projection"
 #: covid-19/results/forms/update-cameroon-result.php:459
 #: covid-19/results/forms/update-cameroon-result.php:476
 #: tb/requests/forms/add-burkina-faso.php:133
+#: tb/requests/forms/edit-burkina-faso.php:153
+#: tb/results/forms/update-burkina-faso.php:152
 msgid "Others"
 msgstr "Autres"
 
@@ -11315,7 +11406,11 @@ msgstr "Nom du projet"
 #: eid/requests/forms/edit-burkina-faso.php:133
 #: eid/results/forms/update-burkina-faso-result.php:132
 #: tb/requests/forms/add-burkina-faso.php:142
-#: tb/requests/forms/add-burkina-faso.php:328
+#: tb/requests/forms/add-burkina-faso.php:348
+#: tb/requests/forms/edit-burkina-faso.php:162
+#: tb/requests/forms/edit-burkina-faso.php:369
+#: tb/results/forms/update-burkina-faso.php:161
+#: tb/results/forms/update-burkina-faso.php:367
 msgid "Testing Laboratory"
 msgstr "Laboratoire d'essais"
 
@@ -11390,13 +11485,14 @@ msgstr "Aucun patient trouvé"
 #: tb/requests/forms/add-burkina-faso.php:162
 #: tb/requests/forms/add-sierraleone.php:190
 #: tb/requests/forms/add-southsudan.php:165
-#: tb/requests/forms/edit-burkina-faso.php:190
-#: tb/requests/forms/edit-burkina-faso.php:192
+#: tb/requests/forms/edit-burkina-faso.php:182
 #: tb/requests/forms/edit-sierraleone.php:229
 #: tb/requests/forms/edit-sierraleone.php:231
 #: tb/requests/forms/edit-southsudan.php:194
-#: tb/requests/forms/edit-southsudan.php:196 vl/requests/forms/add-drc.php:183
-#: vl/requests/forms/add-png.php:140 vl/requests/forms/add-sierraleone.php:209
+#: tb/requests/forms/edit-southsudan.php:196
+#: tb/results/forms/update-burkina-faso.php:181
+#: vl/requests/forms/add-drc.php:183 vl/requests/forms/add-png.php:140
+#: vl/requests/forms/add-sierraleone.php:209
 #: vl/requests/forms/add-southsudan.php:216 vl/requests/forms/edit-drc.php:231
 #: vl/requests/forms/edit-drc.php:233 vl/requests/forms/edit-png.php:286
 #: vl/requests/forms/edit-png.php:288
@@ -11430,6 +11526,8 @@ msgstr "Veuillez saisir l'identifiant du dossier DHIS2"
 #: covid-19/results/forms/update-cameroon-result.php:204
 #: global-config/editGlobalConfig.php:1656
 #: tb/requests/forms/add-burkina-faso.php:176
+#: tb/requests/forms/edit-burkina-faso.php:196
+#: tb/results/forms/update-burkina-faso.php:195
 msgid "First Name"
 msgstr "Prénom"
 
@@ -11455,6 +11553,8 @@ msgstr "Veuillez saisir votre date de naissance"
 
 #: covid-19/requests/forms/add-cameroon.php:236
 #: tb/requests/forms/add-burkina-faso.php:192
+#: tb/requests/forms/edit-burkina-faso.php:212
+#: tb/results/forms/update-burkina-faso.php:211
 msgid "Age (years)"
 msgstr "Âge (Années )"
 
@@ -11598,7 +11698,9 @@ msgstr "Veuillez saisir le numéro de passeport"
 #: covid-19/requests/forms/add-cameroon.php:302
 #: covid-19/requests/forms/edit-cameroon.php:315
 #: covid-19/results/forms/update-cameroon-result.php:278
-#: tb/requests/forms/add-burkina-faso.php:267
+#: tb/requests/forms/add-burkina-faso.php:287
+#: tb/requests/forms/edit-burkina-faso.php:307
+#: tb/results/forms/update-burkina-faso.php:306
 msgid "SPECIMEN INFORMATION"
 msgstr "INFORMATIONS SUR LES SPÉCIMENS"
 
@@ -11687,7 +11789,9 @@ msgstr "Veuillez choisir la raison du test"
 #: eid/requests/forms/add-burkina-faso.php:316
 #: eid/requests/forms/edit-burkina-faso.php:329
 #: eid/results/forms/update-burkina-faso-result.php:328
-#: tb/requests/forms/add-burkina-faso.php:345
+#: tb/requests/forms/add-burkina-faso.php:365
+#: tb/requests/forms/edit-burkina-faso.php:386
+#: tb/results/forms/update-burkina-faso.php:384
 #: vl/requests/forms/add-burkina-faso.php:259
 #: vl/requests/forms/edit-burkina-faso.php:350
 #: vl/results/forms/update-burkina-faso-result.php:350
@@ -11821,9 +11925,9 @@ msgstr "Date de réception"
 #: hepatitis/results/forms/update-rwanda-result.php:273
 #: hepatitis/results/forms/update-rwanda-result.php:285
 #: tb/requests/forms/add-burkina-faso.php:120
-#: tb/requests/forms/add-burkina-faso.php:336
-#: tb/requests/forms/add-burkina-faso.php:342
-#: tb/requests/forms/add-burkina-faso.php:347
+#: tb/requests/forms/add-burkina-faso.php:356
+#: tb/requests/forms/add-burkina-faso.php:362
+#: tb/requests/forms/add-burkina-faso.php:367
 #: tb/requests/forms/add-sierraleone.php:146
 #: tb/requests/forms/add-sierraleone.php:426
 #: tb/requests/forms/add-sierraleone.php:432
@@ -11833,10 +11937,10 @@ msgstr "Date de réception"
 #: tb/requests/forms/add-southsudan.php:347
 #: tb/requests/forms/add-southsudan.php:353
 #: tb/requests/forms/add-southsudan.php:358
-#: tb/requests/forms/edit-burkina-faso.php:157
-#: tb/requests/forms/edit-burkina-faso.php:361
-#: tb/requests/forms/edit-burkina-faso.php:367
-#: tb/requests/forms/edit-burkina-faso.php:371
+#: tb/requests/forms/edit-burkina-faso.php:140
+#: tb/requests/forms/edit-burkina-faso.php:377
+#: tb/requests/forms/edit-burkina-faso.php:383
+#: tb/requests/forms/edit-burkina-faso.php:388
 #: tb/requests/forms/edit-sierraleone.php:185
 #: tb/requests/forms/edit-sierraleone.php:459
 #: tb/requests/forms/edit-sierraleone.php:465
@@ -11846,16 +11950,20 @@ msgstr "Date de réception"
 #: tb/requests/forms/edit-southsudan.php:371
 #: tb/requests/forms/edit-southsudan.php:377
 #: tb/requests/forms/edit-southsudan.php:381
+#: tb/results/forms/update-burkina-faso.php:139
+#: tb/results/forms/update-burkina-faso.php:375
+#: tb/results/forms/update-burkina-faso.php:381
+#: tb/results/forms/update-burkina-faso.php:386
 #: tb/results/forms/update-sierraleone.php:171
 #: tb/results/forms/update-sierraleone.php:317
 #: tb/results/forms/update-sierraleone.php:381
 #: tb/results/forms/update-sierraleone.php:388
 #: tb/results/forms/update-sierraleone.php:401
 #: tb/results/forms/update-sierraleone.php:406
-#: tb/results/forms/update-southsudan.php:171
-#: tb/results/forms/update-southsudan.php:311
-#: tb/results/forms/update-southsudan.php:375
-#: tb/results/forms/update-southsudan.php:381
+#: tb/results/forms/update-southsudan.php:170
+#: tb/results/forms/update-southsudan.php:310
+#: tb/results/forms/update-southsudan.php:373
+#: tb/results/forms/update-southsudan.php:379
 #: vl/requests/forms/add-burkina-faso.php:601 vl/requests/forms/add-drc.php:145
 #: vl/requests/forms/add-drc.php:306 vl/requests/forms/add-drc.php:331
 #: vl/requests/forms/add-drc.php:356 vl/requests/forms/add-drc.php:383
@@ -11935,7 +12043,9 @@ msgstr "Veuillez sélectionner un point de contrôle"
 #: eid/requests/forms/add-cameroon.php:541
 #: eid/requests/forms/edit-cameroon.php:561
 #: eid/results/forms/update-cameroon-result.php:535
-#: tb/requests/forms/add-burkina-faso.php:367
+#: tb/requests/forms/add-burkina-faso.php:387
+#: tb/requests/forms/edit-burkina-faso.php:408
+#: tb/results/forms/update-burkina-faso.php:406
 msgid "Reason for Rejection"
 msgstr "Motif du refus"
 
@@ -11953,7 +12063,9 @@ msgstr "Veuillez sélectionner le motif du refus"
 #: eid/requests/forms/edit-cameroon.php:577
 #: eid/results/forms/update-burkina-faso-result.php:399
 #: eid/results/forms/update-cameroon-result.php:552
-#: tb/requests/forms/add-burkina-faso.php:374
+#: tb/requests/forms/add-burkina-faso.php:394
+#: tb/requests/forms/edit-burkina-faso.php:427
+#: tb/results/forms/update-burkina-faso.php:425
 #: vl/requests/forms/add-burkina-faso.php:508
 #: vl/requests/forms/add-cameroon.php:583 vl/requests/forms/add-drc.php:530
 #: vl/requests/forms/edit-burkina-faso.php:585
@@ -12104,9 +12216,16 @@ msgstr "Personne à contacter"
 #: generic-tests/configuration/edit-test-type.php:382
 #: generic-tests/configuration/edit-test-type.php:438
 #: generic-tests/configuration/edit-test-type.php:849
+#: system/translate-strings-country-4.php:10
 #: tb/requests/forms/add-burkina-faso.php:200
-#: tb/requests/forms/add-burkina-faso.php:213
-#: tb/requests/forms/add-burkina-faso.php:279 users/addUser.php:421
+#: tb/requests/forms/add-burkina-faso.php:225
+#: tb/requests/forms/add-burkina-faso.php:299
+#: tb/requests/forms/edit-burkina-faso.php:220
+#: tb/requests/forms/edit-burkina-faso.php:245
+#: tb/requests/forms/edit-burkina-faso.php:319
+#: tb/results/forms/update-burkina-faso.php:219
+#: tb/results/forms/update-burkina-faso.php:244
+#: tb/results/forms/update-burkina-faso.php:318 users/addUser.php:421
 #: users/editUser.php:513 vl/results/forms/update-cameroon-result.php:508
 msgid "Other"
 msgstr "Autre"
@@ -12393,7 +12512,9 @@ msgstr "Résultat final"
 #: eid/results/forms/update-burkina-faso-result.php:438
 #: generic-tests/mail/mail-generic-tests-results.php:246
 #: import-result/imported-results.php:268
-#: tb/requests/forms/add-burkina-faso.php:423
+#: tb/requests/forms/add-burkina-faso.php:443
+#: tb/requests/forms/edit-burkina-faso.php:493
+#: tb/results/forms/update-burkina-faso.php:491
 #: vl/requests/forms/add-burkina-faso.php:540
 #: vl/requests/forms/add-cameroon.php:606
 #: vl/requests/forms/edit-burkina-faso.php:617
@@ -12422,7 +12543,9 @@ msgstr "Veuillez choisir examiné par"
 #: eid/requests/forms/edit-cameroon.php:599
 #: eid/results/forms/update-burkina-faso-result.php:444
 #: eid/results/forms/update-cameroon-result.php:575
-#: tb/requests/forms/add-burkina-faso.php:429
+#: tb/requests/forms/add-burkina-faso.php:449
+#: tb/requests/forms/edit-burkina-faso.php:499
+#: tb/results/forms/update-burkina-faso.php:497
 #: vl/requests/forms/add-cameroon.php:602
 #: vl/requests/forms/edit-cameroon.php:659
 #: vl/results/forms/update-cameroon-result.php:670
@@ -13582,7 +13705,9 @@ msgstr ""
 #: generic-tests/mail/mail-generic-tests-results.php:247
 #: global-config/editGlobalConfig.php:1693
 #: import-result/imported-results.php:284
-#: tb/requests/forms/add-burkina-faso.php:433
+#: tb/requests/forms/add-burkina-faso.php:453
+#: tb/requests/forms/edit-burkina-faso.php:503
+#: tb/results/forms/update-burkina-faso.php:501
 #: vl/requests/forms/add-burkina-faso.php:591
 #: vl/requests/forms/add-cameroon.php:622
 #: vl/requests/forms/edit-burkina-faso.php:672
@@ -13627,7 +13752,8 @@ msgstr "Commentaires de Lab Technicien"
 #: eid/results/forms/update-burkina-faso-result.php:481
 #: import-result/imported-results.php:302
 #: system-admin/instance-overview/instanceIndex.php:132
-#: tb/requests/forms/add-burkina-faso.php:455
+#: tb/requests/forms/add-burkina-faso.php:475
+#: tb/results/forms/update-burkina-faso.php:523
 #: vl/requests/forms/add-burkina-faso.php:643
 #: vl/requests/forms/add-cameroon.php:683
 #: vl/requests/forms/edit-cameroon.php:740 vl/requests/sample-storage.php:374
@@ -14078,7 +14204,9 @@ msgstr "Veuillez choisir la raison du rejet"
 #: eid/requests/forms/add-cameroon.php:580
 #: eid/requests/forms/edit-cameroon.php:609
 #: eid/results/forms/update-cameroon-result.php:585
-#: tb/requests/forms/add-burkina-faso.php:439
+#: tb/requests/forms/add-burkina-faso.php:459
+#: tb/requests/forms/edit-burkina-faso.php:509
+#: tb/results/forms/update-burkina-faso.php:507
 #: vl/requests/forms/add-cameroon.php:618
 msgid "Approved on"
 msgstr "Validé le"
@@ -19113,6 +19241,286 @@ msgstr "Navigateur"
 msgid "Operating System"
 msgstr "Système d'exploitation"
 
+#: system/translate-strings-country-4.php:7
+msgid "Control Vl Testing"
+msgstr "Contrôle Vl Test"
+
+#: system/translate-strings-country-4.php:8
+msgid "Coinfection"
+msgstr "Coinfection"
+
+#: system/translate-strings-country-4.php:9
+msgid "Recency"
+msgstr "Nouveauté"
+
+#: system/translate-strings-country-4.php:11
+#: vl/requests/forms/add-burkina-faso.php:317
+#: vl/requests/forms/edit-burkina-faso.php:408
+#: vl/results/forms/update-burkina-faso-result.php:408
+msgid "6 Months"
+msgstr "6 mois"
+
+#: system/translate-strings-country-4.php:12
+#: vl/requests/forms/add-burkina-faso.php:318
+#: vl/requests/forms/edit-burkina-faso.php:409
+#: vl/results/forms/update-burkina-faso-result.php:409
+msgid "12 Months"
+msgstr "12 mois"
+
+#: system/translate-strings-country-4.php:13
+msgid "24 Months"
+msgstr "24 mois"
+
+#: system/translate-strings-country-4.php:14
+msgid "36 Months(3 Years)"
+msgstr "36 mois (3 ans)"
+
+#: system/translate-strings-country-4.php:15
+msgid "&gt;= 4 years"
+msgstr "&gt;= 4 ans"
+
+#: system/translate-strings-country-4.php:16
+msgid "3 months after a VL &gt; 1000cp/ml"
+msgstr "3 mois après une VL &gt ; 1000cp/ml"
+
+#: system/translate-strings-country-4.php:17
+msgid "Suspected Treatment Failure"
+msgstr "Échec présumé du traitement"
+
+#: system/translate-strings-country-4.php:18
+msgid "VL Pregnant Woman"
+msgstr "VL Femme enceinte"
+
+#: system/translate-strings-country-4.php:19
+msgid "VL Breastfeeding woman"
+msgstr "VL Femme allaitante"
+
+#: system/translate-strings-country-4.php:20
+msgid "Tuberculosis"
+msgstr "Tuberculose"
+
+#: system/translate-strings-country-4.php:21
+msgid "Viral Hepatitis"
+msgstr "Hépatite virale"
+
+#: system/translate-strings-country-4.php:22
+msgid "&lt; 20"
+msgstr "&lt ; 20"
+
+#: system/translate-strings-country-4.php:23
+msgid "&lt; 40"
+msgstr "&lt ; 40"
+
+#: system/translate-strings-country-4.php:24
+msgid "&lt; 400"
+msgstr "&lt ; 400"
+
+#: system/translate-strings-country-4.php:25
+msgid "Target Not Detected / Non Détecté"
+msgstr "Target Not Detected / Non Détecté"
+
+#: system/translate-strings-country-4.php:27
+msgid "reason one"
+msgstr "première raison"
+
+#: system/translate-strings-country-4.php:28
+msgid "reason two"
+msgstr "deuxième raison"
+
+#: system/translate-strings-country-4.php:29
+msgid "Bad rslt"
+msgstr "Mauvais rslt"
+
+#: system/translate-strings-country-4.php:30
+msgid "Poorly labelled specimen"
+msgstr "Échantillon mal étiqueté"
+
+#: system/translate-strings-country-4.php:31
+msgid "Mismatched sample and form labeling"
+msgstr ""
+"Mauvaise correspondance entre l'échantillon et l'étiquetage du formulaire"
+
+#: system/translate-strings-country-4.php:32
+msgid "Missing labels on container or tracking form"
+msgstr "Étiquettes manquantes sur le conteneur ou le formulaire de suivi"
+
+#: system/translate-strings-country-4.php:33
+msgid "Sample without request forms/Tracking forms"
+msgstr "Modèle sans formulaire de demande/Formulaires de suivi"
+
+#: system/translate-strings-country-4.php:34
+msgid "Name/Information of requester is missing"
+msgstr "Nom/Information du demandeur manquant"
+
+#: system/translate-strings-country-4.php:35
+msgid "Missing information on request form - Age"
+msgstr "Informations manquantes sur le formulaire de demande - Âge"
+
+#: system/translate-strings-country-4.php:36
+msgid "Missing information on request form - Sex"
+msgstr "Informations manquantes sur le formulaire de demande - Sexe"
+
+#: system/translate-strings-country-4.php:37
+msgid "Missing information on request form - Sample Collection Date"
+msgstr ""
+"Informations manquantes sur le formulaire de demande - Date de prélèvement "
+"de l'échantillon"
+
+#: system/translate-strings-country-4.php:38
+msgid "Missing information on request form - ART No"
+msgstr "Informations manquantes sur le formulaire de demande - ART Non"
+
+#: system/translate-strings-country-4.php:39
+msgid "Inappropriate specimen packing"
+msgstr "Emballage inapproprié de l'échantillon"
+
+#: system/translate-strings-country-4.php:40
+msgid "Inappropriate specimen for test request"
+msgstr "Échantillon inapproprié pour la demande d'essai"
+
+#: system/translate-strings-country-4.php:41
+msgid "EDTA tube specimens that arrived hemolyzed"
+msgstr "Échantillons en tube EDTA arrivés hémolysés"
+
+#: system/translate-strings-country-4.php:42
+msgid "ETDA tube that arrives more than 24 hours after specimen collection"
+msgstr ""
+"Tube ETDA qui arrive plus de 24 heures après le prélèvement de l'échantillon"
+
+#: system/translate-strings-country-4.php:43
+msgid "Plasma that arrives at a temperature above 8 C"
+msgstr "Plasma arrivant à une température supérieure à 8 C"
+
+#: system/translate-strings-country-4.php:44
+msgid "Plasma tube contain less than 1.5 mL"
+msgstr "Tube de plasma contenant moins de 1,5 ml"
+
+#: system/translate-strings-country-4.php:45
+msgid "DBS cards with insufficient blood spots"
+msgstr "Cartes DBS avec taches de sang insuffisantes"
+
+#: system/translate-strings-country-4.php:46
+msgid "DBS card with clotting present in spots"
+msgstr "Carte DBS avec présence de caillots dans les taches"
+
+#: system/translate-strings-country-4.php:47
+msgid "DBS cards that have serum rings indicating contamination around spots"
+msgstr ""
+"Cartes DBS présentant des anneaux de sérum indiquant une contamination "
+"autour des taches"
+
+#: system/translate-strings-country-4.php:48
+msgid "VL Mechine Flag"
+msgstr "Drapeau de la machine VL"
+
+#: system/translate-strings-country-4.php:49
+msgid "doublons"
+msgstr "doublons"
+
+#: system/translate-strings-country-4.php:50
+msgid "ECHANTILLON NON RECU"
+msgstr "ECHANTILLON NON RECU"
+
+#: system/translate-strings-country-4.php:51
+msgid "A Reprelever"
+msgstr "Un reproducteur"
+
+#: system/translate-strings-country-4.php:52
+msgid "ECHANTILLON HEMOLYSE"
+msgstr "ECHANTILLON HEMOLYSE"
+
+#: system/translate-strings-country-4.php:53
+msgid "ECHANTILLON INSUFFISANT 200ML"
+msgstr "ECHANTILLON INSUFFISANT 200ML"
+
+#: system/translate-strings-country-4.php:54
+msgid ""
+"DEUX ECHANTILLONS AVEC MEME CODE SUR LE CRYOTUBE SUR LE FICHE LE MEME CODE "
+"AVEC LES AGES DIFFERENTS"
+msgstr ""
+"DEUX ECHANTILLONS AVEC MEME CODE SUR LE CRYOTUBE SUR LE FICHE LE MEME CODE "
+"AVEC LES AGES DIFFERENTS"
+
+#: system/translate-strings-country-4.php:55
+msgid ""
+"LES FICHES DIFFERENTES AUX INFORMATIONS MAIS LES DEUX  ECHANTIONS ONT LA  "
+"MEME CODE D&#039;une fiche LES "
+msgstr ""
+"LES FICHES DIFFERENTES AUX INFORMATIONS MAIS LES DEUX ECHANTIONS ONT LA MEME "
+"CODE D'une fiche LES "
+
+#: system/translate-strings-country-4.php:56
+msgid "A Reprelever après plusieurs manipulations échoué"
+msgstr "A Reprelever après plusieurs manipulations échoué"
+
+#: system/translate-strings-country-4.php:57
+msgid "quantite insuffisante + hemolyse"
+msgstr "quantité insuffisante + hémolyse"
+
+#: system/translate-strings-country-4.php:58
+msgid "QUANTITE INSUFFISANTE 200MICROLITRE+HEMOLUSE"
+msgstr "QUANTITÉ INSUFFISANTE 200MICROLITRE+HEMOLUSE"
+
+#: system/translate-strings-country-4.php:59
+msgid "QUANTITE INSUFFISANTE 800MICROLITRE+HEMOLYSE"
+msgstr "QUANTITE INSUFFISANTE 800MICROLITRE+HEMOLYSE"
+
+#: system/translate-strings-country-4.php:60
+msgid "ECHANTILLON POURRI ET HEMOLYSE"
+msgstr "ECHANTILLON POURRI ET HEMOLYSE"
+
+#: system/translate-strings-country-4.php:61
+msgid "QUANTITE INSUFFISANTE 8OOML"
+msgstr "QUANTITE INSUFFISANTE 8OOML"
+
+#: system/translate-strings-country-4.php:62
+msgid "QUANTITE INSUFFISANTE 400MICROLITRE"
+msgstr "QUANTITE INSUFFISANTE 400MICROLITRE"
+
+#: system/translate-strings-country-4.php:63
+msgid "ECHANTILLON VIDE"
+msgstr "ECHANTILLON VIDE"
+
+#: system/translate-strings-country-4.php:64
+msgid "ECHANTILLON INSUFFISANTE 500MICROLITRE"
+msgstr "ECHANTILLON INSUFFISANTE 500MICROLITRE"
+
+#: system/translate-strings-country-4.php:65
+msgid "Discondance de codification sur la fiche et cryotube"
+msgstr "Discondance de codification sur la fiche et cryotube"
+
+#: system/translate-strings-country-4.php:66
+msgid "ECH POURRI"
+msgstr "ECH POURRI"
+
+#: system/translate-strings-country-4.php:67
+msgid "DOUBONS.DEUX ECH MEME CODE"
+msgstr "DOUBONS.DEUX ECH MEME CODE"
+
+#: system/translate-strings-country-4.php:68
+msgid "INVALIDE "
+msgstr "INVALIDE "
+
+#: system/translate-strings-country-4.php:69
+msgid "DBS"
+msgstr "DBS"
+
+#: system/translate-strings-country-4.php:70
+msgid "Plasma"
+msgstr "Plasma"
+
+#: system/translate-strings-country-4.php:71
+msgid "Whole Blood"
+msgstr "Sang total"
+
+#: system/translate-strings-country-4.php:72
+msgid "Frozen Plasma"
+msgstr "Plasma congelé"
+
+#: system/translate-strings-country-4.php:73
+msgid "CAPILLARY DBS"
+msgstr "CAPILLAIRE DBS"
+
 #: system/translate-strings.php:7
 msgid "DASHBOARD"
 msgstr "TABLEAU DE BORD"
@@ -20138,144 +20546,230 @@ msgid "TB Test Request"
 msgstr "Tuberculose-Demande de test"
 
 #: tb/requests/forms/add-burkina-faso.php:59
+#: tb/requests/forms/edit-burkina-faso.php:79
+#: tb/results/forms/update-burkina-faso.php:79
 #: tb/results/forms/update-sierraleone.php:99
 #: tb/results/forms/update-southsudan.php:99
 msgid "TB LABORATORY TEST REQUEST FORM"
 msgstr "TUBERCULOSE-FORMULAIRE DE DEMANDE DE TEST"
 
 #: tb/requests/forms/add-burkina-faso.php:80
+#: tb/requests/forms/edit-burkina-faso.php:100
+#: tb/results/forms/update-burkina-faso.php:99
 msgid "REFERRING HEALTH FACILITY INFORMATION"
 msgstr "INFORMATIONS SUR L'ÉTABLISSEMENT DE SANTÉ RÉFÉRENT"
 
 #: tb/requests/forms/add-burkina-faso.php:118
+#: tb/requests/forms/edit-burkina-faso.php:138
+#: tb/results/forms/update-burkina-faso.php:137
 msgid "Date of request"
 msgstr "Date de la demande"
 
 #: tb/requests/forms/add-burkina-faso.php:122
+#: tb/requests/forms/edit-burkina-faso.php:142
+#: tb/results/forms/update-burkina-faso.php:141
 msgid "Referring Unit"
 msgstr "Unité de référence"
 
 #: tb/requests/forms/add-burkina-faso.php:130
+#: tb/requests/forms/edit-burkina-faso.php:150
+#: tb/results/forms/update-burkina-faso.php:149
 msgid "Medical"
 msgstr "Médical"
 
 #: tb/requests/forms/add-burkina-faso.php:131
+#: tb/requests/forms/edit-burkina-faso.php:151
+#: tb/results/forms/update-burkina-faso.php:150
 msgid "Paediatric"
 msgstr "Pédiatrie"
 
 #: tb/requests/forms/add-burkina-faso.php:132
+#: tb/requests/forms/edit-burkina-faso.php:152
+#: tb/results/forms/update-burkina-faso.php:151
 msgid "Nutrition"
 msgstr "Valeurs nutritionnelles"
 
 #: tb/requests/forms/add-burkina-faso.php:154
+#: tb/requests/forms/edit-burkina-faso.php:174
+#: tb/results/forms/update-burkina-faso.php:173
 msgid "PATIENT INFORMATION"
 msgstr "INFORMATION DU PATIENT"
 
 #: tb/requests/forms/add-burkina-faso.php:172
+#: tb/requests/forms/edit-burkina-faso.php:192
+#: tb/results/forms/update-burkina-faso.php:191
 msgid "Unique ART Number"
 msgstr "Numéro unique ART"
 
 #: tb/requests/forms/add-burkina-faso.php:182
+#: tb/requests/forms/edit-burkina-faso.php:202
+#: tb/results/forms/update-burkina-faso.php:201
 msgid "Surname"
 msgstr "Nom"
 
 #: tb/requests/forms/add-burkina-faso.php:205
+#: tb/requests/forms/edit-burkina-faso.php:225
+#: tb/results/forms/update-burkina-faso.php:224
+msgid "Weight"
+msgstr "Poids"
+
+#: tb/requests/forms/add-burkina-faso.php:205
+#: tb/requests/forms/edit-burkina-faso.php:225
+#: tb/results/forms/update-burkina-faso.php:224
+msgid "kg"
+msgstr "kg"
+
+#: tb/requests/forms/add-burkina-faso.php:207
+#: tb/requests/forms/edit-burkina-faso.php:227
+#: tb/results/forms/update-burkina-faso.php:226
+msgid "Displaced Population"
+msgstr "Population déplacée"
+
+#: tb/requests/forms/add-burkina-faso.php:217
+#: tb/requests/forms/edit-burkina-faso.php:237
+#: tb/results/forms/update-burkina-faso.php:236
 msgid "Type of patient"
 msgstr "Type de patient"
 
-#: tb/requests/forms/add-burkina-faso.php:209
+#: tb/requests/forms/add-burkina-faso.php:221
+#: tb/requests/forms/edit-burkina-faso.php:241
+#: tb/results/forms/update-burkina-faso.php:240
 msgid "New"
 msgstr "Nouveau"
 
-#: tb/requests/forms/add-burkina-faso.php:210
+#: tb/requests/forms/add-burkina-faso.php:222
+#: tb/requests/forms/edit-burkina-faso.php:242
+#: tb/results/forms/update-burkina-faso.php:241
 msgid "Loss to Follow Up"
 msgstr "Perte de suivi"
 
-#: tb/requests/forms/add-burkina-faso.php:211
+#: tb/requests/forms/add-burkina-faso.php:223
+#: tb/requests/forms/edit-burkina-faso.php:243
+#: tb/results/forms/update-burkina-faso.php:242
 msgid "Treatment Failure"
 msgstr "Échec du traitement"
 
-#: tb/requests/forms/add-burkina-faso.php:212
+#: tb/requests/forms/add-burkina-faso.php:224
+#: tb/requests/forms/edit-burkina-faso.php:244
+#: tb/results/forms/update-burkina-faso.php:243
 msgid "Relapse"
 msgstr "Rechute"
 
-#: tb/requests/forms/add-burkina-faso.php:219
+#: tb/requests/forms/add-burkina-faso.php:229
+#: tb/requests/forms/edit-burkina-faso.php:249
+#: tb/results/forms/update-burkina-faso.php:248
+msgid "Referred By Community Actor"
+msgstr "Référé par l'acteur communautaire"
+
+#: tb/requests/forms/add-burkina-faso.php:239
+#: tb/requests/forms/edit-burkina-faso.php:259
+#: tb/results/forms/update-burkina-faso.php:258
 msgid "Reason for Examination"
 msgstr "Motif de l'examen"
 
-#: tb/requests/forms/add-burkina-faso.php:225
+#: tb/requests/forms/add-burkina-faso.php:245
+#: tb/requests/forms/edit-burkina-faso.php:265
+#: tb/results/forms/update-burkina-faso.php:264
 msgid "Diagnosis"
 msgstr "Diagnostic"
 
-#: tb/requests/forms/add-burkina-faso.php:235
+#: tb/requests/forms/add-burkina-faso.php:255
+#: tb/requests/forms/edit-burkina-faso.php:275
+#: tb/results/forms/update-burkina-faso.php:274
 msgid "Presumptive TB"
 msgstr "Présomption de tuberculose"
 
-#: tb/requests/forms/add-burkina-faso.php:241
+#: tb/requests/forms/add-burkina-faso.php:261
+#: tb/requests/forms/edit-burkina-faso.php:281
+#: tb/results/forms/update-burkina-faso.php:280
 msgid "Rifampicin-resistant TB"
 msgstr "TB résistante à la rifampicine"
 
-#: tb/requests/forms/add-burkina-faso.php:247
+#: tb/requests/forms/add-burkina-faso.php:267
 msgid "MDR-TB"
 msgstr "MDR-TB"
 
-#: tb/requests/forms/add-burkina-faso.php:255
+#: tb/requests/forms/add-burkina-faso.php:275
+#: tb/requests/forms/edit-burkina-faso.php:295
+#: tb/results/forms/update-burkina-faso.php:294
 msgid "Follow Up"
 msgstr "Suivi"
 
-#: tb/requests/forms/add-burkina-faso.php:271
+#: tb/requests/forms/add-burkina-faso.php:291
+#: tb/requests/forms/edit-burkina-faso.php:311
+#: tb/results/forms/update-burkina-faso.php:310
 msgid "Date Specimen Collected"
 msgstr "Date du prélèvement"
 
-#: tb/requests/forms/add-burkina-faso.php:288
+#: tb/requests/forms/add-burkina-faso.php:308
+#: tb/requests/forms/edit-burkina-faso.php:328
+#: tb/results/forms/update-burkina-faso.php:327
 msgid "Specimen Number"
 msgstr "Numéro de l'échantillon"
 
-#: tb/requests/forms/add-burkina-faso.php:299
+#: tb/requests/forms/add-burkina-faso.php:319
+#: tb/requests/forms/edit-burkina-faso.php:340
+#: tb/results/forms/update-burkina-faso.php:339
 msgid "Test(s) requested"
 msgstr "Test(s) demandé(s)"
 
-#: tb/requests/forms/add-burkina-faso.php:308
+#: tb/requests/forms/add-burkina-faso.php:328
 msgid "MTB/RIF"
 msgstr "MTB/RIF"
 
-#: tb/requests/forms/add-burkina-faso.php:309
+#: tb/requests/forms/add-burkina-faso.php:329
 msgid "MTB/RIF ULTRA"
 msgstr "MTB/RIF ULTRA"
 
-#: tb/requests/forms/add-burkina-faso.php:310
+#: tb/requests/forms/add-burkina-faso.php:330
 msgid "TB LAM"
 msgstr "TB LAM"
 
-#: tb/requests/forms/add-burkina-faso.php:324
+#: tb/requests/forms/add-burkina-faso.php:344
+#: tb/requests/forms/edit-burkina-faso.php:365
+#: tb/results/forms/update-burkina-faso.php:363
 msgid "Results (To be completed in the Laboratory)"
 msgstr "Résultats (à remplir par le laboratoire)"
 
-#: tb/requests/forms/add-burkina-faso.php:334
+#: tb/requests/forms/add-burkina-faso.php:354
+#: tb/requests/forms/edit-burkina-faso.php:375
+#: tb/results/forms/update-burkina-faso.php:373
 msgid "Date of Reception"
 msgstr "Date de réception"
 
-#: tb/requests/forms/add-burkina-faso.php:340
+#: tb/requests/forms/add-burkina-faso.php:360
+#: tb/requests/forms/edit-burkina-faso.php:381
+#: tb/results/forms/update-burkina-faso.php:379
 msgid "Date of Sample Tested"
 msgstr "Date de l'échantillon testé"
 
-#: tb/requests/forms/add-burkina-faso.php:382
+#: tb/requests/forms/add-burkina-faso.php:402
+#: tb/requests/forms/edit-burkina-faso.php:435
+#: tb/results/forms/update-burkina-faso.php:433
 msgid "Microscopy Test Results"
 msgstr "Résultats des tests microscopiques"
 
-#: tb/requests/forms/add-burkina-faso.php:385
+#: tb/requests/forms/add-burkina-faso.php:405
+#: tb/requests/forms/edit-burkina-faso.php:438
+#: tb/results/forms/update-burkina-faso.php:436
 msgid "Test #"
 msgstr "Test #"
 
-#: tb/requests/forms/add-burkina-faso.php:387
+#: tb/requests/forms/add-burkina-faso.php:407
+#: tb/requests/forms/edit-burkina-faso.php:440
+#: tb/results/forms/update-burkina-faso.php:438
 msgid "Actual Number"
 msgstr "Nombre réel"
 
-#: tb/requests/forms/add-burkina-faso.php:409
+#: tb/requests/forms/add-burkina-faso.php:429
+#: tb/requests/forms/edit-burkina-faso.php:479
+#: tb/results/forms/update-burkina-faso.php:477
 msgid "Xpert MTB Result"
 msgstr "Résultat Xpert MTB"
 
-#: tb/requests/forms/add-burkina-faso.php:415
+#: tb/requests/forms/add-burkina-faso.php:435
+#: tb/requests/forms/edit-burkina-faso.php:485
+#: tb/results/forms/update-burkina-faso.php:483
 msgid "TB LAM Result"
 msgstr "TB LAM Résultat"
 
@@ -20284,21 +20778,26 @@ msgstr "TB LAM Résultat"
 msgid "Enter clinician name"
 msgstr "Saisir le nom du clinicien"
 
-#: tb/requests/tb-add-request-helper.php:301
+#: tb/requests/forms/edit-burkina-faso.php:82
+#: tb/results/forms/update-burkina-faso.php:82
+msgid "Edit TB Request"
+msgstr "Modifier la demande du CT"
+
+#: tb/requests/tb-add-request-helper.php:304
 msgid "TB test request added successfully"
 msgstr "Demande de test TB ajoutée avec succès"
 
-#: tb/requests/tb-add-request-helper.php:309
+#: tb/requests/tb-add-request-helper.php:312
 msgid "Unable to add this TB sample. Please try again later"
 msgstr "Impossible d'ajouter cet échantillon TB. Veuillez réessayer plus tard"
 
-#: tb/requests/tb-edit-request-helper.php:300
+#: tb/requests/tb-edit-request-helper.php:303
 #: tb/results/tb-update-result-helper.php:235
 msgid "TB test request updated successfully"
 msgstr ""
 "Mise à jour réussie de la demande de test de dépistage de la tuberculose"
 
-#: tb/requests/tb-edit-request-helper.php:308
+#: tb/requests/tb-edit-request-helper.php:311
 #: tb/results/tb-update-result-helper.php:243
 msgid "Unable to update this TB sample. Please try again later"
 msgstr ""
@@ -21433,18 +21932,6 @@ msgstr "Médiocre < 85%"
 msgid "Duration of treatment"
 msgstr "Durée du traitement"
 
-#: vl/requests/forms/add-burkina-faso.php:317
-#: vl/requests/forms/edit-burkina-faso.php:408
-#: vl/results/forms/update-burkina-faso-result.php:408
-msgid "6 Months"
-msgstr "6 mois"
-
-#: vl/requests/forms/add-burkina-faso.php:318
-#: vl/requests/forms/edit-burkina-faso.php:409
-#: vl/results/forms/update-burkina-faso-result.php:409
-msgid "12 Months"
-msgstr "12 mois"
-
 #: vl/requests/forms/add-burkina-faso.php:319
 #: vl/requests/forms/edit-burkina-faso.php:410
 #: vl/results/forms/update-burkina-faso-result.php:410
@@ -22223,6 +22710,11 @@ msgstr "Veuillez sélectionner si l'échantillon est rejeté"
 msgid "Please select reason for rejection"
 msgstr "Veuillez sélectionner la raison du rejet"
 
+#: vl/results/pdf/result-pdf-burkina-faso.php:325
+#: vl/results/pdf/result-pdf-cameroon.php:351
+msgid "Not Rejected"
+msgstr "Non rejeté"
+
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:160
 msgid "Modification date"
 msgstr "Date de modification"
@@ -22407,10 +22899,6 @@ msgstr "DATE DU TEST DE L’ÉCHANTILLON"
 msgid "RESULT RELEASE DATE"
 msgstr "DATE DE PUBLICATION DES RÉSULTATS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:351
-msgid "Not Rejected"
-msgstr "Non rejeté"
-
 #: vl/results/pdf/result-pdf-cameroon.php:359
 msgid "SAMPLE TYPE"
 msgstr "TYPE D’ÉCHANTILLON"
@@ -22566,32 +23054,8 @@ msgstr ""
 #~ msgid "Please choose reason of request of VL"
 #~ msgstr "Veuillez choisir le motif de la demande de VL"
 
-#~ msgid "24 Months"
-#~ msgstr "24 mois"
-
-#~ msgid "36 Months(3 Years)"
-#~ msgstr "36 mois (3 ans)"
-
-#~ msgid ">= 4 years"
-#~ msgstr ">= 4 ans"
-
-#~ msgid "3 months after a VL > 1000cp/ml"
-#~ msgstr "3 mois après une VL > 1000cp/ml"
-
-#~ msgid "VL Pregnant Woman"
-#~ msgstr "VL Femme enceinte"
-
-#~ msgid "VL Breastfeeding woman"
-#~ msgstr "VL Femme allaitante"
-
 #~ msgid "Types of Co-infection"
 #~ msgstr "Types de co-infection"
-
-#~ msgid "Tuberculosis"
-#~ msgstr "Tuberculose"
-
-#~ msgid "Viral Hepatitis"
-#~ msgstr "Hépatite virale"
 
 #~ msgid "Please check reason for viral load request"
 #~ msgstr "Veuillez vérifier la raison de la demande de charge virale"
