@@ -63,14 +63,12 @@ ask_yes_no() {
 }
 
 handle_database_setup_and_import() {
-    # Check if VLSM database exists
     db_exists=$(mysql -u root -p"${mysql_root_password}" -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = 'vlsm';")
-
-    # Check if VLSM database is not empty (has tables)
     db_not_empty=$(mysql -u root -p"${mysql_root_password}" -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'vlsm';")
 
     if [ "$db_exists" -eq 1 ] && [ "$db_not_empty" -gt 0 ]; then
         echo "Renaming existing VLSM database..."
+        log_action "Renaming existing VLSM database..."
         local todays_date=$(date +%Y%m%d_%H%M%S)
         local new_db_name="vlsm_${todays_date}"
         mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
@@ -78,23 +76,25 @@ handle_database_setup_and_import() {
         # Get the list of tables in the original database
         local tables=$(mysql -u root -p"${mysql_root_password}" -sse "SHOW TABLES IN vlsm;")
 
+        # Rename tables
         for table in $tables; do
             mysql -u root -p"${mysql_root_password}" -e "RENAME TABLE vlsm.$table TO ${new_db_name}.$table;"
         done
 
-        # Copy triggers (if necessary)
-        local triggers=$(mysql -u root -p"${mysql_root_password}" -sse "SHOW TRIGGERS FROM vlsm;")
-        for trigger in $triggers; do
-            local trigger_stmt=$(mysql -u root -p"${mysql_root_password}" -sse "SHOW CREATE TRIGGER vlsm.$trigger\G" | sed -n 's/.*SQL: \(.*\)/\1/p')
-            mysql -u root -p"${mysql_root_password}" -e "USE ${new_db_name}; ${trigger_stmt}"
+        echo "Copying triggers..."
+        log_action "Copying triggers..."
+        local triggers=$(mysql -u root -p"${mysql_root_password}" -sse "SHOW TRIGGERS IN vlsm;")
+        for trigger_name in $triggers; do
+            local trigger_sql=$(mysql -u root -p"${mysql_root_password}" -sse "SHOW CREATE TRIGGER vlsm.$trigger_name\G" | sed -n 's/.*SQL: \(.*\)/\1/p')
+            mysql -u root -p"${mysql_root_password}" -D ${new_db_name} -e "$trigger_sql"
         done
 
         echo "All tables and triggers moved to ${new_db_name}."
+        log_action "All tables and triggers moved to ${new_db_name}."
     fi
 
     mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 
-    # Import SQL file if provided, or use init.sql
     local sql_file="${1:-${vlsm_path}/sql/init.sql}"
     if [[ "$sql_file" == *".gz" ]]; then
         gunzip -c "$sql_file" | mysql -u root -p"${mysql_root_password}" vlsm
@@ -125,6 +125,7 @@ current_version=$(lsb_release -rs)
 
 if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
     echo "This script is not compatible with Ubuntu versions older than ${min_version}."
+    log_action "This script is not compatible with Ubuntu versions older than ${min_version}."
     exit 1
 fi
 
@@ -132,6 +133,7 @@ fi
 for cmd in "apt"; do
     if ! command -v $cmd &>/dev/null; then
         echo "$cmd is not installed. Exiting..."
+        log_action "$cmd is not installed. Exiting..."
         exit 1
     fi
 done
@@ -140,6 +142,7 @@ done
 echo "Enter the VLSM installation path [press enter to select /var/www/vlsm]: "
 read -t 15 -p "" vlsm_path
 vlsm_path="${vlsm_path:-/var/www/vlsm}"
+log_action "VLSM installation path: $vlsm_path"
 
 # Initialize variable for database file path
 vlsm_sql_file=""
@@ -169,6 +172,7 @@ if [[ -n "$vlsm_sql_file" ]]; then
 
     if [[ ! -f "$vlsm_sql_file" ]]; then
         echo "SQL file not found: $vlsm_sql_file. Please check the path."
+        log_action "SQL file not found: $vlsm_sql_file. Please check the path."
         exit 1
     fi
 fi
@@ -197,6 +201,7 @@ update-locale
 # Apache Setup
 if command -v apache2 &>/dev/null; then
     echo "Apache is already installed. Skipping installation..."
+    log_action "Apache is already installed. Skipping installation..."
 else
     echo "Installing and configuring Apache..."
     apt-get install -y apache2
@@ -208,11 +213,13 @@ else
         exit 1
     }
     setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
+    log_action "Apache installed and configured."
 fi
 
 # Check for Brotli support and install it if necessary
 if ! apache2ctl -M | grep -q 'brotli_module'; then
     echo "Installing Brotli module for Apache..."
+    log_action "Installing Brotli module for Apache..."
     apt-get install -y brotli
 
     if [ $? -eq 0 ]; then
@@ -224,9 +231,11 @@ if ! apache2ctl -M | grep -q 'brotli_module'; then
         }
     else
         echo "Failed to install Brotli module. Continuing without Brotli support..."
+        log_action "Failed to install Brotli module. Continuing without Brotli support..."
     fi
 else
     echo "Brotli module is already installed and enabled."
+    log_action "Brotli module is already installed and enabled."
 fi
 
 # Prompt for MySQL root password and confirmation
@@ -241,8 +250,10 @@ while :; do # Infinite loop to keep asking until a correct password is provided
 
         if [ -z "${mysql_root_password}" ]; then
             echo "Password cannot be blank."
+            log_action "Password cannot be blank."
         elif [ "${mysql_root_password}" != "${mysql_root_password_confirm}" ]; then
             echo "Passwords do not match. Please try again."
+            log_action "Passwords do not match. Please try again."
         fi
     done
 
@@ -263,12 +274,14 @@ while :; do # Infinite loop to keep asking until a correct password is provided
 
         # Set MySQL root password and create databases
         echo "Setting MySQL root password and creating databases..."
+        log_action "Setting MySQL root password and creating databases..."
         mysql -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
         mysql -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
         mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${mysql_root_password}'; FLUSH PRIVILEGES;"
 
         service mysql restart || {
             echo "Failed to restart MySQL. Exiting..."
+            log_action "Failed to restart MySQL. Exiting..."
             exit 1
         }
         break # Exit the loop after installing MySQL and setting the password
@@ -320,6 +333,8 @@ service mysql restart || {
     exit 1
 }
 
+log_action "MySQL configured."
+
 # PHP Setup
 echo "Installing PHP 8.2..."
 
@@ -330,6 +345,7 @@ switch-php 8.2
 
 service apache2 restart || {
     echo "Failed to restart Apache2. Exiting..."
+    log_action "Failed to restart Apache2. Exiting..."
     exit 1
 }
 
@@ -374,6 +390,8 @@ for phpini in /etc/php/8.2/apache2/php.ini /etc/php/8.2/cli/php.ini; do
         print $0
     }' $phpini >temp.ini && mv temp.ini $phpini
 done
+
+log_action "PHP 8.2 configured."
 
 # phpMyAdmin Setup
 if [ ! -d "/var/www/phpmyadmin" ]; then
@@ -427,6 +445,8 @@ if [ ! -d "/var/www/phpmyadmin" ]; then
     service apache2 restart
 fi
 
+log_action "phpMyAdmin setup complete."
+
 # Composer Setup
 echo "Checking for Composer..."
 if command -v composer &>/dev/null; then
@@ -454,6 +474,8 @@ wget -q --show-progress --progress=dot:giga -O master.zip https://github.com/def
 temp_dir=$(mktemp -d)
 unzip master.zip -d "$temp_dir"
 
+log_action "VLSM downloaded."
+
 # backup old code if it exists
 if [ -d "${vlsm_path}" ]; then
     cp -R "${vlsm_path}" "${vlsm_path}"-$(date +%Y%m%d-%H%M%S)
@@ -467,6 +489,8 @@ cp -R "$temp_dir/vlsm-master/"* "${vlsm_path}"
 # Remove the empty directory and the downloaded zip file
 rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
+
+log_action "VLSM copied to ${vlsm_path}."
 
 # Set proper permissions
 chown -R www-data:www-data "${vlsm_path}"
@@ -510,12 +534,16 @@ configure_vhost() {
 read -p "Enter domain name (press enter to use 'vlsm'): " hostname
 hostname="${hostname:-vlsm}"
 
+log_action "Hostname: $hostname"
+
 # Check if the hostname entry is already in /etc/hosts
 if ! grep -q "127.0.0.1 ${hostname}" /etc/hosts; then
     echo "Adding ${hostname} to hosts file..."
     echo "127.0.0.1 ${hostname}" | tee -a /etc/hosts
+    log_action "${hostname} entry added to hosts file."
 else
     echo "${hostname} entry is already in the hosts file."
+    log_action "${hostname} entry is already in the hosts file."
 fi
 
 # Ask user if they want to install VLSM as the default host or along with other apps
@@ -546,6 +574,7 @@ fi
 # Restart Apache to apply changes
 service apache2 restart || {
     echo "Failed to restart Apache. Please check the configuration."
+    log_action "Failed to restart Apache. Please check the configuration."
     exit 1
 }
 
@@ -561,12 +590,14 @@ cron_job="* * * * * cd ${vlsm_path} && ./cron.sh"
 # Check if the cron job already exists
 if ! crontab -l | grep -qF "${cron_job}"; then
     echo "Adding cron job for VLSM..."
+    log_action "Adding cron job for VLSM..."
     (
         crontab -l
         echo "${cron_job}"
     ) | crontab -
 else
     echo "Cron job for VLSM already exists. Skipping."
+    log_action "Cron job for VLSM already exists. Skipping."
 fi
 
 # Update VLSM config.production.php with database credentials
@@ -575,9 +606,11 @@ source_file="${vlsm_path}/configs/config.production.dist.php"
 
 if [ ! -e "${config_file}" ]; then
     echo "Renaming config.production.dist.php to config.production.php..."
+    log_action "Renaming config.production.dist.php to config.production.php..."
     mv "${source_file}" "${config_file}"
 else
     echo "File config.production.php already exists. Skipping renaming."
+    log_action "File config.production.php already exists. Skipping renaming."
 fi
 
 # Escape special characters in password for sed
@@ -601,7 +634,7 @@ fi
 
 # Prompt for Remote STS URL
 read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url
-
+log_action "Remote STS URL: $remote_sts_url"
 # Update VLSM config.production.php with Remote STS URL if provided
 if [ ! -z "$remote_sts_url" ]; then
 
@@ -662,6 +695,7 @@ if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
                 sudo -u www-data php "$file"
             else
                 echo "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
+                log_action "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
             fi
         done
     fi

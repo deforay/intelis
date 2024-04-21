@@ -404,7 +404,7 @@ wait ${cp_pid}      # Wait for the copy process to finish
 rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
 
-log_action "VLSM files downloaded and copied to the temp directory."
+log_action "VLSM copied to ${vlsm_path}."
 
 # Set proper permissions
 setfacl -R -m u:$USER:rwx,u:www-data:rwx "${vlsm_path}"
@@ -513,6 +513,10 @@ log_action "Remote data sync completed."
 if [ -f "${vlsm_path}/startup.php" ]; then
     rm "${vlsm_path}/startup.php"
     touch "${vlsm_path}/startup.php"
+fi
+
+if [ -f "${vlsm_path}/cache/CompiledContainer.php" ]; then
+    rm "${vlsm_path}/cache/CompiledContainer.php"
 fi
 
 service apache2 restart

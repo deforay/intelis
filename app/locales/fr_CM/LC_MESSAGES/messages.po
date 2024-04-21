@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-04-19 20:23+0530\n"
-"PO-Revision-Date: 2024-04-19 20:23+0530\n"
+"POT-Creation-Date: 2024-04-21 16:08+0530\n"
+"PO-Revision-Date: 2024-04-21 16:09+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -184,7 +184,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: system-admin/edit-config/index.php:28
 #: system-admin/edit-config/resetPassword.php:15
 #: system-admin/instance-overview/instanceIndex.php:44
-#: system-admin/log-files/log-files.php:22
+#: system-admin/log-files/log-files.php:66
 #: system-admin/reset-password/reset-password.php:23
 #: system-admin/user-login-history/userLoginIndex.php:15
 #: tb/management/tb-clinic-report.php:69
@@ -370,7 +370,7 @@ msgstr "Call to action"
 #: hepatitis/results/hepatitis-result-status.php:131 mail/vlResultMail.php:287
 #: specimen-referral-manifest/get-samples-for-manifest.php:157
 #: specimen-referral-manifest/get-samples-for-manifest.php:158
-#: system-admin/log-files/log-files.php:39
+#: system-admin/log-files/log-files.php:83
 #: system-admin/user-login-history/userLoginIndex.php:50
 #: tb/management/tb-clinic-report.php:168
 #: tb/management/tb-clinic-report.php:273
@@ -1095,16 +1095,18 @@ msgstr "Veuillez sélectionner les types de tests"
 #: import-result/import-file.php:119 import-result/import-file.php:149
 #: includes/get-sample-type.php:33 includes/get-sample-type.php:41
 #: includes/get-testing-points.php:21
-#: includes/siteInformationDropdownOptions.php:27 mail/vlResultMail.php:151
-#: mail/vlResultMail.php:176 mail/vlResultMail.php:213
-#: mail/vlResultMail.php:228 mail/vlResultMail.php:240
-#: mail/vlResultMail.php:255 mail/vlResultMail.php:570
-#: mail/vlResultMail.php:574 patients/add-patient.php:60
-#: patients/add-patient.php:70 patients/edit-patient.php:77
-#: patients/edit-patient.php:87 roles/addRole.php:165 roles/addRole.php:220
-#: roles/addRole.php:242 roles/editRole.php:189 roles/editRole.php:208
-#: roles/editRole.php:226 system-admin/edit-config/index.php:56
-#: system-admin/edit-config/index.php:76 system-admin/edit-config/index.php:89
+#: includes/siteInformationDropdownOptions.php:27
+#: instruments/add-instrument.php:512 instruments/edit-instrument.php:661
+#: mail/vlResultMail.php:151 mail/vlResultMail.php:176
+#: mail/vlResultMail.php:213 mail/vlResultMail.php:228
+#: mail/vlResultMail.php:240 mail/vlResultMail.php:255
+#: mail/vlResultMail.php:570 mail/vlResultMail.php:574
+#: patients/add-patient.php:60 patients/add-patient.php:70
+#: patients/edit-patient.php:77 patients/edit-patient.php:87
+#: roles/addRole.php:165 roles/addRole.php:220 roles/addRole.php:242
+#: roles/editRole.php:189 roles/editRole.php:208 roles/editRole.php:226
+#: system-admin/edit-config/index.php:56 system-admin/edit-config/index.php:76
+#: system-admin/edit-config/index.php:89
 #: system-admin/reset-password/get-user.php:52
 #: system-admin/user-login-history/userLoginIndex.php:37
 #: tb/management/tb-clinic-report.php:101
@@ -3090,7 +3092,7 @@ msgstr "Créer un lot"
 #: generic-tests/mail/mail-generic-tests-results.php:71
 #: generic-tests/requests/add-request.php:224
 #: generic-tests/requests/clone-request.php:396
-#: generic-tests/requests/edit-request.php:397
+#: generic-tests/requests/edit-request.php:398
 #: generic-tests/results/email-results.php:75
 #: generic-tests/results/update-generic-test-result.php:390
 #: hepatitis/mail/mail-hepatitis-results.php:50
@@ -3235,7 +3237,7 @@ msgstr "Afficher la recherche avancée"
 #: vl/requests/forms/edit-cameroon.php:193
 #: vl/results/forms/update-cameroon-result.php:243
 msgid "Facility"
-msgstr "Établissement"
+msgstr "FOSA"
 
 #: batch/add-batch.php:208 batch/edit-batch.php:200
 #: cd4/management/cd4-clinic-report.php:142
@@ -3325,7 +3327,7 @@ msgstr "Établissement"
 #: vl/results/vlResultMail.php:102 vl/results/vlResultMail.php:168
 #: vl/results/vlTestResult.php:141
 msgid "Please select facility name"
-msgstr "Veuillez sélectionner le nom de l'établissement"
+msgstr "Veuillez sélectionner le nom de FOSA"
 
 #: batch/add-batch.php:212 batch/edit-batch.php:204
 msgid "Samples Entered By"
@@ -3918,7 +3920,7 @@ msgstr "Annuler"
 #: facilities/editFacility.php:758 facilities/editFacility.php:1070
 #: generic-tests/requests/add-request.php:793
 #: generic-tests/requests/clone-request.php:1137
-#: generic-tests/requests/edit-request.php:1022
+#: generic-tests/requests/edit-request.php:1023
 #: generic-tests/requests/view-requests.php:292
 #: generic-tests/results/update-generic-test-result.php:985
 #: specimen-referral-manifest/move-manifest.php:310
@@ -4909,7 +4911,6 @@ msgstr "Femme"
 #: vl/results/forms/update-cameroon-result.php:367
 #: vl/results/pdf/result-pdf-burkina-faso.php:196
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:167
-#: vl/results/pdf/result-pdf-cameroon.php:201
 #: vl/results/pdf/result-pdf-drc.php:136 vl/results/pdf/result-pdf-png.php:127
 #: vl/results/pdf/result-pdf-rwanda.php:127
 #: vl/results/pdf/result-pdf-sierraleone.php:193
@@ -4971,7 +4972,7 @@ msgstr "Exporter vers Excel"
 #: tb/management/tb-clinic-report.php:287
 #: tb/management/tb-clinic-report.php:384
 msgid "Patient's ID"
-msgstr "No Patient"
+msgstr "Code TARV du patient"
 
 #: cd4/management/cd4-clinic-report.php:186
 #: cd4/management/cd4-clinic-report.php:290
@@ -6269,7 +6270,7 @@ msgstr "Non"
 #: vl/results/vl-failed-results.php:115 vl/results/vlPrintResult.php:185
 #: vl/results/vlPrintResult.php:435
 msgid "Patient ID"
-msgstr "No Patient"
+msgstr "Code TARV du patient"
 
 #: cd4/management/cd4-export-data.php:183
 #: covid-19/management/covid-19-export-data.php:198
@@ -6380,7 +6381,7 @@ msgstr "Saisir le nom du patient"
 #: eid/management/eid-export-data.php:230
 #: generic-tests/program-management/generic-export-data.php:247
 #: hepatitis/management/hepatitis-export-data.php:214
-#: system-admin/log-files/log-files.php:42
+#: system-admin/log-files/log-files.php:86
 #: system-admin/user-login-history/userLoginIndex.php:52
 #: tb/management/tb-export-data.php:207
 #: vl/program-management/vl-export-data.php:385
@@ -6921,7 +6922,7 @@ msgstr "Objectif de test mensuel"
 #: eid/management/eidTestingTargetReport.php:261
 #: hepatitis/management/hepatitis-testing-target-report.php:262
 msgid "Select facility name"
-msgstr "Sélectionner le nom de l'établissement"
+msgstr "Sélectionner le nom de FOSA"
 
 #: cd4/management/cd4-testing-target-report.php:382
 #: covid-19/management/covid19TestingTargetReport.php:383
@@ -6975,7 +6976,7 @@ msgstr "Date de réception"
 #: vl/program-management/export-vl-results.php:36
 #: vl/requests/export-vl-requests.php:28
 msgid "Health Facility Code"
-msgstr "Code de l'établissement de santé"
+msgstr "Code de FOSA"
 
 #: cd4/management/export-cd4-results.php:32
 #: cd4/management/export-cd4-results.php:35
@@ -7069,7 +7070,7 @@ msgstr "Date de prélèvement"
 #: vl/program-management/export-vl-results.php:36
 #: vl/requests/export-vl-requests.php:28
 msgid "Date of Treatment Initiation"
-msgstr "Date d’initiation ARV"
+msgstr "Date d’initiation du traitement ARV"
 
 #: cd4/management/export-cd4-results.php:32
 #: cd4/requests/export-cd4-requests.php:28
@@ -7127,7 +7128,7 @@ msgstr "Motif d’analyse"
 #: vl/program-management/export-vl-results.php:36
 #: vl/requests/export-vl-requests.php:28
 msgid "Requesting Clinican"
-msgstr "Clinicien demandeur"
+msgstr "Prescriteur"
 
 #: cd4/management/export-cd4-results.php:32
 #: vl/program-management/export-vl-results.php:36
@@ -8462,7 +8463,7 @@ msgstr "Veuillez sélectionner le laboratoire cd4"
 #: vl/results/vl-failed-results.php:117 vl/results/vlPrintResult.php:188
 #: vl/results/vlPrintResult.php:438
 msgid "Enter Patient ID"
-msgstr "No Patient"
+msgstr "Code TARV du patient"
 
 #: cd4/requests/cd4-requests.php:442 cd4/requests/cd4-requests.php:467
 msgid "Add CD4 Request Form"
@@ -10154,7 +10155,7 @@ msgid "Storage Status"
 msgstr "État du stockage"
 
 #: common/reference/add-lab-storage.php:98
-#: common/reference/edit-lab-storage.php:107 instruments/add-instrument.php:512
+#: common/reference/edit-lab-storage.php:107
 msgid "Select the options"
 msgstr "Sélectionner les options"
 
@@ -11076,7 +11077,7 @@ msgstr "EID-Modifier la demande de test"
 #: eid/requests/eid-edit-request.php:243
 #: generic-tests/requests/add-request.php:1379
 #: generic-tests/requests/clone-request.php:1348
-#: generic-tests/requests/edit-request.php:1233
+#: generic-tests/requests/edit-request.php:1234
 #: generic-tests/results/update-generic-test-result.php:1199
 #: hepatitis/requests/hepatitis-add-request.php:180
 #: hepatitis/requests/hepatitis-edit-request.php:177
@@ -11214,7 +11215,7 @@ msgstr "Sources de financement"
 #: tb/requests/forms/edit-burkina-faso.php:124
 #: tb/results/forms/update-burkina-faso.php:123
 msgid "Health Facility/POE County"
-msgstr "Établissement de santé/POE Comté"
+msgstr "FOSA/POE Comté"
 
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
@@ -11225,7 +11226,7 @@ msgstr "Établissement de santé/POE Comté"
 #: tb/requests/forms/edit-burkina-faso.php:116
 #: tb/results/forms/update-burkina-faso.php:115
 msgid "Health Facility/POE State"
-msgstr "Établissement de santé/POE État"
+msgstr "FOSA/POE État"
 
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
@@ -11236,7 +11237,7 @@ msgstr "Établissement de santé/POE État"
 #: tb/requests/forms/edit-burkina-faso.php:130
 #: tb/results/forms/update-burkina-faso.php:129
 msgid "Health Facility/POE"
-msgstr "Établissement de santé/POE"
+msgstr "FOSA/POE"
 
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
@@ -11251,7 +11252,7 @@ msgstr "Comté du patient"
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
 msgid "Patient City/Village"
-msgstr "CITY"
+msgstr "Ville/village du patient"
 
 #: covid-19/requests/forms/add-cameroon.php:65
 #: covid-19/requests/forms/add-rwanda.php:43
@@ -11580,7 +11581,7 @@ msgstr "Veuillez sélectionner le sexe"
 #: vl/requests/forms/edit-cameroon.php:337
 #: vl/results/forms/update-cameroon-result.php:373
 msgid "Universal Health Coverage"
-msgstr "Couverture santé universelle"
+msgstr "Code Couverture Santé Universelle"
 
 #: covid-19/requests/forms/add-cameroon.php:252
 #: covid-19/requests/forms/edit-cameroon.php:266
@@ -11916,7 +11917,7 @@ msgstr "Date de réception"
 #: eid/results/forms/update-southsudan-result.php:492
 #: generic-tests/requests/add-request.php:683
 #: generic-tests/requests/clone-request.php:1027
-#: generic-tests/requests/edit-request.php:905
+#: generic-tests/requests/edit-request.php:906
 #: generic-tests/results/update-generic-test-result.php:872
 #: hepatitis/requests/forms/add-rwanda.php:276
 #: hepatitis/requests/forms/add-rwanda.php:288
@@ -12141,12 +12142,12 @@ msgstr ""
 #: covid-19/requests/forms/add-cameroon.php:590 facilities/addFacility.php:104
 #: facilities/editFacility.php:165
 msgid "Please enter facility name"
-msgstr "Veuillez saisir le nom de l'établissement"
+msgstr "Veuillez saisir le nom de FOSA"
 
 #: covid-19/requests/forms/add-cameroon.php:598 facilities/addFacility.php:116
 #: facilities/editFacility.php:174
 msgid "Please enter facility code"
-msgstr "Veuillez saisir le code de l'établissement"
+msgstr "Veuillez saisir le code de FOSA"
 
 #: covid-19/requests/forms/add-cameroon.php:607
 #: covid-19/requests/forms/add-cameroon.php:609
@@ -12157,7 +12158,7 @@ msgstr "Autre ID"
 #: facilities/editFacility.php:192 facilities/facilities.php:73
 #: users/addUser.php:237 users/editUser.php:310
 msgid "Please select facility type"
-msgstr "Veuillez sélectionner le type d'établissement"
+msgstr "Veuillez sélectionner le type de FOSA"
 
 #: covid-19/requests/forms/add-cameroon.php:616 facilities/addFacility.php:160
 #: facilities/editFacility.php:211
@@ -12270,8 +12271,8 @@ msgstr "Pays"
 #: covid-19/requests/forms/add-cameroon.php:716 facilities/addFacility.php:317
 #: facilities/addFacility.php:320 facilities/editFacility.php:338
 #: facilities/editFacility.php:340 instruments/add-instrument.php:469
-#: instruments/add-instrument.php:619 instruments/edit-instrument.php:570
-#: instruments/edit-instrument.php:602 instruments/edit-instrument.php:721
+#: instruments/add-instrument.php:633 instruments/edit-instrument.php:570
+#: instruments/edit-instrument.php:602 instruments/edit-instrument.php:736
 msgid "Latitude"
 msgstr "Latitude"
 
@@ -12284,8 +12285,8 @@ msgstr "Latitude"
 #: covid-19/requests/forms/add-cameroon.php:724 facilities/addFacility.php:327
 #: facilities/addFacility.php:330 facilities/editFacility.php:347
 #: facilities/editFacility.php:349 instruments/add-instrument.php:472
-#: instruments/add-instrument.php:622 instruments/edit-instrument.php:573
-#: instruments/edit-instrument.php:605 instruments/edit-instrument.php:724
+#: instruments/add-instrument.php:636 instruments/edit-instrument.php:573
+#: instruments/edit-instrument.php:605 instruments/edit-instrument.php:739
 msgid "Longitude"
 msgstr "Longitude"
 
@@ -12339,7 +12340,7 @@ msgstr "Sélectionner Autorisé par"
 #: vl/requests/forms/edit-drc.php:244
 #: vl/results/forms/update-drc-result.php:195
 msgid "Please enter the Patient ID"
-msgstr "No Patient"
+msgstr "Code TARV du patient"
 
 #: covid-19/requests/forms/add-drc.php:1252
 msgid "Please enter Patient Age or Date of Birth"
@@ -12371,7 +12372,7 @@ msgstr "Veuillez choisir le comté"
 #: eid/results/forms/update-drc-result.php:113
 #: vl/requests/forms/add-drc.php:114 vl/results/forms/update-drc-result.php:143
 msgid "Please choose facility"
-msgstr "Veuillez choisir un établissement"
+msgstr "Veuillez choisir un FOSA"
 
 #: covid-19/requests/forms/edit-cameroon.php:230
 #: covid-19/results/forms/update-cameroon-result.php:214
@@ -12836,7 +12837,7 @@ msgstr "Point de collecte"
 
 #: dashboard/getSampleCount.php:165
 msgid "Select facility name to filter"
-msgstr "Sélectionner le nom de l'établissement à filtrer"
+msgstr "Sélectionner le nom de FOSA à filtrer"
 
 #: dashboard/getSampleCount.php:181
 msgid "SAMPLES REGISTERED BY COLLECTION POINT"
@@ -13358,7 +13359,7 @@ msgstr "Partenaire financier"
 #: vl/requests/forms/edit-cameroon.php:422
 #: vl/results/forms/update-cameroon-result.php:453
 msgid "Requesting Clinician Name"
-msgstr "Nom du clinicien demandeur"
+msgstr "Nom du Prescriteur"
 
 #: eid/requests/forms/add-burkina-faso.php:133
 #: eid/requests/forms/edit-burkina-faso.php:147
@@ -13515,7 +13516,7 @@ msgstr "copies/mL"
 #: eid/results/forms/update-burkina-faso-result.php:268
 #: eid/results/forms/update-cameroon-result.php:305
 msgid "Date of HIV diagnosis"
-msgstr "Date d'entrée en vigueur"
+msgstr "Date de diagnostic de l'infection à VIH"
 
 #: eid/requests/forms/add-burkina-faso.php:258
 #: eid/requests/forms/add-cameroon.php:310
@@ -13764,7 +13765,7 @@ msgstr "Sauvegarder"
 #: eid/requests/forms/edit-cameroon.php:91
 #: eid/results/forms/update-cameroon-result.php:86
 msgid "HEALTH FACILITY INFORMATION"
-msgstr "INFORMATIONS SUR LES ÉTABLISSEMENTS DE SANTÉ"
+msgstr "INFORMATIONS SUR LES FOSA"
 
 #: eid/requests/forms/add-cameroon.php:92
 #: eid/requests/forms/edit-burkina-faso.php:86
@@ -14232,7 +14233,7 @@ msgstr "Sélectionner Approuvé par"
 #: eid/results/forms/update-drc-result.php:156
 #: vl/requests/forms/add-drc.php:122 vl/results/forms/update-drc-result.php:151
 msgid "Please enter requesting clinician name"
-msgstr "Veuillez saisir le nom du clinicien demandeur"
+msgstr "Veuillez saisir le nom du prescriteur"
 
 #: eid/requests/forms/add-png.php:553 eid/requests/forms/add-png.php:607
 #: eid/requests/forms/edit-png.php:592 eid/requests/forms/edit-png.php:646
@@ -14707,7 +14708,7 @@ msgstr "Les détails de l'installation ont été mis à jour avec succès"
 
 #: facilities/facilities.php:113
 msgid "Please select Active Facility"
-msgstr "Veuillez sélectionner l'établissement actif"
+msgstr "Veuillez sélectionner le FOSA actif"
 
 #: facilities/facilities.php:155
 msgid "Bulk Upload"
@@ -14719,7 +14720,7 @@ msgstr "Enregistré au laboratoire de test"
 
 #: facilities/facilities.php:158
 msgid "Manage Health Facilities"
-msgstr "Gérer les établissements de santé"
+msgstr "Gérer les FOSA"
 
 #: facilities/getFacilityMapUser.php:26
 msgid "User-Facility Map"
@@ -14762,9 +14763,8 @@ msgid ""
 "No facilities found for the selected facility type. Please add a new "
 "facility or edit an existing facility."
 msgstr ""
-"Aucun établissement n'a été trouvé pour le type d'établissement sélectionné. "
-"Veuillez ajouter une nouvelle installation ou modifier une installation "
-"existante."
+"Aucun FOSA n'a été trouvé pour le type de FOSA sélectionné. Veuillez ajouter "
+"une nouvelle installation ou modifier une installation existante."
 
 #: facilities/mapTestTypeHelper.php:47
 msgid "Facility Mapped to Selected Test Type successfully"
@@ -14823,9 +14823,7 @@ msgstr "Nom et code de la structure"
 
 #: facilities/upload-facilities.php:119
 msgid "Update if Facility Name and Facility Code match"
-msgstr ""
-"Mettre à jour si le nom de l'établissement et le code de l'établissement "
-"correspondent"
+msgstr "Mettre à jour si le nom de FOSA et le code de FOSA correspondent"
 
 #: facilities/upload-facilities.php:126 vl/requests/upload-storage.php:89
 msgid "Upload File"
@@ -15241,7 +15239,7 @@ msgstr "Texte"
 #: generic-tests/configuration/edit-test-type.php:350
 #: generic-tests/configuration/edit-test-type.php:413
 #: generic-tests/configuration/edit-test-type.php:834
-#: system-admin/log-files/log-files.php:34
+#: system-admin/log-files/log-files.php:78
 #: system-admin/user-login-history/userLoginIndex.php:29
 #: vl/requests/forms/add-burkina-faso.php:346
 #: vl/requests/forms/add-burkina-faso.php:360
@@ -15399,7 +15397,7 @@ msgstr "Envoie de résultats par email"
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1847
-#: generic-tests/requests/edit-request.php:1732
+#: generic-tests/requests/edit-request.php:1733
 #: generic-tests/requests/getTestTypeForm.php:306
 #: generic-tests/requests/getTestTypeForm.php:359
 #: generic-tests/results/update-generic-test-result.php:1692
@@ -15413,7 +15411,7 @@ msgstr "Covid-19-Saisir le résultat manuellement"
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1847
-#: generic-tests/requests/edit-request.php:1732
+#: generic-tests/requests/edit-request.php:1733
 #: generic-tests/requests/getTestTypeForm.php:306
 #: generic-tests/requests/getTestTypeForm.php:359
 #: generic-tests/results/update-generic-test-result.php:1692
@@ -16258,8 +16256,8 @@ msgstr "Demande de test de laboratoire ajoutée avec succès"
 
 #: generic-tests/requests/add-request.php:770
 #: generic-tests/requests/add-request.php:1571
-#: generic-tests/requests/edit-request.php:967
-#: generic-tests/requests/edit-request.php:1694
+#: generic-tests/requests/edit-request.php:968
+#: generic-tests/requests/edit-request.php:1695
 #: generic-tests/results/update-generic-test-result.php:935
 #: generic-tests/results/update-generic-test-result.php:1654
 msgid "Select Sub Tests"
@@ -16267,7 +16265,7 @@ msgstr "Sélectionner les tests secondaires"
 
 #: generic-tests/requests/add-request.php:789
 #: generic-tests/requests/clone-request.php:1129
-#: generic-tests/requests/edit-request.php:1014
+#: generic-tests/requests/edit-request.php:1015
 msgid "Select Specimen Type"
 msgstr "Sélectionner le type de spécimen"
 
@@ -16275,10 +16273,10 @@ msgstr "Sélectionner le type de spécimen"
 #: generic-tests/requests/add-request.php:1494
 #: generic-tests/requests/clone-request.php:1774
 #: generic-tests/requests/clone-request.php:1778
-#: generic-tests/requests/edit-request.php:1582
-#: generic-tests/requests/edit-request.php:1586
-#: generic-tests/requests/edit-request.php:1665
-#: generic-tests/requests/edit-request.php:1669
+#: generic-tests/requests/edit-request.php:1583
+#: generic-tests/requests/edit-request.php:1587
+#: generic-tests/requests/edit-request.php:1666
+#: generic-tests/requests/edit-request.php:1670
 #: generic-tests/results/update-generic-test-result.php:1555
 #: generic-tests/results/update-generic-test-result.php:1559
 #: generic-tests/results/update-generic-test-result.php:1631
@@ -16389,9 +16387,9 @@ msgid "Both"
 msgstr "Les deux"
 
 #: global-config/editGlobalConfig.php:122 instruments/add-instrument.php:439
-#: instruments/add-instrument.php:458 instruments/add-instrument.php:612
+#: instruments/add-instrument.php:458 instruments/add-instrument.php:626
 #: instruments/edit-instrument.php:527 instruments/edit-instrument.php:559
-#: instruments/edit-instrument.php:591 instruments/edit-instrument.php:714
+#: instruments/edit-instrument.php:591 instruments/edit-instrument.php:729
 #: system-admin/api-stats/api-stats.php:52
 msgid "Date Format"
 msgstr "Format de date"
@@ -17789,9 +17787,8 @@ msgid "Configuration Machine Name"
 msgstr "Configuration Nom de la machine"
 
 #: import-result/import-file.php:118
-msgid "Please select the import config machine name"
-msgstr ""
-"Veuillez sélectionner le nom de la machine de configuration d'importation"
+msgid "Please select instrument"
+msgstr "Veuillez sélectionner un instrument"
 
 #: import-result/import-file.php:128
 msgid "Upload"
@@ -17927,8 +17924,8 @@ msgstr ""
 "Êtes-vous sûr de vouloir marquer tous les échantillons comme acceptés ?"
 
 #: instruments/add-instrument-helper.php:93
-msgid "Result Import configuration initited for "
-msgstr "Résultat Configuration d'importation initiée pour "
+msgid "Instrumemnt import configuration initited for "
+msgstr "Configuration de l'importation d'instruments initiée pour"
 
 #: instruments/add-instrument-helper.php:93
 msgid "Please proceed to write the import logic in the file "
@@ -17969,8 +17966,8 @@ msgid "eg. roche.php or abbott.php"
 msgstr "ex. roche.php ou abbott.php"
 
 #: instruments/add-instrument.php:123 instruments/add-instrument.php:455
-#: instruments/add-instrument.php:611 instruments/edit-instrument.php:556
-#: instruments/edit-instrument.php:588 instruments/edit-instrument.php:713
+#: instruments/add-instrument.php:625 instruments/edit-instrument.php:556
+#: instruments/edit-instrument.php:588 instruments/edit-instrument.php:728
 msgid "Please enter machine name"
 msgstr "Veuillez saisir le nom de la machine"
 
@@ -18301,9 +18298,9 @@ msgid "Machine Names"
 msgstr "Noms des machines"
 
 #: instruments/add-instrument.php:436 instruments/add-instrument.php:455
-#: instruments/add-instrument.php:611 instruments/edit-instrument.php:524
+#: instruments/add-instrument.php:625 instruments/edit-instrument.php:524
 #: instruments/edit-instrument.php:556 instruments/edit-instrument.php:588
-#: instruments/edit-instrument.php:713
+#: instruments/edit-instrument.php:728
 msgid "Machine Name"
 msgstr "Nom système"
 
@@ -18316,41 +18313,39 @@ msgstr "Nom du fichier de l'instrument"
 msgid "Is this a POC Device?"
 msgstr "S'agit-il d'un dispositif POC ?"
 
-#: instruments/add-instrument.php:458 instruments/add-instrument.php:612
+#: instruments/add-instrument.php:458 instruments/add-instrument.php:626
 #: instruments/edit-instrument.php:559 instruments/edit-instrument.php:591
-#: instruments/edit-instrument.php:714
+#: instruments/edit-instrument.php:729
 msgid "Please enter date format"
 msgstr "Veuillez saisir le format de la date"
 
-#: instruments/add-instrument.php:461 instruments/add-instrument.php:613
+#: instruments/add-instrument.php:461 instruments/add-instrument.php:627
 #: instruments/edit-instrument.php:562 instruments/edit-instrument.php:594
-#: instruments/edit-instrument.php:715
+#: instruments/edit-instrument.php:730
 msgid "File Name"
 msgstr "Nom du fichier"
 
-#: instruments/add-instrument.php:461 instruments/add-instrument.php:613
+#: instruments/add-instrument.php:461 instruments/add-instrument.php:627
 #: instruments/edit-instrument.php:178 instruments/edit-instrument.php:562
-#: instruments/edit-instrument.php:594 instruments/edit-instrument.php:715
+#: instruments/edit-instrument.php:594 instruments/edit-instrument.php:730
 msgid "Please enter file name"
 msgstr "Veuillez saisir le nom du fichier"
 
-#: instruments/add-instrument.php:516 instruments/edit-instrument.php:650
+#: instruments/add-instrument.php:516 instruments/edit-instrument.php:665
 msgid "Select Test Types"
 msgstr "Sélectionner les types de tests"
 
-#: instruments/edit-instrument-helper.php:123
-msgid "Import config details updated successfully"
-msgstr ""
-"Les détails de la configuration de l'importation ont été mis à jour avec "
-"succès"
+#: instruments/edit-instrument-helper.php:111
+msgid "Instrument updated successfully"
+msgstr "L'instrument a été mis à jour avec succès"
 
 #: instruments/edit-instrument.php:82 instruments/edit-instrument.php:89
 msgid "Edit Instrument"
 msgstr "Modifier l'instrument"
 
 #: instruments/edit-instrument.php:252
-msgid "Please select import config status"
-msgstr "Veuillez sélectionner l'état de la configuration de l'importation"
+msgid "Please select instrument status"
+msgstr "Veuillez sélectionner l'état de l'instrument"
 
 #: instruments/edit-instrument.php:377
 msgid "Please enter Approved By for CD4 Test"
@@ -18419,10 +18414,6 @@ msgstr "Veuillez saisir le nombre de calibrateurs dans l'hépatite"
 #: instruments/edit-instrument.php:476
 msgid "tb"
 msgstr "tb"
-
-#: instruments/edit-instrument.php:646
-msgid "Select a user"
-msgstr "Sélectionnez un utilisateur"
 
 #: instruments/instruments.php:11 instruments/instruments.php:18
 #: system/translate-strings.php:26 vl/reference/vl-results.php:33
@@ -18979,7 +18970,7 @@ msgid "User Login History"
 msgstr "Historique de connexion de l’utilisateur"
 
 #: system-admin/admin-header.php:162 system-admin/log-files/log-files.php:2
-#: system-admin/log-files/log-files.php:20
+#: system-admin/log-files/log-files.php:64
 msgid "Log File Viewer"
 msgstr "Journal d'audit"
 
@@ -19100,7 +19091,7 @@ msgstr "Nom de l'installation d'instance"
 
 #: system-admin/instance-overview/instanceIndex.php:73
 msgid "Instance Facility Code"
-msgstr "Instance Code de l'installation"
+msgstr "Instance Code de FOSA"
 
 #: system-admin/instance-overview/instanceIndex.php:79
 msgid "Instance Facility Type"
@@ -19139,11 +19130,11 @@ msgstr "Référence à distance Dernière synchronisation"
 msgid "No record found"
 msgstr "Aucun enregistrement trouvé"
 
-#: system-admin/log-files/log-files.php:23
+#: system-admin/log-files/log-files.php:67
 msgid "Manage Log File Viewer"
 msgstr "Gestion du visualisateur de fichiers journaux"
 
-#: system-admin/log-files/log-files.php:36
+#: system-admin/log-files/log-files.php:80
 #: system-admin/user-login-history/userLoginIndex.php:31
 msgid "Select User Date"
 msgstr "Sélectionner la date de l'utilisateur"
@@ -19802,7 +19793,7 @@ msgstr "Ajouter un plan de l'installation"
 
 #: system/translate-strings.php:120
 msgid "Edit Facility Map"
-msgstr "Modifier le plan de l'établissement"
+msgstr "Modifier le plan de FOSA"
 
 #: system/translate-strings.php:121
 msgid "Export VL Data in Excel"
@@ -20557,7 +20548,7 @@ msgstr "TUBERCULOSE-FORMULAIRE DE DEMANDE DE TEST"
 #: tb/requests/forms/edit-burkina-faso.php:100
 #: tb/results/forms/update-burkina-faso.php:99
 msgid "REFERRING HEALTH FACILITY INFORMATION"
-msgstr "INFORMATIONS SUR L'ÉTABLISSEMENT DE SANTÉ RÉFÉRENT"
+msgstr "INFORMATIONS SUR LE FOSA RÉFÉRENT"
 
 #: tb/requests/forms/add-burkina-faso.php:118
 #: tb/requests/forms/edit-burkina-faso.php:138
@@ -20599,7 +20590,7 @@ msgstr "INFORMATION DU PATIENT"
 #: tb/requests/forms/edit-burkina-faso.php:192
 #: tb/results/forms/update-burkina-faso.php:191
 msgid "Unique ART Number"
-msgstr "Numéro unique ART"
+msgstr "Code TARV du patient"
 
 #: tb/requests/forms/add-burkina-faso.php:182
 #: tb/requests/forms/edit-burkina-faso.php:202
@@ -21020,11 +21011,11 @@ msgstr "Mise à jour de l'utilisateur réussie"
 
 #: vl/program-management/export-vl-results.php:33
 msgid "Region of sending facility"
-msgstr "Région de l'établissement d'origine"
+msgstr "Région de FOSA d'origine"
 
 #: vl/program-management/export-vl-results.php:33
 msgid "District of sending facility"
-msgstr "District de l'établissement d'origine"
+msgstr "District de FOSA d'origine"
 
 #: vl/program-management/export-vl-results.php:33
 msgid "Sending facility"
@@ -21063,7 +21054,7 @@ msgstr "Demande de contact"
 
 #: vl/program-management/export-vl-results.php:33
 msgid "Treatment start date"
-msgstr "Date d’initiation ARV"
+msgstr "Date d’initiation du traitement ARV"
 
 #: vl/program-management/export-vl-results.php:33
 msgid "Treatment Protocol"
@@ -21155,7 +21146,7 @@ msgstr "Date du test"
 
 #: vl/program-management/export-vl-results.php:33
 msgid "Date of result sent to facility"
-msgstr "Date d'envoi du résultat à l'établissement"
+msgstr "Date d'envoi du résultat à la FOSA"
 
 #: vl/program-management/export-vl-results.php:33
 msgid "Sample Rejected"
@@ -21236,7 +21227,7 @@ msgstr "Date du nouveau test"
 
 #: vl/program-management/export-vl-results.php:33
 msgid "Result sent back to facility (yes or no)"
-msgstr "Résultat renvoyé à l'établissement (oui ou non)"
+msgstr "Résultat renvoyé à la FOSA (oui ou non)"
 
 #: vl/program-management/export-vl-results.php:33
 msgid "Observations"
@@ -21616,7 +21607,7 @@ msgstr "Ajouter les résultats VL"
 #: vl/reference/vl-results.php:32 vl/requests/forms/add-cameroon.php:568
 #: vl/requests/forms/edit-cameroon.php:624
 #: vl/results/forms/update-cameroon-result.php:652
-#: vl/results/pdf/result-pdf-cameroon.php:386
+#: vl/results/pdf/result-pdf-cameroon.php:387
 msgid "Viral Load Result"
 msgstr "Résultat de la charge virale"
 
@@ -21790,7 +21781,7 @@ msgstr "Date de sortie"
 #: vl/results/forms/update-burkina-faso-result.php:169
 #: vl/results/forms/update-cameroon-result.php:165
 msgid "VIRAL LOAD LABORATORY REQUEST FORM"
-msgstr "FORMULAIRE DE DEMANDE DE LABORATOIRE DE CHARGE VIRALE"
+msgstr "FICHE DE DEMANDE DE CHARGE VIRALE VIH"
 
 #: vl/requests/forms/add-burkina-faso.php:79
 #: vl/requests/forms/edit-burkina-faso.php:171
@@ -22122,7 +22113,7 @@ msgstr "Veuillez sélectionner le nom d'une clinique ou d'un centre de santé"
 #: vl/requests/forms/add-cameroon.php:165
 #: vl/requests/forms/edit-cameroon.php:208
 msgid "Facility code"
-msgstr "Code de l'installation"
+msgstr "Code de FOSA"
 
 #: vl/requests/forms/add-cameroon.php:171
 #: vl/requests/forms/edit-cameroon.php:214
@@ -22236,13 +22227,13 @@ msgstr "Veuillez choisir le type d'échantillon"
 
 #: vl/requests/forms/add-cameroon.php:377
 msgid "Name Of Requester"
-msgstr "Nom du demandeur"
+msgstr "Nom du prescriteur"
 
 #: vl/requests/forms/add-cameroon.php:378
 #: vl/requests/forms/edit-cameroon.php:424
 #: vl/results/forms/update-cameroon-result.php:455
 msgid "Requesting Clinician name"
-msgstr "Nom du demandeur"
+msgstr "Nom du prescriteur"
 
 #: vl/requests/forms/add-cameroon.php:384
 #: vl/requests/forms/edit-cameroon.php:430
@@ -22257,7 +22248,7 @@ msgstr "Veuillez saisir le numéro de téléphone du clinicien de la demande"
 #: vl/results/forms/update-cameroon-result.php:474
 #: vl/results/forms/update-cameroon-result.php:475
 msgid "Treatment Start Date"
-msgstr "Date d’initiation ARV"
+msgstr "Date d’initiation du traitement ARV"
 
 #: vl/requests/forms/add-cameroon.php:406
 #: vl/requests/forms/edit-cameroon.php:450
@@ -22599,7 +22590,7 @@ msgstr "Veuillez entrer le mot de passe"
 
 #: vl/result-mail/editTestResultEmailConfig.php:97
 msgid "Date Of ART Initiation"
-msgstr "Date d'instauration du traitement antirétroviral"
+msgstr "Date d'initiation du traitement ARV"
 
 #: vl/result-mail/editTestResultEmailConfig.php:101
 msgid "Date of Last VL Test"
@@ -22616,7 +22607,8 @@ msgstr "Résultat de la charge virale (copiesl/ml)"
 #: vl/result-mail/editTestResultEmailConfig.php:111
 #: vl/results/pdf/result-pdf-cameroon.php:373
 #: vl/results/pdf/result-pdf-cameroon.php:377
-#: vl/results/pdf/result-pdf-cameroon.php:384
+#: vl/results/pdf/result-pdf-cameroon.php:383
+#: vl/results/pdf/result-pdf-drc.php:275
 msgid "Log Value"
 msgstr "Valeur logarithmique"
 
@@ -22725,7 +22717,7 @@ msgstr "FICHE DE RESULTAT CHARGE VIRAL VIH"
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:226
 msgid "Patient ART Code"
-msgstr "Code ART"
+msgstr "Code TARV du patient"
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:231
 msgid "Sex : "
@@ -22745,7 +22737,7 @@ msgstr "Recueilli par"
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:251
 msgid "Name of Requester"
-msgstr "Nom du demandeur"
+msgstr "Nom du prescriteur"
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:252
 msgid "Contact of Requester"
@@ -22797,7 +22789,7 @@ msgstr "Autorisé et validé par"
 
 #: vl/results/pdf/result-pdf-cameroon.php:231
 msgid "FACILITY"
-msgstr "Facilité"
+msgstr "FOSA"
 
 #: vl/results/pdf/result-pdf-cameroon.php:232
 msgid "FACILITY CODE"
@@ -22817,7 +22809,7 @@ msgstr "PROJET"
 
 #: vl/results/pdf/result-pdf-cameroon.php:246
 msgid "REQUESTING CLINICIAN NAME"
-msgstr "NOM DU CLINICIEN DEMANDEUR"
+msgstr "NOM DU PRESCRITEUR"
 
 #: vl/results/pdf/result-pdf-cameroon.php:247
 msgid "TEL"
@@ -22833,7 +22825,7 @@ msgstr "NOM DU PATIENT"
 
 #: vl/results/pdf/result-pdf-cameroon.php:264
 msgid "PATIENT IDENTIFIER"
-msgstr "ID DU PATIENT"
+msgstr "CODE TARV"
 
 #: vl/results/pdf/result-pdf-cameroon.php:265
 msgid "ARV PROTOCOL"
@@ -23013,6 +23005,21 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Please select the import config machine name"
+#~ msgstr ""
+#~ "Veuillez sélectionner le nom de la machine de configuration d'importation"
+
+#~ msgid "Import config details updated successfully"
+#~ msgstr ""
+#~ "Les détails de la configuration de l'importation ont été mis à jour avec "
+#~ "succès"
+
+#~ msgid "Please select import config status"
+#~ msgstr "Veuillez sélectionner l'état de la configuration de l'importation"
+
+#~ msgid "Select a user"
+#~ msgstr "Sélectionnez un utilisateur"
 
 #~ msgid "&lt; 20"
 #~ msgstr "&lt ; 20"
