@@ -2,7 +2,7 @@
 
 # To use this script:
 # cd ~;
-# wget -O upgrade.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/db-backup.sh
+# wget -O db-backup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/db-backup.sh
 # sudo chmod u+x db-backup.sh;
 # sudo ./db-backup.sh;
 
@@ -12,11 +12,18 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Function to log messages
+log_action() {
+    local message=$1
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>/var/log/vlsm_db_backup.log
+}
+
 error_handling() {
     local last_cmd=$1
     local last_line=$2
     local last_error=$3
     echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
+    log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
     exit 1
 }
 
@@ -24,6 +31,14 @@ error_handling() {
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
 echo "This script will help you export selected MySQL databases."
+
+# Start MySQL if it's stopped
+echo "Checking MySQL status..."
+if ! systemctl is-active --quiet mysql; then
+    echo "MySQL is stopped, starting MySQL..."
+    log_action "MySQL is stopped, starting MySQL..."
+    systemctl start mysql
+fi
 
 # Ask for MySQL root or administrative username
 read -p "Enter MySQL username [root]: " USERNAME
@@ -72,8 +87,10 @@ done
 
 # Confirm selected databases
 echo "You have selected the following databases for export:"
+log_action "Selected databases for export:"
 for db in "${SELECTED_DBS[@]}"; do
     echo "- $db"
+    log_action "- $db"
 done
 
 # Ask for the location of export
@@ -86,6 +103,7 @@ if [ -z "$EXPORT_LOCATION" ]; then
     fi
 fi
 mkdir -p "$EXPORT_LOCATION" # Ensure directory exists
+log_action "Export location: $EXPORT_LOCATION"
 
 # Change to the export directory
 cd "$EXPORT_LOCATION" || exit
@@ -111,17 +129,20 @@ for db in "${SELECTED_DBS[@]}"; do
     (mysqldump --default-character-set=utf8mb4 -u "$USERNAME" -p"$PASSWORD" "$db" | gzip >"${db}-$(date +%Y-%m-%d-%H-%M-%S).sql.gz") &
     spinner
     echo "Exported $db to ${EXPORT_LOCATION}/${db}-$(date +%Y-%m-%d-%H-%M-%S).sql.gz"
+    log_action "Exported $db to ${EXPORT_LOCATION}/${db}-$(date +%Y-%m-%d-%H-%M-%S).sql.gz"
 done
 
-# Ask if the user wants to restart the services
-read -p "Restart Apache and MySQL? (y/n): " RESTART_SERVICES
-if [[ "$RESTART_SERVICES" == "y" || "$RESTART_SERVICES" == "Y" ]]; then
+# Example usage within your restart block
+if [[ "$RESTART_SERVICES" == "yes" || "$RESTART_SERVICES" == "y" || "$RESTART_SERVICES" == "Y" ]]; then
     echo "Restarting Apache2..."
-    service apache2 start
+    systemctl start apache2
+    log_action "Apache2 restarted"
     echo "Restarting MySQL..."
-    service mysql start
+    systemctl start mysql
+    log_action "MySQL restarted"
 else
     echo "Services have not been restarted; remember to manually restart services when appropriate."
+    log_action "Services not restarted by user decision"
 fi
 
 echo "Script completed."
