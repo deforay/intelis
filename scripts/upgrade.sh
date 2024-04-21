@@ -2,7 +2,7 @@
 
 # To use this script:
 # cd ~;
-# wget -O upgrade.sh https://raw.githubusercontent.com/deforay/vlsm/master/docs/upgrade.sh
+# wget -O upgrade.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/upgrade.sh
 # sudo chmod u+x upgrade.sh;
 # sudo ./upgrade.sh;
 
@@ -11,6 +11,17 @@ if [ "$EUID" -ne 0 ]; then
     echo "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
     exit 1
 fi
+
+error_handling() {
+    local last_cmd=$1
+    local last_line=$2
+    local last_error=$3
+    echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
+    exit 1
+}
+
+# Error trap
+trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
 # Function to get Ubuntu version
 get_ubuntu_version() {

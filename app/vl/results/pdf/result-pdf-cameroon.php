@@ -198,7 +198,7 @@ if (!empty($result)) {
      }
 
      if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
-          $result['patient_gender'] = _translate('Unreported');
+          $result['patient_gender'] = 'Unreported';
      }
 
      $smileyContent = '';

@@ -128,7 +128,7 @@ require_once APPLICATION_PATH . '/header.php';
 													<input type="text" id="vlSampleCollectionDate" name="vlSampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
 												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('vl');" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('vl');"><span>
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSampleResultData('vl');"><span>
 															<?= _translate("Reset"); ?>
 														</span></button>
 												</td>
@@ -172,7 +172,7 @@ require_once APPLICATION_PATH . '/header.php';
 													<input type="text" id="recencySampleCollectionDate" name="recencySampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 												</td>
 												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('recency')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('recency');"><span>
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSampleResultData('recency');"><span>
 															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
@@ -218,7 +218,7 @@ require_once APPLICATION_PATH . '/header.php';
 													<input type="text" id="eidSampleCollectionDate" name="eidSampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
 												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('eid')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('eid');"><span>
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSampleResultData('eid');"><span>
 															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
@@ -265,7 +265,7 @@ require_once APPLICATION_PATH . '/header.php';
 													<input type="text" id="covid19SampleCollectionDate" name="covid19SampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
 												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('covid19')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('covid19');"><span>
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSampleResultData('covid19');"><span>
 															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
@@ -313,7 +313,7 @@ require_once APPLICATION_PATH . '/header.php';
 													<input type="text" id="hepatitisSampleCollectionDate" name="hepatitisSampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
 												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('hepatitis')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('hepatitis');"><span>
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSampleResultData('hepatitis');"><span>
 															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
@@ -361,7 +361,7 @@ require_once APPLICATION_PATH . '/header.php';
 													<input type="text" id="tbSampleCollectionDate" name="tbSampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
 												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('tb')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('tb');"><span>
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSampleResultData('tb');"><span>
 															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
@@ -387,8 +387,8 @@ require_once APPLICATION_PATH . '/header.php';
 				<!-- TB END -->
 
 
-					<!-- CD4 START-->
-					<?php if (
+				<!-- CD4 START-->
+				<?php if (
 					isset(SYSTEM_CONFIG['modules']['cd4']) &&
 					SYSTEM_CONFIG['modules']['cd4'] === true && array_intersect($_SESSION['modules'], array('cd4'))
 				) { ?>
@@ -410,7 +410,7 @@ require_once APPLICATION_PATH . '/header.php';
 													<input type="text" id="cd4SampleCollectionDate" name="cd4SampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
 												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('cd4')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('cd4');"><span>
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSampleResultData('cd4');"><span>
 															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
@@ -460,7 +460,7 @@ require_once APPLICATION_PATH . '/header.php';
 													<input type="text" id="genericTestsSampleCollectionDate" name="genericTestsSampleCollectionDate" id="genericTestsSampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
 												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('generic-tests')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('generic-tests');"><span>
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSampleResultData('generic-tests');"><span>
 															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
@@ -554,7 +554,7 @@ require_once APPLICATION_PATH . '/header.php';
 		samplePieChartCounter = 0;
 
 		$.when(
-				searchVlRequestData(currentRequestType),
+				fetchSampleResultData(currentRequestType),
 			)
 			.done(function() {
 				$.unblockUI();
@@ -610,7 +610,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 	}
 
-	function searchVlRequestData(requestType) {
+	function fetchSampleResultData(requestType) {
 		//$.blockUI();
 		if (requestType == 'vl') {
 			currentXHR = $.post("/dashboard/getSampleResult.php", {
@@ -682,7 +682,7 @@ require_once APPLICATION_PATH . '/header.php';
 						$("#cd4SampleResultDetails").html(data);
 					}
 				});
-		}else if (requestType == 'generic-tests') {
+		} else if (requestType == 'generic-tests') {
 			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
 					type: 'generic-tests'
@@ -848,7 +848,7 @@ require_once APPLICATION_PATH . '/header.php';
 		return currentXHR;
 	}
 
-	function resetSearchVlRequestData(requestType) {
+	function resetSampleResultData(requestType) {
 		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate,#tbSampleCollectionDate,#cd4SampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
 			locale: {
 				cancelLabel: "<?= _translate("Clear", true); ?>",

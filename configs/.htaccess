@@ -1,0 +1,32 @@
+<IfModule mod_version.c>
+    <IfVersion < 2.4>
+        # Apache 2.2 syntax
+        Order deny,allow
+        Deny from all
+        # Optional: Uncomment to allow local access
+        # Allow from 127.0.0.1
+    </IfVersion>
+    <IfVersion >= 2.4>
+        # Apache 2.4 syntax
+        Require all denied
+        # Optional: Uncomment to allow local access
+        # Require local
+    </IfVersion>
+</IfModule>
+
+<IfModule !mod_version.c>
+    # Fallback behavior if mod_version isn't available
+    Order deny,allow
+    Deny from all
+    # Note: This fallback will not work correctly on Apache 2.4 without mod_version,
+    # as it will not understand 'Order' and related directives without mod_access_compat module
+</IfModule>
+
+# Disable directory listings
+Options -Indexes
+
+# Prevent script execution
+<FilesMatch "\.(php|pl|jsp|asp|sh|cgi|js|jar|class|py|rb|java|c|cpp|h|cs|aspx|shtml|shtm|stm|sht|shtml)$">
+    AddHandler cgi-script .php .pl .jsp .asp .sh .cgi .js .jar .class .py .rb .java .c .cpp .h .cs .aspx .shtml .shtm .stm .sht .shtml
+</FilesMatch>
+Options -ExecCGI

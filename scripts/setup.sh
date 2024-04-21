@@ -2,7 +2,7 @@
 
 # To use this script:
 # cd ~;
-# wget -O setup.sh https://raw.githubusercontent.com/deforay/vlsm/master/docs/setup.sh
+# wget -O setup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/setup.sh
 # sudo chmod u+x setup.sh;
 # sudo ./setup.sh;
 
@@ -12,8 +12,16 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+error_handling() {
+    local last_cmd=$1
+    local last_line=$2
+    local last_error=$3
+    echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
+    exit 1
+}
+
 # Error trap
-trap 'echo "An error occurred. Exiting..."; exit 1' ERR
+trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
 ask_yes_no() {
     local timeout=15
@@ -193,6 +201,25 @@ else
         exit 1
     }
     setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
+fi
+
+# Check for Brotli support and install it if necessary
+if ! apache2ctl -M | grep -q 'brotli_module'; then
+    echo "Installing Brotli module for Apache..."
+    apt-get install -y brotli
+
+    if [ $? -eq 0 ]; then
+        echo "Enabling Brotli module..."
+        a2enmod brotli
+        service apache2 restart || {
+            echo "Failed to restart Apache after enabling Brotli. Exiting..."
+            exit 1
+        }
+    else
+        echo "Failed to install Brotli module. Continuing without Brotli support..."
+    fi
+else
+    echo "Brotli module is already installed and enabled."
 fi
 
 # Prompt for MySQL root password and confirmation
