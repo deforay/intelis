@@ -186,16 +186,7 @@ if (!empty($result)) {
      }
 
      //Set Age
-     $age = 'Unknown';
-     if (!empty($result['patient_dob']) && $result['patient_dob'] != '0000-00-00') {
-          $dob = new DateTime($result['patient_dob']);
-          $today = new DateTime(date('Y-m-d'));
-          $age = $dob->diff($today)->y;
-     } elseif (!empty($result['patient_age_in_years']) && $result['patient_age_in_years'] > 0) {
-          $age = $result['patient_age_in_years'];
-     } elseif (!empty($result['patient_age_in_months']) && $result['patient_age_in_months'] > 0) {
-          $age = $result['patient_age_in_months'] . ' month' . ($result['patient_age_in_months'] > 1 ? 's' : '');
-     }
+     $age = DateUtility::calculatePatientAge($result);
 
      if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
           $result['patient_gender'] = 'Unreported';
@@ -249,9 +240,9 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['funding_source_name'] ?? '-') . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['request_clinician_name'] ?? '-') . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['request_clinician_name'] ?? '-') . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['request_clinician_phone_number'] ?? '-') . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_emails'] ?? '-') . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (isset($result['facility_emails']) && $result['facility_emails'] != '' && $result['facility_emails'] != 'NULL' ? $result['facility_emails'] : '-') . '</td>';
      $html .= '</tr>';
      $html .= '</table>';
      $html .= '</td>';
@@ -310,10 +301,10 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr>';
 
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(_translate($result['patient_gender'])) . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['patient_gender'])) . '</td>';
      if ($result['patient_gender'] == 'female') {
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(_translate($result['is_patient_breastfeeding']) ?? '-') . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(_translate($result['is_patient_pregnant']) ?? '-') . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['is_patient_breastfeeding'])) ?? '-' . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['is_patient_pregnant'])) ?? '-' . '</td>';
      } else {
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
@@ -324,7 +315,7 @@ if (!empty($result)) {
      if (!empty($result['health_insurance_code'])) {
           $html .= '<table style="padding:8px 4px 2px 2px;">';
           $html .= '<tr><td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH INSURANCE CODE") . '</td></tr>';
-          $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['health_insurance_code']) . '</td></tr>';
+          $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . $result['health_insurance_code'] . '</td></tr>';
           $html .= '</table>';
      }
 
