@@ -15,7 +15,7 @@ fi
 # Function to log messages
 log_action() {
     local message=$1
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>/var/log/db_backup.log
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>./db_backup.log
 }
 
 error_handling() {
