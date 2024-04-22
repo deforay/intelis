@@ -375,7 +375,7 @@ if (!empty($requestResult)) {
         }
 
         $html .= '<tr>';
-        $html .= '<td colspan="4" style="font-size:18px;font-weight:bold;font-weight:normal;"><br>RESULT : ' . $covid19Results[$result['result']] . ' ' . $resultFlag . '</td>';
+        $html .= '<td colspan="4" style="font-size:18px;font-weight:bold;font-weight:normal;"><br>RESULT : ' . _translate($covid19Results[$result['result']]) . ' ' . $resultFlag . '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -384,7 +384,7 @@ if (!empty($requestResult)) {
 
         if ($result['reason_for_sample_rejection'] != '') {
             $html .= '<tr>';
-            $html .= '<td colspan="4" style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">REJECTION REASON : <span style="font-weight:normal;">' . $result['rejection_reason_name'] . '</span></td>';
+            $html .= '<td colspan="4" style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">REJECTION REASON : <span style="font-weight:normal;">' . _translate($result['rejection_reason_name']) . '</span></td>';
             $html .= '</tr>';
         }
         if (trim((string) $result['lab_tech_comments']) != '') {

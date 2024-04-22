@@ -301,7 +301,7 @@ if (!empty($result)) {
     $html .= '<td colspan="3" style="line-height:5px;"></td>';
     $html .= '</tr>';
     $html .= '<tr>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_name']) . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate($result['sample_name']) . '</td>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (!empty($result['sample_tested_datetime']) ? $result['sample_tested_datetime'] : '-') . '</td>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['result_printed_datetime'] . '</td>';
     $html .= '</tr>';
@@ -311,15 +311,15 @@ if (!empty($result)) {
     $html .= '<br><br><table style="padding:4px 2px 2px 2px;">';
 
     if (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') {
-        $finalResult = 'Rejected';
+        $finalResult = _translate('Rejected');
     } else {
-        $finalResult = $eidResults[$result['result']];
+        $finalResult = _translate($eidResults[$result['result']]);
     }
 
-    $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $finalResult . '</td><td >' . $smileyContent . '</td></tr>';
+    $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . _translate($finalResult) . '</td><td >' . $smileyContent . '</td></tr>';
 
     if ($result['reason_for_sample_rejection'] != '') {
-        $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
+        $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . _translate($result['rejection_reason_name']) . '</td></tr>';
     }
 
     $html .= '</table>';

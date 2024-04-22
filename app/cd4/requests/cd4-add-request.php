@@ -34,7 +34,7 @@ $testingLabs = $facilitiesService->getTestingLabs('cd4');
 $healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('cd4', false, true);
 
 
-//get import config
+// get instruments
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
 

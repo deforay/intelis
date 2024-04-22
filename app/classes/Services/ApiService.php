@@ -11,7 +11,6 @@ use App\Utilities\MiscUtility;
 use GuzzleHttp\RequestOptions;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -205,7 +204,7 @@ class ApiService
      * Download a file from a given URL and save it to a specified path.
      *
      * @param string $fileUrl The URL of the file to download.
-     * @param string $downloadPath The local path where the file should be saved.
+     * @param string $downloadPath The local path with filename where the file should be saved.
      * @param array $allowedFileTypes An array of allowed file types.
      * @param string $safePath The base path to ensure the download path is within the allowed directory.
      * @return bool Returns true on successful download, false otherwise.
@@ -218,19 +217,24 @@ class ApiService
             $this->logError(new Exception("Invalid URL"), "Invalid URL provided for downloading");
             return false;
         }
-
+        $downloadFolder = dirname($downloadPath);
+        $fileName = basename($downloadPath);
+        // Check if $fileName is null or empty
+        if (empty($fileName)) {
+            $fileName = basename($fileUrl);
+        }
         // Normalize the safePath and downloadPath to ensure both are absolute and resolved
         $resolvedSafePath = realpath($safePath);
-        $resolvedDownloadPath = realpath($downloadPath);
+        $resolvedDownloadPath = realpath($downloadFolder);
 
         // If realpath returns false, the path does not exist
         if (!$resolvedDownloadPath) {
             // Try creating the directory or handling the error as needed
-            if (!mkdir($downloadPath, 0777, true) && !is_dir($downloadPath)) {
+            if (!MiscUtility::makeDirectory($downloadFolder) && !is_dir($downloadFolder)) {
                 $this->logError(new Exception("Invalid path"), "The download path cannot be created or does not exist");
                 return false;
             }
-            $resolvedDownloadPath = realpath($downloadPath);
+            $resolvedDownloadPath = realpath($downloadFolder);
         }
 
         // Ensure the downloadPath starts with the resolved safePath
@@ -260,7 +264,7 @@ class ApiService
             }
 
             // Save the file
-            $fileResource = fopen($resolvedDownloadPath, 'wb');
+            $fileResource = fopen($resolvedDownloadPath . DIRECTORY_SEPARATOR . $fileName, 'wb');
             if ($fileResource === false || stream_copy_to_stream($response->getBody()->detach(), $fileResource) === false) {
                 if ($fileResource !== false) {
                     fclose($fileResource);
@@ -270,7 +274,7 @@ class ApiService
             }
             fclose($fileResource);
             return true;
-        } catch (GuzzleException $e) {
+        } catch (Throwable $e) {
             $this->logError($e, "Unable to download file from $fileUrl");
             return false;
         }

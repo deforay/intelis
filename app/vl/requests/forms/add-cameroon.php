@@ -366,7 +366,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                       $selected = "selected='selected'";
                                                                  }
                                                                  foreach ($sResult as $name) { ?>
-                                                                      <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
+                                                                      <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?= _translate($name['sample_name']); ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>
@@ -473,7 +473,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                                      <select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType<?php echo $key; ?>" class="form-control controlVlTypeFields" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
                                                                                           <option value=""> <?= _translate("-- Select --"); ?> </option>
                                                                                           <?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
-                                                                                               <option value="<?php echo $testReasonId; ?>"><?php echo ucwords($row); ?></option>
+                                                                                               <option value="<?php echo $testReasonId; ?>"><?php echo _translate($row); ?></option>
                                                                                           <?php } ?>
                                                                                      </select>
                                                                                 </div>

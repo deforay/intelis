@@ -2,7 +2,7 @@
 
 # To use this script:
 # cd ~;
-# wget -O upgrade.sh https://raw.githubusercontent.com/deforay/vlsm/master/docs/upgrade.sh
+# wget -O upgrade.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/upgrade.sh
 # sudo chmod u+x upgrade.sh;
 # sudo ./upgrade.sh;
 
@@ -11,6 +11,24 @@ if [ "$EUID" -ne 0 ]; then
     echo "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
     exit 1
 fi
+
+# Function to log messages
+log_action() {
+    local message=$1
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>./upgrade.log
+}
+
+error_handling() {
+    local last_cmd=$1
+    local last_line=$2
+    local last_error=$3
+    echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
+    log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
+    exit 1
+}
+
+# Error trap
+trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
 # Function to get Ubuntu version
 get_ubuntu_version() {
@@ -69,16 +87,19 @@ fi
 echo "Enter the VLSM installation path [press enter to select /var/www/vlsm]: "
 read -t 60 -p "" vlsm_path
 vlsm_path="${vlsm_path:-/var/www/vlsm}"
+log_action "VLSM installation path is set to ${vlsm_path}."
 
 # Check if VLSM folder exists
 if [ ! -d "${vlsm_path}" ]; then
     echo "VLSM folder does not exist at ${vlsm_path}. Please first run the setup script."
+    log_action "VLSM folder does not exist at ${vlsm_path}. Please first run the setup script."
     exit 1
 fi
 
 # Check for MySQL
 if ! command -v mysql &>/dev/null; then
     echo "MySQL is not installed. Please first run the setup script."
+    log_action "MySQL is not installed. Please first run the setup script."
     exit 1
 fi
 
@@ -124,18 +145,21 @@ awk -v dsm="${desired_sql_mode}" -v dism="${desired_innodb_strict_mode}" \
 
 service mysql restart || {
     echo "Failed to restart MySQL. Exiting..."
+    log_action "Failed to restart MySQL. Exiting..."
     exit 1
 }
 
 # Check for Apache
 if ! command -v apache2ctl &>/dev/null; then
     echo "Apache is not installed. Please first run the setup script."
+    log_action "Apache is not installed. Please first run the setup script."
     exit 1
 fi
 
 # Check for PHP
 if ! command -v php &>/dev/null; then
     echo "PHP is not installed. Please first run the setup script."
+    log_action "PHP is not installed. Please first run the setup script."
     exit 1
 fi
 ask_yes_no() {
@@ -213,6 +237,7 @@ done
 # Check for Composer
 if ! command -v composer &>/dev/null; then
     echo "Composer is not installed. Please first run the setup script."
+    log_action "Composer is not installed. Please first run the setup script."
     exit 1
 fi
 
@@ -233,6 +258,8 @@ apt-get autoremove -y
 
 echo "Installing basic packages..."
 apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole
+
+log_action "Ubuntu packages updated/installed."
 
 setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
@@ -275,8 +302,10 @@ backup_database() {
         mysqldump -u root -p"${mysql_root_password}" "$db" | gzip >"${backup_location}/${db}_${timestamp}.sql.gz"
         if [[ $? -eq 0 ]]; then
             echo "Backup of $db completed successfully."
+            log_action "Backup of $db completed successfully."
         else
             echo "Failed to backup database: $db"
+            log_action "Failed to backup database: $db"
         fi
     done
 }
@@ -329,9 +358,10 @@ if ask_yes_no "Do you want to backup the database" "no"; then
 
     # Backup the selected databases
     backup_database "${selected_indexes[@]}"
-
+    log_action "Database backup completed."
 else
     echo "Skipping database backup as per user request."
+    log_action "Skipping database backup as per user request."
 fi
 
 # Ask the user if they want to backup the VLSM folder
@@ -343,8 +373,10 @@ if ask_yes_no "Do you want to backup the VLSM folder before updating?" "no"; the
     mkdir -p "${backup_folder}"
     rsync -a --delete --exclude "public/temporary/" "${vlsm_path}/" "${backup_folder}/" &
     spinner # This will show the spinner until the above process is completed
+    log_action "VLSM folder backed up to ${backup_folder}"
 else
     echo "Skipping VLSM folder backup as per user request."
+    log_action "Skipping VLSM folder backup as per user request."
 fi
 
 rm -rf "${vlsm_path}/run-once"
@@ -372,6 +404,8 @@ wait ${cp_pid}      # Wait for the copy process to finish
 rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
 
+log_action "VLSM copied to ${vlsm_path}."
+
 # Set proper permissions
 setfacl -R -m u:$USER:rwx,u:www-data:rwx "${vlsm_path}"
 
@@ -387,6 +421,8 @@ sudo -u www-data composer clear-cache
 
 sudo -u www-data composer update --no-dev &&
     sudo -u www-data composer dump-autoload -o
+
+log_action "Composer update completed."
 
 # Check for config.production.php and its content
 config_file="${vlsm_path}/configs/config.production.php"
@@ -418,6 +454,7 @@ sudo -u www-data composer post-update &
 pid=$!
 spinner "$pid"
 wait $pid
+log_action "Database migrations and post-update tasks completed."
 
 for script in "${vlsm_path}/run-once/*.php"; do
     php $script
@@ -470,6 +507,7 @@ pid=$!
 spinner "$pid"
 wait $pid
 echo "Remote data sync completed."
+log_action "Remote data sync completed."
 
 # The old startup.php file is no longer needed, but if it exists, make sure it is empty
 if [ -f "${vlsm_path}/startup.php" ]; then
@@ -477,8 +515,13 @@ if [ -f "${vlsm_path}/startup.php" ]; then
     touch "${vlsm_path}/startup.php"
 fi
 
+if [ -f "${vlsm_path}/cache/CompiledContainer.php" ]; then
+    rm "${vlsm_path}/cache/CompiledContainer.php"
+fi
+
 service apache2 restart
 
 setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
 echo "VLSM update complete."
+log_action "VLSM update complete."

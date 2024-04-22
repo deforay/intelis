@@ -62,11 +62,11 @@ try {
 			if (isset($facilityInfo[0]['geo_name'])) {
 				$_POST['state'] = $facilityInfo[0]['geo_name'];
 			} else {
-				$data = array(
+				$geoData = array(
 					'geo_name' => $_POST['provinceNew'],
 					'updated_datetime' => DateUtility::getCurrentDateTime(),
 				);
-				$db->insert($provinceTable, $data);
+				$db->insert($provinceTable, $geoData);
 				$_POST['state'] = $_POST['provinceNew'];
 			}
 		}
@@ -106,19 +106,19 @@ try {
 		$data = [
 			'facility_name' => $_POST['facilityName'],
 			'facility_code' => !empty($_POST['facilityCode']) ? $_POST['facilityCode'] : null,
-			'vlsm_instance_id' => $instanceId,
+			'vlsm_instance_id' => $instanceId ?? null,
 			'other_id' => !empty($_POST['otherId']) ? $_POST['otherId'] : null,
-			'facility_mobile_numbers' => $_POST['phoneNo'],
-			'address' => $_POST['address'],
-			'country' => $_POST['country'],
-			'facility_state_id' => $_POST['stateId'],
-			'facility_district_id' => $_POST['districtId'],
-			'facility_state' => $_POST['state'],
-			'facility_district' => $_POST['district'],
-			'facility_hub_name' => $_POST['hubName'],
-			'latitude' => $_POST['latitude'],
-			'longitude' => $_POST['longitude'],
-			'facility_emails' => $_POST['email'],
+			'facility_mobile_numbers' => $_POST['phoneNo'] ?? null,
+			'address' => $_POST['address'] ?? null,
+			'country' => $_POST['country'] ?? null,
+			'facility_state_id' => $_POST['stateId'] ?? null,
+			'facility_district_id' => $_POST['districtId'] ?? null,
+			'facility_state' => $_POST['state'] ?? null,
+			'facility_district' => $_POST['district'] ?? null,
+			'facility_hub_name' => $_POST['hubName'] ?? null,
+			'latitude' => $_POST['latitude'] ?? null,
+			'longitude' => $_POST['longitude'] ?? null,
+			'facility_emails' => $_POST['email'] ?? null,
 			'report_email' => $email,
 			'contact_person' => $_POST['contactPerson'],
 			'facility_type' => $_POST['facilityType'],
@@ -208,7 +208,7 @@ try {
 					));
 					// Mapping facility as a Testing Lab
 				} elseif (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
-					$data = array(
+					$testTypeData = array(
 						'test_type' => $testType,
 						'facility_id' => $lastId,
 						'updated_datetime' => DateUtility::getCurrentDateTime()
@@ -219,7 +219,7 @@ try {
 					if (!empty($attributes)) {
 						$data['attributes'] = json_encode($attributes, true);
 					}
-					$db->insert($testingLabsTable, $data);
+					$db->insert($testingLabsTable, $testTypeData);
 				}
 			}
 		}
@@ -227,11 +227,11 @@ try {
 		if ($lastId > 0 && trim((string) $_POST['selectedUser']) != '') {
 			$selectedUser = explode(",", (string) $_POST['selectedUser']);
 			for ($j = 0; $j < count($selectedUser); $j++) {
-				$data = array(
+				$uData = array(
 					'user_id' => $selectedUser[$j],
 					'facility_id' => $lastId,
 				);
-				$db->insert($vlUserFacilityMapTable, $data);
+				$db->insert($vlUserFacilityMapTable, $uData);
 			}
 		}
 		if ($lastId > 0 && !empty($_POST['testData'])) {
@@ -292,12 +292,12 @@ try {
 
 	if (isset($_POST['reqForm']) && $_POST['reqForm'] != '') {
 		$currentDateTime = DateUtility::getCurrentDateTime();
-		$data = array(
+		$healthFacilityData = array(
 			'test_type'     => "covid19",
 			'facility_id'   => $lastId,
 			'updated_datetime'  => $currentDateTime
 		);
-		$db->insert("health_facilities", $data);
+		$db->insert("health_facilities", $healthFacilityData);
 		return 1;
 	} else {
 		$_SESSION['alertMsg'] = _translate("Facility details added successfully");

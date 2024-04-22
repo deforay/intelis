@@ -27,7 +27,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 $arr = $general->getGlobalConfig();
 
-//get import config
+// get instruments
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 

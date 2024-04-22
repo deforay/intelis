@@ -70,8 +70,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                     <h3 class="box-title"><?= _translate("SITE INFORMATION"); ?></h3>
                                 </div>
                                 <div class="box-header with-border">
-                                    <h3 class="box-title" style="font-size:1em;"><?= _translate("To be filled by requesting
-                                        Clinician/Nurse"); ?></h3>
+                                    <h3 class="box-title" style="font-size:1em;"><?= _translate("To be filled by requesting Clinician/Nurse"); ?></h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
@@ -323,8 +322,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15%" class="labels"><?= _translate("Sample Collection
-                                            Date"); ?> <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15%" class="labels"><?= _translate("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35%;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="generateSampleCode();" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
                                         </td>

@@ -42,7 +42,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
-//get import config
+// get instruments
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
@@ -374,6 +374,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	#sampleCode {
 		background-color: #fff;
 	}
+
 	select#subTestResult {
 		display: none !important;
 	}
@@ -668,7 +669,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 										<div class="col-md-6">
 											<label class="col-lg-5" for="">Date of Sample Collection <span class="mandatory">*</span></label>
 											<div class="col-lg-7">
-												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $genericResultInfo['sample_collection_date']; ?>" >
+												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $genericResultInfo['sample_collection_date']; ?>">
 											</div>
 										</div>
 										<div class="col-md-6">
@@ -1695,9 +1696,9 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 						width: '100%'
 					});
 					var length = $('#subTestResult > option').length;
-					if(length > 1){
+					if (length > 1) {
 						$('.subTestFields').show();
-					}else{
+					} else {
 						$('.subTestFields').hide();
 					}
 				}
@@ -1709,7 +1710,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		$('.ins-row-' + row + subrow).attr('disabled', true);
 		$('.ins-row-' + row + subrow).addClass('disabled');
 		testCounter = (subrow + 1);
-		options = $("#finalResult"+row).html();
+		options = $("#finalResult" + row).html();
 		let rowString = `<tr>
                     <td class="text-center">${(subrow+1)}</td>
                     <td>

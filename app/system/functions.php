@@ -181,3 +181,22 @@ function _castVariable(mixed $variable, ?string $expectedType = null, ?bool $isN
         }
     }
 }
+
+
+function _capitalizeWords($string)
+{
+    if (empty($string) || $string == '') {
+        return null;
+    }
+    return mb_convert_case($string, MB_CASE_TITLE, "UTF-8");
+}
+
+function _capitalizeFirstLetter($string, $encoding = "UTF-8")
+{
+    if (empty($string)) {
+        return $string;
+    }
+    $firstChar = mb_substr($string, 0, 1, $encoding);
+    $rest = mb_substr($string, 1, null, $encoding);
+    return mb_strtoupper($firstChar, $encoding) . $rest;
+}

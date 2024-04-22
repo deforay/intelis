@@ -48,7 +48,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
-//get import config
+// get instruments
 $importQuery = "SELECT * FROM instruments WHERE `status` = 'active'";
 $importResult = $db->query($importQuery);
 

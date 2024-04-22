@@ -38,7 +38,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
-//get import config
+// get instruments
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
@@ -898,8 +898,8 @@ $reasonForChange = $reasonForChangeArr[1];
 										<?php } ?>
 										<div class="row" id="labSection"></div>
 									</div>
-							<?php } ?>
-							</div>
+								<?php } ?>
+								</div>
 						</div>
 					</div>
 					<div class="box-footer">

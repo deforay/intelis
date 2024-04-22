@@ -28,7 +28,7 @@
         "ext-bcmath": "*",
         "phpoffice/phpspreadsheet": "^1.28",
         "setasign/fpdi": "^2.3",
-        "tecnickcom/tcpdf": "^6.6",
+        "tecnickcom/tcpdf": "^6.7",
         "phpmailer/phpmailer": "^6.8",
         "thingengineer/mysqli-database-class": "dev-master",
         "guzzlehttp/guzzle": "^7.5",

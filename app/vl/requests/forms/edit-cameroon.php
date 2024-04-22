@@ -95,9 +95,9 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 $testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name', 'parent_reason'), false, " test_reason_status like 'active' ");
 $subTestReasons = $testReasonsResult = [];
 foreach ($testReasonsResultDetails as $row) {
-     if($row['parent_reason'] == 0){
+     if ($row['parent_reason'] == 0) {
           $testReasonsResult[$row['test_reason_id']] = $row['test_reason_name'];
-     }else{
+     } else {
           $subTestReasons[$row['parent_reason']][$row['test_reason_id']] = $row['test_reason_name'];
      }
 }
@@ -411,7 +411,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                       <option <?= $selected; ?> <?php if ($name['sample_id'] == $vlQueryInfo['specimen_type'])
                                                                                                          echo "selected='selected'";
                                                                                                     else
-                                                                                                         echo ""; ?> value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
+                                                                                                         echo ""; ?> value="<?php echo $name['sample_id']; ?>"><?= _translate($name['sample_name']); ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>
@@ -528,13 +528,13 @@ foreach ($testReasonsResultDetails as $row) {
                                                                                      <select name="controlVlTestingType[<?php echo $key; ?>]" id="controlVlType<?php echo $key; ?>" class="form-control controlVlTypeFields" title="<?= _translate('Please choose a reason for VL testing'); ?>" onchange="checkreasonForVLTesting();">
                                                                                           <option value=""> <?= _translate("-- Select --"); ?> </option>
                                                                                           <?php foreach ($subTestReasons[$key] as $testReasonId => $row) { ?>
-                                                                                               <option value="<?php echo $testReasonId; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $testReasonId) ? "selected='selected'" : ""; ?>><?php echo ucwords($row); ?></option>
+                                                                                               <option value="<?php echo $testReasonId; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $testReasonId) ? "selected='selected'" : ""; ?>><?php echo _translate($row); ?></option>
                                                                                           <?php } ?>
                                                                                      </select>
                                                                                 </div>
                                                                            </div>
                                                                       </div>
-                                                                 <?php }
+                                                       <?php }
                                                             }
                                                        } ?>
                                                        <hr>
