@@ -19,6 +19,8 @@ $resultPdfService = ContainerRegistry::get(ResultPdfService::class);
 
 $arr = $general->getGlobalConfig();
 
+$key = (string) $general->getGlobalConfig('key');
+
 if (!empty($result)) {
      $displayPageNoInFooter = true;
      $displaySignatureTable = true;
@@ -258,23 +260,26 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr>';
 
-     $patientFname = $result['patient_first_name'] ?? '-';
+
      if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-          $key = (string) $general->getGlobalConfig('key');
           $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
-          $patientFname = $general->crypto('decrypt', $patientFname, $key);
+          $result['patient_first_name'] = $general->crypto('decrypt', $result['patient_first_name'], $key);
+          $result['patient_middle_name'] = $general->crypto('decrypt', $result['patient_middle_name'], $key);
+          $result['patient_last_name'] = $general->crypto('decrypt', $result['patient_last_name'], $key);
      }
-     $testReasonType = "";
-     if ($result['test_reason_name'] == "coinfection") {
-          $result['test_reason_name'] = _translate("Co-infection", true);
-          $testReasonType = empty($result['coinfection_type']) ? '' : ' - ' . _translate($result['coinfection_type'], true);
-     } elseif ($result['test_reason_name'] == "controlVlTesting") {
-          $result['test_reason_name'] = _translate("Control VL Testing", true);
-          $testReasonType = empty($result['control_vl_testing_type']) ? '' : ' - ' . _translate($result['control_vl_testing_type'], true);
-     } elseif ($result['test_reason_name'] == "other") {
-          $result['test_reason_name'] = _translate("Other Reason", true);
-          $testReasonType = empty($result['reason_for_vl_testing_other']) ? '' : ' - ' . $result['reason_for_vl_testing_other'];
-     }
+
+     $patientFname = trim($result['patient_first_name'] . " " . $result['patient_middle_name'] . " " . $result['patient_last_name']);
+     // $testReasonType = "";
+     // if ($result['test_reason_name'] == "coinfection") {
+     //      $result['test_reason_name'] = _translate("Co-infection", true);
+     //      $testReasonType = empty($result['coinfection_type']) ? '' : ' - ' . _translate($result['coinfection_type'], true);
+     // } elseif ($result['test_reason_name'] == "controlVlTesting") {
+     //      $result['test_reason_name'] = _translate("Control VL Testing", true);
+     //      $testReasonType = empty($result['control_vl_testing_type']) ? '' : ' - ' . _translate($result['control_vl_testing_type'], true);
+     // } elseif ($result['test_reason_name'] == "other") {
+     //      $result['test_reason_name'] = _translate("Other Reason", true);
+     //      $testReasonType = empty($result['reason_for_vl_testing_other']) ? '' : ' - ' . $result['reason_for_vl_testing_other'];
+     // }
 
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_art_no'] . '</td>';
@@ -289,22 +294,22 @@ if (!empty($result)) {
      $html .= '<td colspan="4">';
      $html .= '<table style="padding:8px 2px 2px 2px;">';
      $html .= '<tr>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("GENDER") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("GENDER", true) . '</td>';
      if ($result['patient_gender'] == 'female') {
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("BREASTFEEDING") . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PREGNANCY STATUS") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("BREASTFEEDING", true) . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PREGNANCY STATUS", true) . '</td>';
      } else {
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
      }
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT'S CONTACT") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT'S CONTACT", true) . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
 
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['patient_gender']), true) . '</td>';
      if ($result['patient_gender'] == 'female') {
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['is_patient_breastfeeding']), true) ?? '-' . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['is_patient_pregnant']), true) ?? '-' . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (_translate(_capitalizeFirstLetter($result['is_patient_breastfeeding']), true) ?? '-') . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (_translate(_capitalizeFirstLetter($result['is_patient_pregnant']), true) ?? '-') . '</td>';
      } else {
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
@@ -339,7 +344,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:10px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SAMPLE TEST DATE") . '</td>';
      $html .= '<td style="line-height:10px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("RESULT RELEASE DATE") . '</td>';
      $html .= '</tr>';
-     $rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? _translate('Rejected') : _translate('Not Rejected');
+     $rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected';
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate($rejectedStatus) . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
