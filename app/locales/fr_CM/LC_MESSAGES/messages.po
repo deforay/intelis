@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-04-21 16:08+0530\n"
-"PO-Revision-Date: 2024-04-21 16:09+0530\n"
+"POT-Creation-Date: 2024-04-22 13:31+0530\n"
+"PO-Revision-Date: 2024-04-22 13:32+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -331,13 +331,13 @@ msgstr "Call to action"
 #: eid/management/eid-sample-status.php:103
 #: eid/management/eidTestingTargetReport.php:214
 #: eid/requests/eid-requests.php:366
-#: eid/requests/forms/add-burkina-faso.php:136
-#: eid/requests/forms/edit-burkina-faso.php:150
+#: eid/requests/forms/add-burkina-faso.php:135
+#: eid/requests/forms/edit-burkina-faso.php:149
 #: eid/results/eid-failed-results.php:183
 #: eid/results/eid-manual-results.php:119 eid/results/eid-print-results.php:126
 #: eid/results/eid-print-results.php:273 eid/results/eid-result-status.php:137
 #: eid/results/email-results.php:284
-#: eid/results/forms/update-burkina-faso-result.php:149
+#: eid/results/forms/update-burkina-faso-result.php:148
 #: facilities/getFacilityMapUser.php:72 facilities/getFacilityMapUser.php:73
 #: facilities/mapTestType.php:156 facilities/mapTestType.php:157
 #: generic-tests/program-management/generic-export-data.php:245
@@ -870,8 +870,8 @@ msgstr "Veuillez sélectionner les types de tests"
 #: eid/reference/add-eid-test-reasons.php:48 eid/requests/eid-requests.php:165
 #: eid/requests/eid-requests.php:184 eid/requests/eid-requests.php:217
 #: eid/requests/eid-requests.php:262 eid/requests/eid-requests.php:277
-#: eid/requests/forms/add-burkina-faso.php:263
-#: eid/requests/forms/add-burkina-faso.php:295
+#: eid/requests/forms/add-burkina-faso.php:262
+#: eid/requests/forms/add-burkina-faso.php:294
 #: eid/requests/forms/add-cameroon.php:113
 #: eid/requests/forms/add-cameroon.php:133
 #: eid/requests/forms/add-cameroon.php:145
@@ -893,8 +893,8 @@ msgstr "Veuillez sélectionner les types de tests"
 #: eid/requests/forms/add-cameroon.php:561 eid/requests/forms/add-drc.php:24
 #: eid/requests/forms/add-drc.php:94 eid/requests/forms/add-drc.php:109
 #: eid/requests/forms/add-drc.php:121 eid/requests/forms/add-drc.php:502
-#: eid/requests/forms/edit-burkina-faso.php:276
-#: eid/requests/forms/edit-burkina-faso.php:308
+#: eid/requests/forms/edit-burkina-faso.php:275
+#: eid/requests/forms/edit-burkina-faso.php:307
 #: eid/requests/forms/edit-cameroon.php:124
 #: eid/requests/forms/edit-cameroon.php:129
 #: eid/requests/forms/edit-cameroon.php:149
@@ -926,8 +926,8 @@ msgstr "Veuillez sélectionner les types de tests"
 #: eid/results/email-results.php:225 eid/results/email-results.php:237
 #: eid/results/email-results.php:252 eid/results/email-results.php:572
 #: eid/results/email-results.php:576
-#: eid/results/forms/update-burkina-faso-result.php:275
-#: eid/results/forms/update-burkina-faso-result.php:307
+#: eid/results/forms/update-burkina-faso-result.php:274
+#: eid/results/forms/update-burkina-faso-result.php:306
 #: eid/results/forms/update-cameroon-result.php:118
 #: eid/results/forms/update-cameroon-result.php:123
 #: eid/results/forms/update-cameroon-result.php:143
@@ -1286,9 +1286,9 @@ msgstr "-- Sélectionner --"
 #: admin/monitoring/lab-sync-details.php:139
 #: admin/monitoring/sources-of-requests.php:135
 #: admin/monitoring/sync-status.php:118
-#: eid/requests/forms/add-burkina-faso.php:247
-#: eid/requests/forms/edit-burkina-faso.php:260
-#: eid/results/forms/update-burkina-faso-result.php:259
+#: eid/requests/forms/add-burkina-faso.php:246
+#: eid/requests/forms/edit-burkina-faso.php:259
+#: eid/results/forms/update-burkina-faso-result.php:258
 #: facilities/addFacility.php:346 facilities/addFacility.php:691
 #: facilities/addFacility.php:1020 facilities/editFacility.php:374
 #: facilities/editFacility.php:661 facilities/editFacility.php:690
@@ -1512,14 +1512,14 @@ msgstr "Action"
 #: eid/management/eid-export-data.php:291
 #: eid/management/eid-sample-status.php:123
 #: eid/requests/addSamplesFromManifest.php:79 eid/requests/eid-requests.php:433
-#: eid/requests/forms/add-burkina-faso.php:64
-#: eid/requests/forms/add-burkina-faso.php:70
+#: eid/requests/forms/add-burkina-faso.php:63
+#: eid/requests/forms/add-burkina-faso.php:69
 #: eid/requests/forms/add-cameroon.php:84
 #: eid/requests/forms/add-cameroon.php:90
 #: eid/requests/forms/add-cameroon.php:92
-#: eid/requests/forms/edit-burkina-faso.php:78
-#: eid/requests/forms/edit-burkina-faso.php:84
-#: eid/requests/forms/edit-burkina-faso.php:86
+#: eid/requests/forms/edit-burkina-faso.php:77
+#: eid/requests/forms/edit-burkina-faso.php:83
+#: eid/requests/forms/edit-burkina-faso.php:85
 #: eid/requests/forms/edit-cameroon.php:100
 #: eid/requests/forms/edit-cameroon.php:106
 #: eid/requests/forms/edit-cameroon.php:108
@@ -1528,9 +1528,9 @@ msgstr "Action"
 #: eid/results/eid-manual-results.php:193 eid/results/eid-print-results.php:139
 #: eid/results/eid-print-results.php:191 eid/results/eid-print-results.php:286
 #: eid/results/eid-print-results.php:337 eid/results/eid-result-status.php:168
-#: eid/results/forms/update-burkina-faso-result.php:77
-#: eid/results/forms/update-burkina-faso-result.php:83
-#: eid/results/forms/update-burkina-faso-result.php:85
+#: eid/results/forms/update-burkina-faso-result.php:76
+#: eid/results/forms/update-burkina-faso-result.php:82
+#: eid/results/forms/update-burkina-faso-result.php:84
 #: eid/results/forms/update-cameroon-result.php:94
 #: eid/results/forms/update-cameroon-result.php:100
 #: eid/results/forms/update-cameroon-result.php:102
@@ -2694,17 +2694,17 @@ msgstr "Nom du Labo"
 #: covid-19/requests/forms/add-sierraleone.php:175
 #: covid-19/requests/forms/add-southsudan.php:186
 #: covid-19/requests/forms/edit-cameroon.php:221
-#: eid/requests/forms/add-burkina-faso.php:143
+#: eid/requests/forms/add-burkina-faso.php:142
 #: eid/requests/forms/add-cameroon.php:172 eid/requests/forms/add-png.php:198
 #: eid/requests/forms/add-rwanda.php:166
 #: eid/requests/forms/add-sierraleone.php:186
 #: eid/requests/forms/add-southsudan.php:177
-#: eid/requests/forms/edit-burkina-faso.php:157
+#: eid/requests/forms/edit-burkina-faso.php:156
 #: eid/requests/forms/edit-cameroon.php:189 eid/requests/forms/edit-drc.php:197
 #: eid/requests/forms/edit-png.php:230 eid/requests/forms/edit-rwanda.php:180
 #: eid/requests/forms/edit-sierraleone.php:187
 #: eid/requests/forms/edit-southsudan.php:183
-#: eid/results/forms/update-burkina-faso-result.php:156
+#: eid/results/forms/update-burkina-faso-result.php:155
 #: facilities/mapTestType.php:68
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:52
 #: generic-tests/configuration/sample-types/generic-edit-sample-type.php:65
@@ -3168,11 +3168,11 @@ msgstr "indique les champs obligatoires"
 #: covid-19/management/generate-export-drc.php:94
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: eid/requests/forms/add-burkina-faso.php:358
+#: eid/requests/forms/add-burkina-faso.php:357
 #: eid/requests/forms/add-cameroon.php:516
-#: eid/requests/forms/edit-burkina-faso.php:371
+#: eid/requests/forms/edit-burkina-faso.php:370
 #: eid/requests/forms/edit-cameroon.php:537
-#: eid/results/forms/update-burkina-faso-result.php:371
+#: eid/results/forms/update-burkina-faso-result.php:370
 #: eid/results/forms/update-cameroon-result.php:508
 msgid "Testing Platform"
 msgstr "Plate-forme d'essai"
@@ -3396,17 +3396,17 @@ msgstr "Échantillons entrés par"
 #: eid/management/eid-sample-status.php:125
 #: eid/requests/addSamplesFromManifest.php:87 eid/requests/eid-requests.php:123
 #: eid/requests/eid-requests.php:441
-#: eid/requests/forms/add-burkina-faso.php:312
+#: eid/requests/forms/add-burkina-faso.php:311
 #: eid/requests/forms/add-cameroon.php:473
 #: eid/requests/forms/add-cameroon.php:475
-#: eid/requests/forms/edit-burkina-faso.php:325
+#: eid/requests/forms/edit-burkina-faso.php:324
 #: eid/requests/forms/edit-cameroon.php:491
 #: eid/requests/forms/edit-cameroon.php:493
 #: eid/results/eid-failed-results.php:75 eid/results/eid-failed-results.php:221
 #: eid/results/eid-manual-results.php:77 eid/results/eid-print-results.php:76
 #: eid/results/eid-print-results.php:222 eid/results/eid-result-status.php:102
 #: eid/results/eid-result-status.php:172 eid/results/email-results.php:137
-#: eid/results/forms/update-burkina-faso-result.php:324
+#: eid/results/forms/update-burkina-faso-result.php:323
 #: eid/results/forms/update-cameroon-result.php:472
 #: eid/results/forms/update-cameroon-result.php:474
 #: generic-tests/mail/mail-generic-tests-results.php:226
@@ -3631,11 +3631,11 @@ msgstr "Alphanumérique"
 #: eid/management/eid-clinic-report.php:422
 #: eid/management/eid-clinic-report.php:449
 #: eid/management/eid-export-data.php:96
-#: eid/requests/forms/add-burkina-faso.php:324
-#: eid/requests/forms/edit-burkina-faso.php:337
+#: eid/requests/forms/add-burkina-faso.php:323
+#: eid/requests/forms/edit-burkina-faso.php:336
 #: eid/results/eid-failed-results.php:115
 #: eid/results/eid-manual-results.php:157 eid/results/email-results.php:143
-#: eid/results/forms/update-burkina-faso-result.php:336
+#: eid/results/forms/update-burkina-faso-result.php:335
 #: facilities/getSampleType.php:72
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:3
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:14
@@ -3820,8 +3820,8 @@ msgstr "Ce code de lot existe déjà. Essayez un autre code de lot"
 msgid "Please select machine"
 msgstr "Veuillez sélectionner une machine"
 
-#: batch/add-batch.php:317 eid/requests/forms/add-burkina-faso.php:461
-#: tb/requests/forms/add-burkina-faso.php:476
+#: batch/add-batch.php:317 eid/requests/forms/add-burkina-faso.php:460
+#: tb/requests/forms/add-burkina-faso.php:477
 #: vl/requests/forms/add-burkina-faso.php:651
 #: vl/requests/forms/add-cameroon.php:691
 msgid "Save and Next"
@@ -3853,10 +3853,10 @@ msgstr "Sauvegarder et Suivant"
 #: eid/reference/add-eid-sample-rejection-reasons.php:74
 #: eid/reference/add-eid-sample-type.php:57
 #: eid/reference/add-eid-test-reasons.php:70
-#: eid/requests/forms/add-burkina-faso.php:465
-#: eid/requests/forms/edit-burkina-faso.php:488
+#: eid/requests/forms/add-burkina-faso.php:464
+#: eid/requests/forms/edit-burkina-faso.php:487
 #: eid/results/email-results.php:330
-#: eid/results/forms/update-burkina-faso-result.php:489
+#: eid/results/forms/update-burkina-faso-result.php:488
 #: facilities/addFacility.php:757 facilities/editFacility.php:727
 #: facilities/mapTestType.php:131 facilities/upload-facilities.php:148
 #: generic-tests/configuration/add-test-type.php:373
@@ -3895,8 +3895,8 @@ msgstr "Sauvegarder et Suivant"
 #: tb/reference/add-tb-sample-rejection-reason.php:75
 #: tb/reference/add-tb-sample-type.php:57
 #: tb/reference/add-tb-test-reasons.php:76
-#: tb/requests/forms/add-burkina-faso.php:479 tb/results/email-results.php:333
-#: tb/results/forms/update-burkina-faso.php:526 users/addUser.php:316
+#: tb/requests/forms/add-burkina-faso.php:480 tb/results/email-results.php:333
+#: tb/results/forms/update-burkina-faso.php:527 users/addUser.php:316
 #: users/editProfile.php:130 users/editUser.php:402
 #: vl/reference/add-vl-art-code-details.php:93
 #: vl/reference/add-vl-results.php:125
@@ -4460,12 +4460,12 @@ msgstr "Exemple de rapport d'essai"
 #: eid/management/eid-export-data.php:132
 #: eid/management/eid-sample-status.php:127
 #: eid/management/eidTestingTargetReport.php:191
-#: eid/requests/forms/add-burkina-faso.php:379
+#: eid/requests/forms/add-burkina-faso.php:378
 #: eid/requests/forms/add-cameroon.php:552
-#: eid/requests/forms/edit-burkina-faso.php:392
+#: eid/requests/forms/edit-burkina-faso.php:391
 #: eid/requests/forms/edit-cameroon.php:582
 #: eid/results/eid-print-results.php:93 eid/results/eid-print-results.php:240
-#: eid/results/forms/update-burkina-faso-result.php:393
+#: eid/results/forms/update-burkina-faso-result.php:392
 #: eid/results/forms/update-cameroon-result.php:557
 #: eid/results/forms/update-cameroon-result.php:559
 #: generic-tests/program-management/generic-export-data.php:117
@@ -4643,11 +4643,11 @@ msgstr "Tout"
 #: eid/management/eid-clinic-report.php:157
 #: eid/management/eid-clinic-report.php:257
 #: eid/management/eid-clinic-report.php:364 eid/requests/eid-requests.php:212
-#: eid/requests/forms/add-burkina-faso.php:164
+#: eid/requests/forms/add-burkina-faso.php:163
 #: eid/requests/forms/add-cameroon.php:200
-#: eid/requests/forms/edit-burkina-faso.php:178
+#: eid/requests/forms/edit-burkina-faso.php:177
 #: eid/requests/forms/edit-cameroon.php:215 eid/requests/patientModal.php:102
-#: eid/results/forms/update-burkina-faso-result.php:177
+#: eid/results/forms/update-burkina-faso-result.php:176
 #: eid/results/forms/update-cameroon-result.php:198
 #: generic-tests/mail/mail-generic-tests-results.php:229
 #: generic-tests/program-management/generic-export-data.php:209
@@ -4740,11 +4740,11 @@ msgstr "Veuillez choisir le sexe"
 #: eid/management/eid-clinic-report.php:161
 #: eid/management/eid-clinic-report.php:261
 #: eid/management/eid-clinic-report.php:368 eid/requests/eid-requests.php:220
-#: eid/requests/forms/add-burkina-faso.php:168
+#: eid/requests/forms/add-burkina-faso.php:167
 #: eid/requests/forms/add-cameroon.php:204
-#: eid/requests/forms/edit-burkina-faso.php:182
+#: eid/requests/forms/edit-burkina-faso.php:181
 #: eid/requests/forms/edit-cameroon.php:219 eid/results/email-results.php:176
-#: eid/results/forms/update-burkina-faso-result.php:181
+#: eid/results/forms/update-burkina-faso-result.php:180
 #: eid/results/forms/update-cameroon-result.php:202
 #: generic-tests/program-management/generic-export-data.php:212
 #: generic-tests/results/email-results.php:179
@@ -4796,11 +4796,11 @@ msgstr "Homme"
 #: eid/management/eid-clinic-report.php:162
 #: eid/management/eid-clinic-report.php:262
 #: eid/management/eid-clinic-report.php:369 eid/requests/eid-requests.php:223
-#: eid/requests/forms/add-burkina-faso.php:169
+#: eid/requests/forms/add-burkina-faso.php:168
 #: eid/requests/forms/add-cameroon.php:205
-#: eid/requests/forms/edit-burkina-faso.php:183
+#: eid/requests/forms/edit-burkina-faso.php:182
 #: eid/requests/forms/edit-cameroon.php:220 eid/results/email-results.php:179
-#: eid/results/forms/update-burkina-faso-result.php:182
+#: eid/results/forms/update-burkina-faso-result.php:181
 #: eid/results/forms/update-cameroon-result.php:203
 #: generic-tests/program-management/generic-export-data.php:213
 #: generic-tests/results/email-results.php:182
@@ -4873,7 +4873,6 @@ msgstr "Femme"
 #: eid/requests/forms/edit-cameroon.php:221 eid/results/email-results.php:182
 #: eid/results/forms/update-cameroon-result.php:204
 #: eid/results/pdf/result-pdf-burkina-faso.php:158
-#: eid/results/pdf/result-pdf-cameroon.php:222
 #: eid/results/pdf/result-pdf-drc.php:144
 #: eid/results/pdf/result-pdf-rwanda.php:125
 #: eid/results/pdf/result-pdf-sierraleone.php:193
@@ -4895,6 +4894,7 @@ msgstr "Femme"
 #: tb/management/tb-clinic-report.php:261
 #: tb/management/tb-clinic-report.php:365 tb/requests/tb-requests.php:185
 #: tb/results/email-results.php:185
+#: tb/results/pdf/result-pdf-burkina-faso.php:181
 #: tb/results/pdf/result-pdf-sierraleone.php:182
 #: tb/results/pdf/result-pdf-ssudan.php:184
 #: vl/program-management/highViralLoad.php:249
@@ -4910,7 +4910,6 @@ msgstr "Femme"
 #: vl/results/forms/update-burkina-faso-result.php:330
 #: vl/results/forms/update-cameroon-result.php:367
 #: vl/results/pdf/result-pdf-burkina-faso.php:196
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:167
 #: vl/results/pdf/result-pdf-drc.php:136 vl/results/pdf/result-pdf-png.php:127
 #: vl/results/pdf/result-pdf-rwanda.php:127
 #: vl/results/pdf/result-pdf-sierraleone.php:193
@@ -5327,6 +5326,7 @@ msgstr "Statut"
 #: tb/management/tb-clinic-report.php:264
 #: tb/management/tb-clinic-report.php:291
 #: tb/reference/tb-sample-rejection-reasons.php:37
+#: tb/results/pdf/result-pdf-burkina-faso.php:330
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/getRejectionResult.php:96
 #: vl/program-management/highViralLoad.php:610
@@ -5339,7 +5339,7 @@ msgstr "Statut"
 #: vl/result-mail/editTestResultEmailConfig.php:113
 #: vl/results/forms/update-burkina-faso-result.php:565
 #: vl/results/forms/update-cameroon-result.php:622
-#: vl/results/pdf/result-pdf-cameroon.php:390
+#: vl/results/pdf/result-pdf-cameroon.php:381
 msgid "Rejection Reason"
 msgstr "Motif de rejet"
 
@@ -5641,7 +5641,7 @@ msgstr "Accepté"
 #: eid/results/eid-result-status.php:150 eid/results/email-results.php:258
 #: eid/results/get-eid-result-status.php:217
 #: eid/results/pdf/result-pdf-burkina-faso.php:314
-#: eid/results/pdf/result-pdf-cameroon.php:392
+#: eid/results/pdf/result-pdf-cameroon.php:363
 #: generic-tests/program-management/generic-export-data.php:140
 #: generic-tests/results/email-results.php:261
 #: generic-tests/results/generic-result-approval.php:196
@@ -5658,7 +5658,7 @@ msgstr "Accepté"
 #: vl/program-management/vl-export-data.php:196
 #: vl/results/email-results.php:261 vl/results/getVlResultsForApproval.php:169
 #: vl/results/pdf/result-pdf-burkina-faso.php:325
-#: vl/results/pdf/result-pdf-cameroon.php:351
+#: vl/results/pdf/result-pdf-cameroon.php:342
 #: vl/results/vlResultApproval.php:203 vl/results/vlResultMail.php:261
 msgid "Rejected"
 msgstr "Rejeté"
@@ -5841,11 +5841,11 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: covid-19/results/forms/update-cameroon-result.php:544
 #: eid/management/eid-export-data.php:200 eid/requests/eid-requests.php:265
 #: eid/requests/eid-requests.php:315 eid/requests/eid-requests.php:355
-#: eid/requests/forms/add-burkina-faso.php:145
-#: eid/requests/forms/add-burkina-faso.php:200
-#: eid/requests/forms/add-burkina-faso.php:222
-#: eid/requests/forms/add-burkina-faso.php:281
-#: eid/requests/forms/add-burkina-faso.php:375
+#: eid/requests/forms/add-burkina-faso.php:144
+#: eid/requests/forms/add-burkina-faso.php:199
+#: eid/requests/forms/add-burkina-faso.php:221
+#: eid/requests/forms/add-burkina-faso.php:280
+#: eid/requests/forms/add-burkina-faso.php:374
 #: eid/requests/forms/add-cameroon.php:174
 #: eid/requests/forms/add-cameroon.php:326
 #: eid/requests/forms/add-cameroon.php:340
@@ -5857,10 +5857,10 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: eid/requests/forms/add-rwanda.php:168
 #: eid/requests/forms/add-sierraleone.php:188
 #: eid/requests/forms/add-southsudan.php:179
-#: eid/requests/forms/edit-burkina-faso.php:159
-#: eid/requests/forms/edit-burkina-faso.php:214
-#: eid/requests/forms/edit-burkina-faso.php:236
-#: eid/requests/forms/edit-burkina-faso.php:294
+#: eid/requests/forms/edit-burkina-faso.php:158
+#: eid/requests/forms/edit-burkina-faso.php:213
+#: eid/requests/forms/edit-burkina-faso.php:235
+#: eid/requests/forms/edit-burkina-faso.php:293
 #: eid/requests/forms/edit-cameroon.php:191
 #: eid/requests/forms/edit-cameroon.php:343
 #: eid/requests/forms/edit-cameroon.php:357
@@ -5872,10 +5872,10 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: eid/requests/forms/edit-rwanda.php:182
 #: eid/requests/forms/edit-sierraleone.php:189
 #: eid/requests/forms/edit-southsudan.php:185 eid/results/email-results.php:192
-#: eid/results/forms/update-burkina-faso-result.php:158
-#: eid/results/forms/update-burkina-faso-result.php:213
-#: eid/results/forms/update-burkina-faso-result.php:235
-#: eid/results/forms/update-burkina-faso-result.php:293
+#: eid/results/forms/update-burkina-faso-result.php:157
+#: eid/results/forms/update-burkina-faso-result.php:212
+#: eid/results/forms/update-burkina-faso-result.php:234
+#: eid/results/forms/update-burkina-faso-result.php:292
 #: eid/results/forms/update-cameroon-result.php:324
 #: eid/results/forms/update-cameroon-result.php:338
 #: eid/results/forms/update-cameroon-result.php:358
@@ -6002,7 +6002,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: vl/results/forms/update-cameroon-result.php:389
 #: vl/results/forms/update-cameroon-result.php:406
 #: vl/results/forms/update-cameroon-result.php:615
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:159
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:160
 #: vl/results/vlResultMail.php:195
 msgid "Yes"
 msgstr "Oui"
@@ -6029,11 +6029,11 @@ msgstr "Oui"
 #: covid-19/results/forms/update-cameroon-result.php:545
 #: eid/management/eid-export-data.php:201 eid/requests/eid-requests.php:268
 #: eid/requests/eid-requests.php:318 eid/requests/eid-requests.php:358
-#: eid/requests/forms/add-burkina-faso.php:144
-#: eid/requests/forms/add-burkina-faso.php:201
-#: eid/requests/forms/add-burkina-faso.php:223
-#: eid/requests/forms/add-burkina-faso.php:282
-#: eid/requests/forms/add-burkina-faso.php:376
+#: eid/requests/forms/add-burkina-faso.php:143
+#: eid/requests/forms/add-burkina-faso.php:200
+#: eid/requests/forms/add-burkina-faso.php:222
+#: eid/requests/forms/add-burkina-faso.php:281
+#: eid/requests/forms/add-burkina-faso.php:375
 #: eid/requests/forms/add-cameroon.php:173
 #: eid/requests/forms/add-cameroon.php:327
 #: eid/requests/forms/add-cameroon.php:341
@@ -6045,10 +6045,10 @@ msgstr "Oui"
 #: eid/requests/forms/add-rwanda.php:167
 #: eid/requests/forms/add-sierraleone.php:187
 #: eid/requests/forms/add-southsudan.php:178
-#: eid/requests/forms/edit-burkina-faso.php:158
-#: eid/requests/forms/edit-burkina-faso.php:213
-#: eid/requests/forms/edit-burkina-faso.php:235
-#: eid/requests/forms/edit-burkina-faso.php:295
+#: eid/requests/forms/edit-burkina-faso.php:157
+#: eid/requests/forms/edit-burkina-faso.php:212
+#: eid/requests/forms/edit-burkina-faso.php:234
+#: eid/requests/forms/edit-burkina-faso.php:294
 #: eid/requests/forms/edit-cameroon.php:190
 #: eid/requests/forms/edit-cameroon.php:344
 #: eid/requests/forms/edit-cameroon.php:358
@@ -6060,10 +6060,10 @@ msgstr "Oui"
 #: eid/requests/forms/edit-rwanda.php:181
 #: eid/requests/forms/edit-sierraleone.php:188
 #: eid/requests/forms/edit-southsudan.php:184 eid/results/email-results.php:193
-#: eid/results/forms/update-burkina-faso-result.php:157
-#: eid/results/forms/update-burkina-faso-result.php:212
-#: eid/results/forms/update-burkina-faso-result.php:234
-#: eid/results/forms/update-burkina-faso-result.php:294
+#: eid/results/forms/update-burkina-faso-result.php:156
+#: eid/results/forms/update-burkina-faso-result.php:211
+#: eid/results/forms/update-burkina-faso-result.php:233
+#: eid/results/forms/update-burkina-faso-result.php:293
 #: eid/results/forms/update-cameroon-result.php:325
 #: eid/results/forms/update-cameroon-result.php:339
 #: eid/results/forms/update-cameroon-result.php:359
@@ -6190,7 +6190,7 @@ msgstr "Oui"
 #: vl/results/forms/update-cameroon-result.php:392
 #: vl/results/forms/update-cameroon-result.php:409
 #: vl/results/forms/update-cameroon-result.php:616
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:156
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:157
 #: vl/results/vlResultMail.php:196
 msgid "No"
 msgstr "Non"
@@ -6343,7 +6343,7 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/patientModal.php:104
 #: vl/requests/vl-requests.php:436
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:230
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:231
 #: vl/results/vl-failed-results.php:120 vl/results/vlPrintResult.php:195
 #: vl/results/vlPrintResult.php:443
 msgid "Patient Name"
@@ -6464,9 +6464,9 @@ msgstr "Gérer les colonnes"
 #: eid/management/eid-export-data.php:301
 #: eid/requests/addSamplesFromManifest.php:114
 #: eid/requests/eid-requests.php:471
-#: eid/requests/forms/add-burkina-faso.php:398
+#: eid/requests/forms/add-burkina-faso.php:397
 #: eid/requests/forms/add-cameroon.php:558
-#: eid/requests/forms/edit-burkina-faso.php:420
+#: eid/requests/forms/edit-burkina-faso.php:419
 #: eid/requests/forms/edit-cameroon.php:587
 #: eid/results/eid-failed-results.php:248
 #: eid/results/eid-manual-results.php:160
@@ -6474,7 +6474,7 @@ msgstr "Gérer les colonnes"
 #: eid/results/eid-print-results.php:204 eid/results/eid-print-results.php:321
 #: eid/results/eid-print-results.php:350 eid/results/eid-result-status.php:179
 #: eid/results/eid-samples-for-manual-result-entry.php:221
-#: eid/results/forms/update-burkina-faso-result.php:421
+#: eid/results/forms/update-burkina-faso-result.php:420
 #: eid/results/forms/update-cameroon-result.php:563
 #: generic-tests/program-management/generic-export-data.php:294
 #: generic-tests/program-management/generic-export-data.php:332
@@ -6504,6 +6504,7 @@ msgstr "Gérer les colonnes"
 #: tb/requests/forms/add-burkina-faso.php:406
 #: tb/requests/forms/edit-burkina-faso.php:439 tb/requests/tb-requests.php:320
 #: tb/results/forms/update-burkina-faso.php:437
+#: tb/results/pdf/result-pdf-burkina-faso.php:308
 #: tb/results/tb-failed-results.php:227 tb/results/tb-manual-results.php:157
 #: tb/results/tb-manual-results.php:193 tb/results/tb-print-results.php:175
 #: tb/results/tb-print-results.php:203 tb/results/tb-print-results.php:330
@@ -6536,11 +6537,11 @@ msgstr "Résultat"
 #: covid-19/results/forms/update-cameroon-result.php:183
 #: eid/management/eid-export-data.php:280
 #: eid/management/eid-export-data.php:304
-#: eid/requests/forms/add-burkina-faso.php:98
+#: eid/requests/forms/add-burkina-faso.php:97
 #: eid/requests/forms/add-cameroon.php:142
-#: eid/requests/forms/edit-burkina-faso.php:112
+#: eid/requests/forms/edit-burkina-faso.php:111
 #: eid/requests/forms/edit-cameroon.php:158
-#: eid/results/forms/update-burkina-faso-result.php:111
+#: eid/results/forms/update-burkina-faso-result.php:110
 #: eid/results/forms/update-cameroon-result.php:152
 #: generic-tests/program-management/generic-export-data.php:303
 #: generic-tests/program-management/generic-export-data.php:335
@@ -6995,13 +6996,13 @@ msgstr "Unique ART No."
 #: covid-19/requests/forms/edit-cameroon.php:248
 #: covid-19/results/forms/update-cameroon-result.php:216
 #: covid-19/results/forms/update-cameroon-result.php:218
-#: eid/requests/forms/add-burkina-faso.php:160
+#: eid/requests/forms/add-burkina-faso.php:159
 #: eid/requests/forms/add-cameroon.php:191
 #: eid/requests/forms/add-cameroon.php:260
-#: eid/requests/forms/edit-burkina-faso.php:174
+#: eid/requests/forms/edit-burkina-faso.php:173
 #: eid/requests/forms/edit-cameroon.php:206
 #: eid/requests/forms/edit-cameroon.php:275
-#: eid/results/forms/update-burkina-faso-result.php:173
+#: eid/results/forms/update-burkina-faso-result.php:172
 #: eid/results/forms/update-cameroon-result.php:188
 #: eid/results/forms/update-cameroon-result.php:256
 #: tb/requests/forms/add-burkina-faso.php:186
@@ -7031,7 +7032,7 @@ msgstr "Date de naissance"
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
 #: vl/requests/export-vl-requests.php:28 vl/requests/patientModal.php:107
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:231
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:232
 msgid "Age"
 msgstr "Age"
 
@@ -7153,11 +7154,11 @@ msgstr "Date de la demande"
 #: covid-19/results/forms/update-cameroon-result.php:388
 #: covid-19/results/forms/update-drc-result.php:761
 #: covid-19/results/forms/update-drc-result.php:763
-#: eid/requests/forms/add-burkina-faso.php:371
+#: eid/requests/forms/add-burkina-faso.php:370
 #: eid/requests/forms/add-cameroon.php:529
-#: eid/requests/forms/edit-burkina-faso.php:384
+#: eid/requests/forms/edit-burkina-faso.php:383
 #: eid/requests/forms/edit-cameroon.php:550
-#: eid/results/forms/update-burkina-faso-result.php:385
+#: eid/results/forms/update-burkina-faso-result.php:384
 #: eid/results/forms/update-cameroon-result.php:526
 #: eid/results/forms/update-drc-result.php:471
 #: tb/requests/forms/add-burkina-faso.php:377
@@ -7340,11 +7341,11 @@ msgstr "Échantillons"
 #: cd4/management/get-sample-status.php:377
 #: covid-19/management/getSampleStatus.php:293
 #: eid/management/getSampleStatus.php:338
-#: eid/requests/forms/add-burkina-faso.php:230
+#: eid/requests/forms/add-burkina-faso.php:229
 #: eid/requests/forms/add-cameroon.php:412
-#: eid/requests/forms/edit-burkina-faso.php:243
+#: eid/requests/forms/edit-burkina-faso.php:242
 #: eid/requests/forms/edit-cameroon.php:428
-#: eid/results/forms/update-burkina-faso-result.php:242
+#: eid/results/forms/update-burkina-faso-result.php:241
 #: eid/results/forms/update-cameroon-result.php:411
 #: hepatitis/management/get-sample-status.php:432
 #: tb/management/getSampleStatus.php:379
@@ -7354,11 +7355,11 @@ msgstr "Positif"
 #: cd4/management/get-sample-status.php:381
 #: covid-19/management/getSampleStatus.php:297
 #: eid/management/getSampleStatus.php:342
-#: eid/requests/forms/add-burkina-faso.php:231
+#: eid/requests/forms/add-burkina-faso.php:230
 #: eid/requests/forms/add-cameroon.php:413
-#: eid/requests/forms/edit-burkina-faso.php:244
+#: eid/requests/forms/edit-burkina-faso.php:243
 #: eid/requests/forms/edit-cameroon.php:429
-#: eid/results/forms/update-burkina-faso-result.php:243
+#: eid/results/forms/update-burkina-faso-result.php:242
 #: eid/results/forms/update-cameroon-result.php:412
 #: hepatitis/management/get-sample-status.php:436
 #: tb/management/getSampleStatus.php:383
@@ -8649,13 +8650,13 @@ msgstr ""
 #: covid-19/requests/forms/add-rwanda.php:154
 #: covid-19/requests/forms/add-sierraleone.php:174
 #: covid-19/requests/forms/add-southsudan.php:185
-#: eid/requests/forms/add-burkina-faso.php:142
+#: eid/requests/forms/add-burkina-faso.php:141
 #: eid/requests/forms/add-cameroon.php:171 eid/requests/forms/add-png.php:197
 #: eid/requests/forms/add-rwanda.php:165
 #: eid/requests/forms/add-sierraleone.php:185
 #: eid/requests/forms/add-southsudan.php:176
-#: eid/requests/forms/edit-burkina-faso.php:156
-#: eid/results/forms/update-burkina-faso-result.php:155
+#: eid/requests/forms/edit-burkina-faso.php:155
+#: eid/results/forms/update-burkina-faso-result.php:154
 #: hepatitis/requests/forms/add-rwanda.php:80 patients/add-patient.php:45
 #: patients/edit-patient.php:62 tb/requests/forms/add-burkina-faso.php:164
 #: tb/requests/forms/add-sierraleone.php:192
@@ -8767,9 +8768,9 @@ msgstr "Synchroniser"
 #: tb/requests/forms/add-burkina-faso.php:232
 #: tb/requests/forms/add-burkina-faso.php:380
 #: tb/requests/forms/add-burkina-faso.php:390
-#: tb/requests/forms/add-burkina-faso.php:561
-#: tb/requests/forms/add-burkina-faso.php:583
-#: tb/requests/forms/add-burkina-faso.php:635
+#: tb/requests/forms/add-burkina-faso.php:562
+#: tb/requests/forms/add-burkina-faso.php:584
+#: tb/requests/forms/add-burkina-faso.php:636
 #: tb/requests/forms/edit-burkina-faso.php:127
 #: tb/requests/forms/edit-burkina-faso.php:217
 #: tb/requests/forms/edit-burkina-faso.php:230
@@ -8777,9 +8778,9 @@ msgstr "Synchroniser"
 #: tb/requests/forms/edit-burkina-faso.php:252
 #: tb/requests/forms/edit-burkina-faso.php:401
 #: tb/requests/forms/edit-burkina-faso.php:411
-#: tb/requests/forms/edit-burkina-faso.php:610
-#: tb/requests/forms/edit-burkina-faso.php:632
-#: tb/requests/forms/edit-burkina-faso.php:684 tb/requests/patientModal.php:73
+#: tb/requests/forms/edit-burkina-faso.php:611
+#: tb/requests/forms/edit-burkina-faso.php:633
+#: tb/requests/forms/edit-burkina-faso.php:685 tb/requests/patientModal.php:73
 #: tb/results/forms/update-burkina-faso.php:126
 #: tb/results/forms/update-burkina-faso.php:216
 #: tb/results/forms/update-burkina-faso.php:229
@@ -8787,9 +8788,9 @@ msgstr "Synchroniser"
 #: tb/results/forms/update-burkina-faso.php:251
 #: tb/results/forms/update-burkina-faso.php:399
 #: tb/results/forms/update-burkina-faso.php:409
-#: tb/results/forms/update-burkina-faso.php:608
-#: tb/results/forms/update-burkina-faso.php:630
-#: tb/results/forms/update-burkina-faso.php:682
+#: tb/results/forms/update-burkina-faso.php:609
+#: tb/results/forms/update-burkina-faso.php:631
+#: tb/results/forms/update-burkina-faso.php:683
 #: vl/requests/facilitiesModal.php:101
 #: vl/requests/forms/add-burkina-faso.php:126
 #: vl/requests/forms/add-burkina-faso.php:158
@@ -9379,11 +9380,11 @@ msgid "Please choose urgency type"
 msgstr "Veuillez choisir le type d'urgence"
 
 #: cd4/results/email-results.php:202 covid-19/results/email-results.php:202
-#: eid/requests/forms/add-burkina-faso.php:296
+#: eid/requests/forms/add-burkina-faso.php:295
 #: eid/requests/forms/add-cameroon.php:274
-#: eid/requests/forms/edit-burkina-faso.php:309
+#: eid/requests/forms/edit-burkina-faso.php:308
 #: eid/requests/forms/edit-cameroon.php:289 eid/results/email-results.php:199
-#: eid/results/forms/update-burkina-faso-result.php:308
+#: eid/results/forms/update-burkina-faso-result.php:307
 #: eid/results/forms/update-cameroon-result.php:270
 #: generic-tests/results/email-results.php:202
 #: hepatitis/results/email-results.php:202 mail/vlResultMail.php:202
@@ -9948,19 +9949,19 @@ msgid "Other Tests"
 msgstr "Autres tests"
 
 #: classes/Utilities/DateUtility.php:240 classes/Utilities/DateUtility.php:264
-#: eid/requests/forms/add-burkina-faso.php:232
-#: eid/requests/forms/add-burkina-faso.php:244
-#: eid/requests/forms/add-burkina-faso.php:283
+#: eid/requests/forms/add-burkina-faso.php:231
+#: eid/requests/forms/add-burkina-faso.php:243
+#: eid/requests/forms/add-burkina-faso.php:282
 #: eid/requests/forms/add-cameroon.php:342
 #: eid/requests/forms/add-cameroon.php:392
-#: eid/requests/forms/edit-burkina-faso.php:245
-#: eid/requests/forms/edit-burkina-faso.php:257
-#: eid/requests/forms/edit-burkina-faso.php:296
+#: eid/requests/forms/edit-burkina-faso.php:244
+#: eid/requests/forms/edit-burkina-faso.php:256
+#: eid/requests/forms/edit-burkina-faso.php:295
 #: eid/requests/forms/edit-cameroon.php:359
 #: eid/requests/forms/edit-cameroon.php:409
-#: eid/results/forms/update-burkina-faso-result.php:244
-#: eid/results/forms/update-burkina-faso-result.php:256
-#: eid/results/forms/update-burkina-faso-result.php:295
+#: eid/results/forms/update-burkina-faso-result.php:243
+#: eid/results/forms/update-burkina-faso-result.php:255
+#: eid/results/forms/update-burkina-faso-result.php:294
 #: eid/results/forms/update-cameroon-result.php:340
 #: eid/results/forms/update-cameroon-result.php:390
 msgid "Unknown"
@@ -10378,9 +10379,9 @@ msgstr "S. No."
 #: covid-19/management/generate-export-drc.php:44
 #: covid-19/requests/forms/edit-cameroon.php:567
 #: covid-19/results/forms/update-cameroon-result.php:530
-#: eid/requests/forms/add-burkina-faso.php:407
-#: eid/requests/forms/edit-burkina-faso.php:429
-#: eid/results/forms/update-burkina-faso-result.php:430
+#: eid/requests/forms/add-burkina-faso.php:406
+#: eid/requests/forms/edit-burkina-faso.php:428
+#: eid/results/forms/update-burkina-faso-result.php:429
 #: import-result/imported-results.php:253
 #: tb/requests/forms/add-burkina-faso.php:371
 #: tb/requests/forms/edit-burkina-faso.php:392
@@ -11208,9 +11209,9 @@ msgstr "Sources de financement"
 #: covid-19/requests/forms/add-cameroon.php:132
 #: covid-19/requests/forms/edit-cameroon.php:152
 #: covid-19/results/forms/update-cameroon-result.php:159
-#: eid/requests/forms/add-burkina-faso.php:83
-#: eid/requests/forms/edit-burkina-faso.php:97
-#: eid/results/forms/update-burkina-faso-result.php:96
+#: eid/requests/forms/add-burkina-faso.php:82
+#: eid/requests/forms/edit-burkina-faso.php:96
+#: eid/results/forms/update-burkina-faso-result.php:95
 #: tb/requests/forms/add-burkina-faso.php:104
 #: tb/requests/forms/edit-burkina-faso.php:124
 #: tb/results/forms/update-burkina-faso.php:123
@@ -11219,9 +11220,9 @@ msgstr "FOSA/POE Comté"
 
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: eid/requests/forms/add-burkina-faso.php:75
-#: eid/requests/forms/edit-burkina-faso.php:89
-#: eid/results/forms/update-burkina-faso-result.php:88
+#: eid/requests/forms/add-burkina-faso.php:74
+#: eid/requests/forms/edit-burkina-faso.php:88
+#: eid/results/forms/update-burkina-faso-result.php:87
 #: tb/requests/forms/add-burkina-faso.php:96
 #: tb/requests/forms/edit-burkina-faso.php:116
 #: tb/results/forms/update-burkina-faso.php:115
@@ -11230,9 +11231,9 @@ msgstr "FOSA/POE État"
 
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: eid/requests/forms/add-burkina-faso.php:90
-#: eid/requests/forms/edit-burkina-faso.php:104
-#: eid/results/forms/update-burkina-faso-result.php:103
+#: eid/requests/forms/add-burkina-faso.php:89
+#: eid/requests/forms/edit-burkina-faso.php:103
+#: eid/results/forms/update-burkina-faso-result.php:102
 #: tb/requests/forms/add-burkina-faso.php:110
 #: tb/requests/forms/edit-burkina-faso.php:130
 #: tb/results/forms/update-burkina-faso.php:129
@@ -11273,19 +11274,19 @@ msgstr "Ajouter une nouvelle demande"
 
 #: covid-19/requests/forms/add-cameroon.php:87
 #: covid-19/requests/forms/edit-cameroon.php:107
-#: eid/requests/forms/add-burkina-faso.php:56
-#: eid/requests/forms/edit-burkina-faso.php:70
-#: eid/results/forms/update-burkina-faso-result.php:69
+#: eid/requests/forms/add-burkina-faso.php:55
+#: eid/requests/forms/edit-burkina-faso.php:69
+#: eid/results/forms/update-burkina-faso-result.php:68
 msgid "SITE INFORMATION"
 msgstr "INFORMATIONS SUR LE SITE"
 
 #: covid-19/requests/forms/add-cameroon.php:90
 #: covid-19/requests/forms/edit-cameroon.php:110
 #: covid-19/results/forms/update-cameroon-result.php:117
-#: eid/requests/forms/add-burkina-faso.php:59
-#: eid/requests/forms/edit-burkina-faso.php:73
+#: eid/requests/forms/add-burkina-faso.php:58
+#: eid/requests/forms/edit-burkina-faso.php:72
 #: eid/requests/forms/edit-cameroon.php:94
-#: eid/results/forms/update-burkina-faso-result.php:72
+#: eid/results/forms/update-burkina-faso-result.php:71
 #: eid/results/forms/update-cameroon-result.php:89
 msgid "To be filled by requesting Clinician/Nurse"
 msgstr "A remplir par le clinicien/infirmier demandeur"
@@ -11377,7 +11378,7 @@ msgstr "Veuillez choisir la source d'alerte / POE"
 #: vl/requests/forms/add-cameroon.php:134
 #: vl/requests/forms/edit-cameroon.php:177
 #: vl/results/forms/update-cameroon-result.php:217
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:227
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:228
 msgid "Region"
 msgstr "Région"
 
@@ -11403,9 +11404,9 @@ msgstr "Nom du projet"
 #: covid-19/requests/forms/edit-cameroon.php:168
 #: covid-19/requests/forms/edit-cameroon.php:395
 #: covid-19/results/forms/update-cameroon-result.php:356
-#: eid/requests/forms/add-burkina-faso.php:119
-#: eid/requests/forms/edit-burkina-faso.php:133
-#: eid/results/forms/update-burkina-faso-result.php:132
+#: eid/requests/forms/add-burkina-faso.php:118
+#: eid/requests/forms/edit-burkina-faso.php:132
+#: eid/results/forms/update-burkina-faso-result.php:131
 #: tb/requests/forms/add-burkina-faso.php:142
 #: tb/requests/forms/add-burkina-faso.php:348
 #: tb/requests/forms/edit-burkina-faso.php:162
@@ -11423,16 +11424,16 @@ msgstr "DÉTAILS DE L'AFFAIRE/DONNÉES DÉMOGRAPHIQUES"
 
 #: covid-19/requests/forms/add-cameroon.php:197
 #: covid-19/requests/forms/edit-cameroon.php:212
-#: eid/requests/forms/add-burkina-faso.php:134
-#: eid/requests/forms/edit-burkina-faso.php:148
-#: eid/results/forms/update-burkina-faso-result.php:147
+#: eid/requests/forms/add-burkina-faso.php:133
+#: eid/requests/forms/edit-burkina-faso.php:147
+#: eid/results/forms/update-burkina-faso-result.php:146
 #: vl/requests/forms/add-burkina-faso.php:194
 #: vl/requests/forms/add-cameroon.php:219
 #: vl/requests/forms/edit-burkina-faso.php:285
 #: vl/requests/forms/edit-cameroon.php:263
 #: vl/results/forms/update-burkina-faso-result.php:285
 #: vl/results/forms/update-cameroon-result.php:315
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:220
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:221
 msgid "Patient Information"
 msgstr "Information du patient"
 
@@ -11450,9 +11451,9 @@ msgstr "Saisir le numéro d'art ou le nom du patient"
 
 #: covid-19/requests/forms/add-cameroon.php:199
 #: covid-19/requests/forms/edit-cameroon.php:214
-#: eid/requests/forms/add-burkina-faso.php:136
-#: eid/requests/forms/edit-burkina-faso.php:150
-#: eid/results/forms/update-burkina-faso-result.php:149
+#: eid/requests/forms/add-burkina-faso.php:135
+#: eid/requests/forms/edit-burkina-faso.php:149
+#: eid/results/forms/update-burkina-faso-result.php:148
 #: vl/requests/forms/add-cameroon.php:221 vl/requests/forms/add-drc.php:178
 msgid "No Patient Found"
 msgstr "Aucun patient trouvé"
@@ -11464,12 +11465,12 @@ msgstr "Aucun patient trouvé"
 #: covid-19/requests/forms/add-southsudan.php:183
 #: covid-19/requests/forms/edit-cameroon.php:218
 #: covid-19/requests/forms/edit-cameroon.php:220
-#: eid/requests/forms/add-burkina-faso.php:140
+#: eid/requests/forms/add-burkina-faso.php:139
 #: eid/requests/forms/add-cameroon.php:169 eid/requests/forms/add-png.php:195
 #: eid/requests/forms/add-rwanda.php:163
 #: eid/requests/forms/add-sierraleone.php:183
 #: eid/requests/forms/add-southsudan.php:174
-#: eid/requests/forms/edit-burkina-faso.php:154
+#: eid/requests/forms/edit-burkina-faso.php:153
 #: eid/requests/forms/edit-cameroon.php:186
 #: eid/requests/forms/edit-cameroon.php:188 eid/requests/forms/edit-drc.php:196
 #: eid/requests/forms/edit-png.php:227 eid/requests/forms/edit-png.php:229
@@ -11479,7 +11480,7 @@ msgstr "Aucun patient trouvé"
 #: eid/requests/forms/edit-sierraleone.php:186
 #: eid/requests/forms/edit-southsudan.php:180
 #: eid/requests/forms/edit-southsudan.php:182
-#: eid/results/forms/update-burkina-faso-result.php:153
+#: eid/results/forms/update-burkina-faso-result.php:152
 #: hepatitis/requests/forms/add-rwanda.php:78
 #: hepatitis/requests/forms/edit-rwanda.php:107
 #: hepatitis/requests/forms/edit-rwanda.php:109
@@ -11787,9 +11788,9 @@ msgstr "Veuillez choisir la raison du test"
 #: covid-19/requests/forms/edit-cameroon.php:354
 #: covid-19/results/forms/update-cameroon-result.php:315
 #: covid-19/results/forms/update-cameroon-result.php:317
-#: eid/requests/forms/add-burkina-faso.php:316
-#: eid/requests/forms/edit-burkina-faso.php:329
-#: eid/results/forms/update-burkina-faso-result.php:328
+#: eid/requests/forms/add-burkina-faso.php:315
+#: eid/requests/forms/edit-burkina-faso.php:328
+#: eid/results/forms/update-burkina-faso-result.php:327
 #: tb/requests/forms/add-burkina-faso.php:365
 #: tb/requests/forms/edit-burkina-faso.php:386
 #: tb/results/forms/update-burkina-faso.php:384
@@ -11810,10 +11811,10 @@ msgstr "Veuillez choisir le type de spécimen"
 #: covid-19/requests/forms/add-cameroon.php:371
 #: covid-19/requests/forms/edit-cameroon.php:387
 #: covid-19/results/forms/update-cameroon-result.php:348
-#: eid/requests/forms/add-burkina-faso.php:354
+#: eid/requests/forms/add-burkina-faso.php:353
 #: eid/requests/forms/add-cameroon.php:512
-#: eid/requests/forms/edit-burkina-faso.php:367
-#: eid/results/forms/update-burkina-faso-result.php:367
+#: eid/requests/forms/edit-burkina-faso.php:366
+#: eid/results/forms/update-burkina-faso-result.php:366
 #: eid/results/forms/update-cameroon-result.php:504
 msgid "Reserved for Laboratory Use"
 msgstr "Réservé à l'usage des laboratoires"
@@ -11864,9 +11865,9 @@ msgstr "Date de réception"
 #: covid-19/results/forms/update-southsudan-result.php:320
 #: covid-19/results/forms/update-who-result.php:369
 #: covid-19/results/forms/update-who-result.php:526
-#: eid/requests/forms/add-burkina-faso.php:343
-#: eid/requests/forms/add-burkina-faso.php:381
-#: eid/requests/forms/add-burkina-faso.php:433
+#: eid/requests/forms/add-burkina-faso.php:342
+#: eid/requests/forms/add-burkina-faso.php:380
+#: eid/requests/forms/add-burkina-faso.php:432
 #: eid/requests/forms/add-cameroon.php:524
 #: eid/requests/forms/add-cameroon.php:554 eid/requests/forms/add-drc.php:478
 #: eid/requests/forms/add-drc.php:526 eid/requests/forms/add-png.php:490
@@ -11879,9 +11880,9 @@ msgstr "Date de réception"
 #: eid/requests/forms/add-southsudan.php:442
 #: eid/requests/forms/add-southsudan.php:484 eid/requests/forms/add-who.php:351
 #: eid/requests/forms/add-who.php:404 eid/requests/forms/add-who.php:447
-#: eid/requests/forms/edit-burkina-faso.php:356
-#: eid/requests/forms/edit-burkina-faso.php:394
-#: eid/requests/forms/edit-burkina-faso.php:455
+#: eid/requests/forms/edit-burkina-faso.php:355
+#: eid/requests/forms/edit-burkina-faso.php:393
+#: eid/requests/forms/edit-burkina-faso.php:454
 #: eid/requests/forms/edit-cameroon.php:545
 #: eid/requests/forms/edit-cameroon.php:584 eid/requests/forms/edit-drc.php:507
 #: eid/requests/forms/edit-drc.php:556 eid/requests/forms/edit-png.php:519
@@ -11895,10 +11896,10 @@ msgstr "Date de réception"
 #: eid/requests/forms/edit-southsudan.php:507
 #: eid/requests/forms/edit-who.php:382 eid/requests/forms/edit-who.php:449
 #: eid/requests/forms/edit-who.php:493
-#: eid/results/forms/update-burkina-faso-result.php:355
-#: eid/results/forms/update-burkina-faso-result.php:395
-#: eid/results/forms/update-burkina-faso-result.php:456
-#: eid/results/forms/update-burkina-faso-result.php:482
+#: eid/results/forms/update-burkina-faso-result.php:354
+#: eid/results/forms/update-burkina-faso-result.php:394
+#: eid/results/forms/update-burkina-faso-result.php:455
+#: eid/results/forms/update-burkina-faso-result.php:481
 #: eid/results/forms/update-cameroon-result.php:516
 #: eid/results/forms/update-cameroon-result.php:559
 #: eid/results/forms/update-drc-result.php:461
@@ -12058,11 +12059,11 @@ msgstr "Veuillez sélectionner le motif du refus"
 #: covid-19/requests/forms/add-cameroon.php:429
 #: covid-19/requests/forms/edit-cameroon.php:457
 #: covid-19/results/forms/update-cameroon-result.php:418
-#: eid/requests/forms/add-burkina-faso.php:385
+#: eid/requests/forms/add-burkina-faso.php:384
 #: eid/requests/forms/add-cameroon.php:548
-#: eid/requests/forms/edit-burkina-faso.php:398
+#: eid/requests/forms/edit-burkina-faso.php:397
 #: eid/requests/forms/edit-cameroon.php:577
-#: eid/results/forms/update-burkina-faso-result.php:399
+#: eid/results/forms/update-burkina-faso-result.php:398
 #: eid/results/forms/update-cameroon-result.php:552
 #: tb/requests/forms/add-burkina-faso.php:394
 #: tb/requests/forms/edit-burkina-faso.php:427
@@ -12193,15 +12194,15 @@ msgstr "Personne à contacter"
 
 #: covid-19/requests/forms/add-cameroon.php:658
 #: covid-19/results/forms/update-cameroon-result.php:231
-#: eid/requests/forms/add-burkina-faso.php:267
+#: eid/requests/forms/add-burkina-faso.php:266
 #: eid/requests/forms/add-cameroon.php:234
 #: eid/requests/forms/add-cameroon.php:297
 #: eid/requests/forms/add-cameroon.php:457
-#: eid/requests/forms/edit-burkina-faso.php:280
+#: eid/requests/forms/edit-burkina-faso.php:279
 #: eid/requests/forms/edit-cameroon.php:249
 #: eid/requests/forms/edit-cameroon.php:313
 #: eid/requests/forms/edit-cameroon.php:475
-#: eid/results/forms/update-burkina-faso-result.php:279
+#: eid/results/forms/update-burkina-faso-result.php:278
 #: eid/results/forms/update-cameroon-result.php:230
 #: eid/results/forms/update-cameroon-result.php:294
 #: eid/results/forms/update-cameroon-result.php:457
@@ -12506,16 +12507,16 @@ msgstr "Résultat final"
 
 #: covid-19/requests/forms/edit-cameroon.php:557
 #: covid-19/results/forms/update-cameroon-result.php:520
-#: eid/requests/forms/add-burkina-faso.php:415
+#: eid/requests/forms/add-burkina-faso.php:414
 #: eid/requests/forms/add-cameroon.php:571
-#: eid/requests/forms/edit-burkina-faso.php:437
+#: eid/requests/forms/edit-burkina-faso.php:436
 #: eid/requests/forms/edit-cameroon.php:600
-#: eid/results/forms/update-burkina-faso-result.php:438
+#: eid/results/forms/update-burkina-faso-result.php:437
 #: generic-tests/mail/mail-generic-tests-results.php:246
 #: import-result/imported-results.php:268
-#: tb/requests/forms/add-burkina-faso.php:443
-#: tb/requests/forms/edit-burkina-faso.php:493
-#: tb/results/forms/update-burkina-faso.php:491
+#: tb/requests/forms/add-burkina-faso.php:444
+#: tb/requests/forms/edit-burkina-faso.php:494
+#: tb/results/forms/update-burkina-faso.php:492
 #: vl/requests/forms/add-burkina-faso.php:540
 #: vl/requests/forms/add-cameroon.php:606
 #: vl/requests/forms/edit-burkina-faso.php:617
@@ -12538,15 +12539,15 @@ msgstr "Veuillez choisir examiné par"
 
 #: covid-19/requests/forms/edit-cameroon.php:564
 #: covid-19/results/forms/update-cameroon-result.php:527
-#: eid/requests/forms/add-burkina-faso.php:421
+#: eid/requests/forms/add-burkina-faso.php:420
 #: eid/requests/forms/add-cameroon.php:570
-#: eid/requests/forms/edit-burkina-faso.php:443
+#: eid/requests/forms/edit-burkina-faso.php:442
 #: eid/requests/forms/edit-cameroon.php:599
-#: eid/results/forms/update-burkina-faso-result.php:444
+#: eid/results/forms/update-burkina-faso-result.php:443
 #: eid/results/forms/update-cameroon-result.php:575
-#: tb/requests/forms/add-burkina-faso.php:449
-#: tb/requests/forms/edit-burkina-faso.php:499
-#: tb/results/forms/update-burkina-faso.php:497
+#: tb/requests/forms/add-burkina-faso.php:450
+#: tb/requests/forms/edit-burkina-faso.php:500
+#: tb/results/forms/update-burkina-faso.php:498
 #: vl/requests/forms/add-cameroon.php:602
 #: vl/requests/forms/edit-cameroon.php:659
 #: vl/results/forms/update-cameroon-result.php:670
@@ -13094,9 +13095,9 @@ msgid "Select Received Date"
 msgstr "Date de réception au labo"
 
 #: eid/management/eid-export-data.php:90 eid/management/eid-export-data.php:92
-#: eid/requests/forms/add-burkina-faso.php:437
-#: eid/requests/forms/edit-burkina-faso.php:459
-#: eid/results/forms/update-burkina-faso-result.php:460
+#: eid/requests/forms/add-burkina-faso.php:436
+#: eid/requests/forms/edit-burkina-faso.php:458
+#: eid/results/forms/update-burkina-faso-result.php:459
 msgid "Results Dispatched Date"
 msgstr "Résultats Date d'envoi"
 
@@ -13325,32 +13326,28 @@ msgstr "EID-Ajouter une demande"
 #: eid/requests/forms/add-burkina-faso.php:45
 #: eid/requests/forms/edit-burkina-faso.php:59
 #: eid/results/forms/update-burkina-faso-result.php:59
-msgid ""
-"indicates required\n"
-"                    field"
-msgstr ""
-"indique un champ obligatoire\n"
-"                    domaine"
+msgid "indicates required field"
+msgstr "indique un champ obligatoire"
 
-#: eid/requests/forms/add-burkina-faso.php:108
-#: eid/requests/forms/edit-burkina-faso.php:122
-#: eid/results/forms/update-burkina-faso-result.php:121
+#: eid/requests/forms/add-burkina-faso.php:107
+#: eid/requests/forms/edit-burkina-faso.php:121
+#: eid/results/forms/update-burkina-faso-result.php:120
 msgid "Funding Partner"
 msgstr "Partenaire financier"
 
-#: eid/requests/forms/add-burkina-faso.php:125
+#: eid/requests/forms/add-burkina-faso.php:124
 #: eid/requests/forms/add-cameroon.php:402
 #: eid/requests/forms/add-cameroon.php:403 eid/requests/forms/add-png.php:150
 #: eid/requests/forms/add-rwanda.php:151
 #: eid/requests/forms/add-sierraleone.php:157
 #: eid/requests/forms/add-southsudan.php:156
-#: eid/requests/forms/edit-burkina-faso.php:139
+#: eid/requests/forms/edit-burkina-faso.php:138
 #: eid/requests/forms/edit-cameroon.php:418
 #: eid/requests/forms/edit-cameroon.php:419 eid/requests/forms/edit-png.php:182
 #: eid/requests/forms/edit-rwanda.php:165
 #: eid/requests/forms/edit-sierraleone.php:159
 #: eid/requests/forms/edit-southsudan.php:162
-#: eid/results/forms/update-burkina-faso-result.php:138
+#: eid/results/forms/update-burkina-faso-result.php:137
 #: eid/results/forms/update-cameroon-result.php:400
 #: eid/results/forms/update-png-result.php:177
 #: eid/results/forms/update-rwanda-result.php:158
@@ -13361,297 +13358,297 @@ msgstr "Partenaire financier"
 msgid "Requesting Clinician Name"
 msgstr "Nom du Prescriteur"
 
-#: eid/requests/forms/add-burkina-faso.php:133
-#: eid/requests/forms/edit-burkina-faso.php:147
-#: eid/results/forms/update-burkina-faso-result.php:146
+#: eid/requests/forms/add-burkina-faso.php:132
+#: eid/requests/forms/edit-burkina-faso.php:146
+#: eid/results/forms/update-burkina-faso-result.php:145
 msgid "CHILD and MOTHER INFORMATION"
 msgstr "INFORMATIONS SUR L'ENFANT et la MÈRE"
 
-#: eid/requests/forms/add-burkina-faso.php:150
-#: eid/requests/forms/edit-burkina-faso.php:164
-#: eid/results/forms/update-burkina-faso-result.php:163
+#: eid/requests/forms/add-burkina-faso.php:149
+#: eid/requests/forms/edit-burkina-faso.php:163
+#: eid/results/forms/update-burkina-faso-result.php:162
 msgid "Infant Code"
 msgstr "Code du nourrisson"
 
-#: eid/requests/forms/add-burkina-faso.php:154
+#: eid/requests/forms/add-burkina-faso.php:153
 #: eid/requests/forms/add-cameroon.php:185
 #: eid/requests/forms/add-cameroon.php:187
-#: eid/requests/forms/edit-burkina-faso.php:168
+#: eid/requests/forms/edit-burkina-faso.php:167
 #: eid/requests/forms/edit-cameroon.php:200
 #: eid/requests/forms/edit-cameroon.php:202
-#: eid/results/forms/update-burkina-faso-result.php:167
+#: eid/results/forms/update-burkina-faso-result.php:166
 msgid "Infant name"
 msgstr "Nom du nourrisson"
 
-#: eid/requests/forms/add-burkina-faso.php:175
+#: eid/requests/forms/add-burkina-faso.php:174
 #: eid/requests/forms/add-cameroon.php:195
-#: eid/requests/forms/edit-burkina-faso.php:188
+#: eid/requests/forms/edit-burkina-faso.php:187
 #: eid/requests/forms/edit-cameroon.php:210
-#: eid/results/forms/update-burkina-faso-result.php:187
+#: eid/results/forms/update-burkina-faso-result.php:186
 #: eid/results/forms/update-cameroon-result.php:192
 msgid "Infant Age (months)"
 msgstr "Âge du nourrisson (mois)"
 
-#: eid/requests/forms/add-burkina-faso.php:177
-#: eid/requests/forms/edit-burkina-faso.php:190
-#: eid/results/forms/update-burkina-faso-result.php:189
+#: eid/requests/forms/add-burkina-faso.php:176
+#: eid/requests/forms/edit-burkina-faso.php:189
+#: eid/results/forms/update-burkina-faso-result.php:188
 msgid "Mother ART Number"
 msgstr "Numéro ART de la mère"
 
-#: eid/requests/forms/add-burkina-faso.php:181
+#: eid/requests/forms/add-burkina-faso.php:180
 #: eid/requests/forms/add-cameroon.php:218
-#: eid/requests/forms/edit-burkina-faso.php:194
+#: eid/requests/forms/edit-burkina-faso.php:193
 #: eid/requests/forms/edit-cameroon.php:233
-#: eid/results/forms/update-burkina-faso-result.php:193
+#: eid/results/forms/update-burkina-faso-result.php:192
 #: eid/results/forms/update-cameroon-result.php:215
 msgid "Caretaker phone number"
 msgstr "Numéro de téléphone du gardien"
 
-#: eid/requests/forms/add-burkina-faso.php:184
+#: eid/requests/forms/add-burkina-faso.php:183
 #: eid/requests/forms/add-cameroon.php:224
-#: eid/requests/forms/edit-burkina-faso.php:197
+#: eid/requests/forms/edit-burkina-faso.php:196
 #: eid/requests/forms/edit-cameroon.php:239
-#: eid/results/forms/update-burkina-faso-result.php:196
+#: eid/results/forms/update-burkina-faso-result.php:195
 #: eid/results/forms/update-cameroon-result.php:220
 msgid "Infant caretaker address"
 msgstr "Adresse de la personne en charge de l'enfant"
 
-#: eid/requests/forms/add-burkina-faso.php:192
-#: eid/requests/forms/edit-burkina-faso.php:205
-#: eid/results/forms/update-burkina-faso-result.php:204
+#: eid/requests/forms/add-burkina-faso.php:191
+#: eid/requests/forms/edit-burkina-faso.php:204
+#: eid/results/forms/update-burkina-faso-result.php:203
 msgid "Infant and Mother's Health Information"
 msgstr "Informations sur la santé du nourrisson et de la mère"
 
-#: eid/requests/forms/add-burkina-faso.php:196
-#: eid/requests/forms/edit-burkina-faso.php:209
-#: eid/results/forms/update-burkina-faso-result.php:208
+#: eid/requests/forms/add-burkina-faso.php:195
+#: eid/requests/forms/edit-burkina-faso.php:208
+#: eid/results/forms/update-burkina-faso-result.php:207
 msgid "Is Mother Alive?"
 msgstr "La mère est-elle vivante ?"
 
-#: eid/requests/forms/add-burkina-faso.php:204
-#: eid/requests/forms/add-burkina-faso.php:206
+#: eid/requests/forms/add-burkina-faso.php:203
+#: eid/requests/forms/add-burkina-faso.php:205
 #: eid/requests/forms/add-cameroon.php:256
 #: eid/requests/forms/add-cameroon.php:258
-#: eid/requests/forms/edit-burkina-faso.php:217
-#: eid/requests/forms/edit-burkina-faso.php:219
+#: eid/requests/forms/edit-burkina-faso.php:216
+#: eid/requests/forms/edit-burkina-faso.php:218
 #: eid/requests/forms/edit-cameroon.php:271
 #: eid/requests/forms/edit-cameroon.php:273
-#: eid/results/forms/update-burkina-faso-result.php:216
-#: eid/results/forms/update-burkina-faso-result.php:218
+#: eid/results/forms/update-burkina-faso-result.php:215
+#: eid/results/forms/update-burkina-faso-result.php:217
 #: eid/results/forms/update-cameroon-result.php:252
 #: eid/results/forms/update-cameroon-result.php:254
 msgid "Mother name"
 msgstr "Nom de la mère"
 
-#: eid/requests/forms/add-burkina-faso.php:206
+#: eid/requests/forms/add-burkina-faso.php:205
 #: eid/requests/forms/add-cameroon.php:187
 #: eid/requests/forms/add-cameroon.php:258
-#: eid/requests/forms/edit-burkina-faso.php:219
+#: eid/requests/forms/edit-burkina-faso.php:218
 #: eid/requests/forms/edit-cameroon.php:202
 #: eid/requests/forms/edit-cameroon.php:273
-#: eid/results/forms/update-burkina-faso-result.php:218
+#: eid/results/forms/update-burkina-faso-result.php:217
 #: eid/results/forms/update-cameroon-result.php:254
 msgid "Please enter Infant Name"
 msgstr "Veuillez saisir le nom du nourrisson"
 
-#: eid/requests/forms/add-burkina-faso.php:210
-#: eid/requests/forms/edit-burkina-faso.php:223
-#: eid/results/forms/update-burkina-faso-result.php:222
+#: eid/requests/forms/add-burkina-faso.php:209
+#: eid/requests/forms/edit-burkina-faso.php:222
+#: eid/results/forms/update-burkina-faso-result.php:221
 msgid "Mother DOB"
 msgstr "Date de naissance de la mère"
 
-#: eid/requests/forms/add-burkina-faso.php:214
-#: eid/requests/forms/edit-burkina-faso.php:227
-#: eid/results/forms/update-burkina-faso-result.php:226
+#: eid/requests/forms/add-burkina-faso.php:213
+#: eid/requests/forms/edit-burkina-faso.php:226
+#: eid/results/forms/update-burkina-faso-result.php:225
 msgid "Mother Age"
 msgstr "Âge de la mère"
 
-#: eid/requests/forms/add-burkina-faso.php:218
-#: eid/requests/forms/edit-burkina-faso.php:231
-#: eid/results/forms/update-burkina-faso-result.php:230
+#: eid/requests/forms/add-burkina-faso.php:217
+#: eid/requests/forms/edit-burkina-faso.php:230
+#: eid/results/forms/update-burkina-faso-result.php:229
 msgid "Infant On PMTCT Prophylaxis"
 msgstr "Nourrisson sous prophylaxie PTME"
 
-#: eid/requests/forms/add-burkina-faso.php:226
-#: eid/requests/forms/edit-burkina-faso.php:239
-#: eid/results/forms/update-burkina-faso-result.php:238
+#: eid/requests/forms/add-burkina-faso.php:225
+#: eid/requests/forms/edit-burkina-faso.php:238
+#: eid/results/forms/update-burkina-faso-result.php:237
 msgid "Mother's HIV Status"
 msgstr "Statut VIH de la mère"
 
-#: eid/requests/forms/add-burkina-faso.php:237
-#: eid/requests/forms/edit-burkina-faso.php:250
-#: eid/results/forms/update-burkina-faso-result.php:249
+#: eid/requests/forms/add-burkina-faso.php:236
+#: eid/requests/forms/edit-burkina-faso.php:249
+#: eid/results/forms/update-burkina-faso-result.php:248
 msgid "ART given to the Mother during"
 msgstr "ART donné à la mère pendant"
 
-#: eid/requests/forms/add-burkina-faso.php:240
-#: eid/requests/forms/edit-burkina-faso.php:253
-#: eid/results/forms/update-burkina-faso-result.php:252
+#: eid/requests/forms/add-burkina-faso.php:239
+#: eid/requests/forms/edit-burkina-faso.php:252
+#: eid/results/forms/update-burkina-faso-result.php:251
 msgid "No ART given"
 msgstr "Pas de traitement antirétroviral"
 
+#: eid/requests/forms/add-burkina-faso.php:240
 #: eid/requests/forms/add-burkina-faso.php:241
 #: eid/requests/forms/add-burkina-faso.php:242
-#: eid/requests/forms/add-burkina-faso.php:243
+#: eid/requests/forms/edit-burkina-faso.php:253
 #: eid/requests/forms/edit-burkina-faso.php:254
 #: eid/requests/forms/edit-burkina-faso.php:255
-#: eid/requests/forms/edit-burkina-faso.php:256
+#: eid/results/forms/update-burkina-faso-result.php:252
 #: eid/results/forms/update-burkina-faso-result.php:253
 #: eid/results/forms/update-burkina-faso-result.php:254
-#: eid/results/forms/update-burkina-faso-result.php:255
 #: vl/program-management/highViralLoad.php:423
 msgid "Pregnancy"
 msgstr "Grossesse"
 
-#: eid/requests/forms/add-burkina-faso.php:251
-#: eid/requests/forms/edit-burkina-faso.php:264
-#: eid/results/forms/update-burkina-faso-result.php:263
+#: eid/requests/forms/add-burkina-faso.php:250
+#: eid/requests/forms/edit-burkina-faso.php:263
+#: eid/results/forms/update-burkina-faso-result.php:262
 msgid "copies/mL"
 msgstr "copies/mL"
 
-#: eid/requests/forms/add-burkina-faso.php:256
+#: eid/requests/forms/add-burkina-faso.php:255
 #: eid/requests/forms/add-cameroon.php:308
-#: eid/requests/forms/edit-burkina-faso.php:269
+#: eid/requests/forms/edit-burkina-faso.php:268
 #: eid/requests/forms/edit-cameroon.php:324
-#: eid/results/forms/update-burkina-faso-result.php:268
+#: eid/results/forms/update-burkina-faso-result.php:267
 #: eid/results/forms/update-cameroon-result.php:305
 msgid "Date of HIV diagnosis"
 msgstr "Date de diagnostic de l'infection à VIH"
 
-#: eid/requests/forms/add-burkina-faso.php:258
+#: eid/requests/forms/add-burkina-faso.php:257
 #: eid/requests/forms/add-cameroon.php:310
-#: eid/requests/forms/edit-burkina-faso.php:271
+#: eid/requests/forms/edit-burkina-faso.php:270
 #: eid/requests/forms/edit-cameroon.php:326
-#: eid/results/forms/update-burkina-faso-result.php:270
+#: eid/results/forms/update-burkina-faso-result.php:269
 #: eid/results/forms/update-cameroon-result.php:307
 msgid "Enter date of Mother's Hiv Test"
 msgstr "Saisir la date du test VIH de la mère"
 
-#: eid/requests/forms/add-burkina-faso.php:260
-#: eid/requests/forms/add-burkina-faso.php:262
+#: eid/requests/forms/add-burkina-faso.php:259
+#: eid/requests/forms/add-burkina-faso.php:261
 #: eid/requests/forms/add-cameroon.php:227
 #: eid/requests/forms/add-cameroon.php:229
-#: eid/requests/forms/edit-burkina-faso.php:273
-#: eid/requests/forms/edit-burkina-faso.php:275
+#: eid/requests/forms/edit-burkina-faso.php:272
+#: eid/requests/forms/edit-burkina-faso.php:274
 #: eid/requests/forms/edit-cameroon.php:242
 #: eid/requests/forms/edit-cameroon.php:244
-#: eid/results/forms/update-burkina-faso-result.php:272
-#: eid/results/forms/update-burkina-faso-result.php:274
+#: eid/results/forms/update-burkina-faso-result.php:271
+#: eid/results/forms/update-burkina-faso-result.php:273
 #: eid/results/forms/update-cameroon-result.php:223
 #: eid/results/forms/update-cameroon-result.php:225
 msgid "Prophylactic ARV given to child"
 msgstr "ARV prophylactique administré à l'enfant"
 
-#: eid/requests/forms/add-burkina-faso.php:264
+#: eid/requests/forms/add-burkina-faso.php:263
 #: eid/requests/forms/add-cameroon.php:231
 #: eid/requests/forms/add-cameroon.php:295
-#: eid/requests/forms/edit-burkina-faso.php:277
+#: eid/requests/forms/edit-burkina-faso.php:276
 #: eid/requests/forms/edit-cameroon.php:246
 #: eid/requests/forms/edit-cameroon.php:311
-#: eid/results/forms/update-burkina-faso-result.php:276
+#: eid/results/forms/update-burkina-faso-result.php:275
 #: eid/results/forms/update-cameroon-result.php:227
 #: eid/results/forms/update-cameroon-result.php:292
 msgid "Nothing"
 msgstr "Rien"
 
-#: eid/requests/forms/add-burkina-faso.php:265
+#: eid/requests/forms/add-burkina-faso.php:264
 #: eid/requests/forms/add-cameroon.php:232
-#: eid/requests/forms/edit-burkina-faso.php:278
+#: eid/requests/forms/edit-burkina-faso.php:277
 #: eid/requests/forms/edit-cameroon.php:247
-#: eid/results/forms/update-burkina-faso-result.php:277
+#: eid/results/forms/update-burkina-faso-result.php:276
 #: eid/results/forms/update-cameroon-result.php:228
 msgid "NVP"
 msgstr "NVP"
 
-#: eid/requests/forms/add-burkina-faso.php:266
+#: eid/requests/forms/add-burkina-faso.php:265
 #: eid/requests/forms/add-cameroon.php:233
-#: eid/requests/forms/edit-burkina-faso.php:279
+#: eid/requests/forms/edit-burkina-faso.php:278
 #: eid/requests/forms/edit-cameroon.php:248
-#: eid/results/forms/update-burkina-faso-result.php:278
+#: eid/results/forms/update-burkina-faso-result.php:277
 #: eid/results/forms/update-cameroon-result.php:229
 msgid "AZT"
 msgstr "AZT"
 
-#: eid/requests/forms/add-burkina-faso.php:269
+#: eid/requests/forms/add-burkina-faso.php:268
 #: eid/requests/forms/add-cameroon.php:236
-#: eid/requests/forms/edit-burkina-faso.php:282
+#: eid/requests/forms/edit-burkina-faso.php:281
 #: eid/requests/forms/edit-cameroon.php:251
-#: eid/results/forms/update-burkina-faso-result.php:281
+#: eid/results/forms/update-burkina-faso-result.php:280
 #: eid/results/forms/update-cameroon-result.php:232
 msgid "Please specify other prophylactic ARV given"
 msgstr "Veuillez préciser l'autre ARV prophylactique administré"
 
-#: eid/requests/forms/add-burkina-faso.php:273
+#: eid/requests/forms/add-burkina-faso.php:272
 #: eid/requests/forms/add-cameroon.php:241
 #: eid/requests/forms/add-cameroon.php:302
-#: eid/requests/forms/edit-burkina-faso.php:286
+#: eid/requests/forms/edit-burkina-faso.php:285
 #: eid/requests/forms/edit-cameroon.php:255
 #: eid/requests/forms/edit-cameroon.php:318
-#: eid/results/forms/update-burkina-faso-result.php:285
+#: eid/results/forms/update-burkina-faso-result.php:284
 #: eid/results/forms/update-cameroon-result.php:236
 #: eid/results/forms/update-cameroon-result.php:299
 msgid "Date of Initiation"
 msgstr "Date d'entrée en vigueur"
 
-#: eid/requests/forms/add-burkina-faso.php:275
+#: eid/requests/forms/add-burkina-faso.php:274
 #: eid/requests/forms/add-cameroon.php:243
 #: eid/requests/forms/add-cameroon.php:304
-#: eid/requests/forms/edit-burkina-faso.php:288
+#: eid/requests/forms/edit-burkina-faso.php:287
 #: eid/requests/forms/edit-cameroon.php:257
 #: eid/requests/forms/edit-cameroon.php:320
-#: eid/results/forms/update-burkina-faso-result.php:287
+#: eid/results/forms/update-burkina-faso-result.php:286
 #: eid/results/forms/update-cameroon-result.php:238
 #: eid/results/forms/update-cameroon-result.php:301
 msgid "Enter date of initiation"
 msgstr "Indiquer la date d'initiation"
 
-#: eid/requests/forms/add-burkina-faso.php:277
-#: eid/requests/forms/edit-burkina-faso.php:290
-#: eid/results/forms/update-burkina-faso-result.php:289
+#: eid/requests/forms/add-burkina-faso.php:276
+#: eid/requests/forms/edit-burkina-faso.php:289
+#: eid/results/forms/update-burkina-faso-result.php:288
 msgid "Infant still breastfeeding?"
 msgstr "Le nourrisson est-il encore allaité ?"
 
-#: eid/requests/forms/add-burkina-faso.php:288
+#: eid/requests/forms/add-burkina-faso.php:287
 #: eid/requests/forms/add-cameroon.php:395
 #: eid/requests/forms/add-cameroon.php:397
-#: eid/requests/forms/edit-burkina-faso.php:301
+#: eid/requests/forms/edit-burkina-faso.php:300
 #: eid/requests/forms/edit-cameroon.php:412
 #: eid/requests/forms/edit-cameroon.php:414
-#: eid/results/forms/update-burkina-faso-result.php:300
+#: eid/results/forms/update-burkina-faso-result.php:299
 #: eid/results/forms/update-cameroon-result.php:393
 msgid "Age (months) breastfeeding stopped"
 msgstr "Âge (mois) de l'arrêt de l'allaitement"
 
-#: eid/requests/forms/add-burkina-faso.php:292
+#: eid/requests/forms/add-burkina-faso.php:291
 #: eid/requests/forms/add-cameroon.php:270
-#: eid/requests/forms/edit-burkina-faso.php:305
+#: eid/requests/forms/edit-burkina-faso.php:304
 #: eid/requests/forms/edit-cameroon.php:285
-#: eid/results/forms/update-burkina-faso-result.php:304
+#: eid/results/forms/update-burkina-faso-result.php:303
 #: eid/results/forms/update-cameroon-result.php:266
 msgid "Mode of Delivery"
 msgstr "Mode de livraison"
 
-#: eid/requests/forms/add-burkina-faso.php:297
+#: eid/requests/forms/add-burkina-faso.php:296
 #: eid/requests/forms/add-cameroon.php:275
-#: eid/requests/forms/edit-burkina-faso.php:310
+#: eid/requests/forms/edit-burkina-faso.php:309
 #: eid/requests/forms/edit-cameroon.php:290
-#: eid/results/forms/update-burkina-faso-result.php:309
+#: eid/results/forms/update-burkina-faso-result.php:308
 #: eid/results/forms/update-cameroon-result.php:271
 msgid "Caesarean"
 msgstr "Césarienne"
 
-#: eid/requests/forms/add-burkina-faso.php:298
+#: eid/requests/forms/add-burkina-faso.php:297
 #: eid/requests/forms/add-cameroon.php:276
-#: eid/requests/forms/edit-burkina-faso.php:311
+#: eid/requests/forms/edit-burkina-faso.php:310
 #: eid/requests/forms/edit-cameroon.php:291
-#: eid/results/forms/update-burkina-faso-result.php:310
+#: eid/results/forms/update-burkina-faso-result.php:309
 #: eid/results/forms/update-cameroon-result.php:272
 msgid "Gravidity N*"
 msgstr "Gravidité N*"
 
-#: eid/requests/forms/add-burkina-faso.php:308
-#: eid/requests/forms/edit-burkina-faso.php:321
-#: eid/results/forms/update-burkina-faso-result.php:320
+#: eid/requests/forms/add-burkina-faso.php:307
+#: eid/requests/forms/edit-burkina-faso.php:320
+#: eid/results/forms/update-burkina-faso-result.php:319
 #: vl/requests/forms/add-burkina-faso.php:247
 #: vl/requests/forms/add-cameroon.php:348
 #: vl/requests/forms/edit-burkina-faso.php:338
@@ -13661,35 +13658,35 @@ msgstr "Gravidité N*"
 msgid "Sample Information"
 msgstr "Informations sur les échantillons"
 
-#: eid/requests/forms/add-burkina-faso.php:330
+#: eid/requests/forms/add-burkina-faso.php:329
 #: eid/requests/forms/add-cameroon.php:495
-#: eid/requests/forms/edit-burkina-faso.php:343
+#: eid/requests/forms/edit-burkina-faso.php:342
 #: eid/requests/forms/edit-cameroon.php:514
-#: eid/results/forms/update-burkina-faso-result.php:342
+#: eid/results/forms/update-burkina-faso-result.php:341
 msgid "Requesting Officer"
 msgstr "Responsable de la demande"
 
-#: eid/requests/forms/add-burkina-faso.php:336
-#: eid/requests/forms/edit-burkina-faso.php:349
-#: eid/results/forms/update-burkina-faso-result.php:348
+#: eid/requests/forms/add-burkina-faso.php:335
+#: eid/requests/forms/edit-burkina-faso.php:348
+#: eid/results/forms/update-burkina-faso-result.php:347
 msgid "Sample Requestor Phone"
 msgstr "Téléphone du demandeur d'échantillon"
 
-#: eid/requests/forms/add-burkina-faso.php:341
-#: eid/requests/forms/edit-burkina-faso.php:354
-#: eid/results/forms/update-burkina-faso-result.php:353
+#: eid/requests/forms/add-burkina-faso.php:340
+#: eid/requests/forms/edit-burkina-faso.php:353
+#: eid/results/forms/update-burkina-faso-result.php:352
 msgid "Sample Received Date (at Testing Lab)"
 msgstr "Date de réception de l'échantillon (au laboratoire d'essais)"
 
-#: eid/requests/forms/add-burkina-faso.php:364
-#: eid/requests/forms/edit-burkina-faso.php:377
-#: eid/results/forms/update-burkina-faso-result.php:378
+#: eid/requests/forms/add-burkina-faso.php:363
+#: eid/requests/forms/edit-burkina-faso.php:376
+#: eid/results/forms/update-burkina-faso-result.php:377
 msgid "Machine used to test"
 msgstr "Machine utilisée pour le test"
 
-#: eid/requests/forms/add-burkina-faso.php:387
-#: eid/requests/forms/edit-burkina-faso.php:400
-#: eid/results/forms/update-burkina-faso-result.php:401
+#: eid/requests/forms/add-burkina-faso.php:386
+#: eid/requests/forms/edit-burkina-faso.php:399
+#: eid/results/forms/update-burkina-faso-result.php:400
 msgid ""
 "Reason for\n"
 "                                                Rejection"
@@ -13697,18 +13694,18 @@ msgstr ""
 "Motif du\n"
 "                                                Rejet"
 
-#: eid/requests/forms/add-burkina-faso.php:425
+#: eid/requests/forms/add-burkina-faso.php:424
 #: eid/requests/forms/add-cameroon.php:581
-#: eid/requests/forms/edit-burkina-faso.php:447
+#: eid/requests/forms/edit-burkina-faso.php:446
 #: eid/requests/forms/edit-cameroon.php:610
-#: eid/results/forms/update-burkina-faso-result.php:448
+#: eid/results/forms/update-burkina-faso-result.php:447
 #: eid/results/forms/update-cameroon-result.php:586
 #: generic-tests/mail/mail-generic-tests-results.php:247
 #: global-config/editGlobalConfig.php:1693
 #: import-result/imported-results.php:284
-#: tb/requests/forms/add-burkina-faso.php:453
-#: tb/requests/forms/edit-burkina-faso.php:503
-#: tb/results/forms/update-burkina-faso.php:501
+#: tb/requests/forms/add-burkina-faso.php:454
+#: tb/requests/forms/edit-burkina-faso.php:504
+#: tb/results/forms/update-burkina-faso.php:502
 #: vl/requests/forms/add-burkina-faso.php:591
 #: vl/requests/forms/add-cameroon.php:622
 #: vl/requests/forms/edit-burkina-faso.php:672
@@ -13719,11 +13716,11 @@ msgstr ""
 msgid "Approved By"
 msgstr "Approuvé par"
 
-#: eid/requests/forms/add-burkina-faso.php:431
+#: eid/requests/forms/add-burkina-faso.php:430
 #: eid/requests/forms/add-cameroon.php:579
-#: eid/requests/forms/edit-burkina-faso.php:453
+#: eid/requests/forms/edit-burkina-faso.php:452
 #: eid/requests/forms/edit-cameroon.php:608
-#: eid/results/forms/update-burkina-faso-result.php:454
+#: eid/results/forms/update-burkina-faso-result.php:453
 #: eid/results/forms/update-cameroon-result.php:584
 #: vl/requests/forms/add-burkina-faso.php:599
 #: vl/requests/forms/add-cameroon.php:616
@@ -13734,9 +13731,9 @@ msgstr "Approuvé par"
 msgid "Approved On"
 msgstr "Approuvé le"
 
-#: eid/requests/forms/add-burkina-faso.php:441
-#: eid/requests/forms/edit-burkina-faso.php:463
-#: eid/results/forms/update-burkina-faso-result.php:464
+#: eid/requests/forms/add-burkina-faso.php:440
+#: eid/requests/forms/edit-burkina-faso.php:462
+#: eid/results/forms/update-burkina-faso-result.php:463
 #: generic-tests/mail/mail-generic-tests-results.php:248
 #: vl/requests/forms/add-burkina-faso.php:614
 #: vl/requests/forms/add-cameroon.php:642
@@ -13748,13 +13745,13 @@ msgstr "Approuvé le"
 msgid "Lab Tech. Comments"
 msgstr "Commentaires de Lab Technicien"
 
-#: eid/requests/forms/add-burkina-faso.php:460
-#: eid/requests/forms/edit-burkina-faso.php:480
-#: eid/results/forms/update-burkina-faso-result.php:481
+#: eid/requests/forms/add-burkina-faso.php:459
+#: eid/requests/forms/edit-burkina-faso.php:479
+#: eid/results/forms/update-burkina-faso-result.php:480
 #: import-result/imported-results.php:302
 #: system-admin/instance-overview/instanceIndex.php:132
-#: tb/requests/forms/add-burkina-faso.php:475
-#: tb/results/forms/update-burkina-faso.php:523
+#: tb/requests/forms/add-burkina-faso.php:476
+#: tb/results/forms/update-burkina-faso.php:524
 #: vl/requests/forms/add-burkina-faso.php:643
 #: vl/requests/forms/add-cameroon.php:683
 #: vl/requests/forms/edit-cameroon.php:740 vl/requests/sample-storage.php:374
@@ -13768,9 +13765,9 @@ msgid "HEALTH FACILITY INFORMATION"
 msgstr "INFORMATIONS SUR LES FOSA"
 
 #: eid/requests/forms/add-cameroon.php:92
-#: eid/requests/forms/edit-burkina-faso.php:86
+#: eid/requests/forms/edit-burkina-faso.php:85
 #: eid/requests/forms/edit-cameroon.php:108
-#: eid/results/forms/update-burkina-faso-result.php:85
+#: eid/results/forms/update-burkina-faso-result.php:84
 #: eid/results/forms/update-cameroon-result.php:102
 #: vl/requests/forms/add-cameroon.php:109
 #: vl/requests/forms/edit-cameroon.php:152
@@ -14205,9 +14202,9 @@ msgstr "Veuillez choisir la raison du rejet"
 #: eid/requests/forms/add-cameroon.php:580
 #: eid/requests/forms/edit-cameroon.php:609
 #: eid/results/forms/update-cameroon-result.php:585
-#: tb/requests/forms/add-burkina-faso.php:459
-#: tb/requests/forms/edit-burkina-faso.php:509
-#: tb/results/forms/update-burkina-faso.php:507
+#: tb/requests/forms/add-burkina-faso.php:460
+#: tb/requests/forms/edit-burkina-faso.php:510
+#: tb/results/forms/update-burkina-faso.php:508
 #: vl/requests/forms/add-cameroon.php:618
 msgid "Approved on"
 msgstr "Validé le"
@@ -20737,6 +20734,7 @@ msgstr "Date de l'échantillon testé"
 #: tb/requests/forms/add-burkina-faso.php:402
 #: tb/requests/forms/edit-burkina-faso.php:435
 #: tb/results/forms/update-burkina-faso.php:433
+#: tb/results/pdf/result-pdf-burkina-faso.php:305
 msgid "Microscopy Test Results"
 msgstr "Résultats des tests microscopiques"
 
@@ -20752,15 +20750,15 @@ msgstr "Test #"
 msgid "Actual Number"
 msgstr "Nombre réel"
 
-#: tb/requests/forms/add-burkina-faso.php:429
-#: tb/requests/forms/edit-burkina-faso.php:479
-#: tb/results/forms/update-burkina-faso.php:477
+#: tb/requests/forms/add-burkina-faso.php:430
+#: tb/requests/forms/edit-burkina-faso.php:480
+#: tb/results/forms/update-burkina-faso.php:478
 msgid "Xpert MTB Result"
 msgstr "Résultat Xpert MTB"
 
-#: tb/requests/forms/add-burkina-faso.php:435
-#: tb/requests/forms/edit-burkina-faso.php:485
-#: tb/results/forms/update-burkina-faso.php:483
+#: tb/requests/forms/add-burkina-faso.php:436
+#: tb/requests/forms/edit-burkina-faso.php:486
+#: tb/results/forms/update-burkina-faso.php:484
 msgid "TB LAM Result"
 msgstr "TB LAM Résultat"
 
@@ -20816,6 +20814,154 @@ msgstr ""
 #: tb/results/forms/update-southsudan.php:102
 msgid "Edit New Request"
 msgstr "Modifier la nouvelle demande"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:203
+msgid "REQUESTING HEALTH FACILITY NAME"
+msgstr "NOM DE L'ÉTABLISSEMENT DE SANTÉ DEMANDEUR"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:204
+msgid "HEALTH FACILITY CODE"
+msgstr "CODE DES ÉTABLISSEMENTS DE SANTÉ"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:205
+#: vl/results/pdf/result-pdf-cameroon.php:224
+msgid "REGION"
+msgstr "RÉGION"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:206
+#: vl/results/pdf/result-pdf-cameroon.php:225
+msgid "DISTRICT"
+msgstr "DISTRICT"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:221
+#: vl/results/pdf/result-pdf-cameroon.php:254
+msgid "PATIENT NAME"
+msgstr "NOM DU PATIENT"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:222
+msgid "PATIENT ID"
+msgstr "No Patient"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:223
+msgid "DOB"
+msgstr "Date de naissance"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:224
+#: vl/results/pdf/result-pdf-cameroon.php:257
+msgid "AGE"
+msgstr "AGE"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:253
+#: vl/results/pdf/result-pdf-cameroon.php:292
+msgid "GENDER"
+msgstr "SEXE"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:254
+msgid "WEIGHT(kg)"
+msgstr "POIDS(kg)"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:255
+msgid "DISPLACED POPULATION"
+msgstr "POPULATION DÉPLACÉE"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:256
+msgid "COMMUNITY ACTOR"
+msgstr "ACTEUR COMMUNAUTAIRE"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:272
+#: vl/results/pdf/result-pdf-cameroon.php:328
+msgid "SAMPLE ID"
+msgstr "ID DE L'ÉCHANTILLON"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:273
+#: vl/results/pdf/result-pdf-cameroon.php:329
+msgid "SAMPLE COLLECTION DATE"
+msgstr "DATE DE PRÉLÈVEMENT DE L'ÉCHANTILLON"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:274
+#: vl/results/pdf/result-pdf-cameroon.php:330
+msgid "SAMPLE RECEIPT DATE"
+msgstr "DATE DE RÉCEPTION DE L'ÉCHANTILLON"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:282
+msgid "SAMPLE REJECTION STATUS"
+msgstr "STATUT DU REJET DE L'ÉCHANTILLON"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:283
+#: vl/results/pdf/result-pdf-cameroon.php:339
+msgid "SAMPLE TEST DATE"
+msgstr "DATE DU TEST DE L’ÉCHANTILLON"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:284
+#: vl/results/pdf/result-pdf-cameroon.php:340
+msgid "RESULT RELEASE DATE"
+msgstr "DATE DE PUBLICATION DES RÉSULTATS"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:294
+#: vl/results/pdf/result-pdf-cameroon.php:350
+msgid "SAMPLE TYPE"
+msgstr "TYPE D’ÉCHANTILLON"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:307
+msgid "No AFB"
+msgstr "Pas d'AFB"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:309
+msgid "Actual No"
+msgstr "Réel Non"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:328
+msgid "XPERT MTB Result"
+msgstr "XPERT MTB Résultat"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:343
+#: vl/results/pdf/result-pdf-cameroon.php:491
+msgid "TESTED BY"
+msgstr "TESTÉ PAR"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:344
+#: tb/results/pdf/result-pdf-burkina-faso.php:366
+#: tb/results/pdf/result-pdf-burkina-faso.php:385
+#: tb/results/pdf/result-pdf-burkina-faso.php:406
+#: vl/results/pdf/result-pdf-cameroon.php:492
+#: vl/results/pdf/result-pdf-cameroon.php:514
+#: vl/results/pdf/result-pdf-cameroon.php:535
+#: vl/results/pdf/result-pdf-cameroon.php:555
+#: vl/results/pdf/result-pdf-cameroon.php:577
+msgid "SIGNATURE"
+msgstr "SIGNATURE"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:345
+#: tb/results/pdf/result-pdf-burkina-faso.php:367
+#: tb/results/pdf/result-pdf-burkina-faso.php:386
+#: tb/results/pdf/result-pdf-burkina-faso.php:407
+#: vl/results/pdf/result-pdf-cameroon.php:493
+#: vl/results/pdf/result-pdf-cameroon.php:515
+#: vl/results/pdf/result-pdf-cameroon.php:536
+#: vl/results/pdf/result-pdf-cameroon.php:556
+#: vl/results/pdf/result-pdf-cameroon.php:578
+msgid "DATE"
+msgstr "DATE"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:365
+#: vl/results/pdf/result-pdf-cameroon.php:534
+msgid "REVIEWED BY"
+msgstr "REVUE PAR"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:384
+#: vl/results/pdf/result-pdf-cameroon.php:513
+msgid "REPORT REVISED BY"
+msgstr "RAPPORT RÉVISÉ PAR"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:405
+#: vl/results/pdf/result-pdf-cameroon.php:554
+msgid "APPROVED BY"
+msgstr "APPROUVÉ PAR"
+
+#: tb/results/pdf/result-pdf-burkina-faso.php:428
+#: vl/results/pdf/result-pdf-cameroon.php:612
+msgid "Lab Comments"
+msgstr "Commentaires du laboratoire"
 
 #: tb/results/tb-manual-results.php:9
 msgid "Enter TB Result"
@@ -21607,7 +21753,7 @@ msgstr "Ajouter les résultats VL"
 #: vl/reference/vl-results.php:32 vl/requests/forms/add-cameroon.php:568
 #: vl/requests/forms/edit-cameroon.php:624
 #: vl/results/forms/update-cameroon-result.php:652
-#: vl/results/pdf/result-pdf-cameroon.php:387
+#: vl/results/pdf/result-pdf-cameroon.php:378
 msgid "Viral Load Result"
 msgstr "Résultat de la charge virale"
 
@@ -22605,9 +22751,9 @@ msgid "Viral Load Result(copiesl/ml)"
 msgstr "Résultat de la charge virale (copiesl/ml)"
 
 #: vl/result-mail/editTestResultEmailConfig.php:111
-#: vl/results/pdf/result-pdf-cameroon.php:373
-#: vl/results/pdf/result-pdf-cameroon.php:377
-#: vl/results/pdf/result-pdf-cameroon.php:383
+#: vl/results/pdf/result-pdf-cameroon.php:364
+#: vl/results/pdf/result-pdf-cameroon.php:368
+#: vl/results/pdf/result-pdf-cameroon.php:374
 #: vl/results/pdf/result-pdf-drc.php:275
 msgid "Log Value"
 msgstr "Valeur logarithmique"
@@ -22703,23 +22849,23 @@ msgid "Please select reason for rejection"
 msgstr "Veuillez sélectionner la raison du rejet"
 
 #: vl/results/pdf/result-pdf-burkina-faso.php:325
-#: vl/results/pdf/result-pdf-cameroon.php:351
+#: vl/results/pdf/result-pdf-cameroon.php:342
 msgid "Not Rejected"
 msgstr "Non rejeté"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:160
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:161
 msgid "Modification date"
 msgstr "Date de modification"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:219
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:220
 msgid "HIV VIRAL LOAD RESULT SHEET"
 msgstr "FICHE DE RESULTAT CHARGE VIRAL VIH"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:226
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:227
 msgid "Patient ART Code"
 msgstr "Code TARV du patient"
 
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:231
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:232
 msgid "Sex : "
 msgstr "Sexe : "
 
@@ -22787,115 +22933,71 @@ msgstr "Autorisé par"
 msgid "Authorized and Validated by"
 msgstr "Autorisé et validé par"
 
-#: vl/results/pdf/result-pdf-cameroon.php:231
+#: vl/results/pdf/result-pdf-cameroon.php:222
 msgid "FACILITY"
 msgstr "FOSA"
 
-#: vl/results/pdf/result-pdf-cameroon.php:232
+#: vl/results/pdf/result-pdf-cameroon.php:223
 msgid "FACILITY CODE"
 msgstr "CODE DE LA FOSA"
 
-#: vl/results/pdf/result-pdf-cameroon.php:233
-msgid "REGION"
-msgstr "RÉGION"
-
-#: vl/results/pdf/result-pdf-cameroon.php:234
-msgid "DISTRICT"
-msgstr "DISTRICT"
-
-#: vl/results/pdf/result-pdf-cameroon.php:245
+#: vl/results/pdf/result-pdf-cameroon.php:236
 msgid "PROJECT"
 msgstr "PROJET"
 
-#: vl/results/pdf/result-pdf-cameroon.php:246
+#: vl/results/pdf/result-pdf-cameroon.php:237
 msgid "REQUESTING CLINICIAN NAME"
 msgstr "NOM DU PRESCRITEUR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:247
+#: vl/results/pdf/result-pdf-cameroon.php:238
 msgid "TEL"
 msgstr "TEL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:248
+#: vl/results/pdf/result-pdf-cameroon.php:239
 msgid "EMAIL"
 msgstr "EMAIL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:263
-msgid "PATIENT NAME"
-msgstr "NOM DU PATIENT"
-
-#: vl/results/pdf/result-pdf-cameroon.php:264
+#: vl/results/pdf/result-pdf-cameroon.php:255
 msgid "PATIENT IDENTIFIER"
 msgstr "CODE TARV"
 
-#: vl/results/pdf/result-pdf-cameroon.php:265
+#: vl/results/pdf/result-pdf-cameroon.php:256
 msgid "ARV PROTOCOL"
 msgstr "PROTOCOLE ARV"
 
-#: vl/results/pdf/result-pdf-cameroon.php:266
-msgid "AGE"
-msgstr "AGE"
-
-#: vl/results/pdf/result-pdf-cameroon.php:278
+#: vl/results/pdf/result-pdf-cameroon.php:269
 msgid "Co-infection"
 msgstr "Co-infection"
 
-#: vl/results/pdf/result-pdf-cameroon.php:281
+#: vl/results/pdf/result-pdf-cameroon.php:272
 msgid "Control VL Testing"
 msgstr "Test VL de contrôle"
 
-#: vl/results/pdf/result-pdf-cameroon.php:284
+#: vl/results/pdf/result-pdf-cameroon.php:275
 msgid "Other Reason"
 msgstr "Autre raison"
 
-#: vl/results/pdf/result-pdf-cameroon.php:301
-msgid "GENDER"
-msgstr "SEXE"
-
-#: vl/results/pdf/result-pdf-cameroon.php:303
+#: vl/results/pdf/result-pdf-cameroon.php:294
 msgid "BREASTFEEDING"
 msgstr "ALLAITEMENT"
 
-#: vl/results/pdf/result-pdf-cameroon.php:304
+#: vl/results/pdf/result-pdf-cameroon.php:295
 msgid "PREGNANCY STATUS"
 msgstr "ÉTAT DE GROSSESSE"
 
-#: vl/results/pdf/result-pdf-cameroon.php:309
+#: vl/results/pdf/result-pdf-cameroon.php:300
 msgid "PATIENT'S CONTACT"
 msgstr "CONTACT DU PATIENT"
 
-#: vl/results/pdf/result-pdf-cameroon.php:326
+#: vl/results/pdf/result-pdf-cameroon.php:317
 msgid "HEALTH INSURANCE CODE"
 msgstr "COUVERTURE SANTÉ UNIVERSELLE"
 
-#: vl/results/pdf/result-pdf-cameroon.php:337
-msgid "SAMPLE ID"
-msgstr "ID DE L'ÉCHANTILLON"
-
 #: vl/results/pdf/result-pdf-cameroon.php:338
-msgid "SAMPLE COLLECTION DATE"
-msgstr "DATE DE PRÉLÈVEMENT DE L'ÉCHANTILLON"
-
-#: vl/results/pdf/result-pdf-cameroon.php:339
-msgid "SAMPLE RECEIPT DATE"
-msgstr "DATE DE RÉCEPTION DE L'ÉCHANTILLON"
-
-#: vl/results/pdf/result-pdf-cameroon.php:347
 msgid "SAMPLE REJECTED?"
 msgstr "ÉCHANTILLON REJETÉ ?"
 
-#: vl/results/pdf/result-pdf-cameroon.php:348
-msgid "SAMPLE TEST DATE"
-msgstr "DATE DU TEST DE L’ÉCHANTILLON"
-
-#: vl/results/pdf/result-pdf-cameroon.php:349
-msgid "RESULT RELEASE DATE"
-msgstr "DATE DE PUBLICATION DES RÉSULTATS"
-
-#: vl/results/pdf/result-pdf-cameroon.php:359
-msgid "SAMPLE TYPE"
-msgstr "TYPE D’ÉCHANTILLON"
-
-#: vl/results/pdf/result-pdf-cameroon.php:394
+#: vl/results/pdf/result-pdf-cameroon.php:385
 msgid ""
 "Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR "
 "(Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)"
@@ -22904,51 +23006,15 @@ msgstr ""
 "PCR (seuil de sensibilité : 40 copies/ml pour le plasma et 839 copies/ml "
 "pour le DBS)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:432
+#: vl/results/pdf/result-pdf-cameroon.php:423
 msgid "TEST PLATFORM"
 msgstr "PLATE-FORME D'ESSAI"
 
-#: vl/results/pdf/result-pdf-cameroon.php:500
-msgid "TESTED BY"
-msgstr "TESTÉ PAR"
-
-#: vl/results/pdf/result-pdf-cameroon.php:501
-#: vl/results/pdf/result-pdf-cameroon.php:523
-#: vl/results/pdf/result-pdf-cameroon.php:544
-#: vl/results/pdf/result-pdf-cameroon.php:564
-#: vl/results/pdf/result-pdf-cameroon.php:586
-msgid "SIGNATURE"
-msgstr "SIGNATURE"
-
-#: vl/results/pdf/result-pdf-cameroon.php:502
-#: vl/results/pdf/result-pdf-cameroon.php:524
-#: vl/results/pdf/result-pdf-cameroon.php:545
-#: vl/results/pdf/result-pdf-cameroon.php:565
-#: vl/results/pdf/result-pdf-cameroon.php:587
-msgid "DATE"
-msgstr "DATE"
-
-#: vl/results/pdf/result-pdf-cameroon.php:522
-msgid "REPORT REVISED BY"
-msgstr "RAPPORT RÉVISÉ PAR"
-
-#: vl/results/pdf/result-pdf-cameroon.php:543
-msgid "REVIEWED BY"
-msgstr "REVUE PAR"
-
-#: vl/results/pdf/result-pdf-cameroon.php:563
-msgid "APPROVED BY"
-msgstr "APPROUVÉ PAR"
-
-#: vl/results/pdf/result-pdf-cameroon.php:585
+#: vl/results/pdf/result-pdf-cameroon.php:576
 msgid "REVIEWED AND APPROVED BY"
 msgstr "REVU ET APPROUVÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:621
-msgid "Lab Comments"
-msgstr "Commentaires du laboratoire"
-
-#: vl/results/pdf/result-pdf-cameroon.php:638
+#: vl/results/pdf/result-pdf-cameroon.php:629
 msgid ""
 "For a variation in Viral Load to be significant, the difference between two "
 "measurements must be at least 0.5 Log<sub>10</sub> or a reduction or "
@@ -22958,11 +23024,11 @@ msgstr ""
 "entre deux mesures doit être d'au moins 0,5 <sub>Log10</sub> ou une "
 "réduction ou une augmentation d'un facteur 3 du nombre de copies/mL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:647
+#: vl/results/pdf/result-pdf-cameroon.php:638
 msgid "Detection Limit (DL)"
 msgstr "Limite de détection (LDD)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:647
+#: vl/results/pdf/result-pdf-cameroon.php:638
 msgid ""
 "&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 "
 "Log<sub>10</sub>) copies/mL for DBS"
@@ -22970,11 +23036,11 @@ msgstr ""
 "&lt; 40 (1,60 <sub>Log10</sub>) copies/mL pour le plasma et 839 (2,92 "
 "<sub>Log10</sub>) copies/mL pour le DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:649
+#: vl/results/pdf/result-pdf-cameroon.php:640
 msgid "Quantification Limits (QL)"
 msgstr "Limites de quantification (LDQ)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:649
+#: vl/results/pdf/result-pdf-cameroon.php:640
 msgid ""
 "Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for "
 "Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for "
@@ -22984,15 +23050,15 @@ msgstr ""
 "plasma et 839 et 10 000 000 (2,92 et 7,0 <sub>Log10</sub>) copies/mL pour le "
 "DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:666
+#: vl/results/pdf/result-pdf-cameroon.php:657
 msgid "Continue on current regimen"
 msgstr "Poursuivre le protocole actuel"
 
-#: vl/results/pdf/result-pdf-cameroon.php:667
+#: vl/results/pdf/result-pdf-cameroon.php:658
 msgid "Printed on"
 msgstr "Imprimé le"
 
-#: vl/results/pdf/result-pdf-cameroon.php:670
+#: vl/results/pdf/result-pdf-cameroon.php:661
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 
@@ -23005,6 +23071,13 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid ""
+#~ "indicates required\n"
+#~ "                    field"
+#~ msgstr ""
+#~ "indique un champ obligatoire\n"
+#~ "                    domaine"
 
 #~ msgid "Please select the import config machine name"
 #~ msgstr ""
@@ -23171,9 +23244,6 @@ msgstr ""
 #~ msgid "NAME OF REQUESTING CLINIC"
 #~ msgstr "NOM DE LA CLINIQUE DEMANDEUSE"
 
-#~ msgid "REQUESTING HEALTH FACILITY NAME"
-#~ msgstr "NOM DE L'ÉTABLISSEMENT DE SANTÉ DEMANDEUR"
-
 #~ msgid "STATE"
 #~ msgstr "Etat"
 
@@ -23185,9 +23255,6 @@ msgstr ""
 
 #~ msgid "REASON FOR VL TESTING"
 #~ msgstr "RAISON DU TEST VL"
-
-#~ msgid "SAMPLE REJECTION STATUS"
-#~ msgstr "STATUT DU REJET DE L'ÉCHANTILLON"
 
 #~ msgid "Abbott Linear Detection range: 839 copies/ml - 10 million copies/ml"
 #~ msgstr ""
