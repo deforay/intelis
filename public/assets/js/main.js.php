@@ -155,8 +155,9 @@
     function getAge() {
         const dob = $.trim($("#dob").val());
         // Clear the fields initially
-        $("#ageInYears, #ageInMonths").val("");
+
         if (dob) {
+            $("#ageInYears, #ageInMonths").val("");
             const age = Utilities.getAgeFromDob(dob, globalDayjsDateFormat);
             if (age.years && age.years >= 1) {
                 $("#ageInYears").val(age.years);
