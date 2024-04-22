@@ -99,14 +99,14 @@ try {
     }
 
     // CONFIG
-    if (!empty($lastUpdatedOn)) {
-        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
-    }
-    $globalConfig = $db->get('global_config');
+    // if (!empty($lastUpdatedOn)) {
+    //     $db = $db->where(' (updated_on > "' . $lastUpdatedOn . '" OR updated_on IS NULL)');
+    // }
+    // $globalConfig = $db->get('global_config');
 
-    if (!empty($globalConfig)) {
-        $payload["globalConfig"] = $globalConfig;
-    }
+    // if (!empty($globalConfig)) {
+    //     $payload["globalConfig"] = $globalConfig;
+    // }
 
     $jsonResponse = $apiService->post($url, $payload);
     $instanceId = $general->getInstanceId();
