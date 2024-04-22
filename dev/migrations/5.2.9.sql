@@ -445,3 +445,16 @@ UPDATE privileges SET privilege_name = '/batch/edit-batch.php?type=tb' WHERE pri
 UPDATE privileges SET shared_privileges = '["/batch/generate-batch-pdf.php?type=tb"]' WHERE privilege_id = 199;
 UPDATE privileges SET shared_privileges = '["/batch/add-batch-position.php?type=tb"]' WHERE privilege_id = 200;
 UPDATE privileges SET shared_privileges = '["/batch/delete-batch.php?type=tb","/batch/edit-batch-position.php?type=tb"]' WHERE privilege_id = 201;
+
+-- Jeyabanu 17-Apr-2024
+CREATE TABLE `r_reasons_for_sample_removal` (
+  `removal_reason_id` int NOT NULL AUTO_INCREMENT,
+  `removal_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `removal_reason_status` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `updated_datetime` datetime DEFAULT NULL,
+  `data_sync` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`removal_reason_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `lab_storage_history` ADD `sample_removal_reason` INT NULL DEFAULT NULL AFTER `comments`;
+

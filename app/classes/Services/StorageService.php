@@ -99,25 +99,35 @@ class StorageService
         });
     }
 
-    public function updateSampleStorageStatus($storageId, $uniqueId, $status)
+    public function getStorageByCode(?string $storageCode = null): ?array
     {
-        try {
-
-            if (isset($storageId) && $storageId != "" && !empty($uniqueId)) {
-                $data = array(
-                    'sample_status' => $status,
-                    'updated_datetime' => DateUtility::getCurrentDateTime()
-                );
-                $this->db->where('sample_unique_id', $uniqueId);
-                $this->db->where('freezer_id', $storageId);
-                $save = $this->db->update('lab_storage_history', $data);
+        return once(function () use ($storageCode) {
+            if (!empty($storageCode)) {
+                $this->db->where('storage_code', $storageCode);
+                $this->db->where('storage_status', 'active');
+                $return = $this->db->getOne("$this->table");
+            } else {
+                $return = null;
             }
+            return $return;
+        });
+    }
 
-            $this->db->commitTransaction();
-            return $save;
-        } catch (\Exception $e) {
-            $this->db->rollbackTransaction();
-            throw $e;
-        }
+    public function getFreezerHistoryById($historyId){
+        return once(function () use ($historyId) {
+            if (!empty($historyId)) {
+                $this->db->where('history_id', $historyId);
+                $return = $this->db->getOne("lab_storage_history");
+            } else {
+                $return = null;
+            }
+            return $return;
+        });
+    }
+
+    public function updateSampleStorageStatus($data)
+    {
+        $save = $this->db->insert('lab_storage_history', $data);
+        return $save;
     }
 }
