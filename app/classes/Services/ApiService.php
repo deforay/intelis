@@ -3,13 +3,14 @@
 namespace App\Services;
 
 use Exception;
+use Throwable;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
+use App\Utilities\MiscUtility;
 use GuzzleHttp\RequestOptions;
-use App\Exceptions\SystemException;
 use App\Utilities\LoggerUtility;
-use GuzzleHttp\Exception\GuzzleException;
+use App\Exceptions\SystemException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -18,26 +19,66 @@ class ApiService
     protected ?Client $client = null;
     protected int $maxRetries;
     protected int $delayMultiplier;
+    protected float $jitterFactor;
+    protected int $maxRetryDelay;
 
-    public function __construct(int $maxRetries = 3, int $delayMultiplier = 1000)
+    public function __construct(int $maxRetries = 3, int $delayMultiplier = 1000, float $jitterFactor = 0.2, int $maxRetryDelay = 10000)
     {
         $this->maxRetries = $maxRetries;
         $this->delayMultiplier = $delayMultiplier;
+        $this->jitterFactor = $jitterFactor;
+        $this->maxRetryDelay = $maxRetryDelay;
         $this->client = $this->createApiClient();
+    }
+
+    private function logError(Throwable $e, string $message): void
+    {
+        LoggerUtility::log('error', "$message: " . $e->getMessage(), [
+            'exception' => $e,
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'stacktrace' => $e->getTraceAsString()
+        ]);
     }
 
     protected function createApiClient(): Client
     {
         $handlerStack = HandlerStack::create();
         $handlerStack->push(Middleware::retry(
-            fn ($retries, $request, $response = null, $exception = null) =>
-            $retries < $this->maxRetries && ($exception instanceof RequestException),
-            fn ($retries) =>
-            $this->delayMultiplier * 2 ** $retries
+            $this->retryDecider(),
+            $this->retryDelay()
         ));
 
         return new Client(['handler' => $handlerStack]);
     }
+
+    private function retryDecider()
+    {
+        return function ($retries, $request, $response, $exception) {
+            if ($retries >= $this->maxRetries) {
+                return false;
+            }
+            if ($exception instanceof RequestException) {
+                if ($response) {
+                    $statusCode = $response->getStatusCode();
+                    // Retry on server errors (5xx) or rate limiting errors (429)
+                    return $statusCode >= 500 || $statusCode === 429;
+                }
+                return true;
+            }
+            return false;
+        };
+    }
+
+    private function retryDelay()
+    {
+        return function ($retries) {
+            $delay = $this->delayMultiplier * (2 ** $retries);
+            $jitter = $this->jitterFactor * random_int(0, 1000) / 1000;
+            return min($this->maxRetryDelay, $delay * (1 + $jitter));
+        };
+    }
+
 
     public function checkConnectivity(string $url): bool
     {
@@ -51,8 +92,13 @@ class ApiService
             } else {
                 return false; // API returned a non-200 status code
             }
-        } catch (GuzzleException | RequestException | Exception $e) {
-            error_log($e->getMessage());
+        } catch (Throwable $e) {
+            LoggerUtility::log('error', "Unable to connect to $url: " . $e->getMessage(), [
+                'exception' => $e,
+                'file' => $e->getFile(), // File where the error occurred
+                'line' => $e->getLine(), // Line number of the error
+                'stacktrace' => $e->getTraceAsString()
+            ]);
             return false; // Error occurred while making the request
         }
     }
@@ -75,8 +121,8 @@ class ApiService
             $response = $this->client->post($url, $options);
 
             return $response->getBody()->getContents();
-        } catch (GuzzleException | RequestException | Exception $e) {
-            error_log($e->getMessage());
+        } catch (Throwable $e) {
+            $this->logError($e, "Unable to post to $url");
             return null; // Error occurred while making the request
         }
     }
@@ -118,8 +164,8 @@ class ApiService
             $response = $this->client->post($url, $options);
 
             return $response->getBody()->getContents();
-        } catch (GuzzleException | RequestException | Exception $e) {
-            error_log($e->getMessage());
+        } catch (Throwable $e) {
+            $this->logError($e, "Unable to post to $url");
             return null; // Error occurred while making the request
         }
     }
@@ -147,13 +193,8 @@ class ApiService
             }
 
             return $jsonData;
-        } catch (\Throwable $e) {
-            LoggerUtility::log('error', "Unable to retrieve json: " . $e->getMessage(), [
-                'exception' => $e,
-                'file' => $e->getFile(), // File where the error occurred
-                'line' => $e->getLine(), // Line number of the error
-                'stacktrace' => $e->getTraceAsString()
-            ]);
+        } catch (Throwable $e) {
+            $this->logError($e, "Unable to retrieve json");
             return null;
         }
     }
@@ -162,17 +203,80 @@ class ApiService
     /**
      * Download a file from a given URL and save it to a specified path.
      *
-     * @param string $url The URL of the file to download.
-     * @param string $path The local path where the file should be saved.
+     * @param string $fileUrl The URL of the file to download.
+     * @param string $downloadPath The local path with filename where the file should be saved.
+     * @param array $allowedFileTypes An array of allowed file types.
+     * @param string $safePath The base path to ensure the download path is within the allowed directory.
      * @return bool Returns true on successful download, false otherwise.
      */
-    public function downloadFile(string $url, string $path): int|bool
+    public function downloadFile(string $fileUrl, string $downloadPath, array $allowedFileTypes = [], $safePath = ROOT_PATH): int|bool
     {
+
+        // Validate the URL
+        if (!filter_var($fileUrl, FILTER_VALIDATE_URL)) {
+            $this->logError(new Exception("Invalid URL"), "Invalid URL provided for downloading");
+            return false;
+        }
+        $downloadFolder = dirname($downloadPath);
+        $fileName = basename($downloadPath);
+        // Check if $fileName is null or empty
+        if (empty($fileName)) {
+            $fileName = basename($fileUrl);
+        }
+        // Normalize the safePath and downloadPath to ensure both are absolute and resolved
+        $resolvedSafePath = realpath($safePath);
+        $resolvedDownloadPath = realpath($downloadFolder);
+
+        // If realpath returns false, the path does not exist
+        if (!$resolvedDownloadPath) {
+            // Try creating the directory or handling the error as needed
+            if (!MiscUtility::makeDirectory($downloadFolder) && !is_dir($downloadFolder)) {
+                $this->logError(new Exception("Invalid path"), "The download path cannot be created or does not exist");
+                return false;
+            }
+            $resolvedDownloadPath = realpath($downloadFolder);
+        }
+
+        // Ensure the downloadPath starts with the resolved safePath
+        if ($resolvedDownloadPath === false || !str_starts_with($resolvedDownloadPath, $resolvedSafePath)) {
+            $this->logError(new Exception("Invalid path"), "The download path is not within the allowed directory");
+            return false;
+        }
+
         try {
-            return file_put_contents($path, file_get_contents($url));
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-            return false; // Handle any exception
+            // Use Guzzle to download the file
+            $response = $this->client->request('GET', $fileUrl, ['stream' => true]);
+
+            // Validate response status
+            if ($response->getStatusCode() !== 200) {
+                $this->logError(new Exception("HTTP error " . $response->getStatusCode()), "Failed to download file from $fileUrl");
+                return false;
+            }
+
+            // Check MIME type if allowed file types are specified
+            if (!empty($allowedFileTypes)) {
+                $contentType = $response->getHeaderLine('Content-Type');
+                $allowedMimeTypes = MiscUtility::getMimeTypeStrings($allowedFileTypes);
+                if (!in_array($contentType, $allowedMimeTypes)) {
+                    $this->logError(new Exception("Invalid file type"), "The file type '$contentType' is not allowed.");
+                    return false;
+                }
+            }
+
+            // Save the file
+            $fileResource = fopen($resolvedDownloadPath . DIRECTORY_SEPARATOR . $fileName, 'wb');
+            if ($fileResource === false || stream_copy_to_stream($response->getBody()->detach(), $fileResource) === false) {
+                if ($fileResource !== false) {
+                    fclose($fileResource);
+                }
+                $this->logError(new Exception("Failed to save file"), "Unable to save the downloaded file.");
+                return false;
+            }
+            fclose($fileResource);
+            return true;
+        } catch (Throwable $e) {
+            $this->logError($e, "Unable to download file from $fileUrl");
+            return false;
         }
     }
 

@@ -9,7 +9,7 @@ It also does not set up mail settings or configure system security so you will h
 ```
 cd ~;
 sudo -s;
-wget -O setup.sh https://raw.githubusercontent.com/deforay/vlsm/master/docs/setup.sh
+wget -O setup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/setup.sh
 sudo chmod +x setup.sh;
 ./setup.sh;
 rm setup.sh;

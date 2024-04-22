@@ -36,7 +36,7 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $bQuery = "SELECT * FROM batch_details";
 $bResult = $db->rawQuery($bQuery);
-//get import config
+// get instruments
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 

@@ -5,10 +5,26 @@ Options -Indexes -MultiViews +FollowSymLinks
 #Header set X-Content-Type-Options "nosniff"
 #Header set Access-Control-Allow-Origin "*"
 
-<FilesMatch ".(perl|py|htaccess|htpasswd|ini|psd|log|sh|lock|phar|yml|md|sql|zip|hgignore|hg|hgtags|DS_Store)$">
-  Order Allow,Deny
-  Deny from all
-</FilesMatch>
+<IfModule mod_version.c>
+    <IfVersion < 2.4>
+        <FilesMatch ".(perl|py|htaccess|htpasswd|ini|psd|log|sh|lock|phar|yml|md|sql|zip|hgignore|hg|hgtags|DS_Store)$">
+            Order Allow,Deny
+            Deny from all
+        </FilesMatch>
+    </IfVersion>
+    <IfVersion >= 2.4>
+        <FilesMatch ".(perl|py|htaccess|htpasswd|ini|psd|log|sh|lock|phar|yml|md|sql|zip|hgignore|hg|hgtags|DS_Store)$">
+            Require all denied
+        </FilesMatch>
+    </IfVersion>
+</IfModule>
+
+<IfModule !mod_version.c>
+    <FilesMatch ".(perl|py|htaccess|htpasswd|ini|psd|log|sh|lock|phar|yml|md|sql|zip|hgignore|hg|hgtags|DS_Store)$">
+        Order Allow,Deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
 
 
 <IfModule mod_headers.c>

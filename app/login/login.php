@@ -200,9 +200,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		let captchaflag = false;
 
 		function getCaptcha(captchaDivId) {
-			//var d = new Date();
-			//var randstr = d.getFullYear() + d.getSeconds() + d.getMilliseconds() + Math.random();
-			$("#" + captchaDivId).attr("src", '/includes/captcha.php');
+			$("#" + captchaDivId).attr("src", '/includes/captcha.php?x=' + Math.random());
 			$("#" + captchaDivId).load(function() {
 				$.blockUI();
 			});

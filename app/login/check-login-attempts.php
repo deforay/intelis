@@ -1,11 +1,17 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-$loginId = trim((string) $_POST['loginId']);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$postParams = _sanitizeInput($request->getParsedBody());
+
+$loginId = trim((string) $postParams['loginId']);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -17,20 +23,21 @@ $ipAddress = $general->getClientIpAddress();
 $data = 0;
 $ipdata = 0;
 if (!empty($loginId)) {
-	$loginQuery = "SELECT
-					SUM(CASE WHEN login_id like ? THEN 1 ELSE 0 END) AS loginCount,
-					SUM(CASE WHEN ip_address like ? THEN 1 ELSE 0 END) AS ipCount
-					FROM user_login_history
-					WHERE login_status like 'failed'
-					AND login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 minute)";
-	$attemptCount = $db->rawQueryOne($loginQuery, [$loginId, $ipAddress, DateUtility::getCurrentDateTime()]);
 
-	$ipCount = $attemptCount['ipCount'];
-	$loginCount = $attemptCount['loginCount'];
+	$loginAttemptCount = $db->rawQueryOne(
+		"SELECT COUNT(*) AS FailedAttempts
+			FROM user_login_history ulh
+			WHERE ulh.login_id = ? AND
+			ulh.login_status = 'failed' AND
+			ulh.login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 MINUTE)",
+		[$loginId, DateUtility::getCurrentDateTime()]
+	);
 
-	// If someone is failing to login with on same IP address
-	// OR the same login ID, then we need to show the captcha
-	if ($ipCount >= 3 || $loginCount >= 3) {
+	$loginCount = $loginAttemptCount['FailedAttempts'];
+
+	// If someone is failing to login with same login ID,
+	// then we need to show the captcha
+	if ($loginCount >= 3) {
 		$data = 1;
 	}
 }

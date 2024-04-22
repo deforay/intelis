@@ -8,6 +8,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
@@ -27,6 +28,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 $uploadedFiles = $request->getUploadedFiles();
 
+$sanitizedUserSignature = _sanitizeFiles($uploadedFiles['userSignature'], ['png', 'jpg', 'jpeg', 'gif']);
 
 $userId = base64_decode((string) $_POST['userId']);
 
@@ -41,7 +43,7 @@ $signatureImage = null;
 try {
     if (trim((string) $_POST['userName']) != '' && trim((string) $_POST['loginId']) != '' && ($_POST['role']) != '') {
 
-        $data = array(
+        $data = [
             'user_name'             => $_POST['userName'],
             'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", (string) $_POST['interfaceUserName']))) : null,
             'email'                 => $_POST['email'],
@@ -50,7 +52,7 @@ try {
             'role_id'               => $_POST['role'],
             'status'                => $_POST['status'],
             'app_access'            => $_POST['appAccessable']
-        );
+        ];
         if (!empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
@@ -84,6 +86,26 @@ try {
             $data['user_signature'] = $signatureImage;
         } else {
             $signatureImage = $userInfo['user_signature'] ?? null;
+        }
+
+
+        $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
+        if ($sanitizedUserSignature instanceof UploadedFile && $sanitizedUserSignature->getError() === UPLOAD_ERR_OK) {
+            MiscUtility::makeDirectory($signatureImagePath);
+            $extension = MiscUtility::getFileExtension($sanitizedUserSignature->getClientFilename());
+            $signatureImage = "usign-" . $userId . "." . $extension;
+            $signatureImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $signatureImage;
+
+            // Move the uploaded file to the desired location
+            $sanitizedUserSignature->moveTo($signatureImagePath);
+
+            $resizeObj = new ImageResizeUtility($signatureImagePath);
+            $resizeObj->resizeToWidth(250);
+            $resizeObj->save($filePath);
+
+            $data['user_signature'] = $signatureImage;
+        } else {
+            $signatureImagePath = isset($userInfo['user_signature']) ? $signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'] :  null;
         }
 
         if (isset($_POST['password']) && trim((string) $_POST['password']) != "") {
@@ -136,19 +158,19 @@ try {
 
         $systemType = $general->getSystemConfig('sc_user_type');
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $systemType == 'vluser') {
-            $_POST['userId'] = $userId;
-            $_POST['loginId'] = null;
-            $_POST['password'] = null;
-            $_POST['hashAlgorithm'] = 'phb';
-            $_POST['role'] = 0;
-            $_POST['status'] = 'inactive';
-            $_POST['userId'] = base64_encode($userId);
+            $apiData = $_POST;
+            $apiData['loginId'] = null;
+            $apiData['password'] = null;
+            $apiData['hashAlgorithm'] = 'phb';
+            $apiData['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
+            $apiData['status'] = 'inactive';
+            $apiData['userId'] = base64_encode($userId);
             $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
 
             $multipart = [
                 [
                     'name' => 'post',
-                    'contents' => json_encode($_POST)
+                    'contents' => json_encode($apiData)
                 ],
                 [
                     'name' => 'x-api-key',
@@ -156,10 +178,10 @@ try {
                 ]
             ];
 
-            if (!empty($signatureImage) && MiscUtility::imageExists($signatureImage)) {
+            if (!empty($signatureImagePath) && MiscUtility::imageExists($signatureImagePath)) {
                 $multipart[] = [
                     'name' => 'sign',
-                    'contents' => fopen($signatureImage, 'r')
+                    'contents' => fopen($signatureImagePath, 'r')
                 ];
             }
 
@@ -169,9 +191,9 @@ try {
                     'multipart' => $multipart
                 ]);
 
-                $result = $response->getBody()->getContents();
-                $deResult = json_decode($result, true);
-            } catch (Exception $e) {
+                // $result = $response->getBody()->getContents();
+                // $deResult = json_decode($result, true);
+            } catch (Throwable $e) {
                 // Handle the exception
                 LoggerUtility::log("error", $e->getMessage(), [
                     'file' => __FILE__,
@@ -191,7 +213,7 @@ try {
     $general->activityLog($eventType, $action, $resource);
 
     header("Location:users.php");
-} catch (Exception $e) {
+} catch (Throwable $e) {
     LoggerUtility::log("error", $e->getMessage(), [
         'file' => __FILE__,
         'line' => __LINE__,

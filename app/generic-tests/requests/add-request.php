@@ -44,7 +44,7 @@ $arr = $general->getGlobalConfig();
 $healthFacilities = $facilitiesService->getHealthFacilities('generic-tests');
 $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
-//get import config
+// get instruments
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
 $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
@@ -1567,16 +1567,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                function(data) {
                     if (data != "") {
                          $("#subTestResult").append(data);
-                        /* $("#subTestResult").multipleSelect({
-                              placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
-                              width: '100%'
-                         });*/
+                         /* $("#subTestResult").multipleSelect({
+                               placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
+                               width: '100%'
+                          });*/
                          var length = $('#mySelectList > option').length;
-					if(length > 1){
-						$('.subTestFields').show();
-					}else{
-						$('.subTestFields').hide();
-					}
+                         if (length > 1) {
+                              $('.subTestFields').show();
+                         } else {
+                              $('.subTestFields').hide();
+                         }
                     }
                });
      }
@@ -1586,7 +1586,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('.ins-row-' + row + subrow).attr('disabled', true);
           $('.ins-row-' + row + subrow).addClass('disabled');
           testCounter = (subrow + 1);
-          options = $("#finalResult"+row).html();
+          options = $("#finalResult" + row).html();
           let rowString = `<tr>
                     <td class="text-center">${(subrow+1)}</td>
                     <td>

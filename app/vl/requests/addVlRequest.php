@@ -22,7 +22,7 @@ $vlService = ContainerRegistry::get(VlService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-/** @var CommonService $commonService */
+/** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 $formId = (int) $general->getGlobalConfig('vl_form');
@@ -34,7 +34,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 $healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('vl', false, true);
 
 $storageList = $vlService->getLabStorage();
-//get import config
+// get instruments
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
 
@@ -152,7 +152,7 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
     function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
         $.blockUI();
         let formData = $("#" + formId).serialize();
-        if(provinceCode != null && provinceCode != ''){
+        if (provinceCode != null && provinceCode != '') {
             formData += "&provinceCode=" + encodeURIComponent(provinceCode);
         }
         formData += "&provinceId=" + encodeURIComponent(provinceId);
@@ -172,6 +172,5 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
                 }
             });
     }
-
 </script>
 <?php include APPLICATION_PATH . '/footer.php';

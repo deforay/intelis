@@ -87,10 +87,9 @@ $prevMachineControlQuery = "SELECT control_names from batch_details WHERE machin
 $prevMachineControlInfo = $db->rawQuery($prevMachineControlQuery, [$machine]);
 
 $prevBatchControlNames = json_decode((string) $prevMachineControlInfo[0]['control_names'], true);
-if(!empty($batchInfo[0]['control_names'])){
+if (!empty($batchInfo[0]['control_names'])) {
 	$batchControlNames = json_decode((string) $batchInfo[0]['control_names'], true);
-}
-else{
+} else {
 	$batchControlNames = json_decode((string) $prevMachineControlInfo[0]['control_names'], true);
 }
 //echo '<pre>'; print_r($batchControlNames); die;
@@ -105,7 +104,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 			$prevDisplaySampleArray[] = $xplodJsonToArray[1];
 		}
 	}
-	
+
 	//Get display sample only
 	$displaySampleOrderArray = [];
 	$samplesQuery = "SELECT $primaryKeyColumn, $patientIdColumn, sample_code
@@ -141,17 +140,15 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 				$label = str_replace("_", " ", (string) $jsonToArray[$j]);
 				$label = str_replace("in house", "In-House", $label);
 				$label = (str_replace("no of ", " ", $label));
-				if(isset($batchControlNames[$jsonToArray[$j]]) && $batchControlNames[$jsonToArray[$j]]!=""){
+				if (isset($batchControlNames[$jsonToArray[$j]]) && $batchControlNames[$jsonToArray[$j]] != "") {
 					$existingValue = $batchControlNames[$jsonToArray[$j]];
 					$liLabel = $existingValue;
-				}
-				else{
+				} else {
 					$liLabel = $label;
 					$existingValue = "";
 				}
 				$content .= '<li class="ui-state-default" id="' . $jsonToArray[$j] . '">' . $liLabel . '</li>';
-				$labelNewContent .= ' <tr><th>'.$label.' :</th><td> <input class="form-control" type="text" name="controls['.$jsonToArray[$j].']" value="'.$existingValue.'" placeholder="Enter label name"/></td></tr>';
-
+				$labelNewContent .= ' <tr><th>' . $label . ' :</th><td> <input class="form-control" type="text" name="controls[' . $jsonToArray[$j] . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
 			}
 		}
 	}
@@ -164,17 +161,16 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 		$label = str_replace("_", " ", $remainNewArray[$n]);
 		$label = str_replace("in house", "In-House", $label);
 		$label = (str_replace("no of ", " ", $label));
-		if(isset($batchControlNames[$remainNewArray[$n]]) && $batchControlNames[$remainNewArray[$n]]!=""){
+		if (isset($batchControlNames[$remainNewArray[$n]]) && $batchControlNames[$remainNewArray[$n]] != "") {
 			$existingValue = $batchControlNames[$remainNewArray[$n]];
 			$liLabel = $existingValue;
-		}
-		else{
+		} else {
 			$liLabel = $label;
 			$existingValue = "";
 		}
 		$newContent .= '<li class="ui-state-default" id="' . $remainNewArray[$n] . '">' . $liLabel . '</li>';
-		
-		$labelNewContent .= ' <tr><th>'.$label.' :</th><td> <input class="form-control" type="text" name="controls['.$remainNewArray[$n].']" value="'.$existingValue.'" placeholder="Enter label name"/></td></tr>';
+
+		$labelNewContent .= ' <tr><th>' . $label . ' :</th><td> <input class="form-control" type="text" name="controls[' . $remainNewArray[$n] . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
 	}
 	//For new samples
 	for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
@@ -191,30 +187,28 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 		foreach (range(1, $configControl[$testType]['noHouseCtrl']) as $h) {
 			$displayOrder[] = "no_of_in_house_controls_" . $h;
 			$label = "";
-			if(array_key_exists("no_of_in_house_controls_" . $h,$batchControlNames))
-			{
+			if (!empty($batchControlNames) && array_key_exists("no_of_in_house_controls_" . $h, $batchControlNames)) {
 				$label = $batchControlNames["no_of_in_house_controls_" . $h];
 			}
 			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Controls ' . $h . '</li>';
-			$labelNewContent .= ' <tr><th>no_of_in_house_controls_'.$h.':</th><td> <input class="form-control" type="text" name="controls[no_of_in_house_controls_' . $h.']" value="'.$existingValue.'" placeholder="Enter label name"/></td></tr>';
+			$labelNewContent .= ' <tr><th>no_of_in_house_controls_' . $h . ':</th><td> <input class="form-control" type="text" name="controls[no_of_in_house_controls_' . $h . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
 		}
 	}
 	if (isset($configControl[$testType]['noManufacturerCtrl']) && trim((string) $configControl[$testType]['noManufacturerCtrl']) != '' && $configControl[$testType]['noManufacturerCtrl'] > 0) {
 		foreach (range(1, $configControl[$testType]['noManufacturerCtrl']) as $m) {
 			$displayOrder[] = "no_of_manufacturer_controls_" . $m;
-			if(array_key_exists("no_of_manufacturer_controls_" . $m,$batchControlNames))
-			{
+			if (!empty($batchControlNames) && array_key_exists("no_of_manufacturer_controls_" . $m, $batchControlNames)) {
 				$label = $batchControlNames["no_of_manufacturer_controls_" . $m];
 			}
 			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '"> ' . $label . '</li>';
-			$labelNewContent .= ' <tr><th>manufacturer_controls_'.$m.' :</th><td> <input class="form-control" type="text" name="controls[no_of_manufacturer_controls_'.$m.']" value="'.$label.'" placeholder="Enter label name"/></td></tr>';
+			$labelNewContent .= ' <tr><th>manufacturer_controls_' . $m . ' :</th><td> <input class="form-control" type="text" name="controls[no_of_manufacturer_controls_' . $m . ']" value="' . $label . '" placeholder="Enter label name"/></td></tr>';
 		}
 	}
 	if (isset($configControl[$testType]['noCalibrators']) && trim((string) $configControl[$testType]['noCalibrators']) != '' && $configControl[$testType]['noCalibrators'] > 0) {
 		foreach (range(1, $configControl[$testType]['noCalibrators']) as $c) {
 			$displayOrder[] = "no_of_calibrators_" . $c;
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
-			$labelNewContent .= ' <tr><th>'.$label.' :</th><td> <input class="form-control" type="text" name="controls[no_of_calibrators_'.$c.']" value="'.$existingValue.'" placeholder="Enter label name"/></td></tr>';
+			$labelNewContent .= ' <tr><th>' . $label . ' :</th><td> <input class="form-control" type="text" name="controls[no_of_calibrators_' . $c . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
 		}
 	}
 	$samplesQuery = "SELECT $primaryKeyColumn, $patientIdColumn, sample_code
@@ -280,7 +274,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 							<div class="col-lg-12">
 								<ul id="sortableRow">
 									<?php
-										echo $content . $newContent;
+									echo $content . $newContent;
 									?>
 								</ul>
 								<table class="table" style="width:50%; margin-left:300px;">

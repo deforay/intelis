@@ -185,13 +185,25 @@ class MiscUtility
 
     public static function fileExists($filePath): bool
     {
-        return !empty($filePath) && is_file($filePath) && !is_dir($filePath) && (@filesize($filePath) > 0);
+        return !empty($filePath) && file_exists($filePath) && is_file($filePath);
     }
 
     public static function imageExists($filePath): bool
     {
-        return self::fileExists($filePath) && false !== @getimagesize($filePath);
+        if (!self::fileExists($filePath)) {
+            return false;
+        }
+
+        // Attempt to obtain image size and type
+        $imageInfo = getimagesize($filePath);
+        if ($imageInfo === false) {
+            return false;
+        }
+
+        // Check if the image type is recognized by PHP
+        return isset($imageInfo[2]) && $imageInfo[2] > 0;
     }
+
 
     public static function getMimeType($file, $allowedMimeTypes)
     {
@@ -383,5 +395,15 @@ class MiscUtility
             }
         }
         return $array;
+    }
+
+    public static function getFileExtension($filename)
+    {
+        if (empty($filename)) {
+            return '';
+        }
+
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        return strtolower($extension);
     }
 }

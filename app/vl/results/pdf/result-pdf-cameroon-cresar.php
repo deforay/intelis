@@ -36,11 +36,11 @@ if (!empty($result)) {
           if ($reviewedByRes) {
                $reviewedBy = $reviewedByRes['user_name'];
           }
-     }else{
-          if(!empty($result['defaultReviewedBy'])){
+     } else {
+          if (!empty($result['defaultReviewedBy'])) {
                $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
                if ($reviewedByRes) {
-                   $reviewedBy = $reviewedByRes['user_name'];
+                    $reviewedBy = $reviewedByRes['user_name'];
                }
           }
      }
@@ -60,10 +60,10 @@ if (!empty($result)) {
           $resultApprovedBy = ($result['approvedBy']);
           $approvedByRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
      } else {
-          if(!empty($result['defaultApprovedBy'])){
+          if (!empty($result['defaultApprovedBy'])) {
                $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
                if ($approvedByRes) {
-                   $resultApprovedBy = $approvedByRes['user_name'];
+                    $resultApprovedBy = $approvedByRes['user_name'];
                }
           }
      }
@@ -146,12 +146,13 @@ if (!empty($result)) {
 
      $age = DateUtility::calculatePatientAge($result);
 
+     $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? $currentTime);
      $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '');
      $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '');
      $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '');
-     $result['treatment_initiated_date'] = DateUtility::humanReadableDateFormat($result['treatment_initiated_date'] ?? '');
-     $result['last_modified_datetime'] = DateUtility::humanReadableDateFormat($result['last_modified_datetime'] ?? '');
      $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? '');
+     $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '');
+     $result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date'] ?? '');
 
      $modified = _translate("No");
      $modificationDate = "";
@@ -164,7 +165,7 @@ if (!empty($result)) {
 
 
      if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
-          $result['patient_gender'] = _translate('Unreported');
+          $result['patient_gender'] = 'Unreported';
      }
 
      $smileyContent = '';
@@ -228,11 +229,10 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Patient Name") . " : " . $patientFname . '</td>';
-     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Age") . " : " . $age . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . _translate("Sex : ") . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
+     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Age") . " : " . $age . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . _translate("Sex : ") . _translate(str_replace("_", " ", (string) _capitalizeFirstLetter($result['patient_gender']))) . '</td>';
      $html .= '</tr>';
 
-     if($result['health_insurance_code'] != "" || $result['health_insurance_code'] != NULL )
-     {
+     if ($result['health_insurance_code'] != "" || $result['health_insurance_code'] != NULL) {
           $html .= '<tr>';
           $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Health Insurance Code") . " : " . $result['health_insurance_code'] . '</td>';
           $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">&nbsp;</td>';
@@ -240,7 +240,7 @@ if (!empty($result)) {
      }
 
      $html .= '<tr>';
-     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' .  _translate("Type of Sample") . " : " . $result['sample_name'] . '</td>';
+     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' .  _translate("Type of Sample") . " : " . _translate($result['sample_name']) . '</td>';
      $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Contact") . " : " . $result['patient_mobile_number'] . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';

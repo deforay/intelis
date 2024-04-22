@@ -411,17 +411,40 @@ ADD `last_cd8_result` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_percentage`,
 ADD `last_cd4_date` DATE NULL DEFAULT NULL AFTER `last_cd8_result`,
 ADD `last_cd8_date` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_date`;
 
-ALTER TABLE `audit_form_vl` 
-ADD `treatment_duration_precise` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration`, 
-ADD `last_cd4_result` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration_precise`, 
-ADD `last_cd4_percentage` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_result`, 
-ADD `last_cd8_result` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_percentage`, 
-ADD `last_cd4_date` DATE NULL DEFAULT NULL AFTER `last_cd8_result`, 
+ALTER TABLE `audit_form_vl`
+ADD `treatment_duration_precise` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration`,
+ADD `last_cd4_result` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration_precise`,
+ADD `last_cd4_percentage` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_result`,
+ADD `last_cd8_result` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_percentage`,
+ADD `last_cd4_date` DATE NULL DEFAULT NULL AFTER `last_cd8_result`,
 ADD `last_cd8_date` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_date`;
 
 -- Thana 16-Apr-2024
-ALTER TABLE `form_eid` ADD `mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
-ALTER TABLE `audit_form_eid` ADD `mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
+ALTER TABLE `form_eid` ADD `is_mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
+ALTER TABLE `audit_form_eid` ADD `is_mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
+
+-- Amit 18-Apr-2024
+UPDATE `roles` SET `landing_page` = '/dashboard/index.php';
+-- Thana 18-Apr-2024
+ALTER TABLE `form_tb`
+ADD `patient_weight` DECIMAL(5,2) NULL DEFAULT NULL AFTER `patient_age`,
+ADD `is_displaced_population` VARCHAR(5) NULL DEFAULT NULL AFTER `patient_address`,
+ADD `is_referred_by_community_actor` VARCHAR(5) NULL DEFAULT NULL AFTER `is_displaced_population`;
+
+ALTER TABLE `audit_form_tb`
+ADD `patient_weight` DECIMAL(5,2) NULL DEFAULT NULL AFTER `patient_age`,
+ADD `is_displaced_population` VARCHAR(5) NULL DEFAULT NULL AFTER `patient_address`,
+ADD `is_referred_by_community_actor` VARCHAR(5) NULL DEFAULT NULL AFTER `is_displaced_population`;
+
+-- Thana 22-Apr-2024
+UPDATE privileges SET resource_id = 'tb-batches' WHERE privilege_id IN(199,200,201);
+UPDATE privileges SET privilege_name = '/batch/batches.php?type=tb' WHERE privilege_id = 199;
+UPDATE privileges SET privilege_name = '/batch/add-batch.php?type=tb' WHERE privilege_id = 200;
+UPDATE privileges SET privilege_name = '/batch/edit-batch.php?type=tb' WHERE privilege_id = 201;
+
+UPDATE privileges SET shared_privileges = '["/batch/generate-batch-pdf.php?type=tb"]' WHERE privilege_id = 199;
+UPDATE privileges SET shared_privileges = '["/batch/add-batch-position.php?type=tb"]' WHERE privilege_id = 200;
+UPDATE privileges SET shared_privileges = '["/batch/delete-batch.php?type=tb","/batch/edit-batch-position.php?type=tb"]' WHERE privilege_id = 201;
 
 -- Jeyabanu 17-Apr-2024
 CREATE TABLE `r_reasons_for_sample_removal` (
@@ -434,3 +457,4 @@ CREATE TABLE `r_reasons_for_sample_removal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `lab_storage_history` ADD `sample_removal_reason` INT NULL DEFAULT NULL AFTER `comments`;
+

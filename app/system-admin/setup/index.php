@@ -28,7 +28,7 @@ try {
   throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }
 
-$randomString = $general->generateRandomString();
+$randomString = $general->generateUUID();
 fwrite($myfile, $randomString);
 fclose($myfile);
 

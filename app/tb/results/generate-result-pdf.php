@@ -129,7 +129,8 @@ $fileArray = [
     COUNTRY\CAMEROON => 'pdf/result-pdf-cameroon.php',
     COUNTRY\PNG => 'pdf/result-pdf-png.php',
     COUNTRY\WHO => 'pdf/result-pdf-who.php',
-    COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php'
+    COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
+    COUNTRY\BURKINA_FASO => 'pdf/result-pdf-burkina-faso.php'
 ];
 
 
@@ -170,8 +171,8 @@ if (!empty($requestResult)) {
         $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%tb%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
         $currentDateTime = DateUtility::getCurrentDateTime();
+        
         $_SESSION['aliasPage'] = $page;
-
         if (!isset($result['labName'])) {
             $result['labName'] = '';
         }

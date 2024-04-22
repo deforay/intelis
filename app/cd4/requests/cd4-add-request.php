@@ -22,7 +22,7 @@ $cd4Service = ContainerRegistry::get(CD4Service::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-/** @var CommonService $commonService */
+/** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 $formId = (int) $general->getGlobalConfig('vl_form');
@@ -34,7 +34,7 @@ $testingLabs = $facilitiesService->getTestingLabs('cd4');
 $healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('cd4', false, true);
 
 
-//get import config
+// get instruments
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
 

@@ -1,5 +1,6 @@
 <?php
 
+use Slim\Psr7\UploadedFile;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\MiscUtility;
@@ -34,7 +35,9 @@ $app = ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 
-$sanitizedSignFile = _sanitizeFiles($_FILES['sign'], ['png', 'jpg', 'jpeg', 'gif']);
+$uploadedFiles = $request->getUploadedFiles();
+
+$sanitizedSignFile = _sanitizeFiles($uploadedFiles['sign'], ['png', 'jpg', 'jpeg', 'gif']);
 
 try {
     ini_set('memory_limit', -1);
@@ -113,31 +116,31 @@ try {
         $data['login_id'] =  $db->escape($post['loginId']);
     }
 
-    if (isset($sanitizedSignFile) && $sanitizedSignFile['error'] === UPLOAD_ERR_OK && $sanitizedSignFile['size'] > 0) {
-
-
+    if ($sanitizedSignFile instanceof UploadedFile && $sanitizedSignFile->getError() === UPLOAD_ERR_OK && $sanitizedSignFile->getSize() > 0) {
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
-
         MiscUtility::makeDirectory($signatureImagePath);
 
-        $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $sanitizedSignFile['name'])));
-        $imageName = str_replace(" ", "-", $imageName);
-        $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
-        $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;
+        $extension = MiscUtility::getFileExtension($sanitizedSignFile->getClientFilename());
 
+        $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;
 
         $signatureImagePath = realpath($signatureImagePath) . DIRECTORY_SEPARATOR . $imageName;
 
-        if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
-            $resizeObj = new ImageResizeUtility($signatureImagePath);
-            $resizeObj->resizeToWidth(250);
-            $resizeObj->save($signatureImagePath);
-            $data['user_signature'] = $imageName;
-        }
+        // Move the uploaded file to the desired location
+        $sanitizedSignFile->moveTo($signatureImagePath);
+
+        // Resize the image
+        $resizeObj = new ImageResizeUtility($signatureImagePath);
+        $resizeObj->resizeToWidth(250);
+        $resizeObj->save($signatureImagePath);
+
+        $data['user_signature'] = $imageName;
     }
     $id = false;
     $data = MiscUtility::convertEmptyStringToNull($data);
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
+        // Unset the fields that should not be updated
+        unset($data['login_id'], $data['role_id'], $data['password'], $data['hash_algorithm'], $data['status']);
         $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
     } else {

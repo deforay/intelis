@@ -25,7 +25,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
-/** @var CommonService $commonService */
+/** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 
@@ -45,7 +45,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
-//get import config
+// get instruments
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 

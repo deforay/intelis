@@ -6,8 +6,8 @@ use App\Utilities\MiscUtility;
 use Laminas\Filter\StringTrim;
 use App\Services\SystemService;
 use Laminas\Filter\FilterChain;
-use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
+use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
 
 function _translate(?string $text, ?bool $escapeText = false)
@@ -75,89 +75,74 @@ function _sanitizeInput(string|array|null $data, $customFilters = [])
     return $data;
 }
 
-
-function _sanitizeFiles($filesInput, $allowedTypes = [], $sanitizeFileName = true, $maxSize = null)
+function _sanitizeFiles($files, $allowedTypes = [], $sanitizeFileName = true, $maxSize = null)
 {
     if ($maxSize === null) {
-        $maxSize = MiscUtility::convertToBytes(ini_get('upload_max_filesize') ?? '500M');
+        $uploadMaxSize = ini_get('upload_max_filesize');
+        if ($uploadMaxSize) {
+            $maxSize = MiscUtility::convertToBytes($uploadMaxSize);
+        } else {
+            $maxSize = MiscUtility::convertToBytes('500M');
+        }
     }
 
     $sanitizedFiles = [];
+    $allowedMimeTypes = MiscUtility::getMimeTypeStrings($allowedTypes);
 
-    // Check if the input is a single file, multiple files from one input, or multiple single-file inputs
-    $isSingleFile = isset($filesInput['name']) && is_string($filesInput['name']);
-    $isMultiFileArray = isset($filesInput['name']) && is_array($filesInput['name']);
-
-    // Normalize input
+    $isSingleFile = !is_array($files);
     if ($isSingleFile) {
-        $files = ['singleFile' => $filesInput];
-    } elseif ($isMultiFileArray) {
-        $files = [];
-        foreach ($filesInput['name'] as $i => $name) {
-            $files[] = array(
-                'name' => $filesInput['name'][$i],
-                'type' => $filesInput['type'][$i],
-                'tmp_name' => $filesInput['tmp_name'][$i],
-                'error' => $filesInput['error'][$i],
-                'size' => $filesInput['size'][$i]
-            );
-        }
-    } else {
-        $files = $filesInput;
+        $files = [$files];
     }
 
-    foreach ($files as $key => $file) {
-        try {
-            if ($file['error'] != UPLOAD_ERR_OK) {
-                throw new SystemException(_translate('File upload error'), 500);
-            }
-
-            if ($file['size'] > $maxSize) {
-                throw new SystemException(_translate('File size exceeds the maximum allowed size'), 400);
-            }
-
-            if (!empty($allowedTypes) && !empty($file['tmp_name'])) {
-                $allowedMimeTypes = MiscUtility::getMimeTypeStrings($allowedTypes);
-                $fileType = strtolower(mime_content_type($file['tmp_name']));
-                $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-
-                if (!in_array($fileType, $allowedMimeTypes) && !isset($allowedMimeTypes[$fileExtension])) {
-                    throw new SystemException(_translate('File type is not allowed'), 400);
+    foreach ($files as $file) {
+        if ($file instanceof UploadedFile) {
+            try {
+                if ($file->getError() === UPLOAD_ERR_NO_FILE) {
+                    // No file was uploaded
+                    throw new SystemException("No file was uploaded");
                 }
-            }
 
-            if ($sanitizeFileName) {
-                // Sanitize the filename
-                $sanitizedFilename = preg_replace('/[^A-Za-z0-9._-]/', '_', $file['name']);
-                // Ensure the filename does not start with a dot
-                if ($sanitizedFilename[0] === '.') {
-                    $sanitizedFilename = '_' . ltrim($sanitizedFilename, '.');
+                if ($file->getError() !== UPLOAD_ERR_OK) {
+                    throw new SystemException('File upload error');
                 }
-                // Assign the sanitized filename back to the file array
-                $file['name'] = $sanitizedFilename;
-            }
 
-            $sanitizedFiles[$key] = $file;
-        } catch (SystemException |Exception $e) {
-            LoggerUtility::log('error', $e->getMessage());
-            // Set to empty array to indicate failure
-            $sanitizedFiles[$key] = [];
-            continue;
+                if ($file->getSize() > $maxSize) {
+                    throw new SystemException('File size exceeds the maximum allowed size');
+                }
+
+                $fileExtension = strtolower(pathinfo($file->getClientFilename(), PATHINFO_EXTENSION));
+                $fileMimeType = $file->getClientMediaType();
+
+                if (!empty($allowedTypes) && (!in_array($fileExtension, $allowedTypes) || !in_array($fileMimeType, $allowedMimeTypes))) {
+                    throw new SystemException('File type is not allowed');
+                }
+
+                if ($sanitizeFileName) {
+                    $sanitizedFilename = preg_replace('/[^A-Za-z0-9._-]/', '_', $file->getClientFilename());
+                    if ($sanitizedFilename[0] === '.') {
+                        $sanitizedFilename = '_' . ltrim($sanitizedFilename, '.');
+                    }
+                    $file = new UploadedFile(
+                        $file->getStream(),
+                        $file->getSize(),
+                        $file->getError(),
+                        $sanitizedFilename,
+                        $file->getClientMediaType()
+                    );
+                }
+
+                $sanitizedFiles[] = $file;
+            } catch (Throwable $e) {
+                //error_log($e->getMessage());
+                // You can choose to handle the error differently, e.g., add null to the array or skip the file
+                $sanitizedFiles[] = null;
+            }
         }
     }
 
-    // Return the sanitized files in the same structure as the input
-    if ($isSingleFile) {
-        // Return single file data directly
-        return reset($sanitizedFiles);
-    } elseif ($isMultiFileArray) {
-        // Return array of files for multi-file input
-        return array_values($sanitizedFiles);
-    } else {
-        // Return array of single-file inputs
-        return $sanitizedFiles;
-    }
+    return $isSingleFile ? $sanitizedFiles[0] : $sanitizedFiles;
 }
+
 
 function _castVariable(mixed $variable, ?string $expectedType = null, ?bool $isNullable = true)
 {
@@ -195,4 +180,23 @@ function _castVariable(mixed $variable, ?string $expectedType = null, ?bool $isN
                 return $variable;
         }
     }
+}
+
+
+function _capitalizeWords($string)
+{
+    if (empty($string) || $string == '') {
+        return null;
+    }
+    return mb_convert_case($string, MB_CASE_TITLE, "UTF-8");
+}
+
+function _capitalizeFirstLetter($string, $encoding = "UTF-8")
+{
+    if (empty($string)) {
+        return $string;
+    }
+    $firstChar = mb_substr($string, 0, 1, $encoding);
+    $rest = mb_substr($string, 1, null, $encoding);
+    return mb_strtoupper($firstChar, $encoding) . $rest;
 }

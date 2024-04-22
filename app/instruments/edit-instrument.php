@@ -183,7 +183,7 @@ $testTypeList = SystemService::getActiveModules(true);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="configurationFileName" class="col-lg-4 control-label">
+									<label for="lowerLimit" class="col-lg-4 control-label">
 										<?= _translate("Lower Limit"); ?>
 									</label>
 									<div class="col-lg-7">
@@ -195,7 +195,7 @@ $testTypeList = SystemService::getActiveModules(true);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="configurationFileName" class="col-lg-4 control-label">
+									<label for="higherLimit" class="col-lg-4 control-label">
 										<?= _translate("Higher Limit"); ?>
 									</label>
 									<div class="col-lg-7">
@@ -249,7 +249,7 @@ $testTypeList = SystemService::getActiveModules(true);
 										<?php echo _translate("Status"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control" id="status" name="status" title="<?php echo _translate('Please select import config status'); ?>">
+										<select class="form-control" id="status" name="status" title="<?php echo _translate('Please select instrument status'); ?>">
 											<option value="active" <?php echo ($sInfo['status'] == 'active') ? 'selected="selected"' : ''; ?>><?php echo _translate("Active"); ?></option>
 											<option value="inactive" <?php echo ($sInfo['status'] == 'inactive') ? 'selected="selected"' : ''; ?>><?php echo _translate("Inactive"); ?></option>
 										</select>
@@ -641,9 +641,24 @@ $testTypeList = SystemService::getActiveModules(true);
 	tableRowId = '<?php echo $i; ?>';
 
 	$(document).ready(function() {
+
+
+		$('input[name="fileName[]"]').each(function() {
+			if ($(this).val() === '') {
+				$(this).val($('#configurationFile').val());
+			}
+		});
+
+		$('input[name="configMachineName[]"]').each(function(index) {
+			if ($(this).val() === '') {
+				$(this).val($('#configurationName').val() + ' - ' + (index + 1));
+			}
+		});
+
+
 		$(".select2").select2({
 			width: '100%',
-			placeholder: '<?php echo _translate("Select a user"); ?>'
+			placeholder: '<?php echo _translate("-- Select --"); ?>'
 		});
 
 		$("#supportedTests").select2({

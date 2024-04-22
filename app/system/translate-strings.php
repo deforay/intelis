@@ -180,7 +180,6 @@ _translate("Export Report in Excel");
 _translate("Export Report in PDF");
 _translate("View Generic Tests");
 _translate("Add Generic Tests");
-_translate("Add Samples From Manifest");
 _translate("Add Batch Code");
 _translate("Edit Generic Tests");
 _translate("Manage Test Results");

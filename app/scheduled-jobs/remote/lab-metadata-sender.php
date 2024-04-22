@@ -97,14 +97,25 @@ try {
     if (!empty($instrumentControls)) {
         $payload["instrumentControls"] = $instrumentControls;
     }
+
+    // CONFIG
+    if (!empty($lastUpdatedOn)) {
+        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+    }
+    $globalConfig = $db->get('global_config');
+
+    if (!empty($globalConfig)) {
+        $payload["globalConfig"] = $globalConfig;
+    }
+
     $jsonResponse = $apiService->post($url, $payload);
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_lab_metadata_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Exception $exc) {
-    LoggerUtility::log("error", $exc->getMessage(), [
-        'file' => __FILE__,
-        'line' => __LINE__,
+    LoggerUtility::log("error", __FILE__ . ":" . $exc->getMessage(), [
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
         'trace' => $exc->getTraceAsString(),
     ]);
 }

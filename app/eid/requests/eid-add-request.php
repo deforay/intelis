@@ -36,7 +36,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-/** @var CommonService $commonService */
+/** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 //Funding source list
@@ -239,9 +239,10 @@ require_once($fileArray[$arr['vl_form']]);
         var dateOfBirth = moment($("#childDob").val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
         $("#childAge").val(moment().diff(dateOfBirth, 'months'));
     }
+
     function calculateAgeInYears(calcFrom, calcTo) {
-        var dateOfBirth = moment($("#"+calcFrom).val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
-        $("#"+calcTo).val(moment().diff(dateOfBirth, 'years'));
+        var dateOfBirth = moment($("#" + calcFrom).val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
+        $("#" + calcTo).val(moment().diff(dateOfBirth, 'years'));
     }
 </script>
 
