@@ -422,3 +422,15 @@ ADD `last_cd8_date` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_date`;
 -- Thana 16-Apr-2024
 ALTER TABLE `form_eid` ADD `mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
 ALTER TABLE `audit_form_eid` ADD `mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
+
+-- Jeyabanu 17-Apr-2024
+CREATE TABLE `r_reasons_for_sample_removal` (
+  `removal_reason_id` int NOT NULL AUTO_INCREMENT,
+  `removal_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `removal_reason_status` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `updated_datetime` datetime DEFAULT NULL,
+  `data_sync` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`removal_reason_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `lab_storage_history` ADD `sample_removal_reason` INT NULL DEFAULT NULL AFTER `comments`;
