@@ -111,7 +111,7 @@ try {
           $id = $db->update($fDetails, $fData);
      }
 
-     if (isset($_POST['gender']) && (trim((string) $_POST['gender']) == 'male'|| trim((string) $_POST['gender']) == 'unreported')) {
+     if (isset($_POST['gender']) && (trim((string) $_POST['gender']) == 'male' || trim((string) $_POST['gender']) == 'unreported')) {
           $_POST['patientPregnant'] = "N/A";
           $_POST['breastfeeding'] = "N/A";
      }
@@ -200,7 +200,7 @@ try {
      }
 
      $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
-    
+
      $vlData = array(
           'vlsm_instance_id' => $instanceId,
           'vlsm_country_id' => $formId,
@@ -304,23 +304,22 @@ try {
           'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'] ?? null
      );
 
-     if(isset($_POST['freezer']) && $_POST['freezer']!="" && $_POST['freezer'] != null){
-          $countChar = substr_count($_POST['freezer'],"-");
-                    
-          if(isset($countChar) && $countChar > 2) {
+     if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
+          $countChar = substr_count($_POST['freezer'], "-");
+
+          if (isset($countChar) && $countChar > 2) {
                $storageId = $_POST['freezer'];
-               $getStorage = $general->getDataFromOneFieldAndValue('lab_storage','storage_code',$_POST['freezer']);
+               $getStorage = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_code', $_POST['freezer']);
                $freezerCode = $getStorage['storage_code'];
-          }
-          else{
+          } else {
                $storageId = $general->generateUUID();
                $freezerCode = $_POST['freezer'];
-               $storageSave = $general->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $_POST['freezer'], $_POST['labId'], 'active'));
+               $storageSave = $general->quickInsert('lab_storage', array('storage_id', 'storage_code', 'lab_id', 'storage_status'), array($storageId, $_POST['freezer'], $_POST['labId'], 'active'));
           }
           $formAttributes = [
-          'applicationVersion' => $general->getSystemConfig('sc_version'),
-          'ip_address' => $general->getClientIpAddress(),
-          'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$_POST['rack'],"box"=>$_POST['box'],"position"=>$_POST['position'],"volume"=>$_POST['volume']),
+               'applicationVersion' => $general->getSystemConfig('sc_version'),
+               'ip_address' => $general->getClientIpAddress(),
+               'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode, "rack" => $_POST['rack'], "box" => $_POST['box'], "position" => $_POST['position'], "volume" => $_POST['volume']),
           ];
 
           $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
@@ -336,8 +335,7 @@ try {
 
      $vlData['patient_first_name'] = $_POST['patientFirstName'] ?? '';
      $vlData['patient_middle_name'] = $_POST['patientMiddleName'] ?? '';
-     $vlData['patient_last_name'] = $_POST['patientMiddleName'] ?? '';
-
+     $vlData['patient_last_name'] = $_POST['patientLastName'] ?? '';
 
      // only if result status has changed, let us update
      if (!empty($resultStatus)) {
@@ -417,7 +415,7 @@ try {
           $_SESSION['alertMsg'] = _translate("VL request updated successfully");
 
           $eventType = 'update-vl-request';
-          $action = $_SESSION['userName'] . ' updated VL request with the sample id ' . $_POST['sampleCode'] . ' and patient id '. $patientId;
+          $action = $_SESSION['userName'] . ' updated VL request with the sample id ' . $_POST['sampleCode'] . ' and patient id ' . $patientId;
           $resource = 'vl-request';
 
           $general->activityLog($eventType, $action, $resource);
