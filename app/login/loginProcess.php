@@ -63,27 +63,22 @@ try {
         );
 
         $loginAttemptCount = $db->rawQueryOne(
-            "SELECT
-                SUM(CASE WHEN ulh.login_id = ? THEN 1 ELSE 0 END) AS LoginIdCount,
-                SUM(CASE WHEN ulh.ip_address = ? THEN 1 ELSE 0 END) AS IpCount
-            FROM
-                user_login_history ulh
-            WHERE
+            "SELECT COUNT(*) AS FailedAttempts
+                FROM user_login_history ulh
+                WHERE ulh.login_id = ? AND
                 ulh.login_status = 'failed' AND
-                ulh.login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 minute)",
-            [$_POST['username'], $ipaddress, DateUtility::getCurrentDateTime()]
+                ulh.login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 MINUTE)",
+            [$_POST['username'], DateUtility::getCurrentDateTime()]
         );
-
-
 
         $usersService->recordLoginAttempt($_POST['username'], 'failed');
 
         $maxLoginAttempts = 3;
 
-        if (($loginAttemptCount['LoginIdCount'] >= $maxLoginAttempts
-                || $loginAttemptCount['IpCount'] >= $maxLoginAttempts)
-            &&
-            (empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode'])
+        if (
+            ($loginAttemptCount['FailedAttempts'] >= $maxLoginAttempts) &&
+            ((!empty($_SESSION['captchaCode']) && empty($_POST['captcha'])) ||
+                ($_POST['captcha'] != $_SESSION['captchaCode']))
         ) {
             throw new SystemException(_translate("You have exhausted the maximum number of login attempts. Please retry login after some time."));
         }
