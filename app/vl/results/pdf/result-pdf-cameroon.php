@@ -266,13 +266,13 @@ if (!empty($result)) {
      }
      $testReasonType = "";
      if ($result['test_reason_name'] == "coinfection") {
-          $result['test_reason_name'] = _translate("Co-infection");
-          $testReasonType = empty($result['coinfection_type']) ? '' : ' - ' . _translate($result['coinfection_type']);
+          $result['test_reason_name'] = _translate("Co-infection", true);
+          $testReasonType = empty($result['coinfection_type']) ? '' : ' - ' . _translate($result['coinfection_type'], true);
      } elseif ($result['test_reason_name'] == "controlVlTesting") {
-          $result['test_reason_name'] = _translate("Control VL Testing");
-          $testReasonType = empty($result['control_vl_testing_type']) ? '' : ' - ' . _translate($result['control_vl_testing_type']);
+          $result['test_reason_name'] = _translate("Control VL Testing", true);
+          $testReasonType = empty($result['control_vl_testing_type']) ? '' : ' - ' . _translate($result['control_vl_testing_type'], true);
      } elseif ($result['test_reason_name'] == "other") {
-          $result['test_reason_name'] = _translate("Other Reason");
+          $result['test_reason_name'] = _translate("Other Reason", true);
           $testReasonType = empty($result['reason_for_vl_testing_other']) ? '' : ' - ' . $result['reason_for_vl_testing_other'];
      }
 
@@ -301,10 +301,10 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr>';
 
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['patient_gender'])) . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['patient_gender']), true) . '</td>';
      if ($result['patient_gender'] == 'female') {
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['is_patient_breastfeeding'])) ?? '-' . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['is_patient_pregnant'])) ?? '-' . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['is_patient_breastfeeding']), true) ?? '-' . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['is_patient_pregnant']), true) ?? '-' . '</td>';
      } else {
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
@@ -360,20 +360,17 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:8px 2px 2px 2px;">';
      $logValue = '';
-     if (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] === 'yes' && $result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
-          $logValue = '&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
-     } else {
-          if ($isResultNumeric) {
-               $logV = round(log10($result['result']), 2);
-               $logValue = '&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logV;
+     if (isset($arr['vl_display_log_result']) && trim((string) $arr['vl_display_log_result']) == "yes") {
+          if (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] === 'yes' && $result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
+               $logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
           } else {
-               $logValue = '';
+               if (is_numeric($result['result'])) {
+                    $logV = round(log10($result['result']), 2);
+                    $logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logV;
+               } else {
+                    $logValue = '';
+               }
           }
-     }
-     if (isset($arr['vl_display_log_result']) && trim((string) $arr['vl_display_log_result']) == "no") {
-          $logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logResult;
-     } else {
-          $logValue = '';
      }
      $vlFinalResult = '&nbsp;&nbsp;' . _translate("Viral Load Result") . ' (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']);
      $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">' . $vlFinalResult . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
