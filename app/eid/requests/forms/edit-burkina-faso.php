@@ -396,8 +396,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                         <tr class=" show-rejection rejected" style="display: none">
                                             <td class="labels" style="width:15%;"><?= _translate("Rejection Date"); ?><span class="mandatory">*</span></td>
                                             <td style="width:35%;"><input class="show-rejection rejected form-control date rejection-date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
-                                            <th scope="row" class="rejected labels" style="display: none;width:15%;"><?= _translate("Reason for
-                                                Rejection"); ?></th>
+                                            <th scope="row" class="rejected labels" style="display: none;width:15%;"><?= _translate("Reason for Rejection"); ?></th>
                                             <td class="rejected" style="display: none;width:35%">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the sample rejection reason">
                                                     <option value="">-- Select --</option>
