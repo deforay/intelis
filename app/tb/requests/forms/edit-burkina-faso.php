@@ -476,18 +476,19 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                             </td>
                                         </tr>
                                         <tr>
+                                            <th></th><td></td>
                                             <th scope="row" class="th-label platform xpert"><label class="label-control" for="xPertMTMResult"><?= _translate("Xpert MTB Result");?></label></th>
                                             <td class="platform xpert td-input">
                                                 <select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the Xpert MTM Result">
                                                     <?= $general->generateSelectOptions($tbXPertResults, $tbInfo['xpert_mtb_result'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th scope="row" class="platform lam th-label"><label class="label-control" for="result"><?= _translate("TB LAM Result");?></label></th>
+                                            <!-- <th scope="row" class="platform lam th-label"><label class="label-control" for="result"><?= _translate("TB LAM Result");?></label></th>
                                             <td class="platform lam td-input">
                                                 <select class="form-control" name="result" id="result" title="Please select the TB LAM result">
                                                     <?= $general->generateSelectOptions($tbLamResults, $tbInfo['result'], '-- Select --'); ?>
                                                 </select>
-                                            </td>
+                                            </td> -->
                                         </tr>
                                         <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="reviewedBy"><?= _translate("Reviewed By");?></label></th>

@@ -435,3 +435,13 @@ ALTER TABLE `audit_form_tb`
 ADD `patient_weight` DECIMAL(5,2) NULL DEFAULT NULL AFTER `patient_age`,
 ADD `is_displaced_population` VARCHAR(5) NULL DEFAULT NULL AFTER `patient_address`,
 ADD `is_referred_by_community_actor` VARCHAR(5) NULL DEFAULT NULL AFTER `is_displaced_population`;
+
+-- Thana 22-Apr-2024
+UPDATE privileges SET resource_id = 'tb-batches' WHERE privilege_id IN(199,200,201);
+UPDATE privileges SET privilege_name = '/batch/batches.php?type=tb' WHERE privilege_id = 199;
+UPDATE privileges SET privilege_name = '/batch/add-batch.php?type=tb' WHERE privilege_id = 200;
+UPDATE privileges SET privilege_name = '/batch/edit-batch.php?type=tb' WHERE privilege_id = 201;
+
+UPDATE privileges SET shared_privileges = '["/batch/generate-batch-pdf.php?type=tb"]' WHERE privilege_id = 199;
+UPDATE privileges SET shared_privileges = '["/batch/add-batch-position.php?type=tb"]' WHERE privilege_id = 200;
+UPDATE privileges SET shared_privileges = '["/batch/delete-batch.php?type=tb","/batch/edit-batch-position.php?type=tb"]' WHERE privilege_id = 201;

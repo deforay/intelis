@@ -169,7 +169,7 @@ try {
         'result_date' => !empty($_POST['resultDate']) ? $_POST['resultDate'] : null,
         'sample_received_at_lab_datetime' => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
         'is_sample_rejected' => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
-        'result' => !empty($_POST['result']) ? $_POST['result'] : null,
+        'result' => !empty($_POST['result']) ? $_POST['result'] : $_POST['xPertMTMResult'],
         'xpert_mtb_result' => !empty($_POST['xPertMTMResult']) ? $_POST['xPertMTMResult'] : null,
         'result_sent_to_source' => $resultSentToSource,
         'result_dispatched_datetime' => !empty($_POST['resultDispatchedDatetime']) ? $_POST['resultDispatchedDatetime'] : null,
