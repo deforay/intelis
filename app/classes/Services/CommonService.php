@@ -817,7 +817,7 @@ class CommonService
                 ];
 
                 if (is_array($labId)) {
-                    $facilityIds = implode(",", array_unique(array_filter($labId)));
+                    $labId = implode(",", array_unique(array_filter($labId)));
                     $this->db->where('facility_id', [$labId], 'IN');
                 } else {
                     $this->db->where('facility_id', $labId);
