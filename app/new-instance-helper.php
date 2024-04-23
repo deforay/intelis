@@ -1,13 +1,11 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
-use App\Utilities\ImageResizeUtility;
 use App\Utilities\FileCacheUtility;
+use App\Registries\ContainerRegistry;
 
 
 /** @var DatabaseService $db */
@@ -54,7 +52,7 @@ function getMacWindows(): string
 try {
 	if ((isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) != "") || isset($_POST['labId']) && trim((string) $_POST['labId']) != "") {
 		if (isset($_POST['labId']) && trim((string) $_POST['labId']) != "") {
-			$labResults = $general->fetchDataFromTable('facility_details', 'facility_id = ' . $_POST['labId'], array('facility_type', 'facility_name', 'facility_code'));
+			$labResults = $general->fetchDataFromTable('facility_details', 'facility_id = ' . $_POST['labId'], ['facility_type', 'facility_name', 'facility_code']);
 			if (isset($labResults[0]['facility_name']) && trim((string) $labResults[0]['facility_name']) != "") {
 				$_POST['facilityId'] = $labResults[0]['facility_name'];
 				$_POST['facilityCode'] = $labResults[0]['facility_code'];
@@ -68,11 +66,11 @@ try {
 			$instanceId = $general->generateUUID();
 			// deleting just in case there is a row already inserted
 			$db->delete('s_vlsm_instance');
-			$db->insert('s_vlsm_instance', array('vlsm_instance_id' => $instanceId));
+			$db->insert('s_vlsm_instance', ['vlsm_instance_id' => $instanceId]);
 			$_SESSION['instanceId'] = $instanceId;
 		}
 		$db->where('name', 'instance_type');
-		$db->update($globalTable, array('value' => $_POST['fType']));
+		$db->update($globalTable, ['value' => $_POST['fType']]);
 		$data = [
 			'instance_facility_name' => $_POST['facilityId'],
 			'instance_facility_code' => $_POST['facilityCode'],
@@ -91,7 +89,7 @@ try {
 		$id = $db->update($tableName, $data);
 
 		$db->where('name', 'sc_testing_lab_id');
-		$db->update($systemConfigTable, array('value' => $_POST['labId']));
+		$db->update($systemConfigTable, ['value' => $_POST['labId']]);
 
 		unset($_SESSION['instance']);
 		(ContainerRegistry::get(FileCacheUtility::class))->clear();
