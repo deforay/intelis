@@ -228,7 +228,7 @@ if (!empty($result)) {
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
-    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", (string) $result['child_gender'])) . '</td>';
+    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' .  _translate(_capitalizeFirstLetter($result['child_gender'])) . '</td>';
     $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . $result['i_partner_name'] . '</td>';
     $html .= '</tr>';
     $html .= '<tr>';

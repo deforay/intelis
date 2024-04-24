@@ -97,23 +97,16 @@ class VlService extends AbstractTestService
         return once(function () use ($resultStatus, $finalResult) {
             $vlResultCategory = null;
             $orignalResultValue = $finalResult;
-            $find = [
-                'c/ml',
-                'cp/ml',
-                'copies/ml',
-                'cop/ml',
-                'copies',
-                'cpml',
-                'cp',
-                'HIV-1 DETECTED',
-                'HIV1 DETECTED',
-                'HIV-1 NOT DETECTED',
-                'HIV-1 NOTDETECTED',
-                'HIV1 NOTDETECTED'
+            $patterns = [
+                '/c\/?p(?:ml|m|opies)?/i',
+                '/copies/i',
+                '/hiv-?1\s*(?:not)?\s*detected/i'
             ];
-            $finalResult = trim(str_ireplace($find, '', (string) $finalResult));
 
-            if (empty($finalResult)) {
+            $finalResult = preg_replace($patterns, '', (string) $finalResult);
+            $finalResult = trim($finalResult);
+
+            if (empty($finalResult) || $finalResult == '') {
                 $vlResultCategory = null;
             } elseif (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
                 $vlResultCategory = 'failed';
@@ -125,25 +118,24 @@ class VlService extends AbstractTestService
                 $vlResultCategory = 'invalid';
             } else {
 
-                if (is_numeric($finalResult) || MiscUtility::isScientificNotation($finalResult)) {
-                    $finalResult = floatval($finalResult);
-                    if ($finalResult < $this->suppressionLimit) {
-                        $vlResultCategory = 'suppressed';
-                    } elseif ($finalResult >= $this->suppressionLimit) {
-                        $vlResultCategory = 'not suppressed';
+                if (is_numeric($finalResult)) {
+                    $interpretedResult =  floatval($finalResult);
+                } elseif (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $finalResult, $matches)) {
+                    if (isset($matches[2]) && is_numeric($matches[2])) {
+                        $interpretedResult =  floatval($matches[2]);
                     }
                 } else {
                     if (in_array(strtolower((string) $orignalResultValue), $this->suppressedArray)) {
-                        $textResult = 10;
+                        $interpretedResult = 10;
                     } else {
-                        $textResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
+                        $interpretedResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
                     }
+                }
 
-                    if ($textResult < $this->suppressionLimit) {
-                        $vlResultCategory = 'suppressed';
-                    } elseif ($textResult >= $this->suppressionLimit) {
-                        $vlResultCategory = 'not suppressed';
-                    }
+                if ($interpretedResult < $this->suppressionLimit) {
+                    $vlResultCategory = 'suppressed';
+                } elseif ($interpretedResult >= $this->suppressionLimit) {
+                    $vlResultCategory = 'not suppressed';
                 }
             }
 
@@ -299,32 +291,7 @@ class VlService extends AbstractTestService
                 $txtVal = null;
                 break;
             default:
-                if (str_contains((string)$result, "<")) {
-                    $result = $this->extractViralLoadValue(trim(str_replace("<", "", (string) $result)));
-                    if (!empty($unit) && str_contains((string)$unit, 'Log')) {
-                        $logVal = $result;
-                        $absVal = $absDecimalVal = round(pow(10, $logVal), 2);
-                    } else {
-                        $vlResult = $absVal = $absDecimalVal = $result;
-                        $logVal = round(log10($absDecimalVal), 2);
-                    }
-
-                    $vlResult = $originalResultValue = "< " . $absDecimalVal;
-                    $txtVal = null;
-                } elseif (str_contains((string)$result, ">")) {
-                    $result = $this->extractViralLoadValue(trim(str_replace(">", "", (string) $result)));
-                    if (!empty($unit) && str_contains((string)$unit, 'Log')) {
-                        $logVal = $result;
-                        $absDecimalVal = round(pow(10, $logVal), 2);
-                    } else {
-                        $vlResult = $absVal = $absDecimalVal = $result;
-                        $logVal = round(log10($absDecimalVal), 2);
-                    }
-                    $vlResult = $originalResultValue = ">" . $absDecimalVal;
-                    $txtVal = null;
-                } else {
-                    $vlResult = $txtVal = $result;
-                }
+                $vlResult = $txtVal = $result;
                 break;
         }
         if ($interpretAndConvertResult) {
@@ -344,69 +311,133 @@ class VlService extends AbstractTestService
     public function interpretViralLoadNumericResult(string $result, ?string $unit = null): ?array
     {
         $result = trim($result);
-        // If result is blank, then return null
         if (empty($result)) {
-            return null;
+            return null; // Return early if the result is empty
         }
 
-        // If result is NOT numeric, then process it as a text result
+        // Check the type of the value and process non-numeric types as text results
         if ($this->checkViralLoadValueType($result) == 'text') {
             return $this->interpretViralLoadTextResult($result, $unit);
         }
 
         $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
         $originalResultValue = $result;
+        $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results') === 'yes';
 
+        // Handling inequality operators and scientific notation in the result
+        if (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $result, $matches)) {
+            $operator = $matches[1];
+            $numericValue = floatval($matches[2]);
 
-        $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
-
-        $interpretAndConvertResult = !empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes';
-
-        if (!empty($unit) && str_contains($unit, 'Log') && is_numeric($result)) {
-            $logVal = (float) $result;
-            $originalResultValue =
-                $vlResult = $absVal =
-                $absDecimalVal = round(pow(10, $logVal), 2);
-        } elseif (!empty($unit) && str_contains($unit, '10')) {
-            $unitArray = explode(".", $unit);
-            $exponentArray = explode("*", $unitArray[0]);
-            $multiplier = pow((float) $exponentArray[0], (float) $exponentArray[1]);
-            $vlResult = $result * $multiplier;
-            $unit = $unitArray[1];
-        } elseif (str_contains($result, 'E+') || str_contains($result, 'E-')) {
-            if (str_contains($result, '< 2.00E+1')) {
-                $vlResult = "< 20";
-                $absVal = $absDecimalVal = 20;
+            if (!empty($unit) && str_contains($unit, 'Log')) {
+                $logVal = $numericValue;
+                $absDecimalVal = pow(10, $logVal);
             } else {
-                // incase there are some brackets in the result
-                $resultArray = explode("(", $result);
-
-                $absVal = ($resultArray[0]);
-                $vlResult = $absDecimalVal = (float) $resultArray[0];
-                $logVal = round(log10($absDecimalVal), 2);
+                $absDecimalVal = $numericValue;
+                $logVal = log10($absDecimalVal);
             }
-        } elseif ($result == '< 839') {
-            $vlResult = $txtVal = 'Below Detection Limit';
+
+            $absVal = $absDecimalVal;
+            $vlResult = "$operator $absDecimalVal";
+        } elseif (is_numeric($result)) {
+            // Handle all numeric results here, whether or not they need logarithmic conversion.
+            if (!empty($unit) && str_contains($unit, 'Log')) {
+                // Assume the numeric result is a log value needing conversion to absolute count.
+                $logVal = (float)$result;
+                $absDecimalVal = round(pow(10, $logVal), 2);
+                $vlResult = $absVal = $absDecimalVal;
+            } else {
+                // It's a simple numeric result, not requiring conversion from log scale.
+                $absDecimalVal = floatval($result);
+                $logVal = round(log10($absDecimalVal), 2);
+                $absVal = $absDecimalVal;
+                $vlResult = $absDecimalVal;
+            }
         } else {
             $vlResult = $absVal = $absDecimalVal = floatval($result);
             $logVal = round(log10($absDecimalVal), 2);
-            $txtVal = null;
         }
 
-        if ($interpretAndConvertResult) {
-            $originalResultValue = $vlResult;
-        }
-
+        // Use the converted or original value based on configuration
+        $resultToUse = $interpretAndConvertResult ? $vlResult : $originalResultValue;
 
         return [
             'logVal' => $logVal,
-            'result' => $originalResultValue,
+            'result' => $resultToUse,
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
             'txtVal' => $txtVal,
             'resultStatus' => $resultStatus
         ];
     }
+
+
+
+
+    // public function interpretViralLoadNumericResult(string $result, ?string $unit = null): ?array
+    // {
+    //     $result = trim($result);
+    //     // If result is blank, then return null
+    //     if (empty($result)) {
+    //         return null;
+    //     }
+
+    //     // If result is NOT numeric, then process it as a text result
+    //     if ($this->checkViralLoadValueType($result) == 'text') {
+    //         return $this->interpretViralLoadTextResult($result, $unit);
+    //     }
+
+    //     $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
+    //     $originalResultValue = $result;
+
+
+    //     $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
+
+    //     $interpretAndConvertResult = !empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes';
+
+    //     if (!empty($unit) && str_contains($unit, 'Log') && is_numeric($result)) {
+    //         $logVal = (float) $result;
+    //         $originalResultValue =
+    //             $vlResult = $absVal =
+    //             $absDecimalVal = round(pow(10, $logVal), 2);
+    //     } elseif (!empty($unit) && str_contains($unit, '10')) {
+    //         $unitArray = explode(".", $unit);
+    //         $exponentArray = explode("*", $unitArray[0]);
+    //         $multiplier = pow((float) $exponentArray[0], (float) $exponentArray[1]);
+    //         $vlResult = $result * $multiplier;
+    //         $unit = $unitArray[1];
+    //     } elseif (str_contains($result, 'E+') || str_contains($result, 'E-')) {
+    //         if (str_contains($result, '< 2.00E+1')) {
+    //             $vlResult = "< 20";
+    //             $absVal = $absDecimalVal = 20;
+    //         } else {
+    //             // incase there are some brackets in the result
+    //             $resultArray = explode("(", $result);
+
+    //             $absVal = ($resultArray[0]);
+    //             $vlResult = $absDecimalVal = (float) $resultArray[0];
+    //             $logVal = round(log10($absDecimalVal), 2);
+    //         }
+    //     } else {
+    //         $vlResult = $absVal = $absDecimalVal = floatval($result);
+    //         $logVal = round(log10($absDecimalVal), 2);
+    //         $txtVal = null;
+    //     }
+
+    //     if ($interpretAndConvertResult) {
+    //         $originalResultValue = $vlResult;
+    //     }
+
+
+    //     return [
+    //         'logVal' => $logVal,
+    //         'result' => $originalResultValue,
+    //         'absDecimalVal' => $absDecimalVal,
+    //         'absVal' => $absVal,
+    //         'txtVal' => $txtVal,
+    //         'resultStatus' => $resultStatus
+    //     ];
+    // }
 
 
     // public function getLowVLResultTextFromImportConfigs($machineFile = null)
@@ -510,29 +541,26 @@ class VlService extends AbstractTestService
                     $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                 }
 
-                if(isset($params['freezer']) && $params['freezer'] != "" && $params['freezer'] != null){
+                if (isset($params['freezer']) && $params['freezer'] != "" && $params['freezer'] != null) {
 
-                    $countChar = substr_count($params['freezer'],"-");
-                    
-                    if(isset($countChar) && $countChar > 2) {
+                    $countChar = substr_count($params['freezer'], "-");
+
+                    if (isset($countChar) && $countChar > 2) {
                         $storageId = $params['freezer'];
-                        $getStorage = $this->commonService->getDataFromOneFieldAndValue('lab_storage','storage_code',$params['freezer']);
+                        $getStorage = $this->commonService->getDataFromOneFieldAndValue('lab_storage', 'storage_code', $params['freezer']);
                         $freezerCode = $getStorage['storage_code'];
-                    }
-                    else{
+                    } else {
                         $storageId = $this->commonService->generateUUID();
                         $freezerCode = $params['freezer'];
-                        $storageSave = $this->commonService->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $params['freezer'], $params['labId'], 'active'));
+                        $storageSave = $this->commonService->quickInsert('lab_storage', array('storage_id', 'storage_code', 'lab_id', 'storage_status'), array($storageId, $params['freezer'], $params['labId'], 'active'));
                     }
 
                     $formAttributes = [
                         'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
                         'ip_address' => $this->commonService->getClientIpAddress(),
-                        'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$params['rack'],"box"=>$params['box'],"position"=>$params['position'],"volume"=>$params['volume']),
+                        'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode, "rack" => $params['rack'], "box" => $params['box'], "position" => $params['position'], "volume" => $params['volume']),
                     ];
-
-                }
-                else{
+                } else {
                     $formAttributes = [
                         'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
                         'ip_address' => $this->commonService->getClientIpAddress()
@@ -640,23 +668,42 @@ class VlService extends AbstractTestService
             return 'empty';
         }
 
+        // Explicitly handle "< 839" as text
+        if ($input === '< 839') {
+            return 'text'; // Treat this specific case as text
+        }
+
         // Check if it is a numeric value, including scientific notation
-        if (is_numeric($input) || MiscUtility::isScientificNotation($input)) {
+        if (is_numeric($input)) {
             return 'numeric';
+        } elseif (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $input, $matches)) {
+            // Ensure the numeric value after < or > is handled correctly
+            if (isset($matches[2]) && is_numeric($matches[2])) {
+                return 'numeric'; // The part after < or > is numeric
+            }
         }
 
         // If not null, not empty, and not numeric, it's text
         return 'text';
     }
 
-    public function extractViralLoadValue($input): ?string
+    public function extractViralLoadValue($input, $returnWithOperator = true): ?string
     {
         // Trim the input to remove leading/trailing whitespace
-        $trimmedInput = trim((string) $input);
+        $input = trim((string) $input);
 
-        // Proceed with converting the number to float if it is numeric or scientific notation
-        if (is_numeric($trimmedInput) || MiscUtility::isScientificNotation($trimmedInput)) {
-            return floatval($trimmedInput);
+        if (is_numeric($input)) {
+            return floatval($input);
+        } elseif (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $input, $matches)) {
+            // Ensure the numeric value after < or > is handled correctly
+            if ($returnWithOperator) {
+                $operator = $matches[1] ?? '';
+            } else {
+                $operator = '';
+            }
+            if (isset($matches[2]) && is_numeric($matches[2])) {
+                return trim("$operator " . floatval($matches[2])); // The part after < or > is numeric
+            }
         }
 
         return null;
@@ -665,19 +712,19 @@ class VlService extends AbstractTestService
     public function getLabStorage($labId = null, $onlyActive = true)
     {
 
-            if ($onlyActive) {
-                $this->db->where('status', 'active');
-            }
-            if ($labId) {
-                $this->db->where('lab_id', $labId);
-            }
-            $this->db->join("facility_details f", "f.facility_id=s.lab_id", "INNER");
-           
-                $response = [];
-                $results = $this->db->get("lab_storage s");
-                foreach ($results as $row) {
-                    $response[$row['storage_id']] = $row['storage_code']." - ".$row['facility_name'];
-                }
-                return $response;
+        if ($onlyActive) {
+            $this->db->where('status', 'active');
+        }
+        if ($labId) {
+            $this->db->where('lab_id', $labId);
+        }
+        $this->db->join("facility_details f", "f.facility_id=s.lab_id", "INNER");
+
+        $response = [];
+        $results = $this->db->get("lab_storage s");
+        foreach ($results as $row) {
+            $response[$row['storage_id']] = $row['storage_code'] . " - " . $row['facility_name'];
+        }
+        return $response;
     }
 }
