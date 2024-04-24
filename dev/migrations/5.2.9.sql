@@ -460,3 +460,7 @@ ALTER TABLE `lab_storage_history` ADD `sample_removal_reason` INT NULL DEFAULT N
 
 --Jeyabanu 23-Apr-2024
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'vl-reports', '/vl/program-management/storage-reports.php', NULL, 'Freezer/Storage Reports', NULL, 'lis');
+
+-- Jeyabanu 24-Apr-2024
+ALTER TABLE `form_eid` ADD `child_age_in_weeks` INT NULL DEFAULT NULL AFTER `child_age`;
+ALTER TABLE `audit_form_eid` ADD `child_age_in_weeks` INT NULL DEFAULT NULL AFTER `child_age`;

@@ -226,13 +226,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									<tr>
 										<th scope="row">Age en mois</th>
 										<td><input type="number" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age en mois" title="Age en mois" style="width:100%;" onchange="$('#childDob').val('')" /></td>
-										<th scope="row"></th>
-										<td></td>
+										<th scope="row"><?php echo _translate("Age in weeks"); ?></th>
+										<td><input type="number" maxlength="5" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAgeInWeeks" name="childAgeInWeeks" placeholder="<?php echo _translate("Enter Child Age in weeks"); ?>" title="Age en mois" style="width:100%;" /></td>
 									</tr>
-
 								</table>
-
-
 
 								<br><br>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
