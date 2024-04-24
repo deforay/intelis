@@ -1,0 +1,150 @@
+<?php
+
+use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use Laminas\Filter\StringTrim;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use Laminas\Filter\FilterChain;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+try {
+
+     $db->beginReadOnlyTransaction();
+
+     /** @var CommonService $general */
+     $general = ContainerRegistry::get(CommonService::class);
+     $key = (string) $general->getGlobalConfig('key');
+
+
+if($_POST['reportType']=='storageData'){
+     $sampleCode = 'sample_code';
+     $aColumns = array('vl.sample_code', 'h.volume', 'h.rack', 'h.box', 'h.position', 'h.sample_status');
+     $orderColumns = array('vl.sample_code', 'h.volume', 'h.rack', 'h.box', 'h.position', 'h.sample_status');
+
+     $sOffset = $sLimit = null;
+     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
+          $sOffset = $_POST['iDisplayStart'];
+          $sLimit = $_POST['iDisplayLength'];
+     }
+
+     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
+
+
+     $sQuery = "SELECT h.*, s.storage_code, vl.sample_code
+     FROM lab_storage_history as h
+     LEFT JOIN lab_storage as s ON h.freezer_id=s.storage_id
+     LEFT JOIN form_vl as vl ON vl.unique_id=h.sample_unique_id ";
+
+     if (isset($_POST['freezerId']) && trim((string) $_POST['freezerId']) != '') {
+          $sWhere[] = ' h.freezer_id = "' . $_POST['freezerId'] . '"';
+     }
+    
+     if (!empty($sWhere)) {
+          $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
+     }
+     $_SESSION['storageDataQuery'] = $sQuery;
+
+     if (!empty($sOrder)) {
+          $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+          $sQuery = $sQuery . ' order by ' . $sOrder;
+     }
+
+     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+
+     $_SESSION['storageDataQueryCount'] = $resultCount;
+
+
+     $output = array(
+          "sEcho" => (int) $_POST['sEcho'],
+          "iTotalRecords" => $resultCount,
+          "iTotalDisplayRecords" => $resultCount,
+          "aaData" => []
+     );
+
+     foreach ($rResult as $aRow) {
+          $row = [];
+          $row[] = $aRow['sample_code'];
+          $row[] = ($aRow['volume']);
+          $row[] = ($aRow['rack']);
+          $row[] = ($aRow['box']);
+          $row[] = ($aRow['position']);
+          $row[] = ($aRow['sample_status']);
+
+          $output['aaData'][] = $row;
+     }
+
+}
+else{
+
+     $aColumns = array('vl.patient_first_name', 'vl.patient_middle_name', 's.storage_code', 'h.box', 'h.position', 'h.sample_status');
+     $orderColumns = array('vl.patient_first_name', 'vl.patient_middle_name', 's.storage_code', 'h.box', 'h.position', 'h.sample_status');
+
+     $sOffset = $sLimit = null;
+     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
+          $sOffset = $_POST['iDisplayStart'];
+          $sLimit = $_POST['iDisplayLength'];
+     }
+
+     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
+
+     $sQuery = "SELECT h.*, s.storage_code, vl.patient_first_name,vl.patient_middle_name,vl.patient_last_name, rr.removal_reason_name
+               FROM lab_storage_history as h
+               LEFT JOIN r_reasons_for_sample_removal as rr ON rr.removal_reason_id = sample_removal_reason
+               LEFT JOIN lab_storage as s ON h.freezer_id = s.storage_id
+               LEFT JOIN form_vl as vl ON vl.unique_id = h.sample_unique_id ";
+
+     if (isset($_POST['sampleUniqueId']) && trim((string) $_POST['sampleUniqueId']) != '') {
+          $sWhere[] = ' h.sample_unique_id = "' . $_POST['sampleUniqueId'] . '"';
+     }
+    
+     if (!empty($sWhere)) {
+          $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
+     }
+     $_SESSION['storageHistoryDataQuery'] = $sQuery;
+
+     if (!empty($sOrder)) {
+          $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+          $sQuery = $sQuery . ' order by ' . $sOrder;
+     }
+
+     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+
+     $_SESSION['storageHistoryDataQueryCount'] = $resultCount;
+
+     $output = array(
+          "sEcho" => (int) $_POST['sEcho'],
+          "iTotalRecords" => $resultCount,
+          "iTotalDisplayRecords" => $resultCount,
+          "aaData" => []
+     );
+
+     foreach ($rResult as $aRow) {
+          $row = [];
+          $row[] = $aRow['patient_first_name'];
+          $row[] = $aRow['storage_code'];
+          $row[] = ($aRow['volume']);
+          $row[] = ($aRow['rack']);
+          $row[] = ($aRow['box']);
+          $row[] = ($aRow['position']);
+          $row[] = ($aRow['date_out']);
+          $row[] = ($aRow['comments']);
+          $row[] = ($aRow['sample_status']);
+          $row[] = ($aRow['removal_reason_name']);
+
+          $output['aaData'][] = $row;
+     }
+}
+
+     echo MiscUtility::convertToUtf8AndEncode($output);
+
+     $db->commitTransaction();
+} catch (Exception $exc) {
+     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+}
