@@ -197,7 +197,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	function deleteBatchCode(bId, batchCode) {
 		var conf = confirm("<?php echo _translate("Are you sure you want to delete Batch"); ?> : " + batchCode + "?\n<?php echo _translate("This action cannot be undone."); ?>");
 		if (conf) {
-			$.post("delete-batch.php", {
+			$.post("/batch/delete-batch.php", {
 					id: bId,
 					type: '<?php echo $_GET['type']; ?>'
 				},

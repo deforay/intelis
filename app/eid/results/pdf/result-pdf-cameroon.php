@@ -393,113 +393,110 @@ if (!empty($result)) {
     $html .= '<td colspan="3" style="line-height:22px;"></td>';
     $html .= '</tr>';
 
-    if (!empty($testedBy) && !empty($result['sample_tested_datetime']) && $displaySignatureTable) {
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-        $html .= '</tr>';
+    if ($displaySignatureTable) {
 
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-        if (!empty($testUserSignaturePath) && MiscUtility::imageExists($testUserSignaturePath)) {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
+        if (!empty($testedBy) && !empty($result['sample_tested_datetime']) && !empty($testUserSignaturePath) && MiscUtility::imageExists($testUserSignaturePath)) {
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+            $html .= '</tr>';
+
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
+            if (!empty($testUserSignaturePath) && MiscUtility::imageExists($testUserSignaturePath)) {
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
+            } else {
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+            }
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+            $html .= '</tr>';
+        }
+        if (!empty($revisedBy) && !empty($revisedSignaturePath) && MiscUtility::imageExists($revisedSignaturePath)) {
+            $html .= '<tr>';
+            $html .= '<td colspan="3" style="line-height:22px;"></td>';
+            $html .= '</tr>';
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+            $html .= '</tr>';
+
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
+            if (!empty($revisedSignaturePath) && MiscUtility::imageExists($revisedSignaturePath)) {
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
+            } else {
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+            }
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . DateUtility::humanReadableDateFormat($result['revised_on'] ?? '', true) . '</td>';
+            $html .= '</tr>';
+        }
+        if ($reviewedBy != $resultApprovedBy) {
+            if (!empty($reviewedBy)) {
+
+                $html .= '<tr>';
+                $html .= '<td colspan="3" style="line-height:22px;"></td>';
+                $html .= '</tr>';
+                $html .= '<tr>';
+                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REVIEWED BY</td>';
+                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+                $html .= '</tr>';
+                $html .= '<tr>';
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
+                if (!empty($reviewedBySignaturePath) && MiscUtility::imageExists($reviewedBySignaturePath)) {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
+                } else {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+                }
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_reviewed_datetime'] ?? '' . '</td>';
+                $html .= '</tr>';
+            }
+            if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
+                $html .= '<tr>';
+                $html .= '<td colspan="3" style="line-height:22px;"></td>';
+                $html .= '</tr>';
+
+                $html .= '<tr>';
+                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
+                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+                $html .= '</tr>';
+                $html .= '<tr>';
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
+                if (!empty($approvedBySignaturePath) && MiscUtility::imageExists($approvedBySignaturePath)) {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:50px;" /></td>';
+                } else {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+                }
+
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_approved_datetime']) ? date('d/M/Y', strtotime((string) $result['result_approved_datetime'])) : '') . '</td>';
+                $html .= '</tr>';
+            }
         } else {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-        }
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-        $html .= '</tr>';
-    }
-    if (!empty($revisedBy) && $displaySignatureTable) {
-        $html .= '<tr>';
-        $html .= '<td colspan="3" style="line-height:22px;"></td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-        $html .= '</tr>';
+            if (!empty($reviewedBy)) {
 
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-        if (!empty($revisedSignaturePath) && MiscUtility::imageExists($revisedSignaturePath)) {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
-        } else {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-        }
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . DateUtility::humanReadableDateFormat($result['revised_on'] ?? '', true) . '</td>';
-        $html .= '</tr>';
-    }
-    if ($reviewedBy != $resultApprovedBy && $displaySignatureTable) {
-        if (!empty($reviewedBy) && $displaySignatureTable) {
-
-            $html .= '<tr>';
-            $html .= '<td colspan="3" style="line-height:22px;"></td>';
-            $html .= '</tr>';
-            $html .= '<tr>';
-            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REVIEWED BY</td>';
-            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-            $html .= '</tr>';
-            $html .= '<tr>';
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-            if (!empty($reviewedBySignaturePath) && MiscUtility::imageExists($reviewedBySignaturePath)) {
-                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
-            } else {
-                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+                $html .= '<tr>';
+                $html .= '<td colspan="3" style="line-height:22px;"></td>';
+                $html .= '</tr>';
+                $html .= '<tr>';
+                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REVIEWED AND APPROVED BY</td>';
+                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+                $html .= '</tr>';
+                $html .= '<tr>';
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
+                if (!empty($reviewedBySignaturePath) && MiscUtility::imageExists($reviewedBySignaturePath)) {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
+                } else {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+                }
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_reviewed_datetime']) ? date('d/M/Y', strtotime((string) $result['result_reviewed_datetime'])) : '') . '</td>';
+                $html .= '</tr>';
             }
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_reviewed_datetime'] ?? '' . '</td>';
-            $html .= '</tr>';
-        }
-        if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime']) && $displaySignatureTable) {
-            $html .= '<tr>';
-            $html .= '<td colspan="3" style="line-height:22px;"></td>';
-            $html .= '</tr>';
-
-            $html .= '<tr>';
-            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
-            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-            $html .= '</tr>';
-            $html .= '<tr>';
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-            if (!empty($approvedBySignaturePath) && MiscUtility::imageExists($approvedBySignaturePath)) {
-                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:50px;" /></td>';
-            } else {
-                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-            }
-
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_approved_datetime']) ? date('d/M/Y', strtotime((string) $result['result_approved_datetime'])) : '') . '</td>';
-            $html .= '</tr>';
-        }
-    } else {
-        if (!empty($reviewedBy) && $displaySignatureTable) {
-
-            $html .= '<tr>';
-            $html .= '<td colspan="3" style="line-height:22px;"></td>';
-            $html .= '</tr>';
-            $html .= '<tr>';
-            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REVIEWED AND APPROVED BY</td>';
-            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-            $html .= '</tr>';
-            $html .= '<tr>';
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-            if (!empty($reviewedBySignaturePath) && MiscUtility::imageExists($reviewedBySignaturePath)) {
-                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
-            } else {
-                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-            }
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_reviewed_datetime']) ? date('d/M/Y', strtotime((string) $result['result_reviewed_datetime'])) : '') . '</td>';
-            $html .= '</tr>';
         }
     }
-
-
-
-
-
-
 
     // $html .= '<tr>';
     // $html .= '<td colspan="3" style="line-height:22px;"></td>';

@@ -116,12 +116,15 @@ try {
         $data[$table]['tableData'] = $db->get($table);
     }
 
+    $dataToSync = [];
+    $dataToSync['timestamp'] = !empty($lastUpdatedOn) ? strtotime((string) $lastUpdatedOn) : time();
+    $dataToSync['data'] = $data;
 
     $currentDate = DateUtility::getCurrentDateTime();
 
     $filename = 'reference-data-' . $currentDate . '.json';
     $fp = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'w');
-    fwrite($fp, json_encode($data));
+    fwrite($fp, json_encode($dataToSync));
     fclose($fp);
 
 

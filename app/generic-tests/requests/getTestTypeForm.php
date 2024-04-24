@@ -302,14 +302,14 @@ if (!empty($testResultsAttribute)) {
 
                         $resultSection .= '</td>';
                         if ($resultType != 'qualitative') {
-                        $resultSection .= '<td class="testResultUnit">
-                                    <select class="form-control" id="testResultUnit' . $key . $i . '" name="testResultUnit[' . $subTest . '][]" placeholder=' . _translate("Enter test result unit") . ' title=' . _translate("Please enter test result unit") . '>
-                                        <option value="">--Select--</option>';
-                                foreach ($testResultUnits as $unit) {
-                                    $selected = isset($row['result_unit']) && $row['result_unit'] == $unit['unit_id'] ? "selected='selected'" : "";
-                                    $resultSection .= '<option value="' . $unit['unit_id'] . '" ' . $selected . '>' . $unit['unit_name'] . '</option>';
-                                }
-                                $resultSection .= '</select>
+                            $resultSection .= '<td class="testResultUnit">
+                                <select class="form-control" id="testResultUnit' . $key . $i . '" name="testResultUnit[' . $subTest . '][]" placeholder=' . _translate("Enter test result unit") . ' title=' . _translate("Please enter test result unit") . '>
+                                    <option value="">--Select--</option>';
+                            foreach ($testResultUnits as $unit) {
+                                $selected = isset($row['result_unit']) && $row['result_unit'] == $unit['unit_id'] ? "selected='selected'" : "";
+                                $resultSection .= '<option value="' . $unit['unit_id'] . '" ' . $selected . '>' . $unit['unit_name'] . '</option>';
+                            }
+                            $resultSection .= '</select>
                             </td>';
                         }
                                 $resultSection .= '<td style="vertical-align:middle;text-align: center;width:100px;">
@@ -354,7 +354,7 @@ if (!empty($testResultsAttribute)) {
                 }
 
                 $resultSection .= '</td>';
-                if ($resultType == 'qualitative') {
+                if ($resultType != 'qualitative') {
                     $resultSection .= '<td class="testResultUnit">
                                         <select class="form-control" id="testResultUnit' . $key . $n . '" name="testResultUnit[' . $subTest . '][]" placeholder=' . _translate("Enter test result unit") . ' title=' . _translate("Please enter test result unit") . '>
                                             <option value="">--Select--</option>';

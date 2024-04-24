@@ -20,17 +20,15 @@ class DateUtility
         return $carbonDate && (!$strict || $carbonDate->format($format) === $date);
     }
 
-    public static function isDateValid($date, $format = null): bool
+    public static function isDateValid($date): bool
     {
         $date = trim((string) $date);
-
-        $format = $format ??  $_SESSION['phpDateFormat'] ?? null;
 
         if (empty($date) || 'undefined' === $date || 'null' === $date) {
             return false;
         }
 
-        return self::parseDate($date, [$format]) !== null;
+        return self::parseDate($date) !== null;
     }
 
     public static function humanReadableDateFormat($date, $includeTime = false, $format = null)
