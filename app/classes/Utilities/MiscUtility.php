@@ -6,7 +6,6 @@ use ZipArchive;
 
 class MiscUtility
 {
-
     public static function randomHexColor(): string
     {
         $hexColorPart = function () {
@@ -43,7 +42,6 @@ class MiscUtility
         return rmdir($dirname);
     }
 
-
     //dump the contents of a variable to the error log in a readable format
     public static function dumpToErrorLog($object = null, $useVarDump = true): void
     {
@@ -64,8 +62,6 @@ class MiscUtility
 
         error_log($output);
     }
-
-
 
     /**
      * Checks if the array contains any null or empty string values.
@@ -93,7 +89,6 @@ class MiscUtility
         return json_last_error() === JSON_ERROR_NONE;
     }
 
-
     public static function toJSON($data): ?string
     {
         if (!empty($data)) {
@@ -110,8 +105,6 @@ class MiscUtility
         }
         return null;
     }
-
-
 
     public static function prettyJson($json): string
     {
@@ -226,15 +219,6 @@ class MiscUtility
         }
 
         return mkdir($path, $mode, $recursive);
-    }
-
-    // Regular expression to match scientific notation
-    // Example: 2.00E+1, 1.23e4, -1.23E-4, etc.
-    public static function isScientificNotation($str)
-    {
-        $scientificRegex = '/^-?\d+(\.\d+)?[eE][+-]?\d+$/';
-
-        return preg_match($scientificRegex, (string) $str) === 1;
     }
 
     public static function generateCsv($headings, $data, $filename, $delimiter = ',', $enclosure = '"')
