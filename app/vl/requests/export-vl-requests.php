@@ -82,8 +82,6 @@ foreach ($resultSet as $aRow) {
 		$patientLname = '';
 	}
 
-	$formAttributes = json_decode($aRow['form_attributes']);
-	$storageObj = json_decode($formAttributes->storage);
 
 	$row[] = $no;
 	$row[] = $aRow["sample_code"];
@@ -134,11 +132,14 @@ foreach ($resultSet as $aRow) {
 	$row[] = DateUtility::humanReadableDateFormat($aRow['test_requested_on'] ?? '');
 	$row[] = $sampleRejection;
 	if ($formId == COUNTRY\DRC) {
-		$row[] = $storageObj->storageCode;
-		$row[] = $storageObj->rack;
-		$row[] = $storageObj->box;
-		$row[] = $storageObj->position;
-		$row[] = $storageObj->volume;
+		$formAttributes = json_decode($aRow['form_attributes']);
+			$storageObj = $formAttributes->storage;
+			
+			$row[] = $storageObj->freezer;
+			$row[] = $storageObj->rack;
+			$row[] = $storageObj->box;
+			$row[] = $storageObj->position;
+			$row[] = $storageObj->volume;
 	}
 	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 	$row[] = $aRow['result'];

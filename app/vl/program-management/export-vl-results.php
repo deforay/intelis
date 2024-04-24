@@ -111,8 +111,6 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 				$patientLname = $general->crypto('decrypt', $patientLname, $key);
 			}
 		}
-		$formAttributes = json_decode($aRow['form_attributes']);
-		$storageObj = json_decode($formAttributes->storage);
 		if ($formId == COUNTRY\CAMEROON && $arr['vl_excel_export_format'] == "cresar") {
 			$row[] = $aRow['sample_code'];
 			$row[] = $aRow['facility_state'];
@@ -150,7 +148,10 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			else
 				$row[] = "No";
 			if ($formId == COUNTRY\DRC) {
-				$row[] = $storageObj->storageCode;
+				$formAttributes = json_decode($aRow['form_attributes']);
+				$storageObj = $formAttributes->storage;
+		
+				$row[] = $storageObj->freezer;
 				$row[] = $storageObj->rack;
 				$row[] = $storageObj->box;
 				$row[] = $storageObj->position;
@@ -225,7 +226,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = $aRow['rejection_reason'];
 			$row[] = $aRow['recommended_corrective_action_name'];
 			if ($formId == COUNTRY\DRC) {
-				$row[] = $storageObj->storageCode;
+				$row[] = $storageObj->freezer;
 				$row[] = $storageObj->rack;
 				$row[] = $storageObj->box;
 				$row[] = $storageObj->position;	

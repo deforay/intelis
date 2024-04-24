@@ -74,6 +74,13 @@ $db->rawQuery("INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_heade
 $systemConfig = $db->rawQueryOne("SELECT id FROM s_app_menu WHERE display_text='System Configuration'");
 $systemConfigId = $systemConfig['id'];
 
-$db->rawQuery("INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', NULL, 'no', 'Lab Storage', '/common/reference/lab-storage.php', '/common/reference/add-lab-storage.php', 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-lab-storage', $systemConfigId, 24, 'active', CURRENT_TIMESTAMP)");
+//$db->rawQuery("INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', NULL, 'no', 'Lab Storage', '/common/reference/lab-storage.php', '/common/reference/add-lab-storage.php', 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-lab-storage', $systemConfigId, 24, 'active', CURRENT_TIMESTAMP)");
+
+
+/** Sample Storage Reports menu under vl->Management */
+
+$vlManagement = $db->rawQueryOne("SELECT id FROM s_app_menu WHERE module='vl' AND display_text='Management'");
+$vlManagementId = $vlManagement['id'];
+$db->rawQuery("INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'vl', NULL, 'no', 'Freezer/Storage Reports', '/vl/program-management/sampleStorageReports.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu vlStorageMenu', $vlManagementId, 109, 'active', CURRENT_TIMESTAMP)");
 
 echo $db->getLastError();

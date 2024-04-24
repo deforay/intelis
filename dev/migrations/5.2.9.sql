@@ -458,3 +458,5 @@ CREATE TABLE `r_reasons_for_sample_removal` (
 
 ALTER TABLE `lab_storage_history` ADD `sample_removal_reason` INT NULL DEFAULT NULL AFTER `comments`;
 
+--Jeyabanu 23-Apr-2024
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'vl-reports', '/vl/program-management/storage-reports.php', NULL, 'Freezer/Storage Reports', NULL, 'lis');
