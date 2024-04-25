@@ -21,7 +21,7 @@ $storageService = ContainerRegistry::get(StorageService::class);
 
 $storageInfo = $storageService->getLabStorage();
 $sQuery = "SELECT * FROM form_vl as vl WHERE sample_code IS NOT NULL ";
-$sResult = []; // $db->rawQuery($sQuery);
+$sResult = $db->rawQuery($sQuery);
 
 ?>
 <style>
