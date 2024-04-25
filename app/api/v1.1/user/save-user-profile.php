@@ -137,7 +137,7 @@ try {
         $data['user_signature'] = $imageName;
     }
     $id = false;
-    $data = MiscUtility::convertEmptyStringToNull($data);
+    $data = MiscUtility::arrayEmptyStringsToNull($data);
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
         // Unset the fields that should not be updated
         unset($data['login_id'], $data['role_id'], $data['password'], $data['hash_algorithm'], $data['status']);

@@ -495,7 +495,7 @@ try {
             $covid19Data['sample_tested_datetime'] = null;
         }
         $id = false;
-        $covid19Data = MiscUtility::convertEmptyStringToNull($covid19Data);
+        $covid19Data = MiscUtility::arrayEmptyStringsToNull($covid19Data);
         if (!empty($data['covid19SampleId'])) {
             $db->where('covid19_id', $data['covid19SampleId']);
             $id = $db->update($tableName, $covid19Data);

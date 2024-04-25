@@ -314,7 +314,13 @@ try {
           } else {
                $storageId = $general->generateUUID();
                $freezerCode = $_POST['freezer'];
-               $storageSave = $general->quickInsert('lab_storage', array('storage_id', 'storage_code', 'lab_id', 'storage_status'), array($storageId, $_POST['freezer'], $_POST['labId'], 'active'));
+               $d = [
+                    'storage_id' => $storageId,
+                    'storage_code' => $freezerCode,
+                    'lab_id' => $params['labId'],
+                    'storage_status' => 'active'
+               ];
+               $db->insert('lab_storage', $d);
           }
           $formAttributes = [
                'applicationVersion' => $general->getSystemConfig('sc_version'),

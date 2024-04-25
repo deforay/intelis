@@ -1357,11 +1357,6 @@ class CommonService
         return $sheet;
     }
 
-    public function quickInsert($table, $fields, $values)
-    {
-        return $this->db->insert($table, array_combine($fields, $values));
-    }
-
     public function getTableFieldsAsArray($tableName)
     {
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
