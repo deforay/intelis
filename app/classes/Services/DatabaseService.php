@@ -2,11 +2,10 @@
 
 namespace App\Services;
 
-use App\Exceptions\SystemException;
 use MysqliDb;
 use Generator;
 use Throwable;
-use Exception;
+use App\Utilities\LoggerUtility;
 
 class DatabaseService extends MysqliDb
 {
@@ -172,7 +171,7 @@ class DatabaseService extends MysqliDb
      * @param array|string  $primaryKeys String or Array of primary key column names.
      * @return bool Returns true on success or false on failure.
      */
-    public function upsert($tableName, array $data, array $updateColumns = [], array|string $primaryKeys = [])
+    public function upsert($tableName, array $data, array $updateColumns = [], $primaryKeys = [])
     {
         $this->reset();
         $keys = array_keys($data);
@@ -184,32 +183,51 @@ class DatabaseService extends MysqliDb
 
         $sql = "INSERT INTO `$tableName` (`" . implode('`, `', $keys) . "`) VALUES (" . implode(', ', $placeholders) . ")";
 
-        // Define which columns to update in case of duplicate key, excluding primary key components
+        if (empty($updateColumns)) {
+            $updateColumns = array_diff($keys, $primaryKeys);  // Default to using all data keys except primary keys
+        }
+
         $updateParts = [];
-        foreach ($updateColumns as $column) {
-            if (in_array($column, $keys) && !in_array($column, $primaryKeys)) { // Check against provided primary keys
-                $updateParts[] = "`$column` = VALUES(`$column`)";
+        $updateValues = [];
+        foreach ($updateColumns as $key => $column) {
+            if (is_numeric($key)) {
+                // Indexed array, use VALUES() to refer to the value attempted to insert
+                if (in_array($column, $keys) && !in_array($column, $primaryKeys)) {
+                    $updateParts[] = "`$column` = VALUES(`$column`)";
+                }
+            } else {
+                // Associative array, direct assignment from updateColumns
+                if (!in_array($key, $primaryKeys)) {
+                    $updateParts[] = "`$key` = ?";
+                    $updateValues[] = $column;  // Assuming column is the value to update
+                }
             }
         }
 
-        $sql .= " ON DUPLICATE KEY UPDATE " . implode(', ', $updateParts);
+        if (!empty($updateParts)) {
+            $sql .= " ON DUPLICATE KEY UPDATE " . implode(', ', $updateParts);
+        }
 
         $stmt = $this->mysqli()->prepare($sql);
         if (!$stmt) {
-            error_log("Unable to prepare statement: " . $this->mysqli()->error);
-            throw new SystemException("Unable to prepare statement: " . $this->mysqli()->error, $this->mysqli()->errno);
+            LoggerUtility::log('error', "Unable to prepare statement: " . $this->mysqli()->error . ':' . $this->mysqli()->errno);
         }
-        $types = str_repeat('s', count($values));
-        $stmt->bind_param($types, ...$values);
+
+        $allValues = array_merge($values, $updateValues);
+        $types = str_repeat('s', count($allValues));
+        $stmt->bind_param($types, ...$allValues);
 
         if ($stmt->execute()) {
             $stmt->close();
             return true;
         } else {
+            $error = $stmt->error;
             $stmt->close();
+            LoggerUtility::log('error', "Failed to execute upsert: $error");
             return false;
         }
     }
+
 
 
     public function reset(): void

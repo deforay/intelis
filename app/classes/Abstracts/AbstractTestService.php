@@ -187,8 +187,6 @@ abstract class AbstractTestService
                     'max_sequence_number' => $maxId
                 ];
 
-                // $this->db->onDuplicate($updateColumns)
-                //     ->insert('sequence_counter', $data);
                 $this->db->upsert('sequence_counter', $data, $updateColumns);
             }
         } catch (Exception | SystemException $exception) {

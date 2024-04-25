@@ -410,8 +410,6 @@ try {
                     // we will update all columns ON DUPLICATE
                     $updateColumns = array_keys($tableData);
                     $primaryKey = $dataToSync[$dataType]['primaryKey'];
-                    // $db->onDuplicate($updateColumns, $primaryKey);
-                    // $db->insert($dataToSync[$dataType]['tableName'], $tableData);
 
                     $db->upsert($dataToSync[$dataType]['tableName'], $tableData, $updateColumns, [$primaryKey]);
 

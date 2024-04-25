@@ -64,8 +64,7 @@ try {
                         'status' => 'active'
                     ];
                     $updateColumns = ["other_id", "updated_datetime"];
-                    // $db->onDuplicate($updateColumns, 'facility_id');
-                    // $db->insert('facility_details', $facilityData);
+
                     $db->upsert('facility_details', $facilityData, $updateColumns);
                     $id = $db->getInsertId();
                     if ($id > 0) {

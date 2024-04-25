@@ -39,8 +39,7 @@ foreach ($initOptionSets as $t => $id) {
                 'status' => 'active'
             );
             $updateColumns = array("other_id", "updated_datetime");
-            // $db->onDuplicate($updateColumns, 'facility_id');
-            // $db->insert('facility_details', $facilityData);
+
             $db->upsert('facility_details', $facilityData, $updateColumns);
             $id = $db->getInsertId();
             if ($id > 0) {
@@ -93,8 +92,7 @@ foreach ($initOptionSets as $t => $id) {
 //         'status' => 'active'
 //     );
 //     $updateColumns = array("other_id", "updated_datetime");
-//     $db->onDuplicate($updateColumns, 'facility_id');
-//     $db->insert('facility_details', $facilityData);
+//     $db->upsert('facility_details', $facilityData, $updateColumns);
 //     $id = $db->getInsertId();
 //     // $db->where('facility_id  = ' . $id);
 //     // $db->delete('health_facilities');

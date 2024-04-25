@@ -225,8 +225,6 @@ try {
 
 					$updateColumns = array_keys($dataTest);
 
-					// $db->onDuplicate($updateColumns)
-					// 	->insert($testingLabsTable, $dataTest);
 					$db->upsert($testingLabsTable, $dataTest, $updateColumns);
 				}
 			}
