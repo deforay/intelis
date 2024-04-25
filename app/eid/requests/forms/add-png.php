@@ -83,7 +83,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php } else { ?>
                                             <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
+                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" />
                                             </td>
                                         <?php } ?>
                                         <td></td>
@@ -785,7 +785,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                     $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
                     $("#sampleCodeKey").val(sCodeKey.maxId);
                     $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-                    checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'The laboratory ID that you entered already exists. Please try another ID', null)
                     $.unblockUI();
                 });
         }

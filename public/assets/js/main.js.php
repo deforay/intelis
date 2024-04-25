@@ -152,6 +152,11 @@
 
     }
 
+    function calculateAgeInYears(calcFrom, calcTo) {
+        var dateOfBirth = moment($("#" + calcFrom).val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
+        $("#" + calcTo).val(moment().diff(dateOfBirth, 'years'));
+    }
+
     function getAge() {
         const dob = $.trim($("#dob").val());
         // Clear the fields initially
