@@ -271,7 +271,7 @@ class GenericTestsService extends AbstractTestService
 
         $resultConfig = json_decode((string) $testTypeResult['test_results_config'], true);
         $return = null;
-        
+
         if (isset($resultConfig['result_type'][1]) && $resultConfig['result_type'][1] == 'quantitative') {
             if (is_numeric($result)) {
                 if ($result >= $resultConfig['high_value']) {
@@ -288,7 +288,7 @@ class GenericTestsService extends AbstractTestService
                 $return = $resultConfig['quantitative_result_interpretation'][$resultIndex];
             }
         } elseif (isset($resultConfig['result_type'][1]) && $resultConfig['result_type'][1] == 'qualitative') {
-//echo '<pre>'; print_r($resultConfig); die;
+            //echo '<pre>'; print_r($resultConfig); die;
             $resultIndex = (isset($result) && isset($resultConfig['result']) && in_array($result, $resultConfig['result'])) ? array_search(strtolower((string) $result), array_map('strtolower', $resultConfig['result'])) : '';
             $return = $resultConfig['result_interpretation'][$resultIndex];
         }
@@ -318,13 +318,6 @@ class GenericTestsService extends AbstractTestService
         }
 
         return $response;
-    }
-
-
-    // Quickly insert data in dynamic
-    public function quickInsert($table, $fields, $values)
-    {
-        return $this->db->insert($table, array_combine($fields, $values));
     }
 
     public function getSampleType($testTypeId)

@@ -1,11 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 
 $title = "EID | Edit Request";
@@ -225,33 +225,12 @@ $fileArray = array(
 require_once($fileArray[$arr['vl_form']]);
 
 ?>
-
+<?php
+// Common JS functions in a PHP file
+// Why PHP? Because we can use PHP variables in the JS code
+require_once APPLICATION_PATH . "/eid/eid.js.php";
+?>
 <script>
-    function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
-        if ($.trim($("#" + id).val()) != '') {
-            $.blockUI();
-            $.post("/eid/requests/check-sample-duplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: $("#" + id).val(),
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
-                    if (data != 0) {
-                        // Toastify({
-                        //     text: "<?= _translate('This Sample Code already exists', true) ?>",
-                        //     duration: 3000,
-                        //     style: {
-                        //         background: 'red',
-                        //     }
-                        // }).showToast();
-                    }
-                });
-            $.unblockUI();
-        }
-    }
-
     function updateSampleResult() {
         if ($('#isSampleRejected').val() == "yes") {
             $('.rejected').show();
@@ -281,33 +260,7 @@ require_once($fileArray[$arr['vl_form']]);
             $('#result').addClass('isRequired');
         }
     }
-    var patientSearchTimeout = null;
 
-    function showPatientList(patientCode, timeOutDuration) {
-        if (patientSearchTimeout != null) {
-            clearTimeout(patientSearchTimeout);
-        }
-        patientSearchTimeout = setTimeout(function() {
-            patientSearchTimeout = null;
-
-            $("#showEmptyResult").hide();
-            if ($.trim(patientCode) != '') {
-                $.post("/eid/requests/search-patients.php", {
-                        artPatientNo: $.trim(patientCode)
-                    },
-                    function(data) {
-                        if (data >= '1') {
-                            showModal('patientModal.php?artNo=' + $.trim(patientCode), 900, 520);
-                        } else {
-                            $("#showEmptyResult").show();
-                        }
-                    });
-            }
-
-
-        }, timeOutDuration);
-
-    }
 
     $(document).ready(function() {
         updateSampleResult();
@@ -331,12 +284,6 @@ require_once($fileArray[$arr['vl_form']]);
             }
         });
     });
-
-
-    function calculateAgeInMonths() {
-        var dateOfBirth = moment($("#childDob").val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
-        $("#childAge").val(moment().diff(dateOfBirth, 'months'));
-    }
 </script>
 
 

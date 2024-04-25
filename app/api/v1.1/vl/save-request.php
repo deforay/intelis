@@ -389,7 +389,7 @@ try {
         }
         $id = false;
         // print_r($vlFulldata);die;
-        $vlFulldata = MiscUtility::convertEmptyStringToNull($vlFulldata);
+        $vlFulldata = MiscUtility::arrayEmptyStringsToNull($vlFulldata);
         if (!empty($data['vlSampleId'])) {
             $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);

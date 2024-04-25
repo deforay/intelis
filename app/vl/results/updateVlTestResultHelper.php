@@ -182,23 +182,28 @@ try {
         'qc_tech_sign' => $_POST['qcTechSign'] ?? null,
     );
 
-    if(isset($_POST['freezer']) && $_POST['freezer']!="" && $_POST['freezer']!=null){
-        $countChar = substr_count($_POST['freezer'],"-");
-                    
-        if(isset($countChar) && $countChar > 2) {
+    if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
+        $countChar = substr_count($_POST['freezer'], "-");
+
+        if (isset($countChar) && $countChar > 2) {
             $storageId = $_POST['freezer'];
-            $getStorage = $general->getDataFromOneFieldAndValue('lab_storage','storage_code',$_POST['freezer']);
+            $getStorage = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_code', $_POST['freezer']);
             $freezerCode = $getStorage['storage_code'];
-        }
-        else{
+        } else {
             $storageId = $general->generateUUID();
             $freezerCode = $_POST['freezer'];
-            $storageSave = $general->quickInsert('lab_storage', array('storage_id','storage_code', 'lab_id','storage_status'), array($storageId, $_POST['freezer'], $_POST['labId'], 'active'));
+            $d = [
+                'storage_id' => $storageId,
+                'storage_code' => $freezerCode,
+                'lab_id' => $params['labId'],
+                'storage_status' => 'active'
+            ];
+            $db->insert('lab_storage', $d);
         }
         $formAttributes = [
             'applicationVersion' => $general->getSystemConfig('sc_version'),
             'ip_address' => $general->getClientIpAddress(),
-            'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode,"rack"=>$_POST['rack'],"box"=>$_POST['box'],"position"=>$_POST['position'],"volume"=>$_POST['volume']),
+            'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode, "rack" => $_POST['rack'], "box" => $_POST['box'], "position" => $_POST['position'], "volume" => $_POST['volume']),
         ];
 
         $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
@@ -235,7 +240,7 @@ try {
         $db->insert($tableName2, $data);
 
         $eventType = 'update-vl-result';
-        $action = $_SESSION['userName'] . ' updated result for the sample id ' . $_POST['sampleCode'] . ' and patient id '. $patientId;
+        $action = $_SESSION['userName'] . ' updated result for the sample id ' . $_POST['sampleCode'] . ' and patient id ' . $patientId;
         $resource = 'vl-result';
         $general->activityLog($eventType, $action, $resource);
     } else {

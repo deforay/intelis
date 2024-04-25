@@ -552,7 +552,13 @@ class VlService extends AbstractTestService
                     } else {
                         $storageId = $this->commonService->generateUUID();
                         $freezerCode = $params['freezer'];
-                        $storageSave = $this->commonService->quickInsert('lab_storage', array('storage_id', 'storage_code', 'lab_id', 'storage_status'), array($storageId, $params['freezer'], $params['labId'], 'active'));
+                        $d = [
+                            'storage_id' => $storageId,
+                            'storage_code' => $freezerCode,
+                            'lab_id' => $params['labId'],
+                            'storage_status' => 'active'
+                        ];
+                        $this->db->insert('lab_storage', $d);
                     }
 
                     $formAttributes = [

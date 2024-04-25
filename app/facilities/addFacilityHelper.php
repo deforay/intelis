@@ -17,6 +17,8 @@ use App\Utilities\ImageResizeUtility;
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
+$_POST = MiscUtility::arrayEmptyStringsToNull($_POST);
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 

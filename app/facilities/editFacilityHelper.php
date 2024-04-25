@@ -26,6 +26,8 @@ $geolocation = ContainerRegistry::get(GeoLocationsService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
+$_POST = MiscUtility::arrayEmptyStringsToNull($_POST);
+
 // Get the uploaded files from the request object
 $uploadedFiles = $request->getUploadedFiles();
 

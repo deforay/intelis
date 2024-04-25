@@ -1,13 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
 
 /** @var DatabaseService $db */
@@ -15,6 +11,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var GenericTestsService $generic */
 $generic = ContainerRegistry::get(GenericTestsService::class);
 
 $tableName = "r_test_types";
@@ -71,7 +69,12 @@ try {
         // echo "<pre> => " . $cnt;
         // print_r(json_encode($testAttribute));die;
         if (!is_numeric($_POST['testCategory'])) {
-            $_POST['testCategory'] = $generic->quickInsert('r_generic_test_categories', array('test_category_name', 'test_category_status'), array($_POST['testCategory'], 'active'));
+            $d = [
+                'test_category_name' => $_POST['testCategory'],
+                'test_category_status' => 'active'
+            ];
+            $db->insert('r_generic_test_categories', $d);
+            $_POST['testCategory'] = $db->getInsertId();
         }
         // Convert to uppercase
         $shortCode = strtoupper((string) $_POST['testShortCode']);
@@ -104,7 +107,13 @@ try {
             if (!empty($_POST['testingReason'])) {
                 foreach ($_POST['testingReason'] as $val) {
                     if (!is_numeric($val)) {
-                        $val = $generic->quickInsert('r_generic_test_reasons', array('test_reason_code', 'test_reason', 'test_reason_status'), array($general->generateRandomString(5), $val, 'active'));
+                        $d = [
+                            'test_reason_code' => $general->generateRandomString(5),
+                            'test_reason' => $val,
+                            'test_reason_status' => 'active'
+                        ];
+                        $db->insert('r_generic_test_reasons', $d);
+                        $val = $db->getInsertId();
                     }
                     $value = array('test_reason_id' => $val, 'test_type_id' => $lastId);
                     $db->insert($tableName3, $value);
@@ -121,7 +130,13 @@ try {
             if (!empty($_POST['testFailureReason'])) {
                 foreach ($_POST['testFailureReason'] as $val) {
                     if (!is_numeric($val)) {
-                        $val = $generic->quickInsert('r_generic_test_failure_reasons', array('test_failure_reason_code', 'test_failure_reason', 'test_failure_reason_status'), array($general->generateRandomString(5), $val, 'active'));
+                        $d = [
+                            'test_failure_reason_code' => $general->generateRandomString(5),
+                            'test_failure_reason' => $val,
+                            'test_failure_reason_status' => 'active'
+                        ];
+                        $db->insert('r_generic_test_failure_reasons', $d);
+                        $val = $db->getInsertId();
                     }
                     $value = array('test_failure_reason_id' => $val, 'test_type_id' => $lastId);
                     $db->insert($tableName5, $value);
@@ -131,7 +146,13 @@ try {
             if (!empty($_POST['rejectionReason'])) {
                 foreach ($_POST['rejectionReason'] as $val) {
                     if (!is_numeric($val)) {
-                        $val = $generic->quickInsert('r_generic_sample_rejection_reasons', array('rejection_reason_code', 'rejection_reason_name', 'rejection_reason_status'), array($general->generateRandomString(5), $val, 'active'));
+                        $d = [
+                            'rejection_reason_code' => $general->generateRandomString(5),
+                            'rejection_reason_name' => $val,
+                            'rejection_reason_status' => 'active'
+                        ];
+                        $db->insert('r_generic_sample_rejection_reasons', $d);
+                        $val = $db->getInsertId();
                     }
                     $value = array('rejection_reason_id' => $val, 'test_type_id' => $lastId);
                     $db->insert($tableName6, $value);
@@ -147,7 +168,12 @@ try {
             if (!empty($_POST['testMethod'])) {
                 foreach ($_POST['testMethod'] as $val) {
                     if (!is_numeric($val)) {
-                        $val = $generic->quickInsert('r_generic_test_methods', array('test_method_name', 'test_method_status'), array($val, 'active'));
+                        $d = [
+                            'test_method_name' => $val,
+                            'test_method_status' => 'active'
+                        ];
+                        $db->insert('r_generic_test_methods', $d);
+                        $val = $db->getInsertId();
                     }
                     $value = array('test_method_id' => $val, 'test_type_id' => $lastId);
                     $db->insert($tableName8, $value);

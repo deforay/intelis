@@ -365,23 +365,23 @@ class MiscUtility
         return array_values(array_diff($array, $removeArray));
     }
 
-    public static function convertEmptyStringToNull($array)
+    public static function arrayEmptyStringsToNull(array $array): array
     {
         foreach ($array as $key => &$value) {
             if (is_array($value)) {
-                // If the value is an array, apply the function recursively
-                $value = self::convertEmptyStringToNull($value);
-            } else {
-                // If the value is an empty string, set it to null
-                if ($value === '') {
-                    $value = null;
-                }
+                // Apply the function recursively if the value is an array
+                $value = self::arrayEmptyStringsToNull($value);
+            } elseif ($value === '') {
+                // Directly convert empty strings to null
+                $value = null;
             }
         }
+        unset($value); // Break the reference after the loop
         return $array;
     }
 
-    public static function getFileExtension($filename)
+
+    public static function getFileExtension($filename): string
     {
         if (empty($filename)) {
             return '';

@@ -72,7 +72,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
 											<td>
-												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,null,'The échantillon id that you entered already exists. Please try another échantillon id',null)" />
+												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" />
 											</td>
 										<?php } ?>
 										<td></td>

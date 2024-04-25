@@ -209,11 +209,6 @@ require_once($fileArray[$arr['vl_form']]);
                 }
             });
     }
-
-    function calculateAgeInYears(calcFrom, calcTo) {
-        var dateOfBirth = moment($("#" + calcFrom).val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
-        $("#" + calcTo).val(moment().diff(dateOfBirth, 'years'));
-    }
 </script>
 <?php
 

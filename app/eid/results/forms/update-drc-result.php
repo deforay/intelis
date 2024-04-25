@@ -87,7 +87,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['resul
 									<?php } else { ?>
 										<td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span></td>
 										<td>
-											<input type="text" readonly value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,null,'The échantillon id that you entered already exists. Please try another échantillon id',null)" />
+											<input type="text" readonly value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" />
 										</td>
 									<?php } ?>
 									<td></td>
@@ -231,7 +231,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['resul
 									<th scope="row">Age</th>
 									<td><input type="number" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age en mois" title="Age en mois" style="width:100%;" onchange="$('#childDob').val('')" /></td>
 									<th scope="row"><?php echo _translate("Age in weeks"); ?></th>
-										<td><input type="number" value="<?= htmlspecialchars((string) $eidInfo['child_age_in_weeks']); ?>" maxlength="5" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAgeInWeeks" name="childAgeInWeeks" placeholder="<?php echo _translate("Enter Child Age in weeks"); ?>" title="Age en mois" style="width:100%;" /></td>
+									<td><input type="number" value="<?= htmlspecialchars((string) $eidInfo['child_age_in_weeks']); ?>" maxlength="5" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAgeInWeeks" name="childAgeInWeeks" placeholder="<?php echo _translate("Enter Child Age in weeks"); ?>" title="Age en mois" style="width:100%;" /></td>
 								</tr>
 
 							</table>

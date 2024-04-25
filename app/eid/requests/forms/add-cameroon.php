@@ -89,7 +89,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php } else { ?>
                                             <td><label for="sampleCode"><?= _translate('Sample ID'); ?> </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="<?= _translate('Sample ID'); ?>" title="<?= _translate('Please enter sample id'); ?>" style="width:100%;" readonly="readonly" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
+                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="<?= _translate('Sample ID'); ?>" title="<?= _translate('Please enter sample id'); ?>" style="width:100%;" readonly="readonly" />
                                             </td>
                                         <?php } ?>
                                         <td></td>
@@ -194,7 +194,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                         <th scope="row"><?= _translate('Infant Age (months)'); ?></th>
                                         <td><input type="number" max="24" maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?= _translate('Age'); ?>" title="<?= _translate('Age'); ?>" style="width:100%;" /></td>
-                                      
+
                                     </tr>
                                     <tr>
                                         <th scope="row"><label for="childGender"><?= _translate('Gender'); ?> <span class="mandatory">*</span> </label></th>
@@ -209,19 +209,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
 
                                         <th scope="row"><?= _translate('Universal Health Coverage'); ?></th>
-                                        <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/></td>
+                                        <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32" /></td>
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _translate('Weight of the day'); ?></th>
+                                        <th scope="row"><?= _translate('Weight of the day'); ?></th>
                                         <td><input type="text" class="form-control forceNumeric" id="childWeight" name="childWeight" placeholder="<?= _translate('Infant weight of the day in Kg'); ?>" title="<?= _translate('Infant weight of the day in Kg'); ?>" style="width:100%;" /></td>
 
                                         <th scope="row"><?= _translate('Caretaker phone number'); ?></th>
                                         <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="<?= _translate('Caretaker Phone Number'); ?>" style="width:100%;" /></td>
 
-                                       
+
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _translate('Infant caretaker address'); ?></th>
+                                        <th scope="row"><?= _translate('Infant caretaker address'); ?></th>
                                         <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _translate('Caretaker Address'); ?>" title="<?= _translate('Caretaker Address'); ?>" style="width:100%;"></textarea></td>
 
                                         <th scope="row"><?= _translate('Prophylactic ARV given to child'); ?><span class="mandatory">*</span></th>
@@ -235,13 +235,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </select>
                                             <input type="text" name="childProphylacticArvOther" id="childProphylacticArvOther" class="form-control" placeholder="<?= _translate('Please specify other prophylactic ARV given'); ?>" title="<?= _translate('Please specify other prophylactic ARV given'); ?>" style="display:none;" />
                                         </td>
-                                      
+
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _translate('Date of Initiation'); ?></th>
-                                    <td>
-                                        <input type="text" class="form-control date" name="childTreatmentInitiationDate" id="childTreatmentInitiationDate" placeholder="<?= _translate('Enter date of initiation'); ?>" />
-                                    </td>
+                                        <th scope="row"><?= _translate('Date of Initiation'); ?></th>
+                                        <td>
+                                            <input type="text" class="form-control date" name="childTreatmentInitiationDate" id="childTreatmentInitiationDate" placeholder="<?= _translate('Enter date of initiation'); ?>" />
+                                        </td>
                                     </tr>
                                 </table>
 

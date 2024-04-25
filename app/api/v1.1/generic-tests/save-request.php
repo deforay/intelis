@@ -412,7 +412,7 @@ try {
             $db->delete($testTableName);
         }
         $id = false;
-        $genericData = MiscUtility::convertEmptyStringToNull($genericData);
+        $genericData = MiscUtility::arrayEmptyStringsToNull($genericData);
         if (!empty($data['genericSampleId'])) {
             $db->where('sample_id', $data['genericSampleId']);
             $id = $db->update($tableName, $genericData);
