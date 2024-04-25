@@ -39,16 +39,15 @@ if($_POST['reportType']=='storageData'){
 
      $sQuery = "SELECT h.*, s.storage_code, vl.sample_code
      FROM lab_storage_history as h
-     LEFT JOIN lab_storage as s ON h.freezer_id=s.storage_id
-     LEFT JOIN form_vl as vl ON vl.unique_id=h.sample_unique_id ";
+     INNER JOIN lab_storage as s ON h.freezer_id = s.storage_id
+     INNER JOIN form_vl as vl ON vl.unique_id = h.sample_unique_id ";
 
-     if (isset($_POST['freezerId']) && trim((string) $_POST['freezerId']) != '') {
-          $sWhere[] = ' h.freezer_id = "' . $_POST['freezerId'] . '"';
-     }
+     $sWhere[] = ' h.freezer_id = "' . $_POST['freezerId'] . '"';
     
      if (!empty($sWhere)) {
           $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
      }
+  
      $_SESSION['storageDataQuery'] = $sQuery;
 
      if (!empty($sOrder)) {
@@ -59,7 +58,6 @@ if($_POST['reportType']=='storageData'){
      [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
      $_SESSION['storageDataQueryCount'] = $resultCount;
-
 
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
@@ -79,9 +77,8 @@ if($_POST['reportType']=='storageData'){
 
           $output['aaData'][] = $row;
      }
-
 }
-else{
+else if($_POST['reportType']=='historyData'){
 
      $aColumns = array('vl.patient_first_name', 'vl.patient_middle_name', 's.storage_code', 'h.box', 'h.position', 'h.sample_status');
      $orderColumns = array('vl.patient_first_name', 'vl.patient_middle_name', 's.storage_code', 'h.box', 'h.position', 'h.sample_status');
@@ -100,9 +97,7 @@ else{
                LEFT JOIN lab_storage as s ON h.freezer_id = s.storage_id
                LEFT JOIN form_vl as vl ON vl.unique_id = h.sample_unique_id ";
 
-     if (isset($_POST['sampleUniqueId']) && trim((string) $_POST['sampleUniqueId']) != '') {
-          $sWhere[] = ' h.sample_unique_id = "' . $_POST['sampleUniqueId'] . '"';
-     }
+     $sWhere[] = ' vl.sample_code = "' . $_POST['sampleCode'] . '"';
     
      if (!empty($sWhere)) {
           $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);

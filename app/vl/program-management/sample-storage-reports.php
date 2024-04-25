@@ -143,16 +143,8 @@ $sResult = $db->rawQuery($sQuery);
 														</strong>
 													</td>
 													<td>
-														<select class="form-control" id="sampleUniqueId" name="sampleUniqueId" title="<?php echo _translate('Please select sample code'); ?>" style="width:220px;">
-															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-															<?php
-															foreach ($sResult as $sample) {
-															?>
-																<option value="<?php echo $sample['unique_id']; ?>"><?php echo $sample['sample_code']; ?></option>
-															<?php
-															}
-															?>
-														</select>
+													<input type="text" id="sampleCode" name="sampleCode" class="form-control" placeholder="Please select sample code" style="width:220px;" />
+
 													</td>
 												</tr>
 
@@ -252,10 +244,6 @@ $sResult = $db->rawQuery($sQuery);
 
 		$(".freezerSelect").select2({
 			placeholder: "<?php echo _translate("Select Freezer"); ?>"
-		});
-
-		$("#sampleUniqueId").select2({
-			placeholder: "<?php echo _translate("Select Sample"); ?>"
 		});
 
 		loadStorageData();
@@ -387,10 +375,9 @@ $sResult = $db->rawQuery($sQuery);
 					"name": "reportType",
 					"value": 'historyData'
 				});
-
 				aoData.push({
-					"name": "sampleUniqueId",
-					"value": $("#sampleUniqueId").val()
+					"name": "sampleCode",
+					"value": $("#sampleCode").val()
 				});
 
 				$.ajax({
@@ -420,157 +407,6 @@ $sResult = $db->rawQuery($sQuery);
 		$.unblockUI();
 	}
 
-	function convertResultToPdf(id, newData) {
-		$.blockUI();
-		<?php
-		$path = '';
-		$path = '/vl/results/generate-result-pdf.php';
-		?>
-		$.post("<?php echo $path; ?>", {
-				source: 'print',
-				id: id,
-				newData: newData
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?= _translate("Unable to generate download", true); ?>");
-				} else {
-					$.unblockUI();
-					oTable.fnDraw();
-					//opTable.fnDraw();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
-	}
-
-	function convertSearchResultToPdf(id, newData = null) {
-		$.blockUI();
-		<?php
-		$path = '';
-		$path = '/vl/results/generate-result-pdf.php';
-		?>
-		if (newData == null) {
-			var rowsLength = selectedRows.length;
-			var totalCount = $("#totalSamplesList").val();
-			var checkedRow = $("#checkedRows").val();
-		} else {
-			var rowsLength = selectedPrintedRows.length;
-			var totalCount = $("#totalSamplesPrintedList").val();
-			var checkedRow = $("#checkedPrintedRows").val();
-		}
-		if (rowsLength != 0 && rowsLength > 100) {
-			$.unblockUI();
-			alert("<?= _translate("You have selected", true); ?> " + rowsLength + " <?php echo _translate("results out of the maximum allowed 100 at a time", true); ?>");
-			return false;
-		} else if (totalCount != 0 && totalCount > 100 && rowsLength == 0) {
-			$.unblockUI();
-			alert("<?= _translate("Maximum 100 results allowed to print at a time", true); ?>");
-			return false;
-		} else {
-			id = checkedRow;
-		}
-		$.post("<?php echo $path; ?>", {
-				source: 'print',
-				id: id,
-				newData: newData
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?= _translate("Unable to generate download", true); ?>");
-				} else {
-					$.unblockUI();
-					if (newData == null) {
-						selectedRows = [];
-						$(".checkRows").prop('checked', false);
-						$("#checkRowsData").prop('checked', false);
-						oTable.fnDraw();
-					} else {
-						selectedPrintedRows = [];
-						$(".checkPrintedRows").prop('checked', false);
-						$("#checkPrintedRowsData").prop('checked', false);
-					}
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
-	}
-
-	function checkedRow(obj) {
-		if ($(obj).is(':checked')) {
-			if ($.inArray(obj.value, selectedRows) == -1) {
-				selectedRows.push(obj.value);
-				selectedRowsId.push(obj.id);
-			}
-		} else {
-			selectedRows.splice($.inArray(obj.value, selectedRows), 1);
-			selectedRowsId.splice($.inArray(obj.id, selectedRowsId), 1);
-			$("#checkRowsData").attr("checked", false);
-		}
-		$("#checkedRows").val(selectedRows.join());
-	}
-
-	function checkedPrintedRow(obj) {
-		if ($(obj).is(':checked')) {
-			if ($.inArray(obj.value, selectedRows) == -1) {
-				selectedPrintedRows.push(obj.value);
-				selectedPrintedRowsId.push(obj.id);
-			}
-		} else {
-			selectedPrintedRows.splice($.inArray(obj.value, selectedPrintedRows), 1);
-			selectedPrintedRowsId.splice($.inArray(obj.id, selectedPrintedRowsId), 1);
-			$("#checkPrintedRowsData").attr("checked", false);
-		}
-		$("#checkedPrintedRows").val(selectedPrintedRows.join());
-	}
-
-	function toggleAllVisible() {
-		//alert(tabStatus);
-		$(".checkRows").each(function() {
-			$(this).prop('checked', false);
-			selectedRows.splice($.inArray(this.value, selectedRows), 1);
-			selectedRowsId.splice($.inArray(this.id, selectedRowsId), 1);
-		});
-		if ($("#checkRowsData").is(':checked')) {
-			$(".checkRows").each(function() {
-				$(this).prop('checked', true);
-				selectedRows.push(this.value);
-				selectedRowsId.push(this.id);
-			});
-		} else {
-			$(".checkRows").each(function() {
-				$(this).prop('checked', false);
-				selectedRows.splice($.inArray(this.value, selectedRows), 1);
-				selectedRowsId.splice($.inArray(this.id, selectedRowsId), 1);
-				$("#status").prop('disabled', true);
-			});
-		}
-		$("#checkedRows").val(selectedRows.join());
-	}
-
-	function toggleAllPrintedVisible() {
-		//alert(tabStatus);
-		$(".checkPrintedRows").each(function() {
-			$(this).prop('checked', false);
-			selectedPrintedRows.splice($.inArray(this.value, selectedPrintedRows), 1);
-			selectedPrintedRowsId.splice($.inArray(this.id, selectedPrintedRowsId), 1);
-		});
-		if ($("#checkPrintedRowsData").is(':checked')) {
-			$(".checkPrintedRows").each(function() {
-				$(this).prop('checked', true);
-				selectedPrintedRows.push(this.value);
-				selectedPrintedRowsId.push(this.id);
-			});
-		} else {
-			$(".checkPrintedRows").each(function() {
-				$(this).prop('checked', false);
-				selectedPrintedRows.splice($.inArray(this.value, selectedPrintedRows), 1);
-				selectedPrintedRowsId.splice($.inArray(this.id, selectedPrintedRowsId), 1);
-				$("#status").prop('disabled', true);
-			});
-		}
-		$("#checkedPrintedRows").val(selectedPrintedRows.join());
-	}
 
 	function getByProvince(provinceId) {
 		$("#district").html('');
