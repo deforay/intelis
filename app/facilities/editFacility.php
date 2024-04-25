@@ -369,7 +369,7 @@ $formId = $general->getGlobalConfig('vl_form');
 								<div class="form-group">
 									<label for="testType" class="col-lg-4 control-label test-type"><?php echo _translate("Test Type"); ?></label>
 									<div class="col-lg-7">
-										<select class="" id="testType" name="testType[]" title="<?php echo _translate('Choose one test type'); ?>" onchange="getTestType();" multiple>
+										<select class="" id="testType" name="testType[]" title="<?php echo _translate('Choose at least one test type'); ?>" onchange="getTestType();" multiple>
 											<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 												<option value='vl' <?php echo (preg_match("/vl/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("Viral Load"); ?></option>
 											<?php }
@@ -657,7 +657,7 @@ $formId = $general->getGlobalConfig('vl_form');
 												<input <?php echo $show; ?> class="showFile<?php echo ($key + 1); ?>" type="file" name="signature[]" id="signature<?= $key + 1; ?>" placeholder="<?php echo _translate('Signature'); ?>" title="<?php echo _translate('Please enter the Signature'); ?>">
 											</td>
 											<td style="vertical-align:middle;width:10%;">
-												<select class="select2 testSignType" id="testSignType<?php echo ($key + 1); ?>" name="testSignType[<?= $key + 1; ?>][]" title="<?php echo _translate('Choose one test type'); ?>" multiple>
+												<select class="select2 testSignType" id="testSignType<?php echo ($key + 1); ?>" name="testSignType[<?= $key + 1; ?>][]" title="<?php echo _translate('Choose at least one test type'); ?>" multiple>
 													<option value="vl" <?php echo (isset($row['test_types']) && in_array("vl", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Viral Load"); ?></option>
 													<option value="eid" <?php echo (isset($row['test_types']) && in_array("eid", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Early Infant Diagnosis"); ?></option>
 													<option value="covid19" <?php echo (isset($row['test_types']) && in_array("covid19", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Covid-19"); ?></option>
@@ -686,7 +686,7 @@ $formId = $general->getGlobalConfig('vl_form');
 										<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation1" placeholder="<?php echo _translate('Designation'); ?>" title="<?php echo _translate('Please enter the Designation'); ?>"></td>
 										<td style="width:10%;"><input type="file" name="signature[]" id="signature1" placeholder="<?php echo _translate('Signature'); ?>" title="<?php echo _translate('Please enter the Signature'); ?>"></td>
 										<td style="width:14%;">
-											<select class="select2 testSignType" id="testSignType1" name="testSignType[1][]" title="<?php echo _translate('Choose one test type'); ?>" multiple>
+											<select class="select2 testSignType" id="testSignType1" name="testSignType[1][]" title="<?php echo _translate('Choose at least one test type'); ?>" multiple>
 												<option value="vl"><?php echo _translate("Viral Load"); ?></option>
 												<option value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
 												<option value="covid19"><?php echo _translate("Covid-19"); ?></option>
@@ -1042,7 +1042,7 @@ $formId = $general->getGlobalConfig('vl_form');
 			<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _translate('Designation', true); ?>" title="<?php echo _translate('Please enter the Designation', true); ?>"></td>
 			<td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="<?php echo _translate('Signature', true); ?>" title="<?php echo _translate('Please enter the Signature', true); ?>"></td>
 			<td style="width:14%;">
-				<select class="select2 testSignType" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate('Choose one test type', true); ?>" multiple>
+				<select class="select2 testSignType" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate('Choose at least one test type', true); ?>" multiple>
 					<option value="vl"><?php echo _translate("Viral Load", true); ?></option>
 					<option value="eid"><?php echo _translate("Early Infant Diagnosis", true); ?></option>
 					<option value="covid19"><?php echo _translate("Covid-19", true); ?></option>

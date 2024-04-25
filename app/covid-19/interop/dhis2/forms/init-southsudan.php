@@ -39,18 +39,20 @@ foreach ($initOptionSets as $t => $id) {
                 'status' => 'active'
             );
             $updateColumns = array("other_id", "updated_datetime");
-            $db->onDuplicate($updateColumns, 'facility_id');
-            $db->insert('facility_details', $facilityData);
+            // $db->onDuplicate($updateColumns, 'facility_id');
+            // $db->insert('facility_details', $facilityData);
+            $db->upsert('facility_details', $facilityData, $updateColumns);
             $id = $db->getInsertId();
-
-            $dataTest = array(
-                'test_type' => 'covid19',
-                'facility_id' => $id,
-                'monthly_target' => null,
-                'suppressed_monthly_target' => null,
-                "updated_datetime" => DateUtility::getCurrentDateTime()
-            );
-            $db->setQueryOption(array('IGNORE'))->insert('testing_labs', $dataTest);
+            if ($id > 0) {
+                $dataTest = array(
+                    'test_type' => 'covid19',
+                    'facility_id' => $id,
+                    'monthly_target' => null,
+                    'suppressed_monthly_target' => null,
+                    "updated_datetime" => DateUtility::getCurrentDateTime()
+                );
+                $db->upsert('testing_labs', $dataTest);
+            }
         }
     } else if (!empty($response) && $t == 'testTypes') {
         $_SESSION['DHIS2_TEST_TYPES'] = [];

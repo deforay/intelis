@@ -87,7 +87,7 @@ foreach ($fResult as $fDetails) {
 					</td>
 					<td>&nbsp;<strong>Test Type&nbsp;:<span class="mandatory">*</span></strong></td>
 					<td>
-						<select style="width: 100%;" class="form-control" id="testType" name="testType" title="Choose one test type">
+						<select style="width: 100%;" class="form-control" id="testType" name="testType" title="Choose at least one test type">
 							<option value="">-- select --</option>
 							<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 								<option value="vl">Viral Load</option>

@@ -153,7 +153,6 @@ try {
                     $db->where($primaryKey, $sResult[$primaryKey]);
                     $id = $db->update($tableName, $lab);
                 } else {
-                    //$db->onDuplicate(array_keys($lab), $primaryKey);
                     $id = $db->insert($tableName, $lab);
                 }
             } catch (Throwable $e) {

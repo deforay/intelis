@@ -64,18 +64,21 @@ try {
                         'status' => 'active'
                     ];
                     $updateColumns = ["other_id", "updated_datetime"];
-                    $db->onDuplicate($updateColumns, 'facility_id');
-                    $db->insert('facility_details', $facilityData);
+                    // $db->onDuplicate($updateColumns, 'facility_id');
+                    // $db->insert('facility_details', $facilityData);
+                    $db->upsert('facility_details', $facilityData, $updateColumns);
                     $id = $db->getInsertId();
-
-                    $dataTest = [
-                        'test_type' => 'hepatitis',
-                        'facility_id' => $id,
-                        'monthly_target' => null,
-                        'suppressed_monthly_target' => null,
-                        "updated_datetime" => DateUtility::getCurrentDateTime()
-                    ];
-                    $db->setQueryOption(['IGNORE'])->insert('testing_labs', $dataTest);
+                    if ($id > 0) {
+                        $dataTest = [
+                            'test_type' => 'hepatitis',
+                            'facility_id' => $id,
+                            'monthly_target' => null,
+                            'suppressed_monthly_target' => null,
+                            "updated_datetime" => DateUtility::getCurrentDateTime()
+                        ];
+                        //$db->setQueryOption(['IGNORE'])->insert('testing_labs', $dataTest);
+                        $db->upsert('testing_labs', $dataTest);
+                    }
                 }
             }
         }
@@ -120,19 +123,20 @@ try {
                 'status' => 'active'
             );
             $updateColumns = array("other_id", "updated_datetime");
-            $db->onDuplicate($updateColumns, 'facility_id');
-            $db->insert('facility_details', $facilityData);
+            $db->upsert('facility_details', $facilityData, $updateColumns);
             $id = $db->getInsertId();
 
-            $dataTest = array(
-                'test_type' => 'hepatitis',
-                'facility_id' => $id,
-                "updated_datetime" => DateUtility::getCurrentDateTime()
-            );
-            $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);
+            if ($id > 0) {
+                $dataTest = array(
+                    'test_type' => 'hepatitis',
+                    'facility_id' => $id,
+                    "updated_datetime" => DateUtility::getCurrentDateTime()
+                );
+                $db->upsert('health_facilities', $dataTest);
+            }
         }
     }
-} catch (InvalidArgumentException|PathNotFoundException|Exception $e) {
+} catch (InvalidArgumentException | PathNotFoundException | Exception $e) {
     LoggerUtility::log('error', $e->getMessage(), [
         'line' => $e->getLine(),
         'file' => $e->getFile()

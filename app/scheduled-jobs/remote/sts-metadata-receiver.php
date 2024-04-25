@@ -1,6 +1,6 @@
 <?php
 
-// Request STS to send metadata
+// Request STS to send metadata to this instance of LIS
 
 require_once(__DIR__ . "/../../../bootstrap.php");
 
@@ -46,15 +46,17 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 }
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
+
 $version = VERSION;
-//update common data from remote to lab db
+
 $remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
 
 if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
     LoggerUtility::log('error', "No internet connectivity while trying remote sync.");
-    exit();
+    exit(0);
 }
 
+$instanceId = $general->getInstanceId();
 
 $dataToSync = [];
 $commonDataToSync = [];
@@ -356,7 +358,6 @@ $dataToSync = array_merge(
     $cd4DataToSync
 );
 
-
 $payload['labId'] = $labId;
 
 try {
@@ -383,10 +384,10 @@ try {
 
                 $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name = ? ";
 
-                $columnList = array_map('current', $db->rawQuery($tableColumns, [
-                    $systemConfig['database']['db'],
-                    $dataToSync[$dataType]['tableName']
-                ]));
+                $columnList = array_map(
+                    'current',
+                    $db->rawQuery($tableColumns, [$systemConfig['database']['db'], $dataToSync[$dataType]['tableName']])
+                );
 
                 foreach ($dataValues as $tableDataValues) {
                     $tableData = [];
@@ -408,9 +409,11 @@ try {
                     // getting column names using array_key
                     // we will update all columns ON DUPLICATE
                     $updateColumns = array_keys($tableData);
-                    $lastInsertId = $dataToSync[$dataType]['primaryKey'];
-                    $db->onDuplicate($updateColumns, $lastInsertId);
-                    $db->insert($dataToSync[$dataType]['tableName'], $tableData);
+                    $primaryKey = $dataToSync[$dataType]['primaryKey'];
+                    // $db->onDuplicate($updateColumns, $primaryKey);
+                    // $db->insert($dataToSync[$dataType]['tableName'], $tableData);
+
+                    $db->upsert($dataToSync[$dataType]['tableName'], $tableData, $updateColumns, [$primaryKey]);
 
                     // Updating logo and report template
                     if ($dataType === 'facilities') {
@@ -487,6 +490,4 @@ try {
 // this is set in CommonService::getGlobalConfig()
 $fileCache->delete('app_global_config');
 
-$instanceId = $general->getInstanceId();
-$db->where('vlsm_instance_id', $instanceId);
 $id = $db->update('s_vlsm_instance', ['last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()]);

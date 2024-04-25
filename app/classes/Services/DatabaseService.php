@@ -6,6 +6,7 @@ use App\Exceptions\SystemException;
 use MysqliDb;
 use Generator;
 use Throwable;
+use Exception;
 
 class DatabaseService extends MysqliDb
 {
@@ -143,6 +144,73 @@ class DatabaseService extends MysqliDb
             $this->isTransactionActive = false;
         }
     }
+
+    /**
+     * Dynamically fetch primary key columns for a table.
+     *
+     * @param string $tableName The name of the table.
+     * @return array Array of primary key column names.
+     */
+    public function getPrimaryKeys($tableName)
+    {
+        $sql = "SHOW KEYS FROM `$tableName` WHERE Key_name = 'PRIMARY'";
+        $result = $this->mysqli()->query($sql);
+        $primaryKeys = [];
+        while ($row = $result->fetch_assoc()) {
+            $primaryKeys[] = $row['Column_name'];
+        }
+        return $primaryKeys;
+    }
+
+
+    /**
+     * Insert on duplicate key update (upsert) a row into a table.
+     *
+     * @param string $tableName The name of the table to operate on.
+     * @param array  $data Associative array of data to insert (column => value).
+     * @param array  $updateColumns Array of columns to be updated on duplicate key, excluding primary key components.
+     * @param array|string  $primaryKeys String or Array of primary key column names.
+     * @return bool Returns true on success or false on failure.
+     */
+    public function upsert($tableName, array $data, array $updateColumns = [], array|string $primaryKeys = [])
+    {
+        $this->reset();
+        $keys = array_keys($data);
+        $placeholders = array_fill(0, count($data), '?');
+        $values = array_values($data);
+
+        $primaryKeys = $primaryKeys ?: $this->getPrimaryKeys($tableName);
+        $primaryKeys = is_array($primaryKeys) ? $primaryKeys : [$primaryKeys];
+
+        $sql = "INSERT INTO `$tableName` (`" . implode('`, `', $keys) . "`) VALUES (" . implode(', ', $placeholders) . ")";
+
+        // Define which columns to update in case of duplicate key, excluding primary key components
+        $updateParts = [];
+        foreach ($updateColumns as $column) {
+            if (in_array($column, $keys) && !in_array($column, $primaryKeys)) { // Check against provided primary keys
+                $updateParts[] = "`$column` = VALUES(`$column`)";
+            }
+        }
+
+        $sql .= " ON DUPLICATE KEY UPDATE " . implode(', ', $updateParts);
+
+        $stmt = $this->mysqli()->prepare($sql);
+        if (!$stmt) {
+            error_log("Unable to prepare statement: " . $this->mysqli()->error);
+            throw new SystemException("Unable to prepare statement: " . $this->mysqli()->error, $this->mysqli()->errno);
+        }
+        $types = str_repeat('s', count($values));
+        $stmt->bind_param($types, ...$values);
+
+        if ($stmt->execute()) {
+            $stmt->close();
+            return true;
+        } else {
+            $stmt->close();
+            return false;
+        }
+    }
+
 
     public function reset(): void
     {

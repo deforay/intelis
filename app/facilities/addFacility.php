@@ -340,7 +340,7 @@ $formId = $general->getGlobalConfig('vl_form');
 											<?php echo _translate("Test Type"); ?>
 										</label>
 										<div class="col-lg-7">
-											<select class="" id="testType" name="testType[]" title="<?php echo _translate('Choose one test type'); ?>" onchange="getTestType();" multiple>
+											<select class="" id="testType" name="testType[]" title="<?php echo _translate('Choose at least one test type'); ?>" onchange="getTestType();" multiple>
 												<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 													<option value="vl">
 														<?php echo _translate("Viral Load"); ?>
@@ -603,7 +603,7 @@ $formId = $general->getGlobalConfig('vl_form');
 									</div>
 								</div>
 							</div>
-							<?php if ($formId == COUNTRY\CAMEROON){ ?>
+							<?php if ($formId == COUNTRY\CAMEROON) { ?>
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
@@ -613,8 +613,8 @@ $formId = $general->getGlobalConfig('vl_form');
 											<div class="col-lg-7">
 												<select class="form-control" name='displayPagenoInFooter' id='displayPagenoInFooter' title="<?php echo _translate('Display Page Number in Footer'); ?>">
 													<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-													<option value="yes" ><?php echo _translate("Yes"); ?></option>
-													<option value="no" ><?php echo _translate("No"); ?></option>
+													<option value="yes"><?php echo _translate("Yes"); ?></option>
+													<option value="no"><?php echo _translate("No"); ?></option>
 												</select>
 											</div>
 										</div>
@@ -627,8 +627,8 @@ $formId = $general->getGlobalConfig('vl_form');
 											<div class="col-lg-7">
 												<select class="form-control" name='displaySignatureTable' id='displaySignatureTable' title="<?php echo _translate('Display Signature Table'); ?>">
 													<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-													<option value="yes" ><?php echo _translate("Yes"); ?></option>
-													<option value="no" ><?php echo _translate("No"); ?></option>
+													<option value="yes"><?php echo _translate("Yes"); ?></option>
+													<option value="no"><?php echo _translate("No"); ?></option>
 												</select>
 											</div>
 										</div>
@@ -685,7 +685,7 @@ $formId = $general->getGlobalConfig('vl_form');
 											<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation1" placeholder="<?php echo _translate('Designation'); ?>" title="<?php echo _translate('Please enter the Designation'); ?>"></td>
 											<td style="width:10%;"><input type="file" name="signature[]" id="signature1" placeholder="<?php echo _translate('Signature'); ?>" title="<?php echo _translate('Please enter the Signature'); ?>"></td>
 											<td style="width:14%;">
-												<select class="select2 .testSignType" id="testSignType1" name="testSignType[1][]" title="<?php echo _translate('Choose one test type'); ?>" multiple>
+												<select class="select2 .testSignType" id="testSignType1" name="testSignType[1][]" title="<?php echo _translate('Choose at least one test type'); ?>" multiple>
 													<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 														<option value="vl">
 															<?php echo _translate("Viral Load"); ?>
@@ -715,7 +715,7 @@ $formId = $general->getGlobalConfig('vl_form');
 														<option value='generic-tests'>
 															<?php echo _translate("Other Lab Tests"); ?>
 														</option>
-													<?php } 
+													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
 														<option value='cd4'>
 															<?php echo _translate("CD4"); ?>
@@ -848,7 +848,7 @@ $formId = $general->getGlobalConfig('vl_form');
 		$('#district').val($("#districtId option:selected").text());
 		tt = $("#testType").val();
 		if (tt == "") {
-			alert("Please choose one test type");
+			alert("Please Choose at least one test type");
 			return false;
 		}
 		flag = deforayValidator.init({
@@ -1016,7 +1016,7 @@ $formId = $general->getGlobalConfig('vl_form');
 			<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _translate("Designation", true); ?>" title="<?php echo _translate("Please enter the Designation", true); ?>"></td>
 			<td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="Signature" title="<?php echo _translate("Please enter the Signature", true); ?>"></td>
 			<td style="width:14%;">
-				<select class="select2 testSignType" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate("Choose one test type", true); ?>" multiple>
+				<select class="select2 testSignType" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate("Choose at least one test type", true); ?>" multiple>
 					<option value="vl"><?php echo _translate("Viral Load", true); ?></option>
 					<option value="eid"><?php echo _translate("Early Infant Diagnosis", true); ?></option>
 					<option value="covid19"><?php echo _translate("Covid-19", true); ?></option>

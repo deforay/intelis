@@ -183,12 +183,13 @@ abstract class AbstractTestService
                     'code_type' => $sampleCodeType
                 ];
 
-                $onDuplicateKeyUpdateData = [
+                $updateColumns = [
                     'max_sequence_number' => $maxId
                 ];
 
-                $this->db->onDuplicate($onDuplicateKeyUpdateData)
-                    ->insert('sequence_counter', $data);
+                // $this->db->onDuplicate($updateColumns)
+                //     ->insert('sequence_counter', $data);
+                $this->db->upsert('sequence_counter', $data, $updateColumns);
             }
         } catch (Exception | SystemException $exception) {
             // Rollback the current transaction to release locks and undo changes

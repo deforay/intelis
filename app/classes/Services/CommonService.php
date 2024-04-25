@@ -248,30 +248,30 @@ class CommonService
 
     public function fetchDataFromTable($tableName = null, $condition = null, $fieldName = null)
     {
-        return once(function () use ($tableName, $condition, $fieldName) {
+        //return once(function () use ($tableName, $condition, $fieldName) {
 
-            if ($this->db == null || empty($tableName)) {
-                return false;
-            }
-            // Check is array or not
-            $fieldName = is_array($fieldName) ? implode(",", $fieldName) : $fieldName;
+        if ($this->db == null || empty($tableName)) {
+            return false;
+        }
+        // Check is array or not
+        $fieldName = is_array($fieldName) ? implode(",", $fieldName) : $fieldName;
 
-            $fieldName = ($fieldName != null) ? $fieldName : '*';
+        $fieldName = ($fieldName != null) ? $fieldName : '*';
 
-            $configQuery = "SELECT $fieldName FROM $tableName";
+        $configQuery = "SELECT $fieldName FROM $tableName";
 
+        if ($condition != null) {
+            $configQuery .= " WHERE $condition ";
+        }
+
+        if ($tableName == "testing_labs") {
+            $configQuery = "SELECT test_type, facility_id, updated_datetime, monthly_target, suppressed_monthly_target from $tableName";
             if ($condition != null) {
                 $configQuery .= " WHERE $condition ";
             }
-
-            if ($tableName == "testing_labs") {
-                $configQuery = "SELECT test_type, facility_id, updated_datetime, monthly_target, suppressed_monthly_target from $tableName";
-                if ($condition != null) {
-                    $configQuery .= " WHERE $condition ";
-                }
-            }
-            return $this->db->query($configQuery);
-        });
+        }
+        return $this->db->query($configQuery);
+        //});
     }
 
     public static function encrypt($message, $key): string

@@ -163,7 +163,7 @@ try {
 				}
 			}
 		}
-		$lastId = $facilityId;
+
 		// Mapping facility as a Testing Lab
 		// if (isset($_POST['testType']) && !empty($_POST['testType'])) {
 		// 	$db->where('test_type NOT IN(' . sprintf("'%s'", implode("', '", $_POST['testType'])) . ')');
@@ -173,7 +173,7 @@ try {
 		// 	$db->where('facility_id', $facilityId);
 		// 	$delId = $db->delete($testingLabsTable);
 		// }
-		if ($lastId > 0) {
+		if ($facilityId > 0) {
 
 			if (!empty($_POST['testType'])) {
 
@@ -197,11 +197,11 @@ try {
 						));
 						// Mapping facility as a Testing Lab
 					} else if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
-						$facilityTypeData = array(
+						$facilityTypeData = [
 							'test_type' => $testType,
 							'facility_id' => $facilityId,
 							'updated_datetime' => DateUtility::getCurrentDateTime()
-						);
+						];
 						if (!empty($_POST['availablePlatforms'])) {
 							$attributes['platforms'] = $_POST['availablePlatforms'];
 						}
@@ -215,34 +215,35 @@ try {
 
 			if (!empty($_POST['testData'])) {
 				for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
-					$dataTest = array(
+					$dataTest = [
 						'test_type' => $_POST['testData'][$tf],
-						'facility_id' => $lastId,
+						'facility_id' => $facilityId,
 						'monthly_target' => $_POST['monTar'][$tf],
 						'suppressed_monthly_target' => $_POST['supMonTar'][$tf],
 						"updated_datetime" => DateUtility::getCurrentDateTime()
-					);
+					];
 
 					$updateColumns = array_keys($dataTest);
 
-					$db->onDuplicate($updateColumns)
-						->insert($testingLabsTable, $dataTest);
+					// $db->onDuplicate($updateColumns)
+					// 	->insert($testingLabsTable, $dataTest);
+					$db->upsert($testingLabsTable, $dataTest, $updateColumns);
 				}
 			}
 		}
 
-		if (isset($_POST['removedLabLogoImage']) && trim((string) $_POST['removedLabLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {
-			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage']);
-			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);
+		if (isset($_POST['removedLabLogoImage']) && trim((string) $_POST['removedLabLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {
+			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage']);
+			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);
 			$data['facility_logo'] = null;
-			// $db->where('facility_id', $lastId);
+			// $db->where('facility_id', $facilityId);
 			// $db->update('facility_details',  $data);
 		}
 
 
 		if ($sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
 
-			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template";
+			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template";
 			MiscUtility::makeDirectory($directoryPath, 0777, true);
 			$string = $general->generateRandomString(12) . ".";
 			$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
@@ -261,12 +262,12 @@ try {
 
 
 		if ($sanitizedLabLogo instanceof UploadedFile && $sanitizedLabLogo->getError() === UPLOAD_ERR_OK) {
-			MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId, 0777, true);
+			MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId, 0777, true);
 			$extension = MiscUtility::getFileExtension($sanitizedLabLogo->getClientFilename());
 			$string = $general->generateRandomString(12) . ".";
 			$actualImageName = "actual-logo-" . $string . $extension;
 			$imageName = "logo-" . $string . $extension;
-			$actualImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo") . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName;
+			$actualImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo") . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $actualImageName;
 
 			// Move the uploaded file to the desired location
 			$sanitizedLabLogo->moveTo($actualImagePath);
@@ -274,7 +275,7 @@ try {
 			// Resize the image
 			$resizeObj = new ImageResizeUtility($actualImagePath);
 			$resizeObj->resizeToWidth(100);
-			$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
+			$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $imageName);
 
 
 			$data['facility_logo'] = $imageName;
@@ -293,15 +294,15 @@ try {
 						'name_of_signatory' => $name,
 						'designation' => $_POST['designation'][$key],
 						'test_types' => implode(",", (array)$_POST['testSignType'][($key + 1)]),
-						'lab_id' => $lastId,
+						'lab_id' => $facilityId,
 						'display_order' => $_POST['sortOrder'][$key],
 						'signatory_status' => $_POST['signStatus'][$key],
 						"added_by" => $_SESSION['userId'],
 						"added_on" => DateUtility::getCurrentDateTime()
 					];
 
-					MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures');
-					$pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures' . DIRECTORY_SEPARATOR;
+					MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . 'signatures');
+					$pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . 'signatures' . DIRECTORY_SEPARATOR;
 					$extension = MiscUtility::getFileExtension($sanitizedSignature[$key]->getClientFilename());
 					$imageName = $general->generateRandomString(12) . ".";
 					$imageName = $imageName . $extension;

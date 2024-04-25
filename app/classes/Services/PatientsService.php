@@ -73,7 +73,7 @@ class PatientsService
         $result = $this->db->getOne($testTable, $col);
         return $result[$col];
     }
-    
+
 
     public function savePatient($params, $testTable)
     {
@@ -142,10 +142,7 @@ class PatientsService
             $data['patient_registered_by'] = $params['registeredBy'] ?? null;
 
             $updateColumns = array_keys($data);
-            $this->db->onDuplicate($updateColumns, 'system_patient_code');
-
-            // Insert the data
-            $id = $this->db->insert($this->table, $data);
+            $id = $this->db->upsert($this->table, $data, $updateColumns, ['system_patient_code']);
 
             if ($id === false) {
                 // Error handling

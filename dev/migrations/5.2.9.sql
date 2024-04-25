@@ -464,3 +464,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 -- Jeyabanu 24-Apr-2024
 ALTER TABLE `form_eid` ADD `child_age_in_weeks` INT NULL DEFAULT NULL AFTER `child_age`;
 ALTER TABLE `audit_form_eid` ADD `child_age_in_weeks` INT NULL DEFAULT NULL AFTER `child_age`;
+
+-- Amit 25-Apr-2024
+ALTER TABLE `global_config` ADD `instance_id` VARCHAR(50) NULL DEFAULT NULL AFTER `value`;
+UPDATE global_config AS gc SET gc.instance_id = (SELECT vlsm_instance_id FROM s_vlsm_instance) WHERE instance_id IS NULL;

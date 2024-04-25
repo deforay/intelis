@@ -291,8 +291,6 @@ try {
             $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
             $formData['vlsm_country_id'] = 1; // South Sudan
 
-
-            //$db->onDuplicate($updateColumns, 'unique_id');
             $id = $db->insert("form_covid19", $formData);
             if ($id) {
                 $processedCounter++;

@@ -64,7 +64,7 @@ require_once APPLICATION_PATH . '/header.php';
 										<div class="form-group">
 											<label for="testType" class="col-lg-4 control-label"><?php echo _translate("Test Type"); ?></label>
 											<div class="col-lg-8">
-												<select class="form-control" id="testType" name="testType" title="<?= _translate('Choose one test type'); ?>" onchange="loadMapTestType();">
+												<select class="form-control" id="testType" name="testType" title="<?= _translate('Choose at least one test type'); ?>" onchange="loadMapTestType();">
 													<option value=""><?php echo _translate("--Select--"); ?></option>
 													<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 														<option value="vl"><?php echo _translate("Viral Load"); ?></option>
