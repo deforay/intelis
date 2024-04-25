@@ -103,6 +103,7 @@ handle_database_setup_and_import() {
     else
         mysql -u root -p"${mysql_root_password}" vlsm <"$sql_file"
     fi
+    mysql -u root -p"${mysql_root_password}" vlsm <"${vlsm_path}/sql/audit-triggers.sql"
 }
 
 spinner() {

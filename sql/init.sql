@@ -2554,7 +2554,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_form_generic_data__ai` AFTER INSERT ON `form_generic` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER `form_form_generic_data__ai` AFTER INSERT ON `form_generic` FOR EACH ROW
             INSERT INTO `audit_form_generic` SELECT 'ai', NULL, NOW(), d.*
             FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id */;;
 DELIMITER ;
