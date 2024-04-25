@@ -135,7 +135,7 @@ foreach ($resultSet as $aRow) {
 		$formAttributes = json_decode($aRow['form_attributes']);
 			$storageObj = $formAttributes->storage;
 			
-			$row[] = $storageObj->freezer;
+			$row[] = $storageObj->freezerCode;
 			$row[] = $storageObj->rack;
 			$row[] = $storageObj->box;
 			$row[] = $storageObj->position;
