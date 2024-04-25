@@ -21,7 +21,7 @@ $storageService = ContainerRegistry::get(StorageService::class);
 
 $storageInfo = $storageService->getLabStorage();
 $sQuery = "SELECT * FROM form_vl as vl WHERE sample_code IS NOT NULL ";
-$sResult = $db->rawQuery($sQuery);
+$sResult = []; // $db->rawQuery($sQuery);
 
 ?>
 <style>
@@ -71,9 +71,9 @@ $sResult = $db->rawQuery($sQuery);
 															<?php echo _translate("Freezer/Storage"); ?>&nbsp;:
 														</strong></td>
 													<td>
-													<select type="text" name="freezerId" id="freezerId" class="form-control freezerSelect" style="width:250px;">
-														<?= $general->generateSelectOptions($storageInfo, null, '-- Select --') ?>
-													</select>
+														<select type="text" name="freezerId" id="freezerId" class="form-control freezerSelect" style="width:250px;">
+															<?= $general->generateSelectOptions($storageInfo, null, '-- Select --') ?>
+														</select>
 													</td>
 												</tr>
 												<tr>
@@ -82,7 +82,7 @@ $sResult = $db->rawQuery($sQuery);
 																<?= _translate('Reset'); ?>
 															</span></button>
 														&nbsp;<button class="btn btn-primary btn-sm" type="button" onclick="exportStorageData('storage');">
-														<span><?php echo _translate("Export to excel"); ?></span></button>
+															<span><?php echo _translate("Export to excel"); ?></span></button>
 
 													</td>
 												</tr>
@@ -155,14 +155,14 @@ $sResult = $db->rawQuery($sQuery);
 														</select>
 													</td>
 												</tr>
-										
+
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
 																<?= _translate('Reset'); ?>
 															</span></button>
-															&nbsp;<button class="btn btn-primary btn-sm" type="button" onclick="exportStorageData('history');">
-														<span><?php echo _translate("Export to excel"); ?></span></button>
+														&nbsp;<button class="btn btn-primary btn-sm" type="button" onclick="exportStorageData('history');">
+															<span><?php echo _translate("Export to excel"); ?></span></button>
 
 													</td>
 												</tr>
@@ -273,7 +273,7 @@ $sResult = $db->rawQuery($sQuery);
 			}
 		});
 	});
-		
+
 	function loadStorageData() {
 		$.blockUI();
 		oTable = $('#storageDataTable').dataTable({
@@ -314,7 +314,7 @@ $sResult = $db->rawQuery($sQuery);
 					"name": "reportType",
 					"value": 'storageData'
 				});
-				
+
 				aoData.push({
 					"name": "freezerId",
 					"value": $("#freezerId").val()
@@ -387,7 +387,7 @@ $sResult = $db->rawQuery($sQuery);
 					"name": "reportType",
 					"value": 'historyData'
 				});
-				
+
 				aoData.push({
 					"name": "sampleUniqueId",
 					"value": $("#sampleUniqueId").val()
@@ -642,11 +642,10 @@ $sResult = $db->rawQuery($sQuery);
 
 	}
 
-	function exportStorageData($data){
-		
+	function exportStorageData($data) {
+
 		$.blockUI();
-		if($data=="storage")
-		{
+		if ($data == "storage") {
 			$.post("/vl/program-management/storageDataToExcel.php", {
 					reqSampleType: $('#requestSampleType').val(),
 					patientInfo: $('#patientInfo').val(),
@@ -659,8 +658,7 @@ $sResult = $db->rawQuery($sQuery);
 						window.open('/download.php?d=a&f=' + data, '_blank');
 					}
 				});
-		}
-		else{
+		} else {
 			$.post("/vl/program-management/storageHistoryDataToExcel.php", {
 					reqSampleType: $('#requestSampleType').val(),
 					patientInfo: $('#patientInfo').val(),
