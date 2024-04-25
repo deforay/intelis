@@ -75,7 +75,7 @@ class ErrorResponseGenerator
     {
         $httpCode  = $this->determineHttpCode($exception);
         $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error');
-        LoggerUtility::log('error', $errorReason . ' : ' . $exception->getCode() . ' : ' . $request->getUri() . ': ' . $exception->getMessage(), [
+        LoggerUtility::log('error', $errorReason . ' : ' . $exception->getCode() . ' : ' . ($request->getUri() ?? 'UNABLE TO GET URI') . ': ' . $exception->getMessage(), [
             'exception' => $exception,
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
