@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-04-25 12:26+0530\n"
-"PO-Revision-Date: 2024-04-25 12:26+0530\n"
+"POT-Creation-Date: 2024-04-26 12:03+0530\n"
+"PO-Revision-Date: 2024-04-26 12:04+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -205,8 +205,8 @@ msgstr "Bienvenue sur la page d’administration"
 #: tb/results/tb-print-results.php:43 tb/results/tb-result-status.php:65
 #: users/addUser.php:60 users/editProfile.php:39 users/editUser.php:101
 #: users/users.php:13 vl/program-management/highViralLoad.php:121
+#: vl/program-management/sample-storage-reports.php:39
 #: vl/program-management/sampleRejectionReport.php:50
-#: vl/program-management/sampleStorageReports.php:41
 #: vl/program-management/vl-sample-status.php:55
 #: vl/program-management/vlControlReport.php:26
 #: vl/reference/add-vl-art-code-details.php:25
@@ -393,9 +393,9 @@ msgstr "Action"
 #: vl/program-management/highViralLoad.php:848
 #: vl/program-management/highViralLoad.php:966
 #: vl/program-management/highViralLoad.php:1063
+#: vl/program-management/sample-storage-reports.php:78
+#: vl/program-management/sample-storage-reports.php:150
 #: vl/program-management/sampleRejectionReport.php:111
-#: vl/program-management/sampleStorageReports.php:80
-#: vl/program-management/sampleStorageReports.php:160
 #: vl/program-management/vl-export-data.php:381
 #: vl/program-management/vl-sample-status.php:129
 #: vl/program-management/vlControlReport.php:64
@@ -621,8 +621,8 @@ msgstr "Pas enregistré"
 #: vl/program-management/highViralLoad.php:693
 #: vl/program-management/highViralLoad.php:892
 #: vl/program-management/highViralLoad.php:1022
-#: vl/program-management/sampleStorageReports.php:129
-#: vl/program-management/sampleStorageReports.php:220
+#: vl/program-management/sample-storage-reports.php:127
+#: vl/program-management/sample-storage-reports.php:210
 #: vl/program-management/vl-export-data.php:521
 #: vl/program-management/vl-sample-status.php:186
 #: vl/program-management/vlMonitoringReport.php:292
@@ -1179,7 +1179,6 @@ msgstr "Veuillez sélectionner le projet"
 #: vl/program-management/highViralLoad.php:1036
 #: vl/program-management/highViralLoad.php:1050
 #: vl/program-management/sampleRejectionReport.php:87
-#: vl/program-management/sampleStorageReports.php:147
 #: vl/program-management/vl-export-data.php:99
 #: vl/program-management/vl-export-data.php:118
 #: vl/program-management/vl-export-data.php:160
@@ -1607,8 +1606,8 @@ msgstr "Action"
 #: vl/program-management/highViralLoad.php:862
 #: vl/program-management/highViralLoad.php:916
 #: vl/program-management/highViralLoad.php:980
-#: vl/program-management/sampleStorageReports.php:95
-#: vl/program-management/sampleStorageReports.php:176
+#: vl/program-management/sample-storage-reports.php:93
+#: vl/program-management/sample-storage-reports.php:166
 #: vl/program-management/vl-export-data.php:404
 #: vl/program-management/vl-export-data.php:467
 #: vl/program-management/vl-sample-status.php:152
@@ -1803,9 +1802,9 @@ msgstr "Envoyer"
 #: vl/program-management/highViralLoad.php:850
 #: vl/program-management/highViralLoad.php:968
 #: vl/program-management/highViralLoad.php:1065
+#: vl/program-management/sample-storage-reports.php:80
+#: vl/program-management/sample-storage-reports.php:152
 #: vl/program-management/sampleRejectionReport.php:113
-#: vl/program-management/sampleStorageReports.php:82
-#: vl/program-management/sampleStorageReports.php:162
 #: vl/program-management/vl-sample-status.php:131
 #: vl/program-management/vlControlReport.php:66
 #: vl/program-management/vlMonitoringReport.php:243
@@ -2469,8 +2468,8 @@ msgstr "Pas de données disponibles"
 #: vl/program-management/highViralLoad.php:1680
 #: vl/program-management/highViralLoad.php:1706
 #: vl/program-management/highViralLoad.php:1728
-#: vl/program-management/sampleStorageReports.php:657
-#: vl/program-management/sampleStorageReports.php:671
+#: vl/program-management/sample-storage-reports.php:490
+#: vl/program-management/sample-storage-reports.php:503
 #: vl/program-management/vlWeeklyReport.php:572
 #: vl/program-management/vlWeeklyReport.php:596
 #: vl/requests/sample-storage.php:570 vl/requests/vl-requests.php:1181
@@ -4972,8 +4971,8 @@ msgstr "Non déclarée"
 #: vl/program-management/highViralLoad.php:651
 #: vl/program-management/highViralLoad.php:853
 #: vl/program-management/highViralLoad.php:971
-#: vl/program-management/sampleStorageReports.php:85
-#: vl/program-management/sampleStorageReports.php:165
+#: vl/program-management/sample-storage-reports.php:83
+#: vl/program-management/sample-storage-reports.php:155
 #: vl/program-management/vlMonitoringReport.php:247
 msgid "Export to excel"
 msgstr "Exporter vers Excel"
@@ -5043,7 +5042,7 @@ msgstr "No Patient"
 #: tb/results/tb-print-results.php:160 tb/results/tb-print-results.php:315
 #: vl/program-management/highViralLoad.php:332
 #: vl/program-management/highViralLoad.php:997
-#: vl/program-management/sampleStorageReports.php:186
+#: vl/program-management/sample-storage-reports.php:176
 #: vl/program-management/vl-export-data.php:421
 #: vl/program-management/vl-export-data.php:481
 #: vl/program-management/vlMonitoringReport.php:267
@@ -5303,8 +5302,8 @@ msgstr "Résultat CD4"
 #: vl/program-management/highViralLoad.php:350
 #: vl/program-management/highViralLoad.php:946
 #: vl/program-management/highViralLoad.php:1015
-#: vl/program-management/sampleStorageReports.php:122
-#: vl/program-management/sampleStorageReports.php:210
+#: vl/program-management/sample-storage-reports.php:120
+#: vl/program-management/sample-storage-reports.php:200
 #: vl/program-management/vl-export-data.php:187
 #: vl/program-management/vl-export-data.php:443
 #: vl/program-management/vl-export-data.php:502
@@ -6612,11 +6611,8 @@ msgstr "Sélectionner au moins un filtre pour obtenir un rapport"
 #: import-result/import-stats-hepatitis.php:129
 #: import-result/import-stats-vl.php:136 tb/management/tb-export-data.php:576
 #: tb/results/email-results-confirm.php:122 tb/results/tb-print-results.php:803
-#: tb/results/tb-print-results.php:847
-#: vl/program-management/sampleStorageReports.php:437
-#: vl/program-management/sampleStorageReports.php:481
-#: vl/results/email-results-confirm.php:123 vl/results/vlPrintResult.php:1058
-#: vl/results/vlPrintResult.php:1102
+#: tb/results/tb-print-results.php:847 vl/results/email-results-confirm.php:123
+#: vl/results/vlPrintResult.php:1058 vl/results/vlPrintResult.php:1102
 msgid "Unable to generate download"
 msgstr "Impossible de générer un téléchargement"
 
@@ -7251,7 +7247,7 @@ msgstr "Résultats (log)"
 #: cd4/requests/export-cd4-requests.php:28
 #: import-result/imported-results.php:247
 #: vl/program-management/export-vl-results.php:36
-#: vl/program-management/sampleStorageReports.php:207
+#: vl/program-management/sample-storage-reports.php:197
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/sample-storage.php:266
 msgid "Comments"
@@ -8339,8 +8335,8 @@ msgstr "Demande de CD4 ajoutée avec succès"
 #: hepatitis/requests/hepatitis-edit-request-helper.php:272
 #: hepatitis/results/hepatitis-update-result-helper.php:105
 #: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:434
-#: vl/requests/editVlRequestHelper.php:423
-#: vl/results/updateVlTestResultHelper.php:242
+#: vl/requests/editVlRequestHelper.php:429
+#: vl/results/updateVlTestResultHelper.php:247
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -9122,9 +9118,8 @@ msgstr "Labo de test"
 #: tb/results/email-results.php:434
 #: tb/results/getRequestSampleCodeDetails.php:141
 #: tb/results/getRequestSampleCodeDetails.php:150
-#: tb/results/tb-print-results.php:830
-#: vl/program-management/sampleStorageReports.php:464
-#: vl/results/email-results.php:425 vl/results/email-results.php:434
+#: tb/results/tb-print-results.php:830 vl/results/email-results.php:425
+#: vl/results/email-results.php:434
 #: vl/results/getRequestSampleCodeDetails.php:141
 #: vl/results/getRequestSampleCodeDetails.php:150
 #: vl/results/vlPrintResult.php:1085 vl/results/vlResultMail.php:425
@@ -9137,9 +9132,7 @@ msgstr "Aucune imprimante sélectionnée"
 #: eid/results/eid-print-results.php:867
 #: generic-tests/results/generic-print-result.php:1007
 #: hepatitis/results/hepatitis-print-results.php:843
-#: tb/results/tb-print-results.php:830
-#: vl/program-management/sampleStorageReports.php:464
-#: vl/results/vlPrintResult.php:1085
+#: tb/results/tb-print-results.php:830 vl/results/vlPrintResult.php:1085
 msgid "results out of the maximum allowed 100 at a time"
 msgstr "résultats sur le maximum autorisé de 100 à la fois"
 
@@ -9148,9 +9141,7 @@ msgstr "résultats sur le maximum autorisé de 100 à la fois"
 #: eid/results/eid-print-results.php:871
 #: generic-tests/results/generic-print-result.php:1011
 #: hepatitis/results/hepatitis-print-results.php:847
-#: tb/results/tb-print-results.php:834
-#: vl/program-management/sampleStorageReports.php:468
-#: vl/results/vlPrintResult.php:1089
+#: tb/results/tb-print-results.php:834 vl/results/vlPrintResult.php:1089
 msgid "Maximum 100 results allowed to print at a time"
 msgstr "100 résultats maximum peuvent être imprimés à la fois"
 
@@ -10169,7 +10160,7 @@ msgstr "Ajout d'un congélateur/stockage de laboratoire"
 #: common/reference/add-lab-storage.php:45
 #: common/reference/add-lab-storage.php:47
 #: common/reference/edit-lab-storage.php:53 common/reference/lab-storage.php:33
-#: vl/program-management/sampleStorageReports.php:189
+#: vl/program-management/sample-storage-reports.php:179
 msgid "Freezer/Storage Code"
 msgstr "Code de congélation/stockage"
 
@@ -11076,7 +11067,6 @@ msgstr ""
 "Impossible d'ajouter cet échantillon Covid-19. Veuillez réessayer plus tard"
 
 #: covid-19/requests/covid-19-add-request.php:202
-#: eid/requests/eid-add-request.php:205
 #: hepatitis/requests/hepatitis-quick-add.php:161
 #: tb/results/tb-update-result.php:207 vl/vl.js.php:95
 msgid "This Sample ID already exists"
@@ -11084,7 +11074,7 @@ msgstr "Ce numéro d'identification d'échantillon existe déjà"
 
 #: covid-19/requests/covid-19-add-request.php:232
 #: covid-19/requests/covid-19-quick-add.php:203
-#: eid/requests/eid-add-request.php:233
+#: eid/requests/eid-add-request.php:182
 #: hepatitis/requests/hepatitis-add-request.php:209
 #: hepatitis/requests/hepatitis-quick-add.php:189
 #: tb/requests/tb-add-request.php:208
@@ -11110,7 +11100,6 @@ msgstr "EID-Modifier la demande de test"
 
 #: covid-19/requests/covid-19-edit-request.php:175
 #: covid-19/requests/covid-19-quick-add.php:175
-#: eid/requests/eid-edit-request.php:243
 #: generic-tests/requests/add-request.php:1379
 #: generic-tests/requests/clone-request.php:1348
 #: generic-tests/requests/edit-request.php:1234
@@ -12134,8 +12123,8 @@ msgid "Please select the Rejection Date"
 msgstr "Veuillez sélectionner le statut"
 
 #: covid-19/requests/forms/add-cameroon.php:439
-msgid "Test No"
-msgstr "Test Non"
+msgid "Test Number"
+msgstr "Numéro d’essai"
 
 #: covid-19/requests/forms/add-cameroon.php:441
 #: covid-19/requests/forms/edit-cameroon.php:469
@@ -12146,8 +12135,8 @@ msgstr "Date du test"
 #: covid-19/requests/forms/add-cameroon.php:442
 #: covid-19/requests/forms/edit-cameroon.php:470
 #: covid-19/results/forms/update-cameroon-result.php:431
-msgid "Test Platform/Test Kit"
-msgstr "Plate-forme d'essai/kit d'essai"
+msgid "Test Platform/Instrument"
+msgstr "Plate-forme d'essai/instrument"
 
 #: covid-19/requests/forms/add-cameroon.php:443
 #: covid-19/requests/forms/edit-cameroon.php:471
@@ -13076,6 +13065,10 @@ msgid "CD4 testing lab(s) did not meet the monthly test target"
 msgstr ""
 "Le(s) laboratoire(s) chargé(s) des tests CD4 n'a (n'ont) pas atteint "
 "l'objectif de tests mensuels"
+
+#: eid/eid.js.php:48
+msgid "The total age must not exceed 24 months."
+msgstr "L'âge total ne doit pas dépasser 24 mois."
 
 #: eid/management/eid-clinic-report.php:7
 msgid "EID | Clinics Report"
@@ -14478,8 +14471,8 @@ msgstr "Nom du Hub lié (le cas échéant)"
 #: facilities/addFacility.php:1019 facilities/editFacility.php:372
 #: facilities/editFacility.php:660 facilities/editFacility.php:689
 #: facilities/editFacility.php:1045 facilities/mapTestType.php:67
-msgid "Choose one test type"
-msgstr "Choisir un type de test"
+msgid "Choose at least one test type"
+msgstr "Choisissez au moins un type de test"
 
 #: facilities/addFacility.php:386 facilities/editFacility.php:402
 msgid "Available Platforms"
@@ -14693,7 +14686,7 @@ msgstr "Veuillez saisir l'objectif mensuel supprimé"
 msgid "Please enter monthly target"
 msgstr "Objectif de test mensuel"
 
-#: facilities/addFacilityHelper.php:303
+#: facilities/addFacilityHelper.php:305
 msgid "Facility details added successfully"
 msgstr "Les détails de l'installation ont été ajoutés avec succès"
 
@@ -14737,7 +14730,7 @@ msgstr "Objectif mensuel"
 msgid "Suppressed Monthly Target"
 msgstr "Cible mensuelle supprimée"
 
-#: facilities/editFacilityHelper.php:321
+#: facilities/editFacilityHelper.php:322
 msgid "Facility details updated successfully"
 msgstr "Les détails de l'installation ont été mis à jour avec succès"
 
@@ -15511,7 +15504,7 @@ msgstr "Sélectionner les symptômes"
 msgid "Select Test Result Unit"
 msgstr "Configuration de l'e-mail des résultats"
 
-#: generic-tests/configuration/addTestTypeHelper.php:157
+#: generic-tests/configuration/addTestTypeHelper.php:183
 msgid "Test type added successfully"
 msgstr "Type de test ajouté avec succès"
 
@@ -15629,7 +15622,7 @@ msgstr "Saisir les options..."
 msgid "Please enter the options"
 msgstr "Veuillez saisir les options"
 
-#: generic-tests/configuration/editTestTypeHelper.php:181
+#: generic-tests/configuration/editTestTypeHelper.php:206
 msgid "Test type updated successfully"
 msgstr "Type de test mis à jour avec succès"
 
@@ -21280,8 +21273,8 @@ msgstr "Congélateur"
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
-#: vl/program-management/sampleStorageReports.php:113
-#: vl/program-management/sampleStorageReports.php:195
+#: vl/program-management/sample-storage-reports.php:111
+#: vl/program-management/sample-storage-reports.php:185
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
 #: vl/requests/forms/add-drc.php:460 vl/requests/forms/add-drc.php:462
@@ -21294,8 +21287,8 @@ msgstr "Coffret"
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
-#: vl/program-management/sampleStorageReports.php:116
-#: vl/program-management/sampleStorageReports.php:198
+#: vl/program-management/sample-storage-reports.php:114
+#: vl/program-management/sample-storage-reports.php:188
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
 #: vl/requests/forms/add-drc.php:467 vl/requests/forms/add-drc.php:470
@@ -21308,8 +21301,8 @@ msgstr "Boîte"
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
-#: vl/program-management/sampleStorageReports.php:119
-#: vl/program-management/sampleStorageReports.php:201
+#: vl/program-management/sample-storage-reports.php:117
+#: vl/program-management/sample-storage-reports.php:191
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
 #: vl/requests/forms/add-drc.php:472 vl/requests/forms/add-drc.php:474
@@ -21527,56 +21520,48 @@ msgstr "Souhaitez-vous modifier le statut du contact terminé ?"
 msgid "Status updated successfully"
 msgstr "Statut mis à jour avec succès"
 
-#: vl/program-management/sampleStorageReports.php:8
-#: vl/program-management/sampleStorageReports.php:37
-#: vl/program-management/sampleStorageReports.php:44
+#: vl/program-management/sample-storage-reports.php:8
+#: vl/program-management/sample-storage-reports.php:35
+#: vl/program-management/sample-storage-reports.php:42
 msgid "Freezer/Storage Reports"
 msgstr "Rapports sur les congélateurs et le stockage"
 
-#: vl/program-management/sampleStorageReports.php:60
+#: vl/program-management/sample-storage-reports.php:58
 msgid "Freezer/Storage Report"
 msgstr "Rapport sur les congélateurs et le stockage"
 
-#: vl/program-management/sampleStorageReports.php:63
+#: vl/program-management/sample-storage-reports.php:61
 msgid "Sample Storage History"
 msgstr "Historique du stockage des échantillons"
 
-#: vl/program-management/sampleStorageReports.php:71
+#: vl/program-management/sample-storage-reports.php:69
 msgid "Freezer/Storage"
 msgstr "Congélateur/Stockage"
 
-#: vl/program-management/sampleStorageReports.php:107
-#: vl/program-management/sampleStorageReports.php:142
+#: vl/program-management/sample-storage-reports.php:105
+#: vl/program-management/sample-storage-reports.php:140
 #: vl/requests/export-sample-storage.php:26 vl/requests/sample-storage.php:233
 msgid "Sample Code"
 msgstr "Code d'échantillon"
 
-#: vl/program-management/sampleStorageReports.php:110
-#: vl/program-management/sampleStorageReports.php:192
+#: vl/program-management/sample-storage-reports.php:108
+#: vl/program-management/sample-storage-reports.php:182
 msgid "Volume of Sample (ml)"
 msgstr "Volume de l'échantillon (ml)"
 
-#: vl/program-management/sampleStorageReports.php:146
-msgid "Please select sample code"
-msgstr "Veuillez sélectionner un exemple de code"
-
-#: vl/program-management/sampleStorageReports.php:204
+#: vl/program-management/sample-storage-reports.php:194
 #: vl/requests/export-sample-storage.php:26
 msgid "Date Out"
 msgstr "Date de sortie"
 
-#: vl/program-management/sampleStorageReports.php:213
+#: vl/program-management/sample-storage-reports.php:203
 msgid "Removal Reason"
 msgstr "Raison du retrait"
 
-#: vl/program-management/sampleStorageReports.php:254
+#: vl/program-management/sample-storage-reports.php:244
 #: vl/requests/sample-storage.php:428
 msgid "Select Freezer"
 msgstr "Sélectionner le congélateur"
-
-#: vl/program-management/sampleStorageReports.php:258
-msgid "Select Sample"
-msgstr "Sélectionner un échantillon"
 
 #: vl/program-management/vl-sample-status.php:8
 msgid "VL | Sample Status Report"
@@ -21998,7 +21983,7 @@ msgstr "Raison de l'échec"
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: vl/requests/editVlRequestHelper.php:415
+#: vl/requests/editVlRequestHelper.php:421
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
 
@@ -23134,7 +23119,7 @@ msgstr "Imprimé le"
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 
-#: vl/results/updateVlTestResultHelper.php:227
+#: vl/results/updateVlTestResultHelper.php:232
 msgid "VL result updated successfully"
 msgstr "Les résultats de la VL ont été mis à jour avec succès"
 
@@ -23143,6 +23128,15 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Test No"
+#~ msgstr "Test Non"
+
+#~ msgid "Please select sample code"
+#~ msgstr "Veuillez sélectionner un exemple de code"
+
+#~ msgid "Select Sample"
+#~ msgstr "Sélectionner un échantillon"
 
 #~ msgid "Co-infection"
 #~ msgstr "Co-infection"
@@ -23540,9 +23534,6 @@ msgstr ""
 
 #~ msgid "samples per batch"
 #~ msgstr "échantillons par lot"
-
-#~ msgid "Test Number"
-#~ msgstr "Numéro d’essai"
 
 #~ msgid "-- Select -- "
 #~ msgstr "-- Sélectionner --"
