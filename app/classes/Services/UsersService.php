@@ -7,18 +7,17 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use Laminas\Diactoros\ServerRequest;
-use App\Registries\ContainerRegistry;
 
 class UsersService
 {
 
-    protected ?DatabaseService $db;
+    protected $db;
     protected string $table = 'user_details';
-    protected CommonService $commonService;
+    protected $commonService;
 
-    public function __construct(?DatabaseService $db, ?CommonService $commonService)
+    public function __construct(DatabaseService $db, CommonService $commonService)
     {
-        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
+        $this->db = $db;
         $this->commonService = $commonService;
     }
 
@@ -177,7 +176,7 @@ class UsersService
             }
 
             $this->db->orderBy("user_name", "asc");
-            
+
             if (isset($type) && $type == 'drop-down') {
                 $result = $this->db->setQueryOption('DISTINCT')->get('user_details u');
                 $userDetails = [];

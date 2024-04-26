@@ -4,6 +4,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -105,8 +106,8 @@ try {
                 }
             } catch (Throwable $e) {
                 $storageNotAdded[] = $rowData;
-                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+                LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+                LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
             }
         }
 

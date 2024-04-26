@@ -2,6 +2,7 @@
 
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Utilities\FileCacheUtility;
@@ -25,7 +26,7 @@ function getMacLinux(): bool|string
 		$mac = exec('getmac');
 		return strtok($mac, ' ') ?? "notfound";
 	} catch (Exception $exc) {
-		error_log($exc->getMessage());
+		LoggerUtility::log('error', $exc->getMessage());
 
 		return "not found";
 	}

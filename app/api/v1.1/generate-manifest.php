@@ -3,12 +3,13 @@
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\DateUtility;
 
 
 /** @var DatabaseService $db */
@@ -102,7 +103,7 @@ try {
     }
     $missiedSamples = array_values(array_diff($input['sampleCode'], $avilableSamples));
     // print_r($sQuery);die;
-    // error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+    // LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
     $payload = [
         'status' => 'success',
         'timestamp' => time(),
@@ -119,7 +120,7 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    error_log($exc->getMessage());
+    LoggerUtility::log('error', $exc->getMessage());
 }
 
 $payload = json_encode($payload);

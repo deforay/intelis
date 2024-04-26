@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -81,8 +82,8 @@ try {
         }
     }
     $db->commitTransaction();
-} catch (Exception | SystemException $exception) {
+} catch (Throwable $exception) {
     $db->rollbackTransaction();
-    error_log("Error while generating Sample Codes : " . $exception->getMessage());
+    LoggerUtility::log('error', "Error while generating Sample Codes : " . $exception->getMessage());
 }
 echo $status;

@@ -8,7 +8,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-
+use App\Utilities\LoggerUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -85,7 +85,7 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    error_log($exc->getMessage());
+    LoggerUtility::log('error', $exc->getMessage());
 }
 
 $payload = json_encode($payload);

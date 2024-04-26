@@ -1,11 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -82,7 +83,7 @@ try {
                     $response = json_decode($result->getBody()->getContents());
 
                     if ($response->status == 'fail') {
-                        error_log('Recency profile not updated! for the user->' . $_POST['userName']);
+                        LoggerUtility::log('error', 'Recency profile not updated! for the user->' . $_POST['userName']);
                     }
                 }
 

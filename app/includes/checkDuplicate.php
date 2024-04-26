@@ -1,8 +1,9 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -46,8 +47,8 @@ if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
         $result = $db->rawQueryOne($sQuery, $parameters);
         $data = $result['count'] ?? 0;
     } catch (Exception $e) {
-        error_log($e->getMessage());
-        error_log($e->getTraceAsString());
+        LoggerUtility::log('error', $e->getMessage());
+        LoggerUtility::log('error', $e->getTraceAsString());
     }
 }
 

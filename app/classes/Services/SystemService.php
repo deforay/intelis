@@ -11,7 +11,7 @@ use Whoops\Handler\JsonResponseHandler;
 
 class SystemService
 {
-    protected ?CommonService $commonService;
+    protected CommonService $commonService;
 
     public function __construct(CommonService $commonService)
     {

@@ -57,10 +57,10 @@ class MiscUtility
         }
 
         // Additional context
-        $timestamp = date('Y-m-d H:i:s');
-        $output = "[{$timestamp}] " . $output;
+        // $timestamp = date('Y-m-d H:i:s');
+        // $output = "[{$timestamp}] " . $output;
 
-        error_log($output);
+        LoggerUtility::log('error', $output);
     }
 
     /**
@@ -99,7 +99,7 @@ class MiscUtility
                 if ($json !== false) {
                     return $json;
                 } else {
-                    error_log('Data could not be encoded as JSON: ' . json_last_error_msg());
+                    LoggerUtility::log('error', 'Data could not be encoded as JSON: ' . json_last_error_msg());
                 }
             }
         }

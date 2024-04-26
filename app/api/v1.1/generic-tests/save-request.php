@@ -1,12 +1,13 @@
 <?php
 
-use App\Registries\AppRegistry;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -464,7 +465,7 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    error_log($exc->getMessage());
+    LoggerUtility::log('error', $exc->getMessage());
 }
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'generic-tests', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');

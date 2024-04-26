@@ -4,11 +4,12 @@
 header('Content-Type: application/json');
 
 use App\Interop\Fhir;
-use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -278,7 +279,7 @@ try {
                 //echo ("Service Status:" . $status) . "<br>";
             }
         } catch (SystemException $e) {
-            error_log($e->getMessage());
+            LoggerUtility::log('error', $e->getMessage());
             $errors[] = $e->getMessage();
             if (isset($basedOnServiceRequest)) {
                 unset($formData[$basedOnServiceRequest]);
@@ -335,9 +336,9 @@ try {
             //continue;
             $id = $db->insert("form_vl", $data);
             //echo "<h1>" . $id . "</h1>";
-            //error_log("Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
+            //LoggerUtility::log('error', "Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
         } catch (Exception $e) {
-            error_log("Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
+            LoggerUtility::log('error', "Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
             throw new SystemException($e->getMessage(), $e->getCode(), $e);
         }
 
@@ -366,5 +367,5 @@ try {
     $db->commitTransaction();
 } catch (Exception | SystemException $exception) {
     $db->rollbackTransaction();
-    error_log("Error while receiving FHIR data : " . $exception->getMessage());
+    LoggerUtility::log('error', "Error while receiving FHIR data : " . $exception->getMessage());
 }

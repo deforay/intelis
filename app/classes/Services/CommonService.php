@@ -140,7 +140,7 @@ class CommonService
             try {
                 return substr(bin2hex(random_bytes($length / 2)), 0, $length);
             } catch (Throwable $e) {
-                error_log($e->getMessage());
+                LoggerUtility::log('error', $e->getMessage());
                 $attempts++;
             }
         }
@@ -768,11 +768,9 @@ class CommonService
             ];
             return $this->db->insert("track_api_requests", $data);
         } catch (Exception | SystemException $exc) {
-            //if ($this->db->getLastErrno() > 0) {
-            error_log('Error in track_api_requests : ' . $this->db->getLastErrno());
-            error_log('Error in track_api_requests : ' . $this->db->getLastError());
-            error_log('Error in track_api_requests : ' . $this->db->getLastQuery());
-            //}
+            if (!empty($this->db->getLastError())) {
+                LoggerUtility::log('error', 'Error in track_api_requests : ' . $this->db->getLastErrno() . ':' . $this->db->getLastError());
+            }
             LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
             return 0;
         }
@@ -826,8 +824,8 @@ class CommonService
             }
         } catch (Throwable $exc) {
             if ($this->db->getLastErrno() > 0) {
-                error_log($this->db->getLastError());
-                error_log($this->db->getLastQuery());
+                LoggerUtility::log('error', $this->db->getLastError());
+                LoggerUtility::log('error', $this->db->getLastQuery());
             }
             LoggerUtility::log('error', "Error while updating timestamps : " . $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
         }

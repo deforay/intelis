@@ -4,17 +4,23 @@ namespace App\Services;
 
 use App\Utilities\DateUtility;
 use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
 
 class FacilitiesService
 {
 
-    protected ?DatabaseService $db;
+    protected $db;
+    private $facilityTypeTableList = [
+        1 => "health_facilities",
+        2 => "testing_labs",
+        3 => "health_facilities",
+    ];
+
+    protected $usersService;
     protected string $table = 'facility_details';
 
-    public function __construct(?DatabaseService $db)
+    public function __construct(DatabaseService $db)
     {
-        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
+        $this->db = $db;
     }
 
     public function getAllFacilities($facilityType = null, $onlyActive = true)
@@ -314,5 +320,45 @@ class FacilitiesService
             $this->db->insert('geographical_divisions', $data);
             return $this->db->getInsertId();
         }
+    }
+    public function getFacilitiesDropdown($testType, $facilityType, $provinceName = null, $districtRequested = null, $option = null, $comingFromUser = null): string
+    {
+
+        $facilityTypeTable = $this->facilityTypeTableList[$facilityType];
+
+        $this->db->where("f.status", 'active');
+        $this->db->orderBy("f.facility_name", "ASC");
+
+        if (!empty($provinceName)) {
+            $this->db->where("f.facility_state", $provinceName);
+        }
+
+        if (!empty($districtRequested)) {
+            $this->db->where("f.facility_district", $districtRequested);
+        }
+        //$db->where("f.facility_type", $facilityTypeRequested);
+        $this->db->join("user_details u", "u.user_id=f.contact_person", "LEFT");
+        $this->db->join("$facilityTypeTable h", "h.facility_id=f.facility_id", "INNER");
+        $this->db->joinWhere("$facilityTypeTable h", "h.test_type", $testType);
+
+        if (!empty($_SESSION['facilityMap'])) {
+            $this->db->where("f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
+        }
+
+        $facilityInfo = $this->db->get('facility_details f', null, 'f.* , u.user_name as contact_person');
+        $facility = '';
+        if ($facilityInfo) {
+            if (!isset($comingFromUser)) {
+                $facility .= $option;
+            }
+            foreach ($facilityInfo as $fDetails) {
+                $fcode = (isset($fDetails['facility_code']) && $fDetails['facility_code'] != "") ? ' - ' . $fDetails['facility_code'] : '';
+
+                $facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (htmlspecialchars((string) $fDetails['facility_name'])) . $fcode . "</option>";
+            }
+        } else {
+            $facility .= $option;
+        }
+        return $facility;
     }
 }
