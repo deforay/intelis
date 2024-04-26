@@ -20,8 +20,6 @@ $general = ContainerRegistry::get(CommonService::class);
 $storageService = ContainerRegistry::get(StorageService::class);
 
 $storageInfo = $storageService->getLabStorage();
-$sQuery = "SELECT * FROM form_vl as vl WHERE sample_code IS NOT NULL ";
-$sResult = $db->rawQuery($sQuery);
 
 ?>
 <style>
@@ -143,7 +141,7 @@ $sResult = $db->rawQuery($sQuery);
 														</strong>
 													</td>
 													<td>
-													<input type="text" id="sampleCode" name="sampleCode" class="form-control" placeholder="Please select sample code" style="width:220px;" />
+														<input type="text" id="sampleCode" name="sampleCode" class="form-control" placeholder="Please select sample code" style="width:220px;" />
 
 													</td>
 												</tr>
