@@ -428,7 +428,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                             <th scope="row" class="text-center"><?= _translate("Test No."); ?></th>
                                                             <th scope="row" class="text-center"><?= _translate("Test Method"); ?></th>
                                                             <th scope="row" class="text-center"><?= _translate("Date of Testing"); ?></th>
-                                                            <th scope="row" class="text-center"><?= _translate("Test Platform/Test Kit"); ?></th>
+                                                            <th scope="row" class="text-center"><?= _translate("Test Platform/Instrument"); ?></th>
                                                             <th scope="row" class="text-center kitlabels" style="display: none;"><?= _translate("Kit Lot No"); ?></th>
                                                             <th scope="row" class="text-center kitlabels" style="display: none;"><?= _translate("Expiry Date"); ?></th>
                                                             <th scope="row" class="text-center"><?= _translate("Test Result"); ?></th>
