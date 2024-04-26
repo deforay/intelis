@@ -468,3 +468,15 @@ ALTER TABLE `audit_form_eid` ADD `child_age_in_weeks` INT NULL DEFAULT NULL AFTE
 -- Amit 25-Apr-2024
 ALTER TABLE `global_config` ADD `instance_id` VARCHAR(50) NULL DEFAULT NULL AFTER `value`;
 UPDATE global_config AS gc SET gc.instance_id = (SELECT vlsm_instance_id FROM s_vlsm_instance) WHERE instance_id IS NULL;
+
+-- Amit 26-Apr-2024
+DELETE a FROM s_app_menu a
+JOIN (
+    SELECT parent_id, link, MAX(id) as max_id
+    FROM s_app_menu
+    GROUP BY module, link
+    HAVING COUNT(*) > 1
+) b ON a.parent_id = b.parent_id AND a.link = b.link
+WHERE a.id < b.max_id;
+
+ALTER TABLE `s_app_menu` ADD UNIQUE(`parent_id`, `link`);

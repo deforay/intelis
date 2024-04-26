@@ -1,6 +1,8 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\AppMenuService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -18,6 +20,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var AppMenuService $appMenuService */
+$appMenuService = ContainerRegistry::get(AppMenuService::class);
 
 try {
     $deleteCd4 = $db->rawQuery("DELETE FROM s_app_menu WHERE module='cd4'");
@@ -81,12 +85,27 @@ try {
 
 
     /** Sample Storage Reports menu under vl->Management */
-
     $vlManagement = $db->rawQueryOne("SELECT id FROM s_app_menu WHERE module='vl' AND display_text='Management'");
     $vlManagementId = $vlManagement['id'];
-    $db->rawQuery("INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'vl', NULL, 'no', 'Freezer/Storage Reports', '/vl/program-management/sample-storage-reports.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu vlStorageMenu', $vlManagementId, 109, 'active', CURRENT_TIMESTAMP)");
 
-    echo $db->getLastError();
+    $menuData = [
+        'module' => 'vl',
+        'sub_module' => null,
+        'is_header' => 'no',
+        'display_text' => 'Freezer/Storage Reports',
+        'link' => '/vl/program-management/sample-storage-reports.php',
+        'inner_pages' => null,
+        'show_mode' => 'lis',
+        'icon' => 'fa-solid fa-caret-right',
+        'has_children' => 'no',
+        'additional_class_names' => 'allMenu vlStorageMenu',
+        'parent_id' => $vlManagementId,
+        'display_order' => 109,
+        'status' => 'active',
+        'updated_datetime' => DateUtility::getCurrentDateTime()
+    ];
+
+    $appMenuService->insertMenu($menuData);
 } catch (Exception $e) {
     $message = "Exception : " . $e->getMessage() . PHP_EOL;
     LoggerUtility::log('error', $message);

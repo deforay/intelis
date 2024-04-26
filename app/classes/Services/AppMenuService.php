@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -72,5 +73,33 @@ class AppMenuService
             }
         }
         return $response;
+    }
+
+    /**
+     * Insert a new menu item into the database.
+     *
+     * @param array $menuData Associative array of the menu item fields and their values.
+     * @return bool Returns true if the item was successfully inserted, false otherwise.
+     */
+    public function insertMenu(array $menuData): bool
+    {
+        // Check if the item already exists based on parent_id and link
+        $this->db->where('parent_id', $menuData['parent_id']);
+        $this->db->where('link', $menuData['link']);
+        $exists = $this->db->getOne($this->table);
+
+        if ($exists) {
+            // Menu item already exists, do not insert
+            return false;
+        }
+
+        // Insert the new menu item
+        $inserted = $this->db->insert($this->table, $menuData);
+        if (!$inserted) {
+            LoggerUtility::log('error', "Failed to insert " . $menuData['module'] . ":" . $menuData['parent_id'] . ":" . $menuData['display_text'] . " menu");
+            return false;
+        } else {
+            return true;
+        }
     }
 }
