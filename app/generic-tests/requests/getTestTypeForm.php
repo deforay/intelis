@@ -274,8 +274,7 @@ if (!empty($testResultsAttribute)) {
                         $resultSection .= '<tr>
                                 <td class="text-center">' . $i . '</td>
                                 <td>
-                                        <select class="form-control test-name-table-input" id="testName' . $key . $i . '" name="testName[' . $subTest . '][]" title="Please enter the name of the Testkit (or) Test Method used">
-                                            <option value="">-- Select --</option>';
+                                        <select class="form-control test-name-table-input" id="testName' . $key . $i . '" name="testName[' . $subTest . '][]" title="Please enter the name of the Testkit (or) Test Method used">';
                         $resultSection .= $general->generateSelectOptions($testMethods, $row['test_name'], '-- Select --');
                         $resultSection .= '</select>
                                         <input type="text" name="testNameOther[' . $subTest . '][]" id="testNameOther' . $key . $i . '" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
