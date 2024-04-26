@@ -1,4 +1,4 @@
-#!/bin/bash
+logs#!/bin/bash
 
 # To use this script:
 # cd ~;
@@ -15,7 +15,7 @@ fi
 # Function to log messages
 log_action() {
     local message=$1
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>./logsetup.log
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>~/logsetup.log
 }
 
 error_handling() {

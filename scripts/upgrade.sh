@@ -15,7 +15,7 @@ fi
 # Function to log messages
 log_action() {
     local message=$1
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>./logupgrade.log
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>~/logupgrade.log
 }
 
 error_handling() {
