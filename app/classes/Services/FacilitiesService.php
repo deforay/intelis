@@ -4,17 +4,22 @@ namespace App\Services;
 
 use App\Utilities\DateUtility;
 use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
 
 class FacilitiesService
 {
+    protected $db;
+    private $facilityTypeTableList = [
+        1 => "health_facilities",
+        2 => "testing_labs",
+        3 => "health_facilities",
+    ];
 
-    protected ?DatabaseService $db;
+    protected $usersService;
     protected string $table = 'facility_details';
 
-    public function __construct(?DatabaseService $db)
+    public function __construct(DatabaseService $db)
     {
-        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
+        $this->db = $db;
     }
 
     public function getAllFacilities($facilityType = null, $onlyActive = true)
@@ -155,49 +160,48 @@ class FacilitiesService
     // $onlyActive = true/false
     public function getHealthFacilities($testType = null, $byPassFacilityMap = false, $allColumns = false, $condition = null, $onlyActive = true, $userId = null)
     {
-        return once(function () use ($testType, $byPassFacilityMap, $allColumns, $condition, $onlyActive, $userId) {
-            $userId = $userId ?: $_SESSION['userId'] ?: null;
-            if (!$byPassFacilityMap && !empty($userId)) {
-                $facilityMap = $_SESSION['facilityMap'] ?? $this->getUserFacilityMap($userId);
-                if (!empty($facilityMap)) {
-                    $this->db->where("`facility_id` IN (" . $facilityMap . ")");
-                }
+
+        $userId = $userId ?: $_SESSION['userId'] ?: null;
+        if (!$byPassFacilityMap && !empty($userId)) {
+            $facilityMap = $_SESSION['facilityMap'] ?? $this->getUserFacilityMap($userId);
+            if (!empty($facilityMap)) {
+                $this->db->where("`facility_id` IN (" . $facilityMap . ")");
             }
+        }
 
-            if (!empty($testType)) {
-                // subquery
-                $healthFacilities = $this->db->subQuery();
-                // we want to fetch facilities that have test type is not specified as well as this specific test type
-                $healthFacilities->where("test_type is null or test_type like '$testType'");
-                $healthFacilities->get("health_facilities", null, "facility_id");
+        if (!empty($testType)) {
+            // subquery
+            $healthFacilities = $this->db->subQuery();
+            // we want to fetch facilities that have test type is not specified as well as this specific test type
+            $healthFacilities->where("test_type is null or test_type like '$testType'");
+            $healthFacilities->get("health_facilities", null, "facility_id");
 
-                $this->db->where("facility_id", $healthFacilities, 'IN');
+            $this->db->where("facility_id", $healthFacilities, 'IN');
+        }
+
+        if ($onlyActive) {
+            $this->db->where('status', 'active');
+        }
+
+        if (!empty($condition)) {
+            $this->db->where($condition);
+        }
+
+        $this->db->orderBy("facility_name", "asc");
+
+        if ($allColumns) {
+            return $this->db->get("facility_details");
+        } else {
+
+            $response = [];
+
+            $results = $this->db->get("facility_details", null, "facility_id,facility_name");
+
+            foreach ($results as $row) {
+                $response[$row['facility_id']] = $row['facility_name'];
             }
-
-            if ($onlyActive) {
-                $this->db->where('status', 'active');
-            }
-
-            if (!empty($condition)) {
-                $this->db->where($condition);
-            }
-
-            $this->db->orderBy("facility_name", "asc");
-
-            if ($allColumns) {
-                return $this->db->get("facility_details");
-            } else {
-
-                $response = [];
-
-                $results = $this->db->get("facility_details", null, "facility_id,facility_name");
-
-                foreach ($results as $row) {
-                    $response[$row['facility_id']] = $row['facility_name'];
-                }
-                return $response;
-            }
-        });
+            return $response;
+        }
     }
 
 
@@ -223,53 +227,50 @@ class FacilitiesService
     // $onlyActive = true/false
     public function getTestingLabs($testType = null, $byPassFacilityMap = true, $allColumns = false, $condition = null, $onlyActive = true, $userId = null)
     {
-        return once(function () use ($testType, $byPassFacilityMap, $allColumns, $condition, $onlyActive, $userId) {
-            $userId = $userId ?: $_SESSION['userId'] ?: null;
-            if (!$byPassFacilityMap && !empty($userId)) {
-                $facilityMap = $this->getUserFacilityMap($userId, 2);
-                if (!empty($facilityMap)) {
-                    $this->db->where("`facility_id` IN (" . $facilityMap . ")");
-                }
+        $userId = $userId ?: $_SESSION['userId'] ?: null;
+        if (!$byPassFacilityMap && !empty($userId)) {
+            $facilityMap = $this->getUserFacilityMap($userId, 2);
+            if (!empty($facilityMap)) {
+                $this->db->where("`facility_id` IN (" . $facilityMap . ")");
             }
+        }
 
-            if (!empty($testType)) {
-                // subquery
-                $testingLabs = $this->db->subQuery();
-                // we want to fetch facilities that have test type is not specified as well as this specific test type
-                $testingLabs->where("test_type is null or test_type like '$testType'");
-                $testingLabs->get("testing_labs", null, "facility_id");
+        if (!empty($testType)) {
+            // subquery
+            $testingLabs = $this->db->subQuery();
+            // we want to fetch facilities that have test type is not specified as well as this specific test type
+            $testingLabs->where("test_type is null or test_type like '$testType'");
+            $testingLabs->get("testing_labs", null, "facility_id");
 
-                $this->db->where("facility_id", $testingLabs, 'IN');
+            $this->db->where("facility_id", $testingLabs, 'IN');
+        }
+
+        if ($onlyActive) {
+            $this->db->where('status', 'active');
+        }
+
+        if (!empty($condition)) {
+            $this->db->where($condition);
+        }
+
+
+        $this->db->where('facility_type = 2');
+        $this->db->orderBy("facility_name", "asc");
+
+        if ($allColumns) {
+            return $this->db->get("facility_details");
+        } else {
+            $response = [];
+            $results = $this->db->get("facility_details", null, "facility_id,facility_name");
+            foreach ($results as $row) {
+                $response[$row['facility_id']] = $row['facility_name'];
             }
-
-            if ($onlyActive) {
-                $this->db->where('status', 'active');
-            }
-
-            if (!empty($condition)) {
-                $this->db->where($condition);
-            }
-
-
-            $this->db->where('facility_type = 2');
-            $this->db->orderBy("facility_name", "asc");
-
-            if ($allColumns) {
-                return $this->db->get("facility_details");
-            } else {
-                $response = [];
-                $results = $this->db->get("facility_details", null, "facility_id,facility_name");
-                foreach ($results as $row) {
-                    $response[$row['facility_id']] = $row['facility_name'];
-                }
-                return $response;
-            }
-        });
+            return $response;
+        }
     }
 
     public function getOrCreateProvince(string $provinceName, string $provinceCode = null): int
     {
-
         // check if there is a province matching the input params, if yes then return province id
         $this->db->where("geo_name ='$provinceName'");
         if ($provinceCode != "") {
@@ -293,7 +294,6 @@ class FacilitiesService
 
     public function getOrCreateDistrict(?string $districtName, ?string $districtCode = null, ?int $provinceId = null): int
     {
-
         // check if there is a district matching the input params, if yes then return province id
         $this->db->where("geo_name ='$districtName' AND geo_parent = $provinceId");
         if ($districtCode != "") {
@@ -314,5 +314,53 @@ class FacilitiesService
             $this->db->insert('geographical_divisions', $data);
             return $this->db->getInsertId();
         }
+    }
+    public function getFacilitiesDropdown($testType, $facilityType, $provinceName = null, $districtRequested = null, $option = null, $comingFromUser = null): string
+    {
+
+        $facilityTypeTable = $this->facilityTypeTableList[$facilityType];
+
+        $this->db->where("f.status", 'active');
+        $this->db->orderBy("f.facility_name", "ASC");
+
+        if (!empty($provinceName)) {
+            if (is_numeric($provinceName)) {
+                $this->db->where("f.facility_state_id", $provinceName);
+            } else {
+                $this->db->where("f.facility_state", $provinceName);
+            }
+        }
+
+        if (!empty($districtRequested)) {
+            if (is_numeric($districtRequested)) {
+                $this->db->where("f.facility_district_id", $districtRequested);
+            } else {
+                $this->db->where("f.facility_district", $districtRequested);
+            }
+        }
+        //$db->where("f.facility_type", $facilityTypeRequested);
+        $this->db->join("user_details u", "u.user_id=f.contact_person", "LEFT");
+        $this->db->join("$facilityTypeTable h", "h.facility_id=f.facility_id", "INNER");
+        $this->db->joinWhere("$facilityTypeTable h", "h.test_type", $testType);
+
+        if (!empty($_SESSION['facilityMap'])) {
+            $this->db->where("f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
+        }
+
+        $facilityInfo = $this->db->get('facility_details f', null, 'f.* , u.user_name as contact_person');
+        $facility = '';
+        if ($facilityInfo) {
+            if (!isset($comingFromUser)) {
+                $facility .= $option;
+            }
+            foreach ($facilityInfo as $fDetails) {
+                $fcode = (isset($fDetails['facility_code']) && $fDetails['facility_code'] != "") ? ' - ' . $fDetails['facility_code'] : '';
+
+                $facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (htmlspecialchars((string) $fDetails['facility_name'])) . $fcode . "</option>";
+            }
+        } else {
+            $facility .= $option;
+        }
+        return $facility;
     }
 }

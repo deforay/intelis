@@ -41,7 +41,6 @@ class StorageService
             } else {
                 $response = [];
                 $results = $this->db->get("lab_storage", null, "storage_id,storage_code");
-                //error_log($this->db->getLastQuery());
                 foreach ($results as $row) {
                     $response[$row['storage_id']] = $row['storage_code'];
                 }
@@ -113,7 +112,8 @@ class StorageService
         });
     }
 
-    public function getFreezerHistoryById($historyId){
+    public function getFreezerHistoryById($historyId)
+    {
         return once(function () use ($historyId) {
             if (!empty($historyId)) {
                 $this->db->where('history_id', $historyId);

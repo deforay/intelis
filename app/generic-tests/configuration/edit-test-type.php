@@ -479,7 +479,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 																<lable for="resultSubGroup<?php echo $key; ?>" class="form-label-control">Enter the test name</lable>
 															</td>
 															<td class="<?php echo (isset($resultName) && !empty($resultName)) ? '' : 'hide'; ?> firstSubTest" style="width:30%;">
-																<input type="text" name="resultConfig[sub_test_name][<?php echo $key; ?>]" id="resultSubGroup<?php echo $key; ?>" value="<?php echo (isset($resultName) && !empty($resultName)) ? $resultName : ''; ?>" class="form-control input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for <?php echo $key; ?> row" />
+																<input type="text" name="resultConfig[sub_test_name][<?php echo $key; ?>]" id="resultSubGroup<?php echo $key; ?>" value="<?php echo (isset($resultName) && !empty($resultName)) ? $resultName : 'Test Level 1'; ?>" class="form-control input-sm firstSubTest-input" placeholder="Enter the sub test name" title="Please ener the sub test name for <?php echo $key; ?> row" />
 															</td>
 															<td style="width:20%;">
 																<lable for="testType<?php echo $key; ?>" class="form-label-control">Select Result Type</lable>
@@ -558,7 +558,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 											<lable for="resultSubGroup1" class="form-label-control">Enter the test name</lable>
 										</td>
 										<td class="hide firstSubTest" style="width:30%;">
-											<input type="text" name="resultConfig[sub_test_name][1]" id="resultSubGroup1" class="form-control input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for 1st row" />
+											<input type="text" name="resultConfig[sub_test_name][1]" id="resultSubGroup1" class="form-control input-sm firstSubTest-input" placeholder="Enter the sub test name" title="Please ener the sub test name for 1st row" />
 										</td>
 										<td style="width:20%;">
 											<lable for="testType1" class="form-label-control">Select Result Type</lable>
@@ -970,6 +970,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 	function addTbRow(obj) {
 		$('.firstSubTest').removeClass('hide');
 		$('#resultSubGroup1').addClass('isRequired');
+		$('.firstSubTest-input').val('');
 		sampleCounter++;
 		var html = '<tr class="result-type">\
 				<td>\

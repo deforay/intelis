@@ -55,7 +55,6 @@ class GenericTestsResultPDFHelper extends Fpdi
         } else {
             if (!empty($this->htitle) && trim($this->htitle) != '') {
                 if (!empty($this->logo) && trim($this->logo) != '') {
-                    error_log($this->logo);
                     if ($this->imageExists($this->logo)) {
                         $this->Image($this->logo, 95, 5, 15, '', '', '', 'T');
                     } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {

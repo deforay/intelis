@@ -15,7 +15,7 @@ fi
 # Function to log messages
 log_action() {
     local message=$1
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>./setup.log
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>./logsetup.log
 }
 
 error_handling() {
@@ -24,7 +24,14 @@ error_handling() {
     local last_error=$3
     echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
     log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
-    exit 1
+
+    # Check if the error is critical
+    if [ "$last_error" -eq 1 ]; then # Adjust according to the error codes you consider critical
+        echo "This error is critical, exiting..."
+        exit 1
+    else
+        echo "This error is not critical, continuing..."
+    fi
 }
 
 # Error trap
@@ -139,11 +146,27 @@ for cmd in "apt"; do
     fi
 done
 
-# Ask user for VLSM installation path with a 15-second timeout and default path as fallback
+# Save the current trap settings
+current_trap=$(trap -p ERR)
+
+# Disable the error trap temporarily
+trap - ERR
+
 echo "Enter the VLSM installation path [press enter to select /var/www/vlsm]: "
-read -t 15 -p "" vlsm_path
-vlsm_path="${vlsm_path:-/var/www/vlsm}"
-log_action "VLSM installation path: $vlsm_path"
+read -t 60 vlsm_path
+
+# Check if read command timed out or no input was provided
+if [ $? -ne 0 ] || [ -z "$vlsm_path" ]; then
+    vlsm_path="/var/www/vlsm"
+    echo "Using default path: $vlsm_path"
+else
+    echo "VLSM installation path is set to ${vlsm_path}."
+fi
+
+log_action "VLSM installation path is set to ${vlsm_path}."
+
+# Restore the previous error trap
+eval "$current_trap"
 
 # Initialize variable for database file path
 vlsm_sql_file=""
@@ -485,7 +508,8 @@ else
 fi
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-cp -R "$temp_dir/vlsm-master/"* "${vlsm_path}"
+# cp -R "$temp_dir/vlsm-master/"* "${vlsm_path}"
+rsync -av "$temp_dir/vlsm-master/" "$vlsm_path/"
 
 # Remove the empty directory and the downloaded zip file
 rm -rf "$temp_dir/vlsm-master/"

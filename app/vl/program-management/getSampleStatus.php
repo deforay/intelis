@@ -229,7 +229,7 @@ if (!empty($sWhere)) {
 $tatSampleQuery .= " GROUP BY monthDate ORDER BY sample_tested_datetime ";
 
 // $general->elog($_POST['labName']);
-//error_log($tatSampleQuery);
+//LoggerUtility::log('error', $tatSampleQuery);
 
 $tatResult = $db->rawQuery($tatSampleQuery);
 $j = 0;

@@ -4,6 +4,7 @@ use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -82,8 +83,7 @@ try {
             GROUP BY vl.facility_id ORDER BY totalCount DESC";
     $sampleTestingResult = $db->rawQuery($sQuery);
 } catch (Exception $e) {
-    error_log($e->getMessage());
-    error_log($e->getTraceAsString());
+    LoggerUtility::log('error', $e->getMessage());
 }
 
 ?>

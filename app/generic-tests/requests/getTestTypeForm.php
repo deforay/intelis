@@ -38,6 +38,7 @@ if (!empty($_POST['formType']) && $_POST['formType'] == 'update-form') {
 }
 // $resultInterpretation = $_POST['resultInterpretation'] ?? "";
 $testResultUnits = $genericTestsService->getTestResultUnit($_POST['testType']);
+
 $testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
 $testTypeResult = $db->rawQueryOne($testTypeQuery, [$_POST['testType']]);
 $testTypeAttributes = json_decode((string) $testTypeResult['test_form_config'], true);
@@ -47,6 +48,13 @@ $result = array_fill_keys($sections, []);
 
 $testResultsAttribute = json_decode((string) $testTypeResult['test_results_config'], true);
 
+$testMethodQuery = " SELECT rgtm.test_method_id, rgtm.test_method_name FROM r_generic_test_methods AS rgtm INNER JOIN generic_test_methods_map as gtmm ON rgtm.test_method_id=gtmm.test_method_id WHERE test_type_id= ? GROUP BY rgtm.test_method_id ";
+$testMethodResult = $db->rawQuery($testMethodQuery, [$_POST['testType']]);
+if(isset($testMethodResult) && !empty($testMethodResult)){
+    foreach($testMethodResult as $row){
+        $testMethods[$row['test_method_id']] = $row['test_method_name'];
+    }
+}
 $othersSectionFields = [];
 $otherSection = [];
 $s = [];
@@ -228,18 +236,10 @@ if (!empty($testTypeAttributes)) {
         }
     }
 }
-$testNames = array(
-    "Real Time RT-PCR"  => "Real Time RT-PCR",
-    "RDT-Antibody"  => "RDT-Antibody",
-    "RDT-Antigen"   => "RDT-Antigen",
-    "GeneXpert" => "GeneXpert",
-    "ELISA" => "ELISA",
-);
-/* echo "<pre>";
-print_r($testResultsAttribute);die; */
 
 //MiscUtility::dumpToErrorLog($testResultsAttribute);
-
+/* echo "<pre>";
+print_r($testResultsAttribute);die; */
 if (!empty($testResultsAttribute)) {
     foreach ($testResultsAttribute['result_type'] as $key => $resultType) {
         if (isset($_POST['subTests']) && !empty($_POST['subTests']) && in_array($testResultsAttribute['sub_test_name'][$key], $_POST['subTests'])) {
@@ -250,16 +250,16 @@ if (!empty($testResultsAttribute)) {
             $finalTestResults = [];
 
             $resultSection .= '<div class="row"><div class="col-md-12"><h3>' . $testResultsAttribute['sub_test_name'][$key] . '</h3>
-            <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
+            <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" id="resultSubTestSection">
                 <thead>
                     <tr>
                         <th scope="row" class="text-center">Test No.</th>
                         <th scope="row" class="text-center">Test Method</th>
                         <th scope="row" class="text-center">Date of Testing</th>
-                        <th scope="row" class="text-center">Test Platform/Test Kit</th>
+                        <th scope="row" class="text-center">Test Platform/Instrument</th>
                         <th scope="row" class="text-center">Test Result</th>';
                         if ($resultType != 'qualitative') {
-                            $resultSection .= '<th scope="row" class="text-center testResultUnit">Test Result Unit</th>';
+                            $resultSection .= '<th scope="row" class="text-center qualitative-field testResultUnit">Test Result Unit</th>';
                         }
                         $resultSection .= '<th scope="row" class="text-center">Action</th>
                     </tr>
@@ -274,9 +274,8 @@ if (!empty($testResultsAttribute)) {
                         $resultSection .= '<tr>
                                 <td class="text-center">' . $i . '</td>
                                 <td>
-                                        <select class="form-control test-name-table-input" id="testName' . $key . $i . '" name="testName[' . $subTest . '][]" title="Please enter the name of the Testkit (or) Test Method used">
-                                            <option value="">-- Select --</option>';
-                        $resultSection .= $general->generateSelectOptions($testNames, $row['test_name'], '-- Select --');
+                                        <select class="form-control test-name-table-input" id="testName' . $key . $i . '" name="testName[' . $subTest . '][]" title="Please enter the name of the Testkit (or) Test Method used">';
+                        $resultSection .= $general->generateSelectOptions($testMethods, $row['test_name'], '-- Select --');
                         $resultSection .= '</select>
                                         <input type="text" name="testNameOther[' . $subTest . '][]" id="testNameOther' . $key . $i . '" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
                                 </td>
@@ -324,14 +323,9 @@ if (!empty($testResultsAttribute)) {
                 $resultSection .= '<tr>
                         <td class="text-center">' . $n . '</td>
                         <td>
-                                <select class="form-control test-name-table-input" id="testName' . $key . $n . '" name="testName[' . $subTest . '][]" title="Please enter the name of the Testkit (or) Test Method used">
-                                    <option value="">-- Select --</option>
-                                    <option value="Real Time RT-PCR">Real Time RT-PCR</option>
-                                    <option value="RDT-Antibody">RDT-Antibody</option>
-                                    <option value="RDT-Antigen">RDT-Antigen</option>
-                                    <option value="GeneXpert">GeneXpert</option>
-                                    <option value="ELISA">ELISA</option>
-                                </select>
+                                <select class="form-control test-name-table-input" id="testName' . $key . $n . '" name="testName[' . $subTest . '][]" title="Please enter the name of the Testkit (or) Test Method used">';
+                                    $resultSection .= $general->generateSelectOptions($testMethods, $row['test_name'], '-- Select --');
+                                $resultSection .= '</select>
                                 <input type="text" name="testNameOther[' . $subTest . '][]" id="testNameOther' . $key . $n . '" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
                         </td>
                         <td><input type="text" name="testDate[' . $subTest . '][]" id="testDate' . $key . $n . '" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ' . $n . '" /></td>
@@ -426,7 +420,7 @@ if (!empty($testResultsAttribute)) {
                 $resultSection .= '<tr><th scope="row" colspan="5" class="text-right final-result-row">Result Interpretation</th>';
                 $resultSection .= '<td><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation' . $key . '" value="' . $finalTestResults[strtolower($subTest)]['final_result_interpretation'] . '" name="resultInterpretation[' . $subTest . ']"></input>';
             }
-            $resultSection .= '<input type="hidden" id="resultType" name="resultType[' . $subTest . ']" class="form-control result-text" value="' . $testResultsAttribute['final_result_interpretation'][$key] . '">';
+            $resultSection .= '<input type="hidden" id="resultType" name="resultType[' . $subTest . ']" class="form-control result-text" value="' . $resultType . '">';
             $resultSection .= '</td></tr>';
             $resultSection .= '</tfoot>
                     </table>

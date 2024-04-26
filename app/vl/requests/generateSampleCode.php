@@ -1,7 +1,8 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\VlService;
+use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -26,5 +27,5 @@ try {
     echo $vlService->getSampleCode($sampleCodeParams);
   }
 } catch (Exception | SystemException $exception) {
-  error_log("Error while generating Sample Code : " . $exception->getMessage());
+  LoggerUtility::log('error', "Error while generating Sample Code : " . $exception->getMessage());
 }

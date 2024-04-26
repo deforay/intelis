@@ -5,6 +5,7 @@ use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
@@ -242,7 +243,7 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    error_log($exc->getMessage());
+    LoggerUtility::log('error', $exc->getMessage());
 }
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'get-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');

@@ -109,7 +109,7 @@ class DateUtility
                 try {
                     return Carbon::createFromFormat($format, $dateStr);
                 } catch (Exception $e) {
-                    error_log("Invalid or unparseable date $dateStr : " . $e->getMessage());
+                    LoggerUtility::log('error', "Invalid or unparseable date $dateStr : " . $e->getMessage());
                     continue;
                 }
             }
@@ -117,7 +117,7 @@ class DateUtility
         try {
             return Carbon::parse($dateStr);
         } catch (Exception $e) {
-            error_log("Invalid or unparseable date $dateStr : " . $e->getMessage());
+            LoggerUtility::log('error', "Invalid or unparseable date $dateStr : " . $e->getMessage());
         }
 
         return null;

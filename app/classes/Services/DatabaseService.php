@@ -31,7 +31,7 @@ class DatabaseService extends MysqliDb
             $this->connect($connectionName);
             return true;
         } catch (Throwable $e) {
-            error_log($e->getMessage());
+            LoggerUtility::log('error', $e->getMessage());
             return false;
         }
     }

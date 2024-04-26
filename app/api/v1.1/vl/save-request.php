@@ -447,10 +447,7 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
-    error_log($exc->getMessage());
-
+    LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError() . ":" . $db->getLastQuery());
     LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }
 

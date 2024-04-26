@@ -5,6 +5,7 @@ namespace App\Services;
 use Exception;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -146,7 +147,7 @@ class PatientsService
 
             if ($id === false) {
                 // Error handling
-                error_log($this->db->getLastError());
+                LoggerUtility::log('error', $this->db->getLastError());
             }
 
             $this->db->commitTransaction();

@@ -1,12 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -376,6 +376,7 @@ try {
             'child_gender' => $data['childGender'] ?? null,
             'health_insurance_code' => $data['healthInsuranceCode'] ?? null,
             'child_age' => $data['childAge'] ?? null,
+            'child_age_in_weeks' => $data['childAgeInWeeks'] ?? null,
             'child_treatment' => isset($data['childTreatment']) ? implode(",", $data['childTreatment']) : null,
             'child_treatment_other' => isset($data['childTreatmentOther']) ? implode(",", $data['childTreatmentOther']) : null,
             'mother_cd4' => $data['mothercd4'] ?? null,

@@ -110,7 +110,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                     <tr>
                                         <td class="labels" style="width:15%"><label for="supportPartner"><?= _translate("Implementing Partner"); ?> </label></td>
                                         <td style="width:35%">
-                                            <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
+                                            <select class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
                                                 <?php foreach ($implementingPartnerList as $implementingPartner) { ?>
                                                     <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $eidInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>>

@@ -5,6 +5,7 @@ use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -104,7 +105,7 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    error_log($exc->getMessage());
+    LoggerUtility::log('error', $exc->getMessage());
 }
 
 $payload = json_encode($payload);
