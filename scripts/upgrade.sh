@@ -15,7 +15,7 @@ fi
 # Function to log messages
 log_action() {
     local message=$1
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>./upgrade.log
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>./logupgrade.log
 }
 
 error_handling() {
@@ -24,7 +24,14 @@ error_handling() {
     local last_error=$3
     echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
     log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
-    exit 1
+
+    # Check if the error is critical
+    if [ "$last_error" -eq 1 ]; then # Adjust according to the error codes you consider critical
+        echo "This error is critical, exiting..."
+        exit 1
+    else
+        echo "This error is not critical, continuing..."
+    fi
 }
 
 # Error trap
@@ -411,7 +418,17 @@ spinner "${unzip_pid}" # Start the spinner
 wait ${unzip_pid}      # Wait for the unzip process to finish
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-cp -R "$temp_dir/vlsm-master/"* "${vlsm_path}"
+rsync -av --exclude 'public/uploads' "$temp_dir/vlsm-master/" "$vlsm_path/"
+
+# Check if rsync command succeeded
+if [ $? -ne 0 ]; then
+    echo "Error occurred during rsync. Logging and continuing..."
+    log_action "Error during rsync operation. Path was: $vlsm_path"
+else
+    echo "Files copied successfully, preserving symlinks where necessary."
+    log_action "Files copied successfully."
+fi
+
 cp_pid=$!           # Save the process ID of the cp command
 spinner "${cp_pid}" # Start the spinner
 wait ${cp_pid}      # Wait for the copy process to finish

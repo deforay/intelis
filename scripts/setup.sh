@@ -15,7 +15,7 @@ fi
 # Function to log messages
 log_action() {
     local message=$1
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>./setup.log
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>./logsetup.log
 }
 
 error_handling() {
@@ -24,7 +24,14 @@ error_handling() {
     local last_error=$3
     echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
     log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
-    exit 1
+
+    # Check if the error is critical
+    if [ "$last_error" -eq 1 ]; then # Adjust according to the error codes you consider critical
+        echo "This error is critical, exiting..."
+        exit 1
+    else
+        echo "This error is not critical, continuing..."
+    fi
 }
 
 # Error trap
@@ -501,7 +508,8 @@ else
 fi
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-cp -R "$temp_dir/vlsm-master/"* "${vlsm_path}"
+# cp -R "$temp_dir/vlsm-master/"* "${vlsm_path}"
+rsync -av "$temp_dir/vlsm-master/" "$vlsm_path/"
 
 # Remove the empty directory and the downloaded zip file
 rm -rf "$temp_dir/vlsm-master/"
