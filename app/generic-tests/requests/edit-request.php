@@ -1644,10 +1644,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			var testResultUnit = '<?php echo $genericResultInfo['result_unit']; ?>';
 			$(".requestForm").show();
 			$.post("/generic-tests/requests/getTestTypeForm.php", {
-					testType: testType,
 					vlSampleId: editId,
 					result: resultVal,
 					testTypeForm: testedTypeForm,
+					testType: testType,
 					subTests: subTestResult
 					// resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
 				},
@@ -1706,22 +1706,27 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	}
 
 	function addTestRow(row, subTest) {
+		var unitTest = '';
 		subrow = document.getElementById("testKitNameTable" + row).rows.length
 		$('.ins-row-' + row + subrow).attr('disabled', true);
 		$('.ins-row-' + row + subrow).addClass('disabled');
 		testCounter = (subrow + 1);
 		options = $("#finalResult" + row).html();
-		let rowString = `<tr>
+		testMethodOptions = $("#testName" + row+(testCounter-1)).html();
+          if($('.qualitative-field').hasClass('testResultUnit')){
+               unitTest = `<td class="testResultUnit">
+                    <select class="form-control resultUnit" id="testResultUnit${row}${testCounter}" name="testResultUnit[${subTest}][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
+                         <option value="">--Select--</option>
+                         <?php foreach ($testResultUnits as $key => $unit) { ?>
+                              <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
+                         <?php } ?>
+                    </select>
+                    </td>`;
+          }
+		  let rowString = `<tr>
                     <td class="text-center">${(subrow+1)}</td>
                     <td>
-                         <select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[${subTest}][]" title="Please enter the name of the Testkit (or) Test Method used">
-                              <option value="">-- Select --</option>
-                              <option value="Real Time RT-PCR">Real Time RT-PCR</option>
-                              <option value="RDT-Antibody">RDT-Antibody</option>
-                              <option value="RDT-Antigen">RDT-Antigen</option>
-                              <option value="GeneXpert">GeneXpert</option>
-                              <option value="ELISA">ELISA</option>
-                         </select>
+                         <select class="form-control test-name-table-input" id="testName${row}${testCounter}" name="testName[${subTest}][]" title="Please enter the name of the Testkit (or) Test Method used">${testMethodOptions}</select>
                          <input type="text" name="testNameOther[${subTest}][]" id="testNameOther${row}${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
                     </td>
                     <td><input type="text" name="testDate[${subTest}][]" id="testDate${row}${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
@@ -1729,14 +1734,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                     <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[${subTest}][]" id="lotNo${row}${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
                     <td class="kitlabels" style="display: none;"><input type="text" name="expDate[${subTest}][]" id="expDate${row}${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
                     <td><select class="form-control result-select" name="testResult[${subTest}][]" id="testResult${row}${testCounter}" title="Enter result">${options}</select></td>
-                    <td class="testResultUnit">
-                    <select class="form-control resultUnit" id="testResultUnit${row}${testCounter}" name="testResultUnit[${subTest}][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
-						<option value="">--Select--</option>
-						<?php foreach ($testResultUnits as $key => $unit) { ?>
-								<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
-						<?php } ?>
-                    </select>
-                    </td>
+                    ${unitTest}
                     <td style="vertical-align:middle;text-align: center;width:100px;">
                          <a class="btn btn-xs btn-primary ins-row-${row}${testCounter} test-name-table" href="javascript:void(0);" onclick="addTestRow(${row}, \'${subTest}\');"><em class="fa-solid fa-plus"></em></a>&nbsp;
                          <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode, ${row},${subrow});"><em class="fa-solid fa-minus"></em></a>

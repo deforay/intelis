@@ -17,11 +17,11 @@ $testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
 $testTypeResult = $db->rawQueryOne($testTypeQuery, [$_POST['testTypeId']]);
 
 $testResultsAttribute = json_decode((string) $testTypeResult['test_results_config'], true);
-$options = ""; $n = count($testResultsAttribute['sub_test_name']);
+$options = "";;
 if(isset($testResultsAttribute['sub_test_name']) && count($testResultsAttribute['sub_test_name']) > 0){
     if($testResultsAttribute['sub_test_name']!=""){
         foreach($testResultsAttribute['sub_test_name'] as $key => $testName){
-            $selected = (in_array($testName, $subTestSArray) || ($n == 1))? "selected='selected'":"";
+            $selected = (in_array($testName, $subTestSArray) || ($key == 1))? "selected='selected'":"";
             $options .= '<option value="'.$testName.'" '.$selected.'>'.$testName.'</option>';
         }
     }
