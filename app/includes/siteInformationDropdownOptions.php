@@ -37,15 +37,17 @@ $facilityTypeRequested = !empty($_POST['fType']) ? $_POST['fType'] : 1;   // 1 =
 
 
 if (!empty($facilityIdRequested)) {
+	// Fetch District and Province for the selected facility
 	$db->where("f.facility_id", $facilityIdRequested);
 	$db->join("user_details u", "u.user_id=f.contact_person", "LEFT");
 
 	$facilityInfo = $db->getOne('facility_details f', 'f.* , u.user_name as contact_person');
 
-	$provinceOptions = $geoLocationsService->getProvinceDropdown($facilityInfo['facility_state_id'], $option);
+	$provinceOptions = $geoLocationsService->getProvinceDropdown(selectedProvince: $facilityInfo['facility_state_id'], option: $option);
 	$districtOptions = $geoLocationsService->getDistrictDropdown(selectedProvince: $facilityInfo['facility_state_id'], selectedDistrict: $facilityInfo['facility_district_id'], option: $option);
 	echo $provinceOptions . "###" . $districtOptions . "###" . $facilityInfo['contact_person'];
-} elseif (!empty($provinceRequested) && !empty($districtRequested) && $_POST['requestType'] == 'patient') {
+} elseif (!empty($provinceRequested) && !empty($districtRequested) && !empty($_POST['requestType']) && $_POST['requestType'] == 'patient') {
+	// Fetch Districts for the selected Province
 	$provinceName = explode("##", (string) $provinceRequested);
 	$districtOptions = $geoLocationsService->getDistrictDropdown(selectedProvince: $provinceName[0], selectedDistrict: $districtRequested, option: $option);
 	echo "###" . $districtOptions . "###";
@@ -53,22 +55,20 @@ if (!empty($facilityIdRequested)) {
 	$districtOptions = $geoLocationsService->getDistrictDropdown(selectedProvince: $provinceRequested, selectedDistrict: $districtRequested, option: $option);
 	echo "###" . $districtOptions . "###";
 } elseif (!empty($provinceRequested)) {
+	// Fetch Districts for the selected Province
 	$provinceName = explode("##", (string) $provinceRequested);
-
-	$facilityOptions = $facilitiesService->getFacilitiesDropdown($testType, $facilityTypeRequested ?? null, $provinceName[0], null, $option, $_POST['comingFromUser'] ?? null);
+	$facilityOptions = $facilitiesService->getFacilitiesDropdown(testType: $testType, facilityType: $facilityTypeRequested, provinceName: $provinceName[0], districtRequested: null, option: $option, comingFromUser: $_POST['comingFromUser'] ?? null);
 	$districtOptions = $geoLocationsService->getDistrictDropdown(selectedProvince: $provinceName[0], selectedDistrict: null, option: $option);
 
 	echo $facilityOptions . "###" . $districtOptions . "###";
 } elseif (!empty($districtRequested)) {
-
-
-	$facilityOptions = $facilitiesService->getFacilitiesDropdown($testType, $facilityTypeRequested ?? null, null, $districtRequested, $option, $_POST['comingFromUser'] ?? null);
+	// Fetch Facilities for the selected District
+	$facilityOptions = $facilitiesService->getFacilitiesDropdown($testType, $facilityTypeRequested, null, $districtRequested, $option, $_POST['comingFromUser'] ?? null);
 	$testingLabsList = $facilitiesService->getTestingLabs($GLOBALS['testType']);
 	$testingLabsOptions = $general->generateSelectOptions($testingLabsList, null, '-- Select --');
 
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 } elseif (!empty($facilityTypeRequested)) {
-
-	$facilityOptions = $facilitiesService->getFacilitiesDropdown($testType, $facilityTypeRequested ?? null, null, $districtRequested, $option, $_POST['comingFromUser'] ?? null);
+	$facilityOptions = $facilitiesService->getFacilitiesDropdown($testType, $facilityTypeRequested, null, $districtRequested, $option, $_POST['comingFromUser'] ?? null);
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 }

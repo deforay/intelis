@@ -182,14 +182,14 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="facilityCode">Implementing Partner </label>
-                                                       <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
-                                                <?php
-                                                foreach ($implementingPartnerList as $implementingPartner) {
-                                                ?>
-                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
-                                                <?php } ?>
-                                            </select>
+                                                       <select class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
+                                                            <option value=""> -- Select -- </option>
+                                                            <?php
+                                                            foreach ($implementingPartnerList as $implementingPartner) {
+                                                            ?>
+                                                                 <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+                                                            <?php } ?>
+                                                       </select>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -269,8 +269,8 @@ $sFormat = '';
                                                             <input type="radio" id="genderFemale" name="gender" value="female" title="Please choose gender">Female
                                                        </label>&nbsp;&nbsp;
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                       <input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please check gender">Unreported
-                                                  </label>
+                                                            <input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please check gender">Unreported
+                                                       </label>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -580,7 +580,7 @@ $sFormat = '';
                                                                            <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
                                                                       </div>
                                                                  </div>
-                                                               
+
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy">Tested By </label>
                                                                       <div class="col-lg-7">
@@ -877,7 +877,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function generateSampleCode() {
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
-        //  var provinceCode = $("#province").find(":selected").attr("data-code");
+          //  var provinceCode = $("#province").find(":selected").attr("data-code");
 
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           if (pName != '' && sDate != '') {

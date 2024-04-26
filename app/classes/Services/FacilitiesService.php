@@ -330,11 +330,19 @@ class FacilitiesService
         $this->db->orderBy("f.facility_name", "ASC");
 
         if (!empty($provinceName)) {
-            $this->db->where("f.facility_state", $provinceName);
+            if (is_numeric($provinceName)) {
+                $this->db->where("f.facility_state_id", $provinceName);
+            } else {
+                $this->db->where("f.facility_state", $provinceName);
+            }
         }
 
         if (!empty($districtRequested)) {
-            $this->db->where("f.facility_district", $districtRequested);
+            if (is_numeric($districtRequested)) {
+                $this->db->where("f.facility_district_id", $districtRequested);
+            } else {
+                $this->db->where("f.facility_district", $districtRequested);
+            }
         }
         //$db->where("f.facility_type", $facilityTypeRequested);
         $this->db->join("user_details u", "u.user_id=f.contact_person", "LEFT");

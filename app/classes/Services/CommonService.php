@@ -387,7 +387,7 @@ class CommonService
             }
 
             $options = array_map(function ($row) {
-                return "<option data-code='{$row['geo_code']}' data-province-id='{$row['geo_id']}' data-name='{$row['geo_name']}' value='{$row['geo_name']}##{$row['geo_code']}'> {$row['geo_name']} </option>";
+                return "<option data-code='{$row['geo_code']}' data-province-id='{$row['geo_id']}' data-name='{$row['geo_name']}' value='{$row['geo_id']}##{$row['geo_code']}'> {$row['geo_name']} </option>";
             }, $result);
 
             array_unshift($options, "<option value=''>" . _translate("-- Select --") . " </option>");

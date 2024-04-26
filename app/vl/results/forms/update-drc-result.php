@@ -156,8 +156,8 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 										<td><label for="supportPartner">Partnaire d'appui </label></td>
 										<td>
-											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" <?php echo $disable; ?> value="< ?php echo $vlQueryInfo['facility_support_partner']; ?>" style="width:100%;"/> -->
-											<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" <?php echo $disable; ?> style="width:100%;">
+											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire d'appui" title="Please enter Partenaire d'appui" <?php echo $disable; ?> value="< ?php echo $vlQueryInfo['facility_support_partner']; ?>" style="width:100%;"/> -->
+											<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" <?php echo $disable; ?> style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
@@ -458,41 +458,41 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?>  <em class="fas fa-edit"></em> :
-												</label></td>
-											<td style="width: 25%;">
+										<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :
+											</label></td>
+										<td style="width: 25%;">
 											<select class="form-control select2 editableSelect" id="freezer" name="freezer" placeholder="<?php echo _translate('Enter Freezer'); ?>" title="<?php echo _translate('Please enter Freezer'); ?>">
 												<?= $general->generateSelectOptions($storageInfo, $storageObj->freezer, '-- Select --') ?>
 											</select>
 
-											<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>
-											<td style="width: 25%;">
-												<input type="text" class="form-control" id="rack" name="rack" value="<?= $storageObj->rack; ?>" placeholder="<?php echo _translate('rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" value="<?= $storageObj->rack; ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
-											</td>
-										</tr>
-										<tr>
-											<td style="width: 25%;"><label for=""><?php echo _translate('Box'); ?> :
-												</label></td>
-											<td style="width: 25%;">
+										<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>
+										<td style="width: 25%;">
+											<input type="text" class="form-control" id="rack" name="rack" value="<?= $storageObj->rack; ?>" placeholder="<?php echo _translate('rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" value="<?= $storageObj->rack; ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 25%;"><label for=""><?php echo _translate('Box'); ?> :
+											</label></td>
+										<td style="width: 25%;">
 											<input type="text" class="form-control" id="box" name="box" value="<?= $storageObj->box; ?>" placeholder="<?php echo _translate('box'); ?>" title="<?php echo _translate('Please enter box'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
-											</td>
-											<td style="width: 25%;"><label for="position"><?php echo _translate('Position'); ?> : </label> </td>
-											<td style="width: 25%;">
-											<input type="text" class="form-control" id="position" name="position" value="<?= $storageObj->position; ?>" placeholder="<?php echo _translate('Position'); ?>" title="<?php echo _translate('Please enter position'); ?>" <?php echo $labFieldDisabled; ?>  style="width:100%;" />
+										</td>
+										<td style="width: 25%;"><label for="position"><?php echo _translate('Position'); ?> : </label> </td>
+										<td style="width: 25%;">
+											<input type="text" class="form-control" id="position" name="position" value="<?= $storageObj->position; ?>" placeholder="<?php echo _translate('Position'); ?>" title="<?php echo _translate('Please enter position'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 
-											</td>
-										</tr>
+										</td>
+									</tr>
 									<tr>
 										<td style="width: 25%;"><label for=""><?php echo _translate('Volume (ml)'); ?> :
-												</label></td>
-											<td style="width: 25%;">
-												<input type="text" class="form-control" id="volume" name="volume" value="<?= $storageObj->volume; ?>" placeholder="<?php echo _translate('Volume'); ?>" title="<?php echo _translate('Please enter volume'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
-											</td>
+											</label></td>
+										<td style="width: 25%;">
+											<input type="text" class="form-control" id="volume" name="volume" value="<?= $storageObj->volume; ?>" placeholder="<?php echo _translate('Volume'); ?>" title="<?php echo _translate('Please enter volume'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+										</td>
 										<td><label for="">Date de réalisation de la charge virale <span class="mandatory">*</span></label></td>
 										<td>
 											<input type="text" class="form-control dateTime isRequired" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 										</td>
-										
+
 									</tr>
 									<tr>
 										<td><label for="testingPlatform">Technique utilisée <span class="mandatory">*</span></label></td>
@@ -614,7 +614,7 @@ $storageInfo = $storageService->getLabStorage();
 						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_result_changes']); ?>" />
 						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?= htmlspecialchars((string) $vlQueryInfo['vl_sample_id']); ?>" />
 						<input type="hidden" name="sampleCode" id="sampleCode" value="<?= ($vlQueryInfo['sample_code']); ?>" />
-					    <input type="hidden" name="artNo" id="artNo" value="<?= ($vlQueryInfo['patient_art_no']); ?>" />
+						<input type="hidden" name="artNo" id="artNo" value="<?= ($vlQueryInfo['patient_art_no']); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
 					</div>
@@ -635,7 +635,7 @@ $storageInfo = $storageService->getLabStorage();
 			tags: true
 		});
 
-		storageEditableSelect('freezer', 'storage_code', 'storage_id','lab_storage', 'Freezer Code');
+		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Freezer Code');
 
 		getVlResults($("#testingPlatform").val());
 		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');

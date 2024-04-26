@@ -169,24 +169,30 @@ class GeoLocationsService
     public function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null, $option = null)
     {
         if (!empty($selectedProvince)) {
+
             if (is_numeric($selectedProvince)) {
                 $this->db->where("geo_parent", $selectedProvince);
-                $this->db->orderBy("geo_name", "ASC");
-
-                $districtInfo = $this->db->setQueryOption('DISTINCT')
-                    ->get('geographical_divisions', null, 'geo_id, geo_name');
-                $district = $option;
-                foreach ($districtInfo as $dRow) {
-                    $selected = '';
-                    if ($selectedDistrict == $dRow['geo_id']) {
-                        $selected = "selected='selected'";
-                    }
-                    $district .= "<option $selected value='" . $dRow['geo_id'] . "'>" . ($dRow['geo_name']) . "</option>";
-                }
-                return $district;
             } else {
-                $this->db->where("f.facility_state", $selectedProvince);
+                $ids = $this->db->subQuery();
+                $ids->where("geo_parent", 0);
+                $ids->where("geo_name", $selectedProvince);
+                $ids->get("geographical_divisions", null, "geo_id");
+                $this->db->where("geo_parent", $ids, 'in');
             }
+
+            $this->db->orderBy("geo_name", "ASC");
+
+            $districtInfo = $this->db->setQueryOption('DISTINCT')
+                ->get('geographical_divisions', null, 'geo_id, geo_name');
+            $district = (string) $option;
+            foreach ($districtInfo as $dRow) {
+                $selected = '';
+                if ($selectedDistrict == $dRow['geo_id']) {
+                    $selected = "selected='selected'";
+                }
+                $district .= "<option $selected value='" . $dRow['geo_id'] . "'>" . ($dRow['geo_name']) . "</option>";
+            }
+            return $district;
         }
 
         if (!empty($_SESSION['facilityMap'])) {
@@ -194,15 +200,15 @@ class GeoLocationsService
         }
         $this->db->orderBy("f.facility_name", "ASC");
         $facilityInfo = $this->db->setQueryOption('DISTINCT')
-            ->get('facility_details f', null, 'facility_district');
+            ->get('facility_details f', null, 'facility_district_id, facility_district');
 
-        $district = $option;
+        $district = (string) $option;
         foreach ($facilityInfo as $fRow) {
             $selected = '';
             if ($selectedDistrict == $fRow['facility_district']) {
                 $selected = "selected='selected'";
             }
-            $district .= "<option $selected value='" . $fRow['facility_district'] . "'>" . ($fRow['facility_district']) . "</option>";
+            $district .= "<option $selected value='" . $fRow['facility_district_id'] . "'>" . $fRow['facility_district'] . "</option>";
         }
         return $district;
     }
@@ -224,7 +230,7 @@ class GeoLocationsService
             if ($selectedProvince == $pRow['geo_id']) {
                 $selected = "selected='selected'";
             }
-            $state .= "<option data-code='" . $pRow['geo_code'] . "' data-province-id='" . $pRow['geo_id'] . "' data-name='" . $pRow['geo_name'] . "' value='" . $pRow['geo_name'] . "##" . $pRow['geo_code'] . "' $selected>" . ($pRow['geo_name']) . "</option>";
+            $state .= "<option data-code='" . $pRow['geo_code'] . "' data-province-id='" . $pRow['geo_id'] . "' data-name='" . $pRow['geo_name'] . "' value='" . $pRow['geo_id'] . "##" . $pRow['geo_code'] . "' $selected>" . ($pRow['geo_name']) . "</option>";
         }
         return $state;
     }
