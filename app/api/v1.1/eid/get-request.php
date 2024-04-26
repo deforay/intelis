@@ -74,6 +74,7 @@ try {
         vl.child_gender                                      as childGender,
         vl.health_insurance_code                             as healthInsuranceCode,
         vl.child_age                                         as childAge,
+        vl.child_age_in_weeks                                as childAgeInWeeks,
         vl.child_treatment                                   as childTreatment,
         vl.child_treatment_other                             as childTreatmentOther,
         vl.mother_cd4                                        as mothercd4,
