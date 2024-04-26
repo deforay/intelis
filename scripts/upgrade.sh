@@ -83,11 +83,27 @@ if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" 
     exit 1
 fi
 
-# Ask user for VLSM installation path with a 15-second timeout and default path as fallback
+# Save the current trap settings
+current_trap=$(trap -p ERR)
+
+# Disable the error trap temporarily
+trap - ERR
+
 echo "Enter the VLSM installation path [press enter to select /var/www/vlsm]: "
-read -t 60 -p "" vlsm_path
-vlsm_path="${vlsm_path:-/var/www/vlsm}"
+read -t 60 vlsm_path
+
+# Check if read command timed out or no input was provided
+if [ $? -ne 0 ] || [ -z "$vlsm_path" ]; then
+    vlsm_path="/var/www/vlsm"
+    echo "Using default path: $vlsm_path"
+else
+    echo "VLSM installation path is set to ${vlsm_path}."
+fi
+
 log_action "VLSM installation path is set to ${vlsm_path}."
+
+# Restore the previous error trap
+eval "$current_trap"
 
 # Check if VLSM folder exists
 if [ ! -d "${vlsm_path}" ]; then
