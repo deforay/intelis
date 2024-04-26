@@ -1,5 +1,9 @@
 <?php
 
+namespace CORE {
+    const SYSTEM_ADMIN_SECRET_KEY_FILE = APPLICATION_PATH . "/system-admin/secret-key.txt";
+}
+
 namespace SAMPLE_STATUS {
     const ON_HOLD = 1; // Sample is on hold
     const LOST_OR_MISSING = 2; // Sample is lost or missing

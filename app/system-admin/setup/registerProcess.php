@@ -9,11 +9,10 @@ $_POST = _sanitizeInput($_POST);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-
 try {
-    $key = file_get_contents(APPLICATION_PATH . "/system-admin/secretKey.txt");
+    $secretKey = file_get_contents(CORE\SYSTEM_ADMIN_SECRET_KEY_FILE);
 
-    if ($_POST['secretKey'] == trim($key)) {
+    if ($_POST['secretKey'] == trim($secretKey)) {
         if (!empty($_POST['password'])) {
             $insertData = [
                 'system_admin_email'    => $_POST['email'] ?? null,
@@ -21,7 +20,7 @@ try {
                 'system_admin_password' => $usersService->passwordHash($_POST['password'])
             ];
             $db->insert("system_admin", $insertData);
-            unlink(APPLICATION_PATH . "/system-admin/secretKey.txt");
+            unlink(CORE\SYSTEM_ADMIN_SECRET_KEY_FILE);
             $_SESSION['alertMsg'] = _translate("System Admin added successfully");
             header("Location:/system-admin/login/login.php");
         }

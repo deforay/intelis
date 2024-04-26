@@ -4,10 +4,6 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-  session_start();
-}
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -24,13 +20,7 @@ $localeLists = $general->getLocaleList(0);
 $formQuery = "SELECT * FROM s_available_country_forms ORDER by form_name ASC";
 $formResult = $db->query($formQuery);
 
-$globalConfigQuery = "SELECT * from global_config";
-$configResult = $db->query($globalConfigQuery);
-$arr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-  $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
+$globalConfig = $general->getGlobalConfig();
 
 $db->where("login_id", NULL, 'IS NOT');
 $count = $db->getValue("user_details", "count(*)");
@@ -123,7 +113,7 @@ if ($_SESSION['instance']['type'] == 'remoteuser') {
                 <?php
                 foreach ($formResult as $val) {
                 ?>
-                  <option value="<?php echo $val['vlsm_country_id']; ?>" <?php echo ($val['vlsm_country_id'] == $arr['vl_form']) ? "selected='selected'" : "" ?>><?php echo $val['form_name']; ?></option>
+                  <option value="<?php echo $val['vlsm_country_id']; ?>" <?php echo ($val['vlsm_country_id'] == $globalConfig['vl_form']) ? "selected='selected'" : "" ?>><?php echo $val['form_name']; ?></option>
                 <?php
                 }
                 ?>
@@ -134,11 +124,12 @@ if ($_SESSION['instance']['type'] == 'remoteuser') {
               <select class="form-control readPage select2 isRequired" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _translate('Timezone'); ?>" title="<?php echo _translate('Please choose Timezone'); ?>">
                 <option value=""></option>
                 <?php
+
                 $timezone_identifiers = DateTimeZone::listIdentifiers();
 
                 foreach ($timezone_identifiers as $value) {
                 ?>
-                  <option <?= ($arr['default_time_zone'] == $value ? 'selected=selected' : ''); ?> value='<?= $value; ?>'> <?= $value; ?></option>;
+                  <option <?= ($globalConfig['default_time_zone'] == $value ? 'selected=selected' : ''); ?> value='<?= $value; ?>'> <?= $value; ?></option>;
                 <?php
                 }
 
@@ -151,7 +142,7 @@ if ($_SESSION['instance']['type'] == 'remoteuser') {
               <select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _translate('Please select the System Locale'); ?>">
                 <option value=""><?= _translate("-- Choose System Language --"); ?></option>
                 <?php foreach ($localeLists as $locale => $localeName) { ?>
-                  <option value="<?php echo $locale; ?>" <?php echo (isset($arr['app_locale']) && $arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?= $localeName; ?></option>
+                  <option value="<?php echo $locale; ?>" <?php echo (isset($globalConfig['app_locale']) && $globalConfig['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?= $localeName; ?></option>
                 <?php } ?>
               </select>
             </div>
