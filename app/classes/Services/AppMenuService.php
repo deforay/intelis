@@ -81,7 +81,7 @@ class AppMenuService
      * @param array $menuData Associative array of the menu item fields and their values.
      * @return bool Returns true if the item was successfully inserted, false otherwise.
      */
-    public function insertMenu(array $menuData): bool
+    public function insertMenu(array $menuData): bool|int
     {
         // Check if the item already exists based on parent_id and link
         $this->db->where('parent_id', $menuData['parent_id']);
@@ -99,7 +99,7 @@ class AppMenuService
             LoggerUtility::log('error', "Failed to insert " . $menuData['module'] . ":" . $menuData['parent_id'] . ":" . $menuData['display_text'] . " menu");
             return false;
         } else {
-            return true;
+            return $this->db->getInsertId();
         }
     }
 }
