@@ -9,9 +9,9 @@ if (php_sapi_name() !== 'cli') {
 require_once(__DIR__ . "/../../bootstrap.php");
 
 use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\LoggerUtility;
 
 $defaultDuration = (isset($argv[1]) && is_numeric($argv[1])) ? (int)$argv[1] : 30;
 
@@ -50,6 +50,7 @@ foreach ($cleanup as $folder => $duration) {
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+// tables and conditions to cleanup
 $tablesToCleanup = [
     'activity_log' => 'date_time < NOW() - INTERVAL 365 DAY',
     'user_login_history' => 'login_attempted_datetime < NOW() - INTERVAL 365 DAY',
@@ -57,7 +58,6 @@ $tablesToCleanup = [
 ];
 
 foreach ($tablesToCleanup as $table => $condition) {
-
     $db->where($condition);
     if (!$db->delete($table)) {
         LoggerUtility::log('error', "Error deleting from {$table}: " . $db->getLastError());
