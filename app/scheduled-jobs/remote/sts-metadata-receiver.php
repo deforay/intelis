@@ -2,7 +2,10 @@
 
 // Request STS to send metadata to this instance of LIS
 
-require_once(__DIR__ . "/../../../bootstrap.php");
+$cliMode = php_sapi_name() === 'cli';
+if ($cliMode) {
+    require_once(__DIR__ . "/../../../bootstrap.php");
+}
 
 use JsonMachine\Items;
 use App\Services\ApiService;
@@ -369,6 +372,7 @@ try {
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
+        $db->rawQuery("SET FOREIGN_KEY_CHECKS = 0;"); // Disable foreign key checks
         foreach ($parsedData as $dataType => $dataValues) {
 
             if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
@@ -388,6 +392,10 @@ try {
                     'current',
                     $db->rawQuery($tableColumns, [$systemConfig['database']['db'], $dataToSync[$dataType]['tableName']])
                 );
+
+                if ($cliMode) {
+                    echo "Syncing data for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
+                }
 
                 foreach ($dataValues as $tableDataValues) {
                     $tableData = [];
@@ -483,7 +491,7 @@ try {
 } catch (Throwable $e) {
     LoggerUtility::log('error', "Error while syncing data from remote: " . $e->getLine() . " " . $e->getMessage());
 }
-
+$db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Enable foreign key checks
 // unset global config cache so that it can be reloaded with new values
 // this is set in CommonService::getGlobalConfig()
 $fileCache->delete('app_global_config');

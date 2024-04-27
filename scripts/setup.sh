@@ -214,13 +214,17 @@ sudo dpkg --configure -a
 apt-get autoremove -y
 
 echo "Installing basic packages..."
-apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole
+apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server
 
 echo "Setting up locale..."
 locale-gen en_US en_US.UTF-8
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 update-locale
+
+systemctl enable ssh
+
+systemctl start ssh
 
 # Apache Setup
 if command -v apache2 &>/dev/null; then
