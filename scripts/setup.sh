@@ -111,6 +111,7 @@ handle_database_setup_and_import() {
         mysql -u root -p"${mysql_root_password}" vlsm <"$sql_file"
     fi
     mysql -u root -p"${mysql_root_password}" vlsm <"${vlsm_path}/sql/audit-triggers.sql"
+    mysql -u root -p"${mysql_root_password}" interfacing <"${vlsm_path}/sql/interface-init.sql"
 }
 
 spinner() {
