@@ -213,7 +213,7 @@ try {
                     "vl_sample_id" => $hepatitisId,
                     "test_type" => "vl",
                     "result_method" => "import",
-                    "updated_on" => DateUtility::getCurrentDateTime()
+                    "updated_datetime" => DateUtility::getCurrentDateTime()
                 ));
             }
             $db->where('temp_sample_id', $id[$i]);

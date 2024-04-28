@@ -73,7 +73,7 @@ $cd4DataToSync = [];
 
 
 $payload = [
-    'globalConfigLastModified'      => $general->getLastModifiedDateTime('global_config', 'updated_on'),
+    'globalConfigLastModified'      => $general->getLastModifiedDateTime('global_config'),
     'provinceLastModified'          => $general->getLastModifiedDateTime('geographical_divisions'),
     'facilityLastModified'          => $general->getLastModifiedDateTime('facility_details'),
     'healthFacilityLastModified'    => $general->getLastModifiedDateTime('health_facilities'),

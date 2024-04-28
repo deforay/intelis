@@ -35,7 +35,7 @@ try {
     foreach ($globalConfigFields as $fieldName) {
         $data = [
             'value' => $_POST[$fieldName] ?? null,
-            'updated_on' => $currentDateTime
+            'updated_datetime' => $currentDateTime
         ];
         $db->where('name', $fieldName);
         $db->update('global_config', $data);

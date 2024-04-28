@@ -50,7 +50,7 @@ try {
         if ($id) {
             $db->where('name', 'logo');
             $db->update("global_config", [
-                "updated_on" => $currentDateTime,
+                "updated_datetime" => $currentDateTime,
                 "updated_by" => $_SESSION['userId']
             ]);
         }
@@ -101,7 +101,7 @@ try {
         $db->where('name', 'logo');
         $db->update("global_config", [
             "value" => $imageName,
-            "updated_on" => $currentDateTime,
+            "updated_datetime" => $currentDateTime,
             "updated_by" => $_SESSION['userId']
         ]);
     }
@@ -112,7 +112,7 @@ try {
     //     if ($id) {
     //         $db->where('name', 'r_mandatory_fields');
     //         $db->update("global_config", [
-    //             "updated_on" => $currentDateTime,
+    //             "updated_datetime" => $currentDateTime,
     //             "updated_by" => $_SESSION['userId']
     //         ]);
     //     }
@@ -132,7 +132,7 @@ try {
             if ($id) {
                 $db->where('name', $fieldName);
                 $db->update("global_config", [
-                    "updated_on" => $currentDateTime,
+                    "updated_datetime" => $currentDateTime,
                     "updated_by" => $_SESSION['userId']
                 ]);
             }
@@ -182,7 +182,7 @@ try {
         if ($id) {
             $db->where('name', 'logo');
             $db->update("global_config", array(
-                "updated_on" => $currentDateTime,
+                "updated_datetime" => $currentDateTime,
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -194,7 +194,7 @@ try {
         if ($id) {
             $db->where('name', 'logo');
             $db->update("global_config", array(
-                "updated_on" => $currentDateTime,
+                "updated_datetime" => $currentDateTime,
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -206,7 +206,7 @@ try {
         if ($id) {
             $db->where('name', 'logo');
             $db->update("global_config", array(
-                "updated_on" => $currentDateTime,
+                "updated_datetime" => $currentDateTime,
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -218,7 +218,7 @@ try {
         if ($id) {
             $db->where('name', 'logo');
             $db->update("global_config", array(
-                "updated_on" => $currentDateTime,
+                "updated_datetime" => $currentDateTime,
                 "updated_by" => $_SESSION['userId']
             ));
         }

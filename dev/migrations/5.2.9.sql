@@ -480,3 +480,8 @@ JOIN (
 WHERE a.id < b.max_id;
 
 ALTER TABLE `s_app_menu` ADD UNIQUE(`parent_id`, `link`);
+
+-- Amit 28-Apr-2024
+ALTER TABLE `global_config` CHANGE `updated_on` `updated_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `log_result_updates` CHANGE `updated_on` `updated_datetime` DATETIME NULL DEFAULT NULL;
+

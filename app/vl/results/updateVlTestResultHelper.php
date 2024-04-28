@@ -235,7 +235,7 @@ try {
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $_POST['vlSampleId'],
             'test_type' => 'vl',
-            'updated_on' => DateUtility::getCurrentDateTime()
+            'updated_datetime' => DateUtility::getCurrentDateTime()
         );
         $db->insert($tableName2, $data);
 

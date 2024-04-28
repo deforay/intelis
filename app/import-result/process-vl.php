@@ -222,7 +222,7 @@ try {
                         "test_type" => "vl",
                         "result_method" => "import",
                         "file_name" => $rResult['import_machine_file_name'],
-                        "updated_on" => DateUtility::getCurrentDateTime()
+                        "updated_datetime" => DateUtility::getCurrentDateTime()
                     )
                 );
             }
