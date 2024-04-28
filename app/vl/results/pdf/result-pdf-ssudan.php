@@ -5,14 +5,18 @@
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
-use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$globalConfig = $general->getGlobalConfig();
 
 if (!empty($result)) {
 
@@ -93,9 +97,9 @@ if (!empty($result)) {
      if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
           $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
      } else {
-          $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
+          $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $globalConfig['logo'];
      }
-     $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT');
+     $pdf->setHeading($logoPrintInPdf, $globalConfig['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT');
      // set document information
      $pdf->SetCreator('VLSM');
      $pdf->SetTitle('HIV Viral Load Patient Report');
@@ -228,15 +232,15 @@ if (!empty($result)) {
 
      if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
           $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-          $showMessage = ($arr['l_vl_msg']);
+          $showMessage = ($globalConfig['l_vl_msg']);
      } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
           $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
-          $showMessage = ($arr['h_vl_msg']);
-     } elseif ($result['result_status'] == '4' || $result['is_sample_rejected'] == 'yes') {
+          $showMessage = ($globalConfig['h_vl_msg']);
+     } elseif ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
           $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
      }
 
-     if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
+     if (isset($globalConfig['show_smiley']) && trim((string) $globalConfig['show_smiley']) == "no") {
           $smileyContent = '';
      } else {
           $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
@@ -573,7 +577,7 @@ if (!empty($result)) {
      $html .= '</td>';
      $html .= '</tr>';
      $html .= '</table>';
-     if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+     if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
           $pdf->writeHTML($html);
           $pdf->lastPage();
           $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

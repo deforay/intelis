@@ -152,7 +152,7 @@ try {
                         $otherField = "hbv_vl_count";
                     }
 
-                    if ($status[$i] == '4') {
+                    if ($status[$i] == SAMPLE_STATUS\REJECTED) {
                         $data['is_sample_rejected'] = 'yes';
                         $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                         $data[$resultField] = null;
@@ -277,7 +277,7 @@ try {
             $data['hbv_vl_count'] = null;
             $data['hcv_vl_count'] = null;
 
-            if ($accResult[$i]['result_status'] == '4') {
+            if ($accResult[$i]['result_status'] == SAMPLE_STATUS\REJECTED) {
                 $data['is_sample_rejected'] = 'yes';
                 $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
             } else {

@@ -214,7 +214,7 @@ if ($result['result'] != null && trim((string) $result['result']) != '') {
 if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
     $smileyContent = '';
 }
-if ($result['result_status'] == '4') {
+if ($result['result_status'] == SAMPLE_STATUS\REJECTED) {
     $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
 }
 foreach ($covid19TestInfo as $indexKey => $rows) {
@@ -441,7 +441,7 @@ $html .= '<tr>';
 $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
 $html .= '</tr>';
 $html .= '</table>';
-if (($result['result'] != '') || ($result['result'] == '' && $result['result_status'] == '4')) {
+if (($result['result'] != '') || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
     $viewId = CommonService::encryptViewQRCode($result['unique_id']);
     $pdf->writeHTML($html);
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {

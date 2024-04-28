@@ -35,11 +35,8 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var GenericTestsService $genericService */
 $genericService = ContainerRegistry::get(GenericTestsService::class);
 
-
-
-
 $transactionId = $general->generateUUID();
-$arr = $general->getGlobalConfig();
+
 $user = null;
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];

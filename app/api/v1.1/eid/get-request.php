@@ -32,12 +32,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-
-
-
 $transactionId = $general->generateUUID();
 
-$arr = $general->getGlobalConfig();
 $user = null;
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];

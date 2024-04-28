@@ -16,6 +16,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
+use MysqliDb;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -156,7 +157,7 @@ class CommonService
         return $uuid;
     }
 
-    public function getClientIpAddress()
+    public function getClientIpAddress(): ?string
     {
         $ipAddress = null;
 
@@ -246,32 +247,38 @@ class CommonService
     }
 
 
-    public function fetchDataFromTable($tableName = null, $condition = null, $fieldName = null)
+    /**
+     *
+     * @param string $tableName
+     * @param string|array $conditions
+     * @param string|array $columns
+     * @param int|array|null $numRows number of rows to fetch
+     * @return array|null
+     * @throws Exception
+     */
+    public function fetchDataFromTable(string $tableName, string|array $conditions = [], string|array $columns = '*', $numRows = null): ?array
     {
-        //return once(function () use ($tableName, $condition, $fieldName) {
-
         if ($this->db == null || empty($tableName)) {
-            return false;
-        }
-        // Check is array or not
-        $fieldName = is_array($fieldName) ? implode(",", $fieldName) : $fieldName;
-
-        $fieldName = ($fieldName != null) ? $fieldName : '*';
-
-        $configQuery = "SELECT $fieldName FROM $tableName";
-
-        if ($condition != null) {
-            $configQuery .= " WHERE $condition ";
+            return null;
         }
 
-        if ($tableName == "testing_labs") {
-            $configQuery = "SELECT test_type, facility_id, updated_datetime, monthly_target, suppressed_monthly_target from $tableName";
-            if ($condition != null) {
-                $configQuery .= " WHERE $condition ";
+        if (!isset($columns) || $columns == '' || empty($columns)) {
+            $columns = '*';
+        }
+
+        if ($conditions !== '' && !empty($conditions)) {
+            $conditions = is_array($conditions) ? $conditions : [$conditions];
+            foreach ($conditions as $where) {
+                $this->db->where($where);
             }
         }
-        return $this->db->query($configQuery);
-        //});
+
+        $resultset = $this->db->get($tableName, $numRows, $columns);
+        if ($this->db->count > 0) {
+            return $resultset;
+        } else {
+            return null;
+        }
     }
 
     public static function encrypt($message, $key): string

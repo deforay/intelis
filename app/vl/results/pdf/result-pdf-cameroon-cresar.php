@@ -180,7 +180,7 @@ if (!empty($result)) {
      } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
           $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
           $showMessage = ($arr['h_vl_msg']);
-     } elseif ($result['result_status'] == '4' || $result['is_sample_rejected'] == 'yes') {
+     } elseif ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
           $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
      }
 

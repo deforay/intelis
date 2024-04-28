@@ -19,13 +19,12 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$sarr = $general->getSystemConfig();
 
-$arr = $general->getGlobalConfig();
+$globalConfig = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
+$delimiter = $globalConfig['default_csv_delimiter'] ?? ',';
+$enclosure = $globalConfig['default_csv_enclosure'] ?? '"';
 
 
 if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) != "") {

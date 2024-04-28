@@ -281,7 +281,7 @@ if (!empty($requestResult)) {
         if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
             $smileyContent = '';
         }
-        if ($result['result_status'] == '4') {
+        if ($result['result_status'] == SAMPLE_STATUS\REJECTED) {
             $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
         }
         foreach ($covid19TestInfo as $indexKey => $rows) {
@@ -516,7 +516,7 @@ if (!empty($requestResult)) {
         if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
             $showQR = true;
         }
-        if (($showQR || !empty($result['result'])) || ($result['result'] == '' && $result['result_status'] == '4')) {
+        if (($showQR || !empty($result['result'])) || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
             $viewId = CommonService::encryptViewQRCode($result['unique_id']);
             $pdf->writeHTML($html);
             $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");

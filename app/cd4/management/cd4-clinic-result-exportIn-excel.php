@@ -21,10 +21,10 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $sarr = $general->getSystemConfig();
 
-$arr = $general->getGlobalConfig();
+$globalConfig = $general->getGlobalConfig();
 
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
+$delimiter = $globalConfig['default_csv_delimiter'] ?? ',';
+$enclosure = $globalConfig['default_csv_enclosure'] ?? '"';
 
 $key = (string) $general->getGlobalConfig('key');
 

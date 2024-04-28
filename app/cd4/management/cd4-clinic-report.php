@@ -11,8 +11,6 @@ require_once APPLICATION_PATH . '/header.php';
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 
-//$arr = $general->getGlobalConfig();
-
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);

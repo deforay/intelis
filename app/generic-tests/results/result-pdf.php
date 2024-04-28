@@ -305,7 +305,7 @@ if (!empty($requestResult)) {
           if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
                $smileyContent = '';
           }
-          if ($result['result_status'] == '4') {
+          if ($result['result_status'] == SAMPLE_STATUS\REJECTED) {
                $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
           }
           $html = '<table style="padding:4px 2px 2px 2px;width:100%;">';
@@ -439,20 +439,20 @@ if (!empty($requestResult)) {
 
           if (!empty($genericTestInfo) && $showHideTable == 'yes') {
                $w = 25;
-               if(isset($result['sub_tests']) && !empty($result['sub_tests'])){
+               if (isset($result['sub_tests']) && !empty($result['sub_tests'])) {
                     $titleTest = "Range";
-               }else{
+               } else {
                     $titleTest = "Platform";
                }
                /* Test Result Section */
                $innerHtml .= '<table border="0" style="padding:5px;">';
                $innerHtml .= '<tr>
-                    <th align="left" style="width:'.$w.'%;line-height:15px;font-size:11px;font-weight:bold;border-right-color:white;border-bottom-color:black;border-top-color:black;">Test Name</th>
-                    <th align="left" style="width:'.$w.'%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-right-color:white;border-bottom-color:black;border-top-color:black;">Result</th>';
-                    $innerHtml .= '<th align="left" style="width:'.$w.'%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-right-color:white;border-bottom-color:black;border-top-color:black;">'.$titleTest.'</th>';
-                    $innerHtml .= '<th align="left" style="width:'.$w.'%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-bottom-color:black;border-top-color:black;">Unit</th>
+                    <th align="left" style="width:' . $w . '%;line-height:15px;font-size:11px;font-weight:bold;border-right-color:white;border-bottom-color:black;border-top-color:black;">Test Name</th>
+                    <th align="left" style="width:' . $w . '%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-right-color:white;border-bottom-color:black;border-top-color:black;">Result</th>';
+               $innerHtml .= '<th align="left" style="width:' . $w . '%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-right-color:white;border-bottom-color:black;border-top-color:black;">' . $titleTest . '</th>';
+               $innerHtml .= '<th align="left" style="width:' . $w . '%;line-height:15px;font-size:11px;font-weight:bold;border-left-color:white;border-bottom-color:black;border-top-color:black;">Unit</th>
                </tr>';
-               if(isset($result['sub_tests']) && !empty($result['sub_tests'])){
+               if (isset($result['sub_tests']) && !empty($result['sub_tests'])) {
                     $subTestsList = explode("##", $result['sub_tests']);
                     $subTestCnt = count($subTestsList);
                     $n = 1;
@@ -483,13 +483,13 @@ if (!empty($requestResult)) {
                                    $lowRange = $testResultsAttribute['quantitative']['low_range'][$subTestKey[$subTestName]];
                               }
                          }
-     
+
                          if (isset($finalResult['finalResult']) && !empty($finalResult['finalResult'])) {
                               $innerHtml .= '<td style="line-height:10px;font-size:11px;' . $lastLineBorder . ';">' . ucwords($finalResult['finalResult']) . '</td>';
                          } else {
                               $innerHtml .= '<td style="line-height:10px;font-size:11px;' . $lastLineBorder . ';"></td>';
                          }
-     
+
                          if ((isset($highRange) && !empty($highRange)) || isset($thresholdRange) && !empty($thresholdRange) || isset($lowRange) && !empty($lowRange)) {
                               $innerHtml .= '<td align="left" style="line-height:10px;font-size:11px;' . $lastLineBorder . ';">
                               <span>' . $testResultsAttribute['quantitative']['high_range'][$subTestKey[$subTestName]] . '</span>-
@@ -504,24 +504,23 @@ if (!empty($requestResult)) {
                          } else {
                               $innerHtml .= '<td style="line-height:10px;font-size:11px;' . $lastLineBorder . ';">&nbsp; -</td>';
                          }
-     
+
                          $innerHtml .= '</tr>';
                          $n++;
                     }
-               }else{
+               } else {
                     foreach ($genericTestInfo as $indexKey => $rows) {
                          $lastLineBorder = '';
                          if ((count($genericTestInfo) - 1) == $indexKey) {
                               $lastLineBorder = 'border-bottom-color:black';
                          }
                          $innerHtml .= '<tr>';
-                         $innerHtml .= '     <td style="line-height:10px;font-size:11px;'.$lastLineBorder.';">' . $rows['test_name'] . '</td>';
-                         $innerHtml .= '     <td style="line-height:10px;font-size:11px;'.$lastLineBorder.';">' . ucwords($rows['result']) . '</td>';
-                         $innerHtml .= '     <td style="line-height:10px;font-size:11px;'.$lastLineBorder.';">' . ucwords($rows['testing_platform']) . '</td>';
-                         $innerHtml .= '     <td style="line-height:10px;font-size:11px;'.$lastLineBorder.';">' . $testUnits[$rows['result_unit']] . '</td>';
+                         $innerHtml .= '     <td style="line-height:10px;font-size:11px;' . $lastLineBorder . ';">' . $rows['test_name'] . '</td>';
+                         $innerHtml .= '     <td style="line-height:10px;font-size:11px;' . $lastLineBorder . ';">' . ucwords($rows['result']) . '</td>';
+                         $innerHtml .= '     <td style="line-height:10px;font-size:11px;' . $lastLineBorder . ';">' . ucwords($rows['testing_platform']) . '</td>';
+                         $innerHtml .= '     <td style="line-height:10px;font-size:11px;' . $lastLineBorder . ';">' . $testUnits[$rows['result_unit']] . '</td>';
                          $innerHtml .= '</tr>';
                     }
-
                }
                $innerHtml .= '</table>';
                $html .= $innerHtml;
@@ -680,7 +679,7 @@ if (!empty($requestResult)) {
           $html .= '</td>';
           $html .= '</tr>';
           $html .= '</table>';
-          if ($vlResult != '' || ($vlResult == '' && $result['result_status'] == '4')) {
+          if ($vlResult != '' || ($vlResult == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
                $pdf->writeHTML($html);
                $pdf->lastPage();
                $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

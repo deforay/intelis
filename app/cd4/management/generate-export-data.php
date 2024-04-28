@@ -21,11 +21,11 @@ $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 $hepatitisResults = $hepatitisService->getHepatitisResults();
 
-$arr = $general->getGlobalConfig();
+$globalConfig = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
+$delimiter = $globalConfig['default_csv_delimiter'] ?? ',';
+$enclosure = $globalConfig['default_csv_enclosure'] ?? '"';
 
 if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatitisResultQuery']) != "") {
 

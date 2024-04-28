@@ -176,7 +176,7 @@ if (!empty($requestResult)) {
                 $smileyContent = '';
             }
         }
-        if ($result['result_status'] == '4') {
+        if ($result['result_status'] == SAMPLE_STATUS\REJECTED) {
             $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
         }
         if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
@@ -417,7 +417,7 @@ if (!empty($requestResult)) {
         $html .= '</td>';
         $html .= '</tr>';
         $html .= '</table>';
-        if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+        if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
             $pdf->writeHTML($html);
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

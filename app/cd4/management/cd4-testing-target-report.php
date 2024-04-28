@@ -27,8 +27,6 @@ $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 //config  query
 
-//$arr = $general->getGlobalConfig();
-
 $sQuery = "SELECT * FROM r_cd4_sample_types where status='active'";
 $sResult = $db->rawQuery($sQuery);
 

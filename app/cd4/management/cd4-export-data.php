@@ -27,8 +27,6 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 
-$arr = $general->getGlobalConfig();
-
 $sQuery = "SELECT * FROM r_cd4_sample_types where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
@@ -73,7 +71,6 @@ $state = $geolocationService->getProvinces("yes");
 	</section>
 	<!-- Main content -->
 	<section class="content">
-		<!-- <pre><?php print_r($arr); ?></pre> -->
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
@@ -122,7 +119,7 @@ $state = $geolocationService->getProvinces("yes");
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="filter-input form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 
-							
+
 							<th scope="row"><?php echo _translate("Last Print Date"); ?></th>
 							<td>
 								<input type="text" id="printDate" name="printDate" class="filter-input form-control" placeholder="<?php echo _translate('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
@@ -140,7 +137,7 @@ $state = $geolocationService->getProvinces("yes");
 							</td>
 						</tr>
 						<tr>
-							
+
 							<td><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
@@ -169,7 +166,7 @@ $state = $geolocationService->getProvinces("yes");
 							</td>
 						</tr>
 						<tr>
-							
+
 							<td><strong><?php echo _translate("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
@@ -187,7 +184,7 @@ $state = $geolocationService->getProvinces("yes");
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
 						</tr>
-						
+
 						<tr>
 							<td colspan="6">
 								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>

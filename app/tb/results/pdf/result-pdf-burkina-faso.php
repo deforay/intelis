@@ -13,8 +13,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 if (!empty($result)) {
 
-    $tbXPertResults = $tbService->getTbResults('x-pert');
-    $countryFormId = (int) $general->getGlobalConfig('vl_form');        
+     $tbXPertResults = $tbService->getTbResults('x-pert');
+     $countryFormId = (int) $general->getGlobalConfig('vl_form');
 
      $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
      $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? '', true);
@@ -38,13 +38,13 @@ if (!empty($result)) {
                $reviewedBy = $reviewedByRes['user_name'];
           }
      } else {
-          if(!empty($result['defaultReviewedBy'])){
+          if (!empty($result['defaultReviewedBy'])) {
                $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
                if ($reviewedByRes) {
-                   $reviewedBy = $reviewedByRes['user_name'];
+                    $reviewedBy = $reviewedByRes['user_name'];
                }
-               if(empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
-                    $result['result_reviewed_datetime'] = $result['sample_tested_datetime'] ;
+               if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
                }
           }
      }
@@ -64,13 +64,13 @@ if (!empty($result)) {
           $resultApprovedBy = ($result['approvedBy']);
           $approvedByRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
      } else {
-          if(!empty($result['defaultApprovedBy'])){
+          if (!empty($result['defaultApprovedBy'])) {
                $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
                if ($approvedByRes) {
-                   $resultApprovedBy = $approvedByRes['user_name'];
+                    $resultApprovedBy = $approvedByRes['user_name'];
                }
-               if(empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
-                    $result['result_approved_datetime'] = $result['sample_tested_datetime'] ;
+               if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_approved_datetime'] = $result['sample_tested_datetime'];
                }
           }
      }
@@ -88,7 +88,7 @@ if (!empty($result)) {
      if (!empty($approvedByRes['user_signature'])) {
           $approvedSignaturePath =  $approvedByRes['user_signature'];
      }
-   
+
      //Set watermark text
      if (!empty($mFieldArray)) {
           for ($m = 0; $m < count($mFieldArray); $m++) {
@@ -185,7 +185,7 @@ if (!empty($result)) {
      $tndMessage = '';
      $messageTextSize = '15px';
 
-    if ($result['result_status'] == '4' || $result['is_sample_rejected'] == 'yes') {
+     if ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
           $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
      }
 
@@ -200,10 +200,10 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:2px;">';
      $html .= '<tr>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("REQUESTING HEALTH FACILITY NAME") .'</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("HEALTH FACILITY CODE") .'</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("REGION") .'</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("DISTRICT") .'</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("REQUESTING HEALTH FACILITY NAME") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH FACILITY CODE") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("REGION") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DISTRICT") . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_name']) . '</td>';
@@ -218,24 +218,24 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:4px 2px 2px 2px;">';
      $html .= '<tr>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("PATIENT NAME") .'</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("PATIENT ID") .'</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("DOB") .'</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("AGE") .'</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT NAME") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT ID") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DOB") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("AGE") . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     
+
      if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-        $key = (string) $general->getGlobalConfig('key');
-        $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
-        $patientFname = $general->crypto('decrypt', $patientFname, $key);
-        $patientLname = $general->crypto('decrypt', $patientLname, $key);
-    }
-    if(isset($tbInfo['reason_for_tb_test']) && !empty($tbInfo['reason_for_tb_test'])){
-        $reasonForTbTest = json_decode($tbInfo['reason_for_tb_test']);
-        $diagnosis = (array)$reasonForTbTest->elaboration->diagnosis;
-        $followup = (array)$reasonForTbTest->elaboration->followup;
-    }
+          $key = (string) $general->getGlobalConfig('key');
+          $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
+          $patientFname = $general->crypto('decrypt', $patientFname, $key);
+          $patientLname = $general->crypto('decrypt', $patientLname, $key);
+     }
+     if (isset($tbInfo['reason_for_tb_test']) && !empty($tbInfo['reason_for_tb_test'])) {
+          $reasonForTbTest = json_decode($tbInfo['reason_for_tb_test']);
+          $diagnosis = (array)$reasonForTbTest->elaboration->diagnosis;
+          $followup = (array)$reasonForTbTest->elaboration->followup;
+     }
 
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . ' ' . $patientLname . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_id'] . '</td>';
@@ -250,10 +250,10 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:8px 2px 2px 2px;">';
      $html .= '<tr>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("GENDER") .'</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("WEIGHT(kg)") .'</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("DISPLACED POPULATION") .'</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("COMMUNITY ACTOR") .'</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("GENDER") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("WEIGHT(kg)") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DISPLACED POPULATION") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("COMMUNITY ACTOR") . '</td>';
      $html .= '</tr>';
 
      $html .= '<tr>';
@@ -269,9 +269,9 @@ if (!empty($result)) {
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">'._translate("SAMPLE ID") .'</td>';
-     $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">'._translate("SAMPLE COLLECTION DATE") .'</td>';
-     $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">'._translate("SAMPLE RECEIPT DATE") .'</td>';
+     $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SAMPLE ID") . '</td>';
+     $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SAMPLE COLLECTION DATE") . '</td>';
+     $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SAMPLE RECEIPT DATE") . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_code'] . '</td>';
@@ -279,9 +279,9 @@ if (!empty($result)) {
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_received_at_lab_datetime'] . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("SAMPLE REJECTION STATUS") .'</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("SAMPLE TEST DATE") .'</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("RESULT RELEASE DATE") .'</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SAMPLE REJECTION STATUS") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SAMPLE TEST DATE") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("RESULT RELEASE DATE") . '</td>';
      $html .= '</tr>';
      $rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected';
      $html .= '<tr>';
@@ -291,7 +291,7 @@ if (!empty($result)) {
      $html .= '</tr>';
 
      $html .= '<tr>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("SAMPLE TYPE") .'</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SAMPLE TYPE") . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_name']) . '</td>';
@@ -302,15 +302,15 @@ if (!empty($result)) {
           $html .= '<tr>';
           $html .= '<td colspan="4">';
           $html .= '<table style="padding:2px;">
-                  <tr><th colspan="3" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;text-align:center;">'._translate("Microscopy Test Results") .'</th></tr>
+                  <tr><th colspan="3" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;text-align:center;">' . _translate("Microscopy Test Results") . '</th></tr>
                   <tr>
-                      <td align="center" width="10%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">'._translate("No AFB") .'</td>
-                      <td align="center" width="50%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">'._translate("Result") .'</td>
-                      <td align="center" width="40%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">'._translate("Actual No") .'</td>
+                      <td align="center" width="10%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">' . _translate("No AFB") . '</td>
+                      <td align="center" width="50%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">' . _translate("Result") . '</td>
+                      <td align="center" width="40%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">' . _translate("Actual No") . '</td>
                   </tr>';
 
           foreach ($tbTestInfo as $indexKey => $rows) {
-              $html .= '<tr>
+               $html .= '<tr>
                       <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . ($indexKey + 1) . '</td>
                       <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . $rows['test_result'] . '</td>
                       <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . $rows['actual_no'] . '</td>
@@ -319,17 +319,17 @@ if (!empty($result)) {
           $html .= '</table>';
           $html .= '</td>';
           $html .= '</tr>';
-      }
+     }
      $html .= '<tr>';
      $html .= '<td colspan="3">';
-        $html .= '<table style="padding:10px 2px 2px 2px;">';
-        $logValue = '';
+     $html .= '<table style="padding:10px 2px 2px 2px;">';
+     $logValue = '';
 
-        $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;width:90%;">&nbsp;&nbsp;'._translate("XPERT MTB Result") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . ucwords($tbXPertResults[$result['xpert_mtb_result']]) . '</td><td style="width:10%;">' . $smileyContent . '</td></tr>';
-        if ($result['reason_for_sample_rejection'] != '' && $result['is_sample_rejected'] == 'yes') {
-            $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;'._translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
-        }
-        $html .= '</table>';
+     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;width:90%;">&nbsp;&nbsp;' . _translate("XPERT MTB Result") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . ucwords($tbXPertResults[$result['xpert_mtb_result']]) . '</td><td style="width:10%;">' . $smileyContent . '</td></tr>';
+     if ($result['reason_for_sample_rejection'] != '' && $result['is_sample_rejected'] == 'yes') {
+          $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
+     }
+     $html .= '</table>';
      $html .= '</td>';
      $html .= '</tr>';
 
@@ -340,9 +340,9 @@ if (!empty($result)) {
      if ($result['is_sample_rejected'] == 'no') {
           if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
                $html .= '<tr>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("TESTED BY") .'</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("SIGNATURE") .'</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("DATE") .'</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("TESTED BY") . '</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
                $html .= '</tr>';
 
                $html .= '<tr>';
@@ -362,9 +362,9 @@ if (!empty($result)) {
           $html .= '</tr>';
 
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("REVIEWED BY") .'</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("SIGNATURE") .'</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("DATE") .'</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("REVIEWED BY") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
           $html .= '</tr>';
 
           $html .= '<tr>';
@@ -381,9 +381,9 @@ if (!empty($result)) {
      if (!empty($revisedBy)) {
 
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("REPORT REVISED BY") .'</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("SIGNATURE") .'</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("DATE") .'</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("REPORT REVISED BY") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
           $html .= '</tr>';
 
           $html .= '<tr>';
@@ -402,9 +402,9 @@ if (!empty($result)) {
      $html .= '</tr>';
      if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("APPROVED BY").'</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("SIGNATURE").'</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">'._translate("DATE").'</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("APPROVED BY") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
           $html .= '</tr>';
 
           $html .= '<tr>';
@@ -425,7 +425,7 @@ if (!empty($result)) {
           $html .= '<td colspan="3" style="line-height:20px;"></td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;"><strong>'._translate("Lab Comments").':</strong> ' . $result['lab_tech_comments'] . '</td>';
+          $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;"><strong>' . _translate("Lab Comments") . ':</strong> ' . $result['lab_tech_comments'] . '</td>';
           $html .= '</tr>';
 
           $html .= '<tr>';
@@ -438,16 +438,16 @@ if (!empty($result)) {
 
      $html .= '<tr>';
      $html .= '<td colspan="3">';
-        $html .= '<table>';
-            $html .= '<tr>';
-            $html .= '<td style="font-size:10px;text-align:center;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
-            $html .= '</tr>';
-        $html .= '</table>';
+     $html .= '<table>';
+     $html .= '<tr>';
+     $html .= '<td style="font-size:10px;text-align:center;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
+     $html .= '</tr>';
+     $html .= '</table>';
      $html .= '</td>';
      $html .= '</tr>';
      $html .= '</table>';
 
-     if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+     if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
           $pdf->writeHTML($html);
           $pdf->lastPage();
           $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

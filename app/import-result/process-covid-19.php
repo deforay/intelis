@@ -152,7 +152,7 @@ try {
                     $data['result_approved_datetime'] = DateUtility::getCurrentDateTime();
                     $sampleVal = $rResult['sample_code'];
 
-                    if ($status[$i] == '4') {
+                    if ($status[$i] == SAMPLE_STATUS\REJECTED) {
                         $data['is_sample_rejected'] = 'yes';
                         $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                         $data['result'] = null;
@@ -259,7 +259,7 @@ try {
                 }
             }
 
-            if ($accResult[$i]['result_status'] == '4') {
+            if ($accResult[$i]['result_status'] == SAMPLE_STATUS\REJECTED) {
                 $data['is_sample_rejected'] = 'yes';
                 $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                 $data['result'] = null;

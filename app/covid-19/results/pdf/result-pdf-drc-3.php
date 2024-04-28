@@ -253,7 +253,7 @@ if ($result['result'] != null && trim((string) $result['result']) != '') {
         $smileyContent = '';
     }
 }
-if ($result['result_status'] == '4') {
+if ($result['result_status'] == SAMPLE_STATUS\REJECTED) {
     $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
 }
 if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
@@ -393,7 +393,7 @@ $html .= '</tr>'; */
 $html .= '</table>';
 $html .= '</td></tr></table>';
 
-if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
     $viewId = CommonService::encryptViewQRCode($result['unique_id']);
     $pdf->writeHTML($html);
 

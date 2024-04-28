@@ -37,7 +37,7 @@ try {
         if (empty($reviewd['result_approved_by'])) {
             $status['result_approved_by'] = $_SESSION['userId'];
         }
-        if ($_POST['status'] == '4') {
+        if ($_POST['status'] == SAMPLE_STATUS\REJECTED) {
             $status['result'] = null;
             $status['is_sample_rejected'] = 'yes';
             $status['reason_for_sample_rejection'] = $_POST['rejectedReason'];
