@@ -703,7 +703,7 @@ $sFormat = '';
                                                   </div> <!-- /printer_select -->
                                              <?php } ?>
                                              <!-- BARCODESTUFF END -->
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow('save');return false;">Save</a>
                                              <input type="hidden" name="saveNext" id="saveNext" />
                                              <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
                                                   <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
@@ -711,7 +711,7 @@ $sFormat = '';
                                              <?php } ?>
                                              <input type="hidden" name="cd4SampleId" id="cd4SampleId" value="" />
                                              <input type="hidden" name="provinceId" id="provinceId" />
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow('next');return false;">Save and Next</a>
                                              <a href="/cd4/requests/cd4-requests.php" class="btn btn-default"> Cancel</a>
                                         </div>
                                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
@@ -742,8 +742,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 <!-- BARCODESTUFF END -->
 <script>
-     provinceName = true;
-     facilityName = true;
+     let provinceName = true;
+     let facilityName = true;
 
      $(document).ready(function() {
           Utilities.autoSelectSingleOption('facilityId');
@@ -1017,7 +1017,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-     function validateNow() {
+     function validateNow(nextStep) {
+
+          $("#saveNext").val(nextStep);
+
+          let formId = 'cd4RequestFormRwd';
+
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
@@ -1028,58 +1033,24 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                return false;
           }
 
-          flag = deforayValidator.init({
-               formId: 'cd4RequestFormRwd'
-          });
-          $('.isRequired').each(function() {
-               ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
-          });
-          var userType = "<?php echo $sarr['sc_user_type']; ?>";
-          if (userType != 'remoteuser') {
-               if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
-                    alert("Please make sure enter DOB or Age");
-                    return false;
-               }
-          }
-          $("#saveNext").val('save');
-          if (flag) {
-               $('.btn-disabled').attr('disabled', 'yes');
-               $(".btn-disabled").prop("onclick", null).off("click");
-               $.blockUI();
-               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                    insertSampleCode('cd4RequestFormRwd', 'cd4SampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 7, 'sampleCollectionDate');
-               <?php } else { ?>
-                    document.getElementById('cd4RequestFormRwd').submit();
-               <?php } ?>
-          }
-     }
-
-     function validateSaveNow() {
-          var format = '<?php echo $arr['sample_code']; ?>';
-          var sCodeLentgh = $("#sampleCode").val();
-
-          var minLength = '<?php echo $arr['min_length']; ?>';
-          if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
-               alert("Sample ID length must be a minimum length of " + minLength + " characters");
+          if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
+               alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
                return false;
           }
 
           flag = deforayValidator.init({
-               formId: 'cd4RequestFormRwd'
+               formId: formId
           });
+
           $('.isRequired').each(function() {
                ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
           });
-          $("#saveNext").val('next');
+
           if (flag) {
                $('.btn-disabled').attr('disabled', 'yes');
                $(".btn-disabled").prop("onclick", null).off("click");
                $.blockUI();
-               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                    insertSampleCode('cd4RequestFormRwd', 'cd4SampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 7, 'sampleCollectionDate');
-               <?php } else { ?>
-                    document.getElementById('cd4RequestFormRwd').submit();
-               <?php } ?>
+               insertSampleCode(formId);
           }
      }
 

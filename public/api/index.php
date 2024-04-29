@@ -19,7 +19,7 @@ use Slim\Middleware\BodyParsingMiddleware;
 $container = new Container();
 AppFactory::setContainer($container);
 
-$app = AppFactory::create();
+$apiService = AppFactory::create();
 $serverRequestCreator = ServerRequestCreatorFactory::create();
 $request = $serverRequestCreator->createServerRequestFromGlobals();
 
@@ -65,7 +65,7 @@ $middlewarePipe->pipe(ContainerRegistry::get(ApiAuthMiddleware::class));
 $middlewarePipe->pipe(ContainerRegistry::get(ApiErrorHandlingMiddleware::class));
 
 //API Routes
-$app->any('/api/v1.1/init', function ($request, $response, $args) {
+$apiService->any('/api/v1.1/init', function ($request, $response, $args) {
     // Start output buffering
     ob_start();
     require_once APPLICATION_PATH . '/api/v1.1/init.php';
@@ -92,7 +92,7 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
     return $response->withHeader('Content-Length', (string) $length);
 }));
 
-$app->add($middlewarePipe);
+$apiService->add($middlewarePipe);
 
 
-$app->run();
+$apiService->run();

@@ -192,7 +192,7 @@ try {
                 'result' => $d['result'],
             );
 
-            if ($batchCode == '') {
+            if ($batchCode == '' || empty($batchCode)) {
                 $data['batch_code'] = $newBatchCode;
                 $data['batch_code_key'] = $maxBatchCodeKey;
             } else {

@@ -35,12 +35,15 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
 $transactionId = $general->generateUUID();
 
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = $general->getAuthorizationBearerToken();
+$authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 
 

@@ -304,4 +304,32 @@ class ApiService
         header('Content-Length: ' . mb_strlen($gzipPayload, '8bit'));
         return $gzipPayload;
     }
+
+    /**
+     * Retrieves the bearer token from the Authorization header using ServerRequestInterface.
+     *
+     * @param ServerRequestInterface $request The request object.
+     * @return string|null Returns the bearer token if present, otherwise null.
+     */
+    public function getAuthorizationBearerToken(ServerRequestInterface $request): ?string
+    {
+        $authorization = $request->getHeaderLine('Authorization');
+        if (preg_match('/Bearer\s+(\S+)/', $authorization, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * Retrieves a specific header value from the request.
+     *
+     * @param ServerRequestInterface $request The request object.
+     * @param string $key The header key to retrieve.
+     * @return string|null Returns the header value if present, otherwise null.
+     */
+    public function getHeader(ServerRequestInterface $request, string $key): ?string
+    {
+        return $request->getHeaderLine($key);
+    }
 }

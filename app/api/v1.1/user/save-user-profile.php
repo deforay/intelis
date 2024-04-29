@@ -30,8 +30,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-/** @var ApiService $app */
-$app = ContainerRegistry::get(ApiService::class);
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 
@@ -43,7 +43,7 @@ try {
     ini_set('memory_limit', -1);
     set_time_limit(0);
     ini_set('max_execution_time', 20000);
-    $authToken = $general->getAuthorizationBearerToken();
+    $authToken = $apiService->getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
     if (!empty($origJson)) {
         $input = _sanitizeInput($request->getParsedBody());

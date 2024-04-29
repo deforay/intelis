@@ -1388,7 +1388,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-     function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
+     function insertSampleCode(formId, vlSampleId = null, sampleCode = null, sampleCodeKey = null, sampleCodeFormat = null, countryId = null, sampleCollectionDate = null, provinceCode = null, provinceId = null) {
           $.blockUI();
           let formData = $("#" + formId).serialize();
           formData += "&provinceCode=" + encodeURIComponent(provinceCode);
@@ -1568,9 +1568,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     if (data != "") {
                          $("#subTestResult").append(data);
                          $("#subTestResult").multipleSelect({
-                               placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
-                               width: '100%'
-                          });
+                              placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
+                              width: '100%'
+                         });
                          var length = $('#mySelectList > option').length;
                          if (length > 1) {
                               $('.subTestFields').show();
@@ -1588,8 +1588,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('.ins-row-' + row + subrow).addClass('disabled');
           testCounter = (subrow + 1);
           options = $("#finalResult" + row).html();
-          testMethodOptions = $("#testName" + row+(testCounter-1)).html();
-          if($('.qualitative-field').hasClass('testResultUnit')){
+          testMethodOptions = $("#testName" + row + (testCounter - 1)).html();
+          if ($('.qualitative-field').hasClass('testResultUnit')) {
                unitTest = `<td class="testResultUnit">
                     <select class="form-control resultUnit" id="testResultUnit${row}${testCounter}" name="testResultUnit[${subTest}][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
                          <option value="">--Select--</option>

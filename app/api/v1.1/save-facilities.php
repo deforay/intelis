@@ -35,6 +35,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
 try {
 
     $db->beginTransaction();
@@ -73,14 +76,14 @@ try {
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
 
-    $authToken = $general->getAuthorizationBearerToken();
+    $authToken = $apiService->getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
     $instanceId = $general->getInstanceId();
 
     $version = $vlsmSystemConfig['sc_version'];
-    $deviceId = $general->getHeader('deviceId');
+    $deviceId = $apiService->getHeader($request, 'deviceId');
 
 
     foreach ($input as $rootKey => $data) {

@@ -27,6 +27,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
@@ -42,7 +45,7 @@ $user = null;
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = $general->getAuthorizationBearerToken();
+$authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 
 

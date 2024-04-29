@@ -42,7 +42,7 @@ try {
     $totalIds = count($id);
     $status = explode(",", (string) $_POST['status']);
     $rejectedReasonId = explode(",", (string) $_POST['rejectReasonId']);
-    if ($_POST['value'] != '') {
+    if ($_POST['value'] != '' && !empty($_POST['value'])) {
         for ($i = 0; $i < $totalIds; $i++) {
             $sQuery = "SELECT * FROM temp_sample_import WHERE imported_by =? AND temp_sample_id= ?";
             $rResult = $db->rawQueryOne($sQuery, [$importedBy, $id[$i]]);
@@ -94,9 +94,9 @@ try {
                 $data['status'] = $status[$i];
 
                 $bquery = "SELECT * FROM batch_details WHERE batch_code= ?";
-                $bvlResult = $db->rawQuery($bquery, [$rResult['batch_code']]);
+                $bvlResult = $db->rawQueryOne($bquery, [$rResult['batch_code']]);
                 if ($bvlResult) {
-                    $data['batch_id'] = $bvlResult[0]['batch_id'];
+                    $data['batch_id'] = $bvlResult['batch_id'];
                 } else {
                     $batchResult = $db->insert('batch_details', [
                         'test_type' => 'vl',
@@ -165,11 +165,12 @@ try {
                     }
                     //get bacth code
                     $bquery = "SELECT * FROM batch_details WHERE batch_code= ?";
-                    $bvlResult = $db->rawQuery($bquery, [$rResult['batch_code']]);
+                    $bvlResult = $db->rawQueryOne($bquery, [$rResult['batch_code']]);
                     if ($bvlResult) {
-                        $data['sample_batch_id'] = $bvlResult[0]['batch_id'];
+                        $data['sample_batch_id'] = $bvlResult['batch_id'];
                     } else {
                         $batchResult = $db->insert('batch_details', [
+                            'test_type' => 'vl',
                             'batch_code' => $rResult['batch_code'],
                             'batch_code_key' => $rResult['batch_code_key'],
                             'sent_mail' => 'no',
@@ -216,14 +217,14 @@ try {
             if (isset($vlSampleId) && $vlSampleId != "") {
                 $db->insert(
                     'log_result_updates',
-                    array(
+                    [
                         "user_id" => $_SESSION['userId'],
                         "vl_sample_id" => $vlSampleId,
                         "test_type" => "vl",
                         "result_method" => "import",
                         "file_name" => $rResult['import_machine_file_name'],
                         "updated_datetime" => DateUtility::getCurrentDateTime()
-                    )
+                    ]
                 );
             }
             $db->where('temp_sample_id', $id[$i]);
@@ -291,11 +292,12 @@ try {
 
             //get bacth code
             $bquery = "SELECT * FROM batch_details WHERE batch_code= ?";
-            $bvlResult = $db->rawQuery($bquery, [$accResult[$i]['batch_code']]);
+            $bvlResult = $db->rawQueryOne($bquery, [$accResult[$i]['batch_code']]);
             if ($bvlResult) {
-                $data['sample_batch_id'] = $bvlResult[0]['batch_id'];
+                $data['sample_batch_id'] = $bvlResult['batch_id'];
             } else {
                 $batchResult = $db->insert('batch_details', [
+                    'test_type' => 'vl',
                     'batch_code' => $accResult[$i]['batch_code'],
                     'batch_code_key' => $accResult[$i]['batch_code_key'],
                     'sent_mail' => 'no',

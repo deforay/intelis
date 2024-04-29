@@ -1,20 +1,17 @@
 <?php
 
+use App\Services\EidService;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Services\DatabaseService;
-use App\Services\EidService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-$tableName = "temp_sample_import";
-$primaryKey = "temp_sample_id";
 
 $importedBy = $_SESSION['userId'];
 $module = $_POST['module'];
@@ -43,7 +40,6 @@ if ($module == 'vl') {
 }
 
 
-
 $allowImportingNonMatchingSamples = $general->getGlobalConfig('import_non_matching_sample');
 if (!empty($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSamples == 'no') {
     $sql = "DELETE t
@@ -52,7 +48,6 @@ if (!empty($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSampl
             WHERE t.imported_by = ? AND f.sample_code IS NULL;";
     $db->rawQuery($sql, [$importedBy]);
 }
-$joinTypeWithTestTable = 'LEFT JOIN';
 
 $dtsQuery = "SELECT SQL_CALC_FOUND_ROWS tsr.temp_sample_id,
                 tsr.module,tsr.sample_code,tsr.sample_details,
@@ -68,7 +63,7 @@ $dtsQuery = "SELECT SQL_CALC_FOUND_ROWS tsr.temp_sample_id,
                     tsr.sample_type,tsr.result,
                     tsr.result_status,ts.status_name
                     FROM temp_sample_import as tsr
-                    $joinTypeWithTestTable $mainTableName as vl ON vl.sample_code=tsr.sample_code
+                    LEFT JOIN $mainTableName as vl ON vl.sample_code=tsr.sample_code
                     LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                     LEFT JOIN $rejectionTableName as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
                     INNER JOIN r_sample_status as ts ON ts.status_id=tsr.result_status";
@@ -77,13 +72,13 @@ if (isset($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSample
     //check matched samples avaiable or not
     $sampleQuery = "SELECT tsr.temp_sample_id,vl.sample_collection_date
     FROM temp_sample_import as tsr
-    $joinTypeWithTestTable $mainTableName as vl
+    LEFT JOIN $mainTableName as vl
     ON vl.sample_code=tsr.sample_code";
     $sampleResultResult = $db->rawQuery($sampleQuery);
     if (empty($sampleResultResult)) {
         $db->where('sample_type', 'S');
-        $delId = $db->delete($tableName);
-        $joinTypeWithTestTable = 'LEFT JOIN';
+        $delId = $db->delete('temp_sample_import');
+
         $dtsQuery = "SELECT
                     SQL_CALC_FOUND_ROWS tsr.temp_sample_id,tsr.sample_code,
                     tsr.sample_details,tsr.result_value_absolute,
@@ -95,7 +90,7 @@ if (isset($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSample
                     fd.facility_name,rsrr.rejection_reason_name,tsr.sample_type,
                     tsr.result,tsr.result_status,ts.status_name
                     FROM temp_sample_import as tsr
-                    $joinTypeWithTestTable $mainTableName as vl ON vl.sample_code=tsr.sample_code
+                    LEFT JOIN $mainTableName as vl ON vl.sample_code=tsr.sample_code
                     LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                     LEFT JOIN $rejectionTableName as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
                     INNER JOIN r_sample_status as ts ON ts.status_id=tsr.result_status";
@@ -132,9 +127,9 @@ $aColumns = array('tsr.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-
 $orderColumns = array('tsr.sample_code', 'vl.sample_collection_date', 'tsr.sample_tested_datetime', 'fd.facility_name', 'rsrr.rejection_reason_name', 'tsr.sample_type', 'tsr.result', 'ts.status_name');
 
 /* Indexed column (used for fast and accurate table cardinality) */
-$sIndexColumn = $primaryKey;
+$sIndexColumn = "temp_sample_id";
 
-$sTable = $tableName;
+$sTable = 'temp_sample_import';
 /*
          * Paging
          */
@@ -238,10 +233,10 @@ foreach ($rResult as $aRow) {
     $status = '';
     if (isset($aRow['sample_code']) && trim((string) $aRow['sample_code']) != '') {
         $batchCodeQuery = "SELECT batch_code from batch_details as b_d INNER JOIN $mainTableName as vl ON vl.sample_batch_id = b_d.batch_id WHERE vl.sample_code = ?";
-        $batchCodeResult = $db->rawQuery($batchCodeQuery, array($aRow['sample_code']));
+        $batchCodeResult = $db->rawQueryOne($batchCodeQuery, array($aRow['sample_code']));
         if (!empty($batchCodeResult)) {
-            $batchCode = "'" . $batchCodeResult[0]['batch_code'] . "'";
-            $aRow['batch_code'] = $batchCodeResult[0]['batch_code'];
+            $batchCode = "'" . $batchCodeResult['batch_code'] . "'";
+            $aRow['batch_code'] = $batchCodeResult['batch_code'];
         }
     }
     if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
@@ -255,17 +250,17 @@ foreach ($rResult as $aRow) {
         $aRow['sample_tested_datetime'] = '';
     }
     //if($aRow['sample_type']=='s' || $aRow['sample_type']=='S'){
-    if ($aRow['sample_details'] == 'Result already exists') {
-        $rsDetails = 'Existing Result';
+    if ($aRow['sample_details'] == _translate('Result already exists')) {
+        $rsDetails = _translate('Existing Result');
         $color = '<span style="color:#FFC300;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
     }
-    if ($aRow['sample_details'] == 'New Sample') {
-        $rsDetails = 'Unknown Sample';
+    if ($aRow['sample_details'] == _translate('New Sample')) {
+        $rsDetails = _translate('Unknown Sample');
         $color = '<span style="color:#e8000b;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
     }
     //if($aRow['sample_details']==''){
     else {
-        $rsDetails = 'Result for Sample';
+        $rsDetails = _translate('Result for Sample');
         $color = '<span style="color:#337ab7;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
     }
     //}

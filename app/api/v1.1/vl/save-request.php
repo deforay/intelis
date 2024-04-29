@@ -79,7 +79,7 @@ try {
     $txtVal = null;
     $finalResult = null;
 
-    $authToken = $general->getAuthorizationBearerToken();
+    $authToken = $apiService->getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
@@ -87,7 +87,7 @@ try {
     $formId = $globalConfig['vl_form'];
 
     $version = $vlsmSystemConfig['sc_version'];
-    $deviceId = $general->getHeader('deviceId');
+    $deviceId = $apiService->getHeader($request, 'deviceId');
 
 
     $dataCounter = 0;

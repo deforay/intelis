@@ -26,8 +26,8 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-/** @var ApiService $app */
-$app = ContainerRegistry::get(ApiService::class);
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);

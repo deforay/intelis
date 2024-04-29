@@ -304,7 +304,7 @@ try {
           'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'] ?? null
      );
 
-     if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
+     if (isset($_POST['freezer']) && $_POST['freezer'] != "" && !empty($_POST['freezer'])) {
           $countChar = substr_count($_POST['freezer'], "-");
 
           if (isset($countChar) && $countChar > 2) {

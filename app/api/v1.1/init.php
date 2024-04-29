@@ -27,8 +27,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var ApiService $app */
-$app = ContainerRegistry::get(ApiService::class);
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -42,7 +42,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $transactionId = $general->generateUUID();
 $formId = $general->getGlobalConfig('vl_form');
 
-$authToken = $general->getAuthorizationBearerToken();
+$authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 $updatedDateTime = $input['latestDateTime'] ?? null;
 /* Status name list */

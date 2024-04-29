@@ -1,14 +1,13 @@
 <?php
 
-use App\Exceptions\SystemException;
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
+use App\Services\UsersService;
+use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\UsersService;
-use App\Utilities\DateUtility;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -33,15 +32,15 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 $user = null;
-/* echo "<pre>";
-print_r($input);
-die; */
+
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = $general->getAuthorizationBearerToken();
+$authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 try {
     $transactionId = $general->generateUUID();

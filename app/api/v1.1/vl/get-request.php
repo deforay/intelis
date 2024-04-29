@@ -36,8 +36,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-/** @var ApiService $app */
-$app = ContainerRegistry::get(ApiService::class);
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 
@@ -46,7 +46,7 @@ $user = null;
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = $general->getAuthorizationBearerToken();
+$authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 try {
     $sQuery = "SELECT

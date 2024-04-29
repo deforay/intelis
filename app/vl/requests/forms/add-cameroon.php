@@ -106,7 +106,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                             <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" />
                                                        <?php } else { ?>
                                                             <label for="sampleCode"><?= _translate('Sample ID'); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="<?= _translate('Enter Sample ID'); ?>" title="<?= _translate('Please enter sample id'); ?>" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample id already exists. Try another',null)" />
+                                                            <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="<?= _translate('Enter Sample ID'); ?>" title="<?= _translate('Please enter Sample ID'); ?>" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample id already exists. Try another',null)" />
                                                        <?php } ?>
                                                   </div>
                                              </div>
@@ -352,7 +352,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                   <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for=""><?= _translate('Date of Sample Collection'); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" title="<?= _translate('Please select sample collection date'); ?>" onchange="generateSampleCode()">
+                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" title="<?= _translate('Please select sample collection date'); ?>" onchange="generateSampleCode();">
                                                        </div>
                                                   </div>
                                                   <div class="col-md-3">
@@ -680,7 +680,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                   </div> <!-- /printer_select -->
                                              <?php } ?>
                                              <!-- BARCODESTUFF END -->
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;"><?= _translate('Save'); ?></a>
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow('save');return false;"><?= _translate('Save'); ?></a>
                                              <input type="hidden" name="saveNext" id="saveNext" />
                                              <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
                                                   <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="" />
@@ -688,7 +688,7 @@ foreach ($testReasonsResultDetails as $row) {
                                              <?php } ?>
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <input type="hidden" name="provinceId" id="provinceId" />
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;"><?= _translate('Save and Next'); ?></a>
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow('next');return false;"><?= _translate('Save and Next'); ?></a>
                                              <a href="/vl/requests/vl-requests.php" class="btn btn-default"> <?= _translate('Cancel'); ?></a>
                                         </div>
                                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
@@ -872,7 +872,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          }
                     });
                //}
-               generateSampleCode();
+               //generateSampleCode();
           } else if (pName == '') {
                provinceName = true;
                facilityName = true;
@@ -910,13 +910,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      function generateSampleCode() {
           var sDate = $("#sampleCollectionDate").val();
-          $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-          var provinceCode = $("#province").find(":selected").attr("data-code");
 
           if (sDate != '') {
                $.post("/vl/requests/generateSampleCode.php", {
-                         sampleCollectionDate: sDate,
-                         provinceCode: provinceCode
+                         sampleCollectionDate: sDate
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);
@@ -1117,81 +1114,41 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      });
 
 
-     function validateNow() {
+     function validateNow(nextStep) {
+
+          $("#saveNext").val(nextStep);
+
           if ($('#isSampleRejected').val() == "yes") {
                $('.vlResult, #vlResult').removeClass('isRequired');
           }
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-          var format = '<?php echo $arr['sample_code']; ?>';
-          var sCodeLentgh = $("#sampleCode").val();
-          var ARTlength = $("#artNo").val();
-          var minLength = '<?php echo $arr['min_length']; ?>';
-          var dob = $("#dob").val();
-          var age = $("#ageInYears").val();
-          if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
-               alert("Sample ID length must be a minimum length of " + minLength + " characters");
-               return false;
-          }
-          if (dob == "" && age == "") {
-               alert("Please Enter DOB or Age in years");
-               return false;
-          }
-
-          flag = deforayValidator.init({
-               formId: 'vlRequestFormCameroon'
-          });
-          $('.isRequired').each(function() {
-               ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
-          });
-          var userType = "<?php echo $sarr['sc_user_type']; ?>";
-          if (userType != 'remoteuser') {
-               if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
-                    alert("Please make sure enter DOB or Age");
-                    return false;
-               }
-          }
-          $("#saveNext").val('save');
-          if (flag) {
-               $('.btn-disabled').attr('disabled', 'yes');
-               $(".btn-disabled").prop("onclick", null).off("click");
-               $.blockUI();
-               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                    insertSampleCode('vlRequestFormCameroon', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 7, 'sampleCollectionDate');
-               <?php } else { ?>
-                    document.getElementById('vlRequestFormCameroon').submit();
-               <?php } ?>
-          }
-     }
-
-     function validateSaveNow() {
-          if ($('#isSampleRejected').val() == "yes") {
-               $('.vlResult, #vlResult').removeClass('isRequired');
-          }
-          var format = '<?php echo $arr['sample_code']; ?>';
-          var sCodeLentgh = $("#sampleCode").val();
-          var ARTlength = $("#artNo").val();
-          var minLength = '<?php echo $arr['min_length']; ?>';
+          let format = '<?php echo $arr['sample_code']; ?>';
+          let sCodeLentgh = $("#sampleCode").val();
+          let ARTlength = $("#artNo").val();
+          let minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
                alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
 
+          if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
+               alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
+               return false;
+          }
+          let formId = 'vlRequestFormCameroon';
           flag = deforayValidator.init({
-               formId: 'vlRequestFormCameroon'
+               formId: formId
           });
-          $('.isRequired').each(function() {
-               ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
-          });
-          $("#saveNext").val('next');
+
           if (flag) {
                $('.btn-disabled').attr('disabled', 'yes');
                $(".btn-disabled").prop("onclick", null).off("click");
                $.blockUI();
-               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                    insertSampleCode('vlRequestFormCameroon', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 7, 'sampleCollectionDate');
-               <?php } else { ?>
-                    document.getElementById('vlRequestFormCameroon').submit();
-               <?php } ?>
+               insertSampleCode(formId);
+          } else {
+               $('.isRequired').each(function() {
+                    ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
+               });
           }
      }
 

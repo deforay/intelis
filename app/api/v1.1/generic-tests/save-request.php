@@ -24,8 +24,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var ApiService $app */
-$app = ContainerRegistry::get(ApiService::class);
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -79,7 +79,7 @@ try {
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $authToken = $general->getAuthorizationBearerToken();
+    $authToken = $apiService->getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
@@ -90,7 +90,7 @@ try {
     /* Update form attributes */
     $transactionId = $general->generateUUID();
     $version = $general->getSystemConfig('sc_version');
-    $deviceId = $general->getHeader('deviceId');
+    $deviceId = $apiService->getHeader($request, 'deviceId');
 
     foreach ($input as $rootKey => $data) {
 
