@@ -86,8 +86,14 @@ class MiscUtility
         }
 
         json_decode($string);
-        return json_last_error() === JSON_ERROR_NONE;
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return true;
+        } else {
+            LoggerUtility::log('error', 'JSON decoding error: ' . json_last_error_msg());
+            return false;
+        }
     }
+
 
     public static function toJSON($data): ?string
     {
