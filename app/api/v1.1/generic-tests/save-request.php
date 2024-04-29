@@ -55,7 +55,7 @@ try {
             'pointer' => '/appVersion',
             'decoder' => new ExtJsonDecoder(true)
         ]);
-  
+
 
         $appVersion = _getIteratorKey($appVersion, 'appVersion');
 
@@ -91,8 +91,8 @@ try {
     /* Update form attributes */
     $transactionId = $general->generateUUID();
     $version = $general->getSystemConfig('sc_version');
-    $deviceId = $general->getHeader('deviceId');
-    if(isset($input) && !empty($input)){
+    $deviceId = $apiService->getHeader($requst, 'deviceId');
+    if (isset($input) && !empty($input)) {
         foreach ($input as $rootKey => $data) {
             $mandatoryFields = [
                 'sampleCollectionDate',
@@ -107,11 +107,11 @@ try {
                 'sampleDispatchedOn',
                 'sampleReceivedDate',
             ];
-    
+
             if ($formId == COUNTRY\PNG) {
                 $mandatoryFields[] = 'provinceId';
             }
-    
+
             if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [
@@ -133,8 +133,8 @@ try {
                 ];
                 continue;
             }
-    
-    
+
+
             if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
                 $province = explode("##", (string) $data['provinceId']);
                 if (!empty($province)) {
@@ -148,12 +148,12 @@ try {
             if (isset($data['fundingSource']) && !is_numeric($data['fundingSource'])) {
                 $data['fundingSource'] = $general->getValueByName($data['fundingSource'], 'funding_source_name', 'r_funding_sources', 'funding_source_id');
             }
-    
+
             $data['api'] = "yes";
             $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
             $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
             $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
-    
+
             $update = "no";
             $rowData = null;
             $uniqueId = null;
@@ -170,7 +170,7 @@ try {
                 locked
                 FROM form_generic ";
                 $sQueryWhere = [];
-    
+
                 // if (!empty($data['uniqueId'])) {
                 //     $uniqueId = $data['uniqueId'];
                 //     $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
@@ -178,13 +178,13 @@ try {
                 if (!empty($data['appSampleCode']) && !empty($data['labId'])) {
                     $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
                 }
-    
+
                 if (!empty($sQueryWhere)) {
                     $sQuery .= " WHERE " . implode(" AND ", $sQueryWhere);
                 }
-    
+
                 $rowData = $db->rawQueryOne($sQuery);
-    
+
                 if (!empty($rowData)) {
                     if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
                         $noOfFailedRecords++;
@@ -194,7 +194,7 @@ try {
                             'status' => 'failed',
                             'action' => 'skipped',
                             'error' => _translate("Sample Locked or Finalized")
-    
+
                         ];
                         continue;
                     }
@@ -202,11 +202,11 @@ try {
                     $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
                 }
             }
-    
+
             // if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             //     $uniqueId = $data['uniqueId'] = $general->generateUUID();
             // }
-    
+
             $currentSampleData = [];
             if (!empty($rowData)) {
                 $data['genericSampleId'] = $rowData['sample_id'];
@@ -224,7 +224,7 @@ try {
                 $params['instanceType'] = $vlsmSystemConfig['sc_user_type'];
                 $params['facilityId'] = $data['facilityId'] ?? null;
                 $params['labId'] = $data['labId'] ?? null;
-    
+
                 $params['insertOperation'] = true;
                 $currentSampleData['id'] = $genericService->insertSample($params, true);
                 $currentSampleData['action'] = 'inserted';
@@ -241,12 +241,12 @@ try {
                     continue;
                 }
             }
-    
+
             $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
             if ($roleUser['access_type'] != 'testing-lab') {
                 $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
             }
-    
+
             if (!empty($data['arrivalDateTime']) && trim((string) $data['arrivalDateTime']) != "") {
                 $arrivalDate = explode(" ", (string) $data['arrivalDateTime']);
                 $data['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
@@ -259,14 +259,14 @@ try {
             } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
                 $status = SAMPLE_STATUS\PENDING_APPROVAL;
             }
-    
+
             if (!empty($data['sampleCollectionDate']) && trim((string) $data['sampleCollectionDate']) != "") {
                 $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
             } else {
                 $sampleCollectionDate = $data['sampleCollectionDate'] = null;
             }
-    
-    
+
+
             //Set sample received date
             if (!empty($data['sampleReceivedDate']) && trim((string) $data['sampleReceivedDate']) != "") {
                 $sampleReceivedDate = explode(" ", (string) $data['sampleReceivedDate']);
@@ -274,7 +274,7 @@ try {
             } else {
                 $data['sampleReceivedDate'] = null;
             }
-    
+
             if (!empty($data['sampleReceivedHubDate']) && trim((string) $data['sampleReceivedHubDate']) != "") {
                 $sampleReceivedHubDate = explode(" ", (string) $data['sampleReceivedHubDate']);
                 $data['sampleReceivedHubDate'] = DateUtility::isoDateFormat($sampleReceivedHubDate[0]) . " " . $sampleReceivedHubDate[1];
@@ -287,42 +287,42 @@ try {
             } else {
                 $data['sampleTestedDateTime'] = null;
             }
-    
+
             if (!empty($data['arrivalDateTime']) && trim((string) $data['arrivalDateTime']) != "") {
                 $arrivalDate = explode(" ", (string) $data['arrivalDateTime']);
                 $data['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
             } else {
                 $data['arrivalDateTime'] = null;
             }
-    
+
             if (!empty($data['revisedOn']) && trim((string) $data['revisedOn']) != "") {
                 $revisedOn = explode(" ", (string) $data['revisedOn']);
                 $data['revisedOn'] = DateUtility::isoDateFormat($revisedOn[0]) . " " . $revisedOn[1];
             } else {
                 $data['revisedOn'] = null;
             }
-    
+
             if (isset($data['resultDispatchedOn']) && trim((string) $data['resultDispatchedOn']) != "") {
                 $resultDispatchedOn = explode(" ", (string) $data['resultDispatchedOn']);
                 $data['resultDispatchedOn'] = DateUtility::isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
             } else {
                 $data['resultDispatchedOn'] = null;
             }
-    
+
             if (isset($data['sampleDispatchedOn']) && trim((string) $data['sampleDispatchedOn']) != "") {
                 $sampleDispatchedOn = explode(" ", (string) $data['sampleDispatchedOn']);
                 $data['sampleDispatchedOn'] = DateUtility::isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
             } else {
                 $data['sampleDispatchedOn'] = null;
             }
-    
+
             if (isset($data['sampleDispatchedDate']) && trim((string) $data['sampleDispatchedDate']) != "") {
                 $sampleDispatchedDate = explode(" ", (string) $data['sampleDispatchedDate']);
                 $data['sampleDispatchedDate'] = DateUtility::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
             } else {
                 $data['sampleDispatchedDate'] = null;
             }
-    
+
             $formAttributes = [
                 'applicationVersion' => $version,
                 'apiTransactionId' => $transactionId,
@@ -335,7 +335,7 @@ try {
             $reasonForChanges = null;
             $allChange = [];
             if (isset($data['reasonForResultChanges']) && !empty($data['reasonForResultChanges'])) {
-                foreach($data['reasonForResultChanges'] as $row){
+                foreach ($data['reasonForResultChanges'] as $row) {
                     $allChange[] = array(
                         'usr' => $row['changed_by'],
                         'msg' => $row['reason'],
@@ -346,9 +346,9 @@ try {
             if (!empty($allChange)) {
                 $reasonForChanges = json_encode($allChange);
             }
-            
+
             $testTypeForm = $general->jsonToSetString(json_encode($data['testTypeForm']), 'test_type_form');
-    
+
             $genericData = [
                 'vlsm_instance_id' => $data['instanceId'],
                 'vlsm_country_id' => $formId,
@@ -407,12 +407,12 @@ try {
                 $genericData['sample_registered_at_lab'] = DateUtility::getCurrentDateTime();
                 $genericData['request_created_by'] = $user['user_id'];
             }
-    
+
             if (isset($data['genericSampleId']) && $data['genericSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
                 if (!empty($data['testResult'])) {
                     $db->where('sample_id', $data['genericSampleId']);
                     $db->delete($testTableName);
-    
+
                     foreach ($data['testResult'] as $testKey => $testResult) {
                         if (!empty($testResult) && trim((string) $testResult) != "") {
                             $db->insert($testTableName, [
