@@ -9,6 +9,8 @@ use Laminas\Filter\FilterChain;
 use App\Exceptions\SystemException;
 use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
+use function iter\count as iterCount;
+use function iter\toArray as iterToArray;
 
 function _translate(?string $text, ?bool $escapeText = false)
 {
@@ -182,7 +184,6 @@ function _castVariable(mixed $variable, ?string $expectedType = null, ?bool $isN
     }
 }
 
-
 function _capitalizeWords($string)
 {
     if (empty($string) || $string == '') {
@@ -199,4 +200,35 @@ function _capitalizeFirstLetter($string, $encoding = "UTF-8")
     $firstChar = mb_substr($string, 0, 1, $encoding);
     $rest = mb_substr($string, 1, null, $encoding);
     return mb_strtoupper($firstChar, $encoding) . $rest;
+}
+
+
+/**
+ * Safely converts an iterator to an array and retrieves a specified key.
+ *
+ * @param mixed $iterator The potential iterator.
+ * @param string $key The key to retrieve from the array.
+ * @return mixed Returns the value associated with the key, or null if not found or not an iterator.
+ */
+function _getIteratorKey($iterator, $key)
+{
+    if ($iterator instanceof Traversable) {
+        $array = iterToArray($iterator);
+        return $array[$key] ?? null;
+    }
+    return null;
+}
+
+/**
+ * Safely counts the elements of an iterator or Traversable object.
+ *
+ * @param mixed $iterator The potential iterator or Traversable object.
+ * @return int Returns the count of elements. Returns 0 if the input is not Traversable.
+ */
+function _getIteratorCount($iterator): int
+{
+    if ($iterator instanceof Traversable) {
+        return iterCount($iterator);
+    }
+    return 0;
 }

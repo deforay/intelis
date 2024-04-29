@@ -47,6 +47,10 @@ try {
 
     $origJson = $request->getBody()->getContents();
 
+    if (MiscUtility::isJSON($origJson) === false) {
+        throw new SystemException("Invalid JSON Payload");
+    }
+
 
     $appVersion = null;
     try {
@@ -227,7 +231,7 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData = $genericService->insertSample($params, true);
+            $currentSampleData['id'] = $genericService->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['genericSampleId'] = intval($currentSampleData['id']);
             if ($data['genericSampleId'] == 0) {
@@ -422,9 +426,9 @@ try {
             $responseData[$rootKey] = [
                 'status' => 'success',
                 'action' => $currentSampleData['action'] ?? null,
-                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? $currentSampleData['id']['remoteSampleCode'] ?? $currentSampleData['id']['sampleCode'] ?? null,
+                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
                 'transactionId' => $transactionId,
-                'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? $currentSampleData['id']['uniqueId'] ?? null,
+                'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
         } else {
