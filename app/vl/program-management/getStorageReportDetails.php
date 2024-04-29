@@ -98,10 +98,16 @@ else if($_POST['reportType']=='historyData'){
                LEFT JOIN form_vl as vl ON vl.unique_id = h.sample_unique_id ";
 
      $sWhere[] = ' vl.sample_code = "' . $_POST['sampleCode'] . '"';
+
+     if(isset($_POST['labId']) && $_POST['labId'] != "")
+     {
+          $sWhere[] = ' vl.lab_id = "' . $_POST['labId'] . '"';
+     }
     
      if (!empty($sWhere)) {
           $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
      }
+    
      $_SESSION['storageHistoryDataQuery'] = $sQuery;
 
      if (!empty($sOrder)) {

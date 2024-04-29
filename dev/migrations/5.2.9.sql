@@ -480,3 +480,6 @@ JOIN (
 WHERE a.id < b.max_id;
 
 ALTER TABLE `s_app_menu` ADD UNIQUE(`parent_id`, `link`);
+
+-- Jeyabanu 29-Apr-2024
+UPDATE `s_app_menu` SET `show_mode` = 'always' WHERE `s_app_menu`.`link` = '/vl/program-management/sample-storage-reports.php';
