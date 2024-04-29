@@ -1,14 +1,15 @@
 <?php
 
-use App\Services\TbService;
-use App\Services\ApiService;
-use App\Services\UsersService;
-use App\Registries\AppRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Registries\AppRegistry;
+use App\Services\ApiService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
+use App\Services\TbService;
+use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -18,6 +19,9 @@ ini_set('max_execution_time', 20000);
 $request = AppRegistry::get('request');
 
 $origJson = $request->getBody()->getContents();
+if (MiscUtility::isJSON($origJson) === false) {
+    throw new SystemException("Invalid JSON Payload");
+}
 $input = $request->getParsedBody();
 
 /** @var DatabaseService $db */

@@ -232,3 +232,4 @@ function _getIteratorCount($iterator): int
     }
     return 0;
 }
+

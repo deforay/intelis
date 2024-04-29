@@ -295,6 +295,7 @@ try {
           'result_approved_datetime' => DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true),
           'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
           'lab_tech_comments' => $_POST['labComments'] ?? null,
+          'reason_for_result_changes' => $reasonForChanges ?? null,
           'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
           'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
           'vl_test_number' => $_POST['viralLoadNo'] ?? null,

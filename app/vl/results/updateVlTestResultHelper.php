@@ -108,19 +108,21 @@ try {
     $resultStatus = $processedResults['resultStatus'] ?? $resultStatus;
 
 
-    $reasonForChanges = null;
-    $allChange = null;
-    if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
-        $allChange = $_POST['reasonForResultChangesHistory'];
-    }
-    if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) != '') {
-        $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . DateUtility::getCurrentDateTime();
-    }
-    if (!empty($allChange) && !empty($reasonForChanges)) {
-        $allChange = $reasonForChanges . 'vlsm' . $allChange;
-    } elseif (!empty($reasonForChanges)) {
-        $allChange = $reasonForChanges;
-    }
+     $reasonForChanges = null;
+     $allChange = [];
+     if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
+          $allChange = json_decode(base64_decode((string) $_POST['reasonForResultChangesHistory']), true);
+     }
+     if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) != '') {
+          $allChange[] = array(
+               'usr' => $_SESSION['userId'] ?? $_POST['userId'],
+               'msg' => $_POST['reasonForResultChanges'],
+               'dtime' => DateUtility::getCurrentDateTime()
+          );
+     }
+     if (!empty($allChange)) {
+          $reasonForChanges = json_encode($allChange);
+     }
 
     if ($_POST['failedTestingTech'] != '') {
         $platForm = explode("##", (string) $_POST['failedTestingTech']);
@@ -157,7 +159,7 @@ try {
         'result_approved_by' => $_POST['approvedBy'] ?? null,
         'result_approved_datetime' => $_POST['approvedOnDateTime'] ?? null,
         'lab_tech_comments' => $_POST['labComments'] ?? null,
-        'reason_for_result_changes' => $allChange ?? null,
+        'reason_for_result_changes' => $reasonForChanges ?? null,
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? ($_SESSION['userId'] ?? $_POST['userId']) : null,
         'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
         'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'],

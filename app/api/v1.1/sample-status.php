@@ -9,6 +9,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Utilities\LoggerUtility;
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -26,6 +27,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $request = AppRegistry::get('request');
 
 $origJson = $request->getBody()->getContents();
+if (MiscUtility::isJSON($origJson) === false) {
+    throw new SystemException("Invalid JSON Payload");
+}
 $input = $request->getParsedBody();
 if (
     empty($input) ||
