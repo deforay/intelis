@@ -127,6 +127,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 														<th>
 															<?php echo _translate("Sample Code"); ?>
 														</th>
+														<th>
+															<?php echo _translate("Storage Date"); ?>
+														</th>
 														<th scope="row">
 															<?php echo _translate("Volume of Sample (ml)"); ?>
 														</th>
@@ -206,7 +209,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 												<thead>
 													<tr>
 														<th>
-															<?php echo _translate("Patient's Name"); ?>
+															<?php echo _translate("Patient's ID"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Sample Collection Date"); ?>
 														</th>
 														<th>
 															<?php echo _translate("Freezer/Storage Code"); ?>
@@ -329,6 +335,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 				},
 				{
 					"sClass": "center"
+				},
+				{
+					"sClass": "center"
 				}
 			],
 			"bProcessing": true,
@@ -375,6 +384,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 			"aoColumns": [{
 					"sClass": "center",
 					"bSortable": false
+				},
+				{
+					"sClass": "center"
 				},
 				{
 					"sClass": "center"
