@@ -130,4 +130,11 @@ class StorageService
         $save = $this->db->insert('lab_storage_history', $data);
         return $save;
     }
+
+    public function getFreezerListByLabId($labId){
+        $query = "SELECT storage_id, storage_code
+        FROM lab_storage
+        WHERE lab_id = $labId";
+        return $this->db->rawQuery($query);
+    }
 }
