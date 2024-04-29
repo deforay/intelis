@@ -36,11 +36,12 @@ try {
     // Check if test type is not set for any batch
     $db->where('test_type', null);
     $db->orWhere('test_type', '');
-    $count = $db->getValue("batch_details", "count(*)");
+    $incompleteBatches = $db->getValue("batch_details", "batch_id");
 
     // Update test type for all batches in the current test type
-    if ($count > 0) {
-        $update = "UPDATE batch_details SET test_type = ? WHERE (test_type is NULL OR test_type = '') and batch_id in (SELECT DISTINCT sample_batch_id FROM $formTable WHERE sample_batch_id IS NOT NULL)";
+    if (!empty($incompleteBatches)) {
+        $incompleteBatches = implode(",", $incompleteBatches);
+        $update = "UPDATE batch_details SET test_type = ? WHERE (test_type is NULL OR test_type = '') and batch_id in (SELECT DISTINCT sample_batch_id FROM $formTable WHERE sample_batch_id IN ($incompleteBatches))";
         $db->rawQuery($update, [$_POST['type']]);
     }
 
