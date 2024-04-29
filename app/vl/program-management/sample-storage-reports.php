@@ -3,6 +3,7 @@
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\StorageService;
+use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 $title = _translate("Freezer/Storage Reports");
@@ -18,8 +19,19 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var StorageService $storageService */
 $storageService = ContainerRegistry::get(StorageService::class);
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+$labId = null;
+if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != "") {
+	$facilityId = base64_decode((string) $_GET['facilityId']);
+	$labId = base64_decode((string) $_GET['labId']);
+}
 
 $storageInfo = $storageService->getLabStorage();
+$testingLabs = $facilitiesService->getTestingLabs('vl');
+
+$testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "-- Select --");
 
 ?>
 <style>
@@ -65,6 +77,17 @@ $storageInfo = $storageService->getLabStorage();
 										<div class="tab-pane fade in active" id="notPrintedData">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
+												<?php if($_SESSION['instance']['type'] == 'remoteuser'){ ?>
+
+												<td><strong>
+														<?php echo _translate("Testing Lab"); ?> :
+													</strong></td>
+												<td>
+													<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;" onchange="getFreezers(this.value);">
+														<?= $testingLabsDropdown; ?>
+													</select>
+												</td>
+												<?php } ?>
 													<td><strong>
 															<?php echo _translate("Freezer/Storage"); ?>&nbsp;:
 														</strong></td>
@@ -135,6 +158,16 @@ $storageInfo = $storageService->getLabStorage();
 										<div class="tab-pane fade" id="printedData">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
+													<?php if($_SESSION['instance']['type'] == 'remoteuser'){ ?>
+													<td><strong>
+															<?php echo _translate("Testing Lab"); ?> :
+														</strong></td>
+													<td>
+														<select class="form-control" id="testingLab" name="testingLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;">
+															<?= $testingLabsDropdown; ?>
+														</select>
+													</td>
+													<?php } ?>
 													<td>
 														<strong>
 															<?php echo _translate("Sample Code"); ?>&nbsp;:
@@ -243,6 +276,12 @@ $storageInfo = $storageService->getLabStorage();
 		$(".freezerSelect").select2({
 			placeholder: "<?php echo _translate("Select Freezer"); ?>"
 		});
+
+		$("#vlLab, #testingLab").select2({
+			placeholder: "<?php echo _translate("Select Vl Lab"); ?>"
+		});
+
+		
 
 		loadStorageData();
 		var i = '<?php echo $i; ?>';
@@ -377,7 +416,11 @@ $storageInfo = $storageService->getLabStorage();
 					"name": "sampleCode",
 					"value": $("#sampleCode").val()
 				});
-
+				aoData.push({
+					"name": "labId",
+					"value": $("#testingLab").val()
+				});
+				
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -507,6 +550,19 @@ $storageInfo = $storageService->getLabStorage();
 				});
 		}
 	}
+
+	function getFreezers(labId, type){
+		$.blockUI();
+        $("#srcRequest").html("");
+        $.post("/vl/program-management/get-freezer-list-by-lab.php", {
+                labId: labId,
+            },
+            function(data) {
+                $.unblockUI();
+                $("#freezerId").html(data);
+            });
+	}
+	
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';
