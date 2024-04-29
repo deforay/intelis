@@ -17,7 +17,9 @@ use App\Utilities\ImageResizeUtility;
 $request = AppRegistry::get('request');
 
 $origJson = $request->getBody()->getContents();
-
+if (MiscUtility::isJSON($origJson) === false) {
+    throw new SystemException("Invalid JSON Payload");
+}
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 

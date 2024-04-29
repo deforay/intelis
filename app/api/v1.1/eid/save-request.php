@@ -46,7 +46,9 @@ try {
     $updatedLabs = [];
 
     $origJson = $request->getBody()->getContents();
-
+    if (MiscUtility::isJSON($origJson) === false) {
+        throw new SystemException("Invalid JSON Payload");
+    }
     $appVersion = null;
     try {
         $appVersion = Items::fromString($origJson, [
@@ -349,6 +351,23 @@ try {
             'mobileAppVersion' => $appVersion,
             'deviceId' => $deviceId
         ];
+
+        /* Reason for VL Result changes */
+        $reasonForChanges = null;
+        $allChange = [];
+        if (isset($data['reasonForResultChanges']) && !empty($data['reasonForResultChanges'])) {
+            foreach($data['reasonForResultChanges'] as $row){
+                $allChange[] = array(
+                    'usr' => $row['changed_by'],
+                    'msg' => $row['reason'],
+                    'dtime' => $row['change_datetime']
+                );
+            }
+        }
+        if (!empty($allChange)) {
+            $reasonForChanges = json_encode($allChange);
+        }
+
         $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
         $eidData = [
@@ -414,7 +433,8 @@ try {
             'result_reviewed_datetime' => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'revised_by' => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
             'revised_on' => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : "",
-            'reason_for_changing' => (!empty($data['reasonForEidResultChanges'])) ? $data['reasonForEidResultChanges'] : null,
+            'reason_for_changing' => $reasonForChanges ?? null,
+            // 'reason_for_changing' => (!empty($data['reasonForEidResultChanges'])) ? $data['reasonForEidResultChanges'] : null,
             'result_status' => $status,
             'data_sync' => 0,
             'reason_for_sample_rejection' => $data['sampleRejectionReason'] ?? null,

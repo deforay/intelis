@@ -6,6 +6,7 @@ use Exception;
 use Throwable;
 use App\Registries\AppRegistry;
 use Laminas\Diactoros\Response;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -42,6 +43,11 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
         } catch (Throwable $e) {
             ob_end_clean();
             // Log the error here if needed
+            LoggerUtility::log('info', APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri);
+            LoggerUtility::log('error', $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'line' => $e->getLine()
+            ]);
             throw new SystemException("API Error : " . $e->getMessage(), 500, $e);
         }
     }

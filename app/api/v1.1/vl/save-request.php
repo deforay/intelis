@@ -44,7 +44,9 @@ try {
     $noOfFailedRecords = 0;
 
     $origJson = $request->getBody()->getContents();
-
+    if (MiscUtility::isJSON($origJson) === false) {
+        throw new SystemException("Invalid JSON Payload");
+    }
     $appVersion = null;
 
     $updatedLabs = [];
@@ -258,10 +260,23 @@ try {
             'mobileAppVersion' => $appVersion,
             'deviceId' => $deviceId
         ];
-
+        /* Reason for VL Result changes */
+        $reasonForChanges = null;
+        $allChange = [];
+        if (isset($data['reasonForResultChanges']) && !empty($data['reasonForResultChanges'])) {
+            foreach($data['reasonForResultChanges'] as $row){
+                $allChange[] = array(
+                    'usr' => $row['changed_by'],
+                    'msg' => $row['reason'],
+                    'dtime' => $row['change_datetime']
+                );
+            }
+        }
+        if (!empty($allChange)) {
+            $reasonForChanges = json_encode($allChange);
+        }
         $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
-
-
+        
         $vlFulldata = [
             'vlsm_instance_id' => $instanceId,
             'sample_collection_date' => $sampleCollectionDate,
@@ -323,8 +338,8 @@ try {
             'result_approved_datetime' => DateUtility::isoDateFormat($data['approvedOnDateTime'] ?? '', true),
             'revised_by' => $data['revisedBy'] ?? null,
             'revised_on' => DateUtility::isoDateFormat($data['revisedOn'] ?? '', true),
-            'reason_for_result_changes' => $data['reasonForVlResultChanges'] ?? null,
             'lab_tech_comments' => $data['labComments'] ?? null,
+            'reason_for_result_changes' => $reasonForChanges ?? null,
             'result_status' => $status,
             'funding_source' => $data['fundingSource'] ?? null,
             'implementing_partner' => $data['implementingPartner'] ?? null,

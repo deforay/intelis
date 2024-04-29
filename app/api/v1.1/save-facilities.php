@@ -44,7 +44,9 @@ try {
     $noOfFailedRecords = 0;
 
     $origJson = $request->getBody()->getContents();
-
+    if (MiscUtility::isJSON($origJson) === false) {
+        throw new SystemException("Invalid JSON Payload");
+    }
     $appVersion = null;
     try {
         $appVersion = Items::fromString($origJson, [
