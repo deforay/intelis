@@ -49,10 +49,6 @@ try {
     if (MiscUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
     }
-    if (MiscUtility::isJSON($origJson) === false) {
-        throw new SystemException("Invalid JSON Payload");
-    }
-
     $appVersion = null;
     try {
         $appVersion = Items::fromString($origJson, [
@@ -98,7 +94,6 @@ try {
     $deviceId = $general->getHeader('deviceId');
     if(isset($input) && !empty($input)){
         foreach ($input as $rootKey => $data) {
-    
             $mandatoryFields = [
                 'sampleCollectionDate',
                 'facilityId',
@@ -211,7 +206,6 @@ try {
             // if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             //     $uniqueId = $data['uniqueId'] = $general->generateUUID();
             // }
-    
     
             $currentSampleData = [];
             if (!empty($rowData)) {
