@@ -34,13 +34,13 @@ if (!empty($result)) {
                $reviewedBy = $reviewedByRes['user_name'];
           }
      } else {
-          if(!empty($result['defaultReviewedBy'])){
+          if (!empty($result['defaultReviewedBy'])) {
                $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
                if ($reviewedByRes) {
-                   $reviewedBy = $reviewedByRes['user_name'];
+                    $reviewedBy = $reviewedByRes['user_name'];
                }
-               if(empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
-                    $result['result_reviewed_datetime'] = $result['sample_tested_datetime'] ;
+               if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
                }
           }
      }
@@ -60,13 +60,13 @@ if (!empty($result)) {
           $resultApprovedBy = ($result['approvedBy']);
           $approvedByRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
      } else {
-          if(!empty($result['defaultApprovedBy'])){
+          if (!empty($result['defaultApprovedBy'])) {
                $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
                if ($approvedByRes) {
-                   $resultApprovedBy = $approvedByRes['user_name'];
+                    $resultApprovedBy = $approvedByRes['user_name'];
                }
-               if(empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
-                    $result['result_approved_datetime'] = $result['sample_tested_datetime'] ;
+               if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+                    $result['result_approved_datetime'] = $result['sample_tested_datetime'];
                }
           }
      }
@@ -84,7 +84,7 @@ if (!empty($result)) {
      if (!empty($approvedByRes['user_signature'])) {
           $approvedSignaturePath =  $approvedByRes['user_signature'];
      }
-     
+
      $_SESSION['aliasPage'] = $page;
      if (!isset($result['labName'])) {
           $result['labName'] = '';
@@ -205,7 +205,7 @@ if (!empty($result)) {
      } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
           $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
           $showMessage = ($arr['h_vl_msg']);
-     } elseif ($result['result_status'] == '4' || $result['is_sample_rejected'] == 'yes') {
+     } elseif ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
           $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
      }
 
@@ -576,7 +576,7 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '</table>';
 
-     if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+     if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
           $pdf->writeHTML($html);
           $pdf->lastPage();
           $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

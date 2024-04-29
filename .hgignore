@@ -24,7 +24,7 @@ syntax: glob
 configs/config.*.php
 configs/*.png
 configs/*.jpg
-secretKey.txt
+secret-key.txt
 rector.php
 temp.ini
 vendor/

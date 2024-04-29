@@ -34,9 +34,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
-
-
-$arr = $general->getGlobalConfig();
 $user = null;
 /* echo "<pre>";
 print_r($input);

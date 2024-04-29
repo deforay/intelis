@@ -40,7 +40,7 @@ try {
         if (empty($vlRow['result_approved_by'])) {
             $status['result_approved_by'] = $_SESSION['userId'];
         }
-        if ($_POST['status'] == '4') {
+        if ($_POST['status'] == SAMPLE_STATUS\REJECTED) {
             $status['result_value_log'] = '';
             $status['result_value_absolute'] = '';
             $status['result_value_text'] = '';

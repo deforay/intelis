@@ -1,17 +1,11 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -25,26 +19,9 @@ try {
     $primaryKey = "cd4_id";
     $key = (string) $general->getGlobalConfig('key');
 
-    //config  query
-    $configQuery = "SELECT * from global_config";
-    $configResult = $db->query($configQuery);
-    $arr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
-    //system config
-    $systemConfigQuery = "SELECT * from system_config";
-    $systemConfigResult = $db->query($systemConfigQuery);
-    $sarr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-        $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-    }
-
     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name');
     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name');
-    if ($sarr['sc_user_type'] == 'standalone') {
+    if ($_SESSION['instance']['type'] == 'standalone') {
         $aColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name');
         $orderColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name');
     }
@@ -213,7 +190,7 @@ try {
         $row = [];
 
         $row[] = $aRow['sample_code'];
-        if ($sarr['sc_user_type'] != 'standalone') {
+        if ($_SESSION['instance']['type'] != 'standalone') {
             $row[] = $aRow['remote_sample_code'];
         }
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

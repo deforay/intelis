@@ -37,7 +37,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var ApiService $app */
 $app = ContainerRegistry::get(ApiService::class);
 
-$arr = $general->getGlobalConfig();
 $user = null;
 
 /* For API Tracking params */

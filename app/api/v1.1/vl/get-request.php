@@ -40,7 +40,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $app = ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
-$arr = $general->getGlobalConfig();
+
 $user = null;
 
 /* For API Tracking params */

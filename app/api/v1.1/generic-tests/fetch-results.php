@@ -42,8 +42,6 @@ $genericService = ContainerRegistry::get(GenericTestsService::class);
 /** @var ApiService $app */
 $app = ContainerRegistry::get(ApiService::class);
 
-
-$arr = $general->getGlobalConfig();
 $user = null;
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];

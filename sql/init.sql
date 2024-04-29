@@ -3617,7 +3617,7 @@ CREATE TABLE `global_config` (
   `value` longtext,
   `category` varchar(255) DEFAULT NULL,
   `remote_sync_needed` varchar(50) DEFAULT NULL,
-  `updated_on` datetime DEFAULT NULL,
+  `updated_datetime` datetime DEFAULT NULL,
   `updated_by` mediumtext,
   `status` varchar(255) NOT NULL DEFAULT 'active',
   PRIMARY KEY (`name`)
@@ -3902,7 +3902,7 @@ CREATE TABLE `log_result_updates` (
   `test_type` varchar(244) DEFAULT NULL COMMENT 'vl, eid, covid19, hepatitis, tb',
   `result_method` varchar(256) DEFAULT NULL,
   `file_name` varchar(256) DEFAULT NULL,
-  `updated_on` datetime DEFAULT NULL,
+  `updated_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`result_log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;

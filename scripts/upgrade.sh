@@ -15,7 +15,7 @@ fi
 # Function to log messages
 log_action() {
     local message=$1
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>./logupgrade.log
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>~/logupgrade.log
 }
 
 error_handling() {
@@ -90,6 +90,8 @@ if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" 
     exit 1
 fi
 
+rm -f ~/logupgrade.log
+
 # Save the current trap settings
 current_trap=$(trap -p ERR)
 
@@ -131,11 +133,20 @@ desired_sql_mode="sql_mode ="
 desired_innodb_strict_mode="innodb_strict_mode = 0"
 desired_charset="character-set-server=utf8mb4"
 desired_collation="collation-server=utf8mb4_general_ci"
+desired_auth_plugin="default_authentication_plugin=mysql_native_password"
 config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
+
+cp ${config_file} ${config_file}.bak
 
 awk -v dsm="${desired_sql_mode}" -v dism="${desired_innodb_strict_mode}" \
     -v dcharset="${desired_charset}" -v dcollation="${desired_collation}" \
-    'BEGIN { sql_mode_added=0; innodb_strict_mode_added=0; charset_added=0; collation_added=0; }
+    -v dauth="${desired_auth_plugin}" \
+    'BEGIN { sql_mode_added=0; innodb_strict_mode_added=0; charset_added=0; collation_added=0; auth_plugin_added=0; }
+                /default_authentication_plugin[[:space:]]*=/ {
+                    if ($0 ~ dauth) {auth_plugin_added=1;}
+                    else {print ";" $0;}
+                    next;
+                }
                 /sql_mode[[:space:]]*=/ {
                     if ($0 ~ dsm) {sql_mode_added=1;}
                     else {print ";" $0;}
@@ -167,6 +178,7 @@ awk -v dsm="${desired_sql_mode}" -v dism="${desired_innodb_strict_mode}" \
                 { print; }' ${config_file} >tmpfile && mv tmpfile ${config_file}
 
 service mysql restart || {
+    mv ${config_file}.bak ${config_file}
     echo "Failed to restart MySQL. Exiting..."
     log_action "Failed to restart MySQL. Exiting..."
     exit 1
@@ -280,7 +292,11 @@ sudo dpkg --configure -a
 apt-get autoremove -y
 
 echo "Installing basic packages..."
-apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole
+apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server
+
+systemctl enable ssh
+
+systemctl start ssh
 
 log_action "Ubuntu packages updated/installed."
 

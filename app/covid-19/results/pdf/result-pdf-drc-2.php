@@ -9,58 +9,58 @@ use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
 if (!class_exists('DRCCovid19PDF2')) {
 
-class DRCCovid19PDF2 extends Covid19ResultPDFHelper
-{
-    //Page header
-    public function Header()
+    class DRCCovid19PDF2 extends Covid19ResultPDFHelper
     {
-        // Logo
-        if (!empty($this->htitle) && trim($this->htitle) != '') {
-            if (!empty($this->logo) && trim($this->logo) != '') {
-                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                    $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                    $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
+        //Page header
+        public function Header()
+        {
+            // Logo
+            if (!empty($this->htitle) && trim($this->htitle) != '') {
+                if (!empty($this->logo) && trim($this->logo) != '') {
+                    if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                        $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                        $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
+                    }
+                }
+                if (!empty($this->facilityInfo) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
+                    $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
+                    $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T');
                 }
             }
-            if (!empty($this->facilityInfo) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
-                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
-                $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T');
+            $this->SetFont('helvetica', 'B', 12);
+            $this->writeHTMLCell(0, 0, 12, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, false, true, 'C');
+            $this->SetFont('helvetica', 'B', 10);
+            $this->writeHTMLCell(0, 0, 12, 10, $this->text, 0, 0, false, true, 'C');
+            if (!empty($this->lab) && trim($this->lab) != '') {
+                $this->SetFont('helvetica', 'B', 11);
+                $this->writeHTMLCell(0, 0, 12, 15, strtoupper($this->lab), 0, 0, false, true, 'C');
             }
-        }
-        $this->SetFont('helvetica', 'B', 12);
-        $this->writeHTMLCell(0, 0, 12, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, false, true, 'C');
-        $this->SetFont('helvetica', 'B', 10);
-        $this->writeHTMLCell(0, 0, 12, 10, $this->text, 0, 0, false, true, 'C');
-        if (!empty($this->lab) && trim($this->lab) != '') {
             $this->SetFont('helvetica', 'B', 11);
-            $this->writeHTMLCell(0, 0, 12, 15, strtoupper($this->lab), 0, 0, false, true, 'C');
-        }
-        $this->SetFont('helvetica', 'B', 11);
-        $this->writeHTMLCell(0, 0, 12, 20, 'Province du Nord-Kivu', 0, 0, false, true, 'C');
-        $this->writeHTMLCell(0, 0, 12, 25, 'Laboratoire P3/P2/P2 Rodolphe Merleux INRB-COMA', 0, 0, false, true, 'C');
-        $this->writeHTMLCell(0, 0, 12, 30, 'Laboratoire Réglonal de Santé Publique', 0, 0, false, true, 'C');
-        $this->SetTextColor(255, 0, 0);
-        $this->writeHTMLCell(0, 0, 12, 35, 'Membre du réseau GABRIEL', 0, 0, false, true, 'C');
-        $this->SetTextColor(0, 0, 0);
-        $this->writeHTMLCell(0, 0, 12, 40, '<hr>', 0, 0, false, true, 'C');
-        $this->writeHTMLCell(0, 0, 12, 41, '<hr>', 0, 0, false, true, 'C');
+            $this->writeHTMLCell(0, 0, 12, 20, 'Province du Nord-Kivu', 0, 0, false, true, 'C');
+            $this->writeHTMLCell(0, 0, 12, 25, 'Laboratoire P3/P2/P2 Rodolphe Merleux INRB-COMA', 0, 0, false, true, 'C');
+            $this->writeHTMLCell(0, 0, 12, 30, 'Laboratoire Réglonal de Santé Publique', 0, 0, false, true, 'C');
+            $this->SetTextColor(255, 0, 0);
+            $this->writeHTMLCell(0, 0, 12, 35, 'Membre du réseau GABRIEL', 0, 0, false, true, 'C');
+            $this->SetTextColor(0, 0, 0);
+            $this->writeHTMLCell(0, 0, 12, 40, '<hr>', 0, 0, false, true, 'C');
+            $this->writeHTMLCell(0, 0, 12, 41, '<hr>', 0, 0, false, true, 'C');
 
-        // Define the path to the image that you want to use as watermark.
-        $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->logo;
-        if (!empty($this->logo) && file_exists($img_file)) {
-        } else if (!empty($this->logo) && UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo) {
-            if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+            // Define the path to the image that you want to use as watermark.
+            $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->logo;
+            if (!empty($this->logo) && file_exists($img_file)) {
+            } else if (!empty($this->logo) && UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo) {
+                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                    $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                }
+            } else {
+                $img_file = "";
             }
-        } else {
-            $img_file = "";
-        }
-        // Render the image
-        if ($img_file != "") {
-            $this->SetAlpha(0.1);
-            $this->Image($img_file, 55, 60, 100, null, '', '', '', false, 300, 'M');
-        }
-        /* $stamp = "";
+            // Render the image
+            if ($img_file != "") {
+                $this->SetAlpha(0.1);
+                $this->Image($img_file, 55, 60, 100, null, '', '', '', false, 300, 'M');
+            }
+            /* $stamp = "";
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png')) {
             $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png';
         }
@@ -69,26 +69,26 @@ class DRCCovid19PDF2 extends Covid19ResultPDFHelper
             $this->Image($stamp, 40, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
             $this->Image($stamp, 120, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
         } */
-    }
-    // Page footer
-    public function Footer()
-    {
-        $this->writeHTML("<hr>");
-        // Set font
-        $this->SetFont('helvetica', 'I', 8);
-        if ($this->systemConfig['sc_user_type'] == 'vluser' && $this->dataSync == 0) {
-            $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
-        } else {
-            $generatedAtTestingLab = "";
         }
+        // Page footer
+        public function Footer()
+        {
+            $this->writeHTML("<hr>");
+            // Set font
+            $this->SetFont('helvetica', 'I', 8);
+            if ($this->systemConfig['sc_user_type'] == 'vluser' && $this->dataSync == 0) {
+                $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
+            } else {
+                $generatedAtTestingLab = "";
+            }
 
-        $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'], IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
-        $this->writeHTMLCell(0, 0, 10, 290, $formatter->format(strtotime((string) $this->resultPrintedDate)) . ' ' . $generatedAtTestingLab, 0, 0, false, true, 'L');
-        $this->writeHTMLCell(0, 0, 10, 280, 'N 29 Av des Orchidees O. le volcan C. de Goma Tel: +243 817933409 +234 993549796', 0, 0, false, true, 'C');
-        $this->writeHTMLCell(0, 0, 10, 285, 'E-mail : info@inrbgoma.com, inrbgoma@gmail.com', 0, 0, false, true, 'C');
-        $this->writeHTMLCell(0, 0, 10, 290, 'inrbgoma.com', 0, 0, false, true, 'C');
+            $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'], IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
+            $this->writeHTMLCell(0, 0, 10, 290, $formatter->format(strtotime((string) $this->resultPrintedDate)) . ' ' . $generatedAtTestingLab, 0, 0, false, true, 'L');
+            $this->writeHTMLCell(0, 0, 10, 280, 'N 29 Av des Orchidees O. le volcan C. de Goma Tel: +243 817933409 +234 993549796', 0, 0, false, true, 'C');
+            $this->writeHTMLCell(0, 0, 10, 285, 'E-mail : info@inrbgoma.com, inrbgoma@gmail.com', 0, 0, false, true, 'C');
+            $this->writeHTMLCell(0, 0, 10, 290, 'inrbgoma.com', 0, 0, false, true, 'C');
+        }
     }
-}
 }
 $usersService = ContainerRegistry::get(UsersService::class);
 
@@ -225,7 +225,7 @@ if ($result['result'] != null && trim((string) $result['result']) != '') {
         $smileyContent = '';
     }
 }
-if ($result['result_status'] == '4') {
+if ($result['result_status'] == SAMPLE_STATUS\REJECTED) {
     $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
 }
 if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
@@ -352,7 +352,7 @@ $html .= '</tr>';
 $html .= '</table>';
 $html .= '</td></tr></table>';
 
-if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
     $viewId = CommonService::encryptViewQRCode($result['unique_id']);
     $pdf->writeHTML($html);
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {

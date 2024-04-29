@@ -2,6 +2,7 @@
 
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -87,7 +88,7 @@ try {
 		'user_id' => $_SESSION['userId'],
 		'vl_sample_id' => $_POST['covid19SampleId'],
 		'test_type' => 'covid19',
-		'updated_on' => DateUtility::getCurrentDateTime()
+		'updated_datetime' => DateUtility::getCurrentDateTime()
 	);
 	$db->insert($tableName2, $data);
 

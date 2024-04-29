@@ -1,31 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
-
-
-
-$formConfigQuery = "SELECT * FROM global_config";
-$configResult = $db->query($formConfigQuery);
-$gconfig = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-	$gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-	$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -35,7 +14,7 @@ $whereCondition = '';
 $tableName = "form_cd4";
 $primaryKey = "cd4_id";
 
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 	$sampleCode = 'remote_sample_code';
 } else {
 	$sampleCode = 'sample_code';
@@ -114,7 +93,7 @@ $sQuery = "SELECT vl.sample_collection_date,
                         AND (vl.sample_tested_datetime IS NOT NULL AND vl.sample_tested_datetime > '0000-00-00')
                         AND vl.cd4_result is not null
                         AND vl.cd4_result != ''";
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instance']['type'] == 'remoteuser') {
 	$whereCondition = '';
 	if (!empty($_SESSION['facilityMap'])) {
 		$whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";

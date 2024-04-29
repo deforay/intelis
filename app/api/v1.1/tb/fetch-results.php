@@ -42,8 +42,6 @@ $tbService = ContainerRegistry::get(TbService::class);
 /** @var ApiService $app */
 $app = ContainerRegistry::get(ApiService::class);
 
-
-$arr = $general->getGlobalConfig();
 $user = null;
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];

@@ -452,7 +452,7 @@ if (!empty($requestResult)) {
         $html .= '</tr>';
         $html .= '</table>';
 
-        if (($result['hcv_vl_count'] != '' || $result['hbv_vl_count'] != '') || (($result['hcv_vl_count'] == '' || $result['hbv_vl_count'] == '') && $result['result_status'] == '4')) {
+        if (($result['hcv_vl_count'] != '' || $result['hbv_vl_count'] != '') || (($result['hcv_vl_count'] == '' || $result['hbv_vl_count'] == '') && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
             $pdf->writeHTML($html);
             if (isset($arr['hepatitis_report_qr_code']) && $arr['hepatitis_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                 $keyFromGlobalConfig = $general->getGlobalConfig('key');

@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
@@ -136,11 +137,15 @@ try {
     'user_id' => $_SESSION['userId'],
     'vl_sample_id' => $_POST['eidSampleId'],
     'test_type' => 'eid',
-    'updated_on' => DateUtility::getCurrentDateTime()
+    'updated_datetime' => DateUtility::getCurrentDateTime()
   );
   $db->insert($tableName2, $data);
 
   header("Location:eid-manual-results.php");
 } catch (Exception $exc) {
-  error_log($exc->getMessage());
+  LoggerUtility::log("error", $e->getMessage(), [
+    'file' => __FILE__,
+    'line' => __LINE__,
+    'trace' => $e->getTraceAsString(),
+  ]);
 }

@@ -20,7 +20,7 @@ $path = '/assets/img/remote-bg.jpg';
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 try {
-  $myfile = fopen(APPLICATION_PATH . "/system-admin/secretKey.txt", "w+");
+  $myfile = fopen(CORE\SYSTEM_ADMIN_SECRET_KEY_FILE, "w+");
   if ($myfile === false) {
     throw new Exception("No permission to write file");
   }

@@ -18,13 +18,7 @@ if (!empty($result)) {
 		$result['labName'] = '';
 	}
 	$draftTextShow = false;
-	//Set watermark text
-	// for ($m = 0; $m < count($mFieldArray); $m++) {
-	// 	if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
-	// 		$draftTextShow = true;
-	// 		break;
-	// 	}
-	// }
+
 	// create new PDF document
 	$pdf = new DrcVlPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 	if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
@@ -159,7 +153,7 @@ if (!empty($result)) {
 	} elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
 		$smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
 		$showMessage = ($arr['h_vl_msg']);
-	} elseif ($result['result_status'] == '4' || $result['is_sample_rejected'] == 'yes') {
+	} elseif ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
 		$smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
 	}
 

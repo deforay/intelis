@@ -142,7 +142,7 @@ if (!empty($result)) {
     if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
         $resultApprovedBy = ($result['approvedBy']);
     } else {
-        if(!empty($result['defaultApprovedBy'])){
+        if (!empty($result['defaultApprovedBy'])) {
             $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
             if ($approvedByRes) {
                 $resultApprovedBy = $approvedByRes['user_name'];
@@ -156,7 +156,7 @@ if (!empty($result)) {
     if (!empty($result['reviewedBy'])) {
         $reviewedBy = $result['reviewedBy'];
     } else {
-        if(!empty($result['defaultReviewedBy'])){
+        if (!empty($result['defaultReviewedBy'])) {
             $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
             if ($reviewedByRes) {
                 $reviewedBy = $reviewedByRes['user_name'];
@@ -217,7 +217,7 @@ if (!empty($result)) {
     if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
         $smileyContent = '';
     }
-    if ($result['result_status'] == '4') {
+    if ($result['result_status'] == SAMPLE_STATUS\REJECTED) {
         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" style="width:25px;" alt="rejected"/>';
     }
     $html = '<table style="padding:0px 2px 2px 2px;">';
@@ -545,7 +545,7 @@ if (!empty($result)) {
     $html .= '</td>';
     $html .= '</tr>';
     $html .= '</table>';
-    if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+    if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
         $pdf->writeHTML($html);
         $pdf->lastPage();
         $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

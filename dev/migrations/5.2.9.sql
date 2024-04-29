@@ -481,5 +481,11 @@ WHERE a.id < b.max_id;
 
 ALTER TABLE `s_app_menu` ADD UNIQUE(`parent_id`, `link`);
 
+-- Amit 28-Apr-2024
+ALTER TABLE `global_config` CHANGE `updated_on` `updated_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `log_result_updates` CHANGE `updated_on` `updated_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` VARCHAR(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` VARCHAR(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
 -- Jeyabanu 29-Apr-2024
 UPDATE `s_app_menu` SET `show_mode` = 'always' WHERE `s_app_menu`.`link` = '/vl/program-management/sample-storage-reports.php';

@@ -29,11 +29,11 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$arr = $general->getGlobalConfig();
+$globalConfig = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
+$delimiter = $globalConfig['default_csv_delimiter'] ?? ',';
+$enclosure = $globalConfig['default_csv_enclosure'] ?? '"';
 
 
 if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['rejectedViralLoadResult']) != "") {

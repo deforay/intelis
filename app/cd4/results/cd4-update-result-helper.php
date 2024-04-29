@@ -150,7 +150,7 @@ try {
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $_POST['cd4SampleId'],
             'test_type' => 'cd4',
-            'updated_on' => DateUtility::getCurrentDateTime()
+            'updated_datetime' => DateUtility::getCurrentDateTime()
         );
         $db->insert($tableName2, $data);
     } else {
