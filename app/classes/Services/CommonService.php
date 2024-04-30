@@ -250,12 +250,12 @@ class CommonService
      *
      * @param string $tableName
      * @param string|array|null $conditions
-     * @param string|array $columns
+     * @param string|array|null $columns
      * @param int|array|null $numRows number of rows to fetch
      * @return array|null
      * @throws Exception
      */
-    public function fetchDataFromTable(string $tableName, string|array|null $conditions = [], string|array $columns = '*', $numRows = null): ?array
+    public function fetchDataFromTable(string $tableName, string|array|null $conditions = [], string|array|null $columns = '*', $numRows = null): ?array
     {
         if ($this->db == null || empty($tableName)) {
             return null;
@@ -272,12 +272,12 @@ class CommonService
             }
         }
 
-        $resultset = $this->db->get($tableName, $numRows, $columns);
-        if ($this->db->count > 0) {
-            return $resultset;
-        } else {
-            return null;
-        }
+        return $this->db->get($tableName, $numRows, $columns);
+        // if ($this->db->count > 0) {
+        //     return $resultset;
+        // } else {
+        //     return [];
+        // }
     }
 
     public static function encrypt($message, $key): string

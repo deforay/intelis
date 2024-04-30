@@ -152,9 +152,14 @@ try {
                 if (!empty($sResult)) {
                     $db->where($primaryKey, $sResult[$primaryKey]);
                     $id = $db->update($tableName, $lab);
+                    $primaryKeyValue = $sResult[$primaryKey];
                 } else {
                     $id = $db->insert($tableName, $lab);
+                    $primaryKeyValue = $db->getInsertId();
                 }
+
+                $db->where('covid19_id', $primaryKeyValue);
+                $db->delete("covid19_tests");
             } catch (Throwable $e) {
                 if ($db->getLastError()) {
                     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
@@ -171,37 +176,36 @@ try {
             }
         }
 
-        try {
 
-            foreach ($testResultsData as $covid19Id => $testResults) {
-                if(!is_numeric($covid19Id)){
-                    continue;
-                }
-                $db->where('covid19_id', (int) $covid19Id);
-                $db->delete("covid19_tests");
-                LoggerUtility::log('info', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
-                foreach ($testResults as $testId => $test) {
-                    $db->insert(
-                        "covid19_tests",
-                        [
-                            "covid19_id" => $test['covid19_id'],
-                            "test_name" => $test['test_name'],
-                            "facility_id" => $test['facility_id'],
-                            "sample_tested_datetime" => $test['sample_tested_datetime'],
-                            "testing_platform" => $test['testing_platform'],
-                            "result" => $test['result']
-                        ]
 
-                    );
-                }
+        foreach ($testResultsData as $covid19Id => $testResults) {
+            $db->where('covid19_id', $covid19Id);
+            $db->delete("covid19_tests");
+            foreach ($testResults as $covid19TestData) {
+                unset($covid19TestData['test_id']);
+                $db->insert("covid19_tests", $covid19TestData);
             }
-        } catch (Throwable $e) {
-
-            LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno() . ":" . $db->getLastError());
-            LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
-
-            LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
         }
+        // foreach ($testResultsData as $covid19Id => $testResults) {
+        //     foreach ($testResults as $testRow) {
+        //         try {
+        //             $c19tData = [
+        //                 "covid19_id" => $testRow['covid19_id'],
+        //                 "test_name" => $testRow['test_name'],
+        //                 "facility_id" => $testRow['facility_id'],
+        //                 "sample_tested_datetime" => $testRow['sample_tested_datetime'],
+        //                 "testing_platform" => $testRow['testing_platform'],
+        //                 "result" => $testRow['result']
+        //             ];
+        //             $db->insert("covid19_tests", $c19tData);
+        //         } catch (Throwable $e) {
+        //             LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno() . ":" . $db->getLastError());
+        //             LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+        //             LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
+        //             continue;
+        //         }
+        //     }
+        // }
     }
 
     $payload = json_encode($sampleCodes);

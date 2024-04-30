@@ -57,10 +57,10 @@ class MiscUtility
         }
 
         // Additional context
-        // $timestamp = date('Y-m-d H:i:s');
-        // $output = "[{$timestamp}] " . $output;
+        $timestamp = date('Y-m-d H:i:s');
+        $output = "[{$timestamp}] " . $output;
 
-        LoggerUtility::log('error', $output);
+        error_log($output);
     }
 
     /**
