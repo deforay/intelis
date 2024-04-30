@@ -114,7 +114,10 @@ try {
          * SQL queries
          * Get data to display
         */
-    $sQuery = "SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > " . $thresholdLimit;
+    $sQuery = "SELECT vl.*,f.facility_name,fd.facility_name as labName FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
+    if(isset($thresholdLimit) && !empty($thresholdLimit)){
+        $sWhere[] =  " vl.result_status=7 AND vl.result > " . $thresholdLimit;
+    }
     $start_date = '';
     $end_date = '';
 
