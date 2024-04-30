@@ -384,7 +384,8 @@ class UsersService
         if(!isset($data) || empty($data) || !isset($userId) || empty($userId)){
             return null;
         }
+        $saveData['user_attributes'] = !empty($data) ? $this->db->func($data) : null;
         $this->db->where('user_id', $userId);
-        return $this->db->update('user_details',array('user_attributes' => $data));
+        return $this->db->update($this->table, $saveData);
     }
 }

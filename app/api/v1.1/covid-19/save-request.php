@@ -97,6 +97,7 @@ try {
     foreach(array('deviceId', 'osVersion', 'ipAddress') as $header){
         $userAttributes[$header] = $apiService->getHeader($request, $header);
     }
+    $userAttributes = $general->jsonToSetString(json_encode($userAttributes), 'user_attributes');
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
     $responseData = [];

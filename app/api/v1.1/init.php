@@ -41,7 +41,6 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $transactionId = $general->generateUUID();
 $formId = $general->getGlobalConfig('vl_form');
-
 $authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 /* To save the user attributes from API */
@@ -49,6 +48,7 @@ $userAttributes = [];
 foreach(array('deviceId', 'osVersion', 'ipAddress') as $header){
     $userAttributes[$header] = $apiService->getHeader($request, $header);
 }
+$userAttributes = $general->jsonToSetString(json_encode($userAttributes), 'user_attributes');
 $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
 $updatedDateTime = $input['latestDateTime'] ?? null;
@@ -61,6 +61,7 @@ $tsResult = $db->rawQuery($tsQuery);
 foreach ($tsResult as $row) {
     $statusList[$row['status_id']] = $row['status_name'];
 }
+
 // Check if covid-19 module active/inactive
 $status = false;
 // Funding Sources List
@@ -168,12 +169,11 @@ foreach ($modules as $module => $status) {
         $rejectionReason[$module] = $reasons[$module];
         $testReasonName = "test_reason_name";
         $testReasonTable = 'r_' . $module . '_test_reasons';
-        if ($module == 'genericTests' || $modules == 'generic-tests' || $modules == 'generic') {
+        if ($module == 'genericTests' || $module == 'generic-tests' || $module == 'generic') {
             $testReasonTable = 'r_generic_test_reasons';
             $testReasonName = "test_reason";
         }
         $testReasonsResult = $general->getDataByTableAndFields($testReasonTable, array('test_reason_id', $testReasonName, 'parent_reason'), false, " test_reason_status like 'active' ", $testReasonName);
-        // print_r($testReasonsResult);die;
         foreach ($testReasonsResult as $subKey => $reject) {
             $testReasons[$module]['testReasons'][$subKey]['parent'] = $reject['parent_reason'] ?? 0;
             $testReasons[$module]['testReasons'][$subKey]['value'] = $reject['test_reason_id'];
