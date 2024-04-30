@@ -16,7 +16,6 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
-use MysqliDb;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -544,10 +543,8 @@ class CommonService
 
     public function getCountryShortCode(): string
     {
-        return once(function () {
-            $this->db->where("vlsm_country_id", $this->getGlobalConfig('vl_form'));
-            return $this->db->getValue("s_available_country_forms", "short_name");
-        });
+        $this->db->where("vlsm_country_id", $this->getGlobalConfig('vl_form'));
+        return $this->db->getValue("s_available_country_forms", "short_name");
     }
 
     public function trackQRPageViews($type, $typeId, $sampleCode)
@@ -654,18 +651,31 @@ class CommonService
     // Returns the current Instance ID
     public function getInstanceId(): ?string
     {
-        return once(function () {
-            return $this->db->getValue("s_vlsm_instance", "vlsm_instance_id");
-        });
+        return $this->db->getValue("s_vlsm_instance", "vlsm_instance_id");
     }
 
-    public function isRemoteUser(): bool
+    public function getInstanceType(): ?string
     {
-        return isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'remoteuser';
+        return $_SESSION['instance']['type'] ?? $this->getSystemConfig('sc_user_type') ?? $this->db->getValue("s_vlsm_instance", "instance_type");
+    }
+
+    public function isSTSInstance(): bool
+    {
+        return $this->getInstanceType() === 'remoteuser';
+    }
+
+    public function isLISInstance(): bool
+    {
+        return $this->getInstanceType() === 'vluser';
+    }
+
+    public function isStandaloneInstance(): bool
+    {
+        return $this->getInstanceType() === 'standalone';
     }
     public function getLastRemoteSyncDateTime()
     {
-        if ($this->isRemoteUser()) {
+        if ($this->isSTSInstance()) {
             $dateTime = $this->db->rawQueryOne("SELECT MAX(`requested_on`) AS `dateTime`
                                                     FROM `track_api_requests`");
         } else {
@@ -1043,56 +1053,52 @@ class CommonService
 
     public function getDistrictDetailsApi($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        return once(function () use ($user, $onlyActive, $updatedDateTime) {
 
-            $query = "SELECT f.facility_id, f.facility_name,
+        $query = "SELECT f.facility_id, f.facility_name,
                     f.facility_code,
                     gd.geo_id,
                     gd.geo_name,
                     f.facility_district
                     FROM geographical_divisions AS gd
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
-            $where = [];
-            if (!empty($user)) {
-                $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
-                if (!empty($facilityMap)) {
-                    $where[] = " f.facility_id IN (" . $facilityMap . ")";
-                }
+        $where = [];
+        if (!empty($user)) {
+            $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
+            if (!empty($facilityMap)) {
+                $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
+        }
 
-            if ($onlyActive) {
-                $where[] = " f.status like 'active'";
-            }
+        if ($onlyActive) {
+            $where[] = " f.status like 'active'";
+        }
 
-            if ($updatedDateTime) {
-                $where[] = " gd.updated_datetime >= '$updatedDateTime'";
-            }
-            $whereStr = "";
-            if (!empty($where)) {
-                $whereStr = " WHERE " . implode(" AND ", $where);
-            }
-            $query .= $whereStr . ' GROUP BY facility_district ORDER BY facility_district ASC';
-            // die($query);
-            $result = $this->db->rawQuery($query);
-            $response = [];
-            foreach ($result as $key => $row) {
-                $condition1 = " facility_district like '" . $row['facility_district'] . "%'";
-                $condition2 = " geo_name like '" . $row['geo_name'] . "%'";
+        if ($updatedDateTime) {
+            $where[] = " gd.updated_datetime >= '$updatedDateTime'";
+        }
+        $whereStr = "";
+        if (!empty($where)) {
+            $whereStr = " WHERE " . implode(" AND ", $where);
+        }
+        $query .= $whereStr . ' GROUP BY facility_district ORDER BY facility_district ASC';
+        // die($query);
+        $result = $this->db->rawQuery($query);
+        $response = [];
+        foreach ($result as $key => $row) {
+            //$condition1 = " facility_district like '" . $row['facility_district'] . "%'";
+            //$condition2 = " geo_name like '" . $row['geo_name'] . "%'";
 
-                $response[$key]['value'] = $row['facility_district'];
-                $response[$key]['show'] = $row['facility_district'];
-                $response[$key]['facilityDetails'] = $this->getSubFields('facility_details', 'facility_id', 'facility_name', $condition1);
-                $response[$key]['provinceDetails'] = $this->getSubFields('geographical_divisions', 'geo_id', 'geo_name', $condition2);
-            }
-            return $response;
-        });
+            $response[$key]['value'] = $row['facility_district'];
+            $response[$key]['show'] = $row['facility_district'];
+            $response[$key]['facilityDetails'] = $this->getSubFields('facility_details', 'facility_id', 'facility_name', " facility_district like '" . $row['facility_district'] . "%'");
+            $response[$key]['provinceDetails'] = $this->getSubFields('geographical_divisions', 'geo_id', 'geo_name', " geo_name like '" . $row['geo_name'] . "%'");
+        }
+        return $response;
     }
 
     public function getProvinceDetailsApi($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        return once(function () use ($user, $onlyActive, $updatedDateTime) {
-
-            $query = "SELECT f.facility_id,
+        $query = "SELECT f.facility_id,
                             f.facility_name,
                             f.facility_code,
                             gd.geo_id,
@@ -1101,36 +1107,35 @@ class CommonService
                             f.facility_type
                     FROM geographical_divisions AS gd
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
-            $where = [];
-            if (!empty($user)) {
-                $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
-                if (!empty($facilityMap)) {
-                    $where[] = " f.facility_id IN (" . $facilityMap . ")";
-                }
+        $where = [];
+        if (!empty($user)) {
+            $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
+            if (!empty($facilityMap)) {
+                $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
+        }
 
-            if ($onlyActive) {
-                $where[] = " f.status like 'active'";
-            }
+        if ($onlyActive) {
+            $where[] = " f.status like 'active'";
+        }
 
-            if ($updatedDateTime) {
-                $where[] = " gd.updated_datetime >= '$updatedDateTime'";
-            }
-            $whereStr = "";
-            if (!empty($where)) {
-                $whereStr = " WHERE " . implode(" AND ", $where);
-            }
-            $query .= $whereStr . ' GROUP BY geo_name ORDER BY geo_name ASC';
-            $result = $this->db->rawQuery($query);
-            foreach ($result as $key => $row) {
-                $condition1 = " facility_state like '" . $row['geo_name'] . "%'";
+        if ($updatedDateTime) {
+            $where[] = " gd.updated_datetime >= '$updatedDateTime'";
+        }
+        $whereStr = "";
+        if (!empty($where)) {
+            $whereStr = " WHERE " . implode(" AND ", $where);
+        }
+        $query .= $whereStr . ' GROUP BY geo_name ORDER BY geo_name ASC';
+        $result = $this->db->rawQuery($query);
+        foreach ($result as $key => $row) {
+            //$condition1 = " facility_state like '" . $row['geo_name'] . "%'";
 
-                $response[$key]['value'] = $row['geo_id'];
-                $response[$key]['show'] = $row['geo_name'];
-                $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', $condition1);
-            }
-            return $response;
-        });
+            $response[$key]['value'] = $row['geo_id'];
+            $response[$key]['show'] = $row['geo_name'];
+            $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', " facility_state like '" . $row['geo_name'] . "%'");
+        }
+        return $response;
     }
 
     public function getAppHealthFacilitiesAPI($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null, $updatedDateTime = null): array
@@ -1215,16 +1220,14 @@ class CommonService
 
     public function getSubFields($tableName, $primary, $name, $condition)
     {
-        return once(function () use ($tableName, $primary, $name, $condition) {
-            $query = "SELECT $primary, $name from $tableName where $condition group by $name";
-            $result = $this->db->rawQuery($query);
-            $response = [];
-            foreach ($result as $key => $row) {
-                $response[$key]['value'] = $row[$primary];
-                $response[$key]['show'] = $row[$name];
-            }
-            return $response;
-        });
+        $query = "SELECT $primary, $name FROM $tableName WHERE $condition group by $name";
+        $result = $this->db->rawQuery($query);
+        $response = [];
+        foreach ($result as $key => $row) {
+            $response[$key]['value'] = $row[$primary];
+            $response[$key]['show'] = $row[$name];
+        }
+        return $response;
     }
 
     public static function encryptViewQRCode($uniqueId)

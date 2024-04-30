@@ -161,7 +161,7 @@ if (!empty($_POST['sampleCollectionDate'])) {
 if (isset($_POST['lab']) && trim((string) $_POST['lab']) != '') {
   $sWhere[] =  "  vl.lab_id IN (" . $_POST['lab'] . ")";
 }
-if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
   $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 

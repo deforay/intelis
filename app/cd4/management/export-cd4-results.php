@@ -36,7 +36,7 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 	}
 
 
-	if ($_SESSION['instance']['type'] == 'standalone') {
+	if ($general->isStandaloneInstance()) {
 		$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
 	}
 

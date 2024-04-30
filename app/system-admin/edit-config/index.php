@@ -81,7 +81,7 @@ $fResult = $facilitiesService->getAllFacilities(2);
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-7 labName" style="<?php echo ($sarr['sc_user_type'] == 'vluser') ? 'display:show' : 'display:none'; ?>">
+                  <div class="col-md-7 labName" style="<?php echo ($general->isLISInstance()) ? 'display:show' : 'display:none'; ?>">
                     <div class="form-group">
                       <label for="sc_testing_lab_id" class="col-lg-4 control-label"><?php echo _translate("Lab Name"); ?></label>
                       <div class="col-lg-8">

@@ -42,7 +42,7 @@ try {
 	$primaryKey = "hepatitis_id";
 
 
-	if ($sarr['sc_user_type'] == 'remoteuser') {
+	if ($general->isSTSInstance()) {
 		$sampleCode = 'remote_sample_code';
 	} else {
 		$sampleCode = 'sample_code';
@@ -123,7 +123,7 @@ try {
 					AND (vl.sample_tested_datetime is NOT NULL AND DATE(vl.sample_tested_datetime) > '0000-00-00')
 					AND vl.hcv_vl_result is not null
 					AND vl.hcv_vl_result != '' ";
-	if ($sarr['sc_user_type'] == 'remoteuser') {
+	if ($general->isSTSInstance()) {
 		$whereCondition = '';
 		if (!empty($_SESSION['facilityMap'])) {
 			$whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";

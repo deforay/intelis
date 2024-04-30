@@ -29,9 +29,9 @@ $primaryKey = "sample_id";
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_type_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
      $sampleCode = 'remote_sample_code';
-} else if ($_SESSION['instance']['type'] == 'standalone') {
+} else if ($general->isStandaloneInstance()) {
      if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
           unset($aColumns[$key]);
           $aColumns = array_values($aColumns);
@@ -132,12 +132,12 @@ vl.sample_received_at_hub_datetime,
 vl.sample_received_at_testing_lab_datetime,
 vl.result_dispatched_datetime,
 vl.result_printed_datetime,
-vl.result_approved_by 
-FROM form_generic as vl 
-LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
-LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.specimen_type 
+vl.result_approved_by
+FROM form_generic as vl
+LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
+LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.specimen_type
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status";
 
 

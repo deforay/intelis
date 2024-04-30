@@ -33,7 +33,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
      $output = [];
 
      $headings = array('Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Patient Id.", "Patient Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
-     if ($_SESSION['instance']['type'] == 'standalone') {
+     if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 

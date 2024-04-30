@@ -31,7 +31,7 @@ $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
 $reasonForFailure = $genericTestsService->getReasonForFailure();
 $genericResults = $genericTestsService->getGenericResults();
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$labFieldDisabled = 'disabled="disabled"';
 }
 
@@ -239,7 +239,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 }
 //check remote user
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$sampleCode = 'remote_sample_code';
 	if (!empty($genericResultInfo['remote_sample']) && $genericResultInfo['remote_sample'] == 'yes') {
 		$sampleCode = 'remote_sample_code';
@@ -295,7 +295,7 @@ $testTypeForm = json_decode((string) $genericResultInfo['test_type_form'], true)
 $reasonForChangeArr = explode('##', (string) $genericResultInfo['reason_for_test_result_changes']);
 $reasonForChange = $reasonForChangeArr[1];
 $mandatoryClass = "";
-if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') {
+if (!empty($_SESSION['instance']['type']) && $general->isLISInstance()) {
 	$mandatoryClass = "isRequired";
 }
 
@@ -540,14 +540,14 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 							<div class="box-body">
 								<div class="row">
 									<div class="col-md-6">
-										<label class="col-lg-5" for="artNo">EPID Number <?php if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+										<label class="col-lg-5" for="artNo">EPID Number <?php if (!empty($_SESSION['instance']['type']) && $general->isLISInstance()) { ?><span class="mandatory">*</span><?php } ?></label>
 										<div class="col-lg-7">
 											<input type="text" name="artNo" id="artNo" class="form-control <?= $mandatoryClass; ?> patientId" placeholder="Enter EPID Number" title="Enter EPID Number" value="<?= htmlspecialchars((string) $genericResultInfo['patient_id']); ?>" />
 										</div>
 
 									</div>
 									<div class="col-md-6">
-										<label class="col-lg-5" for="artNo">Laboratory Number <?php if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+										<label class="col-lg-5" for="artNo">Laboratory Number <?php if (!empty($_SESSION['instance']['type']) && $general->isLISInstance()) { ?><span class="mandatory">*</span><?php } ?></label>
 										<div class="col-lg-7">
 											<input type="text" name="laboratoryNumber" id="laboratoryNumber" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter Laboratory Number" title="Enter Laboratory Number" value="<?= $genericResultInfo['laboratory_number']; ?>" />
 										</div>

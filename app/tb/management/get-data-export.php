@@ -52,9 +52,9 @@ try {
      $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $sampleCode = 'sample_code';
-     if ($_SESSION['instance']['type'] == 'remoteuser') {
+     if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
-     } else if ($sarr['sc_user_type'] == 'standalone') {
+     } else if ($general->isStandaloneInstance()) {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
@@ -252,7 +252,7 @@ try {
      }
 
 
-     if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
      }
      $sQuery = $sQuery . ' WHERE result_status is NOT NULL AND' . implode(" AND ", $sWhere);

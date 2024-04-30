@@ -45,7 +45,7 @@ try {
     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name');
     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name');
 
-    if ($sarr['sc_user_type'] == 'standalone') {
+    if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
     }
@@ -169,7 +169,7 @@ try {
         $sWhere[] =  ' vl.reason_for_sample_rejection = "' . $_POST['sampleRejectionReason'] . '"';
     }
 
-    if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+    if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
     }
     if (!empty($sWhere)) {

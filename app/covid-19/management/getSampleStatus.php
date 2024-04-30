@@ -21,7 +21,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 $whereCondition = null;
 
-if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 

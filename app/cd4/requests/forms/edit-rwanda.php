@@ -26,7 +26,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
      }
 }
 //check remote user
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
      $sampleCode = 'remote_sample_code';
      if (!empty($cd4QueryInfo['remote_sample']) && $cd4QueryInfo['remote_sample'] == 'yes') {
           $sampleCode = 'remote_sample_code';
@@ -134,7 +134,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
-                                                       <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+                                                       <?php if ($general->isSTSInstance()) { ?>
                                                             <label for="sampleCode">Sample ID </label><br>
                                                             <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $cd4QueryInfo[$sampleCode]; ?></span>
                                                             <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo $cd4QueryInfo[$sampleCode]; ?>" />
@@ -143,13 +143,6 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                             <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo $cd4QueryInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" onchange="checkSampleNameValidation('form_cd4','<?php echo $sampleCode; ?>',this.id,'<?php echo "cd4_id##" . $cd4QueryInfo["cd4_id"]; ?>','This sample number already exists.Try another number',null)" />
                                                             <input type="hidden" name="sampleCodeCol" value="<?= ($cd4QueryInfo['sample_code']); ?>" />
                                                        <?php } ?>
-                                                  </div>
-                                             </div>
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="">
-                                                       <label for="sampleReordered">
-                                                            <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $cd4QueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample"> Sample Reordered
-                                                       </label>
                                                   </div>
                                              </div>
                                         </div>
@@ -282,8 +275,8 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                         </div>
                                         <div class="col-xs-3 col-md-3">
                                              <div class="form-group">
-                                                  <label for="dob">Date of Birth <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                  <input type="text" name="dob" id="dob" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" placeholder="Enter DOB" title="Enter dob" onchange="getAge();checkARTInitiationDate();" value="<?= DateUtility::humanReadableDateFormat($cd4QueryInfo['patient_dob']); ?>" />
+                                                  <label for="dob">Date of Birth <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                  <input type="text" name="dob" id="dob" class="form-control date <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" placeholder="Enter DOB" title="Enter dob" onchange="getAge();checkARTInitiationDate();" value="<?= DateUtility::humanReadableDateFormat($cd4QueryInfo['patient_dob']); ?>" />
                                              </div>
                                         </div>
                                         <div class="col-xs-3 col-md-3">
@@ -384,7 +377,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="">Is sample re-ordered as part of corrective action? <span class="mandatory">*</span></label>
-                                                       <select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose adherence">
+                                                       <select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" title="Please choose adherence">
                                                             <option value=""> -- Select -- </option>
                                                             <option value="yes" <?php echo $cd4QueryInfo['sample_reordered'] == 'yes' ? 'selected="selected"' : ''; ?>>Yes</option>
                                                             <option value="no" <?php echo $cd4QueryInfo['sample_reordered'] == 'no' ? 'selected="selected"' : ''; ?>>No</option>
@@ -401,8 +394,8 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                              <div class="row">
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
-                                                            <label for="arvAdherence">ARV Adherence <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                            <select name="arvAdherence" id="arvAdherence" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose adherence">
+                                                            <label for="arvAdherence">ARV Adherence <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                            <select name="arvAdherence" id="arvAdherence" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" title="Please choose adherence">
                                                                  <option value=""> -- Select -- </option>
                                                                  <option value="good" <?php echo ($cd4QueryInfo['arv_adherance_percentage'] == 'good') ? "selected='selected'" : "" ?>>Good >= 95%</option>
                                                                  <option value="fair" <?php echo ($cd4QueryInfo['arv_adherance_percentage'] == 'fair') ? "selected='selected'" : "" ?>>Fair (85-94%)</option>
@@ -418,8 +411,8 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
-                                                            <label for="artRegimen">Current Regimen <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                            <select class="form-control  <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose an ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
+                                                            <label for="artRegimen">Current Regimen <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                            <select class="form-control  <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose an ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
                                                                  <option value="">-- Select --</option>
                                                                  <?php foreach ($artRegimenResult as $heading) { ?>
                                                                       <optgroup label="<?= $heading['headings']; ?>">
@@ -443,8 +436,8 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
-                                                            <label for="">Date of Initiation of Current Regimen<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                            <input type="text" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" value="<?php echo $cd4QueryInfo['date_of_initiation_of_current_regimen']; ?>">
+                                                            <label for="">Date of Initiation of Current Regimen<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                            <input type="text" class="form-control date <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" value="<?php echo $cd4QueryInfo['date_of_initiation_of_current_regimen']; ?>">
                                                        </div>
                                                   </div>
 
@@ -606,35 +599,35 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                   <hr>
                                                   <div class="row">
                                                        <div class="col-md-4">
-                                                            <label for="reqClinician" class="col-lg-5 control-label">Requesting Clinician <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                            <label for="reqClinician" class="col-lg-5 control-label">Requesting Clinician <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician Name" title="Please enter request clinician" value="<?= $cd4QueryInfo['request_clinician_name']; ?>" />
+                                                                 <input type="text" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician Name" title="Please enter request clinician" value="<?= $cd4QueryInfo['request_clinician_name']; ?>" />
                                                             </div>
                                                        </div>
                                                        <div class="col-md-4">
-                                                            <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Contact <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                            <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Contact <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control phone-number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?= $cd4QueryInfo['request_clinician_phone_number']; ?>" />
+                                                                 <input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?= $cd4QueryInfo['request_clinician_phone_number']; ?>" />
                                                             </div>
                                                        </div>
                                                        <div class="col-md-4">
-                                                            <label class="col-lg-5 control-label" for="requestDate">Date Requested <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                            <label class="col-lg-5 control-label" for="requestDate">Date Requested <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?= DateUtility::humanReadableDateFormat($cd4QueryInfo['test_requested_on']); ?>" />
+                                                                 <input type="text" class="form-control date <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?= DateUtility::humanReadableDateFormat($cd4QueryInfo['test_requested_on']); ?>" />
                                                             </div>
                                                        </div>
                                                   </div>
                                                   <div class="row">
                                                        <div class="col-md-4">
-                                                            <label for="cd4FocalPerson" class="col-lg-5 control-label">CD4 Focal Person at Transport Transit site (DH):<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                            <label for="cd4FocalPerson" class="col-lg-5 control-label">CD4 Focal Person at Transport Transit site (DH):<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="cd4FocalPerson" name="cd4FocalPerson" placeholder="CD4 Focal Name" title="Please enter CD4 Focal name" value="<?= $cd4QueryInfo['cd4_focal_person'] ?>" />
+                                                                 <input type="text" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="cd4FocalPerson" name="cd4FocalPerson" placeholder="CD4 Focal Name" title="Please enter CD4 Focal name" value="<?= $cd4QueryInfo['cd4_focal_person'] ?>" />
                                                             </div>
                                                        </div>
                                                        <div class="col-md-4">
-                                                            <label for="cd4FocalPersonPhoneNumber" class="col-lg-5 control-label"> Phone Contact<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                            <label for="cd4FocalPersonPhoneNumber" class="col-lg-5 control-label"> Phone Contact<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control phone-number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="cd4FocalPersonPhoneNumber" name="cd4FocalPersonPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Phone Number" title="Please enter phone number" value="<?= $cd4QueryInfo['cd4_focal_person_phone_number'] ?>" />
+                                                                 <input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="cd4FocalPersonPhoneNumber" name="cd4FocalPersonPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Phone Number" title="Please enter phone number" value="<?= $cd4QueryInfo['cd4_focal_person_phone_number'] ?>" />
                                                             </div>
                                                        </div>
                                                        <div class="col-md-4">

@@ -41,7 +41,7 @@ $sampleCodeKey = 'sample_code_key';
 $sampleCode = 'sample_code';
 $prefix = $arr['sample_code_prefix'];
 
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$rKey = 'R';
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
@@ -187,7 +187,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 								<div class="row">
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
-											<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+											<?php if ($general->isSTSInstance()) { ?>
 												<label class="labels" for="sampleCode">Laboratory ID </label><br>
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;">
 													<?php echo $vlQueryInfo[$sampleCode]; ?>
@@ -202,7 +202,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 										</div>
 									</div>
 
-									<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+									<?php if ($general->isSTSInstance()) { ?>
 
 										<div class="col-xs-3 col-md-3">
 											<div class="">

@@ -53,7 +53,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 	} else {
 		$headings = array("No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 	}
-	if ($_SESSION['instance']['type'] == 'standalone') {
+	if ($general->isStandaloneInstance()) {
 		if (($key = array_search("Remote Sample ID", $headings)) !== false) {
 			unset($headings[$key]);
 		}

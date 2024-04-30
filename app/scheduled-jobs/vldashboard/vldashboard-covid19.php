@@ -71,7 +71,7 @@ try {
         ],
         [
             'name' => 'source',
-            'contents' => ($general->getSystemConfig('sc_user_type') == 'remoteuser') ? 'STS' : 'LIS'
+            'contents' => ($general->isSTSInstance()) ? 'STS' : 'LIS'
         ],
         [
             'name' => 'labId',

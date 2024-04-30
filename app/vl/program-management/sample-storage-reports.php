@@ -77,7 +77,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 										<div class="tab-pane fade in active" id="notPrintedData">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
-													<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+													<?php if ($general->isSTSInstance()) { ?>
 
 														<td><strong>
 																<?php echo _translate("Testing Lab"); ?> :
@@ -161,7 +161,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 										<div class="tab-pane fade" id="printedData">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
-													<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+													<?php if ($general->isSTSInstance()) { ?>
 														<td><strong>
 																<?php echo _translate("Testing Lab"); ?> :
 															</strong></td>

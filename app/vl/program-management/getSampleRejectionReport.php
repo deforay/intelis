@@ -30,7 +30,7 @@ try {
     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
 
-    if ($_SESSION['instance']['type'] == 'standalone') {
+    if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
     }

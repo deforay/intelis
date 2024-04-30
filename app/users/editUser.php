@@ -48,7 +48,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $activeFacilities = [];
 $display = 'display:none';
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 
      $facilityMap = $facilitiesService->getUserFacilityMap($id);
      $preselectedFacilities = explode(",", (string) $facilityMap);

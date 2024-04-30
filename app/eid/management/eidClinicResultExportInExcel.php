@@ -30,7 +30,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
 
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Child's ID", "Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "Result");
-     if ($_SESSION['instance']['type'] == 'standalone') {
+     if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 

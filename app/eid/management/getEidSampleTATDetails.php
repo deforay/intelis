@@ -20,7 +20,7 @@ try {
 	$primaryKey = "eid_id";
 
 
-	if ($_SESSION['instance']['type'] == 'remoteuser') {
+	if ($general->isSTSInstance()) {
 		$sampleCode = 'remote_sample_code';
 	} else {
 		$sampleCode = 'sample_code';
@@ -100,7 +100,7 @@ try {
 				(vl.sample_collection_date is NOT NULL AND DATE(vl.sample_collection_date) > '0000-00-00') AND
 				(vl.sample_tested_datetime is NOT NULL AND DATE(vl.sample_tested_datetime) > '0000-00-00') AND
 				vl.result is not null AND vl.result != ''";
-	if ($_SESSION['instance']['type'] == 'remoteuser') {
+	if ($general->isSTSInstance()) {
 		if (!empty($_SESSION['facilityMap'])) {
 			$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 		}

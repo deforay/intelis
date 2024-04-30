@@ -41,7 +41,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 	}
 
 
-	if ($_SESSION['instance']['type'] == 'standalone') {
+	if ($general->isStandaloneInstance()) {
 		$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
 	}
 
@@ -150,12 +150,12 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			if ($formId == COUNTRY\DRC) {
 				$formAttributes = json_decode($aRow['form_attributes']);
 				$storageObj = $formAttributes->storage;
-		
+
 				$row[] = $storageObj->freezerCode;
 				$row[] = $storageObj->rack;
 				$row[] = $storageObj->box;
 				$row[] = $storageObj->position;
-				$row[] = $storageObj->volume;			
+				$row[] = $storageObj->volume;
 			}
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
@@ -229,8 +229,8 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 				$row[] = $storageObj->freezerCode;
 				$row[] = $storageObj->rack;
 				$row[] = $storageObj->box;
-				$row[] = $storageObj->position;	
-				$row[] = $storageObj->volume;			
+				$row[] = $storageObj->position;
+				$row[] = $storageObj->volume;
 			}
 
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');

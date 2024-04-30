@@ -24,9 +24,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 //system config
 $sarr = $general->getSystemConfig();
 
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
     $sCode = 'remote_sample_code';
-} elseif ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
+} elseif ($general->isLISInstance() || $general->isStandaloneInstance()) {
     $sCode = 'sample_code';
 }
 

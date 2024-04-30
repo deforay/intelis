@@ -441,7 +441,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 <?php } ?>
             ],
             "aaSorting": [
-                [<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 12 : 11 ?>, "desc"]
+                [<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>, "desc"]
             ],
             "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");

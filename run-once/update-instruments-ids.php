@@ -20,7 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $systemConfig = $general->getSystemConfig();
 
-if ($systemConfig['sc_user_type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
     exit("Script not required for STS instance" . PHP_EOL);
 }
 

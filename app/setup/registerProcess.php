@@ -93,7 +93,7 @@ try {
             $db->query("INSERT IGNORE INTO roles_privileges_map(role_id,privilege_id) VALUES (1,$privilegeId)");
         }
 
-        if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {
+        if (!empty(SYSTEM_CONFIG['remoteURL']) && $general->isLISInstance()) {
             $insertData['userId'] = $userId;
             $insertData['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
             $insertData['password'] = null; // We don't want to unintentionally end up creating admin users on STS

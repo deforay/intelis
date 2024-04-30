@@ -18,7 +18,7 @@ $whereCondition = '';
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";
 
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$sampleCode = 'remote_sample_code';
 } else {
 	$sampleCode = 'sample_code';
@@ -99,7 +99,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_collection_date,
 					AND (vl.sample_tested_datetime is NOT NULL AND DATE(vl.sample_tested_datetime) > '0000-00-00')
 					AND vl.result is not null
 					AND vl.result != ''";
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	if (!empty($_SESSION['facilityMap'])) {
 		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 	}
@@ -164,7 +164,7 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 $rUser = '';
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$rUser = $rUser . $whereCondition;
 } else {
 	$rUser = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;

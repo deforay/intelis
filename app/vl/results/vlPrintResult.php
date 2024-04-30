@@ -792,7 +792,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?php echo ($_SESSION['instance']['type'] == 'remoteuser' || $_SESSION['instance']['type'] == 'vluser') ? 12 : 11 ?>, "desc"]
+				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
@@ -943,7 +943,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?php echo ($_SESSION['instance']['type'] == 'remoteuser' || $_SESSION['instance']['type'] == 'vluser') ? 12 : 11 ?>, "desc"]
+				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chkPrinted[]");

@@ -30,9 +30,9 @@ $primaryKey = "eid_id";
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'mother_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'mother_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
     $sampleCode = 'remote_sample_code';
-} else if ($_SESSION['instance']['type'] == 'standalone') {
+} else if ($general->isStandaloneInstance()) {
     if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
         unset($aColumns[$key]);
         $aColumns = array_values($aColumns);
@@ -223,7 +223,7 @@ if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
 } else {
     $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
-if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 if (!empty($sWhere)) {

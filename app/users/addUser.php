@@ -15,7 +15,7 @@ $result = $db->rawQuery($query);
 
 $activeFacilities = [];
 $display = 'display:none';
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
      $fResult = [];
      $fQuery = "SELECT facility_name,facility_id
                     FROM facility_details

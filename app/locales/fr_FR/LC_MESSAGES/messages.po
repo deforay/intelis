@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-04-29 19:18+0530\n"
-"PO-Revision-Date: 2024-04-29 19:19+0530\n"
+"POT-Creation-Date: 2024-04-30 12:46+0530\n"
+"PO-Revision-Date: 2024-04-30 12:47+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -2805,35 +2805,35 @@ msgstr "Dernière demande de synchronisation du STS"
 msgid "Version"
 msgstr "Version"
 
-#: api/v1.1/covid-19/save-request.php:123 api/v1.1/eid/save-request.php:122
-#: api/v1.1/generic-tests/save-request.php:126 api/v1.1/save-facilities.php:104
-#: api/v1.1/tb/save-request.php:120 api/v1.1/vl/save-request.php:123
+#: api/v1.1/covid-19/save-request.php:126 api/v1.1/eid/save-request.php:124
+#: api/v1.1/generic-tests/save-request.php:122 api/v1.1/save-facilities.php:106
+#: api/v1.1/tb/save-request.php:119 api/v1.1/vl/save-request.php:125
 msgid "Missing required fields"
 msgstr "Champs obligatoires manquants"
 
-#: api/v1.1/covid-19/save-request.php:133 api/v1.1/eid/save-request.php:132
-#: api/v1.1/generic-tests/save-request.php:136 api/v1.1/tb/save-request.php:130
-#: api/v1.1/vl/save-request.php:133
+#: api/v1.1/covid-19/save-request.php:136 api/v1.1/eid/save-request.php:134
+#: api/v1.1/generic-tests/save-request.php:132 api/v1.1/tb/save-request.php:129
+#: api/v1.1/vl/save-request.php:135
 msgid "Invalid Dates. Cannot be in the future"
 msgstr "Dates non valables. Ne peut être dans le futur"
 
-#: api/v1.1/covid-19/save-request.php:210 api/v1.1/eid/save-request.php:198
-#: api/v1.1/generic-tests/save-request.php:200 api/v1.1/tb/save-request.php:194
-#: api/v1.1/vl/save-request.php:179
+#: api/v1.1/covid-19/save-request.php:213 api/v1.1/eid/save-request.php:200
+#: api/v1.1/generic-tests/save-request.php:196 api/v1.1/tb/save-request.php:193
+#: api/v1.1/vl/save-request.php:181
 msgid "Sample Locked or Finalized"
 msgstr "Échantillon verrouillé ou finalisé"
 
-#: api/v1.1/covid-19/save-request.php:249 api/v1.1/eid/save-request.php:240
-#: api/v1.1/generic-tests/save-request.php:244 api/v1.1/tb/save-request.php:238
-#: api/v1.1/vl/save-request.php:219
+#: api/v1.1/covid-19/save-request.php:252 api/v1.1/eid/save-request.php:242
+#: api/v1.1/generic-tests/save-request.php:239 api/v1.1/tb/save-request.php:237
+#: api/v1.1/vl/save-request.php:221
 msgid "Failed to insert sample"
 msgstr "Échec de l'insertion de l'échantillon"
 
-#: api/v1.1/user/save-user-profile.php:78
+#: api/v1.1/user/save-user-profile.php:80
 msgid "Please check your request parameters."
 msgstr "Veuillez vérifier les paramètres de votre demande."
 
-#: api/v1.1/user/save-user-profile.php:173 batch/batches.php:208
+#: api/v1.1/user/save-user-profile.php:175 batch/batches.php:208
 #: batch/save-batch-helper.php:113
 msgid "Something went wrong. Please try again later."
 msgstr "Une erreur s'est produite. Veuillez réessayer plus tard."
@@ -3489,6 +3489,7 @@ msgstr "Échantillons entrés par"
 #: vl/program-management/highViralLoad.php:988
 #: vl/program-management/sample-storage-reports.php:215
 #: vl/program-management/sampleRejectionReport.php:66
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/program-management/vl-export-data.php:81
 #: vl/program-management/vl-export-data.php:430
 #: vl/program-management/vl-export-data.php:490
@@ -4980,18 +4981,93 @@ msgstr "Exporter vers Excel"
 #: cd4/management/cd4-clinic-report.php:183
 #: cd4/management/cd4-clinic-report.php:287
 #: cd4/management/cd4-clinic-report.php:383
+#: cd4/management/cd4-export-data.php:178
+#: cd4/management/cd4-export-data.php:180
+#: cd4/management/cd4-export-data.php:218
+#: cd4/management/cd4-export-data.php:255 cd4/requests/cd4-requests.php:414
+#: cd4/requests/patientModal.php:101 cd4/results/cd4-failed-results.php:154
+#: cd4/results/cd4-failed-results.php:216 cd4/results/cd4-print-results.php:118
+#: cd4/results/cd4-print-results.php:203 cd4/results/cd4-print-results.php:280
+#: cd4/results/cd4-print-results.php:363
 #: covid-19/management/covid-19-clinic-report.php:183
 #: covid-19/management/covid-19-clinic-report.php:287
 #: covid-19/management/covid-19-clinic-report.php:386
+#: covid-19/management/covid-19-clinic-report.php:414
+#: covid-19/management/covid-19-export-data.php:196
+#: covid-19/management/covid-19-export-data.php:198
+#: covid-19/management/covid-19-export-data.php:238
+#: covid-19/management/covid-19-export-data.php:275
+#: covid-19/requests/addSamplesFromManifest.php:86
+#: covid-19/requests/covid-19-dhis2.php:85
+#: covid-19/requests/covid-19-requests.php:335
+#: covid-19/requests/covid-19-requests.php:338
+#: covid-19/requests/covid-19-requests.php:448
+#: covid-19/requests/patientModal.php:74
+#: covid-19/results/can-record-confirmatory-tests.php:179
+#: covid-19/results/covid-19-failed-results.php:153
+#: covid-19/results/covid-19-failed-results.php:215
+#: covid-19/results/covid-19-manual-results.php:184
+#: covid-19/results/covid-19-print-results.php:121
+#: covid-19/results/covid-19-print-results.php:203
+#: covid-19/results/covid-19-print-results.php:281
+#: covid-19/results/covid-19-print-results.php:362
+#: covid-19/results/covid-19-result-status.php:174
+#: generic-tests/program-management/generic-export-data.php:237
+#: generic-tests/program-management/generic-export-data.php:273
+#: generic-tests/program-management/generic-export-data.php:325
+#: generic-tests/requests/add-samples-from-manifest.php:79
+#: generic-tests/requests/patientModal.php:100
+#: generic-tests/results/generic-failed-results.php:113
+#: generic-tests/results/generic-print-result.php:160
+#: generic-tests/results/generic-print-result.php:206
+#: generic-tests/results/generic-print-result.php:254
+#: generic-tests/results/generic-print-result.php:379
+#: generic-tests/results/generic-print-result.php:424
+#: generic-tests/results/generic-print-result.php:471
+#: generic-tests/results/generic-test-results.php:180
+#: generic-tests/results/generic-test-results.php:236
 #: hepatitis/management/hepatitis-clinic-report.php:185
 #: hepatitis/management/hepatitis-clinic-report.php:290
 #: hepatitis/management/hepatitis-clinic-report.php:386
+#: hepatitis/management/hepatitis-clinic-report.php:415
+#: hepatitis/management/hepatitis-export-data.php:191
+#: hepatitis/management/hepatitis-export-data.php:240
+#: hepatitis/management/hepatitis-export-data.php:277
+#: hepatitis/requests/add-samples-from-manifest.php:88
+#: hepatitis/requests/hepatitis-dhis2.php:324
+#: hepatitis/requests/hepatitis-requests.php:324
+#: hepatitis/requests/hepatitis-requests.php:421
+#: hepatitis/results/hepatitis-failed-results.php:152
 #: hepatitis/results/hepatitis-failed-results.php:214
+#: hepatitis/results/hepatitis-manual-results.php:185
+#: hepatitis/results/hepatitis-print-results.php:128
+#: hepatitis/results/hepatitis-print-results.php:210
+#: hepatitis/results/hepatitis-print-results.php:287
+#: hepatitis/results/hepatitis-print-results.php:368
+#: hepatitis/results/hepatitis-result-status.php:168
 #: tb/management/tb-clinic-report.php:183
 #: tb/management/tb-clinic-report.php:287
 #: tb/management/tb-clinic-report.php:384
+#: tb/management/tb-clinic-report.php:412 tb/management/tb-export-data.php:191
+#: tb/management/tb-export-data.php:233 tb/management/tb-export-data.php:270
+#: tb/requests/addSamplesFromManifest.php:61 tb/requests/patientModal.php:76
+#: tb/requests/tb-requests.php:249 tb/requests/tb-requests.php:315
+#: tb/results/tb-failed-results.php:153 tb/results/tb-failed-results.php:215
+#: tb/results/tb-manual-results.php:191 tb/results/tb-print-results.php:118
+#: tb/results/tb-print-results.php:197 tb/results/tb-print-results.php:273
+#: tb/results/tb-print-results.php:351 tb/results/tb-result-status.php:168
 #: vl/program-management/sample-storage-reports.php:212
-msgid "Patient's ID"
+#: vl/program-management/storageHistoryDataToExcel.php:25
+#: vl/program-management/vl-export-data.php:362
+#: vl/requests/export-sample-storage.php:26
+#: vl/requests/forms/add-burkina-faso.php:202
+#: vl/requests/forms/add-cameroon.php:242
+#: vl/requests/forms/edit-burkina-faso.php:293 vl/requests/patientModal.php:101
+#: vl/requests/sample-storage.php:242 vl/requests/vl-requests.php:430
+#: vl/results/forms/update-burkina-faso-result.php:293
+#: vl/results/vl-failed-results.php:115 vl/results/vlPrintResult.php:185
+#: vl/results/vlPrintResult.php:435
+msgid "Patient ID"
 msgstr "No Patient"
 
 #: cd4/management/cd4-clinic-report.php:184
@@ -5306,6 +5382,8 @@ msgstr "Résultat CD4"
 #: vl/program-management/highViralLoad.php:1015
 #: vl/program-management/sample-storage-reports.php:146
 #: vl/program-management/sample-storage-reports.php:239
+#: vl/program-management/storageDataToExcel.php:25
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/program-management/vl-export-data.php:187
 #: vl/program-management/vl-export-data.php:443
 #: vl/program-management/vl-export-data.php:502
@@ -6242,83 +6320,6 @@ msgstr "Oui"
 #: vl/results/vlResultMail.php:196
 msgid "No"
 msgstr "Non"
-
-#: cd4/management/cd4-export-data.php:178
-#: cd4/management/cd4-export-data.php:180
-#: cd4/management/cd4-export-data.php:218
-#: cd4/management/cd4-export-data.php:255 cd4/requests/cd4-requests.php:414
-#: cd4/requests/patientModal.php:101 cd4/results/cd4-failed-results.php:154
-#: cd4/results/cd4-failed-results.php:216 cd4/results/cd4-print-results.php:118
-#: cd4/results/cd4-print-results.php:203 cd4/results/cd4-print-results.php:280
-#: cd4/results/cd4-print-results.php:363
-#: covid-19/management/covid-19-clinic-report.php:414
-#: covid-19/management/covid-19-export-data.php:196
-#: covid-19/management/covid-19-export-data.php:198
-#: covid-19/management/covid-19-export-data.php:238
-#: covid-19/management/covid-19-export-data.php:275
-#: covid-19/requests/addSamplesFromManifest.php:86
-#: covid-19/requests/covid-19-dhis2.php:85
-#: covid-19/requests/covid-19-requests.php:335
-#: covid-19/requests/covid-19-requests.php:338
-#: covid-19/requests/covid-19-requests.php:448
-#: covid-19/requests/patientModal.php:74
-#: covid-19/results/can-record-confirmatory-tests.php:179
-#: covid-19/results/covid-19-failed-results.php:153
-#: covid-19/results/covid-19-failed-results.php:215
-#: covid-19/results/covid-19-manual-results.php:184
-#: covid-19/results/covid-19-print-results.php:121
-#: covid-19/results/covid-19-print-results.php:203
-#: covid-19/results/covid-19-print-results.php:281
-#: covid-19/results/covid-19-print-results.php:362
-#: covid-19/results/covid-19-result-status.php:174
-#: generic-tests/program-management/generic-export-data.php:237
-#: generic-tests/program-management/generic-export-data.php:273
-#: generic-tests/program-management/generic-export-data.php:325
-#: generic-tests/requests/add-samples-from-manifest.php:79
-#: generic-tests/requests/patientModal.php:100
-#: generic-tests/results/generic-failed-results.php:113
-#: generic-tests/results/generic-print-result.php:160
-#: generic-tests/results/generic-print-result.php:206
-#: generic-tests/results/generic-print-result.php:254
-#: generic-tests/results/generic-print-result.php:379
-#: generic-tests/results/generic-print-result.php:424
-#: generic-tests/results/generic-print-result.php:471
-#: generic-tests/results/generic-test-results.php:180
-#: generic-tests/results/generic-test-results.php:236
-#: hepatitis/management/hepatitis-clinic-report.php:415
-#: hepatitis/management/hepatitis-export-data.php:191
-#: hepatitis/management/hepatitis-export-data.php:240
-#: hepatitis/management/hepatitis-export-data.php:277
-#: hepatitis/requests/add-samples-from-manifest.php:88
-#: hepatitis/requests/hepatitis-dhis2.php:324
-#: hepatitis/requests/hepatitis-requests.php:324
-#: hepatitis/requests/hepatitis-requests.php:421
-#: hepatitis/results/hepatitis-failed-results.php:152
-#: hepatitis/results/hepatitis-manual-results.php:185
-#: hepatitis/results/hepatitis-print-results.php:128
-#: hepatitis/results/hepatitis-print-results.php:210
-#: hepatitis/results/hepatitis-print-results.php:287
-#: hepatitis/results/hepatitis-print-results.php:368
-#: hepatitis/results/hepatitis-result-status.php:168
-#: tb/management/tb-clinic-report.php:412 tb/management/tb-export-data.php:191
-#: tb/management/tb-export-data.php:233 tb/management/tb-export-data.php:270
-#: tb/requests/addSamplesFromManifest.php:61 tb/requests/patientModal.php:76
-#: tb/requests/tb-requests.php:249 tb/requests/tb-requests.php:315
-#: tb/results/tb-failed-results.php:153 tb/results/tb-failed-results.php:215
-#: tb/results/tb-manual-results.php:191 tb/results/tb-print-results.php:118
-#: tb/results/tb-print-results.php:197 tb/results/tb-print-results.php:273
-#: tb/results/tb-print-results.php:351 tb/results/tb-result-status.php:168
-#: vl/program-management/vl-export-data.php:362
-#: vl/requests/export-sample-storage.php:26
-#: vl/requests/forms/add-burkina-faso.php:202
-#: vl/requests/forms/add-cameroon.php:242
-#: vl/requests/forms/edit-burkina-faso.php:293 vl/requests/patientModal.php:101
-#: vl/requests/sample-storage.php:242 vl/requests/vl-requests.php:430
-#: vl/results/forms/update-burkina-faso-result.php:293
-#: vl/results/vl-failed-results.php:115 vl/results/vlPrintResult.php:185
-#: vl/results/vlPrintResult.php:435
-msgid "Patient ID"
-msgstr "No Patient"
 
 #: cd4/management/cd4-export-data.php:180
 #: covid-19/management/covid-19-export-data.php:198
@@ -7274,6 +7275,7 @@ msgstr "Résultats (log)"
 #: import-result/imported-results.php:247
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/sample-storage-reports.php:236
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/sample-storage.php:266
 msgid "Comments"
@@ -8361,8 +8363,8 @@ msgstr "Demande de CD4 ajoutée avec succès"
 #: hepatitis/requests/hepatitis-edit-request-helper.php:272
 #: hepatitis/results/hepatitis-update-result-helper.php:105
 #: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:434
-#: vl/requests/editVlRequestHelper.php:429
-#: vl/results/updateVlTestResultHelper.php:247
+#: vl/requests/editVlRequestHelper.php:430
+#: vl/results/updateVlTestResultHelper.php:249
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -21322,6 +21324,7 @@ msgstr "Limite de détection de la plate-forme d'essai"
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
 #: vl/requests/forms/add-drc.php:453 vl/requests/forms/edit-drc.php:479
 #: vl/requests/sample-storage.php:155 vl/requests/sample-storage.php:251
@@ -21334,6 +21337,8 @@ msgstr "Congélateur"
 #: vl/program-management/export-vl-results.php:49
 #: vl/program-management/sample-storage-reports.php:137
 #: vl/program-management/sample-storage-reports.php:224
+#: vl/program-management/storageDataToExcel.php:25
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
 #: vl/requests/forms/add-drc.php:460 vl/requests/forms/add-drc.php:462
@@ -21348,6 +21353,8 @@ msgstr "Coffret"
 #: vl/program-management/export-vl-results.php:49
 #: vl/program-management/sample-storage-reports.php:140
 #: vl/program-management/sample-storage-reports.php:227
+#: vl/program-management/storageDataToExcel.php:25
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
 #: vl/requests/forms/add-drc.php:467 vl/requests/forms/add-drc.php:470
@@ -21362,6 +21369,8 @@ msgstr "Boîte"
 #: vl/program-management/export-vl-results.php:49
 #: vl/program-management/sample-storage-reports.php:143
 #: vl/program-management/sample-storage-reports.php:230
+#: vl/program-management/storageDataToExcel.php:25
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
 #: vl/requests/forms/add-drc.php:472 vl/requests/forms/add-drc.php:474
@@ -21599,11 +21608,13 @@ msgstr "Congélateur/Stockage"
 
 #: vl/program-management/sample-storage-reports.php:128
 #: vl/program-management/sample-storage-reports.php:176
+#: vl/program-management/storageDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26 vl/requests/sample-storage.php:233
 msgid "Sample Code"
 msgstr "Code d'échantillon"
 
 #: vl/program-management/sample-storage-reports.php:131
+#: vl/program-management/storageDataToExcel.php:25
 msgid "Storage Date"
 msgstr "Date de stockage"
 
@@ -21613,11 +21624,13 @@ msgid "Volume of Sample (ml)"
 msgstr "Volume de l'échantillon (ml)"
 
 #: vl/program-management/sample-storage-reports.php:233
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 msgid "Date Out"
 msgstr "Date de sortie"
 
 #: vl/program-management/sample-storage-reports.php:242
+#: vl/program-management/storageHistoryDataToExcel.php:25
 msgid "Removal Reason"
 msgstr "Raison du retrait"
 
@@ -21625,6 +21638,11 @@ msgstr "Raison du retrait"
 #: vl/requests/sample-storage.php:428
 msgid "Select Freezer"
 msgstr "Sélectionner le congélateur"
+
+#: vl/program-management/storageDataToExcel.php:25
+#: vl/program-management/storageHistoryDataToExcel.php:25
+msgid "Volume of Sample(ml)"
+msgstr "Volume de l'échantillon (ml)"
 
 #: vl/program-management/vl-sample-status.php:8
 msgid "VL | Sample Status Report"
@@ -22046,7 +22064,7 @@ msgstr "Raison de l'échec"
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: vl/requests/editVlRequestHelper.php:421
+#: vl/requests/editVlRequestHelper.php:422
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
 
@@ -23182,7 +23200,7 @@ msgstr "Imprimé le"
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 
-#: vl/results/updateVlTestResultHelper.php:232
+#: vl/results/updateVlTestResultHelper.php:234
 msgid "VL result updated successfully"
 msgstr "Les résultats de la VL ont été mis à jour avec succès"
 
@@ -23191,6 +23209,9 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Patient's ID"
+#~ msgstr "No Patient"
 
 #~ msgid "Test No"
 #~ msgstr "Test Non"

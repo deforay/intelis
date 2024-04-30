@@ -30,7 +30,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $a
 }
 //check remote user
 $rKey = '';
-if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
      $sampleCodeKey = 'remote_sample_code_key';
      $sampleCode = 'remote_sample_code';
      $rKey = 'R';

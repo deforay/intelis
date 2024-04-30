@@ -238,7 +238,7 @@ try {
 
 
             $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+            if ($general->isSTSInstance()) {
                 $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
             }
 
@@ -267,7 +267,7 @@ try {
 
             $formData['unique_id'] = $uniqueID;
 
-            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+            if ($general->isSTSInstance()) {
                 $sampleCode = 'remote_sample_code';
                 $sampleCodeKey = 'remote_sample_code_key';
                 $sampleCodeFormat = 'remote_sample_code_format';

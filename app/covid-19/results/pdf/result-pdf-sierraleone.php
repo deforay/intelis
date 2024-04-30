@@ -497,7 +497,7 @@ if (!empty($requestResult)) {
         $html .= '<tr>';
         $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
-        if ($_SESSION['instance']['type'] == 'vluser' && $result['data_sync'] == 0) {
+        if ($general->isLISInstance() && $result['data_sync'] == 0) {
             $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
         } else {
             $generatedAtTestingLab = "";

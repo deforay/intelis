@@ -43,7 +43,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 	} else {
 		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding",  "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 	}
-	if ($_SESSION['instance']['type'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
+	if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
 		unset($headings[$key]);
 	}
 	//$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding",  "PCR Test Performed Before", "Last PCR Test results","Reason For PCR Test", "Sample Collection Date", "Sample Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
@@ -70,7 +70,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 
 
 		$row[] = $no;
-		if ($_SESSION['instance']['type'] == 'standalone') {
+		if ($general->isStandaloneInstance()) {
 			$row[] = $aRow["sample_code"];
 		} else {
 			$row[] = $aRow["sample_code"];

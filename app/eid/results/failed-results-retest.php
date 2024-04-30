@@ -24,7 +24,7 @@ try {
     $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-    if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+    if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
         $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     }
 
