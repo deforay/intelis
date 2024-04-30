@@ -211,7 +211,7 @@ $sResult = $db->rawQuery($sQuery);
                                         <?php echo _translate("Facility Name"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _translate("Patient's ID"); ?>
+                                        <?php echo _translate("Patient ID"); ?>
                                     </th>
                                     <th>
                                         <?php echo _translate("Patient's Name"); ?>

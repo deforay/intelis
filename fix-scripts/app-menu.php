@@ -59,7 +59,7 @@ try {
     $menuData = array_combine($menuKeys, $menuValues);
 
     $headerId = $appMenuService->insertMenu($menuData);
-   
+
     /** Insert Submenu of CD4 Module */
     $menuValues = ['cd4', NULL, 'no', 'Request Management', '#cd4-request-management', NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview request', $headerId, 1, 'active', DateUtility::getCurrentDateTime()];
     $menuData = array_combine($menuKeys, $menuValues);
