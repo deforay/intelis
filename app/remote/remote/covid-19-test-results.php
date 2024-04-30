@@ -155,9 +155,6 @@ try {
                     $id = $db->insert($tableName, $lab);
                     $primaryKeyValue = $db->getInsertId();
                 }
-
-                $db->where('covid19_id', $primaryKeyValue);
-                $db->delete("covid19_tests");
             } catch (Throwable $e) {
                 if ($db->getLastError()) {
                     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
