@@ -538,15 +538,15 @@ log_action "VLSM copied to ${vlsm_path}."
 # Set proper permissions
 chown -R www-data:www-data "${vlsm_path}"
 
-# Run Composer Update as www-data
-echo "Running composer update as www-data user..."
+# Run Composer install as www-data
+echo "Running composer install as www-data user..."
 cd "${vlsm_path}"
 
 sudo -u www-data composer config process-timeout 30000
 
 sudo -u www-data composer clear-cache
 
-sudo -u www-data composer update --no-dev &&
+sudo -u www-data composer install --no-dev &&
     sudo -u www-data composer dump-autoload -o
 
 # Function to configure Apache Virtual Host

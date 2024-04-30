@@ -77,17 +77,17 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 										<div class="tab-pane fade in active" id="notPrintedData">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
-												<?php if($_SESSION['instance']['type'] == 'remoteuser'){ ?>
+													<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
 
-												<td><strong>
-														<?php echo _translate("Testing Lab"); ?> :
-													</strong></td>
-												<td>
-													<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;" onchange="getFreezers(this.value);">
-														<?= $testingLabsDropdown; ?>
-													</select>
-												</td>
-												<?php } ?>
+														<td><strong>
+																<?php echo _translate("Testing Lab"); ?> :
+															</strong></td>
+														<td>
+															<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;" onchange="getFreezers(this.value);">
+																<?= $testingLabsDropdown; ?>
+															</select>
+														</td>
+													<?php } ?>
 													<td><strong>
 															<?php echo _translate("Freezer/Storage"); ?>&nbsp;:
 														</strong></td>
@@ -161,15 +161,15 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 										<div class="tab-pane fade" id="printedData">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
-													<?php if($_SESSION['instance']['type'] == 'remoteuser'){ ?>
-													<td><strong>
-															<?php echo _translate("Testing Lab"); ?> :
-														</strong></td>
-													<td>
-														<select class="form-control" id="testingLab" name="testingLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;">
-															<?= $testingLabsDropdown; ?>
-														</select>
-													</td>
+													<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+														<td><strong>
+																<?php echo _translate("Testing Lab"); ?> :
+															</strong></td>
+														<td>
+															<select class="form-control" id="testingLab" name="testingLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;">
+																<?= $testingLabsDropdown; ?>
+															</select>
+														</td>
 													<?php } ?>
 													<td>
 														<strong>
@@ -209,7 +209,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 												<thead>
 													<tr>
 														<th>
-															<?php echo _translate("Patient's ID"); ?>
+															<?php echo _translate("Patient ID"); ?>
 														</th>
 														<th>
 															<?php echo _translate("Sample Collection Date"); ?>
@@ -287,7 +287,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 			placeholder: "<?php echo _translate("Select Vl Lab"); ?>"
 		});
 
-		
+
 
 		loadStorageData();
 		var i = '<?php echo $i; ?>';
@@ -432,7 +432,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 					"name": "labId",
 					"value": $("#testingLab").val()
 				});
-				
+
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -563,18 +563,17 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 		}
 	}
 
-	function getFreezers(labId, type){
+	function getFreezers(labId, type) {
 		$.blockUI();
-        $("#srcRequest").html("");
-        $.post("/vl/program-management/get-freezer-list-by-lab.php", {
-                labId: labId,
-            },
-            function(data) {
-                $.unblockUI();
-                $("#freezerId").html(data);
-            });
+		$("#srcRequest").html("");
+		$.post("/vl/program-management/get-freezer-list-by-lab.php", {
+				labId: labId,
+			},
+			function(data) {
+				$.unblockUI();
+				$("#freezerId").html(data);
+			});
 	}
-	
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

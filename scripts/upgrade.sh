@@ -458,20 +458,18 @@ log_action "VLSM copied to ${vlsm_path}."
 # Set proper permissions
 setfacl -R -m u:$USER:rwx,u:www-data:rwx "${vlsm_path}"
 
-# Run Composer Update as www-data
+# Run Composer Install as www-data
 echo "Running composer update as www-data user..."
 cd "${vlsm_path}"
-
-sudo composer self-update
 
 sudo -u www-data composer config process-timeout 30000
 
 sudo -u www-data composer clear-cache
 
-sudo -u www-data composer update --no-dev &&
+sudo -u www-data composer install --no-dev &&
     sudo -u www-data composer dump-autoload -o
 
-log_action "Composer update completed."
+log_action "Composer install completed."
 
 # Check for config.production.php and its content
 config_file="${vlsm_path}/configs/config.production.php"
