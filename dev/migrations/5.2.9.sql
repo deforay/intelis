@@ -486,10 +486,15 @@ ALTER TABLE `global_config` CHANGE `updated_on` `updated_datetime` DATETIME NULL
 ALTER TABLE `log_result_updates` CHANGE `updated_on` `updated_datetime` DATETIME NULL DEFAULT NULL;
 ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` VARCHAR(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` VARCHAR(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
 -- Jeyabanu 29-Apr-2024
 UPDATE `s_app_menu` SET `show_mode` = 'always' WHERE `s_app_menu`.`link` = '/vl/program-management/sample-storage-reports.php';
+
 -- Thana 29-Apr-2024
 ALTER TABLE `form_eid` CHANGE `reason_for_changing` `reason_for_changing` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_covid19` CHANGE `reason_for_changing` `reason_for_changing` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_tb` CHANGE `reason_for_changing` `reason_for_changing` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_generic` CHANGE `reason_for_test_result_changes` `reason_for_test_result_changes` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+-- Thana 30-Apr-2024
+ALTER TABLE `user_details` ADD `user_attributes` JSON NULL DEFAULT NULL AFTER `user_signature`;

@@ -91,7 +91,12 @@ try {
     /* Update form attributes */
     $transactionId = $general->generateUUID();
     $version = $general->getSystemConfig('sc_version');
-    $deviceId = $apiService->getHeader($requst, 'deviceId');
+    /* To save the user attributes from API */
+    $userAttributes = [];
+    foreach(array('deviceId', 'osVersion', 'ipAddress') as $header){
+        $userAttributes[$header] = $apiService->getHeader($request, $header);
+    }
+    $usersService->saveUserAttributes($userAttributes, $user['user_id']);
     if (isset($input) && !empty($input)) {
         foreach ($input as $rootKey => $data) {
             $mandatoryFields = [
@@ -327,7 +332,7 @@ try {
                 'applicationVersion' => $version,
                 'apiTransactionId' => $transactionId,
                 'mobileAppVersion' => $appVersion,
-                'deviceId' => $deviceId
+                'deviceId' => $userAttributes['deviceId']
             ];
             $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
 

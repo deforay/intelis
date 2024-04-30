@@ -92,7 +92,12 @@ try {
 
     /* Update form attributes */
     $version = $general->getSystemConfig('sc_version');
-    $deviceId = $apiService->getHeader($request, 'deviceId');
+    /* To save the user attributes from API */
+    $userAttributes = [];
+    foreach(array('deviceId', 'osVersion', 'ipAddress') as $header){
+        $userAttributes[$header] = $apiService->getHeader($request, $header);
+    }
+    $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
     $responseData = [];
     foreach ($input as $rootKey => $data) {
@@ -313,7 +318,7 @@ try {
             'applicationVersion' => $version,
             'apiTransactionId' => $transactionId,
             'mobileAppVersion' => $appVersion,
-            'deviceId' => $deviceId
+            'deviceId' => $userAttributes['deviceId']
         ];
         
         /* Reason for VL Result changes */

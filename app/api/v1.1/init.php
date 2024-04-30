@@ -44,6 +44,13 @@ $formId = $general->getGlobalConfig('vl_form');
 
 $authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
+/* To save the user attributes from API */
+$userAttributes = [];
+foreach(array('deviceId', 'osVersion', 'ipAddress') as $header){
+    $userAttributes[$header] = $apiService->getHeader($request, $header);
+}
+$usersService->saveUserAttributes($userAttributes, $user['user_id']);
+
 $updatedDateTime = $input['latestDateTime'] ?? null;
 /* Status name list */
 $statusList = [];

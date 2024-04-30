@@ -379,4 +379,12 @@ class UsersService
 
         return password_hash((string) $password, PASSWORD_BCRYPT, $options);
     }
+
+    public function saveUserAttributes($data, $userId){
+        if(!isset($data) || empty($data) || !isset($userId) || empty($userId)){
+            return null;
+        }
+        $this->db->where('user_id', $userId);
+        return $this->db->update('user_details',array('user_attributes' => $data));
+    }
 }
