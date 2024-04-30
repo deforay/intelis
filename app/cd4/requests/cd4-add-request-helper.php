@@ -2,10 +2,8 @@
 
 use App\Services\CD4Service;
 use App\Utilities\DateUtility;
-use Laminas\Filter\StringTrim;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use Laminas\Filter\FilterChain;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
@@ -190,7 +188,7 @@ try {
     //update facility emails
     if (trim($_POST['emailHf']) != '') {
         $fData = array('facility_emails' => $_POST['emailHf']);
-        $db = $db->where('facility_id', $_POST['facilityId']);
+        $db->where('facility_id', $_POST['facilityId']);
         $id = $db->update($fDetails, $fData);
     }
 
@@ -209,7 +207,6 @@ try {
     $vlData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $formId,
-        'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
         'external_sample_code' => $_POST['serialNo'] ?? null,
         'facility_id' => $_POST['facilityId'] ?? null,
         'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),

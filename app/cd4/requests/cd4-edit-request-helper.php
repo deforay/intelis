@@ -165,7 +165,7 @@ try {
      //update facility emails
      if (trim($_POST['emailHf']) != '') {
           $fData = array('facility_emails' => $_POST['emailHf']);
-          $db = $db->where('facility_id', $_POST['facilityId']);
+          $db->where('facility_id', $_POST['facilityId']);
           $id = $db->update($fDetails, $fData);
      }
 
@@ -175,38 +175,38 @@ try {
      }
 
      if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-	}
+          $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+     }
 
-	if (!empty($_POST['oldStatus'])) {
-		$status = $_POST['oldStatus'];
-	}
+     if (!empty($_POST['oldStatus'])) {
+          $status = $_POST['oldStatus'];
+     }
 
-	if ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
-		$status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-	}
+     if ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+          $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+     }
 
-	$resultSentToSource = null;
+     $resultSentToSource = null;
 
-	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
-		$_POST['cd4_result'] = null;
-		$status = SAMPLE_STATUS\REJECTED;
-		$resultSentToSource = 'pending';
-	}
+     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
+          $_POST['cd4_result'] = null;
+          $status = SAMPLE_STATUS\REJECTED;
+          $resultSentToSource = 'pending';
+     }
 
-	if (!empty($_POST['cd4_result'])) {
-		$resultSentToSource = 'pending';
-	}
+     if (!empty($_POST['cd4_result'])) {
+          $resultSentToSource = 'pending';
+     }
 
 
-	if ($general->isSTSInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
-		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-	} elseif ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
-		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-	}
-	if (isset($_POST['status']) && $_POST['status'] == '') {
-		$_POST['status'] = $_POST['oldStatus'];
-	}
+     if ($general->isSTSInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+          $_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+     } elseif ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+          $_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+     }
+     if (isset($_POST['status']) && $_POST['status'] == '') {
+          $_POST['status'] = $_POST['oldStatus'];
+     }
 
 
      $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
@@ -214,7 +214,6 @@ try {
      $vlData = [
           'vlsm_instance_id' => $instanceId,
           'vlsm_country_id' => $formId,
-          'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
           'external_sample_code' => $_POST['serialNo'] ?? null,
           'facility_id' => $_POST['facilityId'] ?? null,
           'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),

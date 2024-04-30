@@ -110,9 +110,9 @@ try {
 
 
         if (!empty($lastUpdatedOn)) {
-            $db = $db->where('updated_datetime', $lastUpdatedOn, ">");
+            $db->where('updated_datetime', $lastUpdatedOn, ">");
         }
-        $db = $db->orderBy("updated_datetime", "ASC");
+        $db->orderBy("updated_datetime", "ASC");
         $data[$table]['tableData'] = $db->get($table);
     }
 

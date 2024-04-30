@@ -52,7 +52,7 @@ try {
 
     // LAB STORAGE
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+        $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $labStorage = $db->get('lab_storage');
     if (!empty($labStorage)) {
@@ -61,7 +61,7 @@ try {
 
     // PATIENTS
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+        $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $patients = $db->get('patients');
 
@@ -71,7 +71,7 @@ try {
 
     // INSTRUMENTS
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+        $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $instruments = $db->get('instruments');
     if (!empty($instruments)) {
@@ -80,7 +80,7 @@ try {
 
     // INSTRUMENT MACHINES
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+        $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $instrumentMachines = $db->get('instrument_machines');
 
@@ -90,7 +90,7 @@ try {
 
     // INSTRUMENT CONTROLS
     if (!empty($lastUpdatedOn)) {
-        $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+        $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $instrumentControls = $db->get('instrument_controls');
 
@@ -100,7 +100,7 @@ try {
 
     // CONFIG
     // if (!empty($lastUpdatedOn)) {
-    //     $db = $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+    //     $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     // }
     // $globalConfig = $db->get('global_config');
 

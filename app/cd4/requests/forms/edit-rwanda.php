@@ -145,13 +145,6 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                        <?php } ?>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="">
-                                                       <label for="sampleReordered">
-                                                            <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $cd4QueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample"> Sample Reordered
-                                                       </label>
-                                                  </div>
-                                             </div>
                                         </div>
                                         <!-- BARCODESTUFF START -->
                                         <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") { ?>

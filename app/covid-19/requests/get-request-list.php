@@ -32,7 +32,7 @@ try {
 
      if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
-     } else if ($_SESSION['instnceType'] == 'standalone') {
+     } else if ($general->isStandaloneInstance()) {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }

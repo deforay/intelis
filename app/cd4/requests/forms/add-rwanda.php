@@ -98,13 +98,6 @@ $sFormat = '';
                                                        <?php } ?>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="">
-                                                       <label for="sampleReordered">
-                                                            <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="Please indicate if this is a reordered sample"> Sample Reordered
-                                                       </label>
-                                                  </div>
-                                             </div>
                                              <!-- BARCODESTUFF START -->
                                              <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") { ?>
                                                   <div class="col-xs-3 col-md-3 pull-right">
