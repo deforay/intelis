@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -22,13 +22,14 @@ $key = (string) $general->getGlobalConfig('key');
 if (isset($_SESSION['storageDataQuery']) && trim((string) $_SESSION['storageDataQuery']) != "") {
 
      $output = [];
-     $headings = array('Sample Code', "Volume of Sample(ml)", "Rack", "Box", "Position", "Status");
+     $headings = [_translate("Sample Code"),_translate("Storage Date"), _translate("Volume of Sample(ml)"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Status")];
 
      $resultSet = $db->rawQuery($_SESSION['storageDataQuery']);
      foreach ($resultSet as $aRow) {
           $row = [];
         
           $row[] = $aRow['sample_code'];
+          $row[] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'] ?? '', true);
           $row[] = ($aRow['volume']);
           $row[] = $aRow['rack'];
           $row[] = $aRow['box'];

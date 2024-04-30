@@ -92,7 +92,7 @@ else if($_POST['reportType']=='historyData'){
 
      $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-     $sQuery = "SELECT h.*, s.storage_code, vl.sample_collection_date,vl.patient_art_no, rr.removal_reason_name
+     $sQuery = "SELECT h.*, s.storage_code, vl.sample_collection_date,vl.is_encrypted,vl.patient_art_no, rr.removal_reason_name
                FROM lab_storage_history as h
                LEFT JOIN r_reasons_for_sample_removal as rr ON rr.removal_reason_id = sample_removal_reason
                LEFT JOIN lab_storage as s ON h.freezer_id = s.storage_id
@@ -130,6 +130,10 @@ else if($_POST['reportType']=='historyData'){
      foreach ($rResult as $aRow) {
           $row = [];
           //$row[] = $aRow['patient_first_name'];
+          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+               $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+          }
+   
           $row[] = $aRow['patient_art_no'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
           $row[] = $aRow['storage_code'];
@@ -137,7 +141,7 @@ else if($_POST['reportType']=='historyData'){
           $row[] = ($aRow['rack']);
           $row[] = ($aRow['box']);
           $row[] = ($aRow['position']);
-          $row[] = ($aRow['date_out']);
+          $row[] = DateUtility::humanReadableDateFormat($aRow['date_out']);
           $row[] = ($aRow['comments']);
           $row[] = ($aRow['sample_status']);
           $row[] = ($aRow['removal_reason_name']);
