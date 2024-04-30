@@ -386,36 +386,26 @@ try {
                     $id = $db->delete('testing_labs');
                 }
 
-                $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name = ? ";
+                // $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name = ? ";
 
-                $columnList = array_map(
-                    'current',
-                    $db->rawQuery($tableColumns, [$systemConfig['database']['db'], $dataToSync[$dataType]['tableName']])
-                );
+                // $columnList = array_map(
+                //     'current',
+                //     $db->rawQuery($tableColumns, [$systemConfig['database']['db'], $dataToSync[$dataType]['tableName']])
+                // );
+                $unwantedColumnList = [];
+                if ($dataType === 'users') {
+                    $unwantedColumnList = ['user_id', 'user_name', 'phone_number', 'email', 'updated_datetime'];
+                }
+
+                $emptyTableArray = $general->getTableFieldsAsArray($dataToSync[$dataType]['tableName'], $unwantedColumnList);
 
                 if ($cliMode) {
                     echo "Syncing data for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
                 }
 
                 foreach ($dataValues as $tableDataValues) {
-                    $tableData = [];
-                    $updateColumns = [];
-                    foreach ($columnList as $colName) {
-                        if (isset($tableDataValues[$colName])) {
-                            $tableData[$colName] = $tableDataValues[$colName];
-                        } else {
-                            $tableData[$colName] = null;
-                        }
-                    }
 
-                    // For users table, we do not want to sync password and few other fields
-                    if ($dataType === 'users') {
-                        $userColumnList = ['user_id', 'user_name', 'phone_number', 'email', 'updated_datetime'];
-                        $tableData = array_intersect_key($tableData, array_flip($userColumnList));
-                    }
-
-                    // getting column names using array_key
-                    // we will update all columns ON DUPLICATE
+                    $tableData = MiscUtility::updateFromArray($emptyTableArray, $tableDataValues);
                     $updateColumns = array_keys($tableData);
                     $primaryKey = $dataToSync[$dataType]['primaryKey'];
 
@@ -454,7 +444,7 @@ try {
                 }
             }
 
-            //update or insert testing labs signs
+            // signatories
             if ($dataType === 'labReportSignatories') {
                 foreach ($dataValues as $key => $sign) {
 

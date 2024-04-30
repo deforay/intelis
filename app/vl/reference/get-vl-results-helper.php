@@ -1,5 +1,7 @@
 <?php
 
+use App\Utilities\MiscUtility;
+
 $tableName = "r_vl_results";
 $primaryKey = "result_id";
 
@@ -62,7 +64,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
  * Get data to display
  */
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM r_vl_results";
+$sQuery = "SELECT * FROM r_vl_results";
 
 if (!empty($sWhere)) {
     $sWhere = ' WHERE ' . $sWhere;
@@ -74,39 +76,35 @@ if (!empty($sOrder)) {
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
 
-if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-
-$rResult = $db->rawQuery($sQuery);
-
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 /*
  * Output
  */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
 );
 foreach ($rResult as $aRow) {
-    $instruments = json_decode((string) $aRow['available_for_instruments']);
-    $idValues = implode(',', $instruments);
-    $sqlInstrument = "SELECT group_concat(machine_name) as machine_name from instruments where instrument_id in ($idValues)";
-    $instrumentRes = $db->rawQuery($sqlInstrument);
+    $machines = "";
+    if (!empty($aRow['available_for_instruments']) && MiscUtility::isJson($aRow['available_for_instruments'])) {
+        $instruments = json_decode($aRow['available_for_instruments']);
+        $idValues = implode(',', $instruments);
+        $sqlInstrument = "SELECT GROUP_CONCAT(machine_name) as machine_name FROM instruments WHERE instrument_id in ($idValues)";
+        $instrumentRes = $db->rawQueryOne($sqlInstrument);
+        $machines = $instrumentRes['machine_name'];
+    }
     $status = '<select class="form-control" name="status[]" id="' . $aRow['result_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
                <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>' . _translate("Active") . '</option>
                <option value="inactive" ' . ($aRow['status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
                </select><br><br>';
     $row = [];
-    $row[] = ($aRow['result']);
-    $row[] = $instrumentRes[0]['machine_name'];
+    $row[] = $aRow['result'];
+    $row[] = $machines;
 
-    if (_isAllowed("vl-results.php")) {
+    if (_isAllowed("/vl/reference/vl-results.php")) {
         $row[] = $status;
         $row[] = '<a href="edit-vl-results.php?id=' . base64_encode((string) $aRow['result_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     } else {
