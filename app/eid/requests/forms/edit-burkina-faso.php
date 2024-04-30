@@ -73,7 +73,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                        <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+                                        <?php if ($general->isSTSInstance()) { ?>
                                             <td><label for="sampleCode"><?= _translate('Sample ID'); ?> </label></td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $eidInfo[$sampleCode]; ?></span>

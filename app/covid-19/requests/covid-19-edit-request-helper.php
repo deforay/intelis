@@ -85,7 +85,7 @@ try {
 	}
 
 
-	if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+	if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
 		$sampleCode = 'remote_sample_code';
 		$sampleCodeKey = 'remote_sample_code_key';
 	} else {
@@ -114,7 +114,7 @@ try {
 
 
 
-	if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+	if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
 		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 	}
 
@@ -122,7 +122,7 @@ try {
 		$status = $_POST['oldStatus'];
 	}
 
-	if ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+	if ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
 		$status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 	}
 
@@ -139,9 +139,9 @@ try {
 	}
 
 
-	if ($sarr['sc_user_type'] == 'remoteuser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+	if ($general->isSTSInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
 		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-	} elseif ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+	} elseif ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
 		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 	}
 	if (isset($_POST['status']) && $_POST['status'] == '') {

@@ -35,7 +35,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_generic";
 $primaryKey = "sample_id";
 
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$sampleCode = 'remote_sample_code';
 } else {
 	$sampleCode = 'sample_code';
@@ -120,7 +120,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 			AND vl.result is not null
 			AND vl.result != '' ";
 
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	if (!empty($_SESSION['facilityMap'])) {
 		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 	}

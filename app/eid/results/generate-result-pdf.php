@@ -113,11 +113,11 @@ MiscUtility::makeDirectory($pathFront);
 $_SESSION['aliasPage'] = 1;
 
 foreach ($requestResult as $result) {
-    if (($_SESSION['instance']['type'] == 'vluser') && empty($result['result_printed_on_lis_datetime'])) {
+    if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
         $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
         $db->where('eid_id', $result['eid_id']);
         $id = $db->update('form_eid', $pData);
-    } elseif (($_SESSION['instance']['type'] == 'remoteuser') && empty($result['result_printed_on_sts_datetime'])) {
+    } elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
         $pData = array('result_printed_on_sts_datetime' => $currentDateTime);
         $db->where('eid_id', $result['eid_id']);
         $id = $db->update('form_eid', $pData);

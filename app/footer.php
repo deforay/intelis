@@ -46,7 +46,7 @@ if (empty($syncLatestTime)) {
 			</small>
 			<?php
 
-			if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instance']['type']) && ($_SESSION['instance']['type'] == 'vluser')) { ?>
+			if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && $general->isLISInstance()) { ?>
 
 				<small class="pull-right">
 					<a href="javascript:syncRemoteData();">
@@ -140,7 +140,7 @@ if (empty($syncLatestTime)) {
 	function setCrossLogin() {
 		StorageHelper.storeInSessionStorage('crosslogin', 'true');
 	}
-	<?php if (!empty(trim((string) SYSTEM_CONFIG['remoteURL'])) && isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?>
+	<?php if (!empty(trim((string) SYSTEM_CONFIG['remoteURL'])) && $general->isLISInstance()) { ?>
 		remoteSync = true;
 
 		function syncRemoteData() {
@@ -325,7 +325,7 @@ if (empty($syncLatestTime)) {
 		<?php }
 		// if instance facility name is not set, let us show the modal
 
-		if (empty($_SESSION['instance']['facilityName']) || ($_SESSION['instance']['type'] == 'vluser' && ($_SESSION['instance']['labId'] == null))) {
+		if (empty($_SESSION['instance']['facilityName']) || ($general->isLISInstance() && $_SESSION['instance']['labId'] == null)) {
 		?>
 			showModal('/new-instance.php', 900, 420);
 		<?php } ?>

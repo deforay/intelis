@@ -175,7 +175,7 @@ require_once APPLICATION_PATH . '/header.php';
 				}
 			],
 			"aaSorting": [
-				[<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 11 : 10 ?>, "desc"]
+				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 11 : 10 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
@@ -220,7 +220,7 @@ require_once APPLICATION_PATH . '/header.php';
 						$('.activateSample').show();
 						$('#sampleId').val(data);
 					} else {
-						<?php if (isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?>
+						<?php if ($general->isLISInstance()) { ?>
 							forceSyncRequestsByManifestCode($("#samplePackageCode").val(), 'vl');
 						<?php } ?>
 					}
@@ -231,7 +231,7 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	/* Remote Syn only package code matches */
-	<?php if (isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?>
+	<?php if ($general->isLISInstance()) { ?>
 		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {

@@ -23,7 +23,7 @@ $specimenTypeResult = $covid19Service->getCovid19SampleTypes();
 $rKey = '';
 $sKey = '';
 $sFormat = '';
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     $rKey = 'R';
@@ -66,7 +66,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                        <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+                                        <?php if ($general->isSTSInstance()) { ?>
                                             <th scope="row"><label for="sampleCode">Sample ID </label></th>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>

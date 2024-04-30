@@ -28,7 +28,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
 
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
-     if ($sarr['sc_user_type'] == 'standalone') {
+     if ($general->isStandaloneInstance()) {
           $headings = array('Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      }
      if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {

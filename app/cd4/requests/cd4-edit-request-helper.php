@@ -174,7 +174,7 @@ try {
           $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
      }
 
-     if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+     if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
 		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 	}
 
@@ -182,7 +182,7 @@ try {
 		$status = $_POST['oldStatus'];
 	}
 
-	if ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+	if ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
 		$status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 	}
 
@@ -199,9 +199,9 @@ try {
 	}
 
 
-	if ($sarr['sc_user_type'] == 'remoteuser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+	if ($general->isSTSInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
 		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-	} elseif ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+	} elseif ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
 		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 	}
 	if (isset($_POST['status']) && $_POST['status'] == '') {
@@ -273,7 +273,7 @@ try {
           'result_modified'  => 'no',
           'manual_result_entry' => 'yes',
           'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
-          'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,  
+          'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
      ];
 
 

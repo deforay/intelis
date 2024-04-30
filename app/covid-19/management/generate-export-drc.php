@@ -97,7 +97,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
         _translate("Date result released")
     );
 
-    if ($_SESSION['instance']['type'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
+    if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
         unset($headings[$key]);
     }
 
@@ -193,7 +193,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
         }
 
         $row[] = $no;
-        if ($_SESSION['instance']['type'] == 'standalone') {
+        if ($general->isStandaloneInstance()) {
             $row[] = $aRow["sample_code"];
         } else {
             $row[] = $aRow["sample_code"];

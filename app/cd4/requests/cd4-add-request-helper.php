@@ -57,7 +57,7 @@ try {
         die;
     }
 
-    if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+    if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
         $resultStatus = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     } else {
         $resultStatus = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
@@ -142,7 +142,7 @@ try {
 
 
 
-    if ($_SESSION['instance']['type'] == 'remoteuser') {
+    if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';
         $sampleCodeKey = 'remote_sample_code_key';
     } else {

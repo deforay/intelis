@@ -11,7 +11,7 @@ use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
 
-class GenericTestsService extends AbstractTestService
+final class GenericTestsService extends AbstractTestService
 {
 
     protected string $table = 'form_generic';

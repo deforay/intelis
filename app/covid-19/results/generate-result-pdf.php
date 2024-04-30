@@ -92,11 +92,11 @@ $_SESSION['aliasPage'] = 1;
 
 
 foreach ($requestResult as $requestRow) {
-	if (($_SESSION['instance']['type'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
+	if (($general->isLISInstance()) && empty($requestRow['result_printed_on_lis_datetime'])) {
 		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
 		$db->where('covid19_id', $requestRow['covid19_id']);
 		$id = $db->update('form_covid19', $pData);
-	} elseif (($_SESSION['instance']['type'] == 'remoteuser') && empty($requestRow['result_printed_on_sts_datetime'])) {
+	} elseif (($general->isSTSInstance()) && empty($requestRow['result_printed_on_sts_datetime'])) {
 		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
 		$db->where('covid19_id', $requestRow['covid19_id']);
 		$id = $db->update('form_covid19', $pData);

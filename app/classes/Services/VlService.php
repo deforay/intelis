@@ -5,14 +5,12 @@ namespace App\Services;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
-use App\Services\StorageService;
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
-class VlService extends AbstractTestService
+final class VlService extends AbstractTestService
 {
     // keep in lowercase to make them easier to compare
     protected array $suppressedArray = [

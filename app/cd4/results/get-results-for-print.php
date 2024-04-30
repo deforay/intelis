@@ -34,9 +34,9 @@ try {
           $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.cd4_result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
           $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.cd4_result', "vl.last_modified_datetime", 'ts.status_name');
      }
-     if ($_SESSION['instance']['type'] == 'remoteuser') {
+     if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
-     } elseif ($_SESSION['instance']['type'] == 'standalone') {
+     } elseif ($general->isStandaloneInstance()) {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
@@ -248,7 +248,7 @@ try {
           $row[] = ($aRow['sample_name']);
           $row[] = $aRow['cd4_result'];
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
-	  
+
 
           $row[] = $aRow['last_modified_datetime'];
           $row[] = ($aRow['status_name']);

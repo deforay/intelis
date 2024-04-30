@@ -188,7 +188,7 @@ $disable = "disabled = 'disabled'";
 									<?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
 								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
 									<strong>Clinic Contact Person </strong>
-								</div>  
+								</div>
 								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;">
 									<?php echo ($user); ?></div>
 							</div>-->
@@ -323,7 +323,7 @@ $disable = "disabled = 'disabled'";
                                     <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="">Is sample re-ordered as part of corrective action? <span class="mandatory">*</span></label>
-                                                                 <select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose adherence">
+                                                                 <select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" title="Please choose adherence">
                                                                       <option value=""> -- Select -- </option>
                                                                       <option value="yes" <?php echo $cd4QueryInfo['sample_reordered']=='yes' ? 'selected="selected"' : ''; ?>>Yes</option>
                                                                       <option value="no" <?php echo $cd4QueryInfo['sample_reordered']=='no' ? 'selected="selected"' : ''; ?>>No</option>
@@ -347,9 +347,9 @@ $disable = "disabled = 'disabled'";
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
 												<label for="artRegimen">Current Regimen
-													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
-												<select class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" <?php echo $disable; ?> style="width:100%;" onchange="checkARTValue();">
+												<select class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" <?php echo $disable; ?> style="width:100%;" onchange="checkARTValue();">
 													<option value="">-- Select --</option>
 													<?php foreach ($artRegimenResult as $heading) { ?>
 														<optgroup label="<?= $heading['headings']; ?>">
@@ -372,17 +372,17 @@ $disable = "disabled = 'disabled'";
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
 												<label for="">Date of Initiation of Current Regimen
-													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
-												<input type="text" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" <?php echo $disable; ?> value="<?php echo $cd4QueryInfo['date_of_initiation_of_current_regimen']; ?>">
+												<input type="text" class="form-control date <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" <?php echo $disable; ?> value="<?php echo $cd4QueryInfo['date_of_initiation_of_current_regimen']; ?>">
 											</div>
 										</div>
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
 												<label for="arvAdherence">ARV Adherence
-													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
-												<select name="arvAdherence" id="arvAdherence" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" title="Please choose adherence" <?php echo $disable; ?>>
+												<select name="arvAdherence" id="arvAdherence" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" title="Please choose adherence" <?php echo $disable; ?>>
 													<option value=""> -- Select -- </option>
 													<option value="good" <?php echo ($cd4QueryInfo['arv_adherance_percentage'] == 'good') ? "selected='selected'" : "" ?>>Good >= 95%</option>
 													<option value="fair" <?php echo ($cd4QueryInfo['arv_adherance_percentage'] == 'fair') ? "selected='selected'" : "" ?>>Fair (85-94%)</option>
@@ -391,7 +391,7 @@ $disable = "disabled = 'disabled'";
 											</div>
 										</div>
 									</div>
-									
+
 								</div>
 								<div class="box box-primary">
 									<div class="box-header with-border">
@@ -467,7 +467,7 @@ $disable = "disabled = 'disabled'";
                                                                                           $display = 'none';
                                                                                      }
                                                                                      ?>
-                                                                           <input type="radio" class="" id="assessmentAHD" name="reasonForCD4Testing" value="assessmentAHD" title="Please check CD4 indication testing type" onclick="showTesting('assessmentAHD');" <?= $checked; ?> <?php echo $disable; ?>> 
+                                                                           <input type="radio" class="" id="assessmentAHD" name="reasonForCD4Testing" value="assessmentAHD" title="Please check CD4 indication testing type" onclick="showTesting('assessmentAHD');" <?= $checked; ?> <?php echo $disable; ?>>
                                                                                 <strong>Assessment for Advanced HIV Disease (AHD)</strong>
 														</label>
 													</div>
@@ -525,7 +525,7 @@ $disable = "disabled = 'disabled'";
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>     
+                                                                 <label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
                                                                  <div class="col-lg-7">
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4Result" name="treatmentCoinfectionLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?> />(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4ResultPercentage" name="treatmentCoinfectionLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?> /></div>
@@ -552,26 +552,26 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-4">
 												<label for="reqClinician" class="col-lg-5 control-label">Request
 													Clinician
-													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician" title="Please enter request clinician" value="<?php echo $cd4QueryInfo['request_clinician_name']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Requesting Clinician" title="Please enter request clinician" value="<?php echo $cd4QueryInfo['request_clinician_name']; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">
 												<label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number
-													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control phone-number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $cd4QueryInfo['request_clinician_phone_number']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $cd4QueryInfo['request_clinician_phone_number']; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">
 												<label class="col-lg-5 control-label" for="requestDate">Request Date
-													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control date <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?php echo $cd4QueryInfo['test_requested_on']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control date <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?php echo $cd4QueryInfo['test_requested_on']; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 										</div>
@@ -579,19 +579,19 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-4">
 												<label for="cd4FocalPerson" class="col-lg-5 control-label">CD4 Focal
 													Person
-													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="cd4FocalPerson" name="cdrFocalPerson" placeholder="VL Focal Person" title="Please enter cd4 focal person name" value="<?= ($cd4QueryInfo['cd4_focal_person']); ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="cd4FocalPerson" name="cdrFocalPerson" placeholder="VL Focal Person" title="Please enter cd4 focal person name" value="<?= ($cd4QueryInfo['cd4_focal_person']); ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">
 												<label for="cd4FocalPersonPhoneNumber" class="col-lg-5 control-label">CD4
 													Focal Person Phone Number
-													<?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?>
+													<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?>
 												</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control phone-number <?php echo ($_SESSION['instance']['type'] == 'remoteuser') ? "isRequired" : ''; ?>" id="cd4FocalPersonPhoneNumber" name="cd4FocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter cd4 focal person phone number" value="<?= ($cd4QueryInfo['cd4_focal_person_phone_number']); ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="cd4FocalPersonPhoneNumber" name="cd4FocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter cd4 focal person phone number" value="<?= ($cd4QueryInfo['cd4_focal_person_phone_number']); ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">
@@ -679,7 +679,7 @@ $disable = "disabled = 'disabled'";
                                                                            <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
                                                                       </div>
                                                                  </div>
-                                                                 
+
                                                                  <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
                                                                       <div class="col-lg-7">
@@ -721,7 +721,7 @@ $disable = "disabled = 'disabled'";
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                
+
 																 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
                                                                       <div class="col-lg-7">
@@ -828,7 +828,7 @@ $disable = "disabled = 'disabled'";
 			$('#rejectionReason').removeClass('isRequired');
 			$('#rejectionReason').val('');
 			$('#rejectionDate').val('');
-			
+
 		}
 	});
 

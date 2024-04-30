@@ -18,7 +18,7 @@ $primaryKey = "vl_sample_id";
 
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name');
-if ($_SESSION['instance']['type'] == 'standalone') {
+if ($general->isStandaloneInstance()) {
     $aColumns = MiscUtility::removeMatchingElements($aColumns, ['vl.remote_sample_code']);
     $orderColumns = MiscUtility::removeMatchingElements($orderColumns, ['vl.remote_sample_code']);
 }
@@ -128,7 +128,7 @@ if (isset($_POST['noResultPatientPregnant']) && $_POST['noResultPatientPregnant'
 if (isset($_POST['noResultPatientBreastfeeding']) && $_POST['noResultPatientBreastfeeding'] != '') {
     $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['noResultPatientBreastfeeding'] . '"';
 }
-if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 if (!empty($sWhere)) {

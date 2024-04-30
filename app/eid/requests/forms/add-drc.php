@@ -13,7 +13,7 @@ $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
 
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$sampleCode = 'remote_sample_code';
 } else {
 	$sampleCode = 'sample_code';
@@ -63,7 +63,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+										<?php if ($general->isSTSInstance()) { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
 											<td>
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
@@ -137,7 +137,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="" style="width:100%;" />
 										</td>
 									</tr>
-									<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+									<?php if ($general->isSTSInstance()) { ?>
 										<tr>
 											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 											<td>

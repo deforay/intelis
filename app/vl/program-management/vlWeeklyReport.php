@@ -4,7 +4,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 $facilityQuery = "SELECT * FROM facility_details where facility_type = 2 AND status='active' Order By facility_name";
 
-if (isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser' && isset($_SESSION['instance']['labId'])) {
+if ($general->isLISInstance() && isset($_SESSION['instance']['labId'])) {
   $facilityQuery .= " AND facility_id = " . $_SESSION['instance']['labId'];
 }
 

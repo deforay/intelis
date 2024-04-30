@@ -35,7 +35,7 @@ $whereCondition = '';
 $tableName = "form_tb";
 $primaryKey = "tb_id";
 
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$sampleCode = 'remote_sample_code';
 } else {
 	$sampleCode = 'sample_code';
@@ -114,7 +114,7 @@ $sQuery = "SELECT vl.sample_collection_date,
                         AND (vl.sample_tested_datetime IS NOT NULL AND vl.sample_tested_datetime > '0000-00-00')
                         AND vl.result is not null
                         AND vl.result != ''";
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$whereCondition = '';
 	if (!empty($_SESSION['facilityMap'])) {
 		$whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";

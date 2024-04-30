@@ -464,7 +464,7 @@ if (!empty($result)) {
      }
      if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
           $sampleCode = 'sample_code';
-          if ($_SESSION['instance']['type'] == 'remoteuser') {
+          if ($general->isSTSInstance()) {
                $sampleCode = 'remote_sample_code';
                if (!empty($result['remote_sample']) && $result['remote_sample'] == 'yes') {
                     $sampleCode = 'remote_sample_code';

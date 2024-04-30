@@ -12,7 +12,7 @@ $storageService = ContainerRegistry::get(StorageService::class);
 
 
 //check remote user
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 
 	if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
 		$sampleCode = 'remote_sample_code';
@@ -103,7 +103,7 @@ $storageInfo = $storageService->getLabStorage();
 
 
 									<tr>
-										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+										<?php if ($general->isSTSInstance()) { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
 											<td>
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;">
@@ -122,7 +122,7 @@ $storageInfo = $storageService->getLabStorage();
 												<?= _translate("Recency ID"); ?>
 											</label></td>
 										<td><input type="text" class="form-control" id="serialNo" name="serialNo" placeholder="<?= _translate("Recency ID"); ?>" title="<?= _translate("Recency ID"); ?>" style="width:100%;" value="<?php echo $vlQueryInfo['external_sample_code']; ?>" /></td>
-										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+										<?php if ($general->isSTSInstance()) { ?>
 											<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>"><label for="">Date de réception de léchantillon <span class="mandatory">*</span></label></td>
 											<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>">
 												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> value="<?php echo ($vlQueryInfo['sample_received_at_lab_datetime'] != '' && $vlQueryInfo['sample_received_at_lab_datetime'] != null) ? $vlQueryInfo['sample_received_at_lab_datetime'] : date('d-M-Y H:i:s'); ?>" style="width:100%;" />
@@ -199,7 +199,7 @@ $storageInfo = $storageService->getLabStorage();
 												<?php } ?>
 											</select>
 										</td>
-										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+										<?php if ($general->isSTSInstance()) { ?>
 											<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
 											<td>
 												<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">

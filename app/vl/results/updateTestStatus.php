@@ -69,7 +69,7 @@ try {
         $result = $id[$i];
 
         $sampleCode = 'sample_code';
-        if ($_SESSION['instance']['type'] == 'remoteuser') {
+        if ($general->isSTSInstance()) {
             $sampleCode = 'remote_sample_code';
             if (!empty($vlRow['remote_sample']) && $vlRow['remote_sample'] == 'yes') {
                 $sampleCode = 'remote_sample_code';

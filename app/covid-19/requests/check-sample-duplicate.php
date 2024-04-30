@@ -35,7 +35,7 @@ if ($value != '') {
         $tableInfo = explode("##", (string) $fnct);
     }
 
-    if ($systemType == 'remoteuser') {
+    if ($general->isSTSInstance()) {
         $fieldName = 'remote_sample_code';
     }
 

@@ -105,7 +105,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     $row[] = $aRow['art_code'];
     $row[] = ($aRow['headings']);
-    if (_isAllowed("/vl/reference/add-vl-art-code-details.php") && $_SESSION['instance']['type'] !== 'vluser') {
+    if (_isAllowed("/vl/reference/add-vl-art-code-details.php") && $general->isLISInstance() === false) {
         $row[] = $status;
     } else {
         $row[] = $aRow['art_status'];

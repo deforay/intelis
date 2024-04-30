@@ -20,7 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$sampleCode = 'remote_sample_code';
 } else {
 	$sampleCode = 'sample_code';
@@ -99,7 +99,7 @@ $sQuery = "SELECT vl.sample_code,
                         AND (vl.sample_tested_datetime IS NOT NULL AND vl.sample_tested_datetime > '0000-00-00' )
                         AND vl.result is not null
                         AND vl.result != '' ";
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	if (!empty($_SESSION['facilityMap'])) {
 		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 	}

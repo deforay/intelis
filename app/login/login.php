@@ -38,7 +38,7 @@ if (!empty(SYSTEM_CONFIG['instanceName'])) {
 
 $shortName = _translate('Sample Management System');
 
-if (isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'remoteuser') {
+if (isset($_SESSION['instance']['type']) && $general->isSTSInstance()) {
 	$shortName = 'Sample Tracking';
 	$systemType = "Remote Sample Tracking Module";
 	$path = '/assets/img/remote-bg.jpg';
@@ -67,7 +67,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-	<?php if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'remoteuser') { ?>
+	<?php if (!empty($_SESSION['instance']['type']) && $general->isSTSInstance()) { ?>
 		<link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsts-icons/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsts-icons/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsts-icons/favicon-16x16.png">

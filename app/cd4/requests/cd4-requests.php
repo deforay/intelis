@@ -854,7 +854,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				<?php } ?>
 			],
 			"order": [
-				[<?php echo ($_SESSION['instance']['type'] == 'remoteuser' || $_SESSION['instance']['type'] == 'vluser') ? 12 : 11 ?>, "desc"],
+				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>, "desc"],
 				[0, "desc"]
 			],
 			"fnDrawCallback": function() {
@@ -1113,7 +1113,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#" + showId).show();
 	}
 
-	<?php if (isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?>
+	<?php if ($general->isLISInstance()) { ?>
 		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
 
 		function forceResultSync(sampleCode) {

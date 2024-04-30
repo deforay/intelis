@@ -39,7 +39,7 @@ $systemConfig = SYSTEM_CONFIG;
 
 $systemType = $general->getSystemConfig('sc_user_type');
 
-if ($systemType !== 'vluser') {
+if ($general->isLISInstance() === false) {
     exit(0);
 }
 

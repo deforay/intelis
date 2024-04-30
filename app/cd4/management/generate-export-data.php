@@ -50,7 +50,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 
 		$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
 
-		if ($_SESSION['instance']['type'] == 'remoteuser') {
+		if ($general->isSTSInstance()) {
 			$sampleCode = 'remote_sample_code';
 		} else {
 			$sampleCode = 'sample_code';
