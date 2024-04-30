@@ -690,16 +690,20 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
 
-        foreach ($parsedData as $covid19Id => $testResults) {
+
+        $unwantedColumns = [
+            'test_id'
+        ];
+        $emptyTestsArray = $general->getTableFieldsAsArray('covid19_tests', $unwantedColumns);
+
+        foreach ($testResultsData as $covid19Id => $testResults) {
             $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_tests");
             foreach ($testResults as $covid19TestData) {
-                unset($covid19TestData['test_id']);
+                $covid19TestData = MiscUtility::updateFromArray($emptyTestsArray, $covid19TestData);
                 $db->insert("covid19_tests", $covid19TestData);
             }
         }
-
-
 
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
     }

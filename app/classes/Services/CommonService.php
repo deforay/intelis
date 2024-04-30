@@ -1321,7 +1321,7 @@ class CommonService
         return $sheet;
     }
 
-    public function getTableFieldsAsArray($tableName)
+    public function getTableFieldsAsArray(string $tableName, array $unwantedColumns = []): array
     {
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
                         WHERE TABLE_SCHEMA = ? AND table_name= ?";
@@ -1329,6 +1329,11 @@ class CommonService
         $columnNames = array_column($allColResult, 'COLUMN_NAME');
 
         // Create an array with all column names set to null
-        return array_fill_keys($columnNames, null);
+        $tableFieldsAsArray = array_fill_keys($columnNames, null);
+        if (!empty($unwantedColumns)) {
+            $tableFieldsAsArray = array_diff_key($tableFieldsAsArray, array_flip($unwantedColumns));
+        }
+
+        return $tableFieldsAsArray;
     }
 }

@@ -309,6 +309,17 @@ class MiscUtility
         return array_diff_key($fullArray, array_flip($unwantedKeys));
     }
 
+    // Updates entries in targetArray with values from sourceArray where keys exist in targetArray
+    public static function updateFromArray(array $targetArray, array $sourceArray)
+    {
+
+        if (empty($targetArray) || empty($sourceArray)) {
+            return $targetArray;
+        }
+        return array_merge($targetArray, array_intersect_key($sourceArray, $targetArray));
+    }
+
+
     // Helper function to convert file size string to bytes
     public static function convertToBytes($sizeString): int
     {
