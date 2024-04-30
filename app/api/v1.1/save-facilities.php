@@ -120,7 +120,7 @@ try {
             $data['facilityStateId'] = $stateInfo['geo_id'];
         } else {
             $stateData = array(
-                'geo_name' => $stateData['state'],
+                'geo_name' => $data['state'],
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
             );
             $db->insert("geographical_divisions", $stateData);
@@ -134,7 +134,7 @@ try {
             $data['facilityDistrictId'] = $districtInfo['geo_id'];
         } else {
             $districtData = array(
-                'geo_name' => $stateData['state'],
+                'geo_name' => $data['state'],
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
             );
             $db->insert("geographical_divisions", $districtData);

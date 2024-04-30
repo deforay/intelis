@@ -227,7 +227,7 @@ if (!empty($id)) {
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<td colspan="3" align="center">';
-                        $tbl .= 'Sample ID : ' . $sampleResult[$i]['sample_code'] . '<br>';
+                        $tbl .= 'Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
                         if ($barcodeFormat == 'QRCODE') {
                             $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">'.'<br>';
                         } else {
