@@ -7,7 +7,6 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -23,7 +22,7 @@ $tableName = "temp_sample_import";
 try {
     $result = 0;
     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
-        $batchResult = $db->rawQuery("select batch_code from batch_details where batch_code='" . trim((string) $_POST['batchCode']) . "'");
+        $batchResult = $db->rawQuery("SELECT batch_code FROM batch_details WHERE batch_code= ?", [trim((string) $_POST['batchCode'])]);
         if (!$batchResult) {
             $data = array(
                 'machine' => 0,
@@ -35,11 +34,11 @@ try {
         $db->where('temp_sample_id', $_POST['tempsampleId']);
         $result = $db->update($tableName, array('batch_code' => $_POST['batchCode']));
     } else if (isset($_POST['sampleCode']) && trim((string) $_POST['sampleCode']) != '') {
-        $sampleResult = $db->rawQuery("select sample_code from form_vl where sample_code='" . trim((string) $_POST['sampleCode']) . "'");
-        if ($sampleResult) {
-            $sampleDetails = 'Result already exists';
+        $sampleResult = $db->rawQuery("SELECT sample_code FROM form_vl WHERE sample_code='" . trim((string) $_POST['sampleCode']) . "'");
+        if (!empty($sampleResult)) {
+            $sampleDetails = _translate('Result already exists');
         } else {
-            $sampleDetails = 'New Sample';
+            $sampleDetails = _translate('New Sample');
         }
         $db->where('temp_sample_id', $_POST['tempsampleId']);
         $result = $db->update($tableName, array('sample_code' => $_POST['sampleCode'], 'sample_details' => $sampleDetails));

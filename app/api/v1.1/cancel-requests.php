@@ -9,7 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -17,8 +17,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var ApiService $app */
-$app = ContainerRegistry::get(ApiService::class);
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -26,6 +26,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
 $origJson = $request->getBody()->getContents();
+if (MiscUtility::isJSON($origJson) === false) {
+    throw new SystemException("Invalid JSON Payload");
+}
 $input = $request->getParsedBody();
 
 if (
@@ -43,7 +46,7 @@ $transactionId = $general->generateUUID();
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = $general->getAuthorizationBearerToken();
+$authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 
 $tableName = TestsService::getTestTableName($input['testType']);

@@ -26,8 +26,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var ApiService $app */
-$app = ContainerRegistry::get(ApiService::class);
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -46,6 +46,9 @@ try {
     $updatedLabs = [];
 
     $origJson = $request->getBody()->getContents();
+    if (MiscUtility::isJSON($origJson) === false) {
+        throw new SystemException("Invalid JSON Payload");
+    }
 
     $appVersion = null;
     try {
@@ -80,7 +83,7 @@ try {
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $authToken = $general->getAuthorizationBearerToken();
+    $authToken = $apiService->getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
 
     $roleUser = $usersService->getUserRole($user['user_id']);
@@ -89,7 +92,7 @@ try {
 
     /* Update form attributes */
     $version = $general->getSystemConfig('sc_version');
-    $deviceId = $general->getHeader('deviceId');
+    $deviceId = $apiService->getHeader($request, 'deviceId');
 
     $responseData = [];
     foreach ($input as $rootKey => $data) {
@@ -312,8 +315,24 @@ try {
             'mobileAppVersion' => $appVersion,
             'deviceId' => $deviceId
         ];
-        $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+        
+        /* Reason for VL Result changes */
+        $reasonForChanges = null;
+        $allChange = [];
+        if (isset($data['reasonForResultChanges']) && !empty($data['reasonForResultChanges'])) {
+            foreach($data['reasonForResultChanges'] as $row){
+                $allChange[] = array(
+                    'usr' => $row['changed_by'],
+                    'msg' => $row['reason'],
+                    'dtime' => $row['change_datetime']
+                );
+            }
+        }
+        if (!empty($allChange)) {
+            $reasonForChanges = json_encode($allChange);
+        }
 
+        $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
         $covid19Data = [
             'vlsm_instance_id' => $data['instanceId'],
@@ -404,7 +423,8 @@ try {
             'result_reviewed_datetime' => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'result_approved_by' => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] : null,
             'result_approved_datetime' => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] : null,
-            'reason_for_changing' => (!empty($_POST['reasonForCovid19ResultChanges'])) ? $_POST['reasonForCovid19ResultChanges'] : null,
+            'reason_for_changing' => $reasonForChanges ?? null,
+            // 'reason_for_changing' => (!empty($_POST['reasonForCovid19ResultChanges'])) ? $_POST['reasonForCovid19ResultChanges'] : null,
             'rejection_on' => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
             'result_status' => $status,
             'data_sync' => 0,

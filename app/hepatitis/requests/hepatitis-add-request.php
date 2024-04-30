@@ -189,7 +189,7 @@ require_once($fileArray[$arr['vl_form']]);
         }
     }
 
-    function insertSampleCode(formId, hepatitisTestType, hepatitisSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
+    function insertSampleCode(formId, hepatitisTestType = null, hepatitisSampleId = null, sampleCode = null, sampleCodeKey = null, sampleCodeFormat = null, countryId = null, sampleCollectionDate = null, provinceCode = null, provinceId = null) {
         $.blockUI();
         let formData = $("#" + formId).serialize();
         formData += "&provinceCode=" + encodeURIComponent(provinceCode);

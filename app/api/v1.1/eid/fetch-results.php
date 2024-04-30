@@ -9,6 +9,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -18,6 +19,9 @@ ini_set('max_execution_time', 20000);
 $request = AppRegistry::get('request');
 
 $origJson = $request->getBody()->getContents();
+if (MiscUtility::isJSON($origJson) === false) {
+    throw new SystemException("Invalid JSON Payload");
+}
 $input = $request->getParsedBody();
 
 
@@ -33,15 +37,15 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 $user = null;
-/* echo "<pre>";
-print_r($input);
-die; */
+
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = $general->getAuthorizationBearerToken();
+$authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 try {
     $transactionId = $general->generateUUID();

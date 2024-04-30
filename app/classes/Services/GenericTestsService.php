@@ -75,7 +75,7 @@ class GenericTestsService extends AbstractTestService
         );
     }
 
-    public function insertSample($params, $returnSampleData = false)
+    public function insertSample($params, $returnSampleData = false): int|array
     {
         try {
 

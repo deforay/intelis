@@ -31,7 +31,19 @@ try {
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
 
-    $refTable = TestsService::getTestTableName($_POST['type']);
+    $formTable = TestsService::getTestTableName($_POST['type']);
+
+    // Check if test type is not set for any batch
+    $db->where('test_type', null);
+    $db->orWhere('test_type', '');
+    $incompleteBatches = $db->getValue("batch_details", "batch_id");
+
+    // Update test type for all batches in the current test type
+    if (!empty($incompleteBatches)) {
+        $incompleteBatches = implode(",", $incompleteBatches);
+        $update = "UPDATE batch_details SET test_type = ? WHERE (test_type is NULL OR test_type = '') and batch_id in (SELECT DISTINCT sample_batch_id FROM $formTable WHERE sample_batch_id IN ($incompleteBatches))";
+        $db->rawQuery($update, [$_POST['type']]);
+    }
 
     $pdfLayout = $general->getGlobalConfig('batch_pdf_layout');
 
@@ -70,7 +82,7 @@ try {
                 b.batch_id,
                 COUNT(vl.sample_code) AS total_samples
                 FROM batch_details b
-                INNER JOIN $refTable vl ON vl.sample_batch_id = b.batch_id";
+                INNER JOIN $formTable vl ON vl.sample_batch_id = b.batch_id";
 
     if (!empty($sWhere)) {
         $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);

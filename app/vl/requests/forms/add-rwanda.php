@@ -536,7 +536,7 @@ $sFormat = '';
                                                                            <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
                                                                       </div>
                                                                  </div>
-                                                              
+
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? </label>
                                                                       <div class="col-lg-7">
@@ -549,7 +549,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                               
+
 
                                                                  <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
@@ -590,7 +590,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 
+
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
                                                                       <div class="col-lg-7">
@@ -613,7 +613,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                
+
 
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
@@ -634,7 +634,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                            <div class="col-md-6">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> />
@@ -870,7 +870,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function generateSampleCode() {
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
-        //  var provinceCode = $("#province").find(":selected").attr("data-code");
+          //  var provinceCode = $("#province").find(":selected").attr("data-code");
 
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           if (pName != '' && sDate != '') {
@@ -1127,13 +1127,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('.isRequired').each(function() {
                ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
           });
-          var userType = "<?php echo $sarr['sc_user_type']; ?>";
-          if (userType != 'remoteuser') {
-               if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
-                    alert("Please make sure enter DOB or Age");
-                    return false;
-               }
+
+          if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
+               alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
+               return false;
           }
+
           $("#saveNext").val('save');
           if (flag) {
                $('.btn-disabled').attr('disabled', 'yes');

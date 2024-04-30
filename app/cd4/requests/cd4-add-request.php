@@ -138,12 +138,10 @@ require_once($fileArray[$formId]);
 require_once APPLICATION_PATH . "/vl/vl.js.php";
 ?>
 <script>
-    function insertSampleCode(formId, cd4SampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
+    function insertSampleCode(formId) {
         $.blockUI();
         let formData = $("#" + formId).serialize();
-        formData += "&provinceCode=" + encodeURIComponent(provinceCode);
-        formData += "&provinceId=" + encodeURIComponent(provinceId);
-        formData += "&countryId=" + encodeURIComponent(countryId);
+
 
         $.post("/cd4/requests/insert-sample.php", formData,
             function(data) {
@@ -153,7 +151,6 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
                     document.getElementById(formId).submit();
                 } else {
                     $.unblockUI();
-                    //$("#sampleCollectionDate").val('');
                     generateSampleCode();
                     alert("<?= _translate("Could not save this form. Please try again."); ?>");
                 }

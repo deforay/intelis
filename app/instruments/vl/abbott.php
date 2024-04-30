@@ -10,8 +10,6 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
-use PhpMyAdmin\SqlParser\Utils\Misc;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -20,11 +18,11 @@ try {
     // Sanitized values from $request object
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
+
     $_POST = _sanitizeInput($request->getParsedBody());
 
     /** @var TestResultsService $testResultsService */
     $testResultsService = ContainerRegistry::get(TestResultsService::class);
-
 
     $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
 
@@ -32,9 +30,8 @@ try {
 
     $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $allowedExtensions = array(
-        'txt',
-    );
+    $allowedExtensions = ['txt'];
+
     if (
         isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
         || $_FILES['resultFile']['size'] <= 0
@@ -47,9 +44,8 @@ try {
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;
 
-
-
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
+
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
@@ -57,7 +53,6 @@ try {
 
         /** @var BatchService $batchService */
         $batchService = ContainerRegistry::get(BatchService::class);
-        [$maxBatchCodeKey, $newBatchCode] = $batchService->createBatchCode();
 
         $m = 1;
         $skipTillRow = 23;
@@ -265,7 +260,8 @@ try {
                 $data['result'] = "";
             }
 
-            if ($batchCode == '') {
+            if ($batchCode == '' || empty($batchCode)) {
+                [$maxBatchCodeKey, $newBatchCode] = $batchService->createBatchCode();
                 $data['batch_code'] = $newBatchCode;
                 $data['batch_code_key'] = $maxBatchCodeKey;
             } else {

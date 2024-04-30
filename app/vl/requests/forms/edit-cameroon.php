@@ -1198,20 +1198,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
 
           if (dob == "" && age == "") {
-               alert("Please Enter DOB or Age in years");
+               alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
                return false;
           }
 
           $('.isRequired').each(function() {
                ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
           });
-          var userType = "<?php echo $sarr['sc_user_type']; ?>";
-          if (userType != 'remoteuser') {
-               if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
-                    alert("Please make sure to enter DOB or Age");
-                    return false;
-               }
+          if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
+               alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
+               return false;
           }
+
           if (flag) {
                $.blockUI();
                document.getElementById('vlRequestFormCameroon').submit();

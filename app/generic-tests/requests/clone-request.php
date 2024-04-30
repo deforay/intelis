@@ -1469,7 +1469,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		}
 	}
 
-	function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
+	function insertSampleCode(formId, vlSampleId = null, sampleCode = null, sampleCodeKey = null, sampleCodeFormat = null, countryId = null, sampleCollectionDate = null, provinceCode = null, provinceId = null) {
 		$.blockUI();
 		let formData = $("#" + formId).serialize();
 		formData += "&provinceCode=" + encodeURIComponent(provinceCode);

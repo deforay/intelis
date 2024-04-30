@@ -1,8 +1,10 @@
 <?php
 
-use App\Services\DatabaseService;
+use App\Services\ApiService;
 use App\Services\UsersService;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -17,6 +19,9 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -26,12 +31,17 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
+/** @var Slim\Psr7\Request $request */
+$request = AppRegistry::get('request');
+
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 
 $transactionId = $general->generateUUID();
-$authToken = $general->getAuthorizationBearerToken();
+
+$authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
+
 $sampleCode = !empty($_REQUEST['s']) ? explode(",", $db->escape($_REQUEST['s'])) : null;
 $recencyId = !empty($_REQUEST['r']) ? explode(",", $db->escape($_REQUEST['r'])) : null;
 $from = !empty($_REQUEST['f']) ? $db->escape($_REQUEST['f']) : null;

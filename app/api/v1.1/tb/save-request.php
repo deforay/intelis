@@ -1,12 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
 use JsonMachine\Items;
 use App\Services\TbService;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -16,7 +16,20 @@ use JsonMachine\Exception\PathNotFoundException;
 
 session_unset(); // no need of session in json response
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var TbService $tbService */
+$tbService = ContainerRegistry::get(TbService::class);
 try {
 
     $db->beginTransaction();
@@ -29,7 +42,9 @@ try {
     $noOfFailedRecords = 0;
 
     $origJson = $request->getBody()->getContents();
-
+    if (MiscUtility::isJSON($origJson) === false) {
+        throw new SystemException("Invalid JSON Payload");
+    }
 
     $appVersion = null;
     try {
@@ -52,21 +67,6 @@ try {
         throw new SystemException("Invalid request");
     }
 
-    /** @var DatabaseService $db */
-    $db = ContainerRegistry::get(DatabaseService::class);
-
-    /** @var CommonService $general */
-    $general = ContainerRegistry::get(CommonService::class);
-
-    /** @var ApiService $app */
-    $app = ContainerRegistry::get(ApiService::class);
-
-    /** @var UsersService $usersService */
-    $usersService = ContainerRegistry::get(UsersService::class);
-
-    /** @var TbService $tbService */
-    $tbService = ContainerRegistry::get(TbService::class);
-
     $user = null;
     $tableName = "form_tb";
     $tableName1 = "activity_log";
@@ -77,7 +77,7 @@ try {
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $authToken = $general->getAuthorizationBearerToken();
+    $authToken = $apiService->getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
@@ -88,7 +88,7 @@ try {
     /* Update form attributes */
     $transactionId = $general->generateUUID();
     $version = $general->getSystemConfig('sc_version');
-    $deviceId = $general->getHeader('deviceId');
+    $deviceId = $apiService->getHeader($request, 'deviceId');
 
     foreach ($input as $rootKey => $data) {
 
@@ -109,7 +109,6 @@ try {
         if ($formId == COUNTRY\PNG) {
             $mandatoryFields[] = 'provinceId';
         }
-
         if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $noOfFailedRecords++;
             $responseData[$rootKey] = [
@@ -335,6 +334,21 @@ try {
             'mobileAppVersion' => $appVersion,
             'deviceId' => $deviceId
         ];
+        /* Reason for VL Result changes */
+        $reasonForChanges = null;
+        $allChange = [];
+        if (isset($data['reasonForResultChanges']) && !empty($data['reasonForResultChanges'])) {
+            foreach ($data['reasonForResultChanges'] as $row) {
+                $allChange[] = array(
+                    'usr' => $row['changed_by'],
+                    'msg' => $row['reason'],
+                    'dtime' => $row['change_datetime']
+                );
+            }
+        }
+        if (!empty($allChange)) {
+            $reasonForChanges = json_encode($allChange);
+        }
         $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
         $tbData = [
@@ -386,7 +400,8 @@ try {
             'lab_tech_comments' => !empty($data['approverComments']) ? $data['approverComments'] : null,
             'revised_by' => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
             'revised_on' => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : null,
-            'reason_for_changing' => (!empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,
+            'reason_for_changing' => $reasonForChanges ?? null,
+            // 'reason_for_changing' => (!empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,
             'rejection_on' => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
             'result_status' => $status,
             'data_sync' => 0,
@@ -412,11 +427,11 @@ try {
                 $db->delete($testTableName);
 
                 foreach ($data['testResults'] as $testKey => $testResult) {
-                    if (!empty($testResult) && trim((string) $testResult) != "") {
+                    if (isset($testResult['testResult']) && !empty($testResult['testResult'])) {
                         $db->insert($testTableName, [
                             'tb_id' => $data['tbSampleId'],
-                            'actual_no' => $data['actualNo'][$testKey] ?? null,
-                            'test_result' => $testResult,
+                            'actual_no' => $testResult['actualNo'] ?? null,
+                            'test_result' => $testResult['testResult'],
                             'updated_datetime' => DateUtility::getCurrentDateTime()
                         ]);
                     }

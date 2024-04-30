@@ -616,8 +616,8 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                                 <input type="text" class="form-control labSection dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
                                                                            </div>
                                                                       </div>
-<br>
-                                                                     
+                                                                      <br>
+
                                                                  </div>
                                                                  <div class="row">
 
@@ -671,7 +671,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                  </div>
                                                                  <div class="row">
 
-                                                                     
+
                                                                       <div class="col-md-4">
                                                                            <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
                                                                            <div class="col-lg-7">
@@ -1155,13 +1155,12 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
           $('.isRequired').each(function() {
                ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
           });
-          var userType = "<?php echo $sarr['sc_user_type']; ?>";
-          if (userType != 'remoteuser') {
-               if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
-                    alert("Please make sure to enter DOB or Age");
-                    return false;
-               }
+
+          if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
+               alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
+               return false;
           }
+
           if (flag) {
                $.blockUI();
                document.getElementById('vlRequestFormRwd').submit();

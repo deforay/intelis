@@ -448,48 +448,6 @@ class CommonService
         }
     }
 
-    public function getHeader($key)
-    {
-        $headers = null;
-        if (function_exists('apache_request_headers')) {
-            $headers = apache_request_headers();
-        } else {
-            $headers = getallheaders();
-        }
-        foreach ($headers as $header => $value) {
-            if (strtolower((string) $key) === strtolower($header)) {
-                return $value;
-            }
-        }
-
-        return null;
-    }
-
-    public function getAuthorizationBearerToken(): ?string
-    {
-        $headers = null;
-        if (function_exists('apache_request_headers')) {
-            $headers = apache_request_headers();
-        } else {
-            $headers = getallheaders();
-        }
-
-        if (isset($headers['Authorization'])) {
-            $authorizationHeader = $headers['Authorization'];
-        } elseif (isset($headers['authorization'])) {
-            // Fallback for case-insensitive header check
-            $authorizationHeader = $headers['authorization'];
-        } else {
-            return null;
-        }
-
-        if (preg_match('/Bearer\s(\S+)/', (string) $authorizationHeader, $matches)) {
-            return $matches[1];
-        } else {
-            return null;
-        }
-    }
-
     public function getTestingPlatforms($testType = null)
     {
         if (!empty($testType)) {
@@ -502,13 +460,11 @@ class CommonService
 
     public function getDataFromOneFieldAndValue($tablename, $fieldname, $fieldValue, $condition = null)
     {
-        return once(function () use ($tablename, $fieldname, $fieldValue, $condition) {
-            $query = "SELECT * FROM $tablename WHERE $fieldname = ?";
-            if (!empty($condition) && $condition != '') {
-                $query .= " AND $condition";
-            }
-            return $this->db->rawQueryOne($query, [$fieldValue]);
-        });
+        if (!empty($condition) && $condition != '') {
+            $this->db->where($condition);
+        }
+        $this->db->where($fieldname, $fieldValue);
+        return $this->db->getValue($tablename, $fieldname);
     }
 
     public function getRejectionReasons($testType): array

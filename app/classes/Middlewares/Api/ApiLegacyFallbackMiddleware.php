@@ -7,6 +7,7 @@ use Throwable;
 use App\Registries\AppRegistry;
 use Laminas\Diactoros\Response;
 use App\Exceptions\SystemException;
+use App\Utilities\LoggerUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Slim\Exception\HttpNotFoundException;
@@ -21,7 +22,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         } catch (HttpNotFoundException $e) {
             return $this->handleLegacyCode($request);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             // Log the exception here if needed
             throw new SystemException("Error in processing request: " . $e->getMessage(), 500, $e);
         }
@@ -41,7 +42,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
             return $response;
         } catch (Throwable $e) {
             ob_end_clean();
-            // Log the error here if needed
+            LoggerUtility::log('error', "API Error : " . $e->getMessage(), ['exception' => $e]);
             throw new SystemException("API Error : " . $e->getMessage(), 500, $e);
         }
     }

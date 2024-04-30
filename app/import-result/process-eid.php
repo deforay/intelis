@@ -39,7 +39,7 @@ try {
     $totalIds = count($id);
     $status = explode(",", (string) $_POST['status']);
     $rejectedReasonId = explode(",", (string) $_POST['rejectReasonId']);
-    if ($_POST['value'] != '') {
+    if ($_POST['value'] != '' && !empty($_POST['value'])) {
         for ($i = 0; $i < $totalIds; $i++) {
             $sQuery = "SELECT * FROM temp_sample_import WHERE imported_by =? AND temp_sample_id= ?";
             $rResult = $db->rawQueryOne($sQuery, [$importedBy, $id[$i]]);
@@ -89,6 +89,7 @@ try {
                     $data['batch_id'] = $bvlResult[0]['batch_id'];
                 } else {
                     $batchResult = $db->insert('batch_details', [
+                        'test_type' => 'eid',
                         'batch_code' => $rResult['batch_code'],
                         'batch_code_key' => $rResult['batch_code_key'],
                         'sent_mail' => 'no',
@@ -236,6 +237,7 @@ try {
                 $data['sample_batch_id'] = $bvlResult[0]['batch_id'];
             } else {
                 $batchResult = $db->insert('batch_details', [
+                    'test_type' => 'eid',
                     'batch_code' => $accResult[$i]['batch_code'],
                     'batch_code_key' => $accResult[$i]['batch_code_key'],
                     'sent_mail' => 'no',
