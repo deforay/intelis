@@ -186,7 +186,7 @@ class Covid19Service extends AbstractTestService
     }
 
 
-    public function getCovid19TestsByFormId($c19Id = ""): array
+    public function getCovid19TestsByFormId($c19Id = null): array
     {
         $response = [];
 

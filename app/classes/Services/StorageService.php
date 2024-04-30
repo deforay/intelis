@@ -6,6 +6,7 @@ use DateTime;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use Exception;
 use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
 
@@ -78,7 +79,7 @@ class StorageService
 
             $this->db->commitTransaction();
             return $save;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->db->rollbackTransaction();
             throw $e;
         }
@@ -127,8 +128,7 @@ class StorageService
 
     public function updateSampleStorageStatus($data)
     {
-        $save = $this->db->insert('lab_storage_history', $data);
-        return $save;
+        return $this->db->insert('lab_storage_history', $data);
     }
 
     public function getFreezerListByLabId($labId){

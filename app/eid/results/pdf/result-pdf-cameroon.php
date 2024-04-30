@@ -450,7 +450,7 @@ if (!empty($result)) {
                 } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
                 }
-                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_reviewed_datetime'] ?? '' . '</td>';
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_reviewed_datetime'] ?? '</td>';
                 $html .= '</tr>';
             }
             if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {

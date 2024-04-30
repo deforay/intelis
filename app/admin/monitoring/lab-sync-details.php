@@ -4,6 +4,7 @@ use App\Registries\AppRegistry;
 use App\Services\SystemService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 use App\Services\GeoLocationsService;
 
 $title = _translate("Sources of Requests");
@@ -14,6 +15,12 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */

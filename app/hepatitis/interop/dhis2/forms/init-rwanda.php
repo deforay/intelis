@@ -2,7 +2,6 @@
 
 // this file is included in /hepatitis/interop/dhis2/hepatitis-init.php
 
-use Exception;
 use App\Interop\Dhis2;
 use JsonMachine\Items;
 use App\Utilities\DateUtility;

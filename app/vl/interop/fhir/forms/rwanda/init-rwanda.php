@@ -2,16 +2,26 @@
 
 // this file is included in /vl/interop/fhir/vl-receive.php
 
+use App\Interop\Fhir;
+use App\Services\VlService;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\VlService;
-use App\Utilities\DateUtility;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
-use App\Interop\Fhir;
 
-$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
+$interopConfig = [];
+if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
+	$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
+}
+
+
+if(empty($interopConfig)){
+    echo "Interop config not found";
+    die();
+}
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

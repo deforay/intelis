@@ -299,7 +299,7 @@ if (!empty($result)) {
      $html .= '</table>';
      $html .= '</td>';
      $html .= '</tr>';
-     if (trim((string) $showMessage) != '') {
+     if (trim($showMessage) != '') {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:13px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
           $html .= '</tr>';

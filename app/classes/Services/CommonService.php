@@ -249,13 +249,13 @@ class CommonService
     /**
      *
      * @param string $tableName
-     * @param string|array $conditions
+     * @param string|array|null $conditions
      * @param string|array $columns
      * @param int|array|null $numRows number of rows to fetch
      * @return array|null
      * @throws Exception
      */
-    public function fetchDataFromTable(string $tableName, string|array $conditions = [], string|array $columns = '*', $numRows = null): ?array
+    public function fetchDataFromTable(string $tableName, string|array|null $conditions = [], string|array $columns = '*', $numRows = null): ?array
     {
         if ($this->db == null || empty($tableName)) {
             return null;

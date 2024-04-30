@@ -1,6 +1,5 @@
 <?php
 
-use Exception;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;

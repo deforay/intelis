@@ -338,7 +338,7 @@ final class VlService extends AbstractTestService
             $absVal = $absDecimalVal;
             $vlResult = "$operator $absDecimalVal";
         } elseif (is_numeric($result)) {
-            // Handle all numeric results here, whether or not they need logarithmic conversion.
+            // Handle all numeric results here, whether they need logarithmic conversion.
             if (!empty($unit) && str_contains($unit, 'Log')) {
                 // Assume the numeric result is a log value needing conversion to absolute count.
                 $logVal = (float)$result;

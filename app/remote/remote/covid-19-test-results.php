@@ -156,7 +156,7 @@ try {
                     $id = $db->insert($tableName, $lab);
                 }
             } catch (Throwable $e) {
-                if ($db->getLastErrno() > 0) {
+                if ($db->getLastError()) {
                     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
                     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
                     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
@@ -171,23 +171,36 @@ try {
             }
         }
 
-        foreach ($testResultsData as $covid19Id => $testResults) {
-            $db->where('covid19_id', $covid19Id);
-            $db->delete("covid19_tests");
-            foreach ($testResults as $testId => $test) {
-                $db->insert(
-                    "covid19_tests",
-                    [
-                        "covid19_id" => $test['covid19_id'],
-                        "test_name" => $test['test_name'],
-                        "facility_id" => $test['facility_id'],
-                        "sample_tested_datetime" => $test['sample_tested_datetime'],
-                        "testing_platform" => $test['testing_platform'],
-                        "result" => $test['result']
-                    ]
+        try {
 
-                );
+            foreach ($testResultsData as $covid19Id => $testResults) {
+                if(!is_numeric($covid19Id)){
+                    continue;
+                }
+                $db->where('covid19_id', (int) $covid19Id);
+                $db->delete("covid19_tests");
+                LoggerUtility::log('info', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+                foreach ($testResults as $testId => $test) {
+                    $db->insert(
+                        "covid19_tests",
+                        [
+                            "covid19_id" => $test['covid19_id'],
+                            "test_name" => $test['test_name'],
+                            "facility_id" => $test['facility_id'],
+                            "sample_tested_datetime" => $test['sample_tested_datetime'],
+                            "testing_platform" => $test['testing_platform'],
+                            "result" => $test['result']
+                        ]
+
+                    );
+                }
             }
+        } catch (Throwable $e) {
+
+            LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno() . ":" . $db->getLastError());
+            LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+
+            LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
         }
     }
 
@@ -203,12 +216,12 @@ try {
 
     $payload = json_encode([]);
 
-    if ($db->getLastErrno() > 0) {
-        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
-        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+    if ($db->getLastError()) {
+        LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno() . ":" . $db->getLastError());
+        LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+        LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
     }
-    throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
+    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
 }
 
 echo $apiService->sendJsonResponse($payload);
