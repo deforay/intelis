@@ -656,15 +656,13 @@ final class VlService extends AbstractTestService
             $instrumentCondition = $this->db->escape($instrumentId);
 
             // Using 'one' instead of 'all' if checking for at least one occurrence is sufficient
-            $this->db->where("(JSON_SEARCH(available_for_instruments, 'one', {$instrumentCondition}) IS NOT NULL)
+            $this->db->where("(JSON_SEARCH(available_for_instruments, 'all', '$instrumentCondition') IS NOT NULL)
                         OR available_for_instruments IS NULL
                         OR available_for_instruments REGEXP '^\\[\\s*\\]$'");
         }
 
         // Add additional conditions
         $this->db->where('status', 'active');
-
-        // Execute the query and return results
         return $this->db->get('r_vl_results');
     }
 
