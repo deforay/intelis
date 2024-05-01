@@ -300,6 +300,8 @@ if (!empty($result)) {
      $html .= '<td colspan="4">';
      $html .= '<table style="padding:8px 2px 2px 2px;">';
      $html .= '<tr>';
+
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT'S CONTACT", true) . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("GENDER", true) . '</td>';
      if ($result['patient_gender'] == 'female') {
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("BREASTFEEDING?", true) . '</td>';
@@ -308,10 +310,10 @@ if (!empty($result)) {
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
      }
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT'S CONTACT", true) . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
 
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['patient_mobile_number'] ?? '-') . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['patient_gender']), true) . '</td>';
      if ($result['patient_gender'] == 'female') {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (_translate(_capitalizeFirstLetter($result['is_patient_breastfeeding']), true) ?? '-') . '</td>';
@@ -320,7 +322,7 @@ if (!empty($result)) {
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
      }
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['patient_mobile_number'] ?? '-') . '</td>';
+
      $html .= '</tr>';
      $html .= '</table>';
      if (!empty($result['health_insurance_code'])) {
