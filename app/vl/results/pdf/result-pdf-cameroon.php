@@ -8,7 +8,7 @@ use App\Services\ResultPdfService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
-
+use App\Utilities\MiscUtility;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -22,6 +22,7 @@ $arr = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 
 if (!empty($result)) {
+     $result = MiscUtility::arrayEmptyStringsToNull($result);
      $displayPageNoInFooter = true;
      $displaySignatureTable = true;
      $reportTopMargin = 17;
@@ -396,7 +397,7 @@ if (!empty($result)) {
      }
      if (str_contains(strtolower((string)$result['vl_test_platform']), 'abbott')) {
           $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:8px;font-size:10px;padding-top:10px;">' . _translate("Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR (Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)") . '</td>';
+          $html .= '<td colspan="3" style="font-size:10px;padding-top:10px;">' . _translate("Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR (Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)") . '</td>';
           $html .= '</tr>';
      }
      //$html .= '<tr><td colspan="3"></td></tr>';
