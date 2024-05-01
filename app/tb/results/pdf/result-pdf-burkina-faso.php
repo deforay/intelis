@@ -306,7 +306,7 @@ if (!empty($result)) {
                   <tr>
                       <td align="center" width="10%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">' . _translate("No AFB") . '</td>
                       <td align="center" width="50%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">' . _translate("Result") . '</td>
-                      <td align="center" width="40%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">' . _translate("Actual No") . '</td>
+                      <td align="center" width="40%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">' . _translate("Actual Number") . '</td>
                   </tr>';
 
           foreach ($tbTestInfo as $indexKey => $rows) {

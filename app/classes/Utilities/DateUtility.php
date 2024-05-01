@@ -240,17 +240,18 @@ class DateUtility
             return _translate('Unknown');
         }
 
-        // Check for valid DOB and calculate age in years
-        if (!empty($result['patient_dob']) && $result['patient_dob'] !== '0000-00-00' && self::isDateFormatValid($result['patient_dob'])) {
-            $dob = Carbon::parse($result['patient_dob']);
-            $age = Carbon::now()->diffInYears($dob);
-            return $age . ' ' . ($age > 1 ? _translate('years') : _translate('year'));
-        }
 
         // Directly use age in years if provided and valid, considering both possible keys
         $ageInYearsKey = isset($result['patient_age_in_years']) ? 'patient_age_in_years' : 'patient_age';
         if (isset($result[$ageInYearsKey]) && is_numeric($result[$ageInYearsKey]) && $result[$ageInYearsKey] > 0) {
             $age = (int)$result[$ageInYearsKey];
+            return $age . ' ' . ($age > 1 ? _translate('years') : _translate('year'));
+        }
+
+        // Check for valid DOB and calculate age in years
+        if (!empty($result['patient_dob']) && $result['patient_dob'] !== '0000-00-00' && self::isDateFormatValid($result['patient_dob'])) {
+            $dob = Carbon::createFromFormat('Y-m-d', $result['patient_dob']);
+            $age = Carbon::now()->diffInYears($dob);
             return $age . ' ' . ($age > 1 ? _translate('years') : _translate('year'));
         }
 

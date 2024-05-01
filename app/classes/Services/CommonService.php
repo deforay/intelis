@@ -8,7 +8,6 @@ use Throwable;
 use TCPDFBarcode;
 use TCPDF2DBarcode;
 use SodiumException;
-use Ramsey\Uuid\Uuid;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
@@ -32,54 +31,6 @@ class CommonService
         $this->db = $db;
         $this->facilitiesService = $facilitiesService;
         $this->fileCache = $fileCache;
-    }
-
-    public function setGlobalDateFormat($inputFormat = null)
-    {
-        $dateFormatArray = $this->getDateFormat(null, $inputFormat);
-        foreach ($dateFormatArray as $key => $value) {
-            $_SESSION[$key] = $value;
-        }
-    }
-
-    public function getDateFormat($category = null, $inputFormat = null)
-    {
-        $dateFormat = $inputFormat ?? $this->getGlobalConfig('gui_date_format') ?? 'd-M-Y';
-
-        $dateFormatArray = ['phpDateFormat' => $dateFormat];
-
-        if ($dateFormat == 'd-m-Y') {
-            $dateFormatArray['jsDateFieldFormat'] = 'dd-mm-yy';
-            $dateFormatArray['dayjsDateFieldFormat'] = 'DD-MM-YYYY';
-            $dateFormatArray['jsDateRangeFormat'] = 'DD-MM-YYYY';
-            $dateFormatArray['jsDateFormatMask'] = '99-99-9999';
-            $dateFormatArray['mysqlDateFormat'] = '%d-%m-%Y';
-        } else {
-            $dateFormatArray['jsDateFieldFormat'] = 'dd-M-yy';
-            $dateFormatArray['dayjsDateFieldFormat'] = 'DD-MMM-YYYY';
-            $dateFormatArray['jsDateRangeFormat'] = 'DD-MMM-YYYY';
-            $dateFormatArray['jsDateFormatMask'] = '99-aaa-9999';
-            $dateFormatArray['mysqlDateFormat'] = '%d-%b-%Y';
-        }
-
-        if (empty($category)) {
-            // Return all date formats
-            return $dateFormatArray;
-        } elseif ($category == 'php') {
-            return $dateFormatArray['phpDateFormat'] ?? 'd-m-Y';
-        } elseif ($category == 'js') {
-            return $dateFormatArray['jsDateFieldFormat'] ?? 'dd-mm-yy';
-        } elseif ($category == 'dayjs') {
-            return $dateFormatArray['dayjsDateFieldFormat'] ?? 'DD-MM-YYYY';
-        } elseif ($category == 'jsDateRange') {
-            return $dateFormatArray['jsDateRangeFormat'] ?? 'DD-MM-YYYY';
-        } elseif ($category == 'jsMask') {
-            return $dateFormatArray['jsDateFormatMask'] ?? '99-99-9999';
-        } elseif ($category == 'mysql') {
-            return $dateFormatArray['mysqlDateFormat'] ?? '%d-%b-%Y';
-        } else {
-            return null;
-        }
     }
 
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false, bool $unbuffered = false): array
@@ -151,7 +102,7 @@ class CommonService
     // Returns a UUID format string
     public function generateUUID($attachExtraString = true): string
     {
-        $uuid = (Uuid::uuid4())->toString();
+        $uuid = MiscUtility::generateUUID();
         $uuid .= $attachExtraString ? '-' . $this->generateRandomString(6) : '';
         return $uuid;
     }

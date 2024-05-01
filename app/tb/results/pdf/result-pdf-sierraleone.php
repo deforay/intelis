@@ -378,7 +378,7 @@ if (!empty($requestResult)) {
                     <tr>
                         <td align="center" width="10%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">No AFB</td>
                         <td align="center" width="50%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">Result</td>
-                        <td align="center" width="40%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">Actual No</td>
+                        <td align="center" width="40%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">Actual Number</td>
                     </tr>';
 
             foreach ($tbTestInfo as $indexKey => $rows) {

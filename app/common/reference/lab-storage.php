@@ -1,7 +1,14 @@
 <?php
+
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
+
 $title = _translate("Lab Storage");
 
 require_once APPLICATION_PATH . '/header.php';
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 ?>
 <!-- Content Wrapper. Contains page content -->

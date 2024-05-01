@@ -296,8 +296,8 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("GENDER", true) . '</td>';
      if ($result['patient_gender'] == 'female') {
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("BREASTFEEDING", true) . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PREGNANCY STATUS", true) . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("BREASTFEEDING?", true) . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PREGNANT?", true) . '</td>';
      } else {
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -421,7 +421,7 @@ if (!empty($result)) {
      $html .= '</tr>';
 
      if ($displaySignatureTable) {
-          if ($result['is_sample_rejected'] === 'no' && !empty($testedBy) && !empty($result['sample_tested_datetime']) && !empty($testUserSignaturePath) && $pdf->imageExists(($testUserSignaturePath))) {
+          if ($result['is_sample_rejected'] === 'no' && !empty($testedBy) && !empty($result['sample_tested_datetime']) && $pdf->imageExists(($testUserSignaturePath))) {
                $html .= '<tr>';
                $html .= '<td style="line-height:8px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("TESTED BY") . '</td>';
                $html .= '<td style="line-height:8px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';

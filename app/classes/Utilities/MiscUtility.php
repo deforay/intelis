@@ -2,7 +2,10 @@
 
 namespace App\Utilities;
 
+use Throwable;
 use ZipArchive;
+use Ramsey\Uuid\Uuid;
+use App\Exceptions\SystemException;
 
 class MiscUtility
 {
@@ -397,6 +400,33 @@ class MiscUtility
         return $array;
     }
 
+    public static function generateUUID($version = 'v4', $name = null, $namespace = null): string
+    {
+        try {
+            switch ($version) {
+                case 'v1':
+                    return Uuid::uuid1()->toString();
+                case 'v3':
+                    if ($namespace === null || $name === null) {
+                        throw new SystemException("Namespace and name must be provided for UUID version 3.");
+                    }
+                    return Uuid::uuid3($namespace, $name)->toString();
+                case 'v4':
+                    return Uuid::uuid4()->toString();
+                case 'v5':
+                    if ($namespace === null || $name === null) {
+                        throw new SystemException("Namespace and name must be provided for UUID version 5.");
+                    }
+                    return Uuid::uuid5($namespace, $name)->toString();
+                default:
+                    throw new SystemException("Unsupported UUID version: '$version'.");
+            }
+        } catch (Throwable $e) {
+            // Catch any errors caused by an unsatisfiable dependency when generating the UUID
+            LoggerUtility::log('error', $e->getMessage());
+            throw new SystemException("Could not generate UUID: " . $e->getMessage());
+        }
+    }
 
     public static function getFileExtension($filename): string
     {

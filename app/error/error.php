@@ -1,4 +1,11 @@
 <?php
+
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 $errorReason = $errorReason ?? _translate('Internal Server Error') . ' - ';
 $errorMessage = $errorMessage ?? _translate('Sorry, something went wrong. Please try again later.');
 ?>

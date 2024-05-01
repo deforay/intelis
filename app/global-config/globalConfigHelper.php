@@ -4,6 +4,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
 use Laminas\Diactoros\UploadedFile;
@@ -30,6 +31,10 @@ $fileCache = ContainerRegistry::get(FileCacheUtility::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $instanceTableName = "s_vlsm_instance";
+
+
+/** @var SystemService $systemService */
+$systemService = ContainerRegistry::get(SystemService::class);
 
 $currentDateTime = DateUtility::getCurrentDateTime();
 
@@ -140,7 +145,7 @@ try {
     }
 
     $dateFormat = $_POST['gui_date_format'] ?? 'd-M-Y';
-    $general->setGlobalDateFormat($dateFormat);
+    $systemService->setGlobalDateFormat($dateFormat);
 
 
     /* For Lock approve sample updates */

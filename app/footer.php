@@ -3,12 +3,16 @@
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\SystemService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var SystemService $systemService */
+$systemService = ContainerRegistry::get(SystemService::class);
 
 $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 
@@ -125,7 +129,7 @@ if (empty($syncLatestTime)) {
 	});
 
 	let remoteSync = false;
-	let globalDayjsDateFormat = '<?= $general->getDateFormat('dayjs'); ?>';
+	let globalDayjsDateFormat = '<?= $systemService->getDateFormat('dayjs'); ?>';
 	let systemTimezone = '<?= $_SESSION['APP_TIMEZONE'] ?? 'UTC'; ?>';
 
 	window.additionalXHRParams = {

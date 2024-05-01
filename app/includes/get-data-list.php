@@ -4,6 +4,10 @@ use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
+use App\Services\DatabaseService;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var GeoLocationsService $geoDb */
 $geoDb = ContainerRegistry::get(GeoLocationsService::class);

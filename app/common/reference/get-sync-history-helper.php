@@ -1,8 +1,10 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
+use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $tableName = "track_api_requests";
 $primaryKey = "api_track_id";

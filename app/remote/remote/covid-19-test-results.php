@@ -9,9 +9,26 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$jsonResponse = $apiService->getJsonFromRequest($request);
+
+
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
@@ -24,21 +41,6 @@ try {
     //this file receives the lab results and updates in the remote db
     //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
-    /** @var ApiService $apiService */
-    $apiService = ContainerRegistry::get(ApiService::class);
-
-    /** @var Laminas\Diactoros\ServerRequest $request */
-    $request = AppRegistry::get('request');
-    $jsonResponse = $apiService->getJsonFromRequest($request);
-
-    /** @var DatabaseService $db */
-    $db = ContainerRegistry::get(DatabaseService::class);
-
-    /** @var CommonService $general */
-    $general = ContainerRegistry::get(CommonService::class);
-
-    /** @var UsersService $usersService */
-    $usersService = ContainerRegistry::get(UsersService::class);
 
     $transactionId = $general->generateUUID();
 
