@@ -23,7 +23,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $systemType = $general->getSystemConfig('sc_user_type');
 
 $whereCondition = '';
-if ($systemType == 'remoteuser' && (!empty($_SESSION['facilityMap']))) {
+if ($general->isSTSInstance() && (!empty($_SESSION['facilityMap']))) {
     $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 

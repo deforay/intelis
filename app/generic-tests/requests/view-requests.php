@@ -401,7 +401,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				},
 			],
 			"aaSorting": [
-				[<?php echo ($_SESSION['instance']['type'] == 'remoteuser' || $_SESSION['instance']['type'] == 'vluser') ? 13 : 12 ?>, "desc"]
+				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
@@ -541,7 +541,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#" + showId).show();
 	}
 
-	<?php if (isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?>
+	<?php if ($general->isLISInstance()) { ?>
 		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
 
 		function forceResultSync(sampleCode) {

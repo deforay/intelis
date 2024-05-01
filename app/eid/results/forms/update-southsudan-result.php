@@ -148,7 +148,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <?php } ?>
                                         </select>
                                     </td>
-                                    <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
+                                    <?php if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') { ?>
                                         <th class="labels" scope="row">Testing Laboratory <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">

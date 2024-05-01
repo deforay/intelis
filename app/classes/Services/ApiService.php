@@ -14,7 +14,7 @@ use App\Exceptions\SystemException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ApiService
+final class ApiService
 {
     protected ?Client $client = null;
     protected int $maxRetries;

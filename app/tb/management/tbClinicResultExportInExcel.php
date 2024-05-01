@@ -33,7 +33,7 @@ if (isset($_SESSION['highTbResult']) && trim((string) $_SESSION['highTbResult'])
 
      $output = [];
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
-     if ($sarr['sc_user_type'] == 'standalone') {
+     if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 

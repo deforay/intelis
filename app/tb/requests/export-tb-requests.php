@@ -40,7 +40,7 @@ if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
     $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
 }
 
-if ($_SESSION['instance']['type'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
+if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
     unset($headings[$key]);
 }
 
@@ -87,7 +87,7 @@ foreach ($rResult as $aRow) {
 
 
     $row[] = $no;
-    if ($_SESSION['instance']['type'] == 'standalone') {
+    if ($general->isStandaloneInstance()) {
         $row[] = $aRow["sample_code"];
     } else {
         $row[] = $aRow["sample_code"];

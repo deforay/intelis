@@ -9,9 +9,26 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$jsonResponse = $apiService->getJsonFromRequest($request);
+
+
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
@@ -24,30 +41,12 @@ try {
     //this file receives the lab results and updates in the remote db
     //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
-    /** @var ApiService $apiService */
-    $apiService = ContainerRegistry::get(ApiService::class);
-
-    /** @var Laminas\Diactoros\ServerRequest $request */
-    $request = AppRegistry::get('request');
-    $jsonResponse = $apiService->getJsonFromRequest($request);
-
-    /** @var DatabaseService $db */
-    $db = ContainerRegistry::get(DatabaseService::class);
-
-    /** @var CommonService $general */
-    $general = ContainerRegistry::get(CommonService::class);
-
-    /** @var UsersService $usersService */
-    $usersService = ContainerRegistry::get(UsersService::class);
 
     $transactionId = $general->generateUUID();
 
     $sampleCodes = $facilityIds = [];
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
-
-        // Create an array with all column names set to null
-        $emptyLabArray = $general->getTableFieldsAsArray('form_covid19');
 
         //remove fields that we DO NOT NEED here
         $unwantedColumns = [
@@ -57,7 +56,8 @@ try {
             //'last_modified_by',
             'request_created_by'
         ];
-        $emptyLabArray = MiscUtility::removeFromAssociativeArray($emptyLabArray, $unwantedColumns);
+        // Create an array with all column names set to null
+        $emptyLabArray = $general->getTableFieldsAsArray('form_covid19', $unwantedColumns);
 
         $resultData = [];
         $testResultsData = [];
@@ -85,14 +85,14 @@ try {
         foreach ($resultData as $key => $resultRow) {
             $counter++;
             // Overwrite the values in $emptyLabArray with the values in $resultRow
-            $lab = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
+            $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
 
-            if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
+            if (isset($lab['approved_by_name']) && $lab['approved_by_name'] != '') {
 
-                $lab['result_approved_by'] = $usersService->getOrCreateUser($resultRow['approved_by_name']);
+                $lab['result_approved_by'] = $usersService->getOrCreateUser($lab['approved_by_name']);
                 $lab['result_approved_datetime'] = DateUtility::getCurrentDateTime();
                 // we dont need this now
-                //unset($resultRow['approved_by_name']);
+                //unset($lab['approved_by_name']);
             }
 
             $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
@@ -152,11 +152,13 @@ try {
                 if (!empty($sResult)) {
                     $db->where($primaryKey, $sResult[$primaryKey]);
                     $id = $db->update($tableName, $lab);
+                    $primaryKeyValue = $sResult[$primaryKey];
                 } else {
                     $id = $db->insert($tableName, $lab);
+                    $primaryKeyValue = $db->getInsertId();
                 }
             } catch (Throwable $e) {
-                if ($db->getLastErrno() > 0) {
+                if ($db->getLastError()) {
                     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
                     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
                     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
@@ -171,22 +173,19 @@ try {
             }
         }
 
+
+
+        $unwantedColumns = [
+            'test_id'
+        ];
+        $emptyTestsArray = $general->getTableFieldsAsArray('covid19_tests', $unwantedColumns);
+
         foreach ($testResultsData as $covid19Id => $testResults) {
             $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_tests");
-            foreach ($testResults as $testId => $test) {
-                $db->insert(
-                    "covid19_tests",
-                    [
-                        "covid19_id" => $test['covid19_id'],
-                        "test_name" => $test['test_name'],
-                        "facility_id" => $test['facility_id'],
-                        "sample_tested_datetime" => $test['sample_tested_datetime'],
-                        "testing_platform" => $test['testing_platform'],
-                        "result" => $test['result']
-                    ]
-
-                );
+            foreach ($testResults as $covid19TestData) {
+                $covid19TestData = MiscUtility::updateFromArray($emptyTestsArray, $covid19TestData);
+                $db->insert("covid19_tests", $covid19TestData);
             }
         }
     }
@@ -203,12 +202,12 @@ try {
 
     $payload = json_encode([]);
 
-    if ($db->getLastErrno() > 0) {
-        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
-        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+    if ($db->getLastError()) {
+        LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno() . ":" . $db->getLastError());
+        LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+        LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
     }
-    throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
+    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
 }
 
 echo $apiService->sendJsonResponse($payload);

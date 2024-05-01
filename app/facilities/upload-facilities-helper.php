@@ -54,7 +54,7 @@ try {
         $sheetData   = $sheetData->toArray(null, true, true, true);
         $returnArray = [];
         $resultArray = array_slice($sheetData, 1);
-        $filteredArray = array_filter($resultArray, function ($row) {
+        $filteredArray = array_filter((array)$resultArray, function ($row) {
             return array_filter($row); // Remove empty rows
         });
         $total = count($filteredArray);

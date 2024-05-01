@@ -4,7 +4,10 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 $title = _translate("Lab Storage");
 
 require_once APPLICATION_PATH . '/header.php';

@@ -10,9 +10,9 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Dhis2
 {
-	private const DEFAULT_USERNAME = 'admin';
-	private const DEFAULT_PASSWORD = 'district';
-	private const DEFAULT_CONTENT_TYPE = 'application/json';
+	private const string DEFAULT_USERNAME = 'admin';
+	private const string DEFAULT_PASSWORD = 'district';
+	private const string DEFAULT_CONTENT_TYPE = 'application/json';
 
 	private readonly Client $httpClient;
 	private bool $authenticated = false;

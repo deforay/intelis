@@ -26,7 +26,7 @@ $rKey = '';
 $sKey = '';
 $sFormat = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
@@ -106,7 +106,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                        <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+                                        <?php if ($general->isSTSInstance()) { ?>
                                             <td><label for="sampleCode">Sample ID </label></td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $eidInfo[$sampleCode] ?></span>
@@ -167,7 +167,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+                                        <?php if ($general->isSTSInstance()) { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                             <td>

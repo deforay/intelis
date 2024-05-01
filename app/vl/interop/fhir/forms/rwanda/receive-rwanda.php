@@ -15,7 +15,10 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 
-$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
+$interopConfig = [];
+if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
+	$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -307,7 +310,7 @@ try {
         $sampleJson = $vlService->getSampleCode($sampleCodeParams);
 
         $sampleData = json_decode((string) $sampleJson, true);
-        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+        if ($general->isSTSInstance()) {
             $sampleCode = 'remote_sample_code';
             $sampleCodeKey = 'remote_sample_code_key';
             $sampleCodeFormat = 'remote_sample_code_format';

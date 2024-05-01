@@ -29,7 +29,7 @@ $currentFreezerId = $getFreezer['storage_id'];
 $currentStorageInfo = $storageService->getFreezerHistoryById($_POST['historyId']);
 $data = array();
 
-if (is_numeric($_POST['removalReason'])==false) {
+if (is_numeric($_POST['removalReason'])===false) {
     $reasonData = array(
         'removal_reason_name'   => $_POST['removalReason'],
         'removal_reason_status' => "active",

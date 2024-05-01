@@ -30,7 +30,7 @@ try {
 
      $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
-     if ($_SESSION['instance']['type'] == 'standalone') {
+     if ($general->isStandaloneInstance()) {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
@@ -135,7 +135,7 @@ try {
 
 
      //$dWhere = '';
-     if ($_SESSION['instance']['type'] == 'remoteuser') {
+     if ($general->isSTSInstance()) {
           if (!empty($_SESSION['facilityMap'])) {
                $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
                // $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";

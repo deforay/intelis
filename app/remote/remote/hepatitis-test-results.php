@@ -45,9 +45,6 @@ try {
     $labId = null;
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
-        // Create an array with all column names set to null
-        $emptyLabArray = $general->getTableFieldsAsArray('form_hepatitis');
-
         //remove fields that we DO NOT NEED here
         $unwantedColumns = [
             'hepatitis_id',
@@ -56,8 +53,8 @@ try {
             //'last_modified_by',
             'request_created_by'
         ];
-        $emptyLabArray = MiscUtility::removeFromAssociativeArray($emptyLabArray, $unwantedColumns);
-
+        // Create an array with all column names set to null
+        $emptyLabArray = $general->getTableFieldsAsArray('form_hepatitis', $unwantedColumns);
 
         $counter = 0;
 
@@ -77,7 +74,7 @@ try {
         foreach ($resultData as $key => $resultRow) {
             $counter++;
             // Overwrite the values in $emptyLabArray with the values in $resultRow
-            $lab = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
+            $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
 
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 

@@ -4,6 +4,7 @@ use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -19,7 +20,12 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$mysqlDateFormat = $general->getDateFormat('mysql');
+
+/** @var SystemService $systemService */
+$systemService = ContainerRegistry::get(SystemService::class);
+
+
+$mysqlDateFormat = $systemService->getDateFormat('mysql');
 
 $testType = (string) $_POST['type'];
 $table = TestsService::getTestTableName($testType);
@@ -63,7 +69,7 @@ if ($testType == 'eid') {
     $samplesRejectedChart = "cd4SamplesRejectedChart";
     $samplesWaitingChart = "cd4SamplesWaitingChart";
     $samplesOverviewChart = "cd4SamplesOverviewChart";
-}elseif ($testType == 'recency') {
+} elseif ($testType == 'recency') {
     $recencyWhere = " reason_for_vl_testing = 9999 ";
     $samplesReceivedChart = "recencySamplesReceivedChart";
     $samplesTestedChart = "recencySamplesTestedChart";
@@ -163,7 +169,7 @@ try {
                         AND (vl.is_sample_rejected like 'no'
                                 OR vl.is_sample_rejected is null
                                 OR vl.is_sample_rejected = '' )";
-    }elseif ($table == "form_generic") {
+    } elseif ($table == "form_generic") {
         $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as generic
                         LEFT JOIN facility_details as f ON f.facility_id=generic.facility_id
@@ -201,7 +207,7 @@ try {
     INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
     WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
 
-    if($table == "form_cd4"){
+    if ($table == "form_cd4") {
         $aggregateQuery = "SELECT COUNT(unique_id) as totalCollected,
         SUM(CASE WHEN (vl.lab_id is NOT NULL AND vl.sample_tested_datetime is NOT NULL
                             AND vl.cd4_result is NOT NULL AND vl.cd4_result not like ''
@@ -232,14 +238,14 @@ try {
                         WHERE $whereCondition DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
                         GROUP BY `collection_date`
                         ORDER BY `collection_date`";
-                  //      echo $accessionQuery; die;
+    //      echo $accessionQuery; die;
     $tRes = $db->rawQuery($accessionQuery); //overall result
     $tResult = [];
     foreach ($tRes as $tRow) {
         $receivedTotal += $tRow['count'];
         $tResult[] = array('total' => $tRow['count'], 'date' => $tRow['collection_date']);
     }
-//echo $receivedTotal; die;
+    //echo $receivedTotal; die;
     //Samples Tested
     if ($table == "form_vl") {
         $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");

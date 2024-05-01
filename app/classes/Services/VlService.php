@@ -5,14 +5,12 @@ namespace App\Services;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
-use App\Services\StorageService;
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
-class VlService extends AbstractTestService
+final class VlService extends AbstractTestService
 {
     // keep in lowercase to make them easier to compare
     protected array $suppressedArray = [
@@ -340,7 +338,7 @@ class VlService extends AbstractTestService
             $absVal = $absDecimalVal;
             $vlResult = "$operator $absDecimalVal";
         } elseif (is_numeric($result)) {
-            // Handle all numeric results here, whether or not they need logarithmic conversion.
+            // Handle all numeric results here, whether they need logarithmic conversion.
             if (!empty($unit) && str_contains($unit, 'Log')) {
                 // Assume the numeric result is a log value needing conversion to absolute count.
                 $logVal = (float)$result;
@@ -652,12 +650,22 @@ class VlService extends AbstractTestService
 
     public function getVlResults($instrumentId = null)
     {
+        // Build the query condition for instrument availability
         if (!empty($instrumentId)) {
-            $this->db->where("(JSON_SEARCH(available_for_instruments, 'all','$instrumentId') IS NOT NULL)");
+            // Safely binding the parameter to avoid SQL injection
+            $instrumentCondition = $this->db->escape($instrumentId);
+
+            // Using 'one' instead of 'all' if checking for at least one occurrence is sufficient
+            $this->db->where("(JSON_SEARCH(available_for_instruments, 'all', '$instrumentCondition') IS NOT NULL)
+                        OR available_for_instruments IS NULL
+                        OR available_for_instruments REGEXP '^\\[\\s*\\]$'");
         }
+
+        // Add additional conditions
         $this->db->where('status', 'active');
         return $this->db->get('r_vl_results');
     }
+
 
     public function getVlReasonsForTesting(): array
     {

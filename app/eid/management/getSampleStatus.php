@@ -29,7 +29,7 @@ $systemType = $general->getSystemConfig('sc_user_type');
 
 $whereCondition = '';
 
-if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
 	$whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 

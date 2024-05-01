@@ -18,7 +18,7 @@ try {
     $scheduledJobs = $db->get('scheduled_jobs');
 
     if (!empty($scheduledJobs)) {
-        foreach ($scheduledResult as $job) {
+        foreach ($scheduledJobs as $job) {
             $db->update('scheduled_jobs', array('status' => "processing"), "job_id = " . $job['job_id']);
             exec($phpPath . " " . realpath(APPLICATION_PATH . "/scheduled-jobs") . DIRECTORY_SEPARATOR .  $job['job']);
             $db->where("job_id = " . $job['job_id']);

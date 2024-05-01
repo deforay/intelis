@@ -1,6 +1,11 @@
 <?php
 
 use App\Registries\AppRegistry;
+use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 require_once APPLICATION_PATH . '/header.php';
 // Sanitized values from $request object

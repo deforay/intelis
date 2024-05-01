@@ -1,13 +1,5 @@
 -- Viral Load
 DROP TABLE IF EXISTS `audit_form_vl`;
-DROP TABLE IF EXISTS `audit_form_eid`;
-DROP TABLE IF EXISTS `audit_form_covid19`;
-DROP TABLE IF EXISTS `audit_form_hepatitis`;
-DROP TABLE IF EXISTS `audit_form_tb`;
-DROP TABLE IF EXISTS `audit_form_generic`;
-DROP TABLE IF EXISTS `audit_form_cd4`;
-
-
 CREATE TABLE `audit_form_vl` SELECT * from `form_vl` WHERE 1=0;
 
 ALTER TABLE `audit_form_vl`
@@ -39,6 +31,7 @@ CREATE TRIGGER form_vl_data__bd BEFORE DELETE ON `form_vl` FOR EACH ROW
 
 -- EID
 
+DROP TABLE IF EXISTS `audit_form_eid`;
 CREATE TABLE `audit_form_eid` SELECT * from `form_eid` WHERE 1=0;
 
 ALTER TABLE `audit_form_eid`
@@ -68,7 +61,7 @@ CREATE TRIGGER form_eid_data__bd BEFORE DELETE ON `form_eid` FOR EACH ROW
 
 -- Covid-19
 
-
+DROP TABLE IF EXISTS `audit_form_covid19`;
 CREATE TABLE `audit_form_covid19` SELECT * from `form_covid19` WHERE 1=0;
 
 ALTER TABLE `audit_form_covid19`
@@ -97,6 +90,7 @@ CREATE TRIGGER form_covid19_data__bd BEFORE DELETE ON `form_covid19` FOR EACH RO
 
 -- Hepatitis
 
+DROP TABLE IF EXISTS `audit_form_hepatitis`;
 
 CREATE TABLE `audit_form_hepatitis` SELECT * from `form_hepatitis` WHERE 1=0;
 
@@ -128,6 +122,7 @@ CREATE TRIGGER form_hepatitis_data__bd BEFORE DELETE ON `form_hepatitis` FOR EAC
 
 -- TB
 
+DROP TABLE IF EXISTS `audit_form_tb`;
 
 CREATE TABLE `audit_form_tb` SELECT * from `form_tb` WHERE 1=0;
 
@@ -158,6 +153,7 @@ CREATE TRIGGER form_tb_data__bd BEFORE DELETE ON `form_tb` FOR EACH ROW
 
 -- Generic Tests
 
+DROP TABLE IF EXISTS `audit_form_generic`;
 CREATE TABLE `audit_form_generic` SELECT * from `form_generic` WHERE 1=0;
 
 ALTER TABLE `audit_form_generic`
@@ -188,6 +184,7 @@ CREATE TRIGGER form_generic_data__bd BEFORE DELETE ON `form_generic` FOR EACH RO
 
 -- CD4 Tests
 
+DROP TABLE IF EXISTS `audit_form_cd4`;
 CREATE TABLE `audit_form_cd4` SELECT * from `form_cd4` WHERE 1=0;
 
 ALTER TABLE `audit_form_cd4`

@@ -51,7 +51,7 @@ try {
 
     $resultStatus = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
-    if ($_SESSION['instance']['type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+    if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
         $resultStatus = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     }
     $countryFormId = $_POST['countryFormId'] ?? '';
@@ -176,7 +176,7 @@ try {
         $_POST['vlLog'] = '';
     }
 
-    if ($_SESSION['instance']['type'] == 'remoteuser') {
+    if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';
         $sampleCodeKey = 'remote_sample_code_key';
     } else {
@@ -342,7 +342,7 @@ try {
             }
         }
 
-        if ($_SESSION['instance']['type'] == 'remoteuser') {
+        if ($general->isSTSInstance()) {
             $genericData['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : null;
             $genericData['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] : null;
             $genericData['remote_sample'] = 'yes';

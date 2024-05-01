@@ -157,7 +157,7 @@ try {
         $_SESSION['alertMsg'] = _translate("User updated successfully");
 
         $systemType = $general->getSystemConfig('sc_user_type');
-        if (!empty(SYSTEM_CONFIG['remoteURL']) && $systemType == 'vluser') {
+        if (!empty(SYSTEM_CONFIG['remoteURL']) && $general->isLISInstance()) {
             $apiData = $_POST;
             $apiData['loginId'] = null;
             $apiData['password'] = null;

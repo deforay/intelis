@@ -79,7 +79,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 								</div>
 							</div>
 						</div>
-						<?php if (isset($vlsmSystemConfig['sc_user_type']) && $vlsmSystemConfig['sc_user_type'] == 'vluser') { ?>
+						<?php if ($general->isLISInstance()) { ?>
 							<input type="hidden" value="<?php echo $general->getSystemConfig('sc_testing_lab_id'); ?>" name="testingLab" />
 						<?php } else { ?>
 							<div class="row">

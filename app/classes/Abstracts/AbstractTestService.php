@@ -42,7 +42,7 @@ abstract class AbstractTestService
         try {
 
             $sampleCodeGenerator = [];
-            // We use this flag to determine if we generating Sample ID for inserting
+            // We use this flag to determine if we are generating Sample ID for inserting
             // or just displaging on the form
             $insertOperation = $params['insertOperation'] ?? true;
 

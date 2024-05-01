@@ -115,7 +115,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     $row[] = ($aRow['facility_name']);
     $row[] = ($aRow['healthCenterName']);
-    if (_isAllowed("editVlFacilityMap.php") && (($sarr['sc_user_type'] == 'remoteuser') || ($sarr['sc_user_type'] == 'standalone'))) {
+    if (_isAllowed("editVlFacilityMap.php") && (($general->isSTSInstance()) || ($general->isStandaloneInstance()))) {
         $row[] = '<a href="editVlFacilityMap.php?id=' . base64_encode((string) $aRow['vl_lab_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
     }
     $output['aaData'][] = $row;

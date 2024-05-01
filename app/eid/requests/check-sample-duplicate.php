@@ -27,7 +27,7 @@ if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
             $tableCondition = "AND " . $table[0] . "!= ?";
         }
 
-        if ($_SESSION['instance']['type'] == 'vluser') {
+        if ($general->isLISInstance()) {
             $remoteSampleCodeCondition = "OR remote_sample_code= ?";
         }
 

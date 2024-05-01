@@ -92,11 +92,11 @@ $requestResult = $db->query($searchQuery);
 $currentDateTime = DateUtility::getCurrentDateTime();
 
 foreach ($requestResult as $requestRow) {
-    if (($_SESSION['instance']['type'] == 'vluser') && empty($requestRow['result_printed_on_lis_datetime'])) {
+    if (($general->isLISInstance()) && empty($requestRow['result_printed_on_lis_datetime'])) {
         $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
         $db->where('tb_id', $requestRow['tb_id']);
         $id = $db->update('form_tb', $pData);
-    } elseif (($_SESSION['instance']['type'] == 'remoteuser') && empty($requestRow['result_printed_on_sts_datetime'])) {
+    } elseif (($general->isSTSInstance()) && empty($requestRow['result_printed_on_sts_datetime'])) {
         $pData = array('result_printed_on_sts_datetime' => $currentDateTime);
         $db->where('tb_id', $requestRow['tb_id']);
         $id = $db->update('form_tb', $pData);
@@ -171,7 +171,7 @@ if (!empty($requestResult)) {
         $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%tb%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
         $currentDateTime = DateUtility::getCurrentDateTime();
-        
+
         $_SESSION['aliasPage'] = $page;
         if (!isset($result['labName'])) {
             $result['labName'] = '';

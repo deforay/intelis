@@ -55,7 +55,7 @@ $covid19SelectedComorbidities = $covid19Service->getCovid19ComorbiditiesByFormId
 
 $rKey = '';
 
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
     $sampleCodeKey = 'remote_sample_code_key';
     if (!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes') {
         $sampleCode = 'remote_sample_code';
@@ -155,7 +155,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
-                                        <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+                                        <?php if ($general->isSTSInstance()) { ?>
                                             <td><label for="sampleCode">Échantillon ID </label> </td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo $covid19Info[$sampleCode]; ?></span>
@@ -204,7 +204,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+                                        <?php if ($general->isSTSInstance()) { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId">LAB ID <span class="mandatory">*</span></label> </td>
                                             <td>

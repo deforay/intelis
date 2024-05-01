@@ -42,7 +42,7 @@ if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 }
 
 
-if ($_SESSION['instance']['type'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
+if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
     unset($headings[$key]);
 }
 
@@ -68,7 +68,7 @@ foreach ($resultSet as $aRow) {
     }
 
     $row[] = $no;
-    if ($_SESSION['instance']['type'] == 'standalone') {
+    if ($general->isStandaloneInstance()) {
         $row[] = $aRow["sample_code"];
     } else {
         $row[] = $aRow["sample_code"];

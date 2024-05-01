@@ -32,7 +32,7 @@ $smallLogoName = "<img src='/assets/img/flask.png'>";
 $systemType = _translate("Lab Sample Management Module");
 $shortName = _translate("Sample Management");
 $shortCode = 'LIS';
-if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$skin = "skin-red";
 	$systemType = _translate("Remote Sample Tracking Module");
 	$logoName = "<span class='fa fa-medkit'></span> STS";
@@ -74,7 +74,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 	<meta name="viewport" content="width=1024">
 
 	<?php
-	$iconType = !empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'remoteuser' ? 'vlsts' : 'vlsm';
+	$iconType = $general->isSTSInstance() ? 'vlsts' : 'vlsm';
 	?>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/assets/<?= $iconType; ?>-icons/apple-touch-icon.png">

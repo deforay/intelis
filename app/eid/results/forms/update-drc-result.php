@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 
 $rKey = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
 	if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
@@ -78,7 +78,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['resul
 							</div>
 							<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 								<tr>
-									<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+									<?php if ($general->isSTSInstance()) { ?>
 										<td><label for="sampleCode">Échantillon ID </label></td>
 										<td>
 											<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars((string) $eidInfo['sample_code']); ?></span>
@@ -139,7 +139,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['resul
 											<?php } ?>
 										</select>
 									</td>
-									<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+									<?php if ($general->isSTSInstance()) { ?>
 										<!-- <tr> -->
 										<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 										<td>

@@ -281,7 +281,7 @@ try {
 
      $genericData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
-     if ($_SESSION['instance']['type'] == 'remoteuser') {
+     if ($general->isSTSInstance()) {
           $genericData['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : null;
      } elseif ($_POST['sampleCodeCol'] != '') {
           $genericData['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : null;

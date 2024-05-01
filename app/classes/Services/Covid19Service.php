@@ -186,25 +186,18 @@ class Covid19Service extends AbstractTestService
     }
 
 
-    public function getCovid19TestsByFormId($c19Id = ""): array
+    public function getCovid19TestsByFormId(array $c19Ids = []): array
     {
         $response = [];
 
-        // Using this in sync requests/results
-        if (is_array($c19Id) && !empty($c19Id)) {
-            $results = $this->db->rawQuery("SELECT * FROM covid19_tests
-                                                WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")
-                                                    ORDER BY test_id ASC");
+        $c19Ids = !is_array($c19Ids) ? [$c19Ids] : $c19Ids;
+        if (!empty($c19Ids)) {
+            $this->db->where('covid19_id', $c19Ids, 'IN');
+            $results = $this->db->get('covid19_tests');
 
             foreach ($results as $row) {
                 $response[$row['covid19_id']][$row['test_id']] = $row;
             }
-        } elseif (!empty($c19Id) && $c19Id != "" && !is_array($c19Id)) {
-            $response = $this->db->rawQuery("SELECT * FROM covid19_tests
-                                                WHERE `covid19_id` = $c19Id
-                                                    ORDER BY test_id ASC");
-        } elseif (!is_array($c19Id)) {
-            $response = $this->db->rawQuery("SELECT * FROM covid19_tests ORDER BY test_id ASC");
         }
 
         return $response;

@@ -131,7 +131,7 @@ $sFormat = '';
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 $mandatoryClass = "";
-if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') {
+if (!empty($_SESSION['instance']['type']) && $general->isLISInstance()) {
      $mandatoryClass = "isRequired";
 }
 

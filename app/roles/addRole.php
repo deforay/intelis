@@ -348,7 +348,7 @@ $rInfo = $db->query($resourcesQuery);
 											$pQuery = "SELECT * FROM privileges WHERE resource_id= ? $mode ORDER BY display_order ASC";
 											$pInfo = $db->rawQuery($pQuery, [$mRes[0]]);
 											echo "<tr class='permissionTr'>";
-											echo "<td style='text-align:center;vertical-align:middle;' data-privilegeid='" . $privilege['privilege_id'] . "' class='privilegesNode' id='" . $mRes[0] . "'>";
+											echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
 											foreach ($pInfo as $privilege) {
 												echo "<div class='col-lg-3 privilege-div' data-privilegeid='" . $privilege['privilege_id'] . "' id='div" . $privilege['privilege_id'] . "'>
 														<strong class='privilege-label' data-privilegeid='" . $privilege['privilege_id'] . "' id='label" . $privilege['privilege_id'] . "'>" . _translate($privilege['display_name']) . "</strong>

@@ -38,9 +38,9 @@ try {
           $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
           $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_type_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
      }
-     if ($_SESSION['instance']['type'] == 'remoteuser') {
+     if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
-     } else if ($_SESSION['instance']['type'] == 'standalone') {
+     } else if ($general->isStandaloneInstance()) {
           if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
                unset($aColumns[$key]);
                $aColumns = array_values($aColumns);
@@ -254,7 +254,7 @@ try {
      } else {
           $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
      }
-     if ($_SESSION['instance']['type'] == 'remoteuser') {
+     if ($general->isSTSInstance()) {
           $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
           if (!empty($facilityMap)) {
                $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")";

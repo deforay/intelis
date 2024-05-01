@@ -22,6 +22,7 @@ if (
 	!empty(SYSTEM_CONFIG['archive']['database']['username'])
 ) {
 	$archiveDbExists = true;
+	$archiveDbName = SYSTEM_CONFIG['archive']['database']['db'];
 	$db->addConnection('archive', SYSTEM_CONFIG['archive']['database']);
 }
 
@@ -86,7 +87,7 @@ function getColumnValues($db, $tableName, $sampleCode, $archiveDbExists, $archiv
 	$queries = [];
 	$queries[] = sprintf($baseQuery, $mainDbName);
 
-	if ($archiveDbExists && $archiveDbName) {
+	if ($archiveDbExists && !empty($archiveDbName) && $archiveDbName !== '' && $archiveDbName !== $mainDbName) {
 		$queries[] = sprintf($baseQuery, $archiveDbName);
 	}
 
@@ -149,7 +150,7 @@ $resultColumn = getColumns($db, $tableName);
 										<?php }
 										if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
 											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_tb') ? "selected='selected'" : ""; ?> value='audit_form_tb'><?php echo _translate("TB"); ?></option>
-										<?php } 
+										<?php }
 										if (!empty($activeModules) && in_array('cd4', $activeModules)) { ?>
 											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_cd4') ? "selected='selected'" : ""; ?> value='audit_form_cd4'><?php echo _translate("CD4"); ?></option>
 										<?php } ?>

@@ -38,8 +38,6 @@ try {
     $request = AppRegistry::get('request');
     $jsonResponse = $apiService->getJsonFromRequest($request);
 
-    // Create an array with all column names set to null
-    $emptyLabArray = $general->getTableFieldsAsArray('form_vl');
 
     //remove unwanted columns
     $unwantedColumns = [
@@ -51,7 +49,8 @@ try {
         'result_printed_datetime'
     ];
 
-    $emptyLabArray = MiscUtility::removeFromAssociativeArray($emptyLabArray, $unwantedColumns);
+    // Create an array with all column names set to null
+    $emptyLabArray = $general->getTableFieldsAsArray('form_vl', $unwantedColumns);
 
     $transactionId = $general->generateUUID();
 
@@ -77,7 +76,7 @@ try {
 
             $counter++;
             // Overwrite the values in $emptyLabArray with the values in $resultRow
-            $lab = array_merge($emptyLabArray, array_intersect_key($resultRow, $emptyLabArray));
+            $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
 
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 

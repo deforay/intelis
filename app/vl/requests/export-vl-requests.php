@@ -27,7 +27,7 @@ $output = [];
 
 $headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate('KP'), _translate("Universal Insurance Code"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Freezer"),_translate("Rack"),_translate("Box"),_translate("Position"),_translate("Volume (ml)"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
 
-if ($_SESSION['instance']['type'] == 'standalone') {
+if ($general->isStandaloneInstance()) {
 	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
 }
 
@@ -134,7 +134,7 @@ foreach ($resultSet as $aRow) {
 	if ($formId == COUNTRY\DRC) {
 		$formAttributes = json_decode($aRow['form_attributes']);
 			$storageObj = $formAttributes->storage;
-			
+
 			$row[] = $storageObj->freezerCode;
 			$row[] = $storageObj->rack;
 			$row[] = $storageObj->box;

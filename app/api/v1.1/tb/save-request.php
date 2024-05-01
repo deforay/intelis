@@ -88,7 +88,13 @@ try {
     /* Update form attributes */
     $transactionId = $general->generateUUID();
     $version = $general->getSystemConfig('sc_version');
-    $deviceId = $apiService->getHeader($request, 'deviceId');
+    /* To save the user attributes from API */
+    $userAttributes = [];
+    foreach(array('deviceId', 'osVersion', 'ipAddress') as $header){
+        $userAttributes[$header] = $apiService->getHeader($request, $header);
+    }
+    $userAttributes = $general->jsonToSetString(json_encode($userAttributes), 'user_attributes');
+    $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
     foreach ($input as $rootKey => $data) {
 
@@ -332,7 +338,7 @@ try {
             'applicationVersion' => $version,
             'apiTransactionId' => $transactionId,
             'mobileAppVersion' => $appVersion,
-            'deviceId' => $deviceId
+            'deviceId' => $userAttributes['deviceId']
         ];
         /* Reason for VL Result changes */
         $reasonForChanges = null;

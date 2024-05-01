@@ -4,7 +4,15 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 
-require_once(APPLICATION_PATH . '/../configs/config.interop.php');
+$interopConfig = [];
+if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
+    $interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
+}
+
+if(empty($interopConfig)){
+    echo "Interop config not found";
+    die();
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

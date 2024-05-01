@@ -31,7 +31,7 @@ if ($value != '') {
         if ($result) {
             $data = base64_encode((string) $result[0]['sample_id']) . "##" . $result[0][$fieldName];
         } else {
-            if ($systemType == 'vluser') {
+            if ($general->isLISInstance()) {
                 $sQuery = "SELECT * FROM $tableName WHERE remote_sample_code= ?";
                 $parameters = array($value);
                 $result = $db->rawQuery($sQuery, $parameters);
@@ -53,7 +53,7 @@ if ($value != '') {
             if ($result) {
                 $data = base64_encode((string) $result[0]['sample_id']) . "##" . $result[0][$fieldName];
             } else {
-                if ($systemType == 'vluser') {
+                if ($general->isLISInstance()) {
                     $sQuery = "SELECT * from $tableName where remote_sample_code= ? and $table[0]!= ?";
                     $parameters = array($value, $table[1]);
                     $result = $db->rawQuery($sQuery, $parameters);

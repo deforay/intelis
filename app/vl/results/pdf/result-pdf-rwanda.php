@@ -374,7 +374,7 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td colspan="3">';
      $html .= '<table>';
-     if ($_SESSION['instance']['type'] == 'vluser' && $result['data_sync'] == 0) {
+     if ($general->isLISInstance() && $result['data_sync'] == 0) {
           $generatedAtTestingLab = _translate("Report generated at Testing Lab");
      } else {
           $generatedAtTestingLab = "";
@@ -413,7 +413,7 @@ if (!empty($result)) {
      }
      if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
           $sampleCode = 'sample_code';
-          if ($_SESSION['instance']['type'] == 'remoteuser') {
+          if ($general->isSTSInstance()) {
                $sampleCode = 'remote_sample_code';
                if (!empty($result['remote_sample']) && $result['remote_sample'] == 'yes') {
                     $sampleCode = 'remote_sample_code';

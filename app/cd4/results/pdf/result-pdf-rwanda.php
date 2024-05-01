@@ -141,7 +141,7 @@ if (!empty($result)) {
 
      $smileyContent = '';
      $showMessage = '';
-     $tndMessage = ''; 
+     $tndMessage = '';
      $messageTextSize = '15px';
 
      if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
@@ -152,7 +152,7 @@ if (!empty($result)) {
      }
 
      $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-        
+
      if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
           $smileyContent = '';
      } else {
@@ -299,7 +299,7 @@ if (!empty($result)) {
      $html .= '</table>';
      $html .= '</td>';
      $html .= '</tr>';
-     if (trim((string) $showMessage) != '') {
+     if (trim($showMessage) != '') {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:13px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
           $html .= '</tr>';
@@ -361,7 +361,7 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td colspan="3">';
      $html .= '<table>';
-     if ($_SESSION['instance']['type'] == 'vluser' && $result['data_sync'] == 0) {
+     if ($general->isLISInstance() && $result['data_sync'] == 0) {
           $generatedAtTestingLab = _translate("Report generated at Testing Lab");
      } else {
           $generatedAtTestingLab = "";

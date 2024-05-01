@@ -108,7 +108,7 @@ class GeoLocationsService
 
         /* if yes then update or else insert and return Id */
         if (isset($geo) && $geo != "") {
-            $db = $this->db->where('geo_id', $geo['geo_id']);
+            $this->db->where('geo_id', $geo['geo_id']);
             $this->db->update('geographical_divisions', $data);
             return $geo['geo_id'];
         } else {

@@ -428,7 +428,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
 $html .= '</tr>';
-if ($_SESSION['instance']['type'] == 'vluser' && $result['dataSync'] == 0) {
+if ($general->isLISInstance() && $result['dataSync'] == 0) {
     $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
 } else {
     $generatedAtTestingLab = "";

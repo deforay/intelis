@@ -28,7 +28,8 @@ $payload = [];
 
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$data = $apiService->getJsonFromRequest($request, true);
+$data = $apiService->getJsonFromRequest($request, decode: true);
+
 $counter = 0;
 
 $transactionId = $general->generateUUID();
@@ -60,7 +61,7 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
             "generic_test_result_units_map"
         ];
         foreach ($toSyncTables as $table) {
-            $condition = null;
+            $condition = [];
             if (!empty($data[$general->stringToCamelCase($table) . 'LastModified'])) {
                 $condition = "updated_datetime > '" . $data[$general->stringToCamelCase($table) . 'LastModified'] . "'";
             }
@@ -72,38 +73,38 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
     if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
 
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['vlRejectionReasonsLastModified'])) {
             $condition = "updated_datetime > '" . $data['vlRejectionReasonsLastModified'] . "'";
         }
         $response['vlRejectionReasons'] = $general->fetchDataFromTable('r_vl_sample_rejection_reasons', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['vlTestReasonsLastModified'])) {
             $condition = "updated_datetime > '" . $data['vlTestReasonsLastModified'] . "'";
         }
         $response['vlTestReasons'] = $general->fetchDataFromTable('r_vl_test_reasons', $condition);
 
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['vlSampleTypesLastModified'])) {
             $condition = "updated_datetime > '" . $data['vlSampleTypesLastModified'] . "'";
         }
         $response['vlSampleTypes'] = $general->fetchDataFromTable('r_vl_sample_type', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['vlArtCodesLastModified'])) {
             $condition = "updated_datetime > '" . $data['vlArtCodesLastModified'] . "'";
         }
         $response['vlArtCodes'] = $general->fetchDataFromTable('r_vl_art_regimen', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['vlFailureReasonsLastModified'])) {
             $condition = "updated_datetime > '" . $data['vlFailureReasonsLastModified'] . "'";
         }
         $response['vlFailureReasons'] = $general->fetchDataFromTable('r_vl_test_failure_reasons', $condition);
 
-        // $condition = null;
+        // $condition = [];
         //$response['vlResults'] = [];
         if (!empty($data['vlResultsLastModified'])) {
             $condition = "updated_datetime > '" . $data['vlResultsLastModified'] . "'";
@@ -116,26 +117,26 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
 
     if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['eidRejectionReasonsLastModified'])) {
             $condition = "updated_datetime > '" . $data['eidRejectionReasonsLastModified'] . "'";
         }
         $response['eidRejectionReasons'] = $general->fetchDataFromTable('r_eid_sample_rejection_reasons', $condition);
 
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['eidSampleTypesLastModified'])) {
             $condition = "updated_datetime > '" . $data['eidSampleTypesLastModified'] . "'";
         }
         $response['eidSampleTypes'] = $general->fetchDataFromTable('r_eid_sample_type', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['eidResultsLastModified'])) {
             $condition = "updated_datetime > '" . $data['eidResultsLastModified'] . "'";
         }
         $response['eidResults'] = $general->fetchDataFromTable('r_eid_results', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['eidReasonForTestingLastModified'])) {
             $condition = "updated_datetime > '" . $data['eidReasonForTestingLastModified'] . "'";
         }
@@ -146,44 +147,44 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
 
     if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['covid19RejectionReasonsLastModified'])) {
             $condition = "updated_datetime > '" . $data['covid19RejectionReasonsLastModified'] . "'";
         }
         $response['covid19RejectionReasons'] = $general->fetchDataFromTable('r_covid19_sample_rejection_reasons', $condition);
 
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['covid19SampleTypesLastModified'])) {
             $condition = "updated_datetime > '" . $data['covid19SampleTypesLastModified'] . "'";
         }
         $response['covid19SampleTypes'] = $general->fetchDataFromTable('r_covid19_sample_type', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['covid19ComorbiditiesLastModified'])) {
             $condition = "updated_datetime > '" . $data['covid19ComorbiditiesLastModified'] . "'";
         }
         $response['covid19Comorbidities'] = $general->fetchDataFromTable('r_covid19_comorbidities', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['covid19ResultsLastModified'])) {
             $condition = "updated_datetime > '" . $data['covid19ResultsLastModified'] . "'";
         }
         $response['covid19Results'] = $general->fetchDataFromTable('r_covid19_results', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['covid19SymptomsLastModified'])) {
             $condition = "updated_datetime > '" . $data['covid19SymptomsLastModified'] . "'";
         }
         $response['covid19Symptoms'] = $general->fetchDataFromTable('r_covid19_symptoms', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['covid19ReasonForTestingLastModified'])) {
             $condition = "updated_datetime > '" . $data['covid19ReasonForTestingLastModified'] . "'";
         }
         $response['covid19ReasonForTesting'] = $general->fetchDataFromTable('r_covid19_test_reasons', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['covid19QCTestKitsLastModified'])) {
             $condition = "updated_datetime > '" . $data['covid19QCTestKitsLastModified'] . "'";
         }
@@ -194,32 +195,32 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
 
     if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['hepatitisRejectionReasonsLastModified'])) {
             $condition = "updated_datetime > '" . $data['hepatitisRejectionReasonsLastModified'] . "'";
         }
         $response['hepatitisRejectionReasons'] = $general->fetchDataFromTable('r_hepatitis_sample_rejection_reasons', $condition);
 
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['hepatitisSampleTypesLastModified'])) {
             $condition = "updated_datetime > '" . $data['hepatitisSampleTypesLastModified'] . "'";
         }
         $response['hepatitisSampleTypes'] = $general->fetchDataFromTable('r_hepatitis_sample_type', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['hepatitisComorbiditiesLastModified'])) {
             $condition = "updated_datetime > '" . $data['hepatitisComorbiditiesLastModified'] . "'";
         }
         $response['hepatitisComorbidities'] = $general->fetchDataFromTable('r_hepatitis_comorbidities', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['hepatitisResultsLastModified'])) {
             $condition = "updated_datetime > '" . $data['hepatitisResultsLastModified'] . "'";
         }
         $response['hepatitisResults'] = $general->fetchDataFromTable('r_hepatitis_results', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['hepatitisReasonForTestingLastModified'])) {
             $condition = "updated_datetime > '" . $data['hepatitisReasonForTestingLastModified'] . "'";
         }
@@ -230,25 +231,25 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
 
     if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['tbRejectionReasonsLastModified'])) {
             $condition = "updated_datetime > '" . $data['tbRejectionReasonsLastModified'] . "'";
         }
         $response['tbRejectionReasons'] = $general->fetchDataFromTable('r_tb_sample_rejection_reasons', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['tbSampleTypesLastModified'])) {
             $condition = "updated_datetime > '" . $data['tbSampleTypesLastModified'] . "'";
         }
         $response['tbSampleTypes'] = $general->fetchDataFromTable('r_tb_sample_type', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['tbResultsLastModified'])) {
             $condition = "updated_datetime > '" . $data['tbResultsLastModified'] . "'";
         }
         $response['tbResults'] = $general->fetchDataFromTable('r_tb_results', $condition);
 
-        $condition = null;
+        $condition = [];
         if (!empty($data['tbReasonForTestingLastModified'])) {
             $condition = "updated_datetime > '" . $data['tbReasonForTestingLastModified'] . "'";
         }
@@ -257,21 +258,21 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
         $counter += (count($response['tbRejectionReasons']) + count($response['tbSampleTypes']) + count($response['tbResults']) + count($response['tbReasonForTesting']));
     }
 
-    $condition = null;
+    $condition = [];
     if (!empty($data['globalConfigLastModified'])) {
         $condition = "updated_datetime > '" . $data['globalConfigLastModified'] . "' AND remote_sync_needed = 'yes'";
     }
     $response['globalConfig'] = $general->fetchDataFromTable('global_config', $condition);
 
-    $condition = null;
+    $condition = [];
     if (!empty($data['provinceLastModified'])) {
         $condition = "updated_datetime > '" . $data['provinceLastModified'] . "'";
     }
     $response['province'] = $general->fetchDataFromTable('geographical_divisions', $condition);
 
 
-    $condition = null;
-    $signatureCondition = null;
+    $condition = [];
+    $signatureCondition = [];
     // Using same facilityLastModified to check if any signatures were added
     if (!empty($data['facilityLastModified'])) {
         $condition = "updated_datetime > '" . $data['facilityLastModified'] . "'";
@@ -294,32 +295,32 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
     $response['labReportSignatories'] = $general->fetchDataFromTable('lab_report_signatories', $signatureCondition);
 
 
-    $condition = null;
+    $condition = [];
     if (!empty($data['healthFacilityLastModified'])) {
         $condition = "updated_datetime > '" . $data['healthFacilityLastModified'] . "'";
     }
 
     $response['healthFacilities'] = $general->fetchDataFromTable('health_facilities', $condition);
 
-    $condition = null;
+    $condition = [];
     if (!empty($data['testingLabsLastModified'])) {
         $condition = "updated_datetime > '" . $data['testingLabsLastModified'] . "'";
     }
     $response['testingLabs'] = $general->fetchDataFromTable('testing_labs', $condition);
 
-    $condition = null;
+    $condition = [];
     if (!empty($data['fundingSourcesLastModified'])) {
         $condition = "updated_datetime > '" . $data['fundingSourcesLastModified'] . "'";
     }
     $response['fundingSources'] = $general->fetchDataFromTable('r_funding_sources', $condition);
 
-    $condition = null;
+    $condition = [];
     if (!empty($data['partnersLastModified'])) {
         $condition = "updated_datetime > '" . $data['partnersLastModified'] . "'";
     }
     $response['partners'] = $general->fetchDataFromTable('r_implementation_partners', $condition);
 
-    $condition = null;
+    $condition = [];
     if (!empty($data['geoDivisionsLastModified'])) {
         $condition = "updated_datetime > '" . $data['geoDivisionsLastModified'] . "'";
     }

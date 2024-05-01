@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-04-29 19:18+0530\n"
-"PO-Revision-Date: 2024-04-29 19:19+0530\n"
+"POT-Creation-Date: 2024-05-01 12:12+0530\n"
+"PO-Revision-Date: 2024-05-01 12:12+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -24,8 +24,8 @@ msgstr "Bienvenue sur la page d’administration"
 
 #: admin/index.php:11 admin/monitoring/activity-log.php:47
 #: admin/monitoring/api-sync-history.php:40
-#: admin/monitoring/audit-trail.php:119
-#: admin/monitoring/lab-sync-details.php:90
+#: admin/monitoring/audit-trail.php:120
+#: admin/monitoring/lab-sync-details.php:97
 #: admin/monitoring/sources-of-requests.php:70
 #: admin/monitoring/sync-status.php:70 batch/add-batch-position.php:255
 #: batch/add-batch.php:134 batch/batches.php:47
@@ -247,7 +247,7 @@ msgid "User Activity Log"
 msgstr "Journal d’activité de l’utilisateur"
 
 #: admin/monitoring/activity-log.php:50 admin/monitoring/audit-trail.php:8
-#: admin/monitoring/audit-trail.php:117 admin/monitoring/audit-trail.php:120
+#: admin/monitoring/audit-trail.php:118 admin/monitoring/audit-trail.php:121
 #: system/translate-strings.php:22
 msgid "Audit Trail"
 msgstr "Piste d’audit"
@@ -285,7 +285,7 @@ msgstr "Action"
 
 #: admin/monitoring/activity-log.php:88
 #: admin/monitoring/api-sync-history.php:112
-#: admin/monitoring/lab-sync-details.php:178
+#: admin/monitoring/lab-sync-details.php:185
 #: admin/monitoring/sources-of-requests.php:180
 #: admin/monitoring/sync-status.php:143 batch/get-samples-batch.php:188
 #: batch/get-samples-batch.php:189 cd4/management/cd4-clinic-report.php:168
@@ -651,9 +651,9 @@ msgstr "Historique de l’API"
 
 #: admin/monitoring/api-sync-history.php:62
 #: admin/monitoring/api-sync-history.php:131
-#: admin/monitoring/audit-trail.php:134
-#: admin/monitoring/lab-sync-details.php:132
-#: admin/monitoring/lab-sync-details.php:204
+#: admin/monitoring/audit-trail.php:135
+#: admin/monitoring/lab-sync-details.php:139
+#: admin/monitoring/lab-sync-details.php:211
 #: admin/monitoring/sources-of-requests.php:127
 #: admin/monitoring/sync-status.php:112 batch/batches.php:94
 #: facilities/addFacility.php:340 facilities/editFacility.php:370
@@ -669,15 +669,15 @@ msgid "Test Type"
 msgstr "Type de test"
 
 #: admin/monitoring/api-sync-history.php:65
-#: admin/monitoring/audit-trail.php:136
-#: admin/monitoring/lab-sync-details.php:136
+#: admin/monitoring/audit-trail.php:137
+#: admin/monitoring/lab-sync-details.php:143
 #: admin/monitoring/sources-of-requests.php:132
 #: admin/monitoring/sync-status.php:115 facilities/facilities.php:86
 msgid "Please select the Test types"
 msgstr "Veuillez sélectionner le projet"
 
 #: admin/monitoring/api-sync-history.php:67
-#: admin/monitoring/lab-sync-details.php:110
+#: admin/monitoring/lab-sync-details.php:117
 #: admin/monitoring/sources-of-requests.php:96
 #: admin/monitoring/sync-status.php:90 batch/add-batch.php:185
 #: batch/add-batch.php:250 batch/edit-batch.php:225 batch/edit-batch.php:287
@@ -704,7 +704,7 @@ msgstr "Veuillez sélectionner le projet"
 #: cd4/requests/cd4-requests.php:272 cd4/requests/cd4-requests.php:286
 #: cd4/requests/cd4-requests.php:307 cd4/requests/cd4-requests.php:323
 #: cd4/requests/cd4-requests.php:352 cd4/requests/cd4-requests.php:368
-#: cd4/requests/forms/add-rwanda.php:140 cd4/requests/forms/edit-rwanda.php:188
+#: cd4/requests/forms/add-rwanda.php:133 cd4/requests/forms/edit-rwanda.php:181
 #: cd4/results/cd4-failed-results.php:85 cd4/results/cd4-failed-results.php:120
 #: cd4/results/cd4-manual-results.php:106
 #: cd4/results/cd4-manual-results.php:124
@@ -717,7 +717,7 @@ msgstr "Veuillez sélectionner le projet"
 #: cd4/results/email-results.php:240 cd4/results/email-results.php:255
 #: cd4/results/email-results.php:575 cd4/results/email-results.php:579
 #: cd4/results/get-cd4-result-status.php:167
-#: classes/Services/CommonService.php:400
+#: classes/Services/CommonService.php:399
 #: common/reference/add-geographical-divisions.php:74
 #: common/reference/edit-geographical-divisions.php:76
 #: covid-19/management/covid-19-clinic-report.php:100
@@ -1287,8 +1287,8 @@ msgid "-- Select --"
 msgstr "-- Sélectionner --"
 
 #: admin/monitoring/api-sync-history.php:71
-#: admin/monitoring/audit-trail.php:139
-#: admin/monitoring/lab-sync-details.php:139
+#: admin/monitoring/audit-trail.php:140
+#: admin/monitoring/lab-sync-details.php:146
 #: admin/monitoring/sources-of-requests.php:135
 #: admin/monitoring/sync-status.php:118
 #: eid/requests/forms/add-burkina-faso.php:246
@@ -1304,8 +1304,8 @@ msgid "Viral Load"
 msgstr "CHARGE VIRALE"
 
 #: admin/monitoring/api-sync-history.php:76
-#: admin/monitoring/audit-trail.php:142
-#: admin/monitoring/lab-sync-details.php:144
+#: admin/monitoring/audit-trail.php:143
+#: admin/monitoring/lab-sync-details.php:151
 #: admin/monitoring/sources-of-requests.php:140
 #: admin/monitoring/sync-status.php:121 classes/Services/TestsService.php:43
 #: facilities/addFacility.php:351 facilities/addFacility.php:696
@@ -1317,8 +1317,8 @@ msgid "Early Infant Diagnosis"
 msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
 
 #: admin/monitoring/api-sync-history.php:81
-#: admin/monitoring/audit-trail.php:145
-#: admin/monitoring/lab-sync-details.php:149
+#: admin/monitoring/audit-trail.php:146
+#: admin/monitoring/lab-sync-details.php:156
 #: admin/monitoring/sources-of-requests.php:145
 #: admin/monitoring/sync-status.php:124 classes/Services/TestsService.php:53
 #: facilities/addFacility.php:356 facilities/addFacility.php:701
@@ -1333,8 +1333,8 @@ msgid "Covid-19"
 msgstr "COVID-19"
 
 #: admin/monitoring/api-sync-history.php:86
-#: admin/monitoring/audit-trail.php:148
-#: admin/monitoring/lab-sync-details.php:154
+#: admin/monitoring/audit-trail.php:149
+#: admin/monitoring/lab-sync-details.php:161
 #: admin/monitoring/sources-of-requests.php:150
 #: admin/monitoring/sync-status.php:127 classes/Services/TestsService.php:63
 #: facilities/addFacility.php:361 facilities/addFacility.php:706
@@ -1353,8 +1353,8 @@ msgid "Hepatitis"
 msgstr "Hépatite"
 
 #: admin/monitoring/api-sync-history.php:91
-#: admin/monitoring/audit-trail.php:151
-#: admin/monitoring/lab-sync-details.php:159
+#: admin/monitoring/audit-trail.php:152
+#: admin/monitoring/lab-sync-details.php:166
 #: admin/monitoring/sources-of-requests.php:155
 #: admin/monitoring/sync-status.php:130 facilities/addFacility.php:366
 #: facilities/addFacility.php:711 facilities/addFacility.php:1024
@@ -1367,8 +1367,8 @@ msgid "TB"
 msgstr "Tuberculose"
 
 #: admin/monitoring/api-sync-history.php:96
-#: admin/monitoring/audit-trail.php:154
-#: admin/monitoring/lab-sync-details.php:164
+#: admin/monitoring/audit-trail.php:155
+#: admin/monitoring/lab-sync-details.php:171
 #: admin/monitoring/sources-of-requests.php:160
 #: cd4/management/cd4-clinic-report.php:68
 #: cd4/management/cd4-sample-rejection-report.php:37
@@ -1463,7 +1463,7 @@ msgstr "Synchronisé sur"
 msgid "Action"
 msgstr "Action"
 
-#: admin/monitoring/audit-trail.php:158 batch/generate-batch-pdf.php:170
+#: admin/monitoring/audit-trail.php:159 batch/generate-batch-pdf.php:170
 #: batch/generate-batch-pdf.php:181 cd4/management/cd4-clinic-report.php:178
 #: cd4/management/cd4-clinic-report.php:282
 #: cd4/management/cd4-clinic-report.php:378
@@ -1631,7 +1631,7 @@ msgstr "Action"
 msgid "Sample ID"
 msgstr "ID de l'échantillon"
 
-#: admin/monitoring/audit-trail.php:163 batch/edit-batch.php:330
+#: admin/monitoring/audit-trail.php:164 batch/edit-batch.php:330
 #: cd4/reference/add-cd4-sample-rejection-reasons.php:74
 #: cd4/reference/add-cd4-sample-type.php:56
 #: cd4/reference/add-cd4-test-reasons.php:70
@@ -1714,8 +1714,8 @@ msgstr "ID de l'échantillon"
 msgid "Submit"
 msgstr "Envoyer"
 
-#: admin/monitoring/audit-trail.php:164
-#: admin/monitoring/lab-sync-details.php:176
+#: admin/monitoring/audit-trail.php:165
+#: admin/monitoring/lab-sync-details.php:183
 #: admin/monitoring/sync-status.php:141
 #: cd4/management/cd4-clinic-report.php:169
 #: cd4/management/cd4-clinic-report.php:274
@@ -1816,25 +1816,25 @@ msgstr "Envoyer"
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: admin/monitoring/audit-trail.php:330
+#: admin/monitoring/audit-trail.php:331
 msgid "Select Columns"
 msgstr "Sélectionner les colonnes"
 
-#: admin/monitoring/lab-sync-details.php:9
+#: admin/monitoring/lab-sync-details.php:10
 #: admin/monitoring/sources-of-requests.php:11
 #: admin/monitoring/sync-status.php:10
 msgid "Sources of Requests"
 msgstr "Sources des demandes"
 
-#: admin/monitoring/lab-sync-details.php:84
+#: admin/monitoring/lab-sync-details.php:91
 msgid "Lab Sync Details for "
 msgstr "Détails de la synchronisation des laboratoires pour "
 
-#: admin/monitoring/lab-sync-details.php:93
+#: admin/monitoring/lab-sync-details.php:100
 msgid "Lab Sync Details"
 msgstr "Détails de la synchronisation des laboratoires"
 
-#: admin/monitoring/lab-sync-details.php:106
+#: admin/monitoring/lab-sync-details.php:113
 #: admin/monitoring/sources-of-requests.php:92
 #: admin/monitoring/sync-status.php:86 cd4/management/cd4-clinic-report.php:126
 #: cd4/management/cd4-clinic-report.php:234
@@ -1955,7 +1955,7 @@ msgstr "Détails de la synchronisation des laboratoires"
 msgid "Province/State"
 msgstr "Province"
 
-#: admin/monitoring/lab-sync-details.php:109
+#: admin/monitoring/lab-sync-details.php:116
 #: admin/monitoring/sync-status.php:89 cd4/requests/cd4-requests.php:367
 #: covid-19/requests/covid-19-requests.php:286
 #: eid/requests/eid-requests.php:276
@@ -1966,7 +1966,7 @@ msgstr "Province"
 msgid "Please choose Province/State/Region"
 msgstr "Veuillez choisir Province/État/Région"
 
-#: admin/monitoring/lab-sync-details.php:114
+#: admin/monitoring/lab-sync-details.php:121
 #: admin/monitoring/sources-of-requests.php:100
 #: admin/monitoring/sync-status.php:94 cd4/management/cd4-clinic-report.php:133
 #: cd4/management/cd4-clinic-report.php:241
@@ -2093,7 +2093,7 @@ msgstr "Veuillez choisir Province/État/Région"
 msgid "District/County"
 msgstr "District"
 
-#: admin/monitoring/lab-sync-details.php:117
+#: admin/monitoring/lab-sync-details.php:124
 #: admin/monitoring/sources-of-requests.php:95
 #: admin/monitoring/sources-of-requests.php:104
 #: admin/monitoring/sync-status.php:97 cd4/management/cd4-clinic-report.php:128
@@ -2199,8 +2199,8 @@ msgstr "District"
 msgid "Please select Province/State"
 msgstr "Veuillez sélectionner la province ou l'État"
 
-#: admin/monitoring/lab-sync-details.php:123
-#: admin/monitoring/lab-sync-details.php:201
+#: admin/monitoring/lab-sync-details.php:130
+#: admin/monitoring/lab-sync-details.php:208
 #: cd4/management/cd4-clinic-report.php:182
 #: cd4/management/cd4-clinic-report.php:286
 #: cd4/management/cd4-clinic-report.php:382
@@ -2375,13 +2375,13 @@ msgstr "Veuillez sélectionner la province ou l'État"
 msgid "Facility Name"
 msgstr "Nom de la structure"
 
-#: admin/monitoring/lab-sync-details.php:126
+#: admin/monitoring/lab-sync-details.php:133
 #: admin/monitoring/sources-of-requests.php:122
 #: admin/monitoring/sync-status.php:106
 msgid "Please select the Lab name"
 msgstr "Veuillez sélectionner le nom du laboratoire"
 
-#: admin/monitoring/lab-sync-details.php:173
+#: admin/monitoring/lab-sync-details.php:180
 #: admin/monitoring/sync-status.php:138
 #: cd4/management/get-rejected-samples.php:93 cd4/requests/cd4-requests.php:454
 #: cd4/requests/cd4-requests.php:476
@@ -2397,7 +2397,7 @@ msgstr "Veuillez sélectionner le nom du laboratoire"
 msgid "Export Excel"
 msgstr "Exporter vers Excel"
 
-#: admin/monitoring/lab-sync-details.php:207
+#: admin/monitoring/lab-sync-details.php:214
 #: covid-19/management/covid-19-clinic-report.php:417
 #: eid/management/eid-clinic-report.php:420 facilities/facilities.php:173
 #: patients/add-patient.php:57 patients/edit-patient.php:74
@@ -2406,7 +2406,7 @@ msgstr "Exporter vers Excel"
 msgid "Province"
 msgstr "Province"
 
-#: admin/monitoring/lab-sync-details.php:210
+#: admin/monitoring/lab-sync-details.php:217
 #: covid-19/management/generate-export-drc.php:46
 #: eid/requests/forms/add-cameroon.php:106
 #: eid/requests/forms/edit-cameroon.php:122
@@ -2418,20 +2418,20 @@ msgstr "Province"
 msgid "District"
 msgstr "District"
 
-#: admin/monitoring/lab-sync-details.php:213
+#: admin/monitoring/lab-sync-details.php:220
 msgid "Last Request Sent from STS"
 msgstr "Dernière demande envoyée par STS"
 
-#: admin/monitoring/lab-sync-details.php:216
+#: admin/monitoring/lab-sync-details.php:223
 msgid "Last Result Received From Lab"
 msgstr "Dernier résultat reçu du laboratoire"
 
-#: admin/monitoring/lab-sync-details.php:223
+#: admin/monitoring/lab-sync-details.php:230
 #: admin/monitoring/sync-status.php:173
 msgid "No data available"
 msgstr "Pas de données disponibles"
 
-#: admin/monitoring/lab-sync-details.php:306
+#: admin/monitoring/lab-sync-details.php:313
 #: admin/monitoring/sources-of-requests.php:482
 #: admin/monitoring/sync-status.php:254
 #: cd4/management/cd4-clinic-report.php:944
@@ -2689,8 +2689,8 @@ msgstr "État de la synchronisation du laboratoire"
 msgid "Lab Name"
 msgstr "Nom du Labo"
 
-#: admin/monitoring/sync-status.php:116 cd4/requests/forms/add-rwanda.php:223
-#: cd4/requests/forms/edit-rwanda.php:270
+#: admin/monitoring/sync-status.php:116 cd4/requests/forms/add-rwanda.php:216
+#: cd4/requests/forms/edit-rwanda.php:263
 #: common/reference/add-funding-sources.php:44
 #: common/reference/add-geographical-divisions.php:84
 #: common/reference/add-implementation-partners.php:44
@@ -2805,35 +2805,35 @@ msgstr "Dernière demande de synchronisation du STS"
 msgid "Version"
 msgstr "Version"
 
-#: api/v1.1/covid-19/save-request.php:123 api/v1.1/eid/save-request.php:122
-#: api/v1.1/generic-tests/save-request.php:126 api/v1.1/save-facilities.php:104
-#: api/v1.1/tb/save-request.php:120 api/v1.1/vl/save-request.php:123
+#: api/v1.1/covid-19/save-request.php:132 api/v1.1/eid/save-request.php:130
+#: api/v1.1/generic-tests/save-request.php:128 api/v1.1/save-facilities.php:112
+#: api/v1.1/tb/save-request.php:125 api/v1.1/vl/save-request.php:131
 msgid "Missing required fields"
 msgstr "Champs obligatoires manquants"
 
-#: api/v1.1/covid-19/save-request.php:133 api/v1.1/eid/save-request.php:132
-#: api/v1.1/generic-tests/save-request.php:136 api/v1.1/tb/save-request.php:130
-#: api/v1.1/vl/save-request.php:133
+#: api/v1.1/covid-19/save-request.php:142 api/v1.1/eid/save-request.php:140
+#: api/v1.1/generic-tests/save-request.php:138 api/v1.1/tb/save-request.php:135
+#: api/v1.1/vl/save-request.php:141
 msgid "Invalid Dates. Cannot be in the future"
 msgstr "Dates non valables. Ne peut être dans le futur"
 
-#: api/v1.1/covid-19/save-request.php:210 api/v1.1/eid/save-request.php:198
-#: api/v1.1/generic-tests/save-request.php:200 api/v1.1/tb/save-request.php:194
-#: api/v1.1/vl/save-request.php:179
+#: api/v1.1/covid-19/save-request.php:219 api/v1.1/eid/save-request.php:206
+#: api/v1.1/generic-tests/save-request.php:202 api/v1.1/tb/save-request.php:199
+#: api/v1.1/vl/save-request.php:187
 msgid "Sample Locked or Finalized"
 msgstr "Échantillon verrouillé ou finalisé"
 
-#: api/v1.1/covid-19/save-request.php:249 api/v1.1/eid/save-request.php:240
-#: api/v1.1/generic-tests/save-request.php:244 api/v1.1/tb/save-request.php:238
-#: api/v1.1/vl/save-request.php:219
+#: api/v1.1/covid-19/save-request.php:258 api/v1.1/eid/save-request.php:248
+#: api/v1.1/generic-tests/save-request.php:245 api/v1.1/tb/save-request.php:243
+#: api/v1.1/vl/save-request.php:227
 msgid "Failed to insert sample"
 msgstr "Échec de l'insertion de l'échantillon"
 
-#: api/v1.1/user/save-user-profile.php:78
+#: api/v1.1/user/save-user-profile.php:80
 msgid "Please check your request parameters."
 msgstr "Veuillez vérifier les paramètres de votre demande."
 
-#: api/v1.1/user/save-user-profile.php:173 batch/batches.php:208
+#: api/v1.1/user/save-user-profile.php:175 batch/batches.php:208
 #: batch/save-batch-helper.php:113
 msgid "Something went wrong. Please try again later."
 msgstr "Une erreur s'est produite. Veuillez réessayer plus tard."
@@ -3489,6 +3489,7 @@ msgstr "Échantillons entrés par"
 #: vl/program-management/highViralLoad.php:988
 #: vl/program-management/sample-storage-reports.php:215
 #: vl/program-management/sampleRejectionReport.php:66
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/program-management/vl-export-data.php:81
 #: vl/program-management/vl-export-data.php:430
 #: vl/program-management/vl-export-data.php:490
@@ -4335,7 +4336,7 @@ msgstr "Calibrateurs"
 #: instruments/get-instruments.php:113 patients/get-patients-helper.php:124
 #: roles/getRoleDetails.php:108 system/translate-strings.php:109
 #: tb/requests/get-request-list.php:275 users/getUserDetails.php:133
-#: vl/reference/get-vl-results-helper.php:111
+#: vl/reference/get-vl-results-helper.php:109
 #: vl/reference/get-vl-test-failure-reasons-helper.php:127
 #: vl/requests/get-request-list.php:355
 #: vl/result-mail/testResultEmailConfig.php:23
@@ -4980,18 +4981,93 @@ msgstr "Exporter vers Excel"
 #: cd4/management/cd4-clinic-report.php:183
 #: cd4/management/cd4-clinic-report.php:287
 #: cd4/management/cd4-clinic-report.php:383
+#: cd4/management/cd4-export-data.php:178
+#: cd4/management/cd4-export-data.php:180
+#: cd4/management/cd4-export-data.php:218
+#: cd4/management/cd4-export-data.php:255 cd4/requests/cd4-requests.php:414
+#: cd4/requests/patientModal.php:101 cd4/results/cd4-failed-results.php:154
+#: cd4/results/cd4-failed-results.php:216 cd4/results/cd4-print-results.php:118
+#: cd4/results/cd4-print-results.php:203 cd4/results/cd4-print-results.php:280
+#: cd4/results/cd4-print-results.php:363
 #: covid-19/management/covid-19-clinic-report.php:183
 #: covid-19/management/covid-19-clinic-report.php:287
 #: covid-19/management/covid-19-clinic-report.php:386
+#: covid-19/management/covid-19-clinic-report.php:414
+#: covid-19/management/covid-19-export-data.php:196
+#: covid-19/management/covid-19-export-data.php:198
+#: covid-19/management/covid-19-export-data.php:238
+#: covid-19/management/covid-19-export-data.php:275
+#: covid-19/requests/addSamplesFromManifest.php:86
+#: covid-19/requests/covid-19-dhis2.php:85
+#: covid-19/requests/covid-19-requests.php:335
+#: covid-19/requests/covid-19-requests.php:338
+#: covid-19/requests/covid-19-requests.php:448
+#: covid-19/requests/patientModal.php:74
+#: covid-19/results/can-record-confirmatory-tests.php:179
+#: covid-19/results/covid-19-failed-results.php:153
+#: covid-19/results/covid-19-failed-results.php:215
+#: covid-19/results/covid-19-manual-results.php:184
+#: covid-19/results/covid-19-print-results.php:121
+#: covid-19/results/covid-19-print-results.php:203
+#: covid-19/results/covid-19-print-results.php:281
+#: covid-19/results/covid-19-print-results.php:362
+#: covid-19/results/covid-19-result-status.php:174
+#: generic-tests/program-management/generic-export-data.php:237
+#: generic-tests/program-management/generic-export-data.php:273
+#: generic-tests/program-management/generic-export-data.php:325
+#: generic-tests/requests/add-samples-from-manifest.php:79
+#: generic-tests/requests/patientModal.php:100
+#: generic-tests/results/generic-failed-results.php:113
+#: generic-tests/results/generic-print-result.php:160
+#: generic-tests/results/generic-print-result.php:206
+#: generic-tests/results/generic-print-result.php:254
+#: generic-tests/results/generic-print-result.php:379
+#: generic-tests/results/generic-print-result.php:424
+#: generic-tests/results/generic-print-result.php:471
+#: generic-tests/results/generic-test-results.php:180
+#: generic-tests/results/generic-test-results.php:236
 #: hepatitis/management/hepatitis-clinic-report.php:185
 #: hepatitis/management/hepatitis-clinic-report.php:290
 #: hepatitis/management/hepatitis-clinic-report.php:386
+#: hepatitis/management/hepatitis-clinic-report.php:415
+#: hepatitis/management/hepatitis-export-data.php:191
+#: hepatitis/management/hepatitis-export-data.php:240
+#: hepatitis/management/hepatitis-export-data.php:277
+#: hepatitis/requests/add-samples-from-manifest.php:88
+#: hepatitis/requests/hepatitis-dhis2.php:324
+#: hepatitis/requests/hepatitis-requests.php:324
+#: hepatitis/requests/hepatitis-requests.php:421
+#: hepatitis/results/hepatitis-failed-results.php:152
 #: hepatitis/results/hepatitis-failed-results.php:214
+#: hepatitis/results/hepatitis-manual-results.php:185
+#: hepatitis/results/hepatitis-print-results.php:128
+#: hepatitis/results/hepatitis-print-results.php:210
+#: hepatitis/results/hepatitis-print-results.php:287
+#: hepatitis/results/hepatitis-print-results.php:368
+#: hepatitis/results/hepatitis-result-status.php:168
 #: tb/management/tb-clinic-report.php:183
 #: tb/management/tb-clinic-report.php:287
 #: tb/management/tb-clinic-report.php:384
+#: tb/management/tb-clinic-report.php:412 tb/management/tb-export-data.php:191
+#: tb/management/tb-export-data.php:233 tb/management/tb-export-data.php:270
+#: tb/requests/addSamplesFromManifest.php:61 tb/requests/patientModal.php:76
+#: tb/requests/tb-requests.php:249 tb/requests/tb-requests.php:315
+#: tb/results/tb-failed-results.php:153 tb/results/tb-failed-results.php:215
+#: tb/results/tb-manual-results.php:191 tb/results/tb-print-results.php:118
+#: tb/results/tb-print-results.php:197 tb/results/tb-print-results.php:273
+#: tb/results/tb-print-results.php:351 tb/results/tb-result-status.php:168
 #: vl/program-management/sample-storage-reports.php:212
-msgid "Patient's ID"
+#: vl/program-management/storageHistoryDataToExcel.php:25
+#: vl/program-management/vl-export-data.php:362
+#: vl/requests/export-sample-storage.php:26
+#: vl/requests/forms/add-burkina-faso.php:202
+#: vl/requests/forms/add-cameroon.php:242
+#: vl/requests/forms/edit-burkina-faso.php:293 vl/requests/patientModal.php:101
+#: vl/requests/sample-storage.php:242 vl/requests/vl-requests.php:430
+#: vl/results/forms/update-burkina-faso-result.php:293
+#: vl/results/vl-failed-results.php:115 vl/results/vlPrintResult.php:185
+#: vl/results/vlPrintResult.php:435
+msgid "Patient ID"
 msgstr "No Patient"
 
 #: cd4/management/cd4-clinic-report.php:184
@@ -5306,6 +5382,8 @@ msgstr "Résultat CD4"
 #: vl/program-management/highViralLoad.php:1015
 #: vl/program-management/sample-storage-reports.php:146
 #: vl/program-management/sample-storage-reports.php:239
+#: vl/program-management/storageDataToExcel.php:25
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/program-management/vl-export-data.php:187
 #: vl/program-management/vl-export-data.php:443
 #: vl/program-management/vl-export-data.php:502
@@ -5792,7 +5870,7 @@ msgid "Implementing Partners"
 msgstr "Partenaires opérationnels"
 
 #: cd4/management/cd4-export-data.php:158 cd4/requests/cd4-requests.php:270
-#: cd4/requests/forms/add-rwanda.php:185 cd4/requests/forms/edit-rwanda.php:232
+#: cd4/requests/forms/add-rwanda.php:178 cd4/requests/forms/edit-rwanda.php:225
 #: covid-19/management/covid-19-export-data.php:179
 #: covid-19/requests/covid-19-requests.php:201
 #: covid-19/requests/forms/add-rwanda.php:113
@@ -5870,8 +5948,8 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: cd4/management/cd4-export-data.php:173 cd4/requests/cd4-requests.php:181
 #: cd4/requests/cd4-requests.php:215 cd4/requests/cd4-requests.php:310
 #: cd4/requests/cd4-requests.php:326 cd4/requests/cd4-requests.php:355
-#: cd4/requests/cd4-requests.php:405 cd4/requests/forms/add-rwanda.php:225
-#: cd4/requests/forms/edit-rwanda.php:272 cd4/results/email-results.php:195
+#: cd4/requests/cd4-requests.php:405 cd4/requests/forms/add-rwanda.php:218
+#: cd4/requests/forms/edit-rwanda.php:265 cd4/results/email-results.php:195
 #: covid-19/management/covid-19-export-data.php:191
 #: covid-19/requests/covid-19-requests.php:153
 #: covid-19/requests/covid-19-requests.php:326
@@ -6058,8 +6136,8 @@ msgstr "Oui"
 #: cd4/management/cd4-export-data.php:174 cd4/requests/cd4-requests.php:184
 #: cd4/requests/cd4-requests.php:218 cd4/requests/cd4-requests.php:313
 #: cd4/requests/cd4-requests.php:329 cd4/requests/cd4-requests.php:358
-#: cd4/requests/cd4-requests.php:408 cd4/requests/forms/add-rwanda.php:224
-#: cd4/requests/forms/edit-rwanda.php:271 cd4/results/email-results.php:196
+#: cd4/requests/cd4-requests.php:408 cd4/requests/forms/add-rwanda.php:217
+#: cd4/requests/forms/edit-rwanda.php:264 cd4/results/email-results.php:196
 #: covid-19/management/covid-19-export-data.php:192
 #: covid-19/requests/covid-19-requests.php:156
 #: covid-19/requests/covid-19-requests.php:329
@@ -6242,83 +6320,6 @@ msgstr "Oui"
 #: vl/results/vlResultMail.php:196
 msgid "No"
 msgstr "Non"
-
-#: cd4/management/cd4-export-data.php:178
-#: cd4/management/cd4-export-data.php:180
-#: cd4/management/cd4-export-data.php:218
-#: cd4/management/cd4-export-data.php:255 cd4/requests/cd4-requests.php:414
-#: cd4/requests/patientModal.php:101 cd4/results/cd4-failed-results.php:154
-#: cd4/results/cd4-failed-results.php:216 cd4/results/cd4-print-results.php:118
-#: cd4/results/cd4-print-results.php:203 cd4/results/cd4-print-results.php:280
-#: cd4/results/cd4-print-results.php:363
-#: covid-19/management/covid-19-clinic-report.php:414
-#: covid-19/management/covid-19-export-data.php:196
-#: covid-19/management/covid-19-export-data.php:198
-#: covid-19/management/covid-19-export-data.php:238
-#: covid-19/management/covid-19-export-data.php:275
-#: covid-19/requests/addSamplesFromManifest.php:86
-#: covid-19/requests/covid-19-dhis2.php:85
-#: covid-19/requests/covid-19-requests.php:335
-#: covid-19/requests/covid-19-requests.php:338
-#: covid-19/requests/covid-19-requests.php:448
-#: covid-19/requests/patientModal.php:74
-#: covid-19/results/can-record-confirmatory-tests.php:179
-#: covid-19/results/covid-19-failed-results.php:153
-#: covid-19/results/covid-19-failed-results.php:215
-#: covid-19/results/covid-19-manual-results.php:184
-#: covid-19/results/covid-19-print-results.php:121
-#: covid-19/results/covid-19-print-results.php:203
-#: covid-19/results/covid-19-print-results.php:281
-#: covid-19/results/covid-19-print-results.php:362
-#: covid-19/results/covid-19-result-status.php:174
-#: generic-tests/program-management/generic-export-data.php:237
-#: generic-tests/program-management/generic-export-data.php:273
-#: generic-tests/program-management/generic-export-data.php:325
-#: generic-tests/requests/add-samples-from-manifest.php:79
-#: generic-tests/requests/patientModal.php:100
-#: generic-tests/results/generic-failed-results.php:113
-#: generic-tests/results/generic-print-result.php:160
-#: generic-tests/results/generic-print-result.php:206
-#: generic-tests/results/generic-print-result.php:254
-#: generic-tests/results/generic-print-result.php:379
-#: generic-tests/results/generic-print-result.php:424
-#: generic-tests/results/generic-print-result.php:471
-#: generic-tests/results/generic-test-results.php:180
-#: generic-tests/results/generic-test-results.php:236
-#: hepatitis/management/hepatitis-clinic-report.php:415
-#: hepatitis/management/hepatitis-export-data.php:191
-#: hepatitis/management/hepatitis-export-data.php:240
-#: hepatitis/management/hepatitis-export-data.php:277
-#: hepatitis/requests/add-samples-from-manifest.php:88
-#: hepatitis/requests/hepatitis-dhis2.php:324
-#: hepatitis/requests/hepatitis-requests.php:324
-#: hepatitis/requests/hepatitis-requests.php:421
-#: hepatitis/results/hepatitis-failed-results.php:152
-#: hepatitis/results/hepatitis-manual-results.php:185
-#: hepatitis/results/hepatitis-print-results.php:128
-#: hepatitis/results/hepatitis-print-results.php:210
-#: hepatitis/results/hepatitis-print-results.php:287
-#: hepatitis/results/hepatitis-print-results.php:368
-#: hepatitis/results/hepatitis-result-status.php:168
-#: tb/management/tb-clinic-report.php:412 tb/management/tb-export-data.php:191
-#: tb/management/tb-export-data.php:233 tb/management/tb-export-data.php:270
-#: tb/requests/addSamplesFromManifest.php:61 tb/requests/patientModal.php:76
-#: tb/requests/tb-requests.php:249 tb/requests/tb-requests.php:315
-#: tb/results/tb-failed-results.php:153 tb/results/tb-failed-results.php:215
-#: tb/results/tb-manual-results.php:191 tb/results/tb-print-results.php:118
-#: tb/results/tb-print-results.php:197 tb/results/tb-print-results.php:273
-#: tb/results/tb-print-results.php:351 tb/results/tb-result-status.php:168
-#: vl/program-management/vl-export-data.php:362
-#: vl/requests/export-sample-storage.php:26
-#: vl/requests/forms/add-burkina-faso.php:202
-#: vl/requests/forms/add-cameroon.php:242
-#: vl/requests/forms/edit-burkina-faso.php:293 vl/requests/patientModal.php:101
-#: vl/requests/sample-storage.php:242 vl/requests/vl-requests.php:430
-#: vl/results/forms/update-burkina-faso-result.php:293
-#: vl/results/vl-failed-results.php:115 vl/results/vlPrintResult.php:185
-#: vl/results/vlPrintResult.php:435
-msgid "Patient ID"
-msgstr "No Patient"
 
 #: cd4/management/cd4-export-data.php:180
 #: covid-19/management/covid-19-export-data.php:198
@@ -7274,6 +7275,7 @@ msgstr "Résultats (log)"
 #: import-result/imported-results.php:247
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/sample-storage-reports.php:236
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/sample-storage.php:266
 msgid "Comments"
@@ -7752,7 +7754,7 @@ msgstr "Veuillez saisir le statut du motif de rejet"
 #: vl/reference/add-vl-test-reasons.php:59
 #: vl/reference/edit-vl-test-failure-reason.php:54
 #: vl/reference/get-vl-art-code-details-helper.php:102
-#: vl/reference/get-vl-results-helper.php:102
+#: vl/reference/get-vl-results-helper.php:100
 #: vl/reference/get-vl-sample-rejection-reasons-helper.php:117
 #: vl/reference/get-vl-sample-type-helper.php:115
 #: vl/reference/get-vl-test-failure-reasons-helper.php:117
@@ -7852,7 +7854,7 @@ msgstr "Actif"
 #: vl/reference/add-vl-test-reasons.php:60
 #: vl/reference/edit-vl-test-failure-reason.php:55
 #: vl/reference/get-vl-art-code-details-helper.php:103
-#: vl/reference/get-vl-results-helper.php:103
+#: vl/reference/get-vl-results-helper.php:101
 #: vl/reference/get-vl-sample-rejection-reasons-helper.php:118
 #: vl/reference/get-vl-sample-type-helper.php:116
 #: vl/reference/get-vl-test-failure-reasons-helper.php:118
@@ -8139,7 +8141,7 @@ msgstr "Raison"
 #: tb/reference/getTbTestReasonsDetails.php:115
 #: tb/results/get-tb-result-status.php:216
 #: vl/reference/get-vl-art-code-details-helper.php:101
-#: vl/reference/get-vl-results-helper.php:101
+#: vl/reference/get-vl-results-helper.php:99
 #: vl/reference/get-vl-sample-rejection-reasons-helper.php:116
 #: vl/reference/get-vl-sample-type-helper.php:114
 #: vl/reference/get-vl-test-failure-reasons-helper.php:116
@@ -8334,7 +8336,7 @@ msgstr ""
 msgid "Samples from this Manifest have been activated"
 msgstr "Des échantillons de ce manifeste ont été activés"
 
-#: cd4/requests/cd4-add-request-helper.php:55
+#: cd4/requests/cd4-add-request-helper.php:53
 #: cd4/requests/cd4-edit-request-helper.php:55
 #: generic-tests/requests/add-request-helper.php:46
 #: generic-tests/requests/edit-request-helper.php:49
@@ -8344,12 +8346,12 @@ msgstr ""
 "Veuillez remplir tous les champs obligatoires pour enregistrer la demande de "
 "test"
 
-#: cd4/requests/cd4-add-request-helper.php:314
+#: cd4/requests/cd4-add-request-helper.php:311
 msgid "CD4 request added successfully"
 msgstr "Demande de CD4 ajoutée avec succès"
 
-#: cd4/requests/cd4-add-request-helper.php:344
-#: cd4/requests/cd4-edit-request-helper.php:336
+#: cd4/requests/cd4-add-request-helper.php:341
+#: cd4/requests/cd4-edit-request-helper.php:335
 #: cd4/results/cd4-update-result-helper.php:157
 #: covid-19/requests/covid-19-edit-request-helper.php:422
 #: covid-19/results/covid-19-update-result-helper.php:191
@@ -8361,8 +8363,8 @@ msgstr "Demande de CD4 ajoutée avec succès"
 #: hepatitis/requests/hepatitis-edit-request-helper.php:272
 #: hepatitis/results/hepatitis-update-result-helper.php:105
 #: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:434
-#: vl/requests/editVlRequestHelper.php:429
-#: vl/results/updateVlTestResultHelper.php:247
+#: vl/requests/editVlRequestHelper.php:430
+#: vl/results/updateVlTestResultHelper.php:249
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -8373,7 +8375,7 @@ msgstr "Veuillez réessayer plus tard"
 msgid "Could not save this form. Please try again."
 msgstr "Impossible d'enregistrer ce formulaire. Veuillez réessayer."
 
-#: cd4/requests/cd4-edit-request-helper.php:328
+#: cd4/requests/cd4-edit-request-helper.php:327
 #: cd4/results/cd4-update-result-helper.php:147
 msgid "CD4 request updated successfully"
 msgstr "Mise à jour réussie de la demande de CD4"
@@ -8679,7 +8681,7 @@ msgstr "Indication pour le test CD4"
 msgid "CD4 Result (%)"
 msgstr "Résultat CD4 (%)"
 
-#: cd4/requests/forms/add-rwanda.php:220 cd4/requests/forms/edit-rwanda.php:267
+#: cd4/requests/forms/add-rwanda.php:213 cd4/requests/forms/edit-rwanda.php:260
 #: patients/add-patient.php:43 patients/edit-patient.php:60
 #: vl/requests/forms/add-cameroon.php:227 vl/requests/forms/add-rwanda.php:180
 #: vl/requests/forms/edit-cameroon.php:270
@@ -8693,7 +8695,7 @@ msgstr ""
 "Le patient appartient aux forces de défense (le nom et l'identifiant du "
 "patient ne seront pas synchronisés entre LIS et STS)"
 
-#: cd4/requests/forms/add-rwanda.php:222 cd4/requests/forms/edit-rwanda.php:269
+#: cd4/requests/forms/add-rwanda.php:215 cd4/requests/forms/edit-rwanda.php:262
 #: covid-19/requests/forms/add-cameroon.php:205
 #: covid-19/requests/forms/add-png.php:201
 #: covid-19/requests/forms/add-rwanda.php:154
@@ -8723,7 +8725,7 @@ msgstr ""
 msgid "Encrypt Patient Identifying Information"
 msgstr "Cryptage des données d'identification des patients"
 
-#: cd4/requests/forms/add-rwanda.php:766 cd4/requests/forms/edit-rwanda.php:862
+#: cd4/requests/forms/add-rwanda.php:759 cd4/requests/forms/edit-rwanda.php:855
 #: vl/requests/forms/add-burkina-faso.php:706
 #: vl/requests/forms/add-cameroon.php:744 vl/requests/forms/add-drc.php:965
 #: vl/requests/forms/add-png.php:659 vl/requests/forms/add-rwanda.php:733
@@ -8734,7 +8736,7 @@ msgstr "Cryptage des données d'identification des patients"
 msgid "No. of times Test Requested for this Patient"
 msgstr "Nombre de fois où le test a été demandé pour ce patient"
 
-#: cd4/requests/forms/add-rwanda.php:769 cd4/requests/forms/edit-rwanda.php:865
+#: cd4/requests/forms/add-rwanda.php:762 cd4/requests/forms/edit-rwanda.php:858
 #: vl/requests/forms/add-burkina-faso.php:709
 #: vl/requests/forms/add-cameroon.php:747 vl/requests/forms/add-drc.php:968
 #: vl/requests/forms/add-png.php:662 vl/requests/forms/add-rwanda.php:736
@@ -8745,7 +8747,7 @@ msgstr "Nombre de fois où le test a été demandé pour ce patient"
 msgid "Last Test Request Added On LIS/STS"
 msgstr "Dernière demande envoyée par LIS/STS"
 
-#: cd4/requests/forms/add-rwanda.php:772 cd4/requests/forms/edit-rwanda.php:868
+#: cd4/requests/forms/add-rwanda.php:765 cd4/requests/forms/edit-rwanda.php:861
 #: vl/requests/forms/add-burkina-faso.php:712
 #: vl/requests/forms/add-cameroon.php:750 vl/requests/forms/add-drc.php:971
 #: vl/requests/forms/add-png.php:665 vl/requests/forms/add-rwanda.php:739
@@ -8756,7 +8758,7 @@ msgstr "Dernière demande envoyée par LIS/STS"
 msgid "Sample Collection Date for Last Request"
 msgstr "Date de prélèvement de l'échantillon pour la dernière demande"
 
-#: cd4/requests/forms/add-rwanda.php:775 cd4/requests/forms/edit-rwanda.php:871
+#: cd4/requests/forms/add-rwanda.php:768 cd4/requests/forms/edit-rwanda.php:864
 #: vl/requests/forms/add-burkina-faso.php:715
 #: vl/requests/forms/add-cameroon.php:753 vl/requests/forms/add-drc.php:974
 #: vl/requests/forms/add-png.php:668 vl/requests/forms/add-rwanda.php:742
@@ -8767,8 +8769,8 @@ msgstr "Date de prélèvement de l'échantillon pour la dernière demande"
 msgid "Total No. of times Patient tested for HIV VL"
 msgstr "Nombre total de fois où le patient a été testé pour le VIH VL"
 
-#: cd4/requests/forms/add-rwanda.php:1037
-#: cd4/requests/forms/edit-rwanda.php:1157
+#: cd4/requests/forms/add-rwanda.php:1030
+#: cd4/requests/forms/edit-rwanda.php:1150
 #: vl/requests/forms/add-cameroon.php:1135
 #: vl/requests/forms/add-rwanda.php:1132
 #: vl/requests/forms/edit-cameroon.php:1201
@@ -18877,7 +18879,7 @@ msgstr "Tout déselectionner"
 msgid "None"
 msgstr "Rien"
 
-#: roles/addRolesHelper.php:33
+#: roles/addRolesHelper.php:32
 msgid "Roles Added successfully"
 msgstr "Rôles ajoutés avec succès"
 
@@ -20840,6 +20842,7 @@ msgstr "Test #"
 #: tb/requests/forms/add-burkina-faso.php:407
 #: tb/requests/forms/edit-burkina-faso.php:440
 #: tb/results/forms/update-burkina-faso.php:438
+#: tb/results/pdf/result-pdf-burkina-faso.php:309
 msgid "Actual Number"
 msgstr "Nombre réel"
 
@@ -20998,10 +21001,6 @@ msgstr "Type d'échantillon"
 #: tb/results/pdf/result-pdf-burkina-faso.php:307
 msgid "No AFB"
 msgstr "Pas d'AFB"
-
-#: tb/results/pdf/result-pdf-burkina-faso.php:309
-msgid "Actual No"
-msgstr "Réel Non"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:328
 msgid "XPERT MTB Result"
@@ -21322,6 +21321,7 @@ msgstr "Limite de détection de la plate-forme d'essai"
 #: vl/program-management/export-vl-results.php:33
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
 #: vl/requests/forms/add-drc.php:453 vl/requests/forms/edit-drc.php:479
 #: vl/requests/sample-storage.php:155 vl/requests/sample-storage.php:251
@@ -21334,6 +21334,8 @@ msgstr "Congélateur"
 #: vl/program-management/export-vl-results.php:49
 #: vl/program-management/sample-storage-reports.php:137
 #: vl/program-management/sample-storage-reports.php:224
+#: vl/program-management/storageDataToExcel.php:25
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
 #: vl/requests/forms/add-drc.php:460 vl/requests/forms/add-drc.php:462
@@ -21348,6 +21350,8 @@ msgstr "Coffret"
 #: vl/program-management/export-vl-results.php:49
 #: vl/program-management/sample-storage-reports.php:140
 #: vl/program-management/sample-storage-reports.php:227
+#: vl/program-management/storageDataToExcel.php:25
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
 #: vl/requests/forms/add-drc.php:467 vl/requests/forms/add-drc.php:470
@@ -21362,6 +21366,8 @@ msgstr "Boîte"
 #: vl/program-management/export-vl-results.php:49
 #: vl/program-management/sample-storage-reports.php:143
 #: vl/program-management/sample-storage-reports.php:230
+#: vl/program-management/storageDataToExcel.php:25
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:35
 #: vl/requests/forms/add-drc.php:472 vl/requests/forms/add-drc.php:474
@@ -21599,11 +21605,13 @@ msgstr "Congélateur/Stockage"
 
 #: vl/program-management/sample-storage-reports.php:128
 #: vl/program-management/sample-storage-reports.php:176
+#: vl/program-management/storageDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26 vl/requests/sample-storage.php:233
 msgid "Sample Code"
 msgstr "Code d'échantillon"
 
 #: vl/program-management/sample-storage-reports.php:131
+#: vl/program-management/storageDataToExcel.php:25
 msgid "Storage Date"
 msgstr "Date de stockage"
 
@@ -21613,11 +21621,13 @@ msgid "Volume of Sample (ml)"
 msgstr "Volume de l'échantillon (ml)"
 
 #: vl/program-management/sample-storage-reports.php:233
+#: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 msgid "Date Out"
 msgstr "Date de sortie"
 
 #: vl/program-management/sample-storage-reports.php:242
+#: vl/program-management/storageHistoryDataToExcel.php:25
 msgid "Removal Reason"
 msgstr "Raison du retrait"
 
@@ -21625,6 +21635,11 @@ msgstr "Raison du retrait"
 #: vl/requests/sample-storage.php:428
 msgid "Select Freezer"
 msgstr "Sélectionner le congélateur"
+
+#: vl/program-management/storageDataToExcel.php:25
+#: vl/program-management/storageHistoryDataToExcel.php:25
+msgid "Volume of Sample(ml)"
+msgstr "Volume de l'échantillon (ml)"
 
 #: vl/program-management/vl-sample-status.php:8
 msgid "VL | Sample Status Report"
@@ -22046,7 +22061,7 @@ msgstr "Raison de l'échec"
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: vl/requests/editVlRequestHelper.php:421
+#: vl/requests/editVlRequestHelper.php:422
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
 
@@ -23098,12 +23113,12 @@ msgid "ARV PROTOCOL"
 msgstr "PROTOCOLE ARV"
 
 #: vl/results/pdf/result-pdf-cameroon.php:299
-msgid "BREASTFEEDING"
-msgstr "Allaitement"
+msgid "BREASTFEEDING?"
+msgstr "L'ALLAITEMENT MATERNEL ?"
 
 #: vl/results/pdf/result-pdf-cameroon.php:300
-msgid "PREGNANCY STATUS"
-msgstr "ÉTAT DE GROSSESSE"
+msgid "PREGNANT?"
+msgstr "ENCEINTE ?"
 
 #: vl/results/pdf/result-pdf-cameroon.php:305
 msgid "PATIENT'S CONTACT"
@@ -23182,7 +23197,7 @@ msgstr "Imprimé le"
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 
-#: vl/results/updateVlTestResultHelper.php:232
+#: vl/results/updateVlTestResultHelper.php:234
 msgid "VL result updated successfully"
 msgstr "Les résultats de la VL ont été mis à jour avec succès"
 
@@ -23191,6 +23206,12 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Actual No"
+#~ msgstr "Réel Non"
+
+#~ msgid "Patient's ID"
+#~ msgstr "No Patient"
 
 #~ msgid "Test No"
 #~ msgstr "Test Non"

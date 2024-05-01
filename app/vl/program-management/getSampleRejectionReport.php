@@ -30,7 +30,7 @@ try {
     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
 
-    if ($_SESSION['instance']['type'] == 'standalone') {
+    if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
     }
@@ -70,9 +70,8 @@ try {
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
             LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id
             INNER JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
-            LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
-            WHERE vl.is_sample_rejected='yes' AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
-
+            LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action ";
+    $sWhere[] = " vl.is_sample_rejected='yes' AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
     if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) != '') {
         $sWhere[] = ' b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
     }
@@ -131,7 +130,6 @@ try {
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['rejectedViralLoadResult'] = $sQuery;
-
 
     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 

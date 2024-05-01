@@ -45,7 +45,7 @@ try {
     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name');
     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name');
 
-    if ($sarr['sc_user_type'] == 'standalone') {
+    if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
     }
@@ -111,16 +111,16 @@ try {
          * SQL queries
          * Get data to display
         */
-    $sQuery = "SELECT vl.*,f.*,s.*,fd.facility_name as labName,rsrr.rejection_reason_name,r_c_a.recommended_corrective_action_name FROM form_tb as vl
-            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-            LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
-            LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
-            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-            JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
-            LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
-            where vl.is_sample_rejected='yes'";
+    $sQuery = "SELECT vl.*,f.facility_name,fd.facility_name as labName,rsrr.rejection_reason_name,r_c_a.recommended_corrective_action_name FROM form_tb as vl
+            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+            LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id 
+            LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type 
+            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+            JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection 
+            LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action ";
     $start_date = '';
     $end_date = '';
+    $swhere[] = " vl.is_sample_rejected='yes' ";
     if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) != '') {
         $sWhere[] = ' b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
     }
@@ -169,7 +169,7 @@ try {
         $sWhere[] =  ' vl.reason_for_sample_rejection = "' . $_POST['sampleRejectionReason'] . '"';
     }
 
-    if ($_SESSION['instance']['type'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+    if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
     }
     if (!empty($sWhere)) {

@@ -8,7 +8,6 @@ use Throwable;
 use TCPDFBarcode;
 use TCPDF2DBarcode;
 use SodiumException;
-use Ramsey\Uuid\Uuid;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
@@ -16,7 +15,6 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
-use MysqliDb;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -33,54 +31,6 @@ class CommonService
         $this->db = $db;
         $this->facilitiesService = $facilitiesService;
         $this->fileCache = $fileCache;
-    }
-
-    public function setGlobalDateFormat($inputFormat = null)
-    {
-        $dateFormatArray = $this->getDateFormat(null, $inputFormat);
-        foreach ($dateFormatArray as $key => $value) {
-            $_SESSION[$key] = $value;
-        }
-    }
-
-    public function getDateFormat($category = null, $inputFormat = null)
-    {
-        $dateFormat = $inputFormat ?? $this->getGlobalConfig('gui_date_format') ?? 'd-M-Y';
-
-        $dateFormatArray = ['phpDateFormat' => $dateFormat];
-
-        if ($dateFormat == 'd-m-Y') {
-            $dateFormatArray['jsDateFieldFormat'] = 'dd-mm-yy';
-            $dateFormatArray['dayjsDateFieldFormat'] = 'DD-MM-YYYY';
-            $dateFormatArray['jsDateRangeFormat'] = 'DD-MM-YYYY';
-            $dateFormatArray['jsDateFormatMask'] = '99-99-9999';
-            $dateFormatArray['mysqlDateFormat'] = '%d-%m-%Y';
-        } else {
-            $dateFormatArray['jsDateFieldFormat'] = 'dd-M-yy';
-            $dateFormatArray['dayjsDateFieldFormat'] = 'DD-MMM-YYYY';
-            $dateFormatArray['jsDateRangeFormat'] = 'DD-MMM-YYYY';
-            $dateFormatArray['jsDateFormatMask'] = '99-aaa-9999';
-            $dateFormatArray['mysqlDateFormat'] = '%d-%b-%Y';
-        }
-
-        if (empty($category)) {
-            // Return all date formats
-            return $dateFormatArray;
-        } elseif ($category == 'php') {
-            return $dateFormatArray['phpDateFormat'] ?? 'd-m-Y';
-        } elseif ($category == 'js') {
-            return $dateFormatArray['jsDateFieldFormat'] ?? 'dd-mm-yy';
-        } elseif ($category == 'dayjs') {
-            return $dateFormatArray['dayjsDateFieldFormat'] ?? 'DD-MM-YYYY';
-        } elseif ($category == 'jsDateRange') {
-            return $dateFormatArray['jsDateRangeFormat'] ?? 'DD-MM-YYYY';
-        } elseif ($category == 'jsMask') {
-            return $dateFormatArray['jsDateFormatMask'] ?? '99-99-9999';
-        } elseif ($category == 'mysql') {
-            return $dateFormatArray['mysqlDateFormat'] ?? '%d-%b-%Y';
-        } else {
-            return null;
-        }
     }
 
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false, bool $unbuffered = false): array
@@ -152,7 +102,7 @@ class CommonService
     // Returns a UUID format string
     public function generateUUID($attachExtraString = true): string
     {
-        $uuid = (Uuid::uuid4())->toString();
+        $uuid = MiscUtility::generateUUID();
         $uuid .= $attachExtraString ? '-' . $this->generateRandomString(6) : '';
         return $uuid;
     }
@@ -250,13 +200,13 @@ class CommonService
     /**
      *
      * @param string $tableName
-     * @param string|array $conditions
-     * @param string|array $columns
+     * @param string|array|null $conditions
+     * @param string|array|null $columns
      * @param int|array|null $numRows number of rows to fetch
      * @return array|null
      * @throws Exception
      */
-    public function fetchDataFromTable(string $tableName, string|array $conditions = [], string|array $columns = '*', $numRows = null): ?array
+    public function fetchDataFromTable(string $tableName, string|array|null $conditions = [], string|array|null $columns = '*', $numRows = null): ?array
     {
         if ($this->db == null || empty($tableName)) {
             return null;
@@ -273,12 +223,12 @@ class CommonService
             }
         }
 
-        $resultset = $this->db->get($tableName, $numRows, $columns);
-        if ($this->db->count > 0) {
-            return $resultset;
-        } else {
-            return null;
-        }
+        return $this->db->get($tableName, $numRows, $columns);
+        // if ($this->db->count > 0) {
+        //     return $resultset;
+        // } else {
+        //     return [];
+        // }
     }
 
     public static function encrypt($message, $key): string
@@ -544,10 +494,8 @@ class CommonService
 
     public function getCountryShortCode(): string
     {
-        return once(function () {
-            $this->db->where("vlsm_country_id", $this->getGlobalConfig('vl_form'));
-            return $this->db->getValue("s_available_country_forms", "short_name");
-        });
+        $this->db->where("vlsm_country_id", $this->getGlobalConfig('vl_form'));
+        return $this->db->getValue("s_available_country_forms", "short_name");
     }
 
     public function trackQRPageViews($type, $typeId, $sampleCode)
@@ -654,18 +602,31 @@ class CommonService
     // Returns the current Instance ID
     public function getInstanceId(): ?string
     {
-        return once(function () {
-            return $this->db->getValue("s_vlsm_instance", "vlsm_instance_id");
-        });
+        return $this->db->getValue("s_vlsm_instance", "vlsm_instance_id");
     }
 
-    public function isRemoteUser(): bool
+    public function getInstanceType(): ?string
     {
-        return isset($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'remoteuser';
+        return $_SESSION['instance']['type'] ?? $this->getSystemConfig('sc_user_type') ?? $this->db->getValue("s_vlsm_instance", "instance_type");
+    }
+
+    public function isSTSInstance(): bool
+    {
+        return $this->getInstanceType() === 'remoteuser';
+    }
+
+    public function isLISInstance(): bool
+    {
+        return $this->getInstanceType() === 'vluser';
+    }
+
+    public function isStandaloneInstance(): bool
+    {
+        return $this->getInstanceType() === 'standalone';
     }
     public function getLastRemoteSyncDateTime()
     {
-        if ($this->isRemoteUser()) {
+        if ($this->isSTSInstance()) {
             $dateTime = $this->db->rawQueryOne("SELECT MAX(`requested_on`) AS `dateTime`
                                                     FROM `track_api_requests`");
         } else {
@@ -1043,56 +1004,52 @@ class CommonService
 
     public function getDistrictDetailsApi($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        return once(function () use ($user, $onlyActive, $updatedDateTime) {
 
-            $query = "SELECT f.facility_id, f.facility_name,
+        $query = "SELECT f.facility_id, f.facility_name,
                     f.facility_code,
                     gd.geo_id,
                     gd.geo_name,
                     f.facility_district
                     FROM geographical_divisions AS gd
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
-            $where = [];
-            if (!empty($user)) {
-                $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
-                if (!empty($facilityMap)) {
-                    $where[] = " f.facility_id IN (" . $facilityMap . ")";
-                }
+        $where = [];
+        if (!empty($user)) {
+            $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
+            if (!empty($facilityMap)) {
+                $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
+        }
 
-            if ($onlyActive) {
-                $where[] = " f.status like 'active'";
-            }
+        if ($onlyActive) {
+            $where[] = " f.status like 'active'";
+        }
 
-            if ($updatedDateTime) {
-                $where[] = " gd.updated_datetime >= '$updatedDateTime'";
-            }
-            $whereStr = "";
-            if (!empty($where)) {
-                $whereStr = " WHERE " . implode(" AND ", $where);
-            }
-            $query .= $whereStr . ' GROUP BY facility_district ORDER BY facility_district ASC';
-            // die($query);
-            $result = $this->db->rawQuery($query);
-            $response = [];
-            foreach ($result as $key => $row) {
-                $condition1 = " facility_district like '" . $row['facility_district'] . "%'";
-                $condition2 = " geo_name like '" . $row['geo_name'] . "%'";
+        if ($updatedDateTime) {
+            $where[] = " gd.updated_datetime >= '$updatedDateTime'";
+        }
+        $whereStr = "";
+        if (!empty($where)) {
+            $whereStr = " WHERE " . implode(" AND ", $where);
+        }
+        $query .= $whereStr . ' GROUP BY facility_district ORDER BY facility_district ASC';
+        // die($query);
+        $result = $this->db->rawQuery($query);
+        $response = [];
+        foreach ($result as $key => $row) {
+            //$condition1 = " facility_district like '" . $row['facility_district'] . "%'";
+            //$condition2 = " geo_name like '" . $row['geo_name'] . "%'";
 
-                $response[$key]['value'] = $row['facility_district'];
-                $response[$key]['show'] = $row['facility_district'];
-                $response[$key]['facilityDetails'] = $this->getSubFields('facility_details', 'facility_id', 'facility_name', $condition1);
-                $response[$key]['provinceDetails'] = $this->getSubFields('geographical_divisions', 'geo_id', 'geo_name', $condition2);
-            }
-            return $response;
-        });
+            $response[$key]['value'] = $row['facility_district'];
+            $response[$key]['show'] = $row['facility_district'];
+            $response[$key]['facilityDetails'] = $this->getSubFields('facility_details', 'facility_id', 'facility_name', " facility_district like '" . $row['facility_district'] . "%'");
+            $response[$key]['provinceDetails'] = $this->getSubFields('geographical_divisions', 'geo_id', 'geo_name', " geo_name like '" . $row['geo_name'] . "%'");
+        }
+        return $response;
     }
 
     public function getProvinceDetailsApi($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        return once(function () use ($user, $onlyActive, $updatedDateTime) {
-
-            $query = "SELECT f.facility_id,
+        $query = "SELECT f.facility_id,
                             f.facility_name,
                             f.facility_code,
                             gd.geo_id,
@@ -1101,36 +1058,35 @@ class CommonService
                             f.facility_type
                     FROM geographical_divisions AS gd
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
-            $where = [];
-            if (!empty($user)) {
-                $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
-                if (!empty($facilityMap)) {
-                    $where[] = " f.facility_id IN (" . $facilityMap . ")";
-                }
+        $where = [];
+        if (!empty($user)) {
+            $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
+            if (!empty($facilityMap)) {
+                $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
+        }
 
-            if ($onlyActive) {
-                $where[] = " f.status like 'active'";
-            }
+        if ($onlyActive) {
+            $where[] = " f.status like 'active'";
+        }
 
-            if ($updatedDateTime) {
-                $where[] = " gd.updated_datetime >= '$updatedDateTime'";
-            }
-            $whereStr = "";
-            if (!empty($where)) {
-                $whereStr = " WHERE " . implode(" AND ", $where);
-            }
-            $query .= $whereStr . ' GROUP BY geo_name ORDER BY geo_name ASC';
-            $result = $this->db->rawQuery($query);
-            foreach ($result as $key => $row) {
-                $condition1 = " facility_state like '" . $row['geo_name'] . "%'";
+        if ($updatedDateTime) {
+            $where[] = " gd.updated_datetime >= '$updatedDateTime'";
+        }
+        $whereStr = "";
+        if (!empty($where)) {
+            $whereStr = " WHERE " . implode(" AND ", $where);
+        }
+        $query .= $whereStr . ' GROUP BY geo_name ORDER BY geo_name ASC';
+        $result = $this->db->rawQuery($query);
+        foreach ($result as $key => $row) {
+            //$condition1 = " facility_state like '" . $row['geo_name'] . "%'";
 
-                $response[$key]['value'] = $row['geo_id'];
-                $response[$key]['show'] = $row['geo_name'];
-                $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', $condition1);
-            }
-            return $response;
-        });
+            $response[$key]['value'] = $row['geo_id'];
+            $response[$key]['show'] = $row['geo_name'];
+            $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', " facility_state like '" . $row['geo_name'] . "%'");
+        }
+        return $response;
     }
 
     public function getAppHealthFacilitiesAPI($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null, $updatedDateTime = null): array
@@ -1215,16 +1171,14 @@ class CommonService
 
     public function getSubFields($tableName, $primary, $name, $condition)
     {
-        return once(function () use ($tableName, $primary, $name, $condition) {
-            $query = "SELECT $primary, $name from $tableName where $condition group by $name";
-            $result = $this->db->rawQuery($query);
-            $response = [];
-            foreach ($result as $key => $row) {
-                $response[$key]['value'] = $row[$primary];
-                $response[$key]['show'] = $row[$name];
-            }
-            return $response;
-        });
+        $query = "SELECT $primary, $name FROM $tableName WHERE $condition group by $name";
+        $result = $this->db->rawQuery($query);
+        $response = [];
+        foreach ($result as $key => $row) {
+            $response[$key]['value'] = $row[$primary];
+            $response[$key]['show'] = $row[$name];
+        }
+        return $response;
     }
 
     public static function encryptViewQRCode($uniqueId)
@@ -1318,7 +1272,7 @@ class CommonService
         return $sheet;
     }
 
-    public function getTableFieldsAsArray($tableName)
+    public function getTableFieldsAsArray(string $tableName, array $unwantedColumns = []): array
     {
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
                         WHERE TABLE_SCHEMA = ? AND table_name= ?";
@@ -1326,6 +1280,11 @@ class CommonService
         $columnNames = array_column($allColResult, 'COLUMN_NAME');
 
         // Create an array with all column names set to null
-        return array_fill_keys($columnNames, null);
+        $tableFieldsAsArray = array_fill_keys($columnNames, null);
+        if (!empty($unwantedColumns)) {
+            $tableFieldsAsArray = array_diff_key($tableFieldsAsArray, array_flip($unwantedColumns));
+        }
+
+        return $tableFieldsAsArray;
     }
 }

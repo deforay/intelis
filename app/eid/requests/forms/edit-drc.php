@@ -16,7 +16,7 @@ $eidResults = $eidService->getEidResults();
 
 $rKey = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
 	if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
@@ -90,7 +90,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 
-										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+										<?php if ($general->isSTSInstance()) { ?>
 											<td><label for="sampleCode">Échantillon ID <span class="mandatory">*</span>
 												</label></td>
 											<td>
@@ -158,7 +158,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											</select>
 										</td>
 
-										<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+										<?php if ($general->isSTSInstance()) { ?>
 											<!-- <tr> -->
 											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 											<td>

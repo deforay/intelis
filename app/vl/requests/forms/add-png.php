@@ -5,7 +5,7 @@ $sampleCodeKey = 'sample_code_key';
 $sampleCode = 'sample_code';
 $prefix = $arr['sample_code_prefix'];
 
-if ($_SESSION['instance']['type'] == 'remoteuser') {
+if ($general->isSTSInstance()) {
 	$rKey = 'R';
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
@@ -54,7 +54,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</div>
 									</div>
 
-									<?php if ($_SESSION['instance']['type'] == 'remoteuser') { ?>
+									<?php if ($general->isSTSInstance()) { ?>
 
 										<div class="col-xs-3 col-md-3">
 											<div class="">
