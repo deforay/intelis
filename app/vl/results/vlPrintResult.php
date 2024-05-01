@@ -210,7 +210,7 @@ $state = $geolocationService->getProvinces("yes");
 																<?= _translate('Reset'); ?>
 															</span></button>
 														&nbsp;<button class="btn btn-default btn-sm" onclick="convertSearchResultToPdf('');"><span>
-																<?php echo _translate("Result PDF"); ?>
+																<?php echo _translate("Print Result PDF"); ?>
 															</span></button>
 														&nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span>
 																<?php echo _translate("Manage Columns"); ?>
@@ -458,7 +458,7 @@ $state = $geolocationService->getProvinces("yes");
 																<?= _translate('Reset'); ?>
 															</span></button>
 														&nbsp;<button class="btn btn-default btn-sm" onclick="convertSearchResultToPdf('','printData');"><span>
-																<?php echo _translate("Result PDF"); ?>
+																<?php echo _translate("Print Result PDF"); ?>
 															</span></button>
 														&nbsp;<button class="btn btn-primary btn-sm" onclick="$('#printShowhide').fadeToggle();return false;"><span>
 																<?php echo _translate("Manage Columns"); ?>

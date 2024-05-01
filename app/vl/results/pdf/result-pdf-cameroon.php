@@ -104,6 +104,8 @@ if (!empty($result)) {
           }
      }
 
+     $sameReviewerAndApprover = (!empty($reviewedBy) && $reviewedBy == $resultApprovedBy);
+
      $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = $approvedSignaturePath = null;
      if (!empty($testedByRes['user_signature'])) {
           $testUserSignaturePath =  $testedByRes['user_signature'];
@@ -134,6 +136,10 @@ if (!empty($result)) {
      }
      // create new PDF document
      $pdf = new VLResultPDFHelper(orientation: PDF_PAGE_ORIENTATION, unit: PDF_UNIT, format: PDF_PAGE_FORMAT, unicode: true, encoding: 'UTF-8', diskCache: false, pdfTemplatePath: $reportTemplatePath, enableFooter: $displayPageNoInFooter);
+
+     // Get the current page dimensions
+     $page_width = $pdf->getPageWidth();
+     $page_height = $pdf->getPageHeight();
 
      if (empty($reportTemplatePath)) {
           if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
@@ -353,9 +359,13 @@ if (!empty($result)) {
 
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("SAMPLE TYPE") . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("TESTED BY") . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . ($sameReviewerAndApprover === false ? _translate("REVIEWED BY") : '') . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate($result['sample_name']) . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $testedBy . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($sameReviewerAndApprover === false ? $reviewedBy : '') . '</td>';
      $html .= '</tr>';
      // $html .= '<tr>';
      // $html .= '<td colspan="3" style="line-height:10px;"></td>';
@@ -421,111 +431,30 @@ if (!empty($result)) {
      $html .= '</tr>';
 
      if ($displaySignatureTable) {
-          if ($result['is_sample_rejected'] === 'no' && !empty($testedBy) && !empty($result['sample_tested_datetime']) && $pdf->imageExists(($testUserSignaturePath))) {
+
+          if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime']) && $displaySignatureTable) {
+
+               $approvertext = ($sameReviewerAndApprover) ? _translate("REVIEWED AND APPROVED BY") : _translate("APPROVED BY");
+
                $html .= '<tr>';
-               $html .= '<td style="line-height:8px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("TESTED BY") . '</td>';
-               $html .= '<td style="line-height:8px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
-               $html .= '<td style="line-height:8px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . $approvertext . '</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
                $html .= '</tr>';
 
                $html .= '<tr>';
-               $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . $testedBy . '</td>';
-               if (!empty($testUserSignaturePath) && $pdf->imageExists(($testUserSignaturePath))) {
-                    $html .= '<td style="line-height:8px;font-size:10px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:40px;" /></td>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
+               if (!empty($approvedSignaturePath) && $pdf->imageExists(($approvedSignaturePath))) {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedSignaturePath . '" style="width:100px;" /></td>';
                } else {
-                    $html .= '<td style="line-height:8px;font-size:10px;text-align:left;"></td>';
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
                }
-               $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
                $html .= '</tr>';
                $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:1px;"></td>';
+               $html .= '<td colspan="3" style="line-height:2px;"></td>';
                $html .= '</tr>';
-          }
-
-          if (!empty($revisedBy) && !empty($revisedSignaturePath) && $pdf->imageExists($revisedSignaturePath)) {
-
-               $html .= '<tr>';
-               $html .= '<td style="line-height:8px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("REPORT REVISED BY") . '</td>';
-               $html .= '<td style="line-height:8px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
-               $html .= '<td style="line-height:8px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
-               $html .= '</tr>';
-
-               $html .= '<tr>';
-               $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . $revisedBy . '</td>';
-               if (!empty($revisedSignaturePath) && $pdf->imageExists($revisedSignaturePath)) {
-                    $html .= '<td style="line-height:8px;font-size:10px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:40px;" /></td>';
-               } else {
-                    $html .= '<td style="line-height:8px;font-size:10px;text-align:left;"></td>';
-               }
-               $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . DateUtility::humanReadableDateFormat($result['revised_on'] ?? '') . '</td>';
-               $html .= '</tr>';
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:1px;"></td>';
-               $html .= '</tr>';
-          }
-          if ($reviewedBy != $resultApprovedBy) {
-               if (!empty($reviewedBy)) {
-                    $html .= '<tr>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("REVIEWED BY") . '</td>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
-                    $html .= '</tr>';
-
-                    $html .= '<tr>';
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-                    if (!empty($reviewedSignaturePath) && $pdf->imageExists(($reviewedSignaturePath))) {
-                         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:40px;" /></td>';
-                    } else {
-                         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-                    }
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_reviewed_datetime']) ? $result['result_reviewed_datetime'] : $result['sample_tested_datetime']) . '</td>';
-                    $html .= '</tr>';
-                    $html .= '<tr>';
-                    $html .= '<td colspan="3" style="line-height:2px;"></td>';
-                    $html .= '</tr>';
-               }
-               if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime']) && $displaySignatureTable) {
-                    $html .= '<tr>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("APPROVED BY") . '</td>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
-                    $html .= '</tr>';
-
-                    $html .= '<tr>';
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-                    if (!empty($approvedSignaturePath) && $pdf->imageExists(($approvedSignaturePath))) {
-                         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedSignaturePath . '" style="width:100px;" /></td>';
-                    } else {
-                         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-                    }
-
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
-                    $html .= '</tr>';
-                    $html .= '<tr>';
-                    $html .= '<td colspan="3" style="line-height:2px;"></td>';
-                    $html .= '</tr>';
-               }
-          } else {
-               if (!empty($reviewedBy)) {
-                    $html .= '<tr>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("REVIEWED AND APPROVED BY") . '</td>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
-                    $html .= '</tr>';
-
-                    $html .= '<tr>';
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-                    if (!empty($reviewedSignaturePath) && $pdf->imageExists(($reviewedSignaturePath))) {
-                         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:40px;" /></td>';
-                    } else {
-                         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-                    }
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_reviewed_datetime']) ? $result['result_reviewed_datetime'] : $result['sample_tested_datetime']) . '</td>';
-                    $html .= '</tr>';
-                    $html .= '<tr>';
-                    $html .= '<td colspan="3" style="line-height:2px;"></td>';
-                    $html .= '</tr>';
-               }
           }
      }
 
@@ -541,58 +470,122 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:1px;"></td>';
      $html .= '</tr>';
+     $html .= '</table>';
 
-     $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:10px;font-size:10px;text-align:left;">';
-     $html .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log<sub>10</sub> or a reduction or increase of a factor of 3 in the number of copies/mL") . ' </td>';
-     $html .= '</tr>';
+     //$html .= '<br><br><br><br><br><br><br><br>';
 
-     $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:2px;"></td>';
-     $html .= '</tr>';
+     // $html .= '<table>';
+     // $html .= '<tr>';
+     // $html .= '<td colspan="3" style="font-size:10px;text-align:left;">';
+     // $html .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log<sub>10</sub> or a reduction or increase of a factor of 3 in the number of copies/mL") . ' </td>';
+     // $html .= '</tr>';
 
-
-     $html .= '<tr><td colspan="3" style="line-height:11px;font-size:11px;text-align:left;color:#808080;">(*)&nbsp;';
-     $html .= '<u><strong>' . _translate("Detection Limit (DL)") . '</strong></u> : ' . _translate("&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 Log<sub>10</sub>) copies/mL for DBS");
-     $html .= '<br> &nbsp;&nbsp;&nbsp;&nbsp;';
-     $html .= '<u><strong>' . _translate("Quantification Limits (QL)") . '</strong></u> : ' .  _translate("Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for DBS");
-     $html .= '</td></tr>';
-
-     $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:2px;"></td>';
-     $html .= '</tr>';
-
-     $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
-     $html .= '</tr>';
      // $html .= '<tr>';
      // $html .= '<td colspan="3" style="line-height:2px;"></td>';
      // $html .= '</tr>';
-     $html .= '<tr>';
-     $html .= '<td colspan="3">';
-     $html .= '<table>';
-     $html .= '<tr>';
-     $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> = VL < = 1000 copies/ml: ' . _translate("Continue on current regimen") . '</td>';
-     $html .= '<td style="font-size:10px;text-align:left;">' . _translate("Printed on") . ' : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
-     $html .= '</tr>';
-     $html .= '<tr>';
-     $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:8px;height:8px;"/> = VL > 1000 copies/ml: ' . _translate("Clinical and counselling action required") . '</td>';
-     $html .= '</tr>';
-     $html .= '</table>';
-     $html .= '</td>';
-     $html .= '</tr>';
-     $html .= '</table>';
+
+
+     // $html .= '<tr><td colspan="3" style="font-size:11px;text-align:left;color:#808080;">(*)&nbsp;';
+     // $html .= '<u><strong>' . _translate("Detection Limit (DL)") . '</strong></u> : ' . _translate("&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 Log<sub>10</sub>) copies/mL for DBS");
+     // $html .= '<br> &nbsp;&nbsp;&nbsp;&nbsp;';
+     // $html .= '<u><strong>' . _translate("Quantification Limits (QL)") . '</strong></u> : ' .  _translate("Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for DBS");
+     // $html .= '</td></tr>';
+
+     // $html .= '<tr>';
+     // $html .= '<td colspan="3" style="line-height:2px;"></td>';
+     // $html .= '</tr>';
+
+     // $html .= '<tr>';
+     // $html .= '<td colspan="3" style="line-height:2px;font-size:2em;border-bottom:2px solid #d3d3d3;padding-"><br><br></td>';
+     // $html .= '</tr>';
+     // // $html .= '<tr>';
+     // // $html .= '<td colspan="3" style="line-height:2px;"></td>';
+     // // $html .= '</tr>';
+     // $html .= '<tr>';
+     // $html .= '<td colspan="3">';
+     // $html .= '<table>';
+     // $html .= '<tr>';
+     // $html .= '<td style="font-size:10px;text-align:left;width:75%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> = VL < = 1000 copies/ml: ' . _translate("Continue on current regimen") . '</td>';
+     // $html .= '<td style="font-size:10px;text-align:left;">' . _translate("Printed on") . ' : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
+     // $html .= '</tr>';
+     // $html .= '<tr>';
+     // $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:75%;">
+     //                <img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:8px;height:8px;"/> = VL > 1000 copies/ml: ' .
+     //      _translate("Clinical and counselling action required") .
+     //      '</td>';
+     // $html .= '</tr>';
+     // $html .= '</table>';
+     // $html .= '</td>';
+     // $html .= '</tr>';
+     // $html .= '</table>';
+
+     // Define the HTML block you want to position at the bottom
+     $bottomHtml = '
+          <table>
+               <tr>
+                    <td colspan="3" style="font-size:10px;text-align:left;">';
+     $bottomHtml .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log<sub>10</sub> or a reduction or increase of a factor of 3 in the number of copies/mL") . ' </td>';
+     $bottomHtml .= '</tr>';
+
+     $bottomHtml .= '<tr>';
+     $bottomHtml .= '<td colspan="3" style="line-height:2px;"></td>';
+     $bottomHtml .= '</tr>';
+
+
+     $bottomHtml .= '<tr><td colspan="3" style="font-size:11px;text-align:left;color:#808080;">(*)&nbsp;';
+     $bottomHtml .= '<u><strong>' . _translate("Detection Limit (DL)") . '</strong></u> : ' . _translate("&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 Log<sub>10</sub>) copies/mL for DBS");
+     $bottomHtml .= '<br> &nbsp;&nbsp;&nbsp;&nbsp;';
+     $bottomHtml .= '<u><strong>' . _translate("Quantification Limits (QL)") . '</strong></u> : ' .  _translate("Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for DBS");
+     $bottomHtml .= '</td></tr>';
+
+     $bottomHtml .= '<tr>';
+     $bottomHtml .= '<td colspan="3" style="line-height:2px;"></td>';
+     $bottomHtml .= '</tr>';
+
+     $bottomHtml .= '<tr>';
+     $bottomHtml .= '<td colspan="3" style="line-height:2px;font-size:2em;border-bottom:2px solid #d3d3d3;padding-"><br><br></td>';
+     $bottomHtml .= '</tr>';
+     $bottomHtml .= '<tr>';
+     $bottomHtml .= '<td colspan="3">';
+     $bottomHtml .= '<table>';
+     $bottomHtml .= '<tr>';
+     $bottomHtml .= '<td style="font-size:10px;text-align:left;width:75%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> = VL < = 1000 copies/ml: ' . _translate("Continue on current regimen") . '</td>';
+     $bottomHtml .= '<td style="font-size:10px;text-align:left;">' . _translate("Printed on") . ' : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
+     $bottomHtml .= '</tr>';
+     $bottomHtml .= '<tr>';
+     $bottomHtml .= '<td colspan="2" style="font-size:10px;text-align:left;width:75%;">
+                              <img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:8px;height:8px;"/> = VL > 1000 copies/ml: ' .
+          _translate("Clinical and counselling action required") .
+          '</td>';
+     $bottomHtml .= '</tr>';
+     $bottomHtml .= '</table>';
+     $bottomHtml .= '</td>';
+     $bottomHtml .= '</tr>';
+     $bottomHtml .= '</table>';
+
      if ($result['result'] != '' || (empty($result['result']) && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
           $pdf->writeHTML($html);
+
+          // Calculate where to start the bottom HTML
+          $margin_bottom = 10; // Adjust based on the height of your footer
+          $bottom_content_height = 50; // Adjust based on your content's estimated height
+          $start_y = $page_height - $bottom_content_height - $margin_bottom;
+
+          // Use writeHTMLCell() to position the bottom HTML content
+          $pdf->writeHTMLCell(0, 0, '', $start_y, $bottomHtml, 0, 1, 0, true, 'L', true);
+
           $pdf->lastPage();
+
           $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
-          $pdf->Output($filename, "F");
+
           if ($draftTextShow) {
                //Watermark section
                $watermark = new PdfWatermarkHelper();
                $watermark->setFullPathToFile($filename);
                $fullPathToFile = $filename;
                $watermark->Output($filename, "F");
+          } else {
+               $pdf->Output($filename, "F");
           }
           $pages[] = $filename;
           $page++;
