@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-05-01 12:12+0530\n"
-"PO-Revision-Date: 2024-05-01 12:12+0530\n"
+"POT-Creation-Date: 2024-05-02 11:49+0530\n"
+"PO-Revision-Date: 2024-05-02 11:52+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -44,13 +44,13 @@ msgstr "Bienvenue sur la page de l’administrateur"
 #: common/reference/add-implementation-partners.php:13
 #: common/reference/add-lab-storage.php:25
 #: common/reference/add-recommended-corrective-action.php:27
-#: common/reference/edit-geographical-divisions.php:35
-#: common/reference/edit-lab-storage.php:33
-#: common/reference/edit-recommended-corrective-action.php:36
+#: common/reference/edit-geographical-divisions.php:46
+#: common/reference/edit-lab-storage.php:36
+#: common/reference/edit-recommended-corrective-action.php:41
 #: common/reference/funding-sources.php:13
 #: common/reference/geographical-divisions-details.php:13
 #: common/reference/implementation-partners.php:13
-#: common/reference/lab-storage.php:13
+#: common/reference/lab-storage.php:20
 #: common/reference/recommended-corrective-actions.php:26
 #: covid-19/management/covid-19-clinic-report.php:68
 #: covid-19/management/covid-19-sample-rejection-report.php:36
@@ -147,7 +147,9 @@ msgstr "Bienvenue sur la page de l’administrateur"
 #: generic-tests/program-management/generic-sample-status.php:60
 #: generic-tests/program-management/generic-tests-clinic-report.php:35
 #: generic-tests/program-management/sample-rejection-report.php:43
+#: generic-tests/requests/add-request.php:216
 #: generic-tests/requests/add-samples-from-manifest.php:19
+#: generic-tests/requests/edit-request.php:387
 #: generic-tests/requests/view-requests.php:110
 #: generic-tests/results/email-results.php:61
 #: generic-tests/results/generic-failed-results.php:51
@@ -435,7 +437,7 @@ msgstr "Rechercher"
 #: covid-19/results/covid-19-print-results.php:459
 #: covid-19/results/covid-19-result-status.php:213
 #: covid-19/results/email-results.php:372 dashboard/index.php:519
-#: dashboard/index.php:854 dashboard/vlTestResultStatus.php:189
+#: dashboard/index.php:854 dashboard/vlTestResultStatus.php:194
 #: eid/management/eid-clinic-report.php:546
 #: eid/management/eid-export-data.php:369
 #: eid/management/eid-export-data.php:400
@@ -530,7 +532,7 @@ msgstr "Enregistré le"
 #: common/reference/funding-sources.php:39
 #: common/reference/geographical-divisions-details.php:43
 #: common/reference/implementation-partners.php:39
-#: common/reference/lab-storage.php:42
+#: common/reference/lab-storage.php:49
 #: common/reference/recommended-corrective-actions.php:55
 #: covid-19/management/covid-19-clinic-report.php:194
 #: covid-19/management/covid-19-clinic-report.php:297
@@ -658,8 +660,11 @@ msgstr "Historique de l’API"
 #: admin/monitoring/sync-status.php:112 batch/batches.php:94
 #: facilities/addFacility.php:340 facilities/editFacility.php:370
 #: facilities/editFacility.php:979 facilities/mapTestType.php:65
+#: generic-tests/requests/add-request.php:236
+#: generic-tests/requests/edit-request.php:411
 #: generic-tests/requests/view-requests.php:127
 #: generic-tests/requests/view-requests.php:162
+#: generic-tests/results/update-generic-test-result.php:403
 #: instruments/add-instrument.php:199 instruments/add-instrument.php:320
 #: instruments/edit-instrument.php:270 instruments/edit-instrument.php:408
 #: specimen-referral-manifest/move-manifest.php:218
@@ -717,9 +722,9 @@ msgstr "Veuillez sélectionner les types de tests"
 #: cd4/results/email-results.php:240 cd4/results/email-results.php:255
 #: cd4/results/email-results.php:575 cd4/results/email-results.php:579
 #: cd4/results/get-cd4-result-status.php:167
-#: classes/Services/CommonService.php:399
+#: classes/Services/CommonService.php:350
 #: common/reference/add-geographical-divisions.php:74
-#: common/reference/edit-geographical-divisions.php:76
+#: common/reference/edit-geographical-divisions.php:87
 #: covid-19/management/covid-19-clinic-report.php:100
 #: covid-19/management/covid-19-clinic-report.php:113
 #: covid-19/management/covid-19-clinic-report.php:129
@@ -1014,6 +1019,25 @@ msgstr "Veuillez sélectionner les types de tests"
 #: generic-tests/program-management/generic-export-data.php:222
 #: generic-tests/program-management/generic-sample-status.php:87
 #: generic-tests/program-management/generic-tests-clinic-report.php:61
+#: generic-tests/requests/add-request.php:239
+#: generic-tests/requests/add-request.php:288
+#: generic-tests/requests/add-request.php:312
+#: generic-tests/requests/add-request.php:335
+#: generic-tests/requests/add-request.php:348
+#: generic-tests/requests/add-request.php:498
+#: generic-tests/requests/add-request.php:560
+#: generic-tests/requests/add-request.php:572
+#: generic-tests/requests/add-request.php:607
+#: generic-tests/requests/edit-request.php:414
+#: generic-tests/requests/edit-request.php:454
+#: generic-tests/requests/edit-request.php:479
+#: generic-tests/requests/edit-request.php:512
+#: generic-tests/requests/edit-request.php:524
+#: generic-tests/requests/edit-request.php:687
+#: generic-tests/requests/edit-request.php:748
+#: generic-tests/requests/edit-request.php:761
+#: generic-tests/requests/edit-request.php:775
+#: generic-tests/requests/edit-request.php:814
 #: generic-tests/requests/getTestTypeForm.php:97
 #: generic-tests/results/email-results.php:151
 #: generic-tests/results/email-results.php:176
@@ -1036,6 +1060,16 @@ msgstr "Veuillez sélectionner les types de tests"
 #: generic-tests/results/generic-test-results.php:141
 #: generic-tests/results/generic-test-results.php:212
 #: generic-tests/results/get-generic-results-for-approval.php:190
+#: generic-tests/results/update-generic-test-result.php:406
+#: generic-tests/results/update-generic-test-result.php:446
+#: generic-tests/results/update-generic-test-result.php:471
+#: generic-tests/results/update-generic-test-result.php:504
+#: generic-tests/results/update-generic-test-result.php:656
+#: generic-tests/results/update-generic-test-result.php:680
+#: generic-tests/results/update-generic-test-result.php:730
+#: generic-tests/results/update-generic-test-result.php:752
+#: generic-tests/results/update-generic-test-result.php:767
+#: generic-tests/results/update-generic-test-result.php:800
 #: global-config/editGlobalConfig.php:174
 #: global-config/editGlobalConfig.php:839
 #: global-config/editGlobalConfig.php:850
@@ -1418,7 +1452,7 @@ msgstr "Synchronisé sur"
 #: cd4/results/cd4-manual-results.php:278 cd4/results/cd4-print-results.php:213
 #: cd4/results/cd4-print-results.php:373
 #: common/reference/geographical-divisions-details.php:37
-#: common/reference/lab-storage.php:36
+#: common/reference/lab-storage.php:43
 #: covid-19/management/covid-19-export-data.php:283
 #: covid-19/reference/add-covid19-qc-test-kit.php:72
 #: covid-19/reference/edit-covid19-qc-test-kit.php:83
@@ -1543,7 +1577,9 @@ msgstr "Action"
 #: generic-tests/program-management/generic-export-data.php:260
 #: generic-tests/program-management/generic-export-data.php:320
 #: generic-tests/program-management/generic-sample-status.php:151
+#: generic-tests/requests/add-request.php:249
 #: generic-tests/requests/add-samples-from-manifest.php:65
+#: generic-tests/requests/edit-request.php:426
 #: generic-tests/requests/view-requests.php:154
 #: generic-tests/results/generic-failed-results.php:144
 #: generic-tests/results/generic-failed-results.php:196
@@ -1554,6 +1590,7 @@ msgstr "Action"
 #: generic-tests/results/generic-result-approval.php:218
 #: generic-tests/results/generic-test-results.php:166
 #: generic-tests/results/generic-test-results.php:225
+#: generic-tests/results/update-generic-test-result.php:418
 #: global-config/editGlobalConfig.php:475
 #: global-config/editGlobalConfig.php:685
 #: global-config/editGlobalConfig.php:863
@@ -1641,9 +1678,9 @@ msgstr "ID de l'échantillon"
 #: common/reference/add-implementation-partners.php:56
 #: common/reference/add-lab-storage.php:79
 #: common/reference/add-recommended-corrective-action.php:70
-#: common/reference/edit-geographical-divisions.php:97
-#: common/reference/edit-lab-storage.php:88
-#: common/reference/edit-recommended-corrective-action.php:79
+#: common/reference/edit-geographical-divisions.php:108
+#: common/reference/edit-lab-storage.php:91
+#: common/reference/edit-recommended-corrective-action.php:84
 #: covid-19/reference/add-covid19-comorbidities.php:56
 #: covid-19/reference/add-covid19-qc-test-kit.php:93
 #: covid-19/reference/add-covid19-results.php:55
@@ -2020,7 +2057,9 @@ msgstr "Veuillez choisir la Région/Etat"
 #: generic-tests/mail/mail-generic-tests-results.php:223
 #: generic-tests/program-management/generic-export-data.php:97
 #: generic-tests/program-management/generic-tests-clinic-report.php:66
+#: generic-tests/requests/add-request.php:285
 #: generic-tests/requests/add-samples-from-manifest.php:91
+#: generic-tests/requests/edit-request.php:451
 #: generic-tests/requests/view-requests.php:186
 #: generic-tests/results/email-results.php:223
 #: generic-tests/results/generic-failed-results.php:73
@@ -2032,6 +2071,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: generic-tests/results/generic-print-result.php:319
 #: generic-tests/results/generic-print-result.php:439
 #: generic-tests/results/generic-print-result.php:486
+#: generic-tests/results/update-generic-test-result.php:443
 #: hepatitis/management/hepatitis-clinic-report.php:135
 #: hepatitis/management/hepatitis-clinic-report.php:244
 #: hepatitis/management/hepatitis-clinic-report.php:346
@@ -2400,6 +2440,9 @@ msgstr "Exporter vers Excel"
 #: admin/monitoring/lab-sync-details.php:214
 #: covid-19/management/covid-19-clinic-report.php:417
 #: eid/management/eid-clinic-report.php:420 facilities/facilities.php:173
+#: generic-tests/requests/add-request.php:826
+#: generic-tests/requests/edit-request.php:1044
+#: generic-tests/results/update-generic-test-result.php:1018
 #: patients/add-patient.php:57 patients/edit-patient.php:74
 #: users/addUser.php:215 users/editUser.php:288
 #: vl/program-management/highViralLoad.php:934 vl/requests/forms/add-drc.php:98
@@ -2411,8 +2454,11 @@ msgstr "Région"
 #: eid/requests/forms/add-cameroon.php:106
 #: eid/requests/forms/edit-cameroon.php:122
 #: eid/results/forms/update-cameroon-result.php:116
-#: facilities/facilities.php:174 patients/add-patient.php:67
-#: patients/edit-patient.php:84 users/addUser.php:225 users/editUser.php:298
+#: facilities/facilities.php:174 generic-tests/requests/add-request.php:822
+#: generic-tests/requests/edit-request.php:1040
+#: generic-tests/results/update-generic-test-result.php:1014
+#: patients/add-patient.php:67 patients/edit-patient.php:84
+#: users/addUser.php:225 users/editUser.php:298
 #: vl/requests/forms/add-cameroon.php:142
 #: vl/requests/forms/edit-cameroon.php:184
 msgid "District"
@@ -2696,9 +2742,9 @@ msgstr "Nom du Labo"
 #: common/reference/add-implementation-partners.php:44
 #: common/reference/add-lab-storage.php:67
 #: common/reference/add-recommended-corrective-action.php:58
-#: common/reference/edit-geographical-divisions.php:86
-#: common/reference/edit-lab-storage.php:75
-#: common/reference/edit-recommended-corrective-action.php:67
+#: common/reference/edit-geographical-divisions.php:97
+#: common/reference/edit-lab-storage.php:78
+#: common/reference/edit-recommended-corrective-action.php:72
 #: covid-19/requests/forms/add-cameroon.php:206
 #: covid-19/requests/forms/add-png.php:202
 #: covid-19/requests/forms/add-rwanda.php:155
@@ -3020,10 +3066,10 @@ msgstr "Créer un lot"
 #: common/reference/add-lab-storage.php:35
 #: common/reference/add-recommended-corrective-action.php:37
 #: common/reference/edit-funding-sources.php:38
-#: common/reference/edit-geographical-divisions.php:45
-#: common/reference/edit-implementation-partners.php:39
-#: common/reference/edit-lab-storage.php:43
-#: common/reference/edit-recommended-corrective-action.php:46
+#: common/reference/edit-geographical-divisions.php:56
+#: common/reference/edit-implementation-partners.php:44
+#: common/reference/edit-lab-storage.php:46
+#: common/reference/edit-recommended-corrective-action.php:51
 #: covid-19/mail/mail-covid-19-results.php:55
 #: covid-19/reference/add-covid19-comorbidities.php:22
 #: covid-19/reference/add-covid19-qc-test-kit.php:37
@@ -3185,6 +3231,8 @@ msgstr "indique les champs obligatoires"
 #: eid/requests/forms/edit-cameroon.php:537
 #: eid/results/forms/update-burkina-faso-result.php:370
 #: eid/results/forms/update-cameroon-result.php:508
+#: generic-tests/requests/add-request.php:546
+#: generic-tests/requests/edit-request.php:745
 msgid "Testing Platform"
 msgstr "Plate-forme d'essai"
 
@@ -3427,7 +3475,9 @@ msgstr "Échantillons entrés par"
 #: generic-tests/program-management/generic-sample-status.php:76
 #: generic-tests/program-management/generic-sample-status.php:160
 #: generic-tests/program-management/sample-rejection-report.php:59
+#: generic-tests/requests/add-request.php:483
 #: generic-tests/requests/add-samples-from-manifest.php:73
+#: generic-tests/requests/edit-request.php:672
 #: generic-tests/requests/view-requests.php:165
 #: generic-tests/results/email-results.php:140
 #: generic-tests/results/generic-failed-results.php:63
@@ -3438,6 +3488,7 @@ msgstr "Échantillons entrés par"
 #: generic-tests/results/generic-result-approval.php:118
 #: generic-tests/results/generic-result-approval.php:226
 #: generic-tests/results/generic-test-results.php:90
+#: generic-tests/results/update-generic-test-result.php:641
 #: global-config/editGlobalConfig.php:1686
 #: hepatitis/management/hepatitis-clinic-report.php:187
 #: hepatitis/management/hepatitis-clinic-report.php:292
@@ -3659,7 +3710,9 @@ msgstr "Alphanumérique"
 #: generic-tests/program-management/generic-export-data.php:330
 #: generic-tests/program-management/generic-sample-status.php:97
 #: generic-tests/program-management/sample-rejection-report.php:75
+#: generic-tests/requests/add-request.php:495
 #: generic-tests/requests/add-samples-from-manifest.php:94
+#: generic-tests/requests/edit-request.php:684
 #: generic-tests/requests/view-requests.php:189
 #: generic-tests/results/email-results.php:146
 #: generic-tests/results/generic-failed-results.php:93
@@ -3676,6 +3729,7 @@ msgstr "Alphanumérique"
 #: generic-tests/results/generic-test-results.php:110
 #: generic-tests/results/generic-test-results.php:192
 #: generic-tests/results/generic-test-results.php:248
+#: generic-tests/results/update-generic-test-result.php:653
 #: global-config/editGlobalConfig.php:1690
 #: hepatitis/management/hepatitis-clinic-report.php:113
 #: hepatitis/management/hepatitis-clinic-report.php:222
@@ -3790,6 +3844,11 @@ msgstr "Veuillez sélectionner le type d'échantillon"
 #: eid/management/eid-export-data.php:303
 #: generic-tests/program-management/generic-export-data.php:300
 #: generic-tests/program-management/generic-export-data.php:334
+#: generic-tests/requests/add-request.php:332
+#: generic-tests/requests/add-request.php:834
+#: generic-tests/requests/edit-request.php:509
+#: generic-tests/requests/edit-request.php:1052
+#: generic-tests/results/update-generic-test-result.php:1026
 #: hepatitis/management/hepatitis-export-data.php:258
 #: hepatitis/management/hepatitis-export-data.php:283
 #: tb/management/tb-export-data.php:251 tb/management/tb-export-data.php:276
@@ -3834,6 +3893,7 @@ msgid "Please select machine"
 msgstr "Veuillez sélectionner une machine"
 
 #: batch/add-batch.php:317 eid/requests/forms/add-burkina-faso.php:459
+#: generic-tests/requests/add-request.php:725
 #: tb/requests/forms/add-burkina-faso.php:477
 #: vl/requests/forms/add-burkina-faso.php:651
 #: vl/requests/forms/add-cameroon.php:691
@@ -3849,9 +3909,9 @@ msgstr "Sauvegarder et Suivant"
 #: common/reference/add-implementation-partners.php:57
 #: common/reference/add-lab-storage.php:80
 #: common/reference/add-recommended-corrective-action.php:71
-#: common/reference/edit-geographical-divisions.php:98
-#: common/reference/edit-lab-storage.php:89
-#: common/reference/edit-recommended-corrective-action.php:80
+#: common/reference/edit-geographical-divisions.php:109
+#: common/reference/edit-lab-storage.php:92
+#: common/reference/edit-recommended-corrective-action.php:85
 #: covid-19/reference/add-covid19-comorbidities.php:57
 #: covid-19/reference/add-covid19-qc-test-kit.php:94
 #: covid-19/reference/add-covid19-results.php:56
@@ -3890,7 +3950,10 @@ msgstr "Sauvegarder et Suivant"
 #: generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:70
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:66
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:77
+#: generic-tests/requests/add-request.php:729
+#: generic-tests/requests/edit-request.php:941
 #: generic-tests/results/email-results.php:333
+#: generic-tests/results/update-generic-test-result.php:915
 #: global-config/editGlobalConfig.php:1715
 #: hepatitis/reference/add-hepatitis-comorbidities.php:57
 #: hepatitis/reference/add-hepatitis-results.php:56
@@ -3933,7 +3996,7 @@ msgstr "Annuler"
 #: facilities/editFacility.php:758 facilities/editFacility.php:1070
 #: generic-tests/requests/add-request.php:793
 #: generic-tests/requests/clone-request.php:1137
-#: generic-tests/requests/edit-request.php:1023
+#: generic-tests/requests/edit-request.php:1011
 #: generic-tests/requests/view-requests.php:292
 #: generic-tests/results/update-generic-test-result.php:985
 #: specimen-referral-manifest/move-manifest.php:310
@@ -4043,7 +4106,7 @@ msgstr "Créer un nouveau lot"
 #: cd4/management/get-rejected-samples.php:103
 #: covid-19/management/covid-19-sample-testing-report.php:117
 #: covid-19/management/get-rejected-samples.php:89
-#: dashboard/getSampleResult.php:749
+#: dashboard/getSampleResult.php:755
 #: eid/management/eid-sample-testing-report.php:117
 #: eid/management/get-rejected-samples.php:95
 #: generic-tests/program-management/generic-tests-sample-testing-report.php:117
@@ -4664,10 +4727,13 @@ msgstr "Tout"
 #: eid/results/forms/update-cameroon-result.php:198
 #: generic-tests/mail/mail-generic-tests-results.php:229
 #: generic-tests/program-management/generic-export-data.php:209
+#: generic-tests/requests/add-request.php:410
+#: generic-tests/requests/edit-request.php:588
 #: generic-tests/requests/patientModal.php:109
 #: generic-tests/results/generic-print-result.php:135
 #: generic-tests/results/generic-print-result.php:354
 #: generic-tests/results/generic-test-results.php:136
+#: generic-tests/results/update-generic-test-result.php:557
 #: hepatitis/management/hepatitis-clinic-report.php:158
 #: hepatitis/management/hepatitis-clinic-report.php:258
 #: hepatitis/management/hepatitis-clinic-report.php:361
@@ -4762,6 +4828,8 @@ msgstr "Veuillez choisir le sexe"
 #: eid/results/forms/update-cameroon-result.php:202
 #: eid/results/forms/update-drc-result.php:224
 #: generic-tests/program-management/generic-export-data.php:212
+#: generic-tests/requests/add-request.php:413
+#: generic-tests/requests/edit-request.php:592
 #: generic-tests/results/email-results.php:179
 #: generic-tests/results/generic-print-result.php:143
 #: generic-tests/results/generic-print-result.php:362
@@ -4820,6 +4888,8 @@ msgstr "Homme"
 #: eid/results/forms/update-cameroon-result.php:203
 #: eid/results/forms/update-drc-result.php:225
 #: generic-tests/program-management/generic-export-data.php:213
+#: generic-tests/requests/add-request.php:416
+#: generic-tests/requests/edit-request.php:596
 #: generic-tests/results/email-results.php:182
 #: generic-tests/results/generic-print-result.php:146
 #: generic-tests/results/generic-print-result.php:365
@@ -4897,6 +4967,8 @@ msgstr "Femme"
 #: eid/results/pdf/result-pdf-sierraleone.php:193
 #: eid/results/pdf/result-pdf-ssudan.php:158
 #: generic-tests/program-management/generic-export-data.php:214
+#: generic-tests/requests/add-request.php:419
+#: generic-tests/requests/edit-request.php:600
 #: generic-tests/results/email-results.php:185
 #: generic-tests/results/generic-print-result.php:149
 #: generic-tests/results/generic-print-result.php:368
@@ -5026,6 +5098,7 @@ msgstr "Exporter vers Excel"
 #: generic-tests/results/generic-print-result.php:471
 #: generic-tests/results/generic-test-results.php:180
 #: generic-tests/results/generic-test-results.php:236
+#: generic-tests/results/update-generic-test-result.php:523
 #: hepatitis/management/hepatitis-clinic-report.php:185
 #: hepatitis/management/hepatitis-clinic-report.php:290
 #: hepatitis/management/hepatitis-clinic-report.php:386
@@ -5166,7 +5239,7 @@ msgstr "Date de test de l'échantillon"
 #: cd4/results/cd4-manual-results.php:207
 #: cd4/results/cd4-manual-results.php:263
 #: common/reference/add-lab-storage.php:53
-#: common/reference/edit-lab-storage.php:61 common/reference/lab-storage.php:34
+#: common/reference/edit-lab-storage.php:64 common/reference/lab-storage.php:41
 #: covid-19/management/covid-19-clinic-report.php:187
 #: covid-19/management/covid-19-export-data.php:118
 #: covid-19/management/covid-19-sample-status.php:72
@@ -5190,6 +5263,8 @@ msgstr "Date de test de l'échantillon"
 #: eid/results/eid-print-results.php:347
 #: generic-tests/program-management/generic-export-data.php:111
 #: generic-tests/program-management/generic-sample-status.php:105
+#: generic-tests/requests/add-request.php:345
+#: generic-tests/requests/edit-request.php:521
 #: generic-tests/requests/view-requests.php:177
 #: generic-tests/results/generic-failed-results.php:87
 #: generic-tests/results/generic-print-result.php:215
@@ -5199,6 +5274,7 @@ msgstr "Date de test de l'échantillon"
 #: generic-tests/results/generic-test-results.php:128
 #: generic-tests/results/generic-test-results.php:189
 #: generic-tests/results/generic-test-results.php:245
+#: generic-tests/results/update-generic-test-result.php:677
 #: hepatitis/management/hepatitis-clinic-report.php:189
 #: hepatitis/management/hepatitis-export-data.php:109
 #: hepatitis/management/hepatitis-sample-status.php:77
@@ -5253,12 +5329,12 @@ msgstr "Résultat CD4"
 #: cd4/results/cd4-print-results.php:372
 #: common/reference/add-geographical-divisions.php:81
 #: common/reference/add-recommended-corrective-action.php:55
-#: common/reference/edit-geographical-divisions.php:83
-#: common/reference/edit-recommended-corrective-action.php:64
+#: common/reference/edit-geographical-divisions.php:94
+#: common/reference/edit-recommended-corrective-action.php:69
 #: common/reference/funding-sources.php:34
 #: common/reference/geographical-divisions-details.php:35
 #: common/reference/implementation-partners.php:34
-#: common/reference/lab-storage.php:35
+#: common/reference/lab-storage.php:42
 #: common/reference/recommended-corrective-actions.php:47
 #: covid-19/management/covid-19-clinic-report.php:189
 #: covid-19/management/covid-19-clinic-report.php:421
@@ -5420,6 +5496,11 @@ msgstr "Statut"
 #: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:39
 #: generic-tests/mail/mail-generic-tests-results.php:245
 #: generic-tests/program-management/get-rejection-result.php:95
+#: generic-tests/requests/add-request.php:569
+#: generic-tests/requests/add-request.php:586
+#: generic-tests/requests/edit-request.php:772
+#: generic-tests/requests/edit-request.php:792
+#: generic-tests/results/update-generic-test-result.php:784
 #: hepatitis/management/get-rejected-samples.php:101
 #: hepatitis/management/hepatitis-clinic-report.php:267
 #: hepatitis/management/hepatitis-clinic-report.php:294
@@ -5442,7 +5523,7 @@ msgstr "Statut"
 #: vl/result-mail/editTestResultEmailConfig.php:113
 #: vl/results/forms/update-burkina-faso-result.php:565
 #: vl/results/forms/update-cameroon-result.php:622
-#: vl/results/pdf/result-pdf-cameroon.php:383
+#: vl/results/pdf/result-pdf-cameroon.php:396
 msgid "Rejection Reason"
 msgstr "Motif de rejet"
 
@@ -5899,6 +5980,9 @@ msgstr "Partenaires de mise en oeuvre"
 #: eid/results/forms/update-sierraleone-result.php:131
 #: eid/results/forms/update-southsudan-result.php:131
 #: generic-tests/program-management/generic-export-data.php:200
+#: generic-tests/requests/add-request.php:334
+#: generic-tests/requests/edit-request.php:478
+#: generic-tests/results/update-generic-test-result.php:470
 #: hepatitis/management/hepatitis-export-data.php:167
 #: hepatitis/requests/hepatitis-dhis2.php:204
 #: hepatitis/requests/hepatitis-requests.php:159
@@ -6027,7 +6111,18 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: generic-tests/program-management/generic-export-data.php:170
 #: generic-tests/program-management/generic-export-data.php:223
 #: generic-tests/program-management/generic-export-data.php:232
+#: generic-tests/requests/add-request.php:427
+#: generic-tests/requests/add-request.php:446
+#: generic-tests/requests/add-request.php:459
+#: generic-tests/requests/add-request.php:561
+#: generic-tests/requests/edit-request.php:609
+#: generic-tests/requests/edit-request.php:631
+#: generic-tests/requests/edit-request.php:647
+#: generic-tests/requests/edit-request.php:763
 #: generic-tests/results/email-results.php:195
+#: generic-tests/results/update-generic-test-result.php:601
+#: generic-tests/results/update-generic-test-result.php:614
+#: generic-tests/results/update-generic-test-result.php:754
 #: global-config/editGlobalConfig.php:136
 #: global-config/editGlobalConfig.php:257
 #: global-config/editGlobalConfig.php:269
@@ -6215,7 +6310,18 @@ msgstr "Oui"
 #: generic-tests/program-management/generic-export-data.php:171
 #: generic-tests/program-management/generic-export-data.php:224
 #: generic-tests/program-management/generic-export-data.php:233
+#: generic-tests/requests/add-request.php:430
+#: generic-tests/requests/add-request.php:449
+#: generic-tests/requests/add-request.php:462
+#: generic-tests/requests/add-request.php:562
+#: generic-tests/requests/edit-request.php:613
+#: generic-tests/requests/edit-request.php:635
+#: generic-tests/requests/edit-request.php:651
+#: generic-tests/requests/edit-request.php:765
 #: generic-tests/results/email-results.php:196
+#: generic-tests/results/update-generic-test-result.php:605
+#: generic-tests/results/update-generic-test-result.php:618
+#: generic-tests/results/update-generic-test-result.php:756
 #: global-config/editGlobalConfig.php:137
 #: global-config/editGlobalConfig.php:258
 #: global-config/editGlobalConfig.php:270
@@ -6407,9 +6513,12 @@ msgstr "Nom du patient"
 #: covid-19/results/covid-19-print-results.php:127
 #: covid-19/results/covid-19-print-results.php:287
 #: generic-tests/program-management/generic-export-data.php:123
+#: generic-tests/requests/add-request.php:404
+#: generic-tests/requests/edit-request.php:581
 #: generic-tests/results/generic-failed-results.php:120
 #: generic-tests/results/generic-print-result.php:171
 #: generic-tests/results/generic-print-result.php:390
+#: generic-tests/results/update-generic-test-result.php:553
 #: hepatitis/management/hepatitis-export-data.php:198
 #: hepatitis/requests/hepatitis-requests.php:333
 #: hepatitis/results/hepatitis-failed-results.php:162
@@ -6594,6 +6703,12 @@ msgstr "Résultat"
 #: eid/results/forms/update-cameroon-result.php:152
 #: generic-tests/program-management/generic-export-data.php:303
 #: generic-tests/program-management/generic-export-data.php:335
+#: generic-tests/requests/add-request.php:309
+#: generic-tests/requests/add-request.php:830
+#: generic-tests/requests/edit-request.php:476
+#: generic-tests/requests/edit-request.php:1048
+#: generic-tests/results/update-generic-test-result.php:468
+#: generic-tests/results/update-generic-test-result.php:1022
 #: hepatitis/management/hepatitis-export-data.php:261
 #: hepatitis/management/hepatitis-export-data.php:284
 #: tb/management/tb-export-data.php:254 tb/management/tb-export-data.php:277
@@ -6868,6 +6983,9 @@ msgstr "Exemple-Date d'envoie de l'email"
 #: eid/management/eid-sample-status.php:161
 #: eid/results/eid-manual-results.php:264
 #: generic-tests/program-management/generic-sample-status.php:205
+#: generic-tests/requests/add-request.php:797
+#: generic-tests/requests/edit-request.php:1015
+#: generic-tests/results/update-generic-test-result.php:989
 #: hepatitis/management/hepatitis-sample-status.php:150
 #: tb/management/tb-sample-status.php:149
 #: vl/program-management/vl-sample-status.php:209
@@ -7054,6 +7172,9 @@ msgstr "Unique ART No."
 #: eid/results/forms/update-burkina-faso-result.php:172
 #: eid/results/forms/update-cameroon-result.php:188
 #: eid/results/forms/update-cameroon-result.php:256
+#: generic-tests/requests/add-request.php:382
+#: generic-tests/requests/edit-request.php:558
+#: generic-tests/results/update-generic-test-result.php:529
 #: tb/requests/forms/add-burkina-faso.php:186
 #: tb/requests/forms/edit-burkina-faso.php:206
 #: tb/results/forms/update-burkina-faso.php:205
@@ -7103,6 +7224,9 @@ msgstr "Numéro de téléphone portable du patient"
 
 #: cd4/management/export-cd4-results.php:32
 #: cd4/requests/export-cd4-requests.php:28
+#: generic-tests/requests/add-request.php:481
+#: generic-tests/requests/edit-request.php:670
+#: generic-tests/results/update-generic-test-result.php:639
 #: vl/program-management/export-vl-results.php:36
 #: vl/requests/export-vl-requests.php:28
 #: vl/requests/forms/add-burkina-faso.php:253
@@ -7137,8 +7261,15 @@ msgid "Date of Initiation of Current Regimen"
 msgstr "Date de début du Protocole actuel"
 
 #: cd4/management/export-cd4-results.php:32
-#: cd4/requests/export-cd4-requests.php:28 patients/add-patient.php:178
-#: patients/edit-patient.php:195 vl/program-management/export-vl-results.php:36
+#: cd4/requests/export-cd4-requests.php:28
+#: generic-tests/requests/add-request.php:443
+#: generic-tests/requests/add-request.php:446
+#: generic-tests/requests/edit-request.php:627
+#: generic-tests/requests/edit-request.php:630
+#: generic-tests/results/update-generic-test-result.php:597
+#: generic-tests/results/update-generic-test-result.php:600
+#: patients/add-patient.php:178 patients/edit-patient.php:195
+#: vl/program-management/export-vl-results.php:36
 #: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:312
 #: vl/requests/forms/edit-cameroon.php:353
 #: vl/results/forms/update-cameroon-result.php:387
@@ -7146,8 +7277,15 @@ msgid "Is Patient Pregnant?"
 msgstr "La patiente est-elle enceinte ?"
 
 #: cd4/management/export-cd4-results.php:32
-#: cd4/requests/export-cd4-requests.php:28 patients/add-patient.php:189
-#: patients/edit-patient.php:206 vl/program-management/export-vl-results.php:36
+#: cd4/requests/export-cd4-requests.php:28
+#: generic-tests/requests/add-request.php:456
+#: generic-tests/requests/add-request.php:459
+#: generic-tests/requests/edit-request.php:643
+#: generic-tests/requests/edit-request.php:646
+#: generic-tests/results/update-generic-test-result.php:610
+#: generic-tests/results/update-generic-test-result.php:613
+#: patients/add-patient.php:189 patients/edit-patient.php:206
+#: vl/program-management/export-vl-results.php:36
 #: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:329
 #: vl/requests/forms/edit-cameroon.php:370
 #: vl/results/forms/update-cameroon-result.php:404
@@ -7210,6 +7348,9 @@ msgstr "Date de la demande"
 #: eid/results/forms/update-burkina-faso-result.php:384
 #: eid/results/forms/update-cameroon-result.php:526
 #: eid/results/forms/update-drc-result.php:471
+#: generic-tests/requests/add-request.php:557
+#: generic-tests/requests/edit-request.php:757
+#: generic-tests/results/update-generic-test-result.php:748
 #: tb/requests/forms/add-burkina-faso.php:377
 #: tb/requests/forms/edit-burkina-faso.php:398
 #: tb/results/forms/update-burkina-faso.php:396
@@ -7227,8 +7368,8 @@ msgstr "L'échantillon est-il rejeté ?"
 #: cd4/management/export-cd4-results.php:32
 #: common/reference/add-recommended-corrective-action.php:5
 #: common/reference/add-recommended-corrective-action.php:28
-#: common/reference/edit-recommended-corrective-action.php:5
-#: common/reference/edit-recommended-corrective-action.php:37
+#: common/reference/edit-recommended-corrective-action.php:10
+#: common/reference/edit-recommended-corrective-action.php:42
 #: covid-19/management/covid-19-clinic-report.php:292
 #: covid-19/management/get-rejected-samples.php:88
 #: tb/management/get-rejected-samples.php:105
@@ -7304,22 +7445,11 @@ msgstr "Demande Créé le"
 msgid "View"
 msgstr "Voir"
 
-#: cd4/management/get-data-export.php:276 cd4/results/cd4-print-results.php:136
-#: cd4/results/cd4-print-results.php:298
+#: cd4/management/get-data-export.php:276
 #: covid-19/management/get-data-export.php:277
-#: covid-19/results/covid-19-print-results.php:139
-#: covid-19/results/covid-19-print-results.php:299
-#: eid/management/get-data-export.php:302 eid/results/eid-print-results.php:128
-#: eid/results/eid-print-results.php:135 eid/results/eid-print-results.php:275
-#: eid/results/eid-print-results.php:282
-#: generic-tests/results/generic-print-result.php:180
-#: generic-tests/results/generic-print-result.php:399
+#: eid/management/get-data-export.php:302
 #: hepatitis/management/get-data-export.php:286
-#: hepatitis/results/hepatitis-print-results.php:146
-#: hepatitis/results/hepatitis-print-results.php:305
-#: tb/management/get-data-export.php:306 tb/results/tb-print-results.php:136
-#: tb/results/tb-print-results.php:291 vl/results/vlPrintResult.php:213
-#: vl/results/vlPrintResult.php:461
+#: tb/management/get-data-export.php:306
 msgid "Result PDF"
 msgstr "Résultats PDF"
 
@@ -7377,8 +7507,8 @@ msgstr "Résultats des CD4"
 
 #: cd4/management/get-sample-status.php:355
 #: covid-19/management/getSampleStatus.php:271
-#: dashboard/getSampleResult.php:511 dashboard/getSampleResult.php:573
-#: dashboard/getSampleResult.php:636 dashboard/getSampleResult.php:702
+#: dashboard/getSampleResult.php:517 dashboard/getSampleResult.php:579
+#: dashboard/getSampleResult.php:642 dashboard/getSampleResult.php:708
 #: eid/management/getSampleStatus.php:316
 #: generic-tests/program-management/get-sample-status.php:225
 #: hepatitis/management/get-sample-status.php:355
@@ -7673,11 +7803,11 @@ msgstr "Veuillez saisir le statut du motif de rejet"
 #: common/reference/add-implementation-partners.php:45
 #: common/reference/add-lab-storage.php:68
 #: common/reference/add-recommended-corrective-action.php:59
-#: common/reference/edit-geographical-divisions.php:87
-#: common/reference/edit-lab-storage.php:76
-#: common/reference/edit-recommended-corrective-action.php:68
+#: common/reference/edit-geographical-divisions.php:98
+#: common/reference/edit-lab-storage.php:79
+#: common/reference/edit-recommended-corrective-action.php:73
 #: common/reference/get-funding-sources-helper.php:119
-#: common/reference/get-implementation-partners-helper.php:110
+#: common/reference/get-implementation-partners-helper.php:113
 #: covid-19/reference/add-covid19-comorbidities.php:43
 #: covid-19/reference/add-covid19-qc-test-kit.php:58
 #: covid-19/reference/add-covid19-results.php:44
@@ -7773,11 +7903,11 @@ msgstr "Actif"
 #: common/reference/add-implementation-partners.php:46
 #: common/reference/add-lab-storage.php:69
 #: common/reference/add-recommended-corrective-action.php:60
-#: common/reference/edit-geographical-divisions.php:88
-#: common/reference/edit-lab-storage.php:77
-#: common/reference/edit-recommended-corrective-action.php:69
+#: common/reference/edit-geographical-divisions.php:99
+#: common/reference/edit-lab-storage.php:80
+#: common/reference/edit-recommended-corrective-action.php:74
 #: common/reference/get-funding-sources-helper.php:120
-#: common/reference/get-implementation-partners-helper.php:111
+#: common/reference/get-implementation-partners-helper.php:114
 #: covid-19/reference/add-covid19-comorbidities.php:44
 #: covid-19/reference/add-covid19-qc-test-kit.php:59
 #: covid-19/reference/add-covid19-results.php:45
@@ -8052,7 +8182,7 @@ msgstr "Êtes-vous sûr de vouloir modifier le statut ?"
 #: cd4/results/cd4-result-status.php:577
 #: common/reference/funding-sources.php:107
 #: common/reference/implementation-partners.php:107
-#: common/reference/lab-storage.php:116 eid/reference/eid-results.php:110
+#: common/reference/lab-storage.php:123 eid/reference/eid-results.php:110
 #: eid/reference/eid-sample-rejection-reasons.php:119
 #: eid/reference/eid-sample-type.php:109 eid/reference/eid-test-reasons.php:112
 #: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:124
@@ -8097,10 +8227,10 @@ msgstr "Motif de test"
 #: cd4/results/get-cd4-result-status.php:166
 #: common/reference/add-geographical-divisions.php:83
 #: common/reference/add-lab-storage.php:66
-#: common/reference/edit-geographical-divisions.php:85
-#: common/reference/edit-lab-storage.php:74
+#: common/reference/edit-geographical-divisions.php:96
+#: common/reference/edit-lab-storage.php:77
 #: common/reference/get-funding-sources-helper.php:118
-#: common/reference/get-implementation-partners-helper.php:109
+#: common/reference/get-implementation-partners-helper.php:112
 #: covid-19/reference/get-covid19-qc-test-kits-helper.php:117
 #: covid-19/reference/get-covid19-results-helper.php:117
 #: covid-19/reference/getCovid19ComorbiditiesDetails.php:119
@@ -8503,6 +8633,7 @@ msgstr "Veuillez sélectionner le laboratoire cd4"
 #: generic-tests/results/generic-failed-results.php:115
 #: generic-tests/results/generic-print-result.php:163
 #: generic-tests/results/generic-print-result.php:382
+#: generic-tests/results/update-generic-test-result.php:525
 #: hepatitis/management/hepatitis-export-data.php:193
 #: hepatitis/requests/hepatitis-requests.php:327
 #: hepatitis/results/hepatitis-failed-results.php:155
@@ -8557,7 +8688,7 @@ msgstr "Code TARV"
 msgid "Loading Printer Details"
 msgstr "Chargement des détails de l'imprimante"
 
-#: cd4/requests/cd4-requests.php:626
+#: cd4/requests/cd4-requests.php:626 generic-tests/requests/add-request.php:708
 #: generic-tests/requests/view-requests.php:227
 #: vl/requests/forms/add-burkina-faso.php:634
 #: vl/requests/forms/add-cameroon.php:674
@@ -8568,6 +8699,7 @@ msgstr "Aucune imprimante sélectionnée !"
 #: cd4/requests/cd4-requests.php:629 cd4/results/cd4-failed-results.php:268
 #: covid-19/requests/covid-19-requests.php:500
 #: eid/requests/eid-requests.php:511 eid/results/eid-failed-results.php:288
+#: generic-tests/requests/add-request.php:709
 #: generic-tests/requests/view-requests.php:230
 #: generic-tests/results/generic-failed-results.php:232
 #: hepatitis/requests/hepatitis-dhis2.php:379
@@ -8583,6 +8715,7 @@ msgstr "Modifier/Réessayer"
 #: cd4/requests/cd4-requests.php:633 cd4/results/cd4-failed-results.php:272
 #: covid-19/requests/covid-19-requests.php:504
 #: eid/requests/eid-requests.php:515 eid/results/eid-failed-results.php:292
+#: generic-tests/requests/add-request.php:712
 #: generic-tests/requests/view-requests.php:234
 #: generic-tests/results/generic-failed-results.php:235
 #: hepatitis/requests/hepatitis-dhis2.php:383
@@ -8598,6 +8731,7 @@ msgstr "Options d'imprimante Zebra"
 
 #: cd4/requests/cd4-requests.php:634 cd4/results/cd4-failed-results.php:273
 #: eid/results/eid-failed-results.php:293
+#: generic-tests/requests/add-request.php:713
 #: generic-tests/requests/view-requests.php:235
 #: generic-tests/results/generic-failed-results.php:236
 #: hepatitis/requests/hepatitis-dhis2.php:384
@@ -8888,7 +9022,7 @@ msgstr "Date de l'essai précédent"
 
 #: cd4/requests/patientModal.php:122 covid-19/requests/covid-19-dhis2.php:94
 #: covid-19/results/can-record-confirmatory-tests.php:185
-#: dashboard/vlTestResultStatus.php:158 vl/requests/patientModal.php:122
+#: dashboard/vlTestResultStatus.php:163 vl/requests/patientModal.php:122
 msgid "Previous Result"
 msgstr "Résultat Précédent"
 
@@ -9127,6 +9261,21 @@ msgstr "Laboratoire de test"
 msgid "Please select testing labs"
 msgstr "Veuillez selectionner le Laboratoire de test"
 
+#: cd4/results/cd4-print-results.php:136 cd4/results/cd4-print-results.php:298
+#: covid-19/results/covid-19-print-results.php:139
+#: covid-19/results/covid-19-print-results.php:299
+#: eid/results/eid-print-results.php:128 eid/results/eid-print-results.php:135
+#: eid/results/eid-print-results.php:275 eid/results/eid-print-results.php:282
+#: generic-tests/results/generic-print-result.php:180
+#: generic-tests/results/generic-print-result.php:399
+#: hepatitis/results/hepatitis-print-results.php:146
+#: hepatitis/results/hepatitis-print-results.php:305
+#: system/translate-strings.php:111 tb/results/tb-print-results.php:136
+#: tb/results/tb-print-results.php:291 vl/results/vlPrintResult.php:213
+#: vl/results/vlPrintResult.php:461
+msgid "Print Result PDF"
+msgstr "Imprimer Résultat PDF"
+
 #: cd4/results/cd4-print-results.php:849 cd4/results/email-results.php:425
 #: cd4/results/email-results.php:434
 #: cd4/results/getRequestSampleCodeDetails.php:141
@@ -9219,7 +9368,10 @@ msgstr "Choisissez le motif de rejet"
 #: cd4/results/cd4-result-status.php:101
 #: covid-19/results/covid-19-result-status.php:82
 #: eid/results/eid-result-status.php:89
+#: generic-tests/requests/add-request.php:571
+#: generic-tests/requests/edit-request.php:774
 #: generic-tests/results/generic-result-approval.php:102
+#: generic-tests/results/update-generic-test-result.php:766
 #: hepatitis/results/hepatitis-result-status.php:76
 #: tb/results/tb-result-status.php:76 vl/requests/forms/add-cameroon.php:545
 #: vl/requests/forms/edit-cameroon.php:600
@@ -9708,10 +9860,13 @@ msgstr "Sélectionner les lots"
 #: eid/results/email-results.php:394 eid/results/email-results.php:395
 #: eid/results/getRequestSampleCodeDetails.php:109
 #: eid/results/getRequestSampleCodeDetails.php:110
+#: generic-tests/requests/add-request.php:251
+#: generic-tests/requests/edit-request.php:428
 #: generic-tests/results/email-results.php:397
 #: generic-tests/results/email-results.php:398
 #: generic-tests/results/getRequestSampleCodeDetails.php:114
 #: generic-tests/results/getRequestSampleCodeDetails.php:115
+#: generic-tests/results/update-generic-test-result.php:420
 #: hepatitis/results/email-results.php:397
 #: hepatitis/results/email-results.php:398
 #: hepatitis/results/getRequestSampleCodeDetails.php:114
@@ -9897,7 +10052,7 @@ msgstr "DEMANDE NON VALIDE"
 #: classes/ErrorHandlers/ErrorResponseGenerator.php:22
 #: classes/ErrorHandlers/ErrorResponseGenerator.php:77
 #: classes/ErrorHandlers/ErrorResponseGenerator.php:88
-#: classes/ErrorHandlers/ErrorResponseGenerator.php:109 error/error.php:2
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:109 error/error.php:9
 msgid "Internal Server Error"
 msgstr "Erreur interne du serveur"
 
@@ -9914,7 +10069,7 @@ msgid "Unauthorized"
 msgstr "Non autorisé"
 
 #: classes/ErrorHandlers/ErrorResponseGenerator.php:90
-#: classes/ErrorHandlers/ErrorResponseGenerator.php:111 error/error.php:3
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:111 error/error.php:10
 msgid "Sorry, something went wrong. Please try again later."
 msgstr ""
 "Désolé, quelque chose s’est mal passé. Veuillez réessayer à nouveau plus "
@@ -9934,6 +10089,9 @@ msgstr "Résultat sur"
 #: eid/requests/forms/add-cameroon.php:569
 #: eid/requests/forms/edit-cameroon.php:598
 #: eid/results/forms/update-cameroon-result.php:574
+#: generic-tests/requests/add-request.php:655
+#: generic-tests/requests/edit-request.php:863
+#: generic-tests/results/update-generic-test-result.php:834
 #: vl/requests/forms/add-burkina-faso.php:574
 #: vl/requests/forms/add-cameroon.php:600
 #: vl/requests/forms/edit-burkina-faso.php:651
@@ -10005,7 +10163,7 @@ msgstr "Tuberculose"
 msgid "Other Tests"
 msgstr "Autres tests"
 
-#: classes/Utilities/DateUtility.php:240 classes/Utilities/DateUtility.php:264
+#: classes/Utilities/DateUtility.php:240 classes/Utilities/DateUtility.php:265
 #: eid/requests/forms/add-burkina-faso.php:231
 #: eid/requests/forms/add-burkina-faso.php:243
 #: eid/requests/forms/add-burkina-faso.php:282
@@ -10024,19 +10182,19 @@ msgstr "Autres tests"
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: classes/Utilities/DateUtility.php:247 classes/Utilities/DateUtility.php:254
+#: classes/Utilities/DateUtility.php:248 classes/Utilities/DateUtility.php:255
 msgid "years"
 msgstr "années"
 
-#: classes/Utilities/DateUtility.php:247 classes/Utilities/DateUtility.php:254
+#: classes/Utilities/DateUtility.php:248 classes/Utilities/DateUtility.php:255
 msgid "year"
 msgstr "année"
 
-#: classes/Utilities/DateUtility.php:260
+#: classes/Utilities/DateUtility.php:261
 msgid "months"
 msgstr "mois"
 
-#: classes/Utilities/DateUtility.php:260
+#: classes/Utilities/DateUtility.php:261
 msgid "month"
 msgstr "mois"
 
@@ -10065,7 +10223,7 @@ msgid "Please select Funding Source"
 msgstr "Veuillez sélectionner la source de financement"
 
 #: common/reference/add-geographical-divisions.php:3
-#: common/reference/edit-geographical-divisions.php:5
+#: common/reference/edit-geographical-divisions.php:16
 #: common/reference/geographical-divisions-details.php:2
 #: common/reference/geographical-divisions-details.php:11
 #: common/reference/geographical-divisions-details.php:14
@@ -10081,17 +10239,17 @@ msgstr "Ajouter Divisions géographiques"
 
 #: common/reference/add-geographical-divisions.php:53
 #: common/reference/add-geographical-divisions.php:55
-#: common/reference/edit-geographical-divisions.php:55
+#: common/reference/edit-geographical-divisions.php:66
 msgid "Geographical Division Name"
 msgstr "Le nom de la division géographique"
 
 #: common/reference/add-geographical-divisions.php:55
-#: common/reference/edit-geographical-divisions.php:57
+#: common/reference/edit-geographical-divisions.php:68
 msgid "Please enter Geographical Division name"
 msgstr "Veuillez saisir le nom de la division géographique"
 
 #: common/reference/add-geographical-divisions.php:55
-#: common/reference/edit-geographical-divisions.php:57
+#: common/reference/edit-geographical-divisions.php:68
 msgid ""
 "The Geographical Division name that you entered already exists. Please enter "
 "another name"
@@ -10100,7 +10258,7 @@ msgstr ""
 "saisir un autre nom"
 
 #: common/reference/add-geographical-divisions.php:61
-#: common/reference/edit-geographical-divisions.php:63
+#: common/reference/edit-geographical-divisions.php:74
 msgid "Geographical Division Code"
 msgstr "Le code de la division géographique"
 
@@ -10109,12 +10267,12 @@ msgid "Geographical Division code"
 msgstr "Le code de la division géographique"
 
 #: common/reference/add-geographical-divisions.php:63
-#: common/reference/edit-geographical-divisions.php:65
+#: common/reference/edit-geographical-divisions.php:76
 msgid "Please enter Geographical Division code"
 msgstr "Veuillez saisir le code de la division géographique"
 
 #: common/reference/add-geographical-divisions.php:63
-#: common/reference/edit-geographical-divisions.php:65
+#: common/reference/edit-geographical-divisions.php:76
 msgid ""
 "The Geographical Division code that you entered already exists. Please enter "
 "another code"
@@ -10123,12 +10281,12 @@ msgstr ""
 "saisir un autre code"
 
 #: common/reference/add-geographical-divisions.php:71
-#: common/reference/edit-geographical-divisions.php:73
+#: common/reference/edit-geographical-divisions.php:84
 msgid "Parent Geographical Division"
 msgstr "Division géographique du parent"
 
 #: common/reference/add-geographical-divisions.php:73
-#: common/reference/edit-geographical-divisions.php:75
+#: common/reference/edit-geographical-divisions.php:86
 msgid "Parent Division"
 msgstr "Division des parents"
 
@@ -10175,30 +10333,30 @@ msgstr "Veuillez sélectionner le statut de partenaire"
 
 #: common/reference/add-lab-storage.php:7
 #: common/reference/add-lab-storage.php:26
-#: common/reference/edit-lab-storage.php:8 common/reference/lab-storage.php:2
-#: common/reference/lab-storage.php:11 common/reference/lab-storage.php:14
+#: common/reference/edit-lab-storage.php:11 common/reference/lab-storage.php:6
+#: common/reference/lab-storage.php:18 common/reference/lab-storage.php:21
 #: system/translate-strings.php:90 vl/requests/upload-storage.php:59
 msgid "Lab Storage"
 msgstr "Stockage en laboratoire"
 
-#: common/reference/add-lab-storage.php:23 common/reference/lab-storage.php:25
+#: common/reference/add-lab-storage.php:23 common/reference/lab-storage.php:32
 msgid "Add Lab Freezer/Storage"
 msgstr "Ajout d'un congélateur/stockage de laboratoire"
 
 #: common/reference/add-lab-storage.php:45
 #: common/reference/add-lab-storage.php:47
-#: common/reference/edit-lab-storage.php:53 common/reference/lab-storage.php:33
+#: common/reference/edit-lab-storage.php:56 common/reference/lab-storage.php:40
 #: vl/program-management/sample-storage-reports.php:218
 msgid "Freezer/Storage Code"
 msgstr "Code de congélation/stockage"
 
 #: common/reference/add-lab-storage.php:47
-#: common/reference/edit-lab-storage.php:55
+#: common/reference/edit-lab-storage.php:58
 msgid "Please enter Storage Code"
 msgstr "Veuillez saisir le code de stockage"
 
 #: common/reference/add-lab-storage.php:47
-#: common/reference/edit-lab-storage.php:55
+#: common/reference/edit-lab-storage.php:58
 msgid ""
 "The Storage Code that you entered already exists.Enter another Storage Code"
 msgstr ""
@@ -10209,7 +10367,7 @@ msgid "Storage Status"
 msgstr "Statut du stockage"
 
 #: common/reference/add-lab-storage.php:98
-#: common/reference/edit-lab-storage.php:107
+#: common/reference/edit-lab-storage.php:110
 msgid "Select the options"
 msgstr "Sélectionner les options"
 
@@ -10219,19 +10377,19 @@ msgstr "Ajouter l'action correctrice recommandée"
 
 #: common/reference/add-recommended-corrective-action.php:47
 #: common/reference/add-recommended-corrective-action.php:49
-#: common/reference/edit-recommended-corrective-action.php:56
-#: common/reference/edit-recommended-corrective-action.php:58
+#: common/reference/edit-recommended-corrective-action.php:61
+#: common/reference/edit-recommended-corrective-action.php:63
 #: common/reference/recommended-corrective-actions.php:46
 msgid "Recommended Corrective Action Name"
 msgstr "Nom de l'action correctrice recommandée"
 
 #: common/reference/add-recommended-corrective-action.php:49
-#: common/reference/edit-recommended-corrective-action.php:58
+#: common/reference/edit-recommended-corrective-action.php:63
 msgid "Please enter Recommended Corrective Action"
 msgstr "Veuillez saisir l'action correctrice recommandée"
 
 #: common/reference/add-recommended-corrective-action.php:49
-#: common/reference/edit-recommended-corrective-action.php:58
+#: common/reference/edit-recommended-corrective-action.php:63
 msgid ""
 "The Corrective action that you entered already exists.Enter another "
 "Corrective action"
@@ -10240,50 +10398,50 @@ msgstr ""
 "action"
 
 #: common/reference/add-recommended-corrective-action.php:57
-#: common/reference/edit-recommended-corrective-action.php:66
+#: common/reference/edit-recommended-corrective-action.php:71
 msgid "Please select corrective Action Status"
 msgstr "Veuillez sélectionner le statut de l'action correctrice"
 
-#: common/reference/edit-geographical-divisions.php:16
+#: common/reference/edit-geographical-divisions.php:27
 msgid "Something went wrong in Geographical Divisions edit page"
 msgstr ""
 "Un problème s'est produit dans la page d'édition des divisions géographiques"
 
-#: common/reference/edit-geographical-divisions.php:33
-#: common/reference/edit-geographical-divisions.php:36
+#: common/reference/edit-geographical-divisions.php:44
+#: common/reference/edit-geographical-divisions.php:47
 #: system/translate-strings.php:160
 msgid "Edit Geographical Divisions"
 msgstr "Editer les divisions géographiques"
 
-#: common/reference/edit-geographical-divisions.php:57
+#: common/reference/edit-geographical-divisions.php:68
 msgid "Geo Division Name"
 msgstr "Nom de la géodivision"
 
-#: common/reference/edit-geographical-divisions.php:65
+#: common/reference/edit-geographical-divisions.php:76
 msgid "Geographical Divisions code"
 msgstr "Code des divisions géographiques"
 
-#: common/reference/edit-geographical-divisions.php:75
+#: common/reference/edit-geographical-divisions.php:86
 msgid "Please select Parent division"
 msgstr "Veuillez sélectionner la localité des parents"
 
-#: common/reference/edit-lab-storage.php:31
+#: common/reference/edit-lab-storage.php:34
 msgid "Edit Lab Freezer/Storage"
 msgstr "Modifier le congélateur/stockage du laboratoire"
 
-#: common/reference/edit-lab-storage.php:34
+#: common/reference/edit-lab-storage.php:37
 msgid "Lab Freezer/Storage"
 msgstr "Congélateur/stockage de laboratoire"
 
-#: common/reference/edit-lab-storage.php:55
+#: common/reference/edit-lab-storage.php:58
 msgid "Storage Code"
 msgstr "Code de stockage"
 
-#: common/reference/edit-lab-storage.php:72
+#: common/reference/edit-lab-storage.php:75
 msgid "Freezer/Storage Status"
 msgstr "Statut de congélation/stockage"
 
-#: common/reference/edit-recommended-corrective-action.php:34
+#: common/reference/edit-recommended-corrective-action.php:39
 msgid "Edit Recommended Corrective Action"
 msgstr "Modifier Action correctrice recommandée"
 
@@ -10297,7 +10455,7 @@ msgstr "Nom de source de financement"
 
 #: common/reference/funding-sources.php:98
 #: common/reference/implementation-partners.php:98
-#: common/reference/lab-storage.php:107
+#: common/reference/lab-storage.php:114
 #: generic-tests/configuration/sample-types/generic-sample-type.php:119
 #: generic-tests/configuration/symptoms/generic-symptoms.php:121
 #: generic-tests/configuration/test-categories/generic-test-categories.php:118
@@ -10435,6 +10593,9 @@ msgstr "S. No."
 #: eid/requests/forms/add-burkina-faso.php:405
 #: eid/requests/forms/edit-burkina-faso.php:427
 #: eid/results/forms/update-burkina-faso-result.php:428
+#: generic-tests/requests/add-request.php:663
+#: generic-tests/requests/edit-request.php:872
+#: generic-tests/results/update-generic-test-result.php:843
 #: import-result/imported-results.php:253
 #: tb/requests/forms/add-burkina-faso.php:371
 #: tb/requests/forms/edit-burkina-faso.php:392
@@ -10471,6 +10632,7 @@ msgstr "Site de la collection"
 
 #: covid-19/management/generate-export-drc.php:49
 #: covid-19/management/generate-export-drc.php:105
+#: generic-tests/requests/add-request.php:368
 msgid "EPID Number"
 msgstr "N° EPID"
 
@@ -11129,8 +11291,8 @@ msgstr "COVID 19-Modifier la demande de test"
 #: covid-19/requests/covid-19-quick-add.php:175
 #: generic-tests/requests/add-request.php:1379
 #: generic-tests/requests/clone-request.php:1348
-#: generic-tests/requests/edit-request.php:1234
-#: generic-tests/results/update-generic-test-result.php:1199
+#: generic-tests/requests/edit-request.php:1227
+#: generic-tests/results/update-generic-test-result.php:1204
 #: hepatitis/requests/hepatitis-add-request.php:180
 #: hepatitis/requests/hepatitis-edit-request.php:177
 #: tb/requests/tb-add-request.php:179 tb/requests/tb-edit-request.php:208
@@ -11479,6 +11641,9 @@ msgstr "DÉTAILS DE CAS/DONNÉES DÉMOGRAPHIQUES"
 #: eid/requests/forms/add-burkina-faso.php:133
 #: eid/requests/forms/edit-burkina-faso.php:147
 #: eid/results/forms/update-burkina-faso-result.php:146
+#: generic-tests/requests/add-request.php:361
+#: generic-tests/requests/edit-request.php:538
+#: generic-tests/results/update-generic-test-result.php:518
 #: vl/requests/forms/add-burkina-faso.php:194
 #: vl/requests/forms/add-cameroon.php:219
 #: vl/requests/forms/edit-burkina-faso.php:285
@@ -11661,6 +11826,12 @@ msgstr "Numéro de téléphone"
 #: covid-19/results/forms/update-cameroon-result.php:241
 #: facilities/addFacility.php:227 facilities/addFacility.php:230
 #: facilities/editFacility.php:261 facilities/editFacility.php:263
+#: generic-tests/requests/add-request.php:437
+#: generic-tests/requests/add-request.php:526
+#: generic-tests/requests/edit-request.php:621
+#: generic-tests/requests/edit-request.php:722
+#: generic-tests/results/update-generic-test-result.php:589
+#: generic-tests/results/update-generic-test-result.php:705
 #: patients/add-patient.php:203 patients/edit-patient.php:220
 #: patients/view-patients.php:37 users/addUser.php:98 users/addUser.php:100
 #: users/editProfile.php:97 users/editProfile.php:99 users/editUser.php:140
@@ -11831,6 +12002,9 @@ msgid "ELISA"
 msgstr "ELISA"
 
 #: covid-19/requests/forms/add-cameroon.php:328
+#: generic-tests/requests/add-request.php:606
+#: generic-tests/requests/edit-request.php:813
+#: generic-tests/results/update-generic-test-result.php:799
 msgid "Please choose reason for testing"
 msgstr "Veuillez choisir la raison du test"
 
@@ -11843,6 +12017,12 @@ msgstr "Veuillez choisir la raison du test"
 #: eid/requests/forms/add-burkina-faso.php:315
 #: eid/requests/forms/edit-burkina-faso.php:328
 #: eid/results/forms/update-burkina-faso-result.php:327
+#: generic-tests/requests/add-request.php:487
+#: generic-tests/requests/add-request.php:489
+#: generic-tests/requests/edit-request.php:676
+#: generic-tests/requests/edit-request.php:678
+#: generic-tests/results/update-generic-test-result.php:645
+#: generic-tests/results/update-generic-test-result.php:647
 #: tb/requests/forms/add-burkina-faso.php:365
 #: tb/requests/forms/edit-burkina-faso.php:386
 #: tb/results/forms/update-burkina-faso.php:384
@@ -11878,6 +12058,8 @@ msgstr "Réservé à l'usage des laboratoires"
 #: eid/requests/forms/edit-cameroon.php:543
 #: eid/results/forms/update-cameroon-result.php:514
 #: generic-tests/mail/mail-generic-tests-results.php:227
+#: generic-tests/requests/edit-request.php:739
+#: generic-tests/results/update-generic-test-result.php:722
 #: vl/requests/forms/add-cameroon.php:519
 #: vl/requests/forms/edit-cameroon.php:574
 #: vl/result-mail/editTestResultEmailConfig.php:88
@@ -11970,7 +12152,7 @@ msgstr "Date de réception"
 #: eid/results/forms/update-southsudan-result.php:492
 #: generic-tests/requests/add-request.php:683
 #: generic-tests/requests/clone-request.php:1027
-#: generic-tests/requests/edit-request.php:906
+#: generic-tests/requests/edit-request.php:901
 #: generic-tests/results/update-generic-test-result.php:872
 #: hepatitis/requests/forms/add-rwanda.php:276
 #: hepatitis/requests/forms/add-rwanda.php:288
@@ -12120,6 +12302,9 @@ msgstr "Veuillez sélectionner le motif du rejet"
 #: eid/requests/forms/edit-cameroon.php:577
 #: eid/results/forms/update-burkina-faso-result.php:398
 #: eid/results/forms/update-cameroon-result.php:552
+#: generic-tests/requests/add-request.php:590
+#: generic-tests/requests/edit-request.php:796
+#: generic-tests/results/update-generic-test-result.php:788
 #: tb/requests/forms/add-burkina-faso.php:394
 #: tb/requests/forms/edit-burkina-faso.php:427
 #: tb/results/forms/update-burkina-faso.php:425
@@ -12139,6 +12324,9 @@ msgstr "Date de rejet"
 #: eid/requests/forms/add-cameroon.php:549
 #: eid/requests/forms/edit-cameroon.php:578
 #: eid/results/forms/update-cameroon-result.php:553
+#: generic-tests/requests/add-request.php:592
+#: generic-tests/requests/edit-request.php:799
+#: generic-tests/results/update-generic-test-result.php:791
 #: vl/requests/forms/add-cameroon.php:585
 #: vl/requests/forms/edit-cameroon.php:640
 #: vl/results/forms/update-cameroon-result.php:646
@@ -12191,6 +12379,10 @@ msgstr "Date d'expiration"
 #: covid-19/results/forms/update-cameroon-result.php:461
 #: covid-19/results/forms/update-cameroon-result.php:811
 #: covid-19/results/forms/update-cameroon-result.php:820
+#: generic-tests/requests/add-request.php:1606
+#: generic-tests/requests/edit-request.php:1723
+#: generic-tests/results/update-generic-test-result.php:1693
+#: generic-tests/results/update-generic-test-result.php:1694
 msgid "Please enter the name of the Testkit (or) Test Method used"
 msgstr ""
 "Veuillez indiquer le nom du kit de test (ou de la méthode de test) utilisé(e)"
@@ -12358,6 +12550,9 @@ msgstr "Fermer"
 #: covid-19/requests/forms/add-cameroon.php:1040
 #: covid-19/requests/forms/edit-cameroon.php:883
 #: eid/requests/forms/add-cameroon.php:857
+#: generic-tests/requests/add-request.php:805
+#: generic-tests/requests/edit-request.php:1023
+#: generic-tests/results/update-generic-test-result.php:997
 #: vl/requests/forms/add-cameroon.php:780
 msgid "Select Reviewed By"
 msgstr "Sélectionner Révisé par"
@@ -12365,6 +12560,12 @@ msgstr "Sélectionner Révisé par"
 #: covid-19/requests/forms/add-cameroon.php:1043
 #: covid-19/requests/forms/edit-cameroon.php:897
 #: eid/requests/forms/add-cameroon.php:851
+#: generic-tests/requests/add-request.php:801
+#: generic-tests/requests/add-request.php:818
+#: generic-tests/requests/edit-request.php:1019
+#: generic-tests/requests/edit-request.php:1036
+#: generic-tests/results/update-generic-test-result.php:993
+#: generic-tests/results/update-generic-test-result.php:1010
 #: vl/requests/forms/add-cameroon.php:774
 msgid "Select Clinic/Health Center"
 msgstr "Sélectionner une clinique/un centre de santé"
@@ -12409,6 +12610,7 @@ msgstr "COVID-19-FORMULAIRE DE DEMANDE DE TEST DE LABORATOIRE DE L'OMS"
 
 #: covid-19/requests/forms/edit-cameroon.php:90
 #: covid-19/results/forms/update-cameroon-result.php:96
+#: generic-tests/requests/edit-request.php:388
 msgid "Edit Request"
 msgstr "Modifier la demande"
 
@@ -12508,6 +12710,9 @@ msgstr "Indiquer la méthode d'essai utilisée"
 #: covid-19/results/add-covid-19-qc-data.php:172
 #: covid-19/results/edit-covid-19-qc-data.php:188
 #: covid-19/results/forms/update-cameroon-result.php:463
+#: generic-tests/requests/add-request.php:1608
+#: generic-tests/requests/edit-request.php:1725
+#: generic-tests/results/update-generic-test-result.php:1696
 msgid "Tested on"
 msgstr "Échantillons testés le"
 
@@ -12535,6 +12740,9 @@ msgstr "Carte de test de l'antigène COVID-19 Sure Status"
 #: covid-19/requests/forms/edit-cameroon.php:968
 #: covid-19/results/forms/update-cameroon-result.php:483
 #: covid-19/results/forms/update-cameroon-result.php:824
+#: generic-tests/requests/add-request.php:1610
+#: generic-tests/requests/edit-request.php:1727
+#: generic-tests/results/update-generic-test-result.php:1698
 msgid "Kit lot no"
 msgstr "Numéro de lot du kit"
 
@@ -12549,6 +12757,9 @@ msgstr "Veuillez saisir le numéro de lot du kit pour la ligne 1"
 #: covid-19/results/edit-covid-19-qc-data.php:118
 #: covid-19/results/forms/update-cameroon-result.php:486
 #: covid-19/results/forms/update-cameroon-result.php:825
+#: generic-tests/requests/add-request.php:1611
+#: generic-tests/requests/edit-request.php:1728
+#: generic-tests/results/update-generic-test-result.php:1699
 msgid "Expiry date"
 msgstr "Date d'expiration"
 
@@ -12569,6 +12780,9 @@ msgstr "Résultat final"
 #: eid/requests/forms/edit-cameroon.php:600
 #: eid/results/forms/update-burkina-faso-result.php:436
 #: generic-tests/mail/mail-generic-tests-results.php:246
+#: generic-tests/requests/add-request.php:647
+#: generic-tests/requests/edit-request.php:854
+#: generic-tests/results/update-generic-test-result.php:826
 #: import-result/imported-results.php:268
 #: tb/requests/forms/add-burkina-faso.php:444
 #: tb/requests/forms/edit-burkina-faso.php:494
@@ -12587,6 +12801,9 @@ msgstr "Révisé par"
 #: covid-19/results/forms/update-cameroon-result.php:522
 #: eid/requests/forms/add-cameroon.php:573
 #: eid/requests/forms/edit-cameroon.php:602
+#: generic-tests/requests/add-request.php:649
+#: generic-tests/requests/edit-request.php:857
+#: generic-tests/results/update-generic-test-result.php:828
 #: vl/requests/forms/add-cameroon.php:608
 #: vl/requests/forms/edit-cameroon.php:664
 #: vl/results/forms/update-cameroon-result.php:676
@@ -12601,6 +12818,9 @@ msgstr "Veuillez choisir examiné par"
 #: eid/requests/forms/edit-cameroon.php:599
 #: eid/results/forms/update-burkina-faso-result.php:442
 #: eid/results/forms/update-cameroon-result.php:575
+#: generic-tests/requests/add-request.php:657
+#: generic-tests/requests/edit-request.php:866
+#: generic-tests/results/update-generic-test-result.php:837
 #: tb/requests/forms/add-burkina-faso.php:450
 #: tb/requests/forms/edit-burkina-faso.php:500
 #: tb/results/forms/update-burkina-faso.php:498
@@ -12614,6 +12834,9 @@ msgstr "Examiné le"
 #: covid-19/results/forms/update-cameroon-result.php:527
 #: eid/requests/forms/add-cameroon.php:570
 #: eid/results/forms/update-cameroon-result.php:575
+#: generic-tests/requests/add-request.php:657
+#: generic-tests/requests/edit-request.php:866
+#: generic-tests/results/update-generic-test-result.php:837
 #: vl/requests/forms/add-cameroon.php:602
 #: vl/requests/forms/edit-cameroon.php:658
 #: vl/results/forms/update-cameroon-result.php:670
@@ -12624,6 +12847,12 @@ msgstr "Veuillez saisir le statut de l'échantillon"
 #: covid-19/results/forms/update-cameroon-result.php:532
 #: eid/requests/forms/add-cameroon.php:583
 #: eid/results/forms/update-cameroon-result.php:588
+#: generic-tests/requests/add-request.php:665
+#: generic-tests/requests/add-request.php:673
+#: generic-tests/requests/edit-request.php:875
+#: generic-tests/requests/edit-request.php:890
+#: generic-tests/results/update-generic-test-result.php:846
+#: generic-tests/results/update-generic-test-result.php:861
 #: vl/requests/forms/add-cameroon.php:624
 msgid "Please choose approved by"
 msgstr "Veuillez choisir approuvé par"
@@ -12920,7 +13149,7 @@ msgstr "Résultats pas encore imprimés"
 msgid "Samples with Accepted Results"
 msgstr "Echantillons avec résultats acceptés"
 
-#: dashboard/getSampleCount.php:217 dashboard/getSampleResult.php:737
+#: dashboard/getSampleCount.php:217 dashboard/getSampleResult.php:743
 msgid "Samples Rejected"
 msgstr "Échantillons rejetés"
 
@@ -12940,61 +13169,61 @@ msgstr "Résultats déjà imprimés"
 msgid "Select Collection Point(s)"
 msgstr "Sélectionner le(s) point(s) de collecte"
 
-#: dashboard/getSampleResult.php:349
+#: dashboard/getSampleResult.php:355
 msgid "SAMPLES REGISTERED"
 msgstr "ÉCHANTILLONS ENREGISTRÉS"
 
-#: dashboard/getSampleResult.php:352 dashboard/getSampleResult.php:373
-#: dashboard/getSampleResult.php:395
+#: dashboard/getSampleResult.php:358 dashboard/getSampleResult.php:379
+#: dashboard/getSampleResult.php:401
 msgid "In Selected Range"
 msgstr "Dans la plage sélectionnée"
 
-#: dashboard/getSampleResult.php:370
+#: dashboard/getSampleResult.php:376
 msgid "SAMPLES TESTED"
 msgstr "Nombre d'échantillons testés"
 
-#: dashboard/getSampleResult.php:392
+#: dashboard/getSampleResult.php:398
 msgid "SAMPLES REJECTED"
 msgstr "ÉCHANTILLONS REJETÉS"
 
-#: dashboard/getSampleResult.php:414
+#: dashboard/getSampleResult.php:420
 msgid "SAMPLES WITH NO RESULTS"
 msgstr "Echantillons sans résultats"
 
-#: dashboard/getSampleResult.php:417
+#: dashboard/getSampleResult.php:423
 msgid "(LAST 6 MONTHS)"
 msgstr "(6 DERNIERS MOIS)"
 
-#: dashboard/getSampleResult.php:433
+#: dashboard/getSampleResult.php:439
 msgid "CURRENT SAMPLES STATUS - OVERALL"
 msgstr "ÉTAT ACTUEL DES ÉCHANTILLONS -DANS L'ENSEMBLE"
 
-#: dashboard/getSampleResult.php:436
+#: dashboard/getSampleResult.php:442
 msgid "(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"
 msgstr ""
 "(SUR LA BASE DES ÉCHANTILLONS PRÉLEVÉS DANS LA PLAGE DE DATES SÉLECTIONNÉE)"
 
-#: dashboard/getSampleResult.php:736
+#: dashboard/getSampleResult.php:742
 msgid "Samples Tested"
 msgstr "Nombre d'échantillons testés"
 
-#: dashboard/getSampleResult.php:738
+#: dashboard/getSampleResult.php:744
 msgid "Samples on Hold"
 msgstr "Échantillons en attente"
 
-#: dashboard/getSampleResult.php:739
+#: dashboard/getSampleResult.php:745
 msgid "Samples Registered at Testing Lab"
 msgstr "Enregistré au laboratoire de test"
 
-#: dashboard/getSampleResult.php:740
+#: dashboard/getSampleResult.php:746
 msgid "Samples Awaiting Approval"
 msgstr "Échantillons en attente d'approbation"
 
-#: dashboard/getSampleResult.php:741
+#: dashboard/getSampleResult.php:747
 msgid "Samples Registered at Collection Sites"
 msgstr "Échantillons enregistrés sur les sites de collecte"
 
-#: dashboard/getSampleResult.php:757
+#: dashboard/getSampleResult.php:763
 msgid "Total"
 msgstr "Total"
 
@@ -13709,6 +13938,9 @@ msgstr "Gravida N*"
 #: eid/requests/forms/add-burkina-faso.php:307
 #: eid/requests/forms/edit-burkina-faso.php:320
 #: eid/results/forms/update-burkina-faso-result.php:319
+#: generic-tests/requests/add-request.php:476
+#: generic-tests/requests/edit-request.php:665
+#: generic-tests/results/update-generic-test-result.php:634
 #: vl/requests/forms/add-burkina-faso.php:247
 #: vl/requests/forms/add-cameroon.php:348
 #: vl/requests/forms/edit-burkina-faso.php:338
@@ -13751,6 +13983,9 @@ msgstr "Machine utilisée pour le test"
 #: eid/results/forms/update-burkina-faso-result.php:446
 #: eid/results/forms/update-cameroon-result.php:586
 #: generic-tests/mail/mail-generic-tests-results.php:247
+#: generic-tests/requests/add-request.php:671
+#: generic-tests/requests/edit-request.php:887
+#: generic-tests/results/update-generic-test-result.php:858
 #: global-config/editGlobalConfig.php:1693
 #: import-result/imported-results.php:284
 #: tb/requests/forms/add-burkina-faso.php:454
@@ -13772,6 +14007,9 @@ msgstr "Approuvé par"
 #: eid/requests/forms/edit-cameroon.php:608
 #: eid/results/forms/update-burkina-faso-result.php:452
 #: eid/results/forms/update-cameroon-result.php:584
+#: generic-tests/requests/add-request.php:681
+#: generic-tests/requests/edit-request.php:898
+#: generic-tests/results/update-generic-test-result.php:869
 #: vl/requests/forms/add-burkina-faso.php:599
 #: vl/requests/forms/add-cameroon.php:616
 #: vl/requests/forms/edit-burkina-faso.php:680
@@ -13785,6 +14023,9 @@ msgstr "Approuvé le"
 #: eid/requests/forms/edit-burkina-faso.php:461
 #: eid/results/forms/update-burkina-faso-result.php:462
 #: generic-tests/mail/mail-generic-tests-results.php:248
+#: generic-tests/requests/add-request.php:687
+#: generic-tests/requests/edit-request.php:905
+#: generic-tests/results/update-generic-test-result.php:876
 #: vl/requests/forms/add-burkina-faso.php:614
 #: vl/requests/forms/add-cameroon.php:642
 #: vl/requests/forms/edit-burkina-faso.php:695
@@ -13798,6 +14039,9 @@ msgstr "Commentaires du Technicien labo"
 #: eid/requests/forms/add-burkina-faso.php:458
 #: eid/requests/forms/edit-burkina-faso.php:478
 #: eid/results/forms/update-burkina-faso-result.php:479
+#: generic-tests/requests/add-request.php:717
+#: generic-tests/requests/edit-request.php:940
+#: generic-tests/results/update-generic-test-result.php:914
 #: import-result/imported-results.php:302
 #: system-admin/instance-overview/instanceIndex.php:132
 #: tb/requests/forms/add-burkina-faso.php:476
@@ -13819,6 +14063,9 @@ msgstr "INFORMATIONS SUR LA FOSA"
 #: eid/requests/forms/edit-cameroon.php:108
 #: eid/results/forms/update-burkina-faso-result.php:84
 #: eid/results/forms/update-cameroon-result.php:102
+#: generic-tests/requests/add-request.php:251
+#: generic-tests/requests/edit-request.php:428
+#: generic-tests/results/update-generic-test-result.php:420
 #: vl/requests/forms/edit-cameroon.php:151
 #: vl/results/forms/update-cameroon-result.php:192
 msgid "Please enter sample id"
@@ -13832,6 +14079,12 @@ msgstr "Veuillez choisir la région"
 #: eid/requests/forms/add-cameroon.php:125
 #: eid/requests/forms/edit-cameroon.php:141
 #: eid/results/forms/update-cameroon-result.php:135
+#: generic-tests/requests/add-request.php:303
+#: generic-tests/requests/add-request.php:305
+#: generic-tests/requests/edit-request.php:470
+#: generic-tests/requests/edit-request.php:472
+#: generic-tests/results/update-generic-test-result.php:462
+#: generic-tests/results/update-generic-test-result.php:464
 #: vl/requests/forms/add-burkina-faso.php:140
 #: vl/requests/forms/add-cameroon.php:166
 #: vl/requests/forms/edit-burkina-faso.php:233
@@ -13844,6 +14097,9 @@ msgstr "Code de la clinique/du centre de santé"
 #: eid/requests/forms/add-cameroon.php:125
 #: eid/requests/forms/edit-cameroon.php:141
 #: eid/results/forms/update-cameroon-result.php:135
+#: generic-tests/requests/add-request.php:305
+#: generic-tests/requests/edit-request.php:472
+#: generic-tests/results/update-generic-test-result.php:464
 #: vl/requests/forms/add-cameroon.php:166
 #: vl/requests/forms/edit-cameroon.php:208
 #: vl/results/forms/update-cameroon-result.php:252
@@ -14236,6 +14492,8 @@ msgid "Requesting Officer Phone"
 msgstr "Contact du prescripteur"
 
 #: eid/requests/forms/add-cameroon.php:518
+#: generic-tests/requests/edit-request.php:747
+#: generic-tests/results/update-generic-test-result.php:729
 #: vl/requests/forms/add-cameroon.php:506
 #: vl/requests/forms/edit-cameroon.php:560
 #: vl/results/forms/update-cameroon-result.php:583
@@ -14271,6 +14529,9 @@ msgid "Select Lab Name"
 msgstr "Sélectionner le nom du laboratoire"
 
 #: eid/requests/forms/add-cameroon.php:860
+#: generic-tests/requests/add-request.php:814
+#: generic-tests/requests/edit-request.php:1032
+#: generic-tests/results/update-generic-test-result.php:1006
 #: vl/requests/forms/add-cameroon.php:783
 msgid "Select Approved By"
 msgstr "Sélectionner Approuvé par"
@@ -14389,7 +14650,7 @@ msgstr "Veuillez sélectionner la plateforme de test"
 msgid "Failed result retest"
 msgstr "Retest des Échec résultat"
 
-#: error/401.php:22 error/404.php:22 error/error.php:76
+#: error/401.php:22 error/404.php:22 error/error.php:83
 msgid "Please contact the System Admin for further support."
 msgstr "Veuillez contacter l'administrateur du système pour obtenir de l'aide."
 
@@ -14397,19 +14658,19 @@ msgstr "Veuillez contacter l'administrateur du système pour obtenir de l'aide."
 msgid "Sorry! We could not find this page or resource."
 msgstr "Désolé, Nous n'avons pas trouvé cette page ou cette ressource."
 
-#: error/error.php:65
+#: error/error.php:72
 msgid "An error occurred"
 msgstr "Une erreur est survenue"
 
-#: error/error.php:69
+#: error/error.php:76
 msgid "Error Code"
 msgstr "Code d'Erreur"
 
-#: error/error.php:82
+#: error/error.php:89
 msgid "Go to Dashboard"
 msgstr "Aller au tableau de bord"
 
-#: error/error.php:94 footer.php:36
+#: error/error.php:101 footer.php:40
 msgid ""
 "This project is supported by the U.S. President's Emergency Plan for AIDS "
 "Relief (PEPFAR) through the U.S.\n"
@@ -14889,49 +15150,49 @@ msgstr ""
 "Cliquez ici pour télécharger le format Excel permettant de télécharger des "
 "FOSA en bloc"
 
-#: footer.php:40
+#: footer.php:44
 msgid "Clear Cache"
 msgstr "Vider Cache"
 
-#: footer.php:53
+#: footer.php:57
 msgid "Force Remote Sync"
 msgstr "Forcer la synchronisation à distance"
 
-#: footer.php:63
+#: footer.php:67
 msgid "Last synced at"
 msgstr "Dernière synchronisation le"
 
-#: footer.php:148
+#: footer.php:152
 msgid "Please connect to internet to sync with STS"
 msgstr "Veuillez vous connecter à Internet pour synchroniser avec STS"
 
-#: footer.php:154
+#: footer.php:158
 msgid "Preparing for STS sync."
 msgstr "Préparation de la synchronisation STS."
 
-#: footer.php:154 footer.php:176 footer.php:200 new-instance.php:137
+#: footer.php:158 footer.php:180 footer.php:204 new-instance.php:137
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
-#: footer.php:165 footer.php:189 footer.php:213
+#: footer.php:169 footer.php:193 footer.php:217
 msgid "Unable to do STS Sync. Please contact technical team for assistance."
 msgstr ""
 "Impossible d'effectuer la synchronisation STS. Veuillez contacter l'équipe "
 "technique pour obtenir de l'aide."
 
-#: footer.php:176
+#: footer.php:180
 msgid "Trying to sync Test Results"
 msgstr "Essayer de synchroniser les résultats des tests"
 
-#: footer.php:200
+#: footer.php:204
 msgid "Trying to sync Test Requests"
 msgstr "Essayer de synchroniser les demandes de test"
 
-#: footer.php:233 footer.php:244
+#: footer.php:237 footer.php:248
 msgid "Thank you.Your message has been submitted."
 msgstr "Merci, votre message a été envoyé."
 
-#: footer.php:361
+#: footer.php:365
 msgid ""
 "Invalid phone number. Please enter full phone number with the proper country "
 "code"
@@ -14939,17 +15200,22 @@ msgstr ""
 "Numéro de téléphone non valide. Veuillez saisir le numéro de téléphone "
 "complet avec l'indicatif du pays"
 
-#: footer.php:397
+#: footer.php:401
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identifiant du patient : "
 
-#: footer.php:417 vl/requests/forms/add-drc.php:1044
-#: vl/requests/forms/edit-drc.php:1017
+#: footer.php:421 generic-tests/requests/add-request.php:856
+#: generic-tests/requests/add-request.php:913
+#: generic-tests/requests/edit-request.php:1095
+#: generic-tests/requests/edit-request.php:1152
+#: generic-tests/results/update-generic-test-result.php:1069
+#: generic-tests/results/update-generic-test-result.php:1126
+#: vl/requests/forms/add-drc.php:1044 vl/requests/forms/edit-drc.php:1017
 #: vl/results/forms/update-drc-result.php:800
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères pour rechercher"
 
-#: footer.php:472
+#: footer.php:476
 msgid "Cache cleared successfully"
 msgstr "Le Câche a été éliminé avec succès"
 
@@ -15445,10 +15711,10 @@ msgstr "Unité de résultats des tests"
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1847
-#: generic-tests/requests/edit-request.php:1718
+#: generic-tests/requests/edit-request.php:1711
 #: generic-tests/requests/getTestTypeForm.php:305
 #: generic-tests/requests/getTestTypeForm.php:353
-#: generic-tests/results/update-generic-test-result.php:1677
+#: generic-tests/results/update-generic-test-result.php:1682
 msgid "Enter test result unit"
 msgstr "Veuillez entrer l'unité de résultat des test"
 
@@ -15459,10 +15725,10 @@ msgstr "Veuillez entrer l'unité de résultat des test"
 #: generic-tests/requests/clone-request.php:904
 #: generic-tests/requests/clone-request.php:949
 #: generic-tests/requests/clone-request.php:1847
-#: generic-tests/requests/edit-request.php:1718
+#: generic-tests/requests/edit-request.php:1711
 #: generic-tests/requests/getTestTypeForm.php:305
 #: generic-tests/requests/getTestTypeForm.php:353
-#: generic-tests/results/update-generic-test-result.php:1677
+#: generic-tests/results/update-generic-test-result.php:1682
 msgid "Please enter test result unit"
 msgstr "Veuillez saisir l'unité de résultat du test"
 
@@ -16232,6 +16498,10 @@ msgid "Specimen type"
 msgstr "Type de spécimen"
 
 #: generic-tests/mail/mail-generic-tests-results.php:243
+#: generic-tests/requests/add-request.php:598
+#: generic-tests/requests/add-request.php:600
+#: generic-tests/requests/edit-request.php:805
+#: generic-tests/requests/edit-request.php:807
 #: vl/requests/forms/add-burkina-faso.php:516
 #: vl/requests/forms/add-cameroon.php:523
 #: vl/requests/forms/add-cameroon.php:525
@@ -16304,39 +16574,602 @@ msgstr "Veuillez vérifier votre numéro d'identification de l'échantillon"
 msgid "Lab test request added successfully"
 msgstr "Demande de test de laboratoire ajoutée avec succès"
 
+#: generic-tests/requests/add-request.php:214
+#: generic-tests/requests/edit-request.php:385
+#: generic-tests/results/update-generic-test-result.php:377
+msgid "LABORATORY REQUEST FORM"
+msgstr "FORMULAIRE DE DEMANDE DE LABORATOIRE"
+
+#: generic-tests/requests/add-request.php:217
+msgid "Add Request"
+msgstr "Ajouter une demande"
+
+#: generic-tests/requests/add-request.php:232
+#: generic-tests/requests/edit-request.php:406
+#: generic-tests/results/update-generic-test-result.php:398
+#: vl/requests/forms/add-burkina-faso.php:95
+#: vl/requests/forms/add-cameroon.php:97
+#: vl/requests/forms/edit-burkina-faso.php:187
+#: vl/requests/forms/edit-cameroon.php:139
+#: vl/results/forms/update-burkina-faso-result.php:187
+#: vl/results/forms/update-cameroon-result.php:185
+msgid "Clinic Information: (To be filled by requesting Clinican/Nurse)"
+msgstr ""
+"Informations cliniques : (à remplir par le clinicien/infirmier demandeur)"
+
+#: generic-tests/requests/add-request.php:255
+#: generic-tests/requests/edit-request.php:433
+#: generic-tests/results/update-generic-test-result.php:425
+#: system/translate-strings.php:97 vl/requests/forms/add-burkina-faso.php:108
+#: vl/requests/forms/add-cameroon.php:116
+#: vl/requests/forms/edit-burkina-faso.php:201
+#: vl/requests/forms/edit-cameroon.php:158
+#: vl/results/forms/update-burkina-faso-result.php:201
+#: vl/results/forms/update-cameroon-result.php:198
+msgid "Sample Reordered"
+msgstr "Échantillon réorganisé"
+
+#: generic-tests/requests/add-request.php:257
+#: generic-tests/results/update-generic-test-result.php:427
+#: vl/requests/forms/add-cameroon.php:116
+#: vl/requests/forms/edit-cameroon.php:158
+#: vl/results/forms/update-cameroon-result.php:198
+msgid "Please indicate if this is a reordered sample"
+msgstr "Veuillez indiquer s'il s'agit d'un échantillon commandé à nouveau"
+
+#: generic-tests/requests/add-request.php:268
+#: vl/requests/forms/add-cameroon.php:124
+#: vl/requests/forms/edit-cameroon.php:166
+msgid "Print Barcode Label"
+msgstr "Imprimer une étiquette de code-barres"
+
+#: generic-tests/requests/add-request.php:277
+#: generic-tests/requests/edit-request.php:443
+#: generic-tests/results/update-generic-test-result.php:435
+#: vl/requests/forms/add-burkina-faso.php:116
+#: vl/requests/forms/edit-burkina-faso.php:209
+#: vl/results/forms/update-burkina-faso-result.php:209
+msgid "State/Province"
+msgstr "État/Province"
+
+#: generic-tests/requests/add-request.php:295
+#: generic-tests/requests/edit-request.php:461
+#: generic-tests/results/update-generic-test-result.php:453
+#: vl/requests/forms/add-burkina-faso.php:132
+#: vl/requests/forms/edit-burkina-faso.php:225
+#: vl/results/forms/update-burkina-faso-result.php:225
+msgid "Clinic/Health Center"
+msgstr "Clinique/Centre de santé"
+
+#: generic-tests/requests/add-request.php:323
+#: generic-tests/requests/edit-request.php:490
+#: vl/requests/forms/add-burkina-faso.php:146
+#: vl/requests/forms/edit-burkina-faso.php:239
+#: vl/results/forms/update-burkina-faso-result.php:239
+msgid "Clinic Email(s)"
+msgstr "Courriel(s) de la clinique"
+
+#: generic-tests/requests/add-request.php:362
+#: generic-tests/requests/add-request.php:370
+#: generic-tests/requests/edit-request.php:545
+msgid "Enter EPID Number"
+msgstr "Saisir le numéro EPID"
+
+#: generic-tests/requests/add-request.php:362
+msgid "Please enter the Enter EPID Number"
+msgstr "Veuillez saisir le numéro de l'EPID"
+
+#: generic-tests/requests/add-request.php:374
+#: generic-tests/requests/edit-request.php:550
+msgid "Laboratory Number"
+msgstr "Numéro de laboratoire"
+
+#: generic-tests/requests/add-request.php:376
+#: generic-tests/requests/edit-request.php:552
+msgid "Enter Laboratory Number"
+msgstr "Saisir le numéro du laboratoire"
+
+#: generic-tests/requests/add-request.php:384
+#: generic-tests/requests/edit-request.php:560
+#: generic-tests/results/update-generic-test-result.php:531
+#: vl/requests/forms/add-cameroon.php:250
+#: vl/requests/forms/edit-cameroon.php:291
+#: vl/results/forms/update-cameroon-result.php:328
+msgid "Enter DOB"
+msgstr "Saisir la date de naissance"
+
+#: generic-tests/requests/add-request.php:384
+#: generic-tests/requests/edit-request.php:560
+#: generic-tests/results/update-generic-test-result.php:531
+#: vl/requests/forms/add-cameroon.php:250
+#: vl/results/forms/update-cameroon-result.php:328
+msgid "Enter dob"
+msgstr "Saisir le numéro d'identification"
+
+#: generic-tests/requests/add-request.php:388
+#: generic-tests/requests/edit-request.php:564
+#: generic-tests/results/update-generic-test-result.php:537
+#: vl/requests/forms/add-burkina-faso.php:215
+#: vl/requests/forms/edit-burkina-faso.php:306
+#: vl/results/forms/update-burkina-faso-result.php:306
+msgid "If DOB unknown, Age in Years"
+msgstr "Si la date de naissance est inconnue, l'âge en années"
+
+#: generic-tests/requests/add-request.php:390
+#: generic-tests/requests/edit-request.php:566
+#: generic-tests/results/update-generic-test-result.php:539
+msgid "Age in Years"
+msgstr "Âge en années"
+
+#: generic-tests/requests/add-request.php:390
+#: generic-tests/requests/edit-request.php:566
+#: generic-tests/results/update-generic-test-result.php:539
+#: patients/add-patient.php:161 patients/edit-patient.php:178
+#: vl/requests/forms/add-cameroon.php:256
+#: vl/requests/forms/edit-cameroon.php:297
+#: vl/results/forms/update-cameroon-result.php:334
+msgid "Enter age in years"
+msgstr "Saisir l'âge en années"
+
+#: generic-tests/requests/add-request.php:396
+#: generic-tests/requests/edit-request.php:573
+#: generic-tests/results/update-generic-test-result.php:543
+#: vl/requests/forms/add-burkina-faso.php:221
+#: vl/requests/forms/edit-burkina-faso.php:312
+#: vl/results/forms/update-burkina-faso-result.php:312
+msgid "If Age < 1, Age in Months"
+msgstr "Si âge < 1, âge en mois"
+
+#: generic-tests/requests/add-request.php:398
+#: generic-tests/requests/edit-request.php:575
+#: generic-tests/results/update-generic-test-result.php:545
+#: vl/results/forms/update-cameroon-result.php:339
+msgid "Age in Month"
+msgstr "Âge en mois"
+
+#: generic-tests/requests/add-request.php:398
+#: generic-tests/requests/edit-request.php:575
+#: generic-tests/results/update-generic-test-result.php:545
+#: patients/add-patient.php:169 patients/edit-patient.php:186
+#: vl/requests/forms/add-cameroon.php:262
+#: vl/requests/forms/edit-cameroon.php:303
+#: vl/results/forms/update-cameroon-result.php:339
+msgid "Enter age in months"
+msgstr "Saisir l'âge en mois"
+
+#: generic-tests/requests/add-request.php:402
+#: generic-tests/requests/edit-request.php:579
+#: generic-tests/results/update-generic-test-result.php:551
+#: vl/requests/forms/add-burkina-faso.php:228
+#: vl/requests/forms/edit-burkina-faso.php:319
+#: vl/results/forms/update-burkina-faso-result.php:319
+msgid "Patient Name (First Name, Last Name)"
+msgstr "Nom du patient (prénom, nom)"
+
+#: generic-tests/requests/add-request.php:404
+#: generic-tests/requests/edit-request.php:581
+#: vl/results/forms/update-cameroon-result.php:347
+msgid "Enter patient name"
+msgstr "Saisir le nom du patient"
+
+#: generic-tests/requests/add-request.php:413
+#: generic-tests/requests/add-request.php:416
+#: generic-tests/requests/add-request.php:419
+#: generic-tests/requests/edit-request.php:591
+#: generic-tests/requests/edit-request.php:595
+#: generic-tests/requests/edit-request.php:599
+#: generic-tests/results/update-generic-test-result.php:560
+#: generic-tests/results/update-generic-test-result.php:564
+#: generic-tests/results/update-generic-test-result.php:568
+#: vl/results/forms/update-cameroon-result.php:360
+#: vl/results/forms/update-cameroon-result.php:364
+msgid "Please check gender"
+msgstr "Veuillez cocher le sexe"
+
+#: generic-tests/requests/add-request.php:424
+#: generic-tests/requests/edit-request.php:605
+#: generic-tests/results/update-generic-test-result.php:576
+msgid "Patient consent to receive SMS?"
+msgstr "Consentement du patient à recevoir des SMS ?"
+
+#: generic-tests/requests/add-request.php:427
+#: generic-tests/requests/add-request.php:430
+#: generic-tests/requests/edit-request.php:608
+#: generic-tests/requests/edit-request.php:612
+#: generic-tests/results/update-generic-test-result.php:579
+#: generic-tests/results/update-generic-test-result.php:583
+msgid "Patient consent to receive SMS"
+msgstr "Consentement du patient à recevoir des SMS"
+
+#: generic-tests/requests/add-request.php:439
+#: generic-tests/requests/edit-request.php:623
+#: generic-tests/results/update-generic-test-result.php:591
+#: patients/add-patient.php:205 patients/edit-patient.php:222
+#: vl/requests/forms/add-cameroon.php:304
+#: vl/requests/forms/edit-cameroon.php:345
+#: vl/results/forms/update-cameroon-result.php:381
+msgid "Enter Phone Number"
+msgstr "Entrer votre numéro de Téléphone"
+
+#: generic-tests/requests/add-request.php:439
+#: generic-tests/requests/edit-request.php:623
+#: generic-tests/results/update-generic-test-result.php:591
+#: patients/add-patient.php:205 patients/edit-patient.php:222
+#: vl/requests/forms/add-cameroon.php:304
+#: vl/requests/forms/edit-cameroon.php:345
+#: vl/results/forms/update-cameroon-result.php:381
+msgid "Enter phone number"
+msgstr "Saisir le numéro de téléphone"
+
+#: generic-tests/requests/add-request.php:467
+#: generic-tests/requests/edit-request.php:656
+#: generic-tests/results/update-generic-test-result.php:625
+msgid "How long has this patient been on treatment ?"
+msgstr "Depuis combien de temps ce patient est-il sous traitement ?"
+
+#: generic-tests/requests/add-request.php:469
+#: generic-tests/requests/edit-request.php:658
+#: generic-tests/results/update-generic-test-result.php:627
+msgid "Enter Treatment Period"
+msgstr "Saisir la période de traitement"
+
+#: generic-tests/requests/add-request.php:469
+#: generic-tests/requests/edit-request.php:658
+#: generic-tests/results/update-generic-test-result.php:627
+msgid "Please enter how long has this patient been on treatment"
+msgstr ""
+"Veuillez indiquer depuis combien de temps ce patient est sous traitement"
+
+#: generic-tests/requests/add-request.php:483
+#: generic-tests/requests/edit-request.php:672
+#: generic-tests/results/update-generic-test-result.php:641
+#: vl/requests/forms/add-cameroon.php:355
+#: vl/requests/forms/edit-cameroon.php:396
+msgid "Please select sample collection date"
+msgstr "Veuillez sélectionner la date de prélèvement de l'échantillon"
+
+#: generic-tests/requests/add-request.php:489
+#: generic-tests/requests/edit-request.php:678
+#: generic-tests/results/update-generic-test-result.php:647
+msgid "Please select sample dispatched on"
+msgstr "Veuillez sélectionner l'échantillon expédié le"
+
+#: generic-tests/requests/add-request.php:497
+#: generic-tests/requests/edit-request.php:686
+#: generic-tests/results/update-generic-test-result.php:655
+#: vl/requests/forms/add-cameroon.php:361
+#: vl/requests/forms/edit-cameroon.php:402
+#: vl/results/forms/update-cameroon-result.php:439
+msgid "Please choose sample type"
+msgstr "Veuillez choisir le type d'échantillon"
+
+#: generic-tests/requests/add-request.php:513
+#: generic-tests/requests/edit-request.php:703
+#: generic-tests/results/update-generic-test-result.php:672
+#: vl/requests/forms/add-burkina-faso.php:420
+#: vl/requests/forms/add-cameroon.php:493
+#: vl/requests/forms/edit-burkina-faso.php:506
+#: vl/requests/forms/edit-cameroon.php:547
+#: vl/results/forms/update-burkina-faso-result.php:507
+#: vl/results/forms/update-cameroon-result.php:570
+msgid "Laboratory Information"
+msgstr "Informations sur le laboratoire"
+
+#: generic-tests/requests/add-request.php:518
+#: generic-tests/requests/add-request.php:520
+#: generic-tests/requests/edit-request.php:708
+#: generic-tests/results/update-generic-test-result.php:689
+msgid "Focal Person"
+msgstr "Personne focale"
+
+#: generic-tests/requests/add-request.php:520
+msgid "Please enter focal person name"
+msgstr "Veuillez saisir le nom de la personne focale"
+
+#: generic-tests/requests/add-request.php:524
+#: generic-tests/requests/edit-request.php:720
+#: generic-tests/results/update-generic-test-result.php:703
+msgid "Focal Person Phone Number"
+msgstr "Numéro de téléphone de la personne de contact"
+
+#: generic-tests/requests/add-request.php:526
+#: generic-tests/requests/edit-request.php:722
+#: generic-tests/results/update-generic-test-result.php:705
+msgid "Please enter focal person phone number"
+msgstr "Veuillez saisir le numéro de téléphone de la personne de référence"
+
+#: generic-tests/requests/add-request.php:532
+msgid "Date Sample Received at Hub"
+msgstr "Date de réception de l'échantillon au centre"
+
+#: generic-tests/requests/add-request.php:534
+#: generic-tests/requests/edit-request.php:731
+#: generic-tests/results/update-generic-test-result.php:712
+msgid "Sample Received at HUB Date"
+msgstr "Échantillon reçu au HUB Date"
+
+#: generic-tests/requests/add-request.php:534
+msgid "Please select sample received at Hub date"
+msgstr "Veuillez sélectionner l'échantillon reçu à la date du Hub"
+
+#: generic-tests/requests/add-request.php:538
+#: global-config/editGlobalConfig.php:1688
+#: vl/requests/forms/add-burkina-faso.php:456
+#: vl/requests/forms/add-cameroon.php:517
+#: vl/requests/forms/edit-burkina-faso.php:533
+#: vl/requests/forms/edit-cameroon.php:572
+#: vl/results/forms/update-burkina-faso-result.php:534
+#: vl/results/forms/update-cameroon-result.php:595
+msgid "Date Sample Received at Testing Lab"
+msgstr "Date de réception de l'échantillon au laboratoire de test"
+
+#: generic-tests/requests/add-request.php:540
+msgid "Sample Received at LAB Date"
+msgstr "Échantillon reçu au LAB Date"
+
+#: generic-tests/requests/add-request.php:540
+msgid "Please select sample received at Lab date"
+msgstr "Veuillez sélectionner l'échantillon reçu à la date du laboratoire"
+
+#: generic-tests/requests/add-request.php:548
+msgid "Please choose Testing Platform"
+msgstr "Veuillez choisir la plate-forme de test"
+
+#: generic-tests/requests/add-request.php:559
+#: generic-tests/requests/edit-request.php:760
+#: generic-tests/results/update-generic-test-result.php:751
+#: vl/requests/forms/add-cameroon.php:535
+#: vl/requests/forms/edit-cameroon.php:590
+#: vl/results/forms/update-cameroon-result.php:613
+msgid "Please check if sample is rejected or not"
+msgstr "Veuillez vérifier si l'échantillon est rejeté ou non"
+
+#: generic-tests/requests/add-request.php:583
+#: generic-tests/requests/edit-request.php:789
+#: generic-tests/results/update-generic-test-result.php:781
+#: vl/requests/forms/add-burkina-faso.php:501
+#: vl/requests/forms/edit-burkina-faso.php:578
+#: vl/results/forms/update-burkina-faso-result.php:579
+msgid "Other (Please Specify)"
+msgstr "Autre (à préciser)"
+
+#: generic-tests/requests/add-request.php:586
+#: generic-tests/requests/edit-request.php:792
+#: generic-tests/results/update-generic-test-result.php:784
+msgid "Please enter rejection reason"
+msgstr "Veuillez saisir le motif du rejet"
+
+#: generic-tests/requests/add-request.php:592
+#: vl/requests/forms/add-cameroon.php:585
+#: vl/requests/forms/edit-cameroon.php:640
+#: vl/results/forms/update-cameroon-result.php:646
+msgid "Please select rejection date"
+msgstr "Veuillez sélectionner la date de rejet"
+
+#: generic-tests/requests/add-request.php:600
+#: generic-tests/requests/edit-request.php:807
+#: vl/requests/forms/add-cameroon.php:525
+#: vl/requests/forms/edit-cameroon.php:580
+#: vl/results/forms/update-cameroon-result.php:603
+msgid "Please select sample testing date"
+msgstr "Veuillez sélectionner la date de test de l'échantillon"
+
+#: generic-tests/requests/add-request.php:604
+#: generic-tests/requests/edit-request.php:811
+#: generic-tests/results/update-generic-test-result.php:797
+msgid "Reason For Testing"
+msgstr "Raison du test"
+
+#: generic-tests/requests/add-request.php:617
+#: generic-tests/requests/edit-request.php:837
+#: generic-tests/results/update-generic-test-result.php:809
+#: vl/requests/forms/add-burkina-faso.php:608
+#: vl/requests/forms/add-cameroon.php:636
+#: vl/requests/forms/edit-burkina-faso.php:689
+#: vl/requests/forms/edit-cameroon.php:694
+#: vl/results/forms/update-burkina-faso-result.php:690
+#: vl/results/forms/update-cameroon-result.php:706
+msgid "Date Results Dispatched"
+msgstr "Date d'envoi des résultats"
+
+#: generic-tests/requests/add-request.php:619
+msgid "Result Dispatch Date"
+msgstr "Résultat Date d'envoi"
+
+#: generic-tests/requests/add-request.php:619
+#: generic-tests/requests/edit-request.php:839
+#: generic-tests/results/update-generic-test-result.php:811
+#: vl/requests/forms/add-cameroon.php:638
+#: vl/requests/forms/edit-cameroon.php:696
+#: vl/results/forms/update-cameroon-result.php:708
+msgid "Please select result dispatched date"
+msgstr "Veuillez sélectionner la date d'envoi du résultat"
+
+#: generic-tests/requests/add-request.php:623
+#: generic-tests/requests/edit-request.php:843
+#: generic-tests/results/update-generic-test-result.php:815
+msgid "Tests Performed"
+msgstr "Tests effectués"
+
+#: generic-tests/requests/add-request.php:625
+#: generic-tests/requests/edit-request.php:845
+#: generic-tests/results/update-generic-test-result.php:817
+msgid "Please select sub tests"
+msgstr "Veuillez sélectionner les sous-épreuves"
+
+#: generic-tests/requests/add-request.php:633
+#: vl/requests/forms/add-burkina-faso.php:561 vl/requests/forms/add-drc.php:553
+#: vl/requests/forms/edit-burkina-faso.php:638
+#: vl/requests/forms/edit-drc.php:575
+#: vl/results/forms/update-burkina-faso-result.php:639
+#: vl/results/forms/update-drc-result.php:551
+msgid "Reason for Failure"
+msgstr "Motif de l'échec"
+
+#: generic-tests/requests/add-request.php:635
+msgid "Please choose reason for failure"
+msgstr "Veuillez choisir la raison de l'échec"
+
+#: generic-tests/requests/add-request.php:683
+msgid "Please choose Approved On"
+msgstr "Veuillez choisir Approuvé le"
+
+#: generic-tests/requests/add-request.php:689
+#: generic-tests/requests/edit-request.php:908
+#: generic-tests/results/update-generic-test-result.php:879
+#: vl/requests/forms/add-cameroon.php:644
+#: vl/requests/forms/edit-cameroon.php:702
+#: vl/results/forms/update-cameroon-result.php:714
+msgid "Lab comments"
+msgstr "Commentaires du laboratoire"
+
+#: generic-tests/requests/add-request.php:689
+msgid "Please enter LabComments"
+msgstr "Veuillez saisir LabComments"
+
+#: generic-tests/requests/add-request.php:701
+#: vl/requests/forms/add-burkina-faso.php:627
+#: vl/requests/forms/add-cameroon.php:667
+msgid "Loading Printer Details..."
+msgstr "Chargement des détails de l'imprimante..."
+
+#: generic-tests/requests/add-request.php:727
+msgid "Save and Clone"
+msgstr "Sauvegarde et clonage"
+
 #: generic-tests/requests/add-request.php:770
 #: generic-tests/requests/add-request.php:1571
-#: generic-tests/requests/edit-request.php:968
-#: generic-tests/requests/edit-request.php:1695
+#: generic-tests/requests/edit-request.php:962
+#: generic-tests/requests/edit-request.php:1688
 #: generic-tests/results/update-generic-test-result.php:935
-#: generic-tests/results/update-generic-test-result.php:1654
+#: generic-tests/results/update-generic-test-result.php:1659
 msgid "Select Sub Tests"
 msgstr "Sélectionner les tests secondaires"
 
 #: generic-tests/requests/add-request.php:789
 #: generic-tests/requests/clone-request.php:1129
-#: generic-tests/requests/edit-request.php:1015
+#: generic-tests/requests/edit-request.php:1007
+#: generic-tests/results/update-generic-test-result.php:981
 msgid "Select Specimen Type"
 msgstr "Sélectionner le type de spécimen"
+
+#: generic-tests/requests/add-request.php:809
+#: generic-tests/requests/edit-request.php:1027
+#: generic-tests/results/update-generic-test-result.php:1001
+#: vl/requests/forms/add-cameroon.php:786
+#: vl/requests/forms/edit-cameroon.php:814
+msgid "Select Tested By"
+msgstr "Sélectionner Testé par"
+
+#: generic-tests/requests/add-request.php:848
+msgid "Enter Request Clinician name"
+msgstr "Saisir le nom du clinicien de la demande"
+
+#: generic-tests/requests/add-request.php:905
+#: generic-tests/requests/edit-request.php:1144
+#: generic-tests/results/update-generic-test-result.php:1118
+msgid "Enter Request Focal name"
+msgstr "Saisir le nom du correspondant de la demande"
 
 #: generic-tests/requests/add-request.php:1490
 #: generic-tests/requests/add-request.php:1494
 #: generic-tests/requests/clone-request.php:1774
 #: generic-tests/requests/clone-request.php:1778
-#: generic-tests/requests/edit-request.php:1583
-#: generic-tests/requests/edit-request.php:1587
-#: generic-tests/requests/edit-request.php:1666
-#: generic-tests/requests/edit-request.php:1670
-#: generic-tests/results/update-generic-test-result.php:1555
-#: generic-tests/results/update-generic-test-result.php:1559
-#: generic-tests/results/update-generic-test-result.php:1631
-#: generic-tests/results/update-generic-test-result.php:1635
+#: generic-tests/requests/edit-request.php:1576
+#: generic-tests/requests/edit-request.php:1580
+#: generic-tests/requests/edit-request.php:1659
+#: generic-tests/requests/edit-request.php:1663
+#: generic-tests/results/update-generic-test-result.php:1560
+#: generic-tests/results/update-generic-test-result.php:1564
+#: generic-tests/results/update-generic-test-result.php:1636
+#: generic-tests/results/update-generic-test-result.php:1640
 msgid "Select any one of the option"
 msgstr "Sélectionnez l'une des options suivantes"
 
 #: generic-tests/requests/edit-request-helper.php:341
 msgid "Request updated successfully"
 msgstr "Demande mise à jour avec succès"
+
+#: generic-tests/requests/edit-request.php:495
+#: vl/requests/forms/edit-burkina-faso.php:241
+#: vl/results/forms/update-burkina-faso-result.php:241
+msgid "Clinic Mobile No.(s)"
+msgstr "Numéro(s) de portable(s) de la clinique"
+
+#: generic-tests/requests/edit-request.php:500
+#: vl/requests/forms/edit-burkina-faso.php:243
+#: vl/results/forms/update-burkina-faso-result.php:243
+#: vl/results/forms/update-cameroon-result.php:268
+msgid "Clinic Contact Person"
+msgstr "Personne contact de la clinique"
+
+#: generic-tests/requests/edit-request.php:711
+#: generic-tests/results/update-generic-test-result.php:692
+msgid "Please enter Focal Person"
+msgstr "Veuillez saisir la personne de contact"
+
+#: generic-tests/requests/edit-request.php:728
+#: generic-tests/results/update-generic-test-result.php:709
+msgid ""
+"Date\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tSample Received at Hub (PHL)"
+msgstr ""
+"Date\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tÉchantillon reçu au Hub (PHL)"
+
+#: generic-tests/requests/edit-request.php:731
+#: generic-tests/results/update-generic-test-result.php:712
+msgid "Please select sample received at HUB date"
+msgstr "Veuillez sélectionner l'échantillon reçu à la date du HUB"
+
+#: generic-tests/requests/edit-request.php:736
+#: generic-tests/results/update-generic-test-result.php:719
+msgid ""
+"Date\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tSample Received at Testing Lab"
+msgstr ""
+"Date de réception de l'échantillon\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tÉchantillon reçu au laboratoire d'essai"
+
+#: generic-tests/requests/edit-request.php:739
+#: generic-tests/results/update-generic-test-result.php:722
+#: vl/requests/forms/add-cameroon.php:519
+#: vl/requests/forms/edit-cameroon.php:574
+#: vl/results/forms/update-cameroon-result.php:597
+msgid "Please select sample received date"
+msgstr "Veuillez sélectionner la date de réception de l'échantillon"
+
+#: generic-tests/requests/edit-request.php:799
+#: generic-tests/results/update-generic-test-result.php:791
+msgid "Please select Sample Rejection Date"
+msgstr "Veuillez sélectionner la date de rejet de l'échantillon"
+
+#: generic-tests/requests/edit-request.php:839
+#: generic-tests/results/update-generic-test-result.php:811
+#: vl/requests/forms/add-cameroon.php:638
+#: vl/requests/forms/edit-cameroon.php:696
+#: vl/results/forms/update-cameroon-result.php:708
+msgid "Result Dispatched Date"
+msgstr "Résultat Date d'envoi"
+
+#: generic-tests/requests/edit-request.php:914
+msgid "Reason For Changes in Result"
+msgstr "Raison de la modification du résultat"
+
+#: generic-tests/requests/edit-request.php:916
+#: generic-tests/results/update-generic-test-result.php:888
+msgid "Enter Reason For Result Changes"
+msgstr "Saisir le motif de la modification des résultats"
+
+#: generic-tests/requests/edit-request.php:916
+#: generic-tests/results/update-generic-test-result.php:888
+msgid "Please enter reason for result changes"
+msgstr "Veuillez indiquer la raison de la modification des résultats"
+
+#: generic-tests/requests/edit-request.php:1087
+#: generic-tests/results/update-generic-test-result.php:1061
+msgid "Enter Requesting Clinician Name"
+msgstr "Saisir le nom du clinicien demandeur"
 
 #: generic-tests/requests/getTestTypeForm.php:77
 msgid "Please select an option"
@@ -16377,6 +17210,65 @@ msgstr "Saisir le résultat d'autres tests de laboratoire"
 #: generic-tests/results/update-generic-test-result-helper.php:211
 msgid "Lab Tests results updated successfully"
 msgstr "Les résultats des tests de laboratoire ont été mis à jour avec succès"
+
+#: generic-tests/results/update-generic-test-result.php:437
+#: vl/results/forms/update-cameroon-result.php:218
+msgid "Please choose state"
+msgstr "Veuillez choisir l'État"
+
+#: generic-tests/results/update-generic-test-result.php:445
+#: vl/results/forms/update-cameroon-result.php:229
+msgid "Please choose county"
+msgstr "Veuillez choisir le comté"
+
+#: generic-tests/results/update-generic-test-result.php:455
+#: vl/results/forms/update-cameroon-result.php:244
+msgid "Please select clinic/health center name"
+msgstr "Veuillez sélectionner le nom de la clinique/du centre de santé"
+
+#: generic-tests/results/update-generic-test-result.php:525
+msgid "Enter patient id"
+msgstr "Saisir l'identifiant du patient"
+
+#: generic-tests/results/update-generic-test-result.php:679
+msgid "Please choose lab"
+msgstr "Veuillez choisir un laboratoire"
+
+#: generic-tests/results/update-generic-test-result.php:726
+msgid ""
+"Testing\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tPlatform"
+msgstr ""
+"Tests\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tPlate-forme"
+
+#: generic-tests/results/update-generic-test-result.php:741
+msgid ""
+"Sample\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tTesting Date"
+msgstr ""
+"Échantillon\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tDate de l'essai"
+
+#: generic-tests/results/update-generic-test-result.php:763
+msgid ""
+"Rejection\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tReason"
+msgstr ""
+"Rejet\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tMotif"
+
+#: generic-tests/results/update-generic-test-result.php:885
+msgid ""
+"Reason\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tFor Changes in Result"
+msgstr ""
+"Raison\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tModifications du résultat"
+
+#: generic-tests/results/update-generic-test-result.php:1700
+msgid "Enter result"
+msgstr "Saisir le résultat"
 
 #: global-config/editGlobalConfig.php:8
 msgid "Edit General Configuration"
@@ -17410,16 +18302,6 @@ msgstr "District des FOSA"
 msgid "Patient ART No"
 msgstr "Code TARV"
 
-#: global-config/editGlobalConfig.php:1688
-#: vl/requests/forms/add-burkina-faso.php:456
-#: vl/requests/forms/add-cameroon.php:517
-#: vl/requests/forms/edit-burkina-faso.php:533
-#: vl/requests/forms/edit-cameroon.php:572
-#: vl/results/forms/update-burkina-faso-result.php:534
-#: vl/results/forms/update-cameroon-result.php:595
-msgid "Date Sample Received at Testing Lab"
-msgstr "Date de réception de l'échantillon au laboratoire de test"
-
 #: global-config/editGlobalConfig.php:1692
 msgid "VL Result"
 msgstr "Résultat CV"
@@ -17431,7 +18313,7 @@ msgstr "Résultat CV"
 msgid "Enter Field Name"
 msgstr "Saisir le nom du champ"
 
-#: global-config/globalConfigHelper.php:227
+#: global-config/globalConfigHelper.php:232
 msgid "Configuration updated successfully"
 msgstr "La configuration a été mise à jour avec succès"
 
@@ -18682,13 +19564,6 @@ msgstr "Si la date de naissance est inconnue, âge en année(s)"
 msgid "Age in Year(s)"
 msgstr "Âge en année(s)"
 
-#: patients/add-patient.php:161 patients/edit-patient.php:178
-#: vl/requests/forms/add-cameroon.php:256
-#: vl/requests/forms/edit-cameroon.php:297
-#: vl/results/forms/update-cameroon-result.php:334
-msgid "Enter age in years"
-msgstr "Saisir l'âge en années"
-
 #: patients/add-patient.php:167 patients/edit-patient.php:184
 msgid "If Age < 1, Age in Month(s)"
 msgstr "Si âge < 1, âge en mois"
@@ -18698,13 +19573,6 @@ msgstr "Si âge < 1, âge en mois"
 #: vl/requests/forms/edit-cameroon.php:303
 msgid "Age in Month(s)"
 msgstr "Âge en mois"
-
-#: patients/add-patient.php:169 patients/edit-patient.php:186
-#: vl/requests/forms/add-cameroon.php:262
-#: vl/requests/forms/edit-cameroon.php:303
-#: vl/results/forms/update-cameroon-result.php:339
-msgid "Enter age in months"
-msgstr "Saisir l'âge en mois"
 
 #: patients/add-patient.php:180 patients/edit-patient.php:197
 #: vl/requests/forms/add-cameroon.php:314
@@ -18719,20 +19587,6 @@ msgstr "Veuillez cocher si la patiente est enceinte"
 #: vl/results/forms/update-cameroon-result.php:406
 msgid "Please check if patient is breastfeeding"
 msgstr "Veuillez cocher si la patiente allaite"
-
-#: patients/add-patient.php:205 patients/edit-patient.php:222
-#: vl/requests/forms/add-cameroon.php:304
-#: vl/requests/forms/edit-cameroon.php:345
-#: vl/results/forms/update-cameroon-result.php:381
-msgid "Enter Phone Number"
-msgstr "Entrer votre numéro de Téléphone"
-
-#: patients/add-patient.php:205 patients/edit-patient.php:222
-#: vl/requests/forms/add-cameroon.php:304
-#: vl/requests/forms/edit-cameroon.php:345
-#: vl/results/forms/update-cameroon-result.php:381
-msgid "Enter phone number"
-msgstr "Saisir le numéro de téléphone"
 
 #: patients/add-patient.php:223 patients/edit-patient.php:239
 msgid "Please select patient status"
@@ -19799,15 +20653,6 @@ msgstr "Manifeste CD4"
 msgid "CD4 Config"
 msgstr "Config CD4"
 
-#: system/translate-strings.php:97 vl/requests/forms/add-burkina-faso.php:108
-#: vl/requests/forms/add-cameroon.php:116
-#: vl/requests/forms/edit-burkina-faso.php:201
-#: vl/requests/forms/edit-cameroon.php:158
-#: vl/results/forms/update-burkina-faso-result.php:201
-#: vl/results/forms/update-cameroon-result.php:198
-msgid "Sample Reordered"
-msgstr "Échantillon réorganisé"
-
 #: system/translate-strings.php:99
 msgid "Failed/Invalid"
 msgstr "Échec/Invalidité"
@@ -19835,10 +20680,6 @@ msgstr "Accès"
 #: system/translate-strings.php:108
 msgid "Add"
 msgstr "Ajouter"
-
-#: system/translate-strings.php:111
-msgid "Print Result PDF"
-msgstr "Imprimer Résultat PDF"
 
 #: system/translate-strings.php:112
 msgid "Export VL Data"
@@ -20905,17 +21746,17 @@ msgid "HEALTH FACILITY CODE"
 msgstr "CODE DE LA FOSA"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:205
-#: vl/results/pdf/result-pdf-cameroon.php:226
+#: vl/results/pdf/result-pdf-cameroon.php:233
 msgid "REGION"
 msgstr "RÉGION"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:206
-#: vl/results/pdf/result-pdf-cameroon.php:227
+#: vl/results/pdf/result-pdf-cameroon.php:234
 msgid "DISTRICT"
 msgstr "DISTRICT"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:221
-#: vl/results/pdf/result-pdf-cameroon.php:256
+#: vl/results/pdf/result-pdf-cameroon.php:263
 msgid "PATIENT NAME"
 msgstr "NOM DU PATIENT"
 
@@ -20928,12 +21769,12 @@ msgid "DOB"
 msgstr "Date de naissance"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:224
-#: vl/results/pdf/result-pdf-cameroon.php:259
+#: vl/results/pdf/result-pdf-cameroon.php:266
 msgid "AGE"
 msgstr "AGE"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:253
-#: vl/results/pdf/result-pdf-cameroon.php:297
+#: vl/results/pdf/result-pdf-cameroon.php:306
 msgid "GENDER"
 msgstr "SEXE"
 
@@ -20950,17 +21791,17 @@ msgid "COMMUNITY ACTOR"
 msgstr "ACTEUR COMMUNAUTAIRE"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:272
-#: vl/results/pdf/result-pdf-cameroon.php:333
+#: vl/results/pdf/result-pdf-cameroon.php:342
 msgid "SAMPLE ID"
 msgstr "ID DE L'ÉCHANTILLON"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:273
-#: vl/results/pdf/result-pdf-cameroon.php:334
+#: vl/results/pdf/result-pdf-cameroon.php:343
 msgid "SAMPLE COLLECTION DATE"
 msgstr "DATE DE PRÉLÈVEMENT DE L'ÉCHANTILLON"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:274
-#: vl/results/pdf/result-pdf-cameroon.php:335
+#: vl/results/pdf/result-pdf-cameroon.php:344
 msgid "SAMPLE RECEIPT DATE"
 msgstr "DATE DE RÉCEPTION DE L'ÉCHANTILLON"
 
@@ -20969,17 +21810,17 @@ msgid "SAMPLE REJECTION STATUS"
 msgstr "STATUT DU REJET DE L'ÉCHANTILLON"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:283
-#: vl/results/pdf/result-pdf-cameroon.php:344
+#: vl/results/pdf/result-pdf-cameroon.php:353
 msgid "SAMPLE TEST DATE"
 msgstr "DATE DU TEST DE L’ÉCHANTILLON"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:284
-#: vl/results/pdf/result-pdf-cameroon.php:345
+#: vl/results/pdf/result-pdf-cameroon.php:354
 msgid "RESULT RELEASE DATE"
 msgstr "DATE DE PUBLICATION DES RÉSULTATS"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:294
-#: vl/results/pdf/result-pdf-cameroon.php:355
+#: vl/results/pdf/result-pdf-cameroon.php:364
 msgid "SAMPLE TYPE"
 msgstr "TYPE D’ÉCHANTILLON"
 
@@ -20992,7 +21833,7 @@ msgid "XPERT MTB Result"
 msgstr "XPERT MTB Résultat"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:343
-#: vl/results/pdf/result-pdf-cameroon.php:426
+#: vl/results/pdf/result-pdf-cameroon.php:365
 msgid "TESTED BY"
 msgstr "TESTÉ PAR"
 
@@ -21000,11 +21841,7 @@ msgstr "TESTÉ PAR"
 #: tb/results/pdf/result-pdf-burkina-faso.php:366
 #: tb/results/pdf/result-pdf-burkina-faso.php:385
 #: tb/results/pdf/result-pdf-burkina-faso.php:406
-#: vl/results/pdf/result-pdf-cameroon.php:427
-#: vl/results/pdf/result-pdf-cameroon.php:449
-#: vl/results/pdf/result-pdf-cameroon.php:470
-#: vl/results/pdf/result-pdf-cameroon.php:490
-#: vl/results/pdf/result-pdf-cameroon.php:512
+#: vl/results/pdf/result-pdf-cameroon.php:444
 msgid "SIGNATURE"
 msgstr "SIGNATURE"
 
@@ -21012,31 +21849,26 @@ msgstr "SIGNATURE"
 #: tb/results/pdf/result-pdf-burkina-faso.php:367
 #: tb/results/pdf/result-pdf-burkina-faso.php:386
 #: tb/results/pdf/result-pdf-burkina-faso.php:407
-#: vl/results/pdf/result-pdf-cameroon.php:428
-#: vl/results/pdf/result-pdf-cameroon.php:450
-#: vl/results/pdf/result-pdf-cameroon.php:471
-#: vl/results/pdf/result-pdf-cameroon.php:491
-#: vl/results/pdf/result-pdf-cameroon.php:513
+#: vl/results/pdf/result-pdf-cameroon.php:445
 msgid "DATE"
 msgstr "DATE"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:365
-#: vl/results/pdf/result-pdf-cameroon.php:469
+#: vl/results/pdf/result-pdf-cameroon.php:366
 msgid "REVIEWED BY"
 msgstr "REVUE PAR"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:384
-#: vl/results/pdf/result-pdf-cameroon.php:448
 msgid "REPORT REVISED BY"
 msgstr "RAPPORT RÉVISÉ PAR"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:405
-#: vl/results/pdf/result-pdf-cameroon.php:489
+#: vl/results/pdf/result-pdf-cameroon.php:440
 msgid "APPROVED BY"
 msgstr "APPROUVÉ PAR"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:428
-#: vl/results/pdf/result-pdf-cameroon.php:534
+#: vl/results/pdf/result-pdf-cameroon.php:466
 msgid "Lab Comments"
 msgstr "Commentaires du laboratoire"
 
@@ -21899,7 +22731,7 @@ msgstr "Ajouter les résultats CV"
 #: vl/reference/vl-results.php:32 vl/requests/forms/add-cameroon.php:568
 #: vl/requests/forms/edit-cameroon.php:623
 #: vl/results/forms/update-cameroon-result.php:652
-#: vl/results/pdf/result-pdf-cameroon.php:380
+#: vl/results/pdf/result-pdf-cameroon.php:393
 msgid "Viral Load Result"
 msgstr "Résultat de la charge virale"
 
@@ -22073,52 +22905,6 @@ msgstr "FICHE DE DEMANDE DE CHARGE VIRALE VIH"
 msgid "Add Vl Request"
 msgstr "Ajouter une demande de CV"
 
-#: vl/requests/forms/add-burkina-faso.php:95
-#: vl/requests/forms/add-cameroon.php:97
-#: vl/requests/forms/edit-burkina-faso.php:187
-#: vl/requests/forms/edit-cameroon.php:139
-#: vl/results/forms/update-burkina-faso-result.php:187
-#: vl/results/forms/update-cameroon-result.php:185
-msgid "Clinic Information: (To be filled by requesting Clinican/Nurse)"
-msgstr ""
-"Informations cliniques : (à remplir par le clinicien/infirmier demandeur)"
-
-#: vl/requests/forms/add-burkina-faso.php:116
-#: vl/requests/forms/edit-burkina-faso.php:209
-#: vl/results/forms/update-burkina-faso-result.php:209
-msgid "State/Province"
-msgstr "État/Province"
-
-#: vl/requests/forms/add-burkina-faso.php:132
-#: vl/requests/forms/edit-burkina-faso.php:225
-#: vl/results/forms/update-burkina-faso-result.php:225
-msgid "Clinic/Health Center"
-msgstr "Clinique/Centre de santé"
-
-#: vl/requests/forms/add-burkina-faso.php:146
-#: vl/requests/forms/edit-burkina-faso.php:239
-#: vl/results/forms/update-burkina-faso-result.php:239
-msgid "Clinic Email(s)"
-msgstr "Courriel(s) de la clinique"
-
-#: vl/requests/forms/add-burkina-faso.php:215
-#: vl/requests/forms/edit-burkina-faso.php:306
-#: vl/results/forms/update-burkina-faso-result.php:306
-msgid "If DOB unknown, Age in Years"
-msgstr "Si la date de naissance est inconnue, l'âge en années"
-
-#: vl/requests/forms/add-burkina-faso.php:221
-#: vl/requests/forms/edit-burkina-faso.php:312
-#: vl/results/forms/update-burkina-faso-result.php:312
-msgid "If Age < 1, Age in Months"
-msgstr "Si âge < 1, âge en mois"
-
-#: vl/requests/forms/add-burkina-faso.php:228
-#: vl/requests/forms/edit-burkina-faso.php:319
-#: vl/results/forms/update-burkina-faso-result.php:319
-msgid "Patient Name (First Name, Last Name)"
-msgstr "Nom du patient (prénom, nom)"
-
 #: vl/requests/forms/add-burkina-faso.php:279
 #: vl/requests/forms/add-cameroon.php:393
 #: vl/requests/forms/edit-burkina-faso.php:370
@@ -22286,15 +23072,6 @@ msgstr "Choisir la raison du test"
 msgid "Please choose a reason for VL testing"
 msgstr "Veuillez choisir une raison pour le test CV"
 
-#: vl/requests/forms/add-burkina-faso.php:420
-#: vl/requests/forms/add-cameroon.php:493
-#: vl/requests/forms/edit-burkina-faso.php:506
-#: vl/requests/forms/edit-cameroon.php:547
-#: vl/results/forms/update-burkina-faso-result.php:507
-#: vl/results/forms/update-cameroon-result.php:570
-msgid "Laboratory Information"
-msgstr "Informations sur le laboratoire"
-
 #: vl/requests/forms/add-burkina-faso.php:436
 #: vl/requests/forms/edit-burkina-faso.php:511
 #: vl/results/forms/update-burkina-faso-result.php:512
@@ -22312,12 +23089,6 @@ msgstr "Numéro de téléphone du point focal CV"
 #: vl/results/forms/update-burkina-faso-result.php:528
 msgid "Date Sample Received at Hub (PHL)"
 msgstr "Date de réception de l'échantillon au Hub (PHL)"
-
-#: vl/requests/forms/add-burkina-faso.php:501
-#: vl/requests/forms/edit-burkina-faso.php:578
-#: vl/results/forms/update-burkina-faso-result.php:579
-msgid "Other (Please Specify)"
-msgstr "Autre (à préciser)"
 
 #: vl/requests/forms/add-burkina-faso.php:522
 #: vl/requests/forms/add-cameroon.php:566
@@ -22351,42 +23122,9 @@ msgstr "Détection du VIH-1"
 msgid "HIV-1 Not Detected"
 msgstr "VIH-1 non détecté"
 
-#: vl/requests/forms/add-burkina-faso.php:561 vl/requests/forms/add-drc.php:553
-#: vl/requests/forms/edit-burkina-faso.php:638
-#: vl/requests/forms/edit-drc.php:575
-#: vl/results/forms/update-burkina-faso-result.php:639
-#: vl/results/forms/update-drc-result.php:551
-msgid "Reason for Failure"
-msgstr "Motif de l'échec"
-
-#: vl/requests/forms/add-burkina-faso.php:608
-#: vl/requests/forms/add-cameroon.php:636
-#: vl/requests/forms/edit-burkina-faso.php:689
-#: vl/requests/forms/edit-cameroon.php:694
-#: vl/results/forms/update-burkina-faso-result.php:690
-#: vl/results/forms/update-cameroon-result.php:706
-msgid "Date Results Dispatched"
-msgstr "Date d'envoi des résultats"
-
-#: vl/requests/forms/add-burkina-faso.php:627
-#: vl/requests/forms/add-cameroon.php:667
-msgid "Loading Printer Details..."
-msgstr "Chargement des détails de l'imprimante..."
-
 #: vl/requests/forms/add-cameroon.php:82
 msgid "Add VL Request"
 msgstr "Ajouter une demande CV"
-
-#: vl/requests/forms/add-cameroon.php:116
-#: vl/requests/forms/edit-cameroon.php:158
-#: vl/results/forms/update-cameroon-result.php:198
-msgid "Please indicate if this is a reordered sample"
-msgstr "Veuillez indiquer s'il s'agit d'un échantillon commandé à nouveau"
-
-#: vl/requests/forms/add-cameroon.php:124
-#: vl/requests/forms/edit-cameroon.php:166
-msgid "Print Barcode Label"
-msgstr "Imprimer une étiquette de code-barres"
 
 #: vl/requests/forms/add-cameroon.php:151
 #: vl/requests/forms/edit-cameroon.php:193
@@ -22429,17 +23167,6 @@ msgstr "Saisir le code TARV"
 #: vl/results/forms/update-cameroon-result.php:322
 msgid "Enter art number"
 msgstr "Saisir le code TARV"
-
-#: vl/requests/forms/add-cameroon.php:250
-#: vl/requests/forms/edit-cameroon.php:291
-#: vl/results/forms/update-cameroon-result.php:328
-msgid "Enter DOB"
-msgstr "Saisir la date de naissance"
-
-#: vl/requests/forms/add-cameroon.php:250
-#: vl/results/forms/update-cameroon-result.php:328
-msgid "Enter dob"
-msgstr "Saisir le numéro d'identification"
 
 #: vl/requests/forms/add-cameroon.php:261
 #: vl/requests/forms/edit-cameroon.php:302
@@ -22496,17 +23223,6 @@ msgstr "Si oui, pendant combien de semaines ?"
 #: vl/results/forms/update-cameroon-result.php:416
 msgid "Number of weeks of breastfeeding"
 msgstr "Nombre de semaines d'allaitement"
-
-#: vl/requests/forms/add-cameroon.php:355
-#: vl/requests/forms/edit-cameroon.php:396
-msgid "Please select sample collection date"
-msgstr "Veuillez sélectionner la date de prélèvement de l'échantillon"
-
-#: vl/requests/forms/add-cameroon.php:361
-#: vl/requests/forms/edit-cameroon.php:402
-#: vl/results/forms/update-cameroon-result.php:439
-msgid "Please choose sample type"
-msgstr "Veuillez choisir le type d'échantillon"
 
 #: vl/requests/forms/add-cameroon.php:377
 msgid "Name Of Requester"
@@ -22568,35 +23284,11 @@ msgstr "Saisir le code CV"
 msgid "Please enter CV Number"
 msgstr "Veuillez saisir le code CV"
 
-#: vl/requests/forms/add-cameroon.php:519
-#: vl/requests/forms/edit-cameroon.php:574
-#: vl/results/forms/update-cameroon-result.php:597
-msgid "Please select sample received date"
-msgstr "Veuillez sélectionner la date de réception de l'échantillon"
-
-#: vl/requests/forms/add-cameroon.php:525
-#: vl/requests/forms/edit-cameroon.php:580
-#: vl/results/forms/update-cameroon-result.php:603
-msgid "Please select sample testing date"
-msgstr "Veuillez sélectionner la date de test de l'échantillon"
-
-#: vl/requests/forms/add-cameroon.php:535
-#: vl/requests/forms/edit-cameroon.php:590
-#: vl/results/forms/update-cameroon-result.php:613
-msgid "Please check if sample is rejected or not"
-msgstr "Veuillez vérifier si l'échantillon est rejeté ou non"
-
 #: vl/requests/forms/add-cameroon.php:568
 #: vl/requests/forms/edit-cameroon.php:623
 #: vl/results/forms/update-cameroon-result.php:652
 msgid "Please enter viral load result"
 msgstr "Veuillez saisir le résultat de la charge virale"
-
-#: vl/requests/forms/add-cameroon.php:585
-#: vl/requests/forms/edit-cameroon.php:640
-#: vl/results/forms/update-cameroon-result.php:646
-msgid "Please select rejection date"
-msgstr "Veuillez sélectionner la date de rejet"
 
 #: vl/requests/forms/add-cameroon.php:596
 #: vl/requests/forms/edit-cameroon.php:652
@@ -22610,29 +23302,6 @@ msgstr "Journal de la charge virale"
 #: vl/results/forms/update-cameroon-result.php:664
 msgid "Please enter viral load log"
 msgstr "Veuillez saisir le journal de la charge virale"
-
-#: vl/requests/forms/add-cameroon.php:638
-#: vl/requests/forms/edit-cameroon.php:696
-#: vl/results/forms/update-cameroon-result.php:708
-msgid "Result Dispatched Date"
-msgstr "Résultat Date d'envoi"
-
-#: vl/requests/forms/add-cameroon.php:638
-#: vl/requests/forms/edit-cameroon.php:696
-#: vl/results/forms/update-cameroon-result.php:708
-msgid "Please select result dispatched date"
-msgstr "Veuillez sélectionner la date d'envoi du résultat"
-
-#: vl/requests/forms/add-cameroon.php:644
-#: vl/requests/forms/edit-cameroon.php:702
-#: vl/results/forms/update-cameroon-result.php:714
-msgid "Lab comments"
-msgstr "Commentaires du laboratoire"
-
-#: vl/requests/forms/add-cameroon.php:786
-#: vl/requests/forms/edit-cameroon.php:814
-msgid "Select Tested By"
-msgstr "Sélectionner Testé par"
 
 #: vl/requests/forms/add-cameroon.php:789
 #: vl/requests/forms/edit-cameroon.php:817
@@ -22730,17 +23399,6 @@ msgstr "CPS"
 #: vl/results/forms/update-drc-result.php:237
 msgid "MSM"
 msgstr "MSM"
-
-#: vl/requests/forms/edit-burkina-faso.php:241
-#: vl/results/forms/update-burkina-faso-result.php:241
-msgid "Clinic Mobile No.(s)"
-msgstr "Numéro(s) de portable(s) de la clinique"
-
-#: vl/requests/forms/edit-burkina-faso.php:243
-#: vl/results/forms/update-burkina-faso-result.php:243
-#: vl/results/forms/update-cameroon-result.php:268
-msgid "Clinic Contact Person"
-msgstr "Personne contact de la clinique"
 
 #: vl/requests/forms/edit-cameroon.php:124
 msgid "Edit VL Request"
@@ -22884,8 +23542,8 @@ msgid "Viral Load Result(copiesl/ml)"
 msgstr "Résultat de la charge virale (copiesl/ml)"
 
 #: vl/result-mail/editTestResultEmailConfig.php:111
-#: vl/results/pdf/result-pdf-cameroon.php:370
-#: vl/results/pdf/result-pdf-cameroon.php:374
+#: vl/results/pdf/result-pdf-cameroon.php:383
+#: vl/results/pdf/result-pdf-cameroon.php:387
 #: vl/results/pdf/result-pdf-drc.php:269
 msgid "Log Value"
 msgstr "Valeur logarithmique"
@@ -22915,18 +23573,6 @@ msgstr "Valeur"
 msgid "Please choose if this is a community sample"
 msgstr "Veuillez indiquer s'il s'agit d'un échantillon communautaire"
 
-#: vl/results/forms/update-cameroon-result.php:218
-msgid "Please choose state"
-msgstr "Veuillez choisir l'État"
-
-#: vl/results/forms/update-cameroon-result.php:229
-msgid "Please choose county"
-msgstr "Veuillez choisir le comté"
-
-#: vl/results/forms/update-cameroon-result.php:244
-msgid "Please select clinic/health center name"
-msgstr "Veuillez sélectionner le nom de la clinique/du centre de santé"
-
 #: vl/results/forms/update-cameroon-result.php:258
 msgid "Clinic/Health Center Email(s)"
 msgstr "Courriel(s) de la clinique/du centre de santé"
@@ -22950,19 +23596,6 @@ msgstr "Âge en année"
 #: vl/results/forms/update-cameroon-result.php:339
 msgid "If Age < 1, Age in Month"
 msgstr "Si âge < 1, âge en mois"
-
-#: vl/results/forms/update-cameroon-result.php:339
-msgid "Age in Month"
-msgstr "Âge en mois"
-
-#: vl/results/forms/update-cameroon-result.php:347
-msgid "Enter patient name"
-msgstr "Saisir le nom du patient"
-
-#: vl/results/forms/update-cameroon-result.php:360
-#: vl/results/forms/update-cameroon-result.php:364
-msgid "Please check gender"
-msgstr "Veuillez cocher le sexe"
 
 #: vl/results/forms/update-drc-result.php:470
 msgid "rack"
@@ -23064,59 +23697,59 @@ msgstr "Autorisé par"
 msgid "Authorized and Validated by"
 msgstr "Autorisé et validé par"
 
-#: vl/results/pdf/result-pdf-cameroon.php:224
+#: vl/results/pdf/result-pdf-cameroon.php:231
 msgid "FACILITY"
 msgstr "FOSA"
 
-#: vl/results/pdf/result-pdf-cameroon.php:225
+#: vl/results/pdf/result-pdf-cameroon.php:232
 msgid "FACILITY CODE"
 msgstr "CODE DE LA FOSA"
 
-#: vl/results/pdf/result-pdf-cameroon.php:238
+#: vl/results/pdf/result-pdf-cameroon.php:245
 msgid "PROJECT"
 msgstr "PROJET"
 
-#: vl/results/pdf/result-pdf-cameroon.php:239
+#: vl/results/pdf/result-pdf-cameroon.php:246
 msgid "REQUESTING CLINICIAN NAME"
 msgstr "NOM DU PRESCRITEUR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:240
+#: vl/results/pdf/result-pdf-cameroon.php:247
 msgid "TEL"
 msgstr "TEL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:241
+#: vl/results/pdf/result-pdf-cameroon.php:248
 msgid "EMAIL"
 msgstr "EMAIL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:257
+#: vl/results/pdf/result-pdf-cameroon.php:264
 msgid "PATIENT IDENTIFIER"
 msgstr "CODE TARV"
 
-#: vl/results/pdf/result-pdf-cameroon.php:258
+#: vl/results/pdf/result-pdf-cameroon.php:265
 msgid "ARV PROTOCOL"
 msgstr "PROTOCOLE ARV"
-
-#: vl/results/pdf/result-pdf-cameroon.php:299
-msgid "BREASTFEEDING?"
-msgstr "L'ALLAITEMENT MATERNEL ?"
-
-#: vl/results/pdf/result-pdf-cameroon.php:300
-msgid "PREGNANT?"
-msgstr "ENCEINTE ?"
 
 #: vl/results/pdf/result-pdf-cameroon.php:305
 msgid "PATIENT'S CONTACT"
 msgstr "CONTACT DU PATIENT"
 
-#: vl/results/pdf/result-pdf-cameroon.php:322
+#: vl/results/pdf/result-pdf-cameroon.php:308
+msgid "BREASTFEEDING?"
+msgstr "L'ALLAITEMENT MATERNEL ?"
+
+#: vl/results/pdf/result-pdf-cameroon.php:309
+msgid "PREGNANT?"
+msgstr "ENCEINTE ?"
+
+#: vl/results/pdf/result-pdf-cameroon.php:331
 msgid "HEALTH INSURANCE CODE"
 msgstr "COUVERTURE SANTÉ UNIVERSELLE"
 
-#: vl/results/pdf/result-pdf-cameroon.php:343
+#: vl/results/pdf/result-pdf-cameroon.php:352
 msgid "SAMPLE REJECTED?"
 msgstr "ÉCHANTILLON REJETÉ ?"
 
-#: vl/results/pdf/result-pdf-cameroon.php:387
+#: vl/results/pdf/result-pdf-cameroon.php:400
 msgid ""
 "Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR "
 "(Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)"
@@ -23125,15 +23758,15 @@ msgstr ""
 "PCR (seuil de sensibilité : 40 copies/ml pour le plasma et 839 copies/ml "
 "pour le DBS)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:416
+#: vl/results/pdf/result-pdf-cameroon.php:429
 msgid "TEST PLATFORM"
 msgstr "PLATE-FORME DE TEST"
 
-#: vl/results/pdf/result-pdf-cameroon.php:511
+#: vl/results/pdf/result-pdf-cameroon.php:440
 msgid "REVIEWED AND APPROVED BY"
 msgstr "REVU ET APPROUVÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:547
+#: vl/results/pdf/result-pdf-cameroon.php:530
 msgid ""
 "For a variation in Viral Load to be significant, the difference between two "
 "measurements must be at least 0.5 Log<sub>10</sub> or a reduction or "
@@ -23143,11 +23776,11 @@ msgstr ""
 "entre deux mesures doit être d'au moins 0,5 <sub>Log10</sub> ou une "
 "réduction ou une augmentation d'un facteur 3 du nombre de copies/mL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:556
+#: vl/results/pdf/result-pdf-cameroon.php:539
 msgid "Detection Limit (DL)"
 msgstr "Seuil limite de détection (LDD)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:556
+#: vl/results/pdf/result-pdf-cameroon.php:539
 msgid ""
 "&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 "
 "Log<sub>10</sub>) copies/mL for DBS"
@@ -23155,11 +23788,11 @@ msgstr ""
 "&lt; 40 (1,60 <sub>Log10</sub>) copies/mL pour le plasma et 839 (2,92 "
 "<sub>Log10</sub>) copies/mL pour le DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:558
+#: vl/results/pdf/result-pdf-cameroon.php:541
 msgid "Quantification Limits (QL)"
 msgstr "Limites de quantification (QL)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:558
+#: vl/results/pdf/result-pdf-cameroon.php:541
 msgid ""
 "Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for "
 "Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for "
@@ -23169,15 +23802,15 @@ msgstr ""
 "plasma et 839 et 10 000 000 (2,92 et 7,0 <sub>Log10</sub>) copies/mL pour le "
 "DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:575
+#: vl/results/pdf/result-pdf-cameroon.php:555
 msgid "Continue on current regimen"
 msgstr "Poursuivre le protocole actuel"
 
-#: vl/results/pdf/result-pdf-cameroon.php:576
+#: vl/results/pdf/result-pdf-cameroon.php:556
 msgid "Printed on"
 msgstr "Imprimé le"
 
-#: vl/results/pdf/result-pdf-cameroon.php:579
+#: vl/results/pdf/result-pdf-cameroon.php:561
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 
@@ -23313,12 +23946,6 @@ msgstr ""
 
 #~ msgid "select"
 #~ msgstr "sélectionner"
-
-#~ msgid "Patient consent to receive SMS?"
-#~ msgstr "Consentement du patient à recevoir des SMS ?"
-
-#~ msgid "Patient consent to receive SMS"
-#~ msgstr "Consentement du patient à recevoir des SMS"
 
 #~ msgid "Health Facility"
 #~ msgstr "Etablissement de santé"
@@ -23513,9 +24140,6 @@ msgstr ""
 
 #~ msgid "Name of health personnel collecting sample"
 #~ msgstr "Nom du demandeur"
-
-#~ msgid "Request Clinician name"
-#~ msgstr "Demande Nom du clinicien"
 
 #~ msgid "VL Lab Name"
 #~ msgstr "Nom du labo de CV"
