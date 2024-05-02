@@ -3,6 +3,7 @@
 // This file is included in /vl/results/generate-result-pdf.php
 
 use App\Services\UsersService;
+use App\Services\InstrumentsService;
 use App\Utilities\DateUtility;
 use App\Services\ResultPdfService;
 use App\Helpers\PdfWatermarkHelper;
@@ -12,6 +13,10 @@ use App\Utilities\MiscUtility;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var InstrumentsService $instrumentsService */
+$instrumentsService = ContainerRegistry::get(InstrumentsService::class);
+
 
 /** @var ResultPdfService $resultPdfService */
 $resultPdfService = ContainerRegistry::get(ResultPdfService::class);
@@ -199,6 +204,13 @@ if (!empty($result)) {
 
      if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
           $result['patient_gender'] = 'Unreported';
+     }
+     $descriptionText = "";
+     if (!empty($result['instrument_id'])) {
+          $instrumentInfo = $instrumentsService->getInstrumentInfo($result['instrument_id'], array('additional_text'));
+          if ($instrumentInfo) {
+               $descriptionText = $instrumentInfo['additional_text'];
+          }
      }
 
      $smileyContent = '';
@@ -524,22 +536,36 @@ if (!empty($result)) {
 
      // Define the HTML block you want to position at the bottom
      $bottomHtml = '
-          <table>
-               <tr>
-                    <td colspan="3" style="font-size:10px;text-align:left;">';
-     $bottomHtml .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log<sub>10</sub> or a reduction or increase of a factor of 3 in the number of copies/mL") . ' </td>';
-     $bottomHtml .= '</tr>';
+          <table>';
+               
+     if($descriptionText != "")
+     {
+          $bottomHtml .= '<tr>
+                         <td colspan="3" style="font-size:10px;text-align:left;">'. $descriptionText.'</td>';
+          $bottomHtml .= '</tr>';
 
-     $bottomHtml .= '<tr>';
-     $bottomHtml .= '<td colspan="3" style="line-height:2px;"></td>';
-     $bottomHtml .= '</tr>';
+          $bottomHtml .= '<tr>';
+          $bottomHtml .= '<td colspan="3" style="line-height:2px;"></td>';
+          $bottomHtml .= '</tr>';
+
+     }
+     else{
+          $bottomHtml .= '<tr>
+          <td colspan="3" style="font-size:10px;text-align:left;">';
+          $bottomHtml .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log<sub>10</sub> or a reduction or increase of a factor of 3 in the number of copies/mL") . ' </td>';
+          $bottomHtml .= '</tr>';
+
+          $bottomHtml .= '<tr>';
+          $bottomHtml .= '<td colspan="3" style="line-height:2px;"></td>';
+          $bottomHtml .= '</tr>';
 
 
-     $bottomHtml .= '<tr><td colspan="3" style="font-size:11px;text-align:left;color:#808080;">(*)&nbsp;';
-     $bottomHtml .= '<u><strong>' . _translate("Detection Limit (DL)") . '</strong></u> : ' . _translate("&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 Log<sub>10</sub>) copies/mL for DBS");
-     $bottomHtml .= '<br> &nbsp;&nbsp;&nbsp;&nbsp;';
-     $bottomHtml .= '<u><strong>' . _translate("Quantification Limits (QL)") . '</strong></u> : ' .  _translate("Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for DBS");
-     $bottomHtml .= '</td></tr>';
+          $bottomHtml .= '<tr><td colspan="3" style="font-size:11px;text-align:left;color:#808080;">(*)&nbsp;';
+          $bottomHtml .= '<u><strong>' . _translate("Detection Limit (DL)") . '</strong></u> : ' . _translate("&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 Log<sub>10</sub>) copies/mL for DBS");
+          $bottomHtml .= '<br> &nbsp;&nbsp;&nbsp;&nbsp;';
+          $bottomHtml .= '<u><strong>' . _translate("Quantification Limits (QL)") . '</strong></u> : ' .  _translate("Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for DBS");
+          $bottomHtml .= '</td></tr>';
+     }
 
      $bottomHtml .= '<tr>';
      $bottomHtml .= '<td colspan="3" style="line-height:2px;"></td>';

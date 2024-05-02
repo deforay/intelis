@@ -41,4 +41,13 @@ class InstrumentsService
         $this->db->where('machine_name', $instrumentName);
         return $this->db->getOne($this->table);
     }
+
+    public function getInstrumentInfo($instrumentId, $columns = '*')
+    {
+        if (is_array($columns)) {
+            $columns = implode(",", $columns);
+        }
+        $insQuery = "SELECT $columns FROM $this->table WHERE instrument_id= ?";
+        return $this->db->rawQueryOne($insQuery, [$instrumentId]);
+    }
 }
