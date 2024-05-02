@@ -209,7 +209,7 @@ if (!empty($result)) {
      if (!empty($result['instrument_id'])) {
           $instrumentInfo = $instrumentsService->getInstrumentInfo($result['instrument_id'], array('additional_text'));
           if ($instrumentInfo) {
-               $descriptionText = $instrumentInfo['additional_text'];
+               $descriptionText = isset($instrumentInfo['additional_text']) && !empty($instrumentInfo['additional_text']) ? $instrumentInfo['additional_text'] : '';
           }
      }
 
@@ -535,30 +535,18 @@ if (!empty($result)) {
      // $html .= '</table>';
 
      // Define the HTML block you want to position at the bottom
-     $bottomHtml = '
-          <table>';
-               
-     if($descriptionText != "")
-     {
+     $bottomHtml = '<table>';
+
+     if (!empty($descriptionText) && $descriptionText != "") {
           $bottomHtml .= '<tr>
-                         <td colspan="3" style="font-size:10px;text-align:left;">'. $descriptionText.'</td>';
+                              <td colspan="3" style="font-size:10px;text-align:left;">' . $descriptionText . '</td>';
           $bottomHtml .= '</tr>';
+     } else {
+          $bottomHtml .= '<tr><td colspan="3" style="font-size:10px;text-align:left;">';
+          $bottomHtml .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log<sub>10</sub> or a reduction or increase of a factor of 3 in the number of copies/mL");
+          $bottomHtml .= '</td></tr>';
 
-          $bottomHtml .= '<tr>';
-          $bottomHtml .= '<td colspan="3" style="line-height:2px;"></td>';
-          $bottomHtml .= '</tr>';
-
-     }
-     else{
-          $bottomHtml .= '<tr>
-          <td colspan="3" style="font-size:10px;text-align:left;">';
-          $bottomHtml .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log<sub>10</sub> or a reduction or increase of a factor of 3 in the number of copies/mL") . ' </td>';
-          $bottomHtml .= '</tr>';
-
-          $bottomHtml .= '<tr>';
-          $bottomHtml .= '<td colspan="3" style="line-height:2px;"></td>';
-          $bottomHtml .= '</tr>';
-
+          $bottomHtml .= '<tr><td colspan="3" style="line-height:2px;"></td></tr>';
 
           $bottomHtml .= '<tr><td colspan="3" style="font-size:11px;text-align:left;color:#808080;">(*)&nbsp;';
           $bottomHtml .= '<u><strong>' . _translate("Detection Limit (DL)") . '</strong></u> : ' . _translate("&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 Log<sub>10</sub>) copies/mL for DBS");
@@ -567,9 +555,7 @@ if (!empty($result)) {
           $bottomHtml .= '</td></tr>';
      }
 
-     $bottomHtml .= '<tr>';
-     $bottomHtml .= '<td colspan="3" style="line-height:2px;"></td>';
-     $bottomHtml .= '</tr>';
+     $bottomHtml .= '<tr><td colspan="3" style="line-height:2px;"></td></tr>';
 
      $bottomHtml .= '<tr>';
      $bottomHtml .= '<td colspan="3" style="line-height:2px;font-size:2em;border-bottom:2px solid #d3d3d3;padding-"><br><br></td>';
