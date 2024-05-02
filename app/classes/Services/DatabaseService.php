@@ -7,7 +7,7 @@ use Generator;
 use Throwable;
 use App\Utilities\LoggerUtility;
 
-class DatabaseService extends MysqliDb
+final class DatabaseService extends MysqliDb
 {
 
     private $isTransactionActive = false;

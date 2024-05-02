@@ -1,6 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -64,7 +65,7 @@ try {
 		if (isset($_SESSION['instanceId'])) {
 			$instanceId = $_SESSION['instanceId'];
 		} else {
-			$instanceId = $general->generateUUID();
+			$instanceId = MiscUtility::generateUUID();
 			// deleting just in case there is a row already inserted
 			$db->delete('s_vlsm_instance');
 			$db->insert('s_vlsm_instance', ['vlsm_instance_id' => $instanceId]);

@@ -4,6 +4,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\SystemService;
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -134,7 +135,7 @@ if (empty($syncLatestTime)) {
 
 	window.additionalXHRParams = {
 		layout: 0,
-		'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? $general->generateUUID(); ?>'
+		'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? MiscUtility::generateUUID(); ?>'
 	};
 
 	$.ajaxSetup({

@@ -6,7 +6,7 @@ use App\Utilities\DateUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-class GeoLocationsService
+final class GeoLocationsService
 {
 
     protected ?DatabaseService $db;

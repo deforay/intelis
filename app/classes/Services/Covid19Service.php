@@ -10,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
-class Covid19Service extends AbstractTestService
+final class Covid19Service extends AbstractTestService
 {
 
     protected string $table = 'form_covid19';

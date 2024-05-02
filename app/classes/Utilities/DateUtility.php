@@ -5,7 +5,7 @@ namespace App\Utilities;
 use Exception;
 use Carbon\Carbon;
 
-class DateUtility
+final class DateUtility
 {
     public static function isDateFormatValid($date, $format = 'Y-m-d', $strict = true): bool
     {

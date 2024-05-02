@@ -74,7 +74,7 @@ try {
     $tableName = "form_covid19";
     $tableName1 = "activity_log";
     $testTableName = 'covid19_tests';
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
@@ -94,7 +94,7 @@ try {
     $version = $general->getSystemConfig('sc_version');
     /* To save the user attributes from API */
     $userAttributes = [];
-    foreach(array('deviceId', 'osVersion', 'ipAddress') as $header){
+    foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
         $userAttributes[$header] = $apiService->getHeader($request, $header);
     }
     $userAttributes = $general->jsonToSetString(json_encode($userAttributes), 'user_attributes');
@@ -321,12 +321,12 @@ try {
             'mobileAppVersion' => $appVersion,
             'deviceId' => $userAttributes['deviceId']
         ];
-        
+
         /* Reason for VL Result changes */
         $reasonForChanges = null;
         $allChange = [];
         if (isset($data['reasonForResultChanges']) && !empty($data['reasonForResultChanges'])) {
-            foreach($data['reasonForResultChanges'] as $row){
+            foreach ($data['reasonForResultChanges'] as $row) {
                 $allChange[] = array(
                     'usr' => $row['changed_by'],
                     'msg' => $row['reason'],

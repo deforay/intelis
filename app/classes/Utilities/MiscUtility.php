@@ -7,7 +7,7 @@ use ZipArchive;
 use Ramsey\Uuid\Uuid;
 use App\Exceptions\SystemException;
 
-class MiscUtility
+final class MiscUtility
 {
     public static function randomHexColor(): string
     {

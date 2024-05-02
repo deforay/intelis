@@ -42,7 +42,7 @@ $genericService = ContainerRegistry::get(GenericTestsService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
-$transactionId = $general->generateUUID();
+$transactionId = MiscUtility::generateUUID();
 
 $user = null;
 /* For API Tracking params */

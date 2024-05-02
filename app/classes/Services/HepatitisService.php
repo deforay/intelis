@@ -10,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
-class HepatitisService extends AbstractTestService
+final class HepatitisService extends AbstractTestService
 {
     public array $suppressedArray = [
         'hiv-1 not detected',

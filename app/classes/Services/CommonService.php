@@ -20,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 
-class CommonService
+final class CommonService
 {
     protected DatabaseService $db;
     protected FacilitiesService $facilitiesService;

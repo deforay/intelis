@@ -2,6 +2,7 @@
 
 use App\Services\ApiService;
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -37,7 +38,7 @@ $request = AppRegistry::get('request');
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 
-$transactionId = $general->generateUUID();
+$transactionId = MiscUtility::generateUUID();
 
 $authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);

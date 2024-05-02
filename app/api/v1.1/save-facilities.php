@@ -73,7 +73,7 @@ try {
     //echo '<pre>'; print_r($input); die;
 
 
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
 
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
@@ -87,7 +87,7 @@ try {
     $version = $vlsmSystemConfig['sc_version'];
     /* To save the user attributes from API */
     $userAttributes = [];
-    foreach(array('deviceId', 'osVersion', 'ipAddress') as $header){
+    foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
         $userAttributes[$header] = $apiService->getHeader($request, $header);
     }
     $userAttributes = $general->jsonToSetString(json_encode($userAttributes), 'user_attributes');

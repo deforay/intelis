@@ -10,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
-class EidService extends AbstractTestService
+final class EidService extends AbstractTestService
 {
 
     protected string $table = 'form_eid';

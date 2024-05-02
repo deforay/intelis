@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Services\DatabaseService;
 use App\Utilities\MiscUtility;
+use App\Services\DatabaseService;
 
-class ResultPdfService
+final class ResultPdfService
 {
     protected DatabaseService $db;
     public function __construct(DatabaseService $db)

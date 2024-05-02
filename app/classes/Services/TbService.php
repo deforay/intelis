@@ -10,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
-class TbService extends AbstractTestService
+final class TbService extends AbstractTestService
 {
 
     protected string $table = 'form_tb';

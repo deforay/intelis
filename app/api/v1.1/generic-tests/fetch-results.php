@@ -53,7 +53,7 @@ $requestUrl .= $_SERVER['REQUEST_URI'];
 $authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 try {
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
     $sQuery = "SELECT * FROM form_generic as vl
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id

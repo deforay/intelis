@@ -39,7 +39,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$transactionId = $general->generateUUID();
+$transactionId = MiscUtility::generateUUID();
 
 $user = null;
 /* For API Tracking params */

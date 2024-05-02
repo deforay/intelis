@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Utilities\DateUtility;
 use App\Services\DatabaseService;
 
-class FacilitiesService
+final class FacilitiesService
 {
     protected $db;
     private $facilityTypeTableList = [

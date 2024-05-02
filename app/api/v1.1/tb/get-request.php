@@ -42,7 +42,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
 
-$transactionId = $general->generateUUID();
+$transactionId = MiscUtility::generateUUID();
 $user = null;
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];

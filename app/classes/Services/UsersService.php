@@ -8,7 +8,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use Laminas\Diactoros\ServerRequest;
 
-class UsersService
+final class UsersService
 {
 
     protected $db;
@@ -380,8 +380,9 @@ class UsersService
         return password_hash((string) $password, PASSWORD_BCRYPT, $options);
     }
 
-    public function saveUserAttributes($data, $userId){
-        if(!isset($data) || empty($data) || !isset($userId) || empty($userId)){
+    public function saveUserAttributes($data, $userId)
+    {
+        if (!isset($data) || empty($data) || !isset($userId) || empty($userId)) {
             return null;
         }
         $saveData['user_attributes'] = !empty($data) ? $this->db->func($data) : null;

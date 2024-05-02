@@ -5,7 +5,7 @@ namespace App\Services;
 use DateTimeImmutable;
 use App\Services\DatabaseService;
 
-class TestResultsService
+final class TestResultsService
 {
 
     protected ?DatabaseService $db;

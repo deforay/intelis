@@ -9,7 +9,7 @@ use App\Services\CommonService;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Handler\JsonResponseHandler;
 
-class SystemService
+final class SystemService
 {
     protected CommonService $commonService;
 

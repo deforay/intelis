@@ -3,21 +3,16 @@
 namespace App\Services;
 
 use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
 
-
-
-class InstrumentsService
+final class InstrumentsService
 {
-
-    protected ?DatabaseService $db;
+    protected DatabaseService $db;
     protected string $table = 'instruments';
 
-    public function __construct(?DatabaseService $db)
+    public function __construct(DatabaseService $db)
     {
-        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
+        $this->db = $db;
     }
-
 
     public function getInstruments($testType = null, $dropDown = false)
     {
@@ -42,12 +37,13 @@ class InstrumentsService
         return $this->db->getOne($this->table);
     }
 
-    public function getInstrumentInfo($instrumentId, $columns = '*')
+    public function getInstrument(string $instrumentId, string|array $columns = '*')
     {
-        if (is_array($columns)) {
-            $columns = implode(",", $columns);
+        if (empty($instrumentId) || $instrumentId === '') {
+            return null;
         }
-        $insQuery = "SELECT $columns FROM $this->table WHERE instrument_id= ?";
-        return $this->db->rawQueryOne($insQuery, [$instrumentId]);
+
+        $this->db->where('instrument_id', $instrumentId);
+        return $this->db->getOne($this->table, $columns ?? '*');
     }
 }

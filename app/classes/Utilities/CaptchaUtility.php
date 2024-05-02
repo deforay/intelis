@@ -4,7 +4,7 @@ namespace App\Utilities;
 
 use App\Exceptions\SystemException;
 
-class CaptchaUtility
+final class CaptchaUtility
 {
 
     public function getCaptcha($config = []): void

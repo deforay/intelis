@@ -5,7 +5,7 @@ namespace App\Utilities;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 
-class LoggerUtility
+final class LoggerUtility
 {
     private static ?Logger $logger = null;
 

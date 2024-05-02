@@ -89,11 +89,11 @@ try {
     $formId = (int) $general->getGlobalConfig('vl_form');
 
     /* Update form attributes */
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
     $version = $general->getSystemConfig('sc_version');
     /* To save the user attributes from API */
     $userAttributes = [];
-    foreach(array('deviceId', 'osVersion', 'ipAddress') as $header){
+    foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
         $userAttributes[$header] = $apiService->getHeader($request, $header);
     }
     $userAttributes = $general->jsonToSetString(json_encode($userAttributes), 'user_attributes');

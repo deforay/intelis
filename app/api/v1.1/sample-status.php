@@ -41,7 +41,7 @@ if (
 }
 
 
-$transactionId = $general->generateUUID();
+$transactionId = MiscUtility::generateUUID();
 
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];

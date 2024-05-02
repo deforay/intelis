@@ -7,7 +7,7 @@ use Generator;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-class BatchService
+final class BatchService
 {
 
     protected ?DatabaseService $db;

@@ -4,7 +4,7 @@ namespace App\Services;
 
 use InvalidArgumentException;
 
-class TestsService
+final class TestsService
 {
     public static function getTestTypes()
     {

@@ -48,7 +48,7 @@ $requestUrl .= $_SERVER['REQUEST_URI'];
 $authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 try {
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
     $sQuery = "SELECT
         vl.app_sample_code                                   as appSampleCode,
         vl.unique_id                                         as uniqueId,

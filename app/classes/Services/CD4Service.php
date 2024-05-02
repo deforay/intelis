@@ -10,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
-class CD4Service extends AbstractTestService
+final class CD4Service extends AbstractTestService
 {
     protected string $table = 'form_cd4';
     protected string $shortCode = 'CD4';

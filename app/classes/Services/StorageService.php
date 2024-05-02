@@ -2,15 +2,13 @@
 
 namespace App\Services;
 
-use DateTime;
+use Exception;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use Exception;
-use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
 
-class StorageService
+final class StorageService
 {
 
     protected ?DatabaseService $db;
@@ -131,7 +129,8 @@ class StorageService
         return $this->db->insert('lab_storage_history', $data);
     }
 
-    public function getFreezerListByLabId($labId){
+    public function getFreezerListByLabId($labId)
+    {
         $query = "SELECT storage_id, storage_code
         FROM lab_storage
         WHERE lab_id = $labId";

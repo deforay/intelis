@@ -24,7 +24,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$transactionId = $general->generateUUID();
+$transactionId = MiscUtility::generateUUID();
 try {
     if (!empty($input['userName']) && !empty($input['password'])) {
         $userQuery = "SELECT ud.user_id,

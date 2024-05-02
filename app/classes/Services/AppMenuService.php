@@ -9,7 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-class AppMenuService
+final class AppMenuService
 {
     protected ?DatabaseService $db;
     protected string $table = 's_app_menu';

@@ -207,7 +207,7 @@ if (!empty($result)) {
      }
      $descriptionText = "";
      if (!empty($result['instrument_id'])) {
-          $instrumentInfo = $instrumentsService->getInstrumentInfo($result['instrument_id'], array('additional_text'));
+          $instrumentInfo = $instrumentsService->getInstrument($result['instrument_id'], array('additional_text'));
           if ($instrumentInfo) {
                $descriptionText = isset($instrumentInfo['additional_text']) && !empty($instrumentInfo['additional_text']) ? $instrumentInfo['additional_text'] : '';
           }

@@ -5,10 +5,11 @@ use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\EidService;
 use App\Services\UsersService;
-use App\Services\DatabaseService;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
@@ -39,13 +40,13 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
-$transactionId = $general->generateUUID();
+$transactionId = MiscUtility::generateUUID();
 $formId = $general->getGlobalConfig('vl_form');
 $authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 /* To save the user attributes from API */
 $userAttributes = [];
-foreach(array('deviceId', 'osVersion', 'ipAddress') as $header){
+foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
     $userAttributes[$header] = $apiService->getHeader($request, $header);
 }
 $userAttributes = $general->jsonToSetString(json_encode($userAttributes), 'user_attributes');
