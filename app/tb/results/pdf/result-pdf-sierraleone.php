@@ -59,7 +59,7 @@ if (!empty($requestResult)) {
         } else {
             $logoPrintInPdf = $arr['logo'];
         }
-        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'SOUTH SUDAN TB SAMPLES REFERRAL SYSTEM (SS)', $labFacilityId = null, $formId = $arr['vl_form'], $facilityInfo);
+        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'SOUTH SUDAN TB SAMPLES REFERRAL SYSTEM (SS)', $labFacilityId = null, $formId = (int) $arr['vl_form'], $facilityInfo);
         // set document information
         $pdf->SetCreator('VLSM');
         $pdf->SetTitle('SOUTH SUDAN TB SAMPLES REFERRAL SYSTEM (SS)');

@@ -118,6 +118,8 @@ try {
                 $mandatoryFields[] = 'provinceId';
             }
 
+            $data = MiscUtility::arrayEmptyStringsToNull($data);
+
             if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [
@@ -232,9 +234,9 @@ try {
                 $params['labId'] = $data['labId'] ?? null;
 
                 $params['insertOperation'] = true;
-                $currentSampleData['id'] = $genericService->insertSample($params, true);
+                $currentSampleData = $genericService->insertSample($params, returnSampleData: true);
                 $currentSampleData['action'] = 'inserted';
-                $data['genericSampleId'] = intval($currentSampleData['id']);
+                $data['genericSampleId'] = (int) $currentSampleData['id'];;
                 if ($data['genericSampleId'] == 0) {
                     $noOfFailedRecords++;
                     $responseData[$rootKey] = [
@@ -489,8 +491,9 @@ try {
         'data' => []
     ];
     LoggerUtility::log('error', $exc->getMessage(), [
-        'trace' => $exc->getTraceAsString(),
-        'line' => $exc->getLine()
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
+        'trace' => $exc->getTraceAsString()
     ]);
 }
 $payload = json_encode($payload);

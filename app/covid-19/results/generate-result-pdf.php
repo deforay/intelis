@@ -17,6 +17,7 @@ ini_set('max_execution_time', 300000);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_covid19";
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 

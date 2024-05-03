@@ -1,8 +1,9 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Registries\ContainerRegistry;
 
@@ -172,9 +173,9 @@ try {
 		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId']
 	);
 
-	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
+	if ($general->isLISInstance() || $general->isStandaloneInstance()) {
 		$hepatitisData['source_of_request'] = 'vlsm';
-	} else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
+	} elseif ($general->isSTSInstance()) {
 		$hepatitisData['source_of_request'] = 'vlsts';
 	}
 

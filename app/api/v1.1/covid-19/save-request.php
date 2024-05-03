@@ -122,6 +122,8 @@ try {
             $mandatoryFields[] = 'provinceId';
         }
 
+        $data = MiscUtility::arrayEmptyStringsToNull($data);
+
         if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $noOfFailedRecords++;
             $responseData[$rootKey] = [
@@ -246,9 +248,9 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData = $covid19Service->insertSample($params, true);
+            $currentSampleData = $covid19Service->insertSample($params, returnSampleData: true);
             $currentSampleData['action'] = 'inserted';
-            $data['covid19SampleId'] = intval($currentSampleData['id']);
+            $data['covid19SampleId'] = (int) $currentSampleData['id'];;
             if ($data['covid19SampleId'] == 0) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [
@@ -320,7 +322,7 @@ try {
             'applicationVersion' => $version,
             'apiTransactionId' => $transactionId,
             'mobileAppVersion' => $appVersion,
-            'deviceId' => $userAttributes['deviceId']
+            'deviceId' => $userAttributes['deviceId'] ?? null
         ];
 
         /* Reason for VL Result changes */
@@ -578,7 +580,11 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    LoggerUtility::log('error', $exc->getMessage());
+    LoggerUtility::log('error', $exc->getMessage(), [
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
+        'trace' => $exc->getTraceAsString(),
+    ]);
 }
 
 

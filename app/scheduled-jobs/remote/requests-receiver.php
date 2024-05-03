@@ -528,9 +528,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "covid19" && isset($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
-
     $jsonResponse = $apiService->post($url, $payload);
-
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
         $removeKeys = [
             'covid19_id',
@@ -546,7 +544,10 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             //'request_created_by',
             //'last_modified_by',
             //'request_created_datetime',
-            'data_sync'
+            'data_sync',
+            'data_from_comorbidities',
+            'data_from_symptoms',
+            'data_from_tests'
         ];
 
 
@@ -647,64 +648,39 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     $id = $db->getInsertId();
                 }
             }
-        }
-
-        $options = [
-            'pointer' => '/symptoms',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($jsonResponse, $options);
-        foreach ($parsedData as $covid19Id => $symptoms) {
-            $db->where('covid19_id', $covid19Id);
+            // Symptoms details saving
+            $db->where('covid19_id', $id);
             $db->delete("covid19_patient_symptoms");
-            foreach ($symptoms as $symId => $symValue) {
+            foreach ($remoteData['data_from_symptoms'] as $symId => $value) {
                 $symptomData = [];
-                $symptomData["covid19_id"] = $covid19Id;
-                $symptomData["symptom_id"] = $symId;
-                $symptomData["symptom_detected"] = $symValue;
+                $symptomData["covid19_id"] = $id;
+                $symptomData["symptom_id"] = $value['symptom_id'];
+                $symptomData["symptom_detected"] = $value['symptom_detected'];
+                $symptomData["symptom_details"] = $value['symptom_details'];
                 $db->insert("covid19_patient_symptoms", $symptomData);
             }
-        }
-
-        $options = [
-            'pointer' => '/comorbidities',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($jsonResponse, $options);
-        foreach ($parsedData as $covid19Id => $comorbidities) {
-            $db->where('covid19_id', $covid19Id);
+            // comorbidities details savings
+            $db->where('covid19_id', $id);
             $db->delete("covid19_patient_comorbidities");
-
-            foreach ($comorbidities as $comoId => $comorbidityData) {
+            foreach ($remoteData['data_from_comorbidities'] as $comoId => $comorbidityData) {
                 $comData = [];
-                $comData["covid19_id"] = $covid19Id;
+                $comData["covid19_id"] = $id;
                 $comData["comorbidity_id"] = $comorbidityData['comorbidity_id'];
                 $comData["comorbidity_detected"] = $comorbidityData['comorbidity_detected'];
                 $db->insert("covid19_patient_comorbidities", $comData);
             }
-        }
-
-        $options = [
-            'pointer' => '/testResults',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($jsonResponse, $options);
-
-
-        $unwantedColumns = [
-            'test_id'
-        ];
-        $emptyTestsArray = $general->getTableFieldsAsArray('covid19_tests', $unwantedColumns);
-
-        foreach ($testResultsData as $covid19Id => $testResults) {
-            $db->where('covid19_id', $covid19Id);
+            // sub tests details saving
+            $unwantedColumns = [
+                'test_id'
+            ];
+            $emptyTestsArray = $general->getTableFieldsAsArray('covid19_tests', $unwantedColumns);
+            $db->where('covid19_id', $id);
             $db->delete("covid19_tests");
-            foreach ($testResults as $covid19TestData) {
+            foreach ($remoteData['data_from_tests'] as $covid19Id => $covid19TestData) {
                 $covid19TestData = MiscUtility::updateFromArray($emptyTestsArray, $covid19TestData);
                 $db->insert("covid19_tests", $covid19TestData);
             }
         }
-
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
     }
 }

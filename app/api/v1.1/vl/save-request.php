@@ -86,7 +86,7 @@ try {
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
     $instanceId = $general->getInstanceId();
-    $formId = $globalConfig['vl_form'];
+    $formId = (int) $globalConfig['vl_form'];
 
     $version = $vlsmSystemConfig['sc_version'];
     /* To save the user attributes from API */
@@ -120,6 +120,8 @@ try {
         if ($formId == COUNTRY\PNG) {
             $mandatoryFields[] = 'provinceId';
         }
+
+        $data = MiscUtility::arrayEmptyStringsToNull($data);
 
         if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $noOfFailedRecords++;
@@ -215,9 +217,9 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData = $vlService->insertSample($params, true);
+            $currentSampleData = $vlService->insertSample($params, returnSampleData: true);
             $currentSampleData['action'] = 'inserted';
-            $data['vlSampleId'] = intval($currentSampleData['id']);
+            $data['vlSampleId'] = (int) $currentSampleData['id'];;
             if ($data['vlSampleId'] == 0) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [
@@ -470,7 +472,11 @@ try {
         'data' => []
     ];
     LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError() . ":" . $db->getLastQuery());
-    LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+    LoggerUtility::log('error', $exc->getMessage(), [
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
+        'trace' => $exc->getTraceAsString()
+    ]);
 }
 
 

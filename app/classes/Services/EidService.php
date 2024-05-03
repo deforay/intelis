@@ -74,7 +74,7 @@ final class EidService extends AbstractTestService
             // see the beginTransaction() function implementation to understand how this works
             $this->db->beginTransaction();
 
-            $formId = $this->commonService->getGlobalConfig('vl_form');
+            $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
             $params['tries'] = $params['tries'] ?? 0;
             if ($params['tries'] >= $this->maxTries) {
@@ -129,9 +129,8 @@ final class EidService extends AbstractTestService
                 ];
 
                 $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
-                $instanceType = $_SESSION['instance']['type'] ?? $params['instanceType'] ?? null;
 
-                if ($instanceType === 'remoteuser') {
+                if ($this->commonService->isSTSInstance()) {
                     $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
                     $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];

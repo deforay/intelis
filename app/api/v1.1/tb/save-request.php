@@ -8,6 +8,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -115,6 +116,9 @@ try {
         if ($formId == COUNTRY\PNG) {
             $mandatoryFields[] = 'provinceId';
         }
+
+        $data = MiscUtility::arrayEmptyStringsToNull($data);
+
         if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $noOfFailedRecords++;
             $responseData[$rootKey] = [
@@ -231,9 +235,9 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData = $tbService->insertSample($params, true);
+            $currentSampleData = $tbService->insertSample($params, returnSampleData: true);
             $currentSampleData['action'] = 'inserted';
-            $data['tbSampleId'] = intval($currentSampleData['id']);
+            $data['tbSampleId'] = (int) $currentSampleData['id'];;
             if ($data['tbSampleId'] == 0) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [
@@ -500,7 +504,11 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    error_log($exc->getMessage());
+    LoggerUtility::log('error', $exc->getMessage(), [
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
+        'trace' => $exc->getTraceAsString()
+    ]);
 }
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'tb', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
