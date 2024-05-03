@@ -29,8 +29,11 @@ $resultInfo = $db->query($resultQuery);
 
 $activeInstruments = $instrumentsService->getInstruments(null, true);
 $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instruments'], true);
-$instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $selectedInstruments, "-- Select --");
+$instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $selectedInstruments);
 ?>
+<link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -106,7 +109,7 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 										<?php echo _translate("Available For Instrument"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select style="width: 275px;" class="form-control" id="instruments" name="instruments[]" title="<?php echo _translate('Please select instruments'); ?>" multiple="multiple">
+										<select style="width: 275px;" id="instruments" name="instruments[]" title="<?php echo _translate('Please select instruments'); ?>" multiple="multiple">
 											<?= $instrumentsDropdown; ?>
 										</select>
 									</div>
@@ -130,12 +133,16 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 	</section>
 	<!-- /.content -->
 </div>
+<script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("#instruments").select2({
-			placeholder: "<?php echo _translate("Select Instruments"); ?>"
-		});
+		$("#instruments").multipleSelect({
+                placeholder: 'Select Instruments',
+                width: '100%'
+            });
 
 	});
 
