@@ -580,7 +580,7 @@ if (!empty($requestResult)) {
 
                     $html .= '<tr>';
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-                    if (!empty($testUserSignaturePath) && $pdf->imageExists(($testUserSignaturePath))) {
+                    if (!empty($testUserSignaturePath) && MiscUtility::imageExists(($testUserSignaturePath))) {
                          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
                     } else {
                          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';

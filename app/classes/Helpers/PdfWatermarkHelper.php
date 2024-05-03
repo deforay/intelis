@@ -24,7 +24,7 @@ class PdfWatermarkHelper extends Fpdi
         $this->watermarkText = $watermarkText;
     }
 
-    public function Rotate($angle, $x = -1, $y = -1)
+    public function rotate($angle, $x = -1, $y = -1)
     {
         if ($x == -1) {
             $x = $this->x;
@@ -74,9 +74,9 @@ class PdfWatermarkHelper extends Fpdi
     public function rotatedText($x, $y, $txt, $angle)
     {
         //Text rotated around its origin
-        $this->Rotate($angle, $x, $y);
+        $this->rotate($angle, $x, $y);
         $this->Text($x, $y, $txt);
-        $this->Rotate(0);
+        $this->rotate(0);
         //$this->SetAlpha(0.7);
     }
 }

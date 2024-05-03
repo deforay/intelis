@@ -4,6 +4,7 @@
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\CountrySpecificHelpers\SierraLeoneTBResultPDFHelper;
@@ -100,7 +101,7 @@ if (!empty($result)) {
      }
      // create new PDF document
      $pdf = new SierraLeoneTBResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-     if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+     if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
           $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
      } else {
           $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
@@ -347,7 +348,7 @@ if (!empty($result)) {
 
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-               if (!empty($testUserSignaturePath) && $pdf->imageExists(($testUserSignaturePath))) {
+               if (!empty($testUserSignaturePath) && MiscUtility::imageExists(($testUserSignaturePath))) {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -369,7 +370,7 @@ if (!empty($result)) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-          if (!empty($reviewedSignaturePath) && $pdf->imageExists(($reviewedSignaturePath))) {
+          if (!empty($reviewedSignaturePath) && MiscUtility::imageExists(($reviewedSignaturePath))) {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:50px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -388,7 +389,7 @@ if (!empty($result)) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-          if (!empty($revisedSignaturePath) && $pdf->imageExists($revisedSignaturePath)) {
+          if (!empty($revisedSignaturePath) && MiscUtility::imageExists($revisedSignaturePath)) {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -409,7 +410,7 @@ if (!empty($result)) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-          if (!empty($approvedSignaturePath) && $pdf->imageExists(($approvedSignaturePath))) {
+          if (!empty($approvedSignaturePath) && MiscUtility::imageExists(($approvedSignaturePath))) {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedSignaturePath . '" style="width:50px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';

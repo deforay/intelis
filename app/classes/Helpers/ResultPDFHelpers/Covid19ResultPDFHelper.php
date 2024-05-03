@@ -43,10 +43,6 @@ class Covid19ResultPDFHelper extends Fpdi
         $this->systemConfig = $systemConfig;
         $this->dataSync = $dataSync;
     }
-    public function imageExists($filePath): bool
-    {
-        return MiscUtility::imageExists($filePath);
-    }
     //Page header
     public function Header()
     {

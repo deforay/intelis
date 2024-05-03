@@ -3,6 +3,7 @@
 // This file is included in /vl/results/generate-result-pdf.php
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
 
@@ -22,7 +23,7 @@ if (!empty($result)) {
      }
      // create new PDF document
      $pdf = new VLResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-     if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+     if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
           $logoPrintInPdf = $result['facilityLogo'];
      } else {
           $logoPrintInPdf = $arr['logo'];

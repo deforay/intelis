@@ -51,10 +51,6 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
             $this->logo = $logo;
             $this->text = $text;
          }
-         public function imageExists($filePath): bool
-         {
-            return MiscUtility::imageExists($filePath);
-         }
          //Page header
          public function Header()
          {

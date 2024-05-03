@@ -1,8 +1,8 @@
 <?php
 
 
+use setasign\Fpdi\Tcpdf\Fpdi;
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -20,9 +20,11 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-// die($id);
-// Extend the TCPDF class to create custom Header and Footer
-class Covid19ConfirmationManifestPDF extends TCPDF
+$globalConfig = $general->getGlobalConfig();
+
+$barcodeFormat = $globalConfig['barcode_format'] ?? 'C39';
+
+class Covid19ConfirmationManifestPDF extends Fpdi
 {
     public ?string $logo;
     public ?string $text;
@@ -33,10 +35,6 @@ class Covid19ConfirmationManifestPDF extends TCPDF
         $this->logo = $logo;
         $this->text = $text;
         $this->labname = $labname;
-    }
-    public function imageExists($filePath): bool
-    {
-        return MiscUtility::imageExists($filePath);
     }
     //Page header
     public function Header()
@@ -75,7 +73,7 @@ class Covid19ConfirmationManifestPDF extends TCPDF
         // Set font
         $this->SetFont('helvetica', '', 8);
         // Page number
-        $this->Cell(0, 10,  'Positive Confirmation Manifest Generated On : ' . date('d/m/Y H:i:s') . ' | Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
+        $this->Cell(0, 10,  'Confirmation Manifest Generated On : ' . date('d/m/Y H:i:s') . ' | Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
     }
 }
 
@@ -154,7 +152,6 @@ if (trim($id) != '') {
         // add a page
         $pdf->AddPage();
         $tbl = '';
-        $packageCodeBarCode = $pdf->serializeTCPDFtagParameters(array($result[0]['manifest_code'], 'C39', '', '', 0, 8, 0.25, array('border' => false, 'align' => 'L', 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 8, 'stretchtext' => 2), 'N'));
         $tbl .= '<span style="font-size:1.7em;"> ' . $result[0]['manifest_code'] . ' <img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"> </span>';
         $tbl .= '<br>';
         $tbl .= '<table style="width:100%;border:1px solid #333;">
@@ -184,10 +181,7 @@ if (trim($id) != '') {
             if (isset($sample['patient_dob']) && $sample['patient_dob'] != '' && $sample['patient_dob'] != null && $sample['patient_dob'] != '0000-00-00') {
                 $patientDOB = DateUtility::humanReadableDateFormat($sample['patient_dob']);
             }
-            $params = $pdf->serializeTCPDFtagParameters(array(
-                $sample['sample_code'], 'C39', '', '', '', 9, 0.25,
-                ['border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => [0, 0, 0], 'bgcolor' => [255, 255, 255], 'text' => false, 'font' => 'helvetica', 'fontsize' => 10, 'stretchtext' => 2], 'N'
-            ));
+
             $tbl .= '<tr style="border:1px solid #333;">';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sampleCounter . '.</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['sample_code'] . '</td>';

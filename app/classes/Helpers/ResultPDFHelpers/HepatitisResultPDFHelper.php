@@ -35,10 +35,6 @@ class HepatitisResultPDFHelper extends Fpdi
         $this->labFacilityId = $labFacilityId;
         $this->formId = $formId;
     }
-    public function imageExists($filePath): bool
-    {
-        return MiscUtility::imageExists($filePath);
-    }
     //Page header
     public function Header()
     {

@@ -39,10 +39,6 @@ class TBResultPDFHelper extends Fpdi
         $this->formId = $formId;
         $this->facilityInfo = $facilityInfo;
     }
-    public function imageExists($filePath): bool
-    {
-        return MiscUtility::imageExists($filePath);
-    }
     //Page header
     public function Header()
     {

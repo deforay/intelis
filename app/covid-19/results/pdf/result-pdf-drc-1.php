@@ -2,6 +2,7 @@
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
@@ -21,21 +22,21 @@ if (!class_exists('DRCCovid19PDF1')) {
 
                 // Check facility have the logo
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
-                if ($this->imageExists($imageFilePath)) {
+                if (MiscUtility::imageExists($imageFilePath)) {
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                 } else {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                    if ($this->imageExists($imageFilePath)) {
+                    if (MiscUtility::imageExists($imageFilePath)) {
                         $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                     }
                 }
 
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
-                if ($this->imageExists($imageFilePath)) {
+                if (MiscUtility::imageExists($imageFilePath)) {
                     $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T');
                 } else {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                    if ($this->imageExists($imageFilePath)) {
+                    if (MiscUtility::imageExists($imageFilePath)) {
                         $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T');
                     }
                 }
@@ -64,22 +65,22 @@ if (!class_exists('DRCCovid19PDF1')) {
 
                 // Define the path to the image that you want to use as watermark.
                 $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-" . $this->logo;
-                if (!empty($this->logo) && $this->imageExists($img_file)) {
+                if (!empty($this->logo) && MiscUtility::imageExists($img_file)) {
                 } else if (!empty($this->logo) && UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo) {
-                    if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                    if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                         $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     }
                 } else {
                     $img_file = "";
                 }
                 // Render the image
-                if ($this->imageExists($img_file)) {
+                if (MiscUtility::imageExists($img_file)) {
                     $this->SetAlpha(0.1);
                     $this->Image($img_file, 20, 75, 150, null, '', '', '', false, 300, 'M');
                 }
 
                 $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png';
-                if ($this->imageExists($stamp)) {
+                if (MiscUtility::imageExists($stamp)) {
                     $this->SetAlpha(0.6);
                     $this->Image($stamp, 50, 160, 50, null);
                     $this->Image($stamp, 145, 160, 50, null);
@@ -109,7 +110,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 // create new PDF document
 $pdf = new DRCCovid19PDF1(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
     $logoPrintInPdf = $result['facilityLogo'];
 } else {
     $logoPrintInPdf = $arr['logo'];
