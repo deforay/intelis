@@ -31,7 +31,7 @@ try {
 
     $uploadOption = $_POST['uploadOption'];
 
-    $ranNumber = "BULK-LAB-STORAGE-" . strtoupper($general->generateRandomString(16));
+    $ranNumber = "BULK-LAB-STORAGE-" . MiscUtility::generateRandomString(16);
     $extension = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 

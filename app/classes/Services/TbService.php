@@ -12,11 +12,8 @@ use App\Abstracts\AbstractTestService;
 
 final class TbService extends AbstractTestService
 {
-
-    protected string $table = 'form_tb';
-    protected string $shortCode = 'TB';
-    protected int $maxTries = 5; // Max tries to insert sample
     protected string $testType = 'tb';
+
 
     public function getSampleCode($params)
     {

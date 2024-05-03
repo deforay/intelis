@@ -243,7 +243,7 @@ try {
 
 			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template";
 			MiscUtility::makeDirectory($directoryPath, 0777, true);
-			$string = $general->generateRandomString(12) . ".";
+			$string = MiscUtility::generateRandomString(12) . ".";
 			$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
 			$fileName = "report-template-" . $string . $extension;
 			$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
@@ -262,7 +262,7 @@ try {
 		if ($sanitizedLabLogo instanceof UploadedFile && $sanitizedLabLogo->getError() === UPLOAD_ERR_OK) {
 			MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId, 0777, true);
 			$extension = MiscUtility::getFileExtension($sanitizedLabLogo->getClientFilename());
-			$string = $general->generateRandomString(12) . ".";
+			$string = MiscUtility::generateRandomString(12) . ".";
 			$actualImageName = "actual-logo-" . $string . $extension;
 			$imageName = "logo-" . $string . $extension;
 			$actualImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo") . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $actualImageName;
@@ -302,7 +302,7 @@ try {
 					MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . 'signatures');
 					$pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . 'signatures' . DIRECTORY_SEPARATOR;
 					$extension = MiscUtility::getFileExtension($sanitizedSignature[$key]->getClientFilename());
-					$imageName = $general->generateRandomString(12) . ".";
+					$imageName = MiscUtility::generateRandomString(12) . ".";
 					$imageName = $imageName . $extension;
 
 					// Move the uploaded file to the desired location

@@ -32,7 +32,7 @@ try {
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', (string) $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
-    $ranNumber = $general->generateRandomString(12);
+    $ranNumber = MiscUtility::generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 

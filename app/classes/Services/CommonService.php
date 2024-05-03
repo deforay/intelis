@@ -81,21 +81,7 @@ final class CommonService
 
     public function generateRandomString(int $length = 32): string
     {
-        // Ensure $length is always even
-        if ($length % 2 != 0) {
-            $length++;
-        }
-
-        $attempts = 0;
-        while ($attempts < 3) {
-            try {
-                return substr(bin2hex(random_bytes($length / 2)), 0, $length);
-            } catch (Throwable $e) {
-                LoggerUtility::log('error', $e->getMessage());
-                $attempts++;
-            }
-        }
-        throw new SystemException('Could not generate a random string');
+        return MiscUtility::generateRandomString($length);
     }
 
 
@@ -103,7 +89,7 @@ final class CommonService
     public function generateUUID($attachExtraString = true): string
     {
         $uuid = MiscUtility::generateUUID();
-        $uuid .= $attachExtraString ? '-' . $this->generateRandomString(6) : '';
+        $uuid .= $attachExtraString ? '-' . MiscUtility::generateRandomString(6) : '';
         return $uuid;
     }
 

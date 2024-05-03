@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use DateTime;
+use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use Laminas\Diactoros\ServerRequest;
@@ -221,57 +223,43 @@ final class UsersService
     }
 
 
-    public function getUserByToken($token = null): ?array
+    public function getUserByToken(?string $token = null): ?array
     {
-        return once(function () use ($token) {
-            if (!empty($token)) {
-                $this->db->where('u.api_token', $token);
-                $this->db->where('u.status', 'active');
-                $this->db->join("roles r", "u.role_id=r.role_id", "INNER");
-                $return = $this->db->getOne("$this->table as u");
-            } else {
-                $return = null;
-            }
-            return $return;
-        });
-    }
+        if (empty($token)) {
+            return null;
+        }
 
-    public function generateAuthToken($size = 8): string
-    {
-        return base64_encode($this->commonService->generateUUID() .
-            "-" . $this->commonService->generateRandomString($size ?? 8));
+        $this->db->where('u.api_token', $token);
+        $this->db->where('u.status', 'active');
+        $this->db->join("roles r", "u.role_id=r.role_id", "INNER");
+        return $this->db->getOne("$this->table as u");
     }
 
     public function getUserByUserId(?string $userId = null): ?array
     {
-        return once(function () use ($userId) {
-            if (!empty($userId)) {
-                $this->db->where('u.user_id', $userId);
-                $this->db->where('u.status', 'active');
-                $this->db->join("roles r", "u.role_id=r.role_id", "INNER");
-                $return = $this->db->getOne("$this->table as u");
-            } else {
-                $return = null;
-            }
-            return $return;
-        });
+        if (!empty($userId)) {
+            $this->db->where('u.user_id', $userId);
+            $this->db->where('u.status', 'active');
+            $this->db->join("roles r", "u.role_id=r.role_id", "INNER");
+            $return = $this->db->getOne("$this->table as u");
+        } else {
+            $return = null;
+        }
+        return $return;
     }
 
     public function validateAuthToken(?string $token = null): bool
     {
-        return once(function () use ($token) {
-            $result = null;
-            if (!empty($token)) {
-                $this->db->where('api_token', $token);
-                $this->db->where('status', 'active');
-                $result = $this->db->getOne($this->table, 'user_id');
-            }
-            return !empty($result);
-        });
+        $result = null;
+        if (!empty($token)) {
+            $this->db->where('api_token', $token);
+            $this->db->where('status', 'active');
+            $result = $this->db->getOne($this->table, 'user_id');
+        }
+        return !empty($result);
     }
 
-
-    public function getAuthToken(?string $token, $uId = null): ?array
+    public function sgetAuthToken(?string $token, $userId = null): ?array
     {
         $result = $this->getUserByToken($token) ?? null;
 
@@ -285,7 +273,7 @@ final class UsersService
                 $today = new DateTime();
                 $lastTokenDate = new DateTime($result['api_token_generated_datetime'] ?? null);
                 if (empty($result['api_token']) || $today->diff($lastTokenDate)->days > $tokenExpiration) {
-                    $data['api_token'] = $this->generateAuthToken();
+                    $data['api_token'] = ApiService::generateAuthToken();
                     $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
 
                     $this->db = $this->db->where('user_id', $result['user_id']);
@@ -297,15 +285,78 @@ final class UsersService
             $result['new_token'] = $result['token_updated'] ? $data['api_token'] : null;
             $result['token'] = $result['api_token'] ?? null;
         } else {
-            $data['api_token'] = $this->generateAuthToken();
+            $data['api_token'] = ApiService::generateAuthToken();
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
-            $this->db = $this->db->where('user_id', $uId);
+            $this->db = $this->db->where('user_id', $userId);
             $id = $this->db->update($this->table, $data);
             $result['token'] = $data['api_token'] ?? null;
         }
 
         return $result;
     }
+
+
+
+    public function getAuthToken(?string $token, ?string $userId = null): ?array
+    {
+        $result = $this->getUserByToken($token) ?? null;
+
+        if (!empty($result)) {
+            $tokenExpiration = $result['api_token_exipiration_days'] ?? 0;
+            $lastTokenDate = $result['api_token_generated_datetime'] ?? null;
+
+            if ($this->shouldUpdateToken($tokenExpiration, $lastTokenDate)) {
+                $newToken = $this->updateUserToken($result['user_id']);
+                $result['token_updated'] = ($newToken !== null);
+                $result['new_token'] = $newToken;
+            } else {
+                $result['token_updated'] = false;
+                $result['new_token'] = null;
+            }
+
+            $result['token'] = $result['api_token'] ?? null;
+        } elseif ($userId !== null) {
+            $newToken = $this->updateUserToken($userId);
+            $result = [
+                'token' => $newToken,
+                'token_updated' => true,
+                'new_token' => $newToken
+            ];
+        } else {
+            return null;
+        }
+
+        return $result;
+    }
+
+    private function shouldUpdateToken(int $tokenExpiration, ?string $lastTokenDate): bool
+    {
+        // Tokens with expiration = 0 are tokens that never expire
+        // if $lastTokenDate is empty, the token was manually generated and should not be updated
+        if ($tokenExpiration === 0 || empty($lastTokenDate)) {
+            return false;
+        }
+
+        return DateUtility::compareDateWithInterval($lastTokenDate, '>', "$tokenExpiration days");
+    }
+
+    private function updateUserToken(int $userId): ?string
+    {
+        $newToken = ApiService::generateAuthToken();
+        $data = [
+            'api_token' => $newToken,
+            'api_token_generated_datetime' => DateUtility::getCurrentDateTime(),
+        ];
+
+        $this->db->where('user_id', $userId);
+        if (!$this->db->update($this->table, $data)) {
+            // Log error or handle failed update scenario
+            error_log("Failed to update the user token in the database for user ID: $userId");
+            return null;
+        }
+        return $newToken;
+    }
+
 
     public function getUserRole(string $userId)
     {

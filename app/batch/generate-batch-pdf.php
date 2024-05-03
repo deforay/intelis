@@ -501,7 +501,7 @@ if (!empty($id)) {
         }
 
         $pdf->writeHTML($tbl);
-        $filename = "VLSM-" . trim((string) $bResult['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . $general->generateRandomString(12) . '.pdf';
+        $filename = "VLSM-" . trim((string) $bResult['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . MiscUtility::generateRandomString(12) . '.pdf';
         $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'batches' . DIRECTORY_SEPARATOR . $filename);
         exit;
     }

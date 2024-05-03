@@ -1,6 +1,7 @@
 <?php
 
 use GuzzleHttp\Client;
+use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -8,15 +9,18 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
 use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -27,14 +31,6 @@ $uploadedFiles = $request->getUploadedFiles();
 
 $sanitizedUserSignature = _sanitizeFiles($uploadedFiles['userSignature'], ['png', 'jpg', 'jpeg', 'gif']);
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "user_details";
 $tableName2 = "user_facility_map";
@@ -84,7 +80,7 @@ try {
             $data['api_token'] = $_POST['authToken'];
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         } elseif (!empty($_POST['appAccessable']) && $_POST['appAccessable'] == 'yes') {
-            $data['api_token'] = $usersService->generateAuthToken();
+            $data['api_token'] = ApiService::generateAuthToken();
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
 
@@ -128,7 +124,7 @@ try {
             ],
             [
                 'name' => 'x-api-key',
-                'contents' => $general->generateRandomString(18)
+                'contents' => MiscUtility::generateRandomString(18)
             ]
         ];
 

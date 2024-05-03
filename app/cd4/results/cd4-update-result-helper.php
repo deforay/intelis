@@ -2,10 +2,8 @@
 
 use App\Services\CD4Service;
 use App\Utilities\DateUtility;
-use Laminas\Filter\StringTrim;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use Laminas\Filter\FilterChain;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -24,12 +22,8 @@ $cd4Service = ContainerRegistry::get(CD4Service::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 
-// Define custom filters, with only StringTrim for viral load results
-$onlyStringTrim = (new FilterChain())->attach(new StringTrim());
-
-
 // Sanitize input
-$_POST = _sanitizeInput($_POST, $customFilters);
+$_POST = _sanitizeInput($_POST);
 
 $tableName = "form_cd4";
 $tableName2 = "log_result_updates";

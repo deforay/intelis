@@ -25,6 +25,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 $transactionId = MiscUtility::generateUUID();
+
 try {
     if (!empty($input['userName']) && !empty($input['password'])) {
         $userQuery = "SELECT ud.user_id,
@@ -47,37 +48,37 @@ try {
                         AND ud.status = 'active'
                         AND ud.login_id = ?";
         $userResult = $db->rawQueryOne($userQuery, [$input['userName']]);
+
         if (empty($userResult) || !password_verify((string) $input['password'], (string) $userResult['password'])) {
             throw new SystemException('Login failed. Please contact system administrator.');
-        } else {
-            if ($userResult['testing_user'] == 'yes') {
-                $remoteUser = "yes";
-            } else {
-                $remoteUser = "no";
-            }
-
-            $tokenData = $usersService->getAuthToken($userResult['api_token'], $userResult['user_id']);
-
-
-            $data = [];
-
-            unset($userResult['password']);
-
-            $data['user'] = $userResult;
-            $data['form'] = (int) $general->getGlobalConfig('vl_form');
-            $data['api_token'] = $tokenData['token'];
-            $data['new_token'] = $tokenData['token_updated'];
-            $data['appMenuName'] = $general->getGlobalConfig('app_menu_name');
-            $data['access'] = $usersService->getUserRolePrivileges($userResult['user_id']);
-
-            $payload = [
-                'status' => 1,
-                'message' => 'Login Success',
-                'timestamp' => time(),
-                'transactionId' => $transactionId,
-                'data' => $data
-            ];
         }
+
+        // Not needed anymore in the following code
+        unset($userResult['password']);
+
+        $tokenData = $usersService->getAuthToken($userResult['api_token'], $userResult['user_id']);
+
+        if (empty($tokenData)) {
+            throw new SystemException('Authentication failed. Please contact system administrator.');
+        }
+
+
+        $data = [];
+
+        $data['user'] = $userResult;
+        $data['form'] = (int) $general->getGlobalConfig('vl_form');
+        $data['api_token'] = $tokenData['token'];
+        $data['new_token'] = $tokenData['token_updated'];
+        $data['appMenuName'] = $general->getGlobalConfig('app_menu_name');
+        $data['access'] = $usersService->getUserRolePrivileges($userResult['user_id']);
+
+        $payload = [
+            'status' => 1,
+            'message' => 'Login Success',
+            'timestamp' => time(),
+            'transactionId' => $transactionId,
+            'data' => $data
+        ];
     } else {
         throw new SystemException('Login failed. Please contact system administrator.');
     }

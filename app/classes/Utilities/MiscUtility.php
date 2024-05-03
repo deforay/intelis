@@ -9,6 +9,20 @@ use App\Exceptions\SystemException;
 
 final class MiscUtility
 {
+    public static function generateRandomString(int $length = 32): string
+    {
+        $bytes = ceil($length * 3 / 4);
+        try {
+            $randomBytes = random_bytes($bytes);
+            $base64String = base64_encode($randomBytes);
+            // Replace base64 characters with some alphanumeric characters
+            $customBase64String = strtr($base64String, '+/=', 'ABC');
+            return substr($customBase64String, 0, $length);
+        } catch (Throwable $e) {
+            throw new SystemException('Failed to generate random string: ' . $e->getMessage());
+        }
+    }
+
     public static function randomHexColor(): string
     {
         $hexColorPart = function () {

@@ -4,6 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -31,7 +32,7 @@ $calcQuery = $_SESSION['samplewiseReportsCalc'];
 $calcResult = $db->rawQuery($calcQuery);
 
 $totalCalculationHeadings = array('No. of Samples Requested', 'No. of Samples Acknowledged', 'No. of Samples Received at Testing Lab', 'No. of Samples Tested', 'No. of Results Returned');
-$headings = array('LIS Sample ID','Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample ID", "Request Acknowledged Date Time", "Samples Received At Lab", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time", "Result Return Date and Time", "Last Modified On");
+$headings = array('LIS Sample ID', 'Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample ID", "Request Acknowledged Date Time", "Samples Received At Lab", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time", "Result Return Date and Time", "Last Modified On");
 
 $outputCalc = [];
 $output = [];
@@ -152,6 +153,6 @@ foreach ($output as $rowNo => $rowData) {
     }
 }
 $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-$filename = 'VLSM-SAMPLEWISE-REPORT-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
+$filename = 'VLSM-SAMPLEWISE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

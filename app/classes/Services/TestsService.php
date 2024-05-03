@@ -11,7 +11,7 @@ final class TestsService
         return [
             'vl' => [
                 'testName' => _translate('HIV Viral Load'),
-                'testShortName' => 'VL',
+                'testShortCode' => 'VL',
                 'tableName' => 'form_vl',
                 'primaryKey' => 'vl_sample_id',
                 'patientId' => 'patient_art_no',
@@ -21,7 +21,7 @@ final class TestsService
             ],
             'recency' => [
                 'testName' => _translate('HIV Recency'),
-                'testShortName' => 'Recency',
+                'testShortCode' => 'Recency',
                 'tableName' => 'form_vl',
                 'primaryKey' => 'vl_sample_id',
                 'patientId' => 'patient_art_no',
@@ -31,7 +31,7 @@ final class TestsService
             ],
             'cd4' => [
                 'testName' => _translate('CD4'),
-                'testShortName' => 'CD4',
+                'testShortCode' => 'CD4',
                 'tableName' => 'form_cd4',
                 'primaryKey' => 'cd4_id',
                 'patientId' => 'patient_art_no',
@@ -41,7 +41,7 @@ final class TestsService
             ],
             'eid' => [
                 'testName' => _translate('Early Infant Diagnosis'),
-                'testShortName' => 'EID',
+                'testShortCode' => 'EID',
                 'tableName' => 'form_eid',
                 'primaryKey' => 'eid_id',
                 'patientId' => 'child_id',
@@ -51,7 +51,7 @@ final class TestsService
             ],
             'covid19' => [
                 'testName' => _translate('Covid-19'),
-                'testShortName' => 'covid19',
+                'testShortCode' => 'C19',
                 'tableName' => 'form_covid19',
                 'primaryKey' => 'covid19_id',
                 'patientId' => 'patient_id',
@@ -61,7 +61,7 @@ final class TestsService
             ],
             'hepatitis' => [
                 'testName' => _translate('Hepatitis'),
-                'testShortName' => 'hepatitis',
+                'testShortCode' => 'HEP',
                 'tableName' => 'form_hepatitis',
                 'primaryKey' => 'hepatitis_id',
                 'patientId' => 'patient_id',
@@ -71,7 +71,7 @@ final class TestsService
             ],
             'tb' => [
                 'testName' => _translate('Tubercolosis'),
-                'testShortName' => 'tb',
+                'testShortCode' => 'TB',
                 'tableName' => 'form_tb',
                 'primaryKey' => 'tb_id',
                 'patientId' => 'patient_id',
@@ -81,7 +81,7 @@ final class TestsService
             ],
             'generic-tests' => [
                 'testName' => _translate('Other Tests'),
-                'testShortName' => 'generic-tests',
+                'testShortCode' => 'TEST',
                 'tableName' => 'form_generic',
                 'primaryKey' => 'sample_id',
                 'patientId' => 'patient_id',
@@ -112,9 +112,9 @@ final class TestsService
         return self::getTestTypes()[$testType]['testName'] ?? throw new InvalidArgumentException("Invalid test type key");
     }
 
-    public static function getTestShortName(string $testType): string
+    public static function getTestShortCode(string $testType): string
     {
-        return self::getTestTypes()[$testType]['testShortName'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['testShortCode'] ?? throw new InvalidArgumentException("Invalid test type key");
     }
 
     public static function getPatientIdColumn(string $testType): string

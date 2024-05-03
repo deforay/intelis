@@ -2,10 +2,8 @@
 
 use App\Services\VlService;
 use App\Utilities\DateUtility;
-use Laminas\Filter\StringTrim;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use Laminas\Filter\FilterChain;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -25,19 +23,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 
-// Define custom filters, with only StringTrim for viral load results
-$onlyStringTrim = (new FilterChain())->attach(new StringTrim());
-$customFilters = [
-    'vlResult' => $onlyStringTrim,
-    'cphlVlResult' => $onlyStringTrim,
-    'last_vl_result_failure' => $onlyStringTrim,
-    'last_vl_result_failure_ac' => $onlyStringTrim,
-    'last_vl_result_routine' => $onlyStringTrim,
-    'last_viral_load_result' => $onlyStringTrim
-];
-
 // Sanitize input
-$_POST = _sanitizeInput($_POST, $customFilters);
+$_POST = _sanitizeInput($_POST);
 
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";
@@ -108,21 +95,21 @@ try {
     $resultStatus = $processedResults['resultStatus'] ?? $resultStatus;
 
 
-     $reasonForChanges = null;
-     $allChange = [];
-     if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
-          $allChange = json_decode(base64_decode((string) $_POST['reasonForResultChangesHistory']), true);
-     }
-     if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) != '') {
-          $allChange[] = array(
-               'usr' => $_SESSION['userId'] ?? $_POST['userId'],
-               'msg' => $_POST['reasonForResultChanges'],
-               'dtime' => DateUtility::getCurrentDateTime()
-          );
-     }
-     if (!empty($allChange)) {
-          $reasonForChanges = json_encode($allChange);
-     }
+    $reasonForChanges = null;
+    $allChange = [];
+    if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
+        $allChange = json_decode(base64_decode((string) $_POST['reasonForResultChangesHistory']), true);
+    }
+    if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) != '') {
+        $allChange[] = array(
+            'usr' => $_SESSION['userId'] ?? $_POST['userId'],
+            'msg' => $_POST['reasonForResultChanges'],
+            'dtime' => DateUtility::getCurrentDateTime()
+        );
+    }
+    if (!empty($allChange)) {
+        $reasonForChanges = json_encode($allChange);
+    }
 
     if ($_POST['failedTestingTech'] != '') {
         $platForm = explode("##", (string) $_POST['failedTestingTech']);

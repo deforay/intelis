@@ -111,7 +111,7 @@ $fileArray = array(
 	COUNTRY\BURKINA_FASO => 'pdf/result-pdf-burkina-faso.php'
 );
 
-$randomFolderName = time() . '-' . $general->generateRandomString(6);
+$randomFolderName = time() . '-' . MiscUtility::generateRandomString(6);
 
 $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
 MiscUtility::makeDirectory($pathFront);
@@ -147,7 +147,7 @@ if (!empty($pages)) {
 	$resultPdf->setPrintHeader(false);
 	$resultPdf->setPrintFooter(false);
 	$resultPdf->concat();
-	$resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
+	$resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
 	$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
 	MiscUtility::removeDirectory($pathFront);
 }

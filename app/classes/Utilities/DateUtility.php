@@ -3,7 +3,10 @@
 namespace App\Utilities;
 
 use Exception;
+use Throwable;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
+use App\Exceptions\SystemException;
 
 final class DateUtility
 {
@@ -123,11 +126,65 @@ final class DateUtility
         return null;
     }
 
-    public static function isDateGreaterThan($inputDate, $comparisonDate)
+    /**
+     * Checks if one date is greater than another.
+     *
+     * @param string|null $inputDate The date to compare from.
+     * @param string|null $comparisonDate The date to compare against.
+     * @return bool Returns true if $inputDate is greater than $comparisonDate, otherwise false.
+     *              Returns false if any date is null or invalid.
+     */
+    public static function isDateGreaterThan(?string $inputDate, ?string $comparisonDate): bool
     {
-        $parsedInputDate = Carbon::parse($inputDate);
-        $parsedComparisonDate = Carbon::parse($comparisonDate);
-        return $parsedInputDate->gt($parsedComparisonDate);
+        try {
+            // Validate and parse dates
+            $parsedInputDate = $inputDate ? Carbon::parse($inputDate) : null;
+            $parsedComparisonDate = $comparisonDate ? Carbon::parse($comparisonDate) : null;
+
+            // Check if either date is null after attempting to parse
+            if (!$parsedInputDate || !$parsedComparisonDate) {
+                // Optionally, you can log these errors or handle them as needed
+                return false;
+            }
+
+            return $parsedInputDate->gt($parsedComparisonDate);
+        } catch (Throwable $e) {
+            // Handle or log the error appropriately
+            // This catches cases where Carbon could not parse the date strings
+            return false;
+        }
+    }
+    /**
+     * Compares a given datetime against a modified datetime by a specified interval.
+     *
+     * @param string $datetime The base datetime for the comparison.
+     * @param string $operator The comparison operator ('>' or '<').
+     * @param string $interval A string describing the interval (e.g., '10 days', '3 months', '-5 years', '2 hours').
+     * @return bool Returns true if the comparison is true, false otherwise.
+     */
+    public static function compareDateWithInterval(string $datetime, string $operator, string $interval): bool
+    {
+        $carbonDate = Carbon::parse($datetime);
+        $modifiedDate = clone $carbonDate;
+
+        // Check if interval is negative
+        if (strpos($interval, '-') === 0) {
+            // Subtract interval: remove the '-' and subtract
+            $modifiedDate->sub(CarbonInterval::createFromDateString(ltrim($interval, '-')));
+        } else {
+            // Add interval
+            $modifiedDate->add(CarbonInterval::createFromDateString($interval));
+        }
+
+        // Perform the comparison based on the operator
+        switch ($operator) {
+            case '>':
+                return $carbonDate->greaterThan($modifiedDate);
+            case '<':
+                return $carbonDate->lessThan($modifiedDate);
+            default:
+                throw new SystemException("Invalid comparison operator: $operator. Use '>' or '<'.");
+        }
     }
 
     public static function convertDateRange(?string $dateRange, $seperator = "to"): array

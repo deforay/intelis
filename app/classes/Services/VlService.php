@@ -34,10 +34,8 @@ final class VlService extends AbstractTestService
         'negat'
     ];
     protected int $suppressionLimit = 1000;
-    //protected string $table = 'form_vl';
-    protected string $shortCode = 'VL';
     protected string $testType = 'vl';
-    protected int $maxTries = 5; // Max tries to insert sample
+
 
     public function getSampleCode($params)
     {

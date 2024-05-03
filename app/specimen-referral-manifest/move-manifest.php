@@ -1,18 +1,19 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
-use App\Services\GenericTestsService;
 use App\Services\TbService;
 use App\Services\VlService;
+use App\Services\CD4Service;
 use App\Services\EidService;
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CD4Service;
+use App\Services\GenericTestsService;
 
 $title = "Move Manifest";
 
@@ -73,7 +74,7 @@ if ($module == 'vl') {
     /** @var CD4Service $cd4Service */
     $cd4Service = ContainerRegistry::get(CD4Service::class);
     $sampleTypes = $cd4Service->getCd4SampleTypes();
-}else if ($module == 'generic-tests') {
+} else if ($module == 'generic-tests') {
     /** @var GenericTestsService $genericService */
     $genericService = ContainerRegistry::get(GenericTestsService::class);
     $sampleTypes = $genericService->getGenericSampleTypes();
@@ -443,8 +444,6 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
     function getManifestCodeForm(value) {
         if (value != "") {
-            //var code = value.toUpperCase() + '<?php echo strtoupper(date('ymd') . $general->generateRandomString(6)); ?>';
-            //$('#packageCode').val(code);
             $("#moveSpecimenReferralManifestForm").removeClass("hide");
         }
 

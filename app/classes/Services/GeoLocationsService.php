@@ -4,16 +4,15 @@ namespace App\Services;
 
 use App\Utilities\DateUtility;
 use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
 
 final class GeoLocationsService
 {
 
-    protected ?DatabaseService $db;
+    protected DatabaseService $db;
 
-    public function __construct(?DatabaseService $db)
+    public function __construct(DatabaseService $db)
     {
-        $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
+        $this->db = $db;
     }
 
     public function getProvinces($isApi = "no", $onlyActive = true, $facilityMap = null)

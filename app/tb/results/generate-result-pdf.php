@@ -137,7 +137,7 @@ $fileArray = [
 
 $resultFilename = '';
 if (!empty($requestResult)) {
-    $_SESSION['rVal'] = $general->generateRandomString(6);
+    $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
     $pages = [];
@@ -197,7 +197,7 @@ if (!empty($requestResult)) {
         $resultPdf->setPrintHeader(false);
         $resultPdf->setPrintFooter(false);
         $resultPdf->concat();
-        $resultFilename = 'VLSM-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
+        $resultFilename = 'VLSM-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
         $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
         MiscUtility::removeDirectory($pathFront);
         unset($_SESSION['rVal']);

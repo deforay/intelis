@@ -13,26 +13,22 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
-use App\Services\GeoLocationsService;
 
 abstract class AbstractTestService
 {
     protected DatabaseService $db;
     protected CommonService $commonService;
-    protected GeoLocationsService $geoLocationsService;
     protected int $maxTries = 5; // Max tries for generating Sample ID
     protected string $table;
     protected string $testType;
+    protected string $shortCode;
 
-    public function __construct(
-        DatabaseService $db,
-        CommonService $commonService,
-        GeoLocationsService $geoLocationsService
-    ) {
+    public function __construct(DatabaseService $db, CommonService $commonService)
+    {
         $this->db = $db;
         $this->commonService = $commonService;
-        $this->geoLocationsService = $geoLocationsService;
         $this->table = TestsService::getTestTableName($this->testType);
+        $this->shortCode = TestsService::getTestShortCode($this->testType);
     }
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);

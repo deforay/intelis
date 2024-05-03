@@ -1,6 +1,7 @@
 <?php
 
 use GuzzleHttp\Client;
+use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -57,7 +58,7 @@ try {
             $data['api_token'] = $_POST['authToken'];
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         } elseif (!empty($_POST['appAccessable']) && $_POST['appAccessable'] == 'yes') {
-            $data['api_token'] = $usersService->generateAuthToken();
+            $data['api_token'] = ApiService::generateAuthToken();
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
         if (isset($_POST['removedSignatureImage']) && trim((string) $_POST['removedSignatureImage']) != "") {
@@ -174,7 +175,7 @@ try {
                 ],
                 [
                     'name' => 'x-api-key',
-                    'contents' => $general->generateRandomString(18)
+                    'contents' => MiscUtility::generateRandomString(18)
                 ]
             ];
 

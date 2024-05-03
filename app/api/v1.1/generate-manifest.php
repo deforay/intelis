@@ -53,7 +53,7 @@ $user = $usersService->getUserByToken($authToken);
 $tableName = TestsService::getTestTableName($input['testType']);
 $primaryKeyName = TestsService::getTestPrimaryKeyColumn($input['testType']);
 
-$packageCode = strtoupper(str_replace("-", "", $input['testType']) . date('ymd') .  $general->generateRandomString(6));
+$packageCode = strtoupper(str_replace("-", "", $input['testType']) . date('ymd') .  MiscUtility::generateRandomString(6));
 try {
     $sQuery = "SELECT unique_id, sample_code, remote_sample_code, $primaryKeyName FROM $tableName as vl";
 

@@ -12,10 +12,7 @@ use App\Abstracts\AbstractTestService;
 
 final class CD4Service extends AbstractTestService
 {
-    protected string $table = 'form_cd4';
-    protected string $shortCode = 'CD4';
     protected string $testType = 'cd4';
-    protected int $maxTries = 5; // Max tries to insert sample
 
     public function getSampleCode($params)
     {

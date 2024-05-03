@@ -12,10 +12,6 @@ use App\Abstracts\AbstractTestService;
 
 final class Covid19Service extends AbstractTestService
 {
-
-    protected string $table = 'form_covid19';
-    protected string $shortCode = 'C19';
-    protected int $maxTries = 5; // Max tries to insert sample
     protected string $testType = 'covid19';
 
     public function getSampleCode($params)

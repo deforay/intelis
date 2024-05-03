@@ -135,7 +135,7 @@ if (empty($syncLatestTime)) {
 
 	window.additionalXHRParams = {
 		layout: 0,
-		'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? MiscUtility::generateUUID(); ?>'
+		'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? MiscUtility::generateRandomString(); ?>'
 	};
 
 	$.ajaxSetup({

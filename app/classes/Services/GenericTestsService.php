@@ -13,11 +13,8 @@ use App\Abstracts\AbstractTestService;
 
 final class GenericTestsService extends AbstractTestService
 {
-
-    protected string $table = 'form_generic';
-    protected string $shortCode = 'T';
-    protected int $maxTries = 5; // Max tries to insert sample
     protected string $testType = 'generic-tests';
+
 
     public function getSampleCode($params)
     {

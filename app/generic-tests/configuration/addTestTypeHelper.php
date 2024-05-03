@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -108,7 +109,7 @@ try {
                 foreach ($_POST['testingReason'] as $val) {
                     if (!is_numeric($val)) {
                         $d = [
-                            'test_reason_code' => $general->generateRandomString(5),
+                            'test_reason_code' => MiscUtility::generateRandomString(5),
                             'test_reason' => $val,
                             'test_reason_status' => 'active'
                         ];
@@ -131,7 +132,7 @@ try {
                 foreach ($_POST['testFailureReason'] as $val) {
                     if (!is_numeric($val)) {
                         $d = [
-                            'test_failure_reason_code' => $general->generateRandomString(5),
+                            'test_failure_reason_code' => MiscUtility::generateRandomString(5),
                             'test_failure_reason' => $val,
                             'test_failure_reason_status' => 'active'
                         ];
@@ -147,7 +148,7 @@ try {
                 foreach ($_POST['rejectionReason'] as $val) {
                     if (!is_numeric($val)) {
                         $d = [
-                            'rejection_reason_code' => $general->generateRandomString(5),
+                            'rejection_reason_code' => MiscUtility::generateRandomString(5),
                             'rejection_reason_name' => $val,
                             'rejection_reason_status' => 'active'
                         ];

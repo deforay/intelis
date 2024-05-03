@@ -12,11 +12,8 @@ use App\Abstracts\AbstractTestService;
 
 final class EidService extends AbstractTestService
 {
-
-    protected string $table = 'form_eid';
-    protected string $shortCode = 'EID';
-    protected int $maxTries = 5; // Max tries to insert sample
     protected string $testType = 'eid';
+
 
     public function getSampleCode($params)
     {

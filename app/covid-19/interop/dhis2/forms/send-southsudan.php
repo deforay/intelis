@@ -139,7 +139,7 @@ foreach ($formResults as $row) {
   // $idResponse = (json_decode($idGeneratorApi, true));
   // $eventId = $idResponse['codes'][0];
 
-  // if ($eventId == null) $eventId = $general->generateRandomString(11);
+  // if ($eventId == null) $eventId = MiscUtility::generateRandomString(11);
 
   $eventPayload = array(
     //"event" => $eventId,
@@ -183,7 +183,7 @@ foreach ($formResults as $row) {
     // $idResponse = (json_decode($idGeneratorApi, true));
     // $eventId = $idResponse['codes'][0];
 
-    // if ($eventId == null) $eventId = $general->generateRandomString(11);
+    // if ($eventId == null) $eventId = MiscUtility::generateRandomString(11);
 
     $eventPayload = array(
       //"event" => $eventId,
@@ -217,7 +217,7 @@ foreach ($formResults as $row) {
   // $idResponse = (json_decode($idGeneratorApi, true));
   // $eventId = $idResponse['codes'][0];
 
-  // if ($eventId == null) $eventId = $general->generateRandomString(11);
+  // if ($eventId == null) $eventId = MiscUtility::generateRandomString(11);
 
   $eventPayload = array(
     //"event" => $eventId,

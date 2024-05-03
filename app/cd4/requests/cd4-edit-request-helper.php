@@ -2,10 +2,8 @@
 
 use App\Services\VlService;
 use App\Utilities\DateUtility;
-use Laminas\Filter\StringTrim;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use Laminas\Filter\FilterChain;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
@@ -31,11 +29,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 
-// Define custom filters, with only StringTrim for viral load results
-$onlyStringTrim = (new FilterChain())->attach(new StringTrim());
-
 // Sanitize input
-$_POST = _sanitizeInput($_POST, $customFilters);
+$_POST = _sanitizeInput($_POST);
 
 $tableName = "form_cd4";
 $tableName1 = "activity_log";

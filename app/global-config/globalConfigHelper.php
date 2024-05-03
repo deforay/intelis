@@ -82,7 +82,7 @@ try {
         $logoImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo";
         MiscUtility::makeDirectory($logoImagePath);
         $extension = MiscUtility::getFileExtension($sanitizedLogo->getClientFilename());
-        $string = $general->generateRandomString(12) . ".";
+        $string = MiscUtility::generateRandomString(12) . ".";
         $imageName = "logo-" . $string . $extension;
         $imagePath = realpath($logoImagePath) . DIRECTORY_SEPARATOR . $imageName;
 

@@ -41,6 +41,11 @@ final class ApiService
         ]);
     }
 
+    public static function generateAuthToken(): string
+    {
+        return base64_encode(MiscUtility::generateUUID() . "-" . MiscUtility::generateRandomString(32));
+    }
+
     protected function createApiClient(): Client
     {
         $handlerStack = HandlerStack::create();

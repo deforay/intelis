@@ -1,6 +1,5 @@
 <?php
 
-use Laminas\Filter\StripTags;
 use App\Services\UsersService;
 use App\Utilities\MiscUtility;
 use Laminas\Filter\StringTrim;
@@ -50,8 +49,7 @@ function _sanitizeInput(string|array|null $data, $customFilters = [])
 
     // Default Laminas filter chain with StripTags and StringTrim
     $defaultFilterChain = new FilterChain();
-    $defaultFilterChain->attach(new StripTags())
-        ->attach(new StringTrim());
+    $defaultFilterChain->attach(new StringTrim());
 
     // Convert single string to array for uniform processing
     $data = is_array($data) ? $data : [$data];
@@ -187,14 +185,14 @@ function _castVariable(mixed $variable, ?string $expectedType = null, ?bool $isN
 function _capitalizeWords($string)
 {
     if (empty($string) || $string == '') {
-        return null;
+        return $string;
     }
     return mb_convert_case($string, MB_CASE_TITLE, "UTF-8");
 }
 
 function _capitalizeFirstLetter($string, $encoding = "UTF-8")
 {
-    if (empty($string)) {
+    if (empty($string || $string == '')) {
         return $string;
     }
     $firstChar = mb_substr($string, 0, 1, $encoding);
@@ -232,4 +230,3 @@ function _getIteratorCount($iterator): int
     }
     return 0;
 }
-

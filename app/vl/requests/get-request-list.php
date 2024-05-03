@@ -1,11 +1,9 @@
 <?php
 
+use Kint\Kint;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
-use Laminas\Filter\StringTrim;
-use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use Laminas\Filter\FilterChain;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
@@ -13,6 +11,8 @@ use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+$_POST = _sanitizeInput($_POST);
 
 try {
 

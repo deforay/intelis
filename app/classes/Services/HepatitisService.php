@@ -33,9 +33,6 @@ final class HepatitisService extends AbstractTestService
         'negat'
     ];
 
-    protected string $table = 'form_hepatitis';
-    protected string $shortCode = 'HEP';
-    protected int $maxTries = 5; // Max tries to insert sample
     protected string $testType = 'hepatitis';
 
 
