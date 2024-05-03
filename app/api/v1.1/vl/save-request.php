@@ -86,7 +86,7 @@ try {
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
     $instanceId = $general->getInstanceId();
-    $formId = $globalConfig['vl_form'];
+    $formId = (int) $globalConfig['vl_form'];
 
     $version = $vlsmSystemConfig['sc_version'];
     /* To save the user attributes from API */
@@ -215,7 +215,7 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData = $vlService->insertSample($params, true);
+            $currentSampleData = $vlService->insertSample($params, returnSampleData: true);
             $currentSampleData['action'] = 'inserted';
             $data['vlSampleId'] = intval($currentSampleData['id']);
             if ($data['vlSampleId'] == 0) {

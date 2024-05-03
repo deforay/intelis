@@ -232,7 +232,7 @@ try {
                 $params['labId'] = $data['labId'] ?? null;
 
                 $params['insertOperation'] = true;
-                $currentSampleData['id'] = $genericService->insertSample($params, true);
+                $currentSampleData = $genericService->insertSample($params, returnSampleData: true);
                 $currentSampleData['action'] = 'inserted';
                 $data['genericSampleId'] = intval($currentSampleData['id']);
                 if ($data['genericSampleId'] == 0) {

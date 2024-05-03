@@ -41,7 +41,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $transactionId = MiscUtility::generateUUID();
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 $authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 /* To save the user attributes from API */

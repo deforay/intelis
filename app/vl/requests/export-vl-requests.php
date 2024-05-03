@@ -18,7 +18,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
-$formId = $arr['vl_form'];
+$formId = (int) $arr['vl_form'];
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';

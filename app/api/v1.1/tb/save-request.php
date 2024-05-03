@@ -231,7 +231,7 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData = $tbService->insertSample($params, true);
+            $currentSampleData = $tbService->insertSample($params, returnSampleData: true);
             $currentSampleData['action'] = 'inserted';
             $data['tbSampleId'] = intval($currentSampleData['id']);
             if ($data['tbSampleId'] == 0) {

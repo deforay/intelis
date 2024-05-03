@@ -190,7 +190,7 @@ final class HepatitisService extends AbstractTestService
 
     public function insertSample($params, $returnSampleData = false)
     {
-        $formId = $this->commonService->getGlobalConfig('vl_form');
+        $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
         try {
 

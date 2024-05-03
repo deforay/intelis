@@ -231,7 +231,7 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData = $eidService->insertSample($params, true);
+            $currentSampleData = $eidService->insertSample($params, returnSampleData: true);
             $currentSampleData['action'] = 'inserted';
             $data['eidSampleId'] = intval($currentSampleData['id']);
             if ($data['eidSampleId'] == 0) {

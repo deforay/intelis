@@ -125,7 +125,7 @@ if ($fType == "2") {
 }
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations();
 $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo['facility_state_id']);
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 ?>
 <style>
 	.ms-choice,

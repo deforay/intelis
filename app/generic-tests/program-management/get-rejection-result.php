@@ -21,8 +21,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$formId = $general->getGlobalConfig('form_generic');
-
 $tResult = [];
 //$rjResult = [];
 if (!empty($_POST['sampleCollectionDate'])) {

@@ -357,7 +357,7 @@ final class Covid19Service extends AbstractTestService
                 throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
             }
 
-            $formId = $this->commonService->getGlobalConfig('vl_form');
+            $formId = (int) $this->commonService->getGlobalConfig('vl_form');
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = (!empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
 

@@ -132,7 +132,7 @@ if (!empty($requestResult)) {
         } else {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR  . $arr['logo'];
         }
-        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', $labFacilityId = null, $formId = $arr['vl_form'], $facilityInfo);
+        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', $labFacilityId = null, $formId = (int) $arr['vl_form'], $facilityInfo);
         // set document information
         $pdf->SetCreator('VLSM');
         $pdf->SetTitle('SARS-CoV-2 Patient Report');

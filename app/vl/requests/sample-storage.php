@@ -32,7 +32,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 /** @var StorageService $storageService */
 $storageService = ContainerRegistry::get(StorageService::class);
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 
 $tsQuery = "SELECT * FROM r_sample_status";
@@ -100,7 +100,7 @@ $vlQuery = "SELECT vl.*,f.facility_name,s.storage_code,h.*,r.removal_reason_name
 			LEFT JOIN r_reasons_for_sample_removal as r ON r.removal_reason_id=h.sample_removal_reason
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE vl.sample_code IS NOT NULL ";
 
-$vlQuery = $vlQuery . $sWhere .' ORDER BY h.history_id';
+$vlQuery = $vlQuery . $sWhere . ' ORDER BY h.history_id';
 
 //echo $vlQuery;  die;
 $_SESSION['sampleStorageQuery'] = $vlQuery;
@@ -171,7 +171,8 @@ if (!empty($sampleUniqueId)) {
 										<?php echo _translate("Sample Received at Lab Date"); ?>&nbsp;:
 									</strong></td>
 								<td>
-									<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Received Date'); ?>" style="width:220px;background:#fff;" value="<?php //if(isset($_POST['sampleReceivedDate']) && $_POST['sampleReceivedDate']!="") echo str_replace('+',' ',$_POST['sampleReceivedDate']); ?>" />
+									<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Received Date'); ?>" style="width:220px;background:#fff;" value="<?php //if(isset($_POST['sampleReceivedDate']) && $_POST['sampleReceivedDate']!="") echo str_replace('+',' ',$_POST['sampleReceivedDate']); 
+																																																															?>" />
 								</td>
 							</tr>
 							<tr>
@@ -282,7 +283,7 @@ if (!empty($sampleUniqueId)) {
 												$key = (string) $general->getGlobalConfig('key');
 												$vl['patient_art_no'] = $general->crypto('decrypt', $vl['patient_art_no'], $key);
 											}
-										/*	$patientFirstName = $vl['patient_first_name'] ?? '';
+											/*	$patientFirstName = $vl['patient_first_name'] ?? '';
 											$patientMiddleName = $vl['patient_middle_name'] ?? '';
 											$patientLastName = $vl['patient_last_name'] ?? '';
 											if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
@@ -354,11 +355,11 @@ if (!empty($sampleUniqueId)) {
 												<td class="dataTables_empty">
 													<input type="text" name="comments[<?= $i; ?>]" id="comments<?= $i; ?>" class="form-control" size="20" />
 												</td>
-											<!--	<td class="dataTables_empty">
+												<!--	<td class="dataTables_empty">
 													< ?php echo ucfirst($vl['sample_status']); ?>
 												</td>-->
 												<td class="dataTables_empty">
-													<?php if($existingStorage != "" && (strtolower($vl['sample_status'])!="removed")){ ?> 
+													<?php if ($existingStorage != "" && (strtolower($vl['sample_status']) != "removed")) { ?>
 														<a href="#" class="btn btn-danger btn-xs" onclick="showRemovalReason(<?= $i; ?>);"><em class="fa-solid fa-xmark"></em>&nbsp; Remove</a>
 														<select id="sampleRemovalReason<?= $i; ?>" name="sampleRemovalReason[<?= $i; ?>]" class="form-control" title="Please Enter Sample Removal Reason" onchange="removeSampleFromFreezer(this.value,<?= $i; ?>);" style="width:100%; display:none;">
 															<option value=""><?= _translate("-- Select --"); ?> </option>
@@ -367,11 +368,10 @@ if (!empty($sampleUniqueId)) {
 															<?php } ?>
 															<option value="other">Other</option>
 														</select>
-														<input type="text" class="form-control" name="newSampleRemovalReason[<?= $i; ?>]" id="newSampleRemovalReason<?= $i; ?>" onchange="removeSampleFromFreezer(this.value,<?= $i; ?>);" style="display:none;"/>
-													<?php }
-													else{
-														if($vl['removal_reason_name']!=""){
-															echo "Sample Removed Reason : ".$vl['removal_reason_name'];
+														<input type="text" class="form-control" name="newSampleRemovalReason[<?= $i; ?>]" id="newSampleRemovalReason<?= $i; ?>" onchange="removeSampleFromFreezer(this.value,<?= $i; ?>);" style="display:none;" />
+													<?php } else {
+														if ($vl['removal_reason_name'] != "") {
+															echo "Sample Removed Reason : " . $vl['removal_reason_name'];
 														}
 													} ?>
 												</td>
@@ -411,8 +411,8 @@ if (!empty($sampleUniqueId)) {
 	var selectedTests = [];
 	var selectedTestsId = [];
 	$(document).ready(function() {
-		<?php if(isset($_POST['district'])){ ?>
-		getByProvince($("#state").val());
+		<?php if (isset($_POST['district'])) { ?>
+			getByProvince($("#state").val());
 		<?php } ?>
 
 		$("#state").select2({
@@ -427,8 +427,8 @@ if (!empty($sampleUniqueId)) {
 		$(".freezerSelect").select2({
 			placeholder: "<?php echo _translate("Select Freezer"); ?>"
 		});
-		
-		
+
+
 
 		$('.daterangefield').daterangepicker({
 				locale: {
@@ -494,7 +494,7 @@ if (!empty($sampleUniqueId)) {
 		//$("#facilityName").html('');
 		$.post("/common/get-by-province-id.php", {
 				provinceId: provinceId,
-				districts: '<?php if(isset($_POST['district'])) echo $_POST['district']; ?>',
+				districts: '<?php if (isset($_POST['district'])) echo $_POST['district']; ?>',
 				//facilities: true,
 			},
 			function(data) {
@@ -518,24 +518,22 @@ if (!empty($sampleUniqueId)) {
 			});
 	}
 
-	function showRemovalReason(rowId){
-		$("#sampleRemovalReason"+rowId).show();
+	function showRemovalReason(rowId) {
+		$("#sampleRemovalReason" + rowId).show();
 	}
 
-	function removeSample(value,rowId) {
-		if(value == "other")
-		{
-			$("#newSampleRemovalReason"+rowId).show();
-		}
-		else{
+	function removeSample(value, rowId) {
+		if (value == "other") {
+			$("#newSampleRemovalReason" + rowId).show();
+		} else {
 			removeSampleFromFreezer(value, rowId);
 		}
 	}
 
-	function removeSampleFromFreezer(reason,rowId){
-		if($("#volume"+rowId).val() > 0){
-			if($("#freezer"+rowId).val()==""){
-				$("#freezer"+rowId).addClass('isRequired');
+	function removeSampleFromFreezer(reason, rowId) {
+		if ($("#volume" + rowId).val() > 0) {
+			if ($("#freezer" + rowId).val() == "") {
+				$("#freezer" + rowId).addClass('isRequired');
 				alert("please select freezer to move");
 				return false;
 			}
@@ -543,20 +541,20 @@ if (!empty($sampleUniqueId)) {
 		$.post("/vl/requests/update-sample-storage-status.php", {
 				freezerId: $("#freezer" + rowId).val(),
 				uniqueId: $("#sampleUniqueId" + rowId).val(),
-				rack: $("#rack"+rowId).val(),
-				box: $("#box"+rowId).val(),
-				position: $("#position"+rowId).val(),
-				volume: $("#volume"+rowId).val(),
-				dateOut: $("#dateOut"+rowId).val(),
-				comments: $("#comments"+rowId).val(),
+				rack: $("#rack" + rowId).val(),
+				box: $("#box" + rowId).val(),
+				position: $("#position" + rowId).val(),
+				volume: $("#volume" + rowId).val(),
+				dateOut: $("#dateOut" + rowId).val(),
+				comments: $("#comments" + rowId).val(),
 				removalReason: reason,
-				currentStorage: $("#currentStorage"+rowId).html(),
-				historyId: $("#historyId"+rowId).val()
+				currentStorage: $("#currentStorage" + rowId).html(),
+				historyId: $("#historyId" + rowId).val()
 			},
 			function(data) {
 				if (data != '')
 					alert("Sample is removed from this freezer");
-					location.reload();
+				location.reload();
 			});
 	}
 

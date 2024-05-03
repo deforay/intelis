@@ -18,7 +18,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
-$formId = $arr['vl_form'];
+$formId = (int) $arr['vl_form'];
 
 
 $output = [];
@@ -54,15 +54,15 @@ foreach ($resultSet as $aRow) {
 	$row[] = $aRow["sample_code"];
 	$row[] = $aRow['facility_name'];
 	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-	
-		if (!empty($key) && !empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-			$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
-			$patientFname = $general->crypto('decrypt', $patientFname, $key);
-			$patientMname = $general->crypto('decrypt', $patientMname, $key);
-			$patientLname = $general->crypto('decrypt', $patientLname, $key);
-		}
-		$row[] = $aRow['patient_art_no'];
-		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+
+	if (!empty($key) && !empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+		$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+		$patientFname = $general->crypto('decrypt', $patientFname, $key);
+		$patientMname = $general->crypto('decrypt', $patientMname, $key);
+		$patientLname = $general->crypto('decrypt', $patientLname, $key);
+	}
+	$row[] = $aRow['patient_art_no'];
+	$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 	$row[] = $aRow['storage_code'];
 	$row[] = $aRow['rack'];
 	$row[] = $aRow['box'];
@@ -77,18 +77,18 @@ foreach ($resultSet as $aRow) {
 	$no++;
 }
 
-	$excel = new Spreadsheet();
-	$sheet = $excel->getActiveSheet();
+$excel = new Spreadsheet();
+$sheet = $excel->getActiveSheet();
 
-	$sheet->fromArray($headings, null, 'A1');
+$sheet->fromArray($headings, null, 'A1');
 
-	$rowNo = 2;
-	foreach ($output as $rowData) {
-		$rRowCount = $rowNo++;
-		$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-	}
+$rowNo = 2;
+foreach ($output as $rowData) {
+	$rRowCount = $rowNo++;
+	$sheet->fromArray($rowData, null, 'A' . $rRowCount);
+}
 
-	$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-	$filename = 'VLSM-SAMPLE-STORAGE-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
-	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-	echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
+$filename = 'VLSM-SAMPLE-STORAGE-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
+$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
