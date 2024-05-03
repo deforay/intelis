@@ -102,6 +102,14 @@ if (empty($syncLatestTime)) {
 <script src="/assets/js/highcharts-exporting.js"></script>
 <script src="/assets/js/highcharts-offline-exporting.js"></script>
 <script src="/assets/js/highcharts-accessibility.js"></script>
+<!-- Import jQuery 
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+
+ Import Trumbowyg 
+<script src="/assets/js/trumbowyg.min.js"></script>-->
+<script type="text/javascript" src="/assets/js/summernote.min.js"></script>
+
+
 <?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
 <?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>
 

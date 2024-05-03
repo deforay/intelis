@@ -98,6 +98,9 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
 	<link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css">
+	<!--<link rel="stylesheet" type="text/css" href="/assets/css/trumbowyg.min.css">-->
+	<link href="/assets/css/summernote.min.css" rel="stylesheet">
+
 	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/assets/js/deforayModal.js"></script>

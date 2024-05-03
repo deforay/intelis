@@ -507,6 +507,19 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 	tableRowId = 2;
 
 	$(document).ready(function() {
+		$('#additionalText').summernote({
+			toolbar: [
+			// [groupName, [list of button]]
+			['style', ['bold', 'italic', 'underline', 'clear']],
+			['font', ['strikethrough', 'superscript', 'subscript']],
+			['fontsize', ['fontsize']],
+			['color', ['color']],
+			['para', ['ul', 'ol', 'paragraph']],
+			['height', ['height']]
+		]
+		});
+
+
 		$(".select2").select2({
 			width: '100%',
 			placeholder: '<?php echo _translate("-- Select --"); ?>'

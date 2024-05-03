@@ -27,8 +27,18 @@ try {
     $labelOrder = '';
     if (isset($_POST['sortOrders']) && trim((string) $_POST['sortOrders']) != '') {
 
-        //Saving names of controls
-        $controlNames = json_encode($_POST['controls'], JSON_FORCE_OBJECT);
+        $namesArr = $_POST['controls']; 
+        
+        foreach($namesArr as $key=>$value)
+        {
+            if($value=="")
+            {
+                $namesArr[$key] = ucwords(str_replace('no of ', '',str_replace('_',' ',$key)));
+            }
+        }
+
+         //Saving names of controls
+        $controlNames = json_encode($namesArr, JSON_FORCE_OBJECT);
 
         $xplodSortOrders = explode(",", (string) $_POST['sortOrders']);
         $orderArray = [];
