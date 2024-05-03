@@ -122,6 +122,8 @@ try {
             $mandatoryFields[] = 'provinceId';
         }
 
+        $data = MiscUtility::arrayEmptyStringsToNull($data);
+
         if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $noOfFailedRecords++;
             $responseData[$rootKey] = [
@@ -320,7 +322,7 @@ try {
             'applicationVersion' => $version,
             'apiTransactionId' => $transactionId,
             'mobileAppVersion' => $appVersion,
-            'deviceId' => $userAttributes['deviceId']
+            'deviceId' => $userAttributes['deviceId'] ?? null
         ];
 
         /* Reason for VL Result changes */

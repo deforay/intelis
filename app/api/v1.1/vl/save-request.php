@@ -121,6 +121,8 @@ try {
             $mandatoryFields[] = 'provinceId';
         }
 
+        $data = MiscUtility::arrayEmptyStringsToNull($data);
+
         if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $noOfFailedRecords++;
             $responseData[$rootKey] = [

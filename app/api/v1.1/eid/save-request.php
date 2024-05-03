@@ -121,6 +121,8 @@ try {
             $mandatoryFields[] = 'provinceId';
         }
 
+        $data = MiscUtility::arrayEmptyStringsToNull($data);
+
         if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $noOfFailedRecords++;
             $responseData[$rootKey] = [
@@ -212,7 +214,6 @@ try {
                 $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
             }
         }
-
         $currentSampleData = [];
         if (!empty($rowData)) {
             $data['eidSampleId'] = $rowData['eid_id'];
@@ -304,7 +305,6 @@ try {
             $data['mothersDob'] = null;
         }
 
-
         if (isset($data['motherTreatmentInitiationDate']) && trim((string) $data['motherTreatmentInitiationDate']) != "") {
             $data['motherTreatmentInitiationDate'] = DateUtility::isoDateFormat($data['motherTreatmentInitiationDate']);
         } else {
@@ -348,12 +348,11 @@ try {
             $data['revisedOn'] = null;
         }
 
-
         $formAttributes = [
             'applicationVersion' => $version,
             'apiTransactionId' => $transactionId,
             'mobileAppVersion' => $appVersion,
-            'deviceId' => $userAttributes['deviceId']
+            'deviceId' => $userAttributes['deviceId'] ?? null
         ];
 
         /* Reason for VL Result changes */
@@ -374,7 +373,9 @@ try {
 
         $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
-        $data['motherTreatment'] = !is_array($data['motherTreatment']) ? [$data['motherTreatment']] : $data['motherTreatment'];
+        $data['motherTreatment'] = $data['motherTreatment'] ?? [];
+        $data['childTreatment'] = $data['childTreatment'] ?? [];
+        $data['childTreatmentOther'] = $data['childTreatmentOther'] ?? [];
 
         $eidData = [
             'vlsm_instance_id' => $instanceId,
@@ -391,7 +392,7 @@ try {
             'mother_name' => (!empty($data['mothersName']) && $data['mothersName'] != 'undefined') ? $data['mothersName'] : null,
             'mother_dob' => $data['mothersDob'] ?? null,
             'mother_marital_status' => $data['mothersMaritalStatus'] ?? null,
-            'mother_treatment' => isset($data['motherTreatment']) ? implode(",", $data['motherTreatment']) : null,
+            'mother_treatment' => !empty($data['motherTreatment']) ? implode(",", $data['motherTreatment']) : $data['motherTreatment'],
             'mother_treatment_other' => $data['motherTreatmentOther'] ?? null,
             'mother_treatment_initiation_date' => $data['motherTreatmentInitiationDate'] ?? null,
             'child_id' => $data['childId'] ?? null,
@@ -402,8 +403,8 @@ try {
             'health_insurance_code' => $data['healthInsuranceCode'] ?? null,
             'child_age' => $data['childAge'] ?? null,
             'child_age_in_weeks' => $data['childAgeInWeeks'] ?? null,
-            'child_treatment' => isset($data['childTreatment']) ? implode(",", $data['childTreatment']) : null,
-            'child_treatment_other' => isset($data['childTreatmentOther']) ? implode(",", $data['childTreatmentOther']) : null,
+            'child_treatment' => !empty($data['childTreatment']) ? implode(",", $data['childTreatment']) : $data['childTreatment'],
+            'child_treatment_other' => !empty($data['childTreatmentOther']) ? implode(",", $data['childTreatmentOther']) : $data['childTreatmentOther'],
             'mother_cd4' => $data['mothercd4'] ?? null,
             'mother_vl_result' => $motherVlResult,
             'mother_hiv_status' => $data['mothersHIVStatus'] ?? null,
