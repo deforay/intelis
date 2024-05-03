@@ -34,6 +34,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
+$formId = $general->getGlobalConfig('vl_form');
 
 if (empty($labId)) {
     LoggerUtility::log('error', "No Lab ID set in System Config. Skipping Interfacing Results");
@@ -68,10 +69,10 @@ if ($mysqlConnected) {
             ->where("added_on > '$lastInterfaceSync' OR lims_sync_status = 0");
     }
     $db->connection('interface')->where('result_status', 1);
-    //$db->connection('interface')->where('lims_sync_status', 0);
     $db->connection('interface')->orderBy('analysed_date_time', 'asc');
     $interfaceData = $db->connection('interface')->get('orders');
 } elseif ($sqliteConnected) {
+
     $where = [];
     $where[] = " result_status = 1 ";
     if (!empty($lastInterfaceSync)) {
@@ -79,8 +80,8 @@ if ($mysqlConnected) {
     }
     $where = implode(' AND ', $where);
     $interfaceQuery = "SELECT * FROM `orders`
-                    WHERE $where
-                    ORDER BY analysed_date_time ASC";
+                        WHERE $where
+                        ORDER BY analysed_date_time ASC";
     $interfaceData = $sqliteDb->query($interfaceQuery)->fetchAll(PDO::FETCH_ASSOC);
 } else {
     exit(0);
@@ -181,6 +182,7 @@ if (!empty($interfaceData)) {
                 $txtVal = null;
                 $interpretedResults = [];
 
+
                 if (!empty($vlResult) && !in_array(strtolower($vlResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
                     $interpretedResults = $vlService->interpretViralLoadResult($vlResult, $unit, $instrumentDetails['low_vl_result_text'] ?? null);
 
@@ -225,6 +227,13 @@ if (!empty($interfaceData)) {
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0
             ];
+
+            if ($formId === COUNTRY\CAMEROON && !empty($result['raw_text'])) {
+                $pattern = '/\^CV\s+(\d+)/i';
+                if (preg_match($pattern, $result['raw_text'], $matches)) {
+                    $data['cv_number'] = trim($matches[1]);
+                }
+            }
 
             if (strtolower((string) $vlResult) == 'failed' || strtolower((string) $vlResult) == 'fail' || strtolower((string) $vlResult) == 'invalid' || strtolower((string) $vlResult) == 'inconclusive') {
                 $data['result_status'] = SAMPLE_STATUS\TEST_FAILED; // Invalid
