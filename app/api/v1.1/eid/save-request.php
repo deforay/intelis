@@ -212,15 +212,12 @@ try {
             }
         }
 
-        // if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
-        //     $uniqueId = $data['uniqueId'] = $general->generateUUID();
-        // }
-
         $currentSampleData = [];
         if (!empty($rowData)) {
             $data['eidSampleId'] = $rowData['eid_id'];
             $currentSampleData['sampleCode'] = $rowData['sample_code'] ?? null;
             $currentSampleData['remoteSampleCode'] = $rowData['remote_sample_code'] ?? null;
+            $currentSampleData['uniqueId'] = $rowData['unique_id'] ?? null;
             $currentSampleData['action'] = 'updated';
         } else {
             $params['appSampleCode'] = $data['appSampleCode'] ?? null;
@@ -470,9 +467,9 @@ try {
             $responseData[$rootKey] = [
                 'status' => 'success',
                 'action' => $currentSampleData['action'] ?? null,
-                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? $currentSampleData['id']['remoteSampleCode'] ?? $currentSampleData['id']['sampleCode'] ?? null,
+                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
                 'transactionId' => $transactionId,
-                'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? $currentSampleData['id']['uniqueId'] ?? null,
+                'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
         } else {
