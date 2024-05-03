@@ -246,7 +246,7 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData = $covid19Service->insertSample($params, true);
+            $currentSampleData = $covid19Service->insertSample($params, returnSampleData: true);
             $currentSampleData['action'] = 'inserted';
             $data['covid19SampleId'] = intval($currentSampleData['id']);
             if ($data['covid19SampleId'] == 0) {

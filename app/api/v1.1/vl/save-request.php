@@ -215,7 +215,7 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData = $vlService->insertSample($params, true);
+            $currentSampleData = $vlService->insertSample($params, returnSampleData: true);
             $currentSampleData['action'] = 'inserted';
             $data['vlSampleId'] = intval($currentSampleData['id']);
             if ($data['vlSampleId'] == 0) {
