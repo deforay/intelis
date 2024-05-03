@@ -528,9 +528,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "covid19" && isset($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
-
     $jsonResponse = $apiService->post($url, $payload);
-
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
         $removeKeys = [
             'covid19_id',
@@ -617,7 +615,10 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     'last_modified_by',
                     'result_printed_datetime',
                     'result_dispatched_datetime',
-                    'last_modified_datetime'
+                    'last_modified_datetime',
+                    'data_from_comorbidities',
+                    'data_from_symptoms',
+                    'data_from_tests'
                 ];
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
@@ -650,34 +651,35 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         }
 
         $options = [
-            'pointer' => '/symptoms',
+            'pointer' => '/result/data_from_symptoms',
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $covid19Id => $symptoms) {
-            $db->where('covid19_id', $covid19Id);
+            $db->where('covid19_id', $id);
             $db->delete("covid19_patient_symptoms");
-            foreach ($symptoms as $symId => $symValue) {
+            foreach ($symptoms as $symId => $value) {
                 $symptomData = [];
-                $symptomData["covid19_id"] = $covid19Id;
-                $symptomData["symptom_id"] = $symId;
-                $symptomData["symptom_detected"] = $symValue;
+                $symptomData["covid19_id"] = $id;
+                $symptomData["symptom_id"] = $value['symptom_id'];
+                $symptomData["symptom_detected"] = $value['symptom_detected'];
+                $symptomData["symptom_details"] = $value['symptom_details'];
                 $db->insert("covid19_patient_symptoms", $symptomData);
             }
         }
 
         $options = [
-            'pointer' => '/comorbidities',
+            'pointer' => '/result/data_from_comorbidities',
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $covid19Id => $comorbidities) {
-            $db->where('covid19_id', $covid19Id);
+            $db->where('covid19_id', $id);
             $db->delete("covid19_patient_comorbidities");
 
             foreach ($comorbidities as $comoId => $comorbidityData) {
                 $comData = [];
-                $comData["covid19_id"] = $covid19Id;
+                $comData["covid19_id"] = $id;
                 $comData["comorbidity_id"] = $comorbidityData['comorbidity_id'];
                 $comData["comorbidity_detected"] = $comorbidityData['comorbidity_detected'];
                 $db->insert("covid19_patient_comorbidities", $comData);
@@ -685,19 +687,17 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         }
 
         $options = [
-            'pointer' => '/testResults',
+            'pointer' => '/result/data_from_tests',
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
-
-
         $unwantedColumns = [
             'test_id'
         ];
         $emptyTestsArray = $general->getTableFieldsAsArray('covid19_tests', $unwantedColumns);
 
         foreach ($testResultsData as $covid19Id => $testResults) {
-            $db->where('covid19_id', $covid19Id);
+            $db->where('covid19_id', $id);
             $db->delete("covid19_tests");
             foreach ($testResults as $covid19TestData) {
                 $covid19TestData = MiscUtility::updateFromArray($emptyTestsArray, $covid19TestData);
