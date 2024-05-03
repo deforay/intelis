@@ -91,10 +91,12 @@ foreach ($rResult as $aRow) {
     $machines = "";
     if (!empty($aRow['available_for_instruments']) && MiscUtility::isJson($aRow['available_for_instruments'])) {
         $instruments = json_decode($aRow['available_for_instruments']);
-        $idValues = implode(',', $instruments);
+        
+        $idValues = "'" .implode("', '", $instruments). "'";
         $sqlInstrument = "SELECT GROUP_CONCAT(machine_name) as machine_name FROM instruments WHERE instrument_id in ($idValues)";
+       
         $instrumentRes = $db->rawQueryOne($sqlInstrument);
-        $machines = $instrumentRes['machine_name'];
+        $machines = str_replace(',',', ',$instrumentRes['machine_name']);
     }
     $status = '<select class="form-control" name="status[]" id="' . $aRow['result_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
                <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>' . _translate("Active") . '</option>
