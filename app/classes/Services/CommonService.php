@@ -7,7 +7,6 @@ use Exception;
 use Throwable;
 use TCPDFBarcode;
 use TCPDF2DBarcode;
-use SodiumException;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
@@ -220,9 +219,7 @@ final class CommonService
     public static function encrypt($message, $key): string
     {
         try {
-            $nonce = random_bytes(
-                SODIUM_CRYPTO_SECRETBOX_NONCEBYTES
-            );
+            $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
 
             $cipher = sodium_bin2base64(
                 $nonce .
@@ -236,7 +233,7 @@ final class CommonService
             sodium_memzero($message);
             sodium_memzero($key);
             return $cipher;
-        } catch (SodiumException $e) {
+        } catch (Throwable $e) {
             return $message;
         }
     }
@@ -261,7 +258,7 @@ final class CommonService
             sodium_memzero($ciphertext);
             sodium_memzero($key);
             return $plain;
-        } catch (SodiumException | SystemException $e) {
+        } catch (Throwable $e) {
             // Log the exception and return an empty string or specific error message
             return ''; // or a specific error message
         }
