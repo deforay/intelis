@@ -217,7 +217,7 @@ try {
             $params['insertOperation'] = true;
             $currentSampleData = $vlService->insertSample($params, returnSampleData: true);
             $currentSampleData['action'] = 'inserted';
-            $data['vlSampleId'] = intval($currentSampleData['id']);
+            $data['vlSampleId'] = (int) $currentSampleData['id'];;
             if ($data['vlSampleId'] == 0) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [
@@ -470,7 +470,11 @@ try {
         'data' => []
     ];
     LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError() . ":" . $db->getLastQuery());
-    LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+    LoggerUtility::log('error', $exc->getMessage(), [
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
+        'trace' => $exc->getTraceAsString()
+    ]);
 }
 
 

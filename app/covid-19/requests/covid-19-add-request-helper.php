@@ -4,12 +4,13 @@
 // Path   /vlsm/api/covid-19/v1/add-request.php
 
 use App\Services\ApiService;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\PatientsService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\PatientsService;
-use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -276,9 +277,10 @@ try {
 		'result_modified'  => 'no',
 		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId']
 	);
-	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
+
+	if ($general->isLISInstance() || $general->isStandaloneInstance()) {
 		$covid19Data['source_of_request'] = 'vlsm';
-	} else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
+	} elseif ($general->isSTSInstance()) {
 		$covid19Data['source_of_request'] = 'vlsts';
 	}
 

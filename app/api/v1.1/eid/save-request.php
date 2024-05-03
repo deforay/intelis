@@ -8,6 +8,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -234,7 +235,7 @@ try {
             $params['insertOperation'] = true;
             $currentSampleData = $eidService->insertSample($params, returnSampleData: true);
             $currentSampleData['action'] = 'inserted';
-            $data['eidSampleId'] = intval($currentSampleData['id']);
+            $data['eidSampleId'] = (int) $currentSampleData['id'];;
             if ($data['eidSampleId'] == 0) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [
@@ -372,6 +373,8 @@ try {
         }
 
         $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+
+        $data['motherTreatment'] = !is_array($data['motherTreatment']) ? [$data['motherTreatment']] : $data['motherTreatment'];
 
         $eidData = [
             'vlsm_instance_id' => $instanceId,
@@ -515,7 +518,11 @@ try {
         'data' => []
     ];
 
-    error_log($exc->getMessage());
+    LoggerUtility::log('error', $exc->getMessage(), [
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
+        'trace' => $exc->getTraceAsString()
+    ]);
 }
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');

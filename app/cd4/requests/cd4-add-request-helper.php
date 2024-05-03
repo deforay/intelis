@@ -270,9 +270,9 @@ try {
 
 
 
-    if (isset($systemType) && ($systemType == "vluser" || $systemType == "standalone")) {
+    if ($general->isLISInstance() || $general->isStandaloneInstance()) {
         $vlData['source_of_request'] = 'vlsm';
-    } elseif (isset($systemType) && ($systemType == "remoteuser")) {
+    } elseif ($general->isSTSInstance()) {
         $vlData['source_of_request'] = 'vlsts';
     }
 

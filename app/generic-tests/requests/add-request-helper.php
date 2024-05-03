@@ -268,9 +268,9 @@ try {
         // 'reason_for_failure'                    => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
     );
 
-    if (isset($systemType) && ($systemType == "vluser" || $systemType == "standalone")) {
+    if ($general->isLISInstance() || $general->isStandaloneInstance()) {
         $genericData['source_of_request'] = 'vlsm';
-    } elseif (isset($systemType) && ($systemType == "remoteuser")) {
+    } elseif ($general->isSTSInstance()) {
         $genericData['source_of_request'] = 'vlsts';
     }
 

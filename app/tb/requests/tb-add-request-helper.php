@@ -254,9 +254,9 @@ try {
         'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId']
     );
 
-    if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
+    if ($general->isLISInstance() || $general->isStandaloneInstance()) {
         $tbData['source_of_request'] = 'vlsm';
-    } else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
+    } elseif ($general->isSTSInstance()) {
         $tbData['source_of_request'] = 'vlsts';
     }
 

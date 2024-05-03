@@ -365,13 +365,13 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                    <div class="box-body">
                                         <div class="row">
                                              <div class="col-md-6">
-                                                  <label class="col-lg-5" for="artNo"><?= _translate("EPID Number"); ?> <?php if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+                                                  <label class="col-lg-5" for="artNo"><?= _translate("EPID Number"); ?> <?php if ($general->isLISInstance()) { ?><span class="mandatory">*</span><?php } ?></label>
                                                   <div class="col-lg-7">
                                                        <input type="text" name="artNo" id="artNo" class="form-control <?= $mandatoryClass; ?> patientId" placeholder="<?php echo _translate('Enter EPID Number'); ?>" title="<?php echo _translate('Enter EPID Number'); ?>" onchange="checkPatientDetails('form_generic','patient_id',this,null)" />
                                                   </div>
                                              </div>
                                              <div class="col-md-6">
-                                                  <label class="col-lg-5" for="laboratoryNumber"><?= _translate("Laboratory Number"); ?> <?php if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+                                                  <label class="col-lg-5" for="laboratoryNumber"><?= _translate("Laboratory Number"); ?> <?php if ($general->isLISInstance()) { ?><span class="mandatory">*</span><?php } ?></label>
                                                   <div class="col-lg-7">
                                                        <input type="text" name="laboratoryNumber" id="laboratoryNumber" class="form-control <?= $mandatoryClass; ?>" placeholder="<?php echo _translate('Enter Laboratory Number'); ?>" title="<?php echo _translate('Enter Laboratory Number'); ?>" />
                                                   </div>
@@ -394,9 +394,9 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                         <div class="row">
                                              <div class="col-md-6">
                                                   <label class="col-lg-5" for="ageInMonths"><?= _translate("If Age < 1, Age in Months"); ?> </label>
-                                                            <div class="col-lg-7">
-                                                                 <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="<?php echo _translate('Age in Month'); ?>" title="<?php echo _translate('Enter age in months'); ?>" />
-                                                            </div>
+                                                  <div class="col-lg-7">
+                                                       <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="<?php echo _translate('Age in Month'); ?>" title="<?php echo _translate('Enter age in months'); ?>" />
+                                                  </div>
                                              </div>
                                              <div class="col-md-6">
                                                   <label class="col-lg-5" for="patientFirstName"><?= _translate("Patient Name (First Name, Last Name)"); ?> <span class="mandatory">*</span></label>
@@ -709,8 +709,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                        <button type="button" class="btn btn-success" onclick="changePrinter()"><?= _translate("Change/Retry"); ?></button>
                                                   </div><br /> <!-- /printer_details -->
                                                   <div id="printer_select" style="display:none">
-                                                  <?= _translate("Zebra Printer Options"); ?><br />
-                                                  <?= _translate("Printer"); ?>: <select id="printers"></select>
+                                                       <?= _translate("Zebra Printer Options"); ?><br />
+                                                       <?= _translate("Printer"); ?>: <select id="printers"></select>
                                                   </div> <!-- /printer_select -->
                                              <?php } ?>
                                              <!-- BARCODESTUFF END -->
@@ -767,7 +767,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      $(document).ready(function() {
           $("#subTestResult").multipleSelect({
-               placeholder: '<?php echo _translate("Select Sub Tests",true); ?>',
+               placeholder: '<?php echo _translate("Select Sub Tests", true); ?>',
                width: '100%'
           });
 
@@ -790,15 +790,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
           $("#testType").select2({
                width: '100%',
-               placeholder: "<?php echo _translate("Select Test Type",true); ?>"
+               placeholder: "<?php echo _translate("Select Test Type", true); ?>"
           });
           $('#labId').select2({
                width: '100%',
-               placeholder: "<?php echo _translate("Select Testing Lab",true); ?>"
+               placeholder: "<?php echo _translate("Select Testing Lab", true); ?>"
           });
           $('#facilityId').select2({
                width: '100%',
-               placeholder: "<?php echo _translate("Select Clinic/Health Center",true); ?>"
+               placeholder: "<?php echo _translate("Select Clinic/Health Center", true); ?>"
           });
           $('#reviewedBy').select2({
                width: '100%',

@@ -248,7 +248,7 @@ try {
             $params['insertOperation'] = true;
             $currentSampleData = $covid19Service->insertSample($params, returnSampleData: true);
             $currentSampleData['action'] = 'inserted';
-            $data['covid19SampleId'] = intval($currentSampleData['id']);
+            $data['covid19SampleId'] = (int) $currentSampleData['id'];;
             if ($data['covid19SampleId'] == 0) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [
@@ -578,7 +578,11 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    LoggerUtility::log('error', $exc->getMessage());
+    LoggerUtility::log('error', $exc->getMessage(), [
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
+        'trace' => $exc->getTraceAsString(),
+    ]);
 }
 
 

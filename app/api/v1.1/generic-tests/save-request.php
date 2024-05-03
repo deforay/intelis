@@ -234,7 +234,7 @@ try {
                 $params['insertOperation'] = true;
                 $currentSampleData = $genericService->insertSample($params, returnSampleData: true);
                 $currentSampleData['action'] = 'inserted';
-                $data['genericSampleId'] = intval($currentSampleData['id']);
+                $data['genericSampleId'] = (int) $currentSampleData['id'];;
                 if ($data['genericSampleId'] == 0) {
                     $noOfFailedRecords++;
                     $responseData[$rootKey] = [
@@ -489,8 +489,9 @@ try {
         'data' => []
     ];
     LoggerUtility::log('error', $exc->getMessage(), [
-        'trace' => $exc->getTraceAsString(),
-        'line' => $exc->getLine()
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
+        'trace' => $exc->getTraceAsString()
     ]);
 }
 $payload = json_encode($payload);

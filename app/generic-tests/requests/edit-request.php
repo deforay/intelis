@@ -540,14 +540,14 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 							<div class="box-body">
 								<div class="row">
 									<div class="col-md-6">
-										<label class="col-lg-5" for="artNo">EPID Number <?php if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+										<label class="col-lg-5" for="artNo">EPID Number <?php if ($general->isLISInstance()) { ?><span class="mandatory">*</span><?php } ?></label>
 										<div class="col-lg-7">
 											<input type="text" name="artNo" id="artNo" class="form-control <?= $mandatoryClass; ?> patientId" placeholder="<?= _translate('Enter EPID Number'); ?>" title="<?= _translate('Enter EPID Number'); ?>" value="<?= htmlspecialchars((string) $genericResultInfo['patient_id']); ?>" />
 										</div>
 
 									</div>
 									<div class="col-md-6">
-										<label class="col-lg-5" for="artNo"><?= _translate("Laboratory Number"); ?> <?php if (!empty($_SESSION['instance']['type']) && $_SESSION['instance']['type'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+										<label class="col-lg-5" for="artNo"><?= _translate("Laboratory Number"); ?> <?php if ($general->isLISInstance()) { ?><span class="mandatory">*</span><?php } ?></label>
 										<div class="col-lg-7">
 											<input type="text" name="laboratoryNumber" id="laboratoryNumber" class="form-control <?= $mandatoryClass; ?>" placeholder="<?= _translate('Enter Laboratory Number'); ?>" title="<?= _translate('Enter Laboratory Number'); ?>" value="<?= $genericResultInfo['laboratory_number']; ?>" />
 										</div>
@@ -571,9 +571,9 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 								<div class="row">
 									<div class="col-md-6">
 										<label class="col-lg-5" for="ageInMonths"><?= _translate("If Age < 1, Age in Months"); ?> </label>
-												<div class="col-lg-7">
-													<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Month'); ?>" title="<?= _translate('Enter age in months'); ?>" value="<?= htmlspecialchars((string) $genericResultInfo['patient_age_in_months']); ?>" />
-												</div>
+										<div class="col-lg-7">
+											<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Month'); ?>" title="<?= _translate('Enter age in months'); ?>" value="<?= htmlspecialchars((string) $genericResultInfo['patient_age_in_months']); ?>" />
+										</div>
 									</div>
 									<div class="col-md-6">
 										<label class="col-lg-5" for="patientFirstName"><?= _translate("Patient Name (First Name, Last Name)"); ?> <span class="mandatory">*</span></label>
@@ -717,7 +717,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 											</div>
 											<div class="col-md-6">
 												<label class="col-lg-5" for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">
-												<?= _translate("Focal Person Phone Number"); ?></label>
+													<?= _translate("Focal Person Phone Number"); ?></label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control phone-number labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Please enter focal person phone number'); ?>" value="<?= htmlspecialchars((string) $genericResultInfo['testing_lab_focal_person_phone_number']); ?>" />
 												</div>
@@ -760,9 +760,9 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 													<select name="isSampleRejected" id="isSampleRejected" class="form-control labSection" title="<?= _translate('Please check if sample is rejected or not'); ?>">
 														<option value=""><?= _translate("-- Select --"); ?></option>
 														<option value="yes" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>
-														<?= _translate("Yes"); ?></option>
+															<?= _translate("Yes"); ?></option>
 														<option value="no" <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>
-														<?= _translate("No"); ?></option>
+															<?= _translate("No"); ?></option>
 													</select>
 												</div>
 											</div>
@@ -1003,54 +1003,54 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 
 		autoFillFocalDetails();
 		$("#specimenType").select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("Select Specimen Type", true); ?>"
-          });
-          $("#testType").select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("Select Test Type",true); ?>"
-          });
-          $('#labId').select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("Select Testing Lab",true); ?>"
-          });
-          $('#facilityId').select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("Select Clinic/Health Center",true); ?>"
-          });
-          $('#reviewedBy').select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("Select Reviewed By", true); ?>"
-          });
-          $('#testedBy').select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("Select Tested By", true); ?>"
-          });
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Specimen Type", true); ?>"
+		});
+		$("#testType").select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Test Type", true); ?>"
+		});
+		$('#labId').select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Testing Lab", true); ?>"
+		});
+		$('#facilityId').select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Clinic/Health Center", true); ?>"
+		});
+		$('#reviewedBy').select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Reviewed By", true); ?>"
+		});
+		$('#testedBy').select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Tested By", true); ?>"
+		});
 
-          $('#approvedBy').select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("Select Approved By", true); ?>"
-          });
-          $('#facilityId').select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("Select Clinic/Health Center", true); ?>"
-          });
-          $('#district').select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("District", true); ?>"
-          });
-          $('#province').select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("Province", true); ?>"
-          });
-          $('#implementingPartner').select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("Implementing Partner", true); ?>"
-          });
-          $('#fundingSource').select2({
-               width: '100%',
-               placeholder: "<?php echo _translate("Funding Source", true); ?>"
-          });
+		$('#approvedBy').select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Approved By", true); ?>"
+		});
+		$('#facilityId').select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Clinic/Health Center", true); ?>"
+		});
+		$('#district').select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("District", true); ?>"
+		});
+		$('#province').select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Province", true); ?>"
+		});
+		$('#implementingPartner').select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Implementing Partner", true); ?>"
+		});
+		$('#fundingSource').select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Funding Source", true); ?>"
+		});
 
 		//getAge();
 		getTestTypeForm();
@@ -1705,9 +1705,9 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		$('.ins-row-' + row + subrow).addClass('disabled');
 		testCounter = (subrow + 1);
 		options = $("#finalResult" + row).html();
-		testMethodOptions = $("#testName" + row+(testCounter-1)).html();
-          if($('.qualitative-field').hasClass('testResultUnit')){
-               unitTest = `<td class="testResultUnit">
+		testMethodOptions = $("#testName" + row + (testCounter - 1)).html();
+		if ($('.qualitative-field').hasClass('testResultUnit')) {
+			unitTest = `<td class="testResultUnit">
                     <select class="form-control resultUnit" id="testResultUnit${row}${testCounter}" name="testResultUnit[${subTest}][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
                          <option value="">--Select--</option>
                          <?php foreach ($testResultUnits as $key => $unit) { ?>
@@ -1715,8 +1715,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                          <?php } ?>
                     </select>
                     </td>`;
-          }
-		  let rowString = `<tr>
+		}
+		let rowString = `<tr>
                     <td class="text-center">${(subrow+1)}</td>
                     <td>
                          <select class="form-control test-name-table-input" id="testName${row}${testCounter}" name="testName[${subTest}][]" title="Please enter the name of the Testkit (or) Test Method used">${testMethodOptions}</select>

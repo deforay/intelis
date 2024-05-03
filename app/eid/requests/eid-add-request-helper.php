@@ -424,10 +424,9 @@ try {
 	);
 
 
-
-	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
+	if ($general->isLISInstance() || $general->isStandaloneInstance()) {
 		$eidData['source_of_request'] = 'vlsm';
-	} elseif (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
+	} elseif ($general->isSTSInstance()) {
 		$eidData['source_of_request'] = 'vlsts';
 	}
 

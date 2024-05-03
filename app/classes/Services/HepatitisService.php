@@ -259,9 +259,8 @@ final class HepatitisService extends AbstractTestService
                 ];
 
                 $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
-                $instanceType = $_SESSION['instance']['type'] ?? $params['instanceType'] ?? null;
 
-                if ($instanceType === 'remoteuser') {
+                if ($this->commonService->isSTSInstance()) {
                     $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
                     $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
