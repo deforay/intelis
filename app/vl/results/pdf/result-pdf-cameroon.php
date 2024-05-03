@@ -148,7 +148,7 @@ if (!empty($result)) {
      $page_height = $pdf->getPageHeight();
 
      if (empty($reportTemplatePath)) {
-          if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+          if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
           } else {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
@@ -459,7 +459,7 @@ if (!empty($result)) {
 
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-               if (!empty($approvedSignaturePath) && $pdf->imageExists(($approvedSignaturePath))) {
+               if (!empty($approvedSignaturePath) && MiscUtility::imageExists(($approvedSignaturePath))) {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedSignaturePath . '" style="width:100px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';

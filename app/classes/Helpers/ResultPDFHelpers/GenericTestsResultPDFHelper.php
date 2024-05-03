@@ -37,11 +37,6 @@ class GenericTestsResultPDFHelper extends Fpdi
         $this->labFacilityId = $labFacilityId;
         $this->testType = $testType;
     }
-
-    public function imageExists($filePath): bool
-    {
-        return MiscUtility::imageExists($filePath);
-    }
     //Page header
     public function Header()
     {
@@ -55,12 +50,12 @@ class GenericTestsResultPDFHelper extends Fpdi
         } else {
             if (!empty($this->htitle) && trim($this->htitle) != '') {
                 if (!empty($this->logo) && trim($this->logo) != '') {
-                    if ($this->imageExists($this->logo)) {
+                    if (MiscUtility::imageExists($this->logo)) {
                         $this->Image($this->logo, 95, 5, 15, '', '', '', 'T');
-                    } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
+                    } else if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
                         $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
-                    } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                    } else if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                         $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
                     }
@@ -77,12 +72,12 @@ class GenericTestsResultPDFHelper extends Fpdi
                 $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
             } else {
                 if (!empty($this->logo) && trim($this->logo) != '') {
-                    if ($this->imageExists($this->logo)) {
+                    if (MiscUtility::imageExists($this->logo)) {
                         $this->Image($this->logo, 20, 13, 15, '', '', '', 'T');
-                    } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
+                    } else if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
                         $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
-                    } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                    } else if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                         $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
                     }

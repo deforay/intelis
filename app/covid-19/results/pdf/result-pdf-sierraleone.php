@@ -21,7 +21,7 @@ if (!class_exists('SierraLeoneCovid19PDFHelper')) {
 
                 if (isset($this->formId) && $this->formId == 1) {
                     if (!empty($this->logo) && trim($this->logo) != '') {
-                        if ($this->imageExists($this->logo)) {
+                        if (MiscUtility::imageExists($this->logo)) {
                             $this->Image($this->logo, 10, 5, 25, '', '', '', 'T');
                         }
                     }
@@ -56,7 +56,7 @@ if (!class_exists('SierraLeoneCovid19PDFHelper')) {
                     // $this->writeHTMLCell(0, 0, 25, 35, '<hr>', 0, 0, 0, true, 'C', true);
                 } else {
                     if (!empty($this->logo) && trim($this->logo) != '') {
-                        if ($this->imageExists($this->logo)) {
+                        if (MiscUtility::imageExists($this->logo)) {
                             $this->Image($this->logo, 10, 5, 25, '', '', '', 'T');
                         }
                     }
@@ -127,7 +127,7 @@ if (!empty($requestResult)) {
         }
         // create new PDF document
         $pdf = new SierraLeoneCovid19PDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+        if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
         } else {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR  . $arr['logo'];

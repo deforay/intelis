@@ -158,7 +158,7 @@ final class FacilitiesService
     // $condition = WHERE condition (for eg. "facility_state = 1")
     // $allColumns = (false -> only facility_id and facility_name, true -> all columns)
     // $onlyActive = true/false
-    public function getHealthFacilities($testType = null, $byPassFacilityMap = false, $allColumns = false, $condition = null, $onlyActive = true, $userId = null)
+    public function getHealthFacilities($testType = null, $byPassFacilityMap = false, $allColumns = false, $condition = [], $onlyActive = true, $userId = null)
     {
 
         $userId = $userId ?: $_SESSION['userId'] ?: null;
@@ -184,8 +184,12 @@ final class FacilitiesService
         }
 
         if (!empty($condition)) {
-            $this->db->where($condition);
+            $condition = !is_array($condition) ? [$condition] : $condition;
+            foreach ($condition as $cond) {
+                $this->db->where($cond);
+            }
         }
+
 
         $this->db->orderBy("facility_name", "asc");
 
@@ -225,7 +229,7 @@ final class FacilitiesService
     // $condition = WHERE condition (for eg. "facility_state = 1")
     // $allColumns = (false -> only facility_id and facility_name, true -> all columns)
     // $onlyActive = true/false
-    public function getTestingLabs($testType = null, $byPassFacilityMap = true, $allColumns = false, $condition = null, $onlyActive = true, $userId = null)
+    public function getTestingLabs($testType = null, $byPassFacilityMap = true, $allColumns = false, $condition = [], $onlyActive = true, $userId = null)
     {
         $userId = $userId ?: $_SESSION['userId'] ?: null;
         if (!$byPassFacilityMap && !empty($userId)) {
@@ -250,9 +254,11 @@ final class FacilitiesService
         }
 
         if (!empty($condition)) {
-            $this->db->where($condition);
+            $condition = !is_array($condition) ? [$condition] : $condition;
+            foreach ($condition as $cond) {
+                $this->db->where($cond);
+            }
         }
-
 
         $this->db->where('facility_type = 2');
         $this->db->orderBy("facility_name", "asc");

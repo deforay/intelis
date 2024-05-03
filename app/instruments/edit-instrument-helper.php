@@ -31,7 +31,6 @@ $configControlInfo = $db->rawQuery($configControlQuery, [$configId]);
 
 try {
     if (trim((string) $_POST['configurationName']) != "") {
-
         if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
                 $configDir = __DIR__;

@@ -24,10 +24,6 @@ class ManifestPdfHelper extends TCPDF
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
         $this->manifestType = $manifestType ?: _translate("Sample Referral Manifest");
     }
-    public function imageExists($filePath): bool
-    {
-        return MiscUtility::imageExists($filePath);
-    }
     //Page header
     public function Header()
     {

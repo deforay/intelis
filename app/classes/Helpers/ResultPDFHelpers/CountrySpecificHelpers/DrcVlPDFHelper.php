@@ -2,6 +2,7 @@
 
 namespace App\Helpers\ResultPDFHelpers\CountrySpecificHelpers;
 
+use App\Utilities\MiscUtility;
 use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
 
 class DrcVlPDFHelper extends VLResultPDFHelper
@@ -11,18 +12,18 @@ class DrcVlPDFHelper extends VLResultPDFHelper
     {
         $imageFilePath = null;
         if (!empty($this->logo) && trim($this->logo) != '') {
-            if ($this->imageExists($this->logo)) {
+            if (MiscUtility::imageExists($this->logo)) {
                 $imageFilePath = $this->logo;
-            } elseif ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
+            } elseif (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-            } elseif ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+            } elseif (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
             }
             if (!empty($imageFilePath)) {
                 $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
             }
         }
-        if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
+        if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
             $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
             $this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T');
         }

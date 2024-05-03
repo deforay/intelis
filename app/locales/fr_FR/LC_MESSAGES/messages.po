@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-05-02 11:53+0530\n"
-"PO-Revision-Date: 2024-05-02 11:54+0530\n"
+"POT-Creation-Date: 2024-05-03 12:34+0530\n"
+"PO-Revision-Date: 2024-05-03 12:34+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -259,8 +259,8 @@ msgstr "Piste d’audit"
 #: admin/monitoring/sources-of-requests.php:86 dashboard/index.php:125
 #: dashboard/index.php:169 dashboard/index.php:215 dashboard/index.php:262
 #: dashboard/index.php:310 dashboard/index.php:358 dashboard/index.php:407
-#: dashboard/index.php:457 specimen-referral-manifest/move-manifest.php:181
-#: specimen-referral-manifest/move-manifest.php:184
+#: dashboard/index.php:457 specimen-referral-manifest/move-manifest.php:182
+#: specimen-referral-manifest/move-manifest.php:185
 msgid "Date Range"
 msgstr "Plage de dates"
 
@@ -476,7 +476,7 @@ msgstr "Rechercher"
 #: move-samples/select-samples-to-move.php:233
 #: specimen-referral-manifest/add-manifest.php:281
 #: specimen-referral-manifest/edit-manifest.php:368
-#: specimen-referral-manifest/move-manifest.php:314
+#: specimen-referral-manifest/move-manifest.php:315
 #: system-admin/user-login-history/userLoginIndex.php:165
 #: tb/management/tb-clinic-report.php:539 tb/management/tb-export-data.php:345
 #: tb/management/tb-sample-rejection-report.php:105
@@ -667,7 +667,7 @@ msgstr "Historique de l’API"
 #: generic-tests/results/update-generic-test-result.php:403
 #: instruments/add-instrument.php:199 instruments/add-instrument.php:320
 #: instruments/edit-instrument.php:270 instruments/edit-instrument.php:408
-#: specimen-referral-manifest/move-manifest.php:218
+#: specimen-referral-manifest/move-manifest.php:219
 #: specimen-referral-manifest/view-manifests.php:58
 #: system-admin/api-stats/api-stats.php:46
 msgid "Test Type"
@@ -722,7 +722,7 @@ msgstr "Veuillez sélectionner le projet"
 #: cd4/results/email-results.php:240 cd4/results/email-results.php:255
 #: cd4/results/email-results.php:575 cd4/results/email-results.php:579
 #: cd4/results/get-cd4-result-status.php:167
-#: classes/Services/CommonService.php:350
+#: classes/Services/CommonService.php:336
 #: common/reference/add-geographical-divisions.php:74
 #: common/reference/edit-geographical-divisions.php:87
 #: covid-19/management/covid-19-clinic-report.php:100
@@ -2372,7 +2372,7 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: hepatitis/results/hepatitis-print-results.php:332
 #: hepatitis/results/hepatitis-print-results.php:370
 #: hepatitis/results/hepatitis-result-status.php:170 mail/vlResultMail.php:165
-#: specimen-referral-manifest/move-manifest.php:191
+#: specimen-referral-manifest/move-manifest.php:192
 #: tb/management/get-rejected-samples.php:102
 #: tb/management/tb-clinic-report.php:182
 #: tb/management/tb-clinic-report.php:286
@@ -2869,9 +2869,9 @@ msgstr "Dates non valables. Ne peut être dans le futur"
 msgid "Sample Locked or Finalized"
 msgstr "Échantillon verrouillé ou finalisé"
 
-#: api/v1.1/covid-19/save-request.php:258 api/v1.1/eid/save-request.php:248
-#: api/v1.1/generic-tests/save-request.php:245 api/v1.1/tb/save-request.php:243
-#: api/v1.1/vl/save-request.php:227
+#: api/v1.1/covid-19/save-request.php:259 api/v1.1/eid/save-request.php:245
+#: api/v1.1/generic-tests/save-request.php:245 api/v1.1/tb/save-request.php:244
+#: api/v1.1/vl/save-request.php:228
 msgid "Failed to insert sample"
 msgstr "Échec de l'insertion de l'échantillon"
 
@@ -3999,7 +3999,7 @@ msgstr "Annuler"
 #: generic-tests/requests/edit-request.php:1011
 #: generic-tests/requests/view-requests.php:292
 #: generic-tests/results/update-generic-test-result.php:985
-#: specimen-referral-manifest/move-manifest.php:310
+#: specimen-referral-manifest/move-manifest.php:311
 msgid "Select Test Type"
 msgstr "Sélectionnez le Type"
 
@@ -5285,7 +5285,7 @@ msgstr "Date de test de l'échantillon"
 #: hepatitis/results/hepatitis-manual-results.php:108
 #: instruments/add-instrument.php:89 instruments/edit-instrument.php:126
 #: roles/addRole.php:245 roles/editRole.php:228
-#: specimen-referral-manifest/move-manifest.php:206
+#: specimen-referral-manifest/move-manifest.php:207
 #: specimen-referral-manifest/view-manifests.php:59
 #: tb/management/tb-clinic-report.php:187 tb/management/tb-export-data.php:113
 #: tb/management/tb-sample-status.php:76 tb/requests/tb-requests.php:232
@@ -5523,7 +5523,7 @@ msgstr "Statut"
 #: vl/result-mail/editTestResultEmailConfig.php:113
 #: vl/results/forms/update-burkina-faso-result.php:565
 #: vl/results/forms/update-cameroon-result.php:622
-#: vl/results/pdf/result-pdf-cameroon.php:396
+#: vl/results/pdf/result-pdf-cameroon.php:408
 msgid "Rejection Reason"
 msgstr "Motif de rejet"
 
@@ -8467,10 +8467,10 @@ msgid "Samples from this Manifest have been activated"
 msgstr "Des échantillons de ce manifeste ont été activés"
 
 #: cd4/requests/cd4-add-request-helper.php:53
-#: cd4/requests/cd4-edit-request-helper.php:55
+#: cd4/requests/cd4-edit-request-helper.php:50
 #: generic-tests/requests/add-request-helper.php:46
 #: generic-tests/requests/edit-request-helper.php:49
-#: vl/requests/addVlRequestHelper.php:68 vl/requests/editVlRequestHelper.php:71
+#: vl/requests/addVlRequestHelper.php:54 vl/requests/editVlRequestHelper.php:58
 msgid "Please enter all mandatory fields to save the test request"
 msgstr ""
 "Veuillez remplir tous les champs obligatoires pour enregistrer la demande de "
@@ -8481,8 +8481,8 @@ msgid "CD4 request added successfully"
 msgstr "Demande de CD4 ajoutée avec succès"
 
 #: cd4/requests/cd4-add-request-helper.php:341
-#: cd4/requests/cd4-edit-request-helper.php:335
-#: cd4/results/cd4-update-result-helper.php:157
+#: cd4/requests/cd4-edit-request-helper.php:330
+#: cd4/results/cd4-update-result-helper.php:151
 #: covid-19/requests/covid-19-edit-request-helper.php:422
 #: covid-19/results/covid-19-update-result-helper.php:191
 #: eid/requests/eid-add-request-helper.php:475
@@ -8492,9 +8492,9 @@ msgstr "Demande de CD4 ajoutée avec succès"
 #: generic-tests/results/update-generic-test-result-helper.php:219
 #: hepatitis/requests/hepatitis-edit-request-helper.php:272
 #: hepatitis/results/hepatitis-update-result-helper.php:105
-#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:434
-#: vl/requests/editVlRequestHelper.php:430
-#: vl/results/updateVlTestResultHelper.php:249
+#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:420
+#: vl/requests/editVlRequestHelper.php:417
+#: vl/results/updateVlTestResultHelper.php:236
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -8505,8 +8505,8 @@ msgstr "Veuillez réessayer plus tard"
 msgid "Could not save this form. Please try again."
 msgstr "Impossible d'enregistrer ce formulaire. Veuillez réessayer."
 
-#: cd4/requests/cd4-edit-request-helper.php:327
-#: cd4/results/cd4-update-result-helper.php:147
+#: cd4/requests/cd4-edit-request-helper.php:322
+#: cd4/results/cd4-update-result-helper.php:141
 msgid "CD4 request updated successfully"
 msgstr "Mise à jour réussie de la demande de CD4"
 
@@ -10167,7 +10167,7 @@ msgstr "Tuberculose"
 msgid "Other Tests"
 msgstr "Autres tests"
 
-#: classes/Utilities/DateUtility.php:240 classes/Utilities/DateUtility.php:265
+#: classes/Utilities/DateUtility.php:297 classes/Utilities/DateUtility.php:322
 #: eid/requests/forms/add-burkina-faso.php:231
 #: eid/requests/forms/add-burkina-faso.php:243
 #: eid/requests/forms/add-burkina-faso.php:282
@@ -10186,19 +10186,19 @@ msgstr "Autres tests"
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: classes/Utilities/DateUtility.php:248 classes/Utilities/DateUtility.php:255
+#: classes/Utilities/DateUtility.php:305 classes/Utilities/DateUtility.php:312
 msgid "years"
 msgstr "années"
 
-#: classes/Utilities/DateUtility.php:248 classes/Utilities/DateUtility.php:255
+#: classes/Utilities/DateUtility.php:305 classes/Utilities/DateUtility.php:312
 msgid "year"
 msgstr "année"
 
-#: classes/Utilities/DateUtility.php:261
+#: classes/Utilities/DateUtility.php:318
 msgid "months"
 msgstr "mois"
 
-#: classes/Utilities/DateUtility.php:261
+#: classes/Utilities/DateUtility.php:318
 msgid "month"
 msgstr "mois"
 
@@ -14553,15 +14553,17 @@ msgstr "Sélectionner Approuvé par"
 msgid "Please enter requesting clinician name"
 msgstr "Veuillez saisir le nom du clinicien demandeur"
 
-#: eid/requests/forms/add-drc.php:229 eid/requests/forms/edit-drc.php:270
-#: eid/results/forms/update-drc-result.php:233
-msgid "Age in weeks"
-msgstr "Âge en semaines"
+#: eid/requests/forms/add-drc.php:228 eid/requests/forms/edit-drc.php:269
+#: eid/results/forms/update-drc-result.php:232
+#: generic-tests/mail/mail-generic-tests-results.php:231
+#: vl/result-mail/editTestResultEmailConfig.php:92
+msgid "Age in years"
+msgstr "Âge en années"
 
 #: eid/requests/forms/add-drc.php:230 eid/requests/forms/edit-drc.php:271
 #: eid/results/forms/update-drc-result.php:234
-msgid "Enter Child Age in weeks"
-msgstr "Saisir l'âge de l'enfant en semaines"
+msgid "Age in weeks"
+msgstr "Âge en semaines"
 
 #: eid/requests/forms/add-png.php:553 eid/requests/forms/add-png.php:607
 #: eid/requests/forms/edit-png.php:592 eid/requests/forms/edit-png.php:646
@@ -14683,7 +14685,7 @@ msgstr "Code d'Erreur"
 msgid "Go to Dashboard"
 msgstr "Aller au tableau de bord"
 
-#: error/error.php:101 footer.php:40
+#: error/error.php:101 footer.php:41
 msgid ""
 "This project is supported by the U.S. President's Emergency Plan for AIDS "
 "Relief (PEPFAR) through the U.S.\n"
@@ -15171,49 +15173,49 @@ msgstr ""
 "Cliquez ici pour télécharger le format Excel permettant de télécharger des "
 "installations en masse"
 
-#: footer.php:44
+#: footer.php:45
 msgid "Clear Cache"
 msgstr "Vider Cache"
 
-#: footer.php:57
+#: footer.php:58
 msgid "Force Remote Sync"
 msgstr "Forcer la synchronisation à distance"
 
-#: footer.php:67
+#: footer.php:68
 msgid "Last synced at"
 msgstr "Dernière synchronisation le"
 
-#: footer.php:152
+#: footer.php:153
 msgid "Please connect to internet to sync with STS"
 msgstr "Veuillez vous connecter à Internet pour synchroniser avec STS"
 
-#: footer.php:158
+#: footer.php:159
 msgid "Preparing for STS sync."
 msgstr "Préparation de la synchronisation STS."
 
-#: footer.php:158 footer.php:180 footer.php:204 new-instance.php:137
+#: footer.php:159 footer.php:181 footer.php:205 new-instance.php:137
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
-#: footer.php:169 footer.php:193 footer.php:217
+#: footer.php:170 footer.php:194 footer.php:218
 msgid "Unable to do STS Sync. Please contact technical team for assistance."
 msgstr ""
 "Impossible d'effectuer la synchronisation STS. Veuillez contacter l'équipe "
 "technique pour obtenir de l'aide."
 
-#: footer.php:180
+#: footer.php:181
 msgid "Trying to sync Test Results"
 msgstr "Essayer de synchroniser les résultats des tests"
 
-#: footer.php:204
+#: footer.php:205
 msgid "Trying to sync Test Requests"
 msgstr "Essayer de synchroniser les demandes de test"
 
-#: footer.php:237 footer.php:248
+#: footer.php:238 footer.php:249
 msgid "Thank you.Your message has been submitted."
 msgstr "Merci, votre message a été envoyé."
 
-#: footer.php:365
+#: footer.php:366
 msgid ""
 "Invalid phone number. Please enter full phone number with the proper country "
 "code"
@@ -15221,11 +15223,11 @@ msgstr ""
 "Numéro de téléphone non valide. Veuillez saisir le numéro de téléphone "
 "complet avec l'indicatif du pays"
 
-#: footer.php:401
+#: footer.php:402
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identité du patient : "
 
-#: footer.php:421 generic-tests/requests/add-request.php:856
+#: footer.php:422 generic-tests/requests/add-request.php:856
 #: generic-tests/requests/add-request.php:913
 #: generic-tests/requests/edit-request.php:1095
 #: generic-tests/requests/edit-request.php:1152
@@ -15236,7 +15238,7 @@ msgstr "Veuillez saisir la longueur minimale pour l'Identité du patient : "
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères à rechercher"
 
-#: footer.php:476
+#: footer.php:477
 msgid "Cache cleared successfully"
 msgstr "Le cache a été éliminé avec succès"
 
@@ -15809,7 +15811,7 @@ msgstr "Sélectionner les symptômes"
 msgid "Select Test Result Unit"
 msgstr "Configuration de l'e-mail des résultats"
 
-#: generic-tests/configuration/addTestTypeHelper.php:183
+#: generic-tests/configuration/addTestTypeHelper.php:184
 msgid "Test type added successfully"
 msgstr "Type de test ajouté avec succès"
 
@@ -15927,7 +15929,7 @@ msgstr "Saisir les options..."
 msgid "Please enter the options"
 msgstr "Veuillez saisir les options"
 
-#: generic-tests/configuration/editTestTypeHelper.php:206
+#: generic-tests/configuration/editTestTypeHelper.php:207
 msgid "Test type updated successfully"
 msgstr "Type de test mis à jour avec succès"
 
@@ -16459,11 +16461,6 @@ msgstr "Recueilli par (initiales)"
 #: vl/result-mail/editTestResultEmailConfig.php:91
 msgid "Date Of Birth"
 msgstr "Date de Naissance"
-
-#: generic-tests/mail/mail-generic-tests-results.php:231
-#: vl/result-mail/editTestResultEmailConfig.php:92
-msgid "Age in years"
-msgstr "Âge en années"
 
 #: generic-tests/mail/mail-generic-tests-results.php:232
 #: vl/result-mail/editTestResultEmailConfig.php:93
@@ -18332,7 +18329,7 @@ msgstr "Saisir le nom du champ"
 msgid "Configuration updated successfully"
 msgstr "La configuration a été mise à jour avec succès"
 
-#: header.php:32 login/login.php:36
+#: header.php:32 login/login.php:37
 msgid "Lab Sample Management Module"
 msgstr "Module de gestion des échantillons dU labo"
 
@@ -19395,25 +19392,25 @@ msgstr "tb"
 msgid "Instruments"
 msgstr "Instruments"
 
-#: login/login.php:39
+#: login/login.php:40
 msgid "Sample Management System"
 msgstr "Système de gestion des échantillons"
 
-#: login/login.php:66 login/login.php:177 system-admin/login/login.php:70
+#: login/login.php:67 login/login.php:178 system-admin/login/login.php:70
 msgid "Login"
 msgstr "Connexion"
 
-#: login/login.php:155 system-admin/login/login.php:61
+#: login/login.php:156 system-admin/login/login.php:61
 #: system-admin/setup/index.php:85 users/editUser.php:121
 #: users/editUser.php:123 users/users.php:30 users/users.php:57
 msgid "User Name"
 msgstr "Nom d'utilisateur"
 
-#: login/login.php:155
+#: login/login.php:156
 msgid "Please enter your user name"
 msgstr "Veuillez entrer votre nom d’utilisateur"
 
-#: login/login.php:160 setup/index.php:163
+#: login/login.php:161 setup/index.php:163
 #: system-admin/edit-config/resetPassword.php:36
 #: system-admin/edit-config/resetPassword.php:38
 #: system-admin/login/login.php:65 system-admin/reset-password/get-user.php:29
@@ -19425,24 +19422,24 @@ msgstr "Veuillez entrer votre nom d’utilisateur"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: login/login.php:160
+#: login/login.php:161
 msgid "Please enter your password"
 msgstr "Veuillez saisir votre mot de passe"
 
-#: login/login.php:165
+#: login/login.php:166
 msgid "Get New Image"
 msgstr "Obtenir une nouvelle image"
 
-#: login/login.php:170
+#: login/login.php:171
 msgid "Please enter the text from the image"
 msgstr "Veuillez saisir le texte de l'image"
 
-#: login/login.php:224
+#: login/login.php:225
 msgid "Text you entered from the image is incorrect. Please try again"
 msgstr ""
 "Le texte que vous avez saisi dans l'image est incorrect. Veuillez réessayer"
 
-#: login/login.php:234
+#: login/login.php:235
 msgid "Please enter the text from the image to proceed."
 msgstr "Veuillez saisir le texte de l'image pour continuer."
 
@@ -19849,7 +19846,7 @@ msgstr "Tests de laboratoire Échantillon Manifeste d'orientation"
 msgid "Hepatitis Sample Referral Manifest"
 msgstr "Manifeste de renvoi de l'échantillon d'hépatite"
 
-#: specimen-referral-manifest/generateTBManifest.php:57
+#: specimen-referral-manifest/generateTBManifest.php:58
 msgid "TB Sample Referral Manifest"
 msgstr "Modèle de manifeste d'orientation de la tuberculose"
 
@@ -19861,7 +19858,7 @@ msgstr "Manifeste d'orientation de l'échantillon de charge virale"
 msgid "Print Manifest PDF"
 msgstr "Imprimer le manifeste PDF"
 
-#: specimen-referral-manifest/move-manifest.php:239
+#: specimen-referral-manifest/move-manifest.php:240
 msgid "Assign Manifests to Testing Lab"
 msgstr "Affectation des manifestes au laboratoire de test"
 
@@ -21762,17 +21759,17 @@ msgid "HEALTH FACILITY CODE"
 msgstr "CODE DES ÉTABLISSEMENTS DE SANTÉ"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:205
-#: vl/results/pdf/result-pdf-cameroon.php:233
+#: vl/results/pdf/result-pdf-cameroon.php:245
 msgid "REGION"
 msgstr "Région"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:206
-#: vl/results/pdf/result-pdf-cameroon.php:234
+#: vl/results/pdf/result-pdf-cameroon.php:246
 msgid "DISTRICT"
 msgstr "DISTRICT"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:221
-#: vl/results/pdf/result-pdf-cameroon.php:263
+#: vl/results/pdf/result-pdf-cameroon.php:275
 msgid "PATIENT NAME"
 msgstr "Nom du patient"
 
@@ -21785,12 +21782,12 @@ msgid "DOB"
 msgstr "Date de naissance"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:224
-#: vl/results/pdf/result-pdf-cameroon.php:266
+#: vl/results/pdf/result-pdf-cameroon.php:278
 msgid "AGE"
 msgstr "AGE"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:253
-#: vl/results/pdf/result-pdf-cameroon.php:306
+#: vl/results/pdf/result-pdf-cameroon.php:318
 msgid "GENDER"
 msgstr "SEXE"
 
@@ -21807,17 +21804,17 @@ msgid "COMMUNITY ACTOR"
 msgstr "ACTEUR COMMUNAUTAIRE"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:272
-#: vl/results/pdf/result-pdf-cameroon.php:342
+#: vl/results/pdf/result-pdf-cameroon.php:354
 msgid "SAMPLE ID"
 msgstr "ID de l'échantillon"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:273
-#: vl/results/pdf/result-pdf-cameroon.php:343
+#: vl/results/pdf/result-pdf-cameroon.php:355
 msgid "SAMPLE COLLECTION DATE"
 msgstr "Date de prélèvement de l'échantillon"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:274
-#: vl/results/pdf/result-pdf-cameroon.php:344
+#: vl/results/pdf/result-pdf-cameroon.php:356
 msgid "SAMPLE RECEIPT DATE"
 msgstr "DATE DE RÉCEPTION DE L'ÉCHANTILLON"
 
@@ -21826,17 +21823,17 @@ msgid "SAMPLE REJECTION STATUS"
 msgstr "STATUT DU REJET DE L'ÉCHANTILLON"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:283
-#: vl/results/pdf/result-pdf-cameroon.php:353
+#: vl/results/pdf/result-pdf-cameroon.php:365
 msgid "SAMPLE TEST DATE"
 msgstr "Date du test"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:284
-#: vl/results/pdf/result-pdf-cameroon.php:354
+#: vl/results/pdf/result-pdf-cameroon.php:366
 msgid "RESULT RELEASE DATE"
 msgstr "DATE DE PUBLICATION DES RÉSULTATS"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:294
-#: vl/results/pdf/result-pdf-cameroon.php:364
+#: vl/results/pdf/result-pdf-cameroon.php:376
 msgid "SAMPLE TYPE"
 msgstr "Type d'échantillon"
 
@@ -21849,7 +21846,7 @@ msgid "XPERT MTB Result"
 msgstr "XPERT MTB Résultat"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:343
-#: vl/results/pdf/result-pdf-cameroon.php:365
+#: vl/results/pdf/result-pdf-cameroon.php:377
 msgid "TESTED BY"
 msgstr "TESTÉ PAR"
 
@@ -21857,7 +21854,7 @@ msgstr "TESTÉ PAR"
 #: tb/results/pdf/result-pdf-burkina-faso.php:366
 #: tb/results/pdf/result-pdf-burkina-faso.php:385
 #: tb/results/pdf/result-pdf-burkina-faso.php:406
-#: vl/results/pdf/result-pdf-cameroon.php:444
+#: vl/results/pdf/result-pdf-cameroon.php:456
 msgid "SIGNATURE"
 msgstr "SIGNATURE"
 
@@ -21865,12 +21862,12 @@ msgstr "SIGNATURE"
 #: tb/results/pdf/result-pdf-burkina-faso.php:367
 #: tb/results/pdf/result-pdf-burkina-faso.php:386
 #: tb/results/pdf/result-pdf-burkina-faso.php:407
-#: vl/results/pdf/result-pdf-cameroon.php:445
+#: vl/results/pdf/result-pdf-cameroon.php:457
 msgid "DATE"
 msgstr "DATE"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:365
-#: vl/results/pdf/result-pdf-cameroon.php:366
+#: vl/results/pdf/result-pdf-cameroon.php:378
 msgid "REVIEWED BY"
 msgstr "REVUE PAR"
 
@@ -21879,12 +21876,12 @@ msgid "REPORT REVISED BY"
 msgstr "RAPPORT RÉVISÉ PAR"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:405
-#: vl/results/pdf/result-pdf-cameroon.php:440
+#: vl/results/pdf/result-pdf-cameroon.php:452
 msgid "APPROVED BY"
 msgstr "APPROUVÉ PAR"
 
 #: tb/results/pdf/result-pdf-burkina-faso.php:428
-#: vl/results/pdf/result-pdf-cameroon.php:466
+#: vl/results/pdf/result-pdf-cameroon.php:478
 msgid "Lab Comments"
 msgstr "Commentaires du laboratoire"
 
@@ -22021,7 +22018,7 @@ msgstr ""
 "Type de fichier non valide. Veuillez télécharger le format d'image correct "
 "comme JPG ou JPEG ou PNG"
 
-#: users/addUserHelper.php:110
+#: users/addUserHelper.php:106
 msgid "User saved successfully!"
 msgstr "L'utilisateur a été enregistré avec succès !"
 
@@ -22076,7 +22073,7 @@ msgstr "Modifier l'utilisateur"
 msgid "User Status"
 msgstr "Statut de l'utilisateur"
 
-#: users/editUserHelper.php:157
+#: users/editUserHelper.php:158
 msgid "User updated successfully"
 msgstr "Mise à jour de l'utilisateur réussie"
 
@@ -22747,7 +22744,7 @@ msgstr "Ajouter les résultats VL"
 #: vl/reference/vl-results.php:32 vl/requests/forms/add-cameroon.php:568
 #: vl/requests/forms/edit-cameroon.php:623
 #: vl/results/forms/update-cameroon-result.php:652
-#: vl/results/pdf/result-pdf-cameroon.php:393
+#: vl/results/pdf/result-pdf-cameroon.php:405
 msgid "Viral Load Result"
 msgstr "Résultat de la charge virale"
 
@@ -22890,11 +22887,11 @@ msgstr "Ajouter le motif du test VL"
 msgid "Failure Reason"
 msgstr "Raison de l'échec"
 
-#: vl/requests/addVlRequestHelper.php:404
+#: vl/requests/addVlRequestHelper.php:390
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: vl/requests/editVlRequestHelper.php:422
+#: vl/requests/editVlRequestHelper.php:409
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
 
@@ -23558,8 +23555,8 @@ msgid "Viral Load Result(copiesl/ml)"
 msgstr "Résultat de la charge virale (copiesl/ml)"
 
 #: vl/result-mail/editTestResultEmailConfig.php:111
-#: vl/results/pdf/result-pdf-cameroon.php:383
-#: vl/results/pdf/result-pdf-cameroon.php:387
+#: vl/results/pdf/result-pdf-cameroon.php:395
+#: vl/results/pdf/result-pdf-cameroon.php:399
 #: vl/results/pdf/result-pdf-drc.php:269
 msgid "Log Value"
 msgstr "Valeur logarithmique"
@@ -23713,59 +23710,59 @@ msgstr "Autorisé par"
 msgid "Authorized and Validated by"
 msgstr "Autorisé et validé par"
 
-#: vl/results/pdf/result-pdf-cameroon.php:231
+#: vl/results/pdf/result-pdf-cameroon.php:243
 msgid "FACILITY"
 msgstr "Facilité"
 
-#: vl/results/pdf/result-pdf-cameroon.php:232
+#: vl/results/pdf/result-pdf-cameroon.php:244
 msgid "FACILITY CODE"
 msgstr "CODE DE LA FACILITÉ"
 
-#: vl/results/pdf/result-pdf-cameroon.php:245
+#: vl/results/pdf/result-pdf-cameroon.php:257
 msgid "PROJECT"
 msgstr "PROJET"
 
-#: vl/results/pdf/result-pdf-cameroon.php:246
+#: vl/results/pdf/result-pdf-cameroon.php:258
 msgid "REQUESTING CLINICIAN NAME"
 msgstr "NOM DU CLINICIEN DEMANDEUR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:247
+#: vl/results/pdf/result-pdf-cameroon.php:259
 msgid "TEL"
 msgstr "TEL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:248
+#: vl/results/pdf/result-pdf-cameroon.php:260
 msgid "EMAIL"
 msgstr "EMAIL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:264
+#: vl/results/pdf/result-pdf-cameroon.php:276
 msgid "PATIENT IDENTIFIER"
 msgstr "ID DU PATIENT"
 
-#: vl/results/pdf/result-pdf-cameroon.php:265
+#: vl/results/pdf/result-pdf-cameroon.php:277
 msgid "ARV PROTOCOL"
 msgstr "PROTOCOLE ARV"
 
-#: vl/results/pdf/result-pdf-cameroon.php:305
+#: vl/results/pdf/result-pdf-cameroon.php:317
 msgid "PATIENT'S CONTACT"
 msgstr "CONTACT DU PATIENT"
 
-#: vl/results/pdf/result-pdf-cameroon.php:308
+#: vl/results/pdf/result-pdf-cameroon.php:320
 msgid "BREASTFEEDING?"
 msgstr "L'ALLAITEMENT MATERNEL ?"
 
-#: vl/results/pdf/result-pdf-cameroon.php:309
+#: vl/results/pdf/result-pdf-cameroon.php:321
 msgid "PREGNANT?"
 msgstr "ENCEINTE ?"
 
-#: vl/results/pdf/result-pdf-cameroon.php:331
+#: vl/results/pdf/result-pdf-cameroon.php:343
 msgid "HEALTH INSURANCE CODE"
 msgstr "CODE DE L'ASSURANCE MALADIE"
 
-#: vl/results/pdf/result-pdf-cameroon.php:352
+#: vl/results/pdf/result-pdf-cameroon.php:364
 msgid "SAMPLE REJECTED?"
 msgstr "ÉCHANTILLON REJETÉ ?"
 
-#: vl/results/pdf/result-pdf-cameroon.php:400
+#: vl/results/pdf/result-pdf-cameroon.php:412
 msgid ""
 "Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR "
 "(Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)"
@@ -23774,15 +23771,15 @@ msgstr ""
 "PCR (seuil de sensibilité : 40 copies/ml pour le plasma et 839 copies/ml "
 "pour le DBS)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:429
+#: vl/results/pdf/result-pdf-cameroon.php:441
 msgid "TEST PLATFORM"
 msgstr "PLATE-FORME D'ESSAI"
 
-#: vl/results/pdf/result-pdf-cameroon.php:440
+#: vl/results/pdf/result-pdf-cameroon.php:452
 msgid "REVIEWED AND APPROVED BY"
 msgstr "REVU ET APPROUVÉ PAR"
 
-#: vl/results/pdf/result-pdf-cameroon.php:530
+#: vl/results/pdf/result-pdf-cameroon.php:546
 msgid ""
 "For a variation in Viral Load to be significant, the difference between two "
 "measurements must be at least 0.5 Log<sub>10</sub> or a reduction or "
@@ -23792,11 +23789,11 @@ msgstr ""
 "entre deux mesures doit être d'au moins 0,5 <sub>Log10</sub> ou une "
 "réduction ou une augmentation d'un facteur 3 du nombre de copies/mL"
 
-#: vl/results/pdf/result-pdf-cameroon.php:539
+#: vl/results/pdf/result-pdf-cameroon.php:552
 msgid "Detection Limit (DL)"
 msgstr "Limite de détection (LDD)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:539
+#: vl/results/pdf/result-pdf-cameroon.php:552
 msgid ""
 "&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 "
 "Log<sub>10</sub>) copies/mL for DBS"
@@ -23804,11 +23801,11 @@ msgstr ""
 "&lt; 40 (1,60 <sub>Log10</sub>) copies/mL pour le plasma et 839 (2,92 "
 "<sub>Log10</sub>) copies/mL pour le DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:541
+#: vl/results/pdf/result-pdf-cameroon.php:554
 msgid "Quantification Limits (QL)"
 msgstr "Limites de quantification (LDQ)"
 
-#: vl/results/pdf/result-pdf-cameroon.php:541
+#: vl/results/pdf/result-pdf-cameroon.php:554
 msgid ""
 "Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for "
 "Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for "
@@ -23818,19 +23815,19 @@ msgstr ""
 "plasma et 839 et 10 000 000 (2,92 et 7,0 <sub>Log10</sub>) copies/mL pour le "
 "DBS"
 
-#: vl/results/pdf/result-pdf-cameroon.php:555
+#: vl/results/pdf/result-pdf-cameroon.php:567
 msgid "Continue on current regimen"
 msgstr "Poursuivre le régime actuel"
 
-#: vl/results/pdf/result-pdf-cameroon.php:556
+#: vl/results/pdf/result-pdf-cameroon.php:568
 msgid "Printed on"
 msgstr "Imprimé le"
 
-#: vl/results/pdf/result-pdf-cameroon.php:561
+#: vl/results/pdf/result-pdf-cameroon.php:573
 msgid "Clinical and counselling action required"
 msgstr "Action clinique et de conseil nécessaire"
 
-#: vl/results/updateVlTestResultHelper.php:234
+#: vl/results/updateVlTestResultHelper.php:221
 msgid "VL result updated successfully"
 msgstr "Les résultats de la VL ont été mis à jour avec succès"
 
@@ -23839,6 +23836,9 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Enter Child Age in weeks"
+#~ msgstr "Saisir l'âge de l'enfant en semaines"
 
 #~ msgid "Actual No"
 #~ msgstr "Réel Non"
