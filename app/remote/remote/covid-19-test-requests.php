@@ -59,14 +59,12 @@ try {
   if (!empty($data['manifestCode'])) {
     $covid19Query .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
   } else {
-    $covid19Query .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
+    $covid19Query .= " AND data_sync=0 AND last_modified_datetime > SUBDATE('" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
   }
-
-
   $covid19RemoteResult = $db->rawQuery($covid19Query);
-
   $response  = $sampleIds = $facilityIds = [];
   $counter = 0;
+  $response = [];
   if ($db->count > 0) {
     $counter = $db->count;
     $sampleIds = array_column($covid19RemoteResult, 'covid19_id');
@@ -75,19 +73,24 @@ try {
 
     /** @var Covid19Service $covid19Service */
     $covid19Service = ContainerRegistry::get(Covid19Service::class);
-    $symptoms = $covid19Service->getCovid19SymptomsByFormId($sampleIds);
+    foreach($covid19RemoteResult as $r){
+      $response[$r['covid19_id']] = $r;
+      $response[$r['covid19_id']]['data_from_comorbidities'] = $covid19Service->getCovid19ComorbiditiesByFormId($r['covid19_id'],false, true);
+      $response[$r['covid19_id']]['data_from_symptoms'] = $covid19Service->getCovid19SymptomsByFormId($r['covid19_id'], false, true);
+      $response[$r['covid19_id']]['data_from_tests'] = $covid19Service->getCovid19TestsByFormId($r['covid19_id']);
+    }
+    /* $symptoms = $covid19Service->getCovid19SymptomsByFormId($sampleIds);
     $comorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($sampleIds);
     $testResults = $covid19Service->getCovid19TestsByFormId($sampleIds);
-
-    $response = [];
     $response['result'] = $covid19RemoteResult;
     $response['symptoms'] = $symptoms;
     $response['comorbidities'] = $comorbidities;
-    $response['testResults'] = $testResults;
+    $response['testResults'] = $testResults; */
   }
-
-
-  $payload = json_encode($response);
+  $payload = json_encode(array(
+    'labId' => $labId,
+    'result' => $response,
+  ));
 
   $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
 
