@@ -320,7 +320,7 @@ try {
             'applicationVersion' => $version,
             'apiTransactionId' => $transactionId,
             'mobileAppVersion' => $appVersion,
-            'deviceId' => $userAttributes['deviceId']
+            'deviceId' => $userAttributes['deviceId'] ?? null
         ];
 
         /* Reason for VL Result changes */
