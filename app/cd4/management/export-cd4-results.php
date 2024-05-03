@@ -20,7 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $key = (string) $general->getGlobalConfig('key');
 
 $globalConfig = $general->getGlobalConfig();
-$formId = $globalConfig['vl_form'];
+$formId = (int) $globalConfig['vl_form'];
 
 $delimiter = $globalConfig['default_csv_delimiter'] ?? ',';
 $enclosure = $globalConfig['default_csv_enclosure'] ?? '"';

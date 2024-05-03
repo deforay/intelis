@@ -74,7 +74,7 @@ final class EidService extends AbstractTestService
             // see the beginTransaction() function implementation to understand how this works
             $this->db->beginTransaction();
 
-            $formId = $this->commonService->getGlobalConfig('vl_form');
+            $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
             $params['tries'] = $params['tries'] ?? 0;
             if ($params['tries'] >= $this->maxTries) {

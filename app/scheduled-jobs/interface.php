@@ -34,7 +34,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
-$formId = $general->getGlobalConfig('vl_form');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 if (empty($labId)) {
     LoggerUtility::log('error', "No Lab ID set in System Config. Skipping Interfacing Results");
@@ -123,7 +123,7 @@ if (!empty($interfaceData)) {
         $tableInfo = [];
         foreach ($availableModules as $primaryKeyColumn => $individualTableName) {
 
-            $columnsToSelect = $primaryKeyColumn;
+            $columnsToSelect = $primaryKeyColumn . ", sample_code, remote_sample_code";
 
             // If the table name is there in $additionalColumns, add the additional columns
             if (!empty($additionalColumns) && array_key_exists($individualTableName, $additionalColumns)) {
@@ -148,7 +148,7 @@ if (!empty($interfaceData)) {
 
         if (empty($instrumentDetails)) {
             $sql = "SELECT * FROM instruments
-                    INNER JOIN instrument_machines ON instruments.instrument_id = instrument_machines.config_machine_id
+                    INNER JOIN instrument_machines ON instruments.instrument_id = instrument_machines.instrument_id
                     WHERE instrument_machines.config_machine_name LIKE ?";
             $instrumentDetails = $db->rawQueryOne($sql, [$result['machine_used']]);
         }
@@ -229,9 +229,16 @@ if (!empty($interfaceData)) {
             ];
 
             if ($formId === COUNTRY\CAMEROON && !empty($result['raw_text'])) {
-                $pattern = '/\^CV\s+(\d+)/i';
+                $sampleCode = $tableInfo['sample_code'];
+
+                $stringToSearch = preg_quote($sampleCode, '/') . '\^CV\s+(\d+)';
+
+                $pattern = '/' . $stringToSearch . '/i';
+
                 if (preg_match($pattern, $result['raw_text'], $matches)) {
                     $data['cv_number'] = trim($matches[1]);
+                } else {
+                    $data['cv_number'] = null;
                 }
             }
 

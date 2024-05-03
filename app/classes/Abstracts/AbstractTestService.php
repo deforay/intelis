@@ -53,8 +53,7 @@ abstract class AbstractTestService
             }
 
 
-            $formId = $this->commonService->getGlobalConfig('vl_form');
-            $userType = $this->commonService->getSystemConfig('sc_user_type');
+            $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
             $provinceCode = $params['provinceCode'] ?? '';
@@ -77,7 +76,7 @@ abstract class AbstractTestService
             $remotePrefix = '';
             $sampleCodeKeyCol = 'sample_code_key';
             $sampleCodeType = 'sample_code';
-            if (!empty($userType) && $userType == 'remoteuser') {
+            if ($this->commonService->isSTSInstance()) {
                 $remotePrefix = 'R';
                 $sampleCodeKeyCol = 'remote_sample_code_key';
                 $sampleCodeType = 'remote_sample_code';

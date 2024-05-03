@@ -20,7 +20,7 @@ try {
 
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
-     $formId = $general->getGlobalConfig('vl_form');
+     $formId = (int) $general->getGlobalConfig('vl_form');
 
      /** @var FacilitiesService $facilitiesService */
      $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
