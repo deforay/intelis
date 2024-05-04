@@ -1024,8 +1024,6 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 }
 
 
-
-
 /*
  ****************************************************************
  * CD4 TEST REQUESTS
@@ -1057,17 +1055,13 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
         $parsedData = Items::fromString($jsonResponse, $options);
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                             WHERE TABLE_SCHEMA = ? AND table_name='form_cd4'";
+                            WHERE TABLE_SCHEMA = ? AND table_name='form_cd4'";
         $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
         $columnList = array_map('current', $allColResult);
 
         $removeKeys = array(
             'cd4_id',
             'sample_batch_id',
-            // 'result_value_log',
-            // 'result_value_absolute',
-            // 'result_value_absolute_decimal',
-            // 'result_value_text',
             'cd4_result',
             'sample_tested_datetime',
             'sample_received_at_lab_datetime',
@@ -1076,9 +1070,6 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            //'request_created_datetime',
-            //'request_created_by',
-            //'last_modified_by',
             'data_sync'
         );
 
@@ -1117,13 +1108,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
                     'is_sample_rejected',
                     'reason_for_sample_rejection',
                     'rejection_on',
-                    // 'result_value_absolute',
-                    // 'result_value_absolute_decimal',
-                    //  'result_value_text',
                     'cd4_result',
-                    // 'result_value_log',
-                    // 'result_value_hiv_detection',
-                    //'reason_for_failure',
                     'result_reviewed_by',
                     'result_reviewed_datetime',
                     'cd4_focal_person',

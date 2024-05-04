@@ -58,7 +58,7 @@ if (!empty($sWhere)) {
 
 if (!empty($sOrder)) {
 	$sOrder = preg_replace('/(\v|\s)+/', ' ', (string) $sOrder);
-	$sQuery = $sQuery . ' order by ' . $sOrder;
+	$sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
 
 if (isset($sLimit) && isset($sOffset)) {

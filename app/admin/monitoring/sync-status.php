@@ -1,11 +1,11 @@
 <?php
 
+use App\Services\CommonService;
+use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\GeoLocationsService;
-use App\Services\SystemService;
 
 $title = _translate("Sources of Requests");
 require_once APPLICATION_PATH . '/header.php';
@@ -84,25 +84,23 @@ $activeModules = SystemService::getActiveModules();
                         <tr>
                             <td><strong>
                                     <?php echo _translate("Province/State"); ?>&nbsp;:
-                                </strong></td>
-                            <td>
+                                </strong>
+                                <br>
                                 <select name="province" id="province" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _translate('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
                                     <?= $general->generateSelectOptions($stateNameList, null, _translate("-- Select --")); ?>
                                 </select>
                             </td>
                             <td><strong>
                                     <?php echo _translate("District/County"); ?> :
-                                </strong></td>
-                            <td>
+                                </strong>
+                                <br>
                                 <select class="form-control" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>">
                                 </select>
                             </td>
-                        </tr>
-                        <tr>
                             <td><strong>
                                     <?php echo _translate("Lab Name"); ?>&nbsp;:
-                                </strong></td>
-                            <td>
+                                </strong>
+                                <br>
                                 <select class="form-control select2" id="labName" name="labName" title="<?php echo _translate('Please select the Lab name'); ?>">
                                     <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
                                 </select>

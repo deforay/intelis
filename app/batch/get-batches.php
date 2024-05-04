@@ -95,7 +95,11 @@ try {
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
 
-    [$rResult, $resultCount] = $general->getQueryResultAndCount(sql: $sQuery, params: null, limit: $sLimit, offset: $sOffset, returnGenerator: true);
+    if (isset($sLimit) && isset($sOffset)) {
+        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    }
+
+    [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
     $output = [
         "sEcho" => (int) $_POST['sEcho'],

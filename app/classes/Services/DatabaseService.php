@@ -6,6 +6,9 @@ use MysqliDb;
 use Generator;
 use Throwable;
 use App\Utilities\LoggerUtility;
+use PhpMyAdmin\SqlParser\Parser;
+use App\Exceptions\SystemException;
+use PhpMyAdmin\SqlParser\Components\Limit;
 
 final class DatabaseService extends MysqliDb
 {
@@ -39,14 +42,12 @@ final class DatabaseService extends MysqliDb
 
     /**
      * Execute a query and return a generator to fetch results row by row.
-     * Optionally execute as an unbuffered query.
      *
      * @param string $query SQL query string
      * @param array|null $bindParams Parameters to bind to the query
-     * @param bool $unbuffered Whether to execute as an unbuffered query
      * @return Generator
      */
-    public function rawQueryGenerator(string $query, $bindParams = null, bool $unbuffered = false)
+    public function rawQueryGenerator(string $query, $bindParams = null)
     {
         $params = ['']; // Create the empty 0 index
         $this->_query = $query;
@@ -61,10 +62,6 @@ final class DatabaseService extends MysqliDb
         }
 
         $stmt->execute();
-
-        if (!$unbuffered) {
-            $stmt->store_result();
-        }
 
         // Initialize $row as an empty array
         $row = [];
@@ -228,6 +225,54 @@ final class DatabaseService extends MysqliDb
         }
     }
 
+    public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
+    {
+        try {
+            $count = 0;
+
+            $parser = new Parser($sql);
+
+            $limitOffsetSet = isset($limit) && isset($offset);
+
+            if ((!isset($parser->statements[0]->limit) || empty($parser->statements[0]->limit)) && $limitOffsetSet) {
+                $parser->statements[0]->limit = new Limit($limit, $offset);
+            }
+
+            $sql = $parser->statements[0]->build();
+
+            // Execute the main query
+            if ($returnGenerator === true) {
+                $queryResult = $this->rawQueryGenerator($sql, $params);
+            } else {
+                $queryResult = $this->rawQuery($sql, $params);
+            }
+
+            // Execute the count query if necessary
+            if ($limitOffsetSet || $returnGenerator) {
+
+                $parser->statements[0]->limit = null;
+                $parser->statements[0]->order = null;
+
+                if (stripos($sql, 'GROUP BY') !== false) {
+                    $sql = $parser->statements[0]->build();
+                    $countSql = "SELECT COUNT(*) as totalCount FROM ($sql) as subquery";
+                } else {
+                    $parser->statements[0]->expr = null;
+                    $countSql = "SELECT COUNT(*) as totalCount " . $parser->statements[0]->build();
+                }
+
+                // Generate a unique session key for the count query
+                $countQuerySessionKey = md5($countSql);
+                $count = $_SESSION['queryCounters'][$countQuerySessionKey] ?? ($_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->rawQueryOne($countSql)['totalCount']);
+            } else {
+                $count = count($queryResult);
+            }
+
+            return [$queryResult, $count];
+        } catch (Throwable $e) {
+            throw new SystemException($e->getMessage(), 500, $e);
+        }
+    }
 
 
     public function reset(): void

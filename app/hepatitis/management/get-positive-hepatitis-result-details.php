@@ -180,7 +180,7 @@ $sQuery = $sQuery . $sWhere;
 $sQuery = $sQuery . ' group by vl.hepatitis_id';
 if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' order by ' . $sOrder;
+    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
 $_SESSION['highViralResult'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {

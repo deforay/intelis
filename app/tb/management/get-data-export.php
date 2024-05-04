@@ -259,12 +259,16 @@ try {
      //echo $sQuery; die();
      if (!empty($sOrder)) {
           $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-          $sQuery = $sQuery . ' order by ' . $sOrder;
+          $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
      }
 
      $_SESSION['tbResultQuery'] = $sQuery;
 
-     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+     if (isset($sLimit) && isset($sOffset)) {
+          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+     }
+
+     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
      $_SESSION['tbResultQueryCount'] = $resultCount;
 

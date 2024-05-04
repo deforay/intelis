@@ -16,7 +16,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 
 
-$aColumns = array('storage_code', 'lab_id' ,'storage_status');
+$aColumns = array('storage_code', 'lab_id', 'storage_status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -83,7 +83,7 @@ if (!empty($sWhere)) {
 
 if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' order by ' . $sOrder;
+    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
 
 if (isset($sLimit) && isset($sOffset)) {

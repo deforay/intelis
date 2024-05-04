@@ -32,45 +32,6 @@ final class CommonService
         $this->fileCache = $fileCache;
     }
 
-    public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false, bool $unbuffered = false): array
-    {
-        try {
-            $count = 0;
-            $limitOffsetSet = isset($limit) && isset($offset);
-            $limitSql = "";
-
-            if ($limitOffsetSet) {
-                $limitSql = " LIMIT $offset,$limit";
-            }
-
-            // Execute the main query
-            if ($returnGenerator === true) {
-                $queryResult = $this->db->rawQueryGenerator($sql . $limitSql, $params, $unbuffered);
-            } else {
-                $queryResult = $this->db->rawQuery($sql . $limitSql, $params);
-            }
-
-            // Execute the count query if necessary
-            if ($limitOffsetSet || $returnGenerator) {
-                if (stripos($sql, 'GROUP BY') !== false) {
-                    $countSql = "SELECT COUNT(*) as totalCount FROM ($sql) as subquery";
-                } else {
-                    $countSql = preg_replace('/SELECT.*? FROM/si', 'SELECT COUNT(*) as totalCount FROM', $sql, 1);
-                }
-
-                // Generate a unique session key for the count query
-                $countQuerySessionKey = md5($countSql);
-                $count = $_SESSION['queryCounters'][$countQuerySessionKey] ?? ($_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->db->rawQueryOne($countSql)['totalCount']);
-            } else {
-                $count = count($queryResult);
-            }
-
-            return [$queryResult, $count];
-        } catch (Exception $e) {
-            throw new SystemException($e->getMessage(), 500, $e);
-        }
-    }
-
     /**
      *
      * @param int $length

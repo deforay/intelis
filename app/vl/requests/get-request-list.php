@@ -294,16 +294,20 @@ try {
 
      $_SESSION['vlRequestQuery'] = $sQuery;
 
-     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+     if (isset($sLimit) && isset($sOffset)) {
+          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+     }
+
+     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
      $_SESSION['vlRequestQueryCount'] = $resultCount;
 
-     $output = array(
+     $output = [
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
-     );
+     ];
      $editRequest =  $syncRequest = false;
      if (_isAllowed("/vl/requests/editVlRequest.php")) {
           $editRequest = $syncRequest = true;

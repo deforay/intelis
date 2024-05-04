@@ -113,9 +113,9 @@ try {
     if (isset($_POST['rjtGender']) && $_POST['rjtGender'] != '') {
         if (trim((string) $_POST['rjtGender']) == "unreported") {
             $sWhere[] =  ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
-       } else {
+        } else {
             $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['rjtGender'] . '") ';
-       }
+        }
     }
     if (isset($_POST['rjtPatientPregnant']) && $_POST['rjtPatientPregnant'] != '') {
         $sWhere[] = ' vl.is_patient_pregnant = "' . $_POST['rjtPatientPregnant'] . '"';
@@ -140,7 +140,7 @@ try {
     $sQuery = $sQuery . ' GROUP BY vl.covid19_id';
     if (!empty($sOrder)) {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-        $sQuery = $sQuery . ' order by ' . $sOrder;
+        $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['rejectedViralLoadResult'] = $sQuery;
     if (isset($sLimit) && isset($sOffset)) {

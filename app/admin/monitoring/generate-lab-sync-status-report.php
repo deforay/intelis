@@ -35,23 +35,9 @@ $threeWeekExpiry = $today->sub(DateInterval::createFromDateString('4 weeks'));
 $resultSet = $db->rawQueryGenerator($_SESSION['labSyncStatus']);
 foreach ($resultSet as $aRow) {
     $row = [];
-    $_color = "f08080";
+    $color[]['color'] = $aRow['color'];
 
     $aRow['latest'] = $aRow['latest'] ?? $aRow['requested_on'];
-    $latest = new DateTimeImmutable($aRow['latest']);
-
-    $latest = (!empty($aRow['latest'])) ? new DateTimeImmutable($aRow['latest']) : null;
-
-    if (empty($latest)) {
-        $_color = "f08080";
-    } elseif ($latest >= $twoWeekExpiry) {
-        $_color = "90ee90";
-    } elseif ($latest > $threeWeekExpiry && $latest < $twoWeekExpiry) {
-        $_color = "ffff00";
-    } elseif ($latest >= $threeWeekExpiry) {
-        $_color = "f08080";
-    }
-    $color[]['color'] = $_color;
 
     $row[] = $aRow['facility_name'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['latest']);
