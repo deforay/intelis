@@ -112,6 +112,15 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			}
 		}
 		if ($formId == COUNTRY\CAMEROON && $arr['vl_excel_export_format'] == "cresar") {
+			$lineOfTreatment = '';
+			if($aRow['line_of_treatment']==1)
+				$lineOfTreatment = '1st Line';
+			elseif($aRow['line_of_treatment']==2)
+				$lineOfTreatment = '2nd Line';
+			elseif($aRow['line_of_treatment']==3)
+				$lineOfTreatment = '3rd Line';
+			elseif($aRow['line_of_treatment']=='n/a')
+				$lineOfTreatment = 'N/A';
 			$row[] = $aRow['sample_code'];
 			$row[] = $aRow['facility_state'];
 			$row[] = $aRow['facility_district'];
@@ -134,7 +143,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = $aRow['sample_name'] ?: null;
 			$row[] = $aRow['request_clinician_name'];
 			$row[] = DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date']);
-			$row[] = $aRow['line_of_treatment'];
+			$row[] = $lineOfTreatment;
 			$row[] = $aRow['current_regimen'];
 			$row[] = $aRow['cv_number'];
 			$row[] = $aRow['vl_test_platform'];
