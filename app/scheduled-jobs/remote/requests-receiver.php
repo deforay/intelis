@@ -719,7 +719,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     }
 
     $jsonResponse = $apiService->post($url, $payload);
-
+    die($jsonResponse);
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
         $removeKeys = [
             'hepatitis_id',
@@ -739,7 +739,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             //'request_created_by',
             //'last_modified_by',
             //'request_created_datetime',
-            'data_sync'
+            'data_sync',
+            'data_from_comorbidities',
+            'data_from_risks'
         ];
 
 
@@ -841,56 +843,44 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     $id = $db->getInsertId();
                 }
             }
-        }
-
-        $options = [
-            'pointer' => '/risks',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($jsonResponse, $options);
-        foreach ($parsedData as $hepatitisId => $risks) {
-            $db->where('hepatitis_id', $hepatitisId);
-            $db->delete("hepatitis_risk_factors");
-
-            $rData = [];
-            foreach ($risks as  $riskId => $riskValue) {
-                $riskFactorsData = [];
-                $riskFactorsData["hepatitis_id"] = $hepatitisId;
-                $riskFactorsData["riskfactors_id"] = $riskId;
-                $riskFactorsData["riskfactors_detected"] = $riskValue;
-                $rData[] = $riskFactorsData;
-                //$db->insert("hepatitis_risk_factors", $riskFactorsData);
+            
+            foreach ($remoteData['data_from_risks'] as $hepatitisId => $risks) {
+                $db->where('hepatitis_id', $hepatitisId);
+                $db->delete("hepatitis_risk_factors");
+    
+                $rData = [];
+                foreach ($risks as  $riskId => $riskValue) {
+                    $riskFactorsData = [];
+                    $riskFactorsData["hepatitis_id"] = $hepatitisId;
+                    $riskFactorsData["riskfactors_id"] = $riskId;
+                    $riskFactorsData["riskfactors_detected"] = $riskValue;
+                    $rData[] = $riskFactorsData;
+                    //$db->insert("hepatitis_risk_factors", $riskFactorsData);
+                }
+                $ids = $db->insertMulti('hepatitis_risk_factors', $rData);
+                if (!$ids) {
+                    error_log('insert failed: ' . $db->getLastError());
+                }
             }
-            $ids = $db->insertMulti('hepatitis_risk_factors', $rData);
-            if (!$ids) {
-                error_log('insert failed: ' . $db->getLastError());
-            }
-        }
-
-        $options = [
-            'pointer' => '/comorbidities',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($jsonResponse, $options);
-        foreach ($parsedData as $hepatitisId => $comorbidities) {
-            $db->where('hepatitis_id', $hepatitisId);
-            $db->delete("hepatitis_patient_comorbidities");
-
-            $cData = [];
-            foreach ($comorbidities as $comoId => $comoValue) {
-                $comorbidityData = [];
-                $comorbidityData["hepatitis_id"] = $hepatitisId;
-                $comorbidityData["comorbidity_id"] = $comoId;
-                $comorbidityData["comorbidity_detected"] = $comoValue;
-                $cData[] = $comorbidityData;
-            }
-
-            $ids = $db->insertMulti('hepatitis_patient_comorbidities', $cData);
-            if (!$ids) {
-                error_log('insert failed: ' . $db->getLastError());
+            foreach ($remoteData['data_from_comorbidities'] as $hepatitisId => $comorbidities) {
+                $db->where('hepatitis_id', $hepatitisId);
+                $db->delete("hepatitis_patient_comorbidities");
+    
+                $cData = [];
+                foreach ($comorbidities as $comoId => $comoValue) {
+                    $comorbidityData = [];
+                    $comorbidityData["hepatitis_id"] = $hepatitisId;
+                    $comorbidityData["comorbidity_id"] = $comoId;
+                    $comorbidityData["comorbidity_detected"] = $comoValue;
+                    $cData[] = $comorbidityData;
+                }
+    
+                $ids = $db->insertMulti('hepatitis_patient_comorbidities', $cData);
+                if (!$ids) {
+                    error_log('insert failed: ' . $db->getLastError());
+                }
             }
         }
-
 
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
