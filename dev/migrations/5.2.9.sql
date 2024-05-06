@@ -499,3 +499,6 @@ ALTER TABLE `form_generic` CHANGE `reason_for_test_result_changes` `reason_for_t
 -- Thana 30-Apr-2024
 ALTER TABLE `user_details` ADD `user_attributes` JSON NULL DEFAULT NULL AFTER `user_signature`;
 ALTER TABLE `instruments` CHANGE `additional_text` `additional_text` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+-- Amit 06-May-2024
+UPDATE geographical_divisions set geo_parent = 0 where geo_parent is NULL;
