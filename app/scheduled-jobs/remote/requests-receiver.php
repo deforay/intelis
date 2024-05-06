@@ -649,36 +649,50 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                 }
             }
             // Symptoms details saving
-            $db->where('covid19_id', $id);
-            $db->delete("covid19_patient_symptoms");
-            foreach ($remoteData['data_from_symptoms'] as $symId => $value) {
-                $symptomData = [];
-                $symptomData["covid19_id"] = $id;
-                $symptomData["symptom_id"] = $value['symptom_id'];
-                $symptomData["symptom_detected"] = $value['symptom_detected'];
-                $symptomData["symptom_details"] = $value['symptom_details'];
-                $db->insert("covid19_patient_symptoms", $symptomData);
+            if(isset($remoteData['data_from_symptoms']) && !empty($remoteData['data_from_symptoms'])){
+                $db->where('covid19_id', $id);
+                $db->delete("covid19_patient_symptoms");
+                foreach ($remoteData['data_from_symptoms'] as $symId => $value) {
+                    $symptomData = [];
+                    $symptomData["covid19_id"] = $id;
+                    $symptomData["symptom_id"] = $value['symptom_id'];
+                    $symptomData["symptom_detected"] = $value['symptom_detected'];
+                    $symptomData["symptom_details"] = $value['symptom_details'];
+                    $db->insert("covid19_patient_symptoms", $symptomData);
+                }
             }
             // comorbidities details savings
-            $db->where('covid19_id', $id);
-            $db->delete("covid19_patient_comorbidities");
-            foreach ($remoteData['data_from_comorbidities'] as $comoId => $comorbidityData) {
-                $comData = [];
-                $comData["covid19_id"] = $id;
-                $comData["comorbidity_id"] = $comorbidityData['comorbidity_id'];
-                $comData["comorbidity_detected"] = $comorbidityData['comorbidity_detected'];
-                $db->insert("covid19_patient_comorbidities", $comData);
+            if(isset($remoteData['data_from_comorbidities']) && !empty($remoteData['data_from_comorbidities'])){
+                $db->where('covid19_id', $id);
+                $db->delete("covid19_patient_comorbidities");
+                foreach ($remoteData['data_from_comorbidities'] as $comoId => $comorbidityData) {
+                    $comData = [];
+                    $comData["covid19_id"] = $id;
+                    $comData["comorbidity_id"] = $comorbidityData['comorbidity_id'];
+                    $comData["comorbidity_detected"] = $comorbidityData['comorbidity_detected'];
+                    $db->insert("covid19_patient_comorbidities", $comData);
+                }
             }
             // sub tests details saving
-            $unwantedColumns = [
-                'test_id'
-            ];
-            $emptyTestsArray = $general->getTableFieldsAsArray('covid19_tests', $unwantedColumns);
-            $db->where('covid19_id', $id);
-            $db->delete("covid19_tests");
-            foreach ($remoteData['data_from_tests'] as $covid19Id => $covid19TestData) {
-                $covid19TestData = MiscUtility::updateFromArray($emptyTestsArray, $covid19TestData);
-                $db->insert("covid19_tests", $covid19TestData);
+            if(isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])){
+                $db->where('covid19_id', $id);
+                $db->delete("covid19_tests");
+                foreach ($remoteData['data_from_tests'] as $covid19Id => $cdata) {
+                    $covid19TestData = array(
+                        "covid19_id"                => $id,
+                        "facility_id"               => $cdata['facility_id'],
+                        "test_name"                 => $cdata['test_name'],
+                        "tested_by"                 => $cdata['tested_by'],
+                        "sample_tested_datetime"    => $cdata['sample_tested_datetime'],
+                        "testing_platform"          => $cdata['testing_platform'],
+                        "instrument_id"             => $cdata['instrument_id'],
+                        "kit_lot_no"                => $cdata['kit_lot_no'],
+                        "kit_expiry_date"           => $cdata['kit_expiry_date'],
+                        "result"                    => $cdata['result'],
+                        "updated_datetime"          => $cdata['updated_datetime']
+                    );
+                    $db->insert("covid19_tests", $covid19TestData);
+                }
             }
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
