@@ -23,7 +23,7 @@ final class UsersService
         $this->commonService = $commonService;
     }
 
-    public function isAllowed($currentRequest, $privileges = null): bool
+    public function isAllowed(mixed $currentRequest, mixed $privileges = null): bool
     {
         $privileges = $privileges ?? $_SESSION['privileges'] ?? null;
 
@@ -31,11 +31,11 @@ final class UsersService
             return false;
         }
 
-        $sessionKey = base64_encode(is_string($currentRequest) ? $currentRequest : $currentRequest->getUri());
+        $sessionKey = md5(is_string($currentRequest) ? $currentRequest : $currentRequest->getUri());
 
         // If the result is already stored in the session, return it
-        if (isset($_SESSION['access'][$sessionKey])) {
-            return $_SESSION['access'][$sessionKey];
+        if (isset($_SESSION['acl'][$sessionKey])) {
+            return $_SESSION['acl'][$sessionKey];
         }
 
         $isAllowed = false;
@@ -48,7 +48,7 @@ final class UsersService
                 }
             }
         }
-        $_SESSION['access'][$sessionKey] = $isAllowed;
+        $_SESSION['acl'][$sessionKey] = $isAllowed;
         return $isAllowed;
     }
 

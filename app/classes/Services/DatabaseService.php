@@ -5,10 +5,12 @@ namespace App\Services;
 use MysqliDb;
 use Generator;
 use Throwable;
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use PhpMyAdmin\SqlParser\Parser;
 use App\Exceptions\SystemException;
 use PhpMyAdmin\SqlParser\Components\Limit;
+use PhpMyAdmin\SqlParser\Components\Expression;
 
 final class DatabaseService extends MysqliDb
 {
@@ -228,17 +230,19 @@ final class DatabaseService extends MysqliDb
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
     {
         try {
-            $count = 0;
 
             $parser = new Parser($sql);
 
+            // Retrieve the first statement
+            $statement = $parser->statements[0];
+
             $limitOffsetSet = isset($limit) && isset($offset);
 
-            if ((!isset($parser->statements[0]->limit) || empty($parser->statements[0]->limit)) && $limitOffsetSet) {
-                $parser->statements[0]->limit = new Limit($limit, $offset);
+            if ((!isset($statement->limit) || empty($statement->limit)) && $limitOffsetSet) {
+                $statement->limit = new Limit($limit, $offset);
             }
 
-            $sql = $parser->statements[0]->build();
+            $sql = $statement->build();
 
             // Execute the main query
             if ($returnGenerator === true) {
@@ -247,18 +251,21 @@ final class DatabaseService extends MysqliDb
                 $queryResult = $this->rawQuery($sql, $params);
             }
 
+
+            $count = 0;
             // Execute the count query if necessary
             if ($limitOffsetSet || $returnGenerator) {
 
-                $parser->statements[0]->limit = null;
-                $parser->statements[0]->order = null;
+                $statement->limit = null;
+                $statement->order = null;
 
                 if (stripos($sql, 'GROUP BY') !== false) {
-                    $sql = $parser->statements[0]->build();
+                    $sql = $statement->build();
                     $countSql = "SELECT COUNT(*) as totalCount FROM ($sql) as subquery";
                 } else {
-                    $parser->statements[0]->expr = null;
-                    $countSql = "SELECT COUNT(*) as totalCount " . $parser->statements[0]->build();
+                    // Replacing all SELECT columns with a new COUNT expression
+                    $statement->expr = [new Expression('COUNT(*) as totalCount')];
+                    $countSql = $statement->build();
                 }
 
                 // Generate a unique session key for the count query

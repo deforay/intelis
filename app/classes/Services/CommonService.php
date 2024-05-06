@@ -48,9 +48,7 @@ final class CommonService
     // Returns a UUID format string
     public function generateUUID($attachExtraString = true): string
     {
-        $uuid = MiscUtility::generateUUID();
-        $uuid .= $attachExtraString ? '-' . MiscUtility::generateRandomString(6) : '';
-        return $uuid;
+        return MiscUtility::generateUUID($attachExtraString);
     }
 
     public function getClientIpAddress(): ?string
