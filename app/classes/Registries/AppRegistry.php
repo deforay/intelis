@@ -28,6 +28,11 @@ class AppRegistry
         return self::$items[$key] ?? null;
     }
 
+    public static function remove(string $key): void
+    {
+        unset(self::$items[$key]);
+    }
+
     public function __construct()
     {
         if (self::$instance) {

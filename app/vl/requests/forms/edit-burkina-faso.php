@@ -223,7 +223,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group" style=" width: 100%; ">
                                                        <label for="facilityId"><?= _translate("Clinic/Health Center"); ?> <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired select2" id="facilityId" name="facilityId" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();generateSampleCode();">
+                                                       <select class="form-control isRequired select2" id="facilityId" name="facilityId" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();">
                                                             <?php echo $facility; ?>
                                                        </select>
                                                   </div>
@@ -342,7 +342,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group" style=" width: 100%; ">
                                                             <label for=""><?= _translate("Date of Sample Collection"); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();">
+                                                            <input type="text" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleTestingDate();setSampleDispatchDate();">
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
@@ -1081,7 +1081,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               }
                          });
                }
-               generateSampleCode();
           } else if (pName == '' && cName == '') {
                provinceName = true;
                facilityName = true;
@@ -1089,27 +1088,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#facilityId").html("<?php echo $facility; ?>");
           }
           $.unblockUI();
-     }
-
-     function generateSampleCode() {
-          var sDate = $("#sampleCollectionDate").val();
-          $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-          var provinceCode = $("#province").find(":selected").attr("data-code");
-
-          if (sDate != '') {
-               $.post("/vl/requests/generateSampleCode.php", {
-                         sampleCollectionDate: sDate,
-                         provinceCode: provinceCode
-                    },
-                    function(data) {
-                         var sCodeKey = JSON.parse(data);
-                         $("#sampleCode").val(sCodeKey.sampleCode);
-                         $("#sampleCodeInText").html(sCodeKey.sampleCode);
-                         $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                         $("#sampleCodeKey").val(sCodeKey.maxId);
-                         checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
-                    });
-          }
      }
 
      function getFacilities(obj) {

@@ -938,7 +938,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 					$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
 					$("#sampleCodeKey").val(sCodeKey.maxId);
 					$("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-					checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'The laboratory ID that you entered already exists. Please try another ID', null)
+					//checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'The laboratory ID that you entered already exists. Please try another ID', null)
 					// $.unblockUI();
 				});
 		}

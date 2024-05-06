@@ -75,10 +75,11 @@ try {
         foreach ($resultData as $key => $resultRow) {
 
             $counter++;
+            $resultRow = MiscUtility::arrayEmptyStringsToNull($resultRow);
             // Overwrite the values in $emptyLabArray with the values in $resultRow
             $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
 
-            if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
+            if (isset($resultRow['approved_by_name']) && !empty($resultRow['approved_by_name'])) {
 
                 $lab['result_approved_by'] = $usersService->getOrCreateUser($resultRow['approved_by_name']);
                 $lab['result_approved_datetime'] = DateUtility::getCurrentDateTime();

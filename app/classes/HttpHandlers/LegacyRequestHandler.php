@@ -4,7 +4,6 @@ namespace App\HttpHandlers;
 
 use Throwable;
 use App\Services\CommonService;
-use App\Registries\AppRegistry;
 use Laminas\Diactoros\Response;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -27,7 +26,9 @@ class LegacyRequestHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         try {
-            $fileToInclude = null;
+
+            $filePath = $this->sanitizePath($request);
+
             // Capture output buffer to prevent it from being sent directly
             ob_start();
 
@@ -35,15 +36,16 @@ class LegacyRequestHandler implements RequestHandlerInterface
             $db = $this->dbService;
             $general = $this->commonService;
 
-            $fileToInclude = $this->determineFileToInclude($request);
-            require_once $fileToInclude;
+            (function () use ($filePath, $db, $general) {
+                require_once $filePath;
+            })();
 
             // Get the output buffer content and clean the buffer
             $output = ob_get_clean();
             return $this->createResponse($output);
         } catch (Throwable $e) {
             ob_end_clean(); // Clean the buffer in case of an error
-            LoggerUtility::log('error', "Error in $fileToInclude : " . $e->getFile() . ":" .  $e->getLine() . ":" . $e->getMessage(), [
+            LoggerUtility::log('error', "Error in $filePath : " . $e->getFile() . ":" .  $e->getLine() . ":" . $e->getMessage(), [
                 'request' => $request->getUri()->getPath(),
                 'trace' => $e->getTraceAsString(),
                 'code' => $e->getCode(),
@@ -55,13 +57,11 @@ class LegacyRequestHandler implements RequestHandlerInterface
     }
 
 
-    private function determineFileToInclude(ServerRequestInterface $request): string
+    private function sanitizePath(ServerRequestInterface $request): string
     {
         $uri = $request->getUri()->getPath();
         $uri = filter_var($uri, FILTER_SANITIZE_URL);
         $uri = trim(parse_url($uri, PHP_URL_PATH), "/");
-
-        AppRegistry::set('request', $request);
 
         if ($uri === '' || $uri === null) {
             return APPLICATION_PATH . '/index.php';
@@ -69,18 +69,14 @@ class LegacyRequestHandler implements RequestHandlerInterface
 
         // Resolve the absolute path and ensure it's within the APPLICATION_PATH
         $resolvedPath = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri);
-        if (!$resolvedPath || !str_starts_with($resolvedPath, realpath(APPLICATION_PATH))) {
-            LoggerUtility::log('error', 'Invalid file : ' . $resolvedPath);
+        $resolvedPath = is_dir($resolvedPath) ? $resolvedPath . '/index.php' : $resolvedPath;
+
+        if (!$resolvedPath || !str_starts_with($resolvedPath, realpath(APPLICATION_PATH)) || !is_readable($resolvedPath)) {
+            LoggerUtility::log('error', 'Invalid Request : ' . $resolvedPath);
             throw new SystemException(_translate('Sorry! We could not find this page or resource'), 404);
         }
 
-        if (is_dir($resolvedPath)) {
-            return $resolvedPath . '/index.php';
-        } elseif (is_file($resolvedPath)) {
-            return $resolvedPath;
-        } else {
-            throw new SystemException(_translate('Sorry! We could not find this page or resource') . ' - ' . $uri, 404);
-        }
+        return $resolvedPath;
     }
 
 

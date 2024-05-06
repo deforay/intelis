@@ -1,24 +1,35 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+$_POST = MiscUtility::arrayEmptyStringsToNull($_POST);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+
 try {
-	if (isset($_POST['geoName']) && trim((string) $_POST['geoName']) != "") {
+	if (!empty($_POST['geoName'])) {
 		$lastId = 0;
 		$data = array(
 			'geo_name' 			=> $_POST['geoName'],
-			'geo_code' 			=> $_POST['geoCode'],
-			'geo_parent' 		=> (isset($_POST['geoParent']) && trim((string) $_POST['geoParent']) != "") ? $_POST['geoParent'] : 0,
-			'geo_status' 		=> $_POST['geoStatus'],
+			'geo_code' 			=> $_POST['geoCode'] ?? null,
+			'geo_parent' 		=> $_POST['geoParent'] ?? 0,
+			'geo_status' 		=> $_POST['geoStatus'] ?? 'active',
 			'updated_datetime'	=> DateUtility::getCurrentDateTime()
 		);
 		if (isset($_POST['geoId']) && $_POST['geoId'] != "") {

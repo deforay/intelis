@@ -3,18 +3,17 @@
 require_once dirname(__DIR__) . '/../bootstrap.php';
 
 // api/index.php
-use App\Registries\ContainerRegistry;
 use DI\Container;
 use Slim\Factory\AppFactory;
-use App\Middlewares\Api\ApiAuthMiddleware;
-use App\Middlewares\Api\ApiErrorHandlingMiddleware;
+use App\Registries\AppRegistry;
+use App\Registries\ContainerRegistry;
 use Laminas\Stratigility\MiddlewarePipe;
-use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
-
-use function Laminas\Stratigility\middleware;
-
-use Slim\Factory\ServerRequestCreatorFactory;
+use App\Middlewares\Api\ApiAuthMiddleware;
 use Slim\Middleware\BodyParsingMiddleware;
+use function Laminas\Stratigility\middleware;
+use Slim\Factory\ServerRequestCreatorFactory;
+use App\Middlewares\Api\ApiErrorHandlingMiddleware;
+use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 
 $container = new Container();
 AppFactory::setContainer($container);
@@ -23,6 +22,8 @@ $apiService = AppFactory::create();
 $serverRequestCreator = ServerRequestCreatorFactory::create();
 $request = $serverRequestCreator->createServerRequestFromGlobals();
 
+// Set the request in the AppRegistry
+AppRegistry::set('request', $request);
 
 // Instantiate the middleware pipeline
 $middlewarePipe = new MiddlewarePipe();

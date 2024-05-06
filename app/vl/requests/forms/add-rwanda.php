@@ -868,23 +868,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function generateSampleCode() {
-          var pName = $("#province").val();
-          var sDate = $("#sampleCollectionDate").val();
-          //  var provinceCode = $("#province").find(":selected").attr("data-code");
-
-          $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-          if (pName != '' && sDate != '') {
+          if ($("#sampleCollectionDate").val() != '') {
                $.post("/vl/requests/generateSampleCode.php", {
-                         sampleCollectionDate: sDate,
-                         //provinceCode: provinceCode
+                         sampleCollectionDate: $("#sampleCollectionDate").val()
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);
                          $("#sampleCode").val(sCodeKey.sampleCode);
-                         $("#sampleCodeInText").html(sCodeKey.sampleCode);
+                         $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
                          $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
                          $("#sampleCodeKey").val(sCodeKey.maxId);
-                         checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
                     });
           }
      }
