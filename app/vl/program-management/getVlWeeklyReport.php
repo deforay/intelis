@@ -175,7 +175,7 @@ $sQuery = $sQuery . ' GROUP BY vl.lab_id, vl.facility_id';
 
 if (!empty($sOrder)) {
   $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-  $sQuery = $sQuery . ' order by ' . $sOrder;
+  $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
 //die($sQuery);die;
 $_SESSION['vlStatisticsQuery'] = $sQuery;

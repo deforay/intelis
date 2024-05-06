@@ -32,8 +32,9 @@ function _translate(?string $text, ?bool $escapeText = false)
 
 function _isAllowed($currentRequest, $privileges = null)
 {
-    return (ContainerRegistry::get(UsersService::class))
-        ->isAllowed($currentRequest, $privileges);
+    /** @var UsersService  $usersService */
+    $usersService = ContainerRegistry::get(UsersService::class);
+    return $usersService->isAllowed($currentRequest, $privileges);
 }
 
 function _sanitizeInput(string|array|null $data, $customFilters = [])

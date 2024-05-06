@@ -110,7 +110,11 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+if (isset($sLimit) && isset($sOffset)) {
+     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+}
+
+[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
 /*
  * Output

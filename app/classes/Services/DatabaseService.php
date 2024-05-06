@@ -6,11 +6,23 @@ use MysqliDb;
 use Generator;
 use Throwable;
 use App\Utilities\LoggerUtility;
+use PhpMyAdmin\SqlParser\Parser;
+use App\Exceptions\SystemException;
+use PhpMyAdmin\SqlParser\Components\Limit;
+use PhpMyAdmin\SqlParser\Components\Expression;
 
 final class DatabaseService extends MysqliDb
 {
 
     private $isTransactionActive = false;
+    private $useSavepoints = false;
+
+    public function isMySQL8OrHigher(): bool
+    {
+        $version = $this->mysqli()->server_version;
+        return $version >= 80000; // MySQL versions are expressed in the form of main_version * 10000 + minor_version * 100 + sub_version for example 8.0.21 is 80021
+    }
+
 
     /**
      * Destructor.
@@ -39,14 +51,12 @@ final class DatabaseService extends MysqliDb
 
     /**
      * Execute a query and return a generator to fetch results row by row.
-     * Optionally execute as an unbuffered query.
      *
      * @param string $query SQL query string
      * @param array|null $bindParams Parameters to bind to the query
-     * @param bool $unbuffered Whether to execute as an unbuffered query
      * @return Generator
      */
-    public function rawQueryGenerator(string $query, $bindParams = null, bool $unbuffered = false)
+    public function rawQueryGenerator(string $query, $bindParams = null)
     {
         $params = ['']; // Create the empty 0 index
         $this->_query = $query;
@@ -61,10 +71,6 @@ final class DatabaseService extends MysqliDb
         }
 
         $stmt->execute();
-
-        if (!$unbuffered) {
-            $stmt->store_result();
-        }
 
         // Initialize $row as an empty array
         $row = [];
@@ -112,37 +118,68 @@ final class DatabaseService extends MysqliDb
     }
 
     /**
-     * Begin a new transaction if not already started.
+     * Begin a new transaction.
+     * Optionally use savepoints if supported and requested.
+     *
+     * @param bool $useSavepoints Whether to use savepoints within the transaction.
      */
-    public function beginTransaction(): void
+    public function beginTransaction($useSavepoints = false): void
     {
         if (!$this->isTransactionActive) {
             $this->startTransaction();
             $this->isTransactionActive = true;
+            // Enable savepoints only if MySQL 8 or higher and requested.
+            $this->useSavepoints = $this->isMySQL8OrHigher() ? $useSavepoints : false;
         }
     }
 
     /**
-     * Commit the current transaction.
+     * Commit the current transaction or to a savepoint.
+     * @param string|null $toSavepoint The savepoint to commit to, or null to commit the entire transaction.
      */
-    public function commitTransaction(): void
+    public function commitTransaction($toSavepoint = null): void
     {
         if ($this->isTransactionActive) {
-            $this->commit();
-            $this->isTransactionActive = false;
+            if ($toSavepoint && $this->useSavepoints) {
+                $this->releaseSavepoint($toSavepoint);
+            } else {
+                $this->commit();
+                $this->isTransactionActive = false;
+            }
         }
     }
 
     /**
      * Roll back the current transaction.
+     * * @param string|null $toSavepoint The savepoint to rollback to, or null to rollback the entire transaction.
      */
-    public function rollbackTransaction(): void
+    public function rollbackTransaction($toSavepoint = null): void
     {
         if ($this->isTransactionActive) {
-            $this->rollback();
+            if ($toSavepoint && $this->useSavepoints) {
+                $this->rollbackToSavepoint($toSavepoint);
+            } else {
+                $this->rollback();
+            }
             $this->isTransactionActive = false;
         }
     }
+
+    public function createSavepoint($savepointName): void
+    {
+        $this->rawQuery("SAVEPOINT `$savepointName`;");
+    }
+
+    public function rollbackToSavepoint($savepointName): void
+    {
+        $this->rawQuery("ROLLBACK TO SAVEPOINT `$savepointName`;");
+    }
+
+    public function releaseSavepoint($savepointName): void
+    {
+        $this->rawQuery("RELEASE SAVEPOINT `$savepointName`;");
+    }
+
 
     /**
      * Dynamically fetch primary key columns for a table.
@@ -228,6 +265,59 @@ final class DatabaseService extends MysqliDb
         }
     }
 
+    public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
+    {
+        try {
+
+            $parser = new Parser($sql);
+
+            // Retrieve the first statement
+            $statement = $parser->statements[0];
+
+            $limitOffsetSet = isset($limit) && isset($offset);
+
+            if ((!isset($statement->limit) || empty($statement->limit)) && $limitOffsetSet) {
+                $statement->limit = new Limit($limit, $offset);
+            }
+
+            $sql = $statement->build();
+
+            // Execute the main query
+            if ($returnGenerator === true) {
+                $queryResult = $this->rawQueryGenerator($sql, $params);
+            } else {
+                $queryResult = $this->rawQuery($sql, $params);
+            }
+
+
+            $count = 0;
+            // Execute the count query if necessary
+            if ($limitOffsetSet || $returnGenerator) {
+
+                $statement->limit = null;
+                $statement->order = null;
+
+                if (stripos($sql, 'GROUP BY') !== false) {
+                    $sql = $statement->build();
+                    $countSql = "SELECT COUNT(*) as totalCount FROM ($sql) as subquery";
+                } else {
+                    // Replacing all SELECT columns with a new COUNT expression
+                    $statement->expr = [new Expression('COUNT(*) as totalCount')];
+                    $countSql = $statement->build();
+                }
+
+                // Generate a unique session key for the count query
+                $countQuerySessionKey = md5($countSql);
+                $count = $_SESSION['queryCounters'][$countQuerySessionKey] ?? ($_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->rawQueryOne($countSql)['totalCount']);
+            } else {
+                $count = count($queryResult);
+            }
+
+            return [$queryResult, $count];
+        } catch (Throwable $e) {
+            throw new SystemException($e->getMessage(), 500, $e);
+        }
+    }
 
 
     public function reset(): void

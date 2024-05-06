@@ -289,39 +289,37 @@ final class MiscUtility
         fclose($handle);
     }
 
-    public static function convertToUtf8($input)
+    public static function convertToUtf8(array|string|null $input)
     {
         if (is_array($input)) {
-            return array_map(function ($item) {
-                return self::convertToUtf8($item);
-            }, $input);
+            return array_map([self::class, 'convertToUtf8'], $input);
         }
         if (is_string($input)) {
             $encoding = mb_detect_encoding($input, mb_detect_order(), true) ?? 'UTF-8';
-            if ($encoding) {
-                return mb_convert_encoding($input, 'UTF-8', $encoding);
-            }
+            return mb_convert_encoding($input, 'UTF-8', $encoding);
         }
         return $input;
     }
 
-    public static function convertToUtf8AndEncode($data)
+    public static function convertToUtf8AndEncode(array|string|null $data)
     {
+        if (empty($data)) {
+            return is_array($data) ? '[]' : '{}';
+        }
+
         return json_encode(self::convertToUtf8($data));
     }
 
-    public static function getGenderFromString($gender)
+    public static function getGenderFromString(string $gender)
     {
-        return once(function () use ($gender) {
-            return match (strtolower((string)$gender)) {
-                'male', 'm' => 'M',
-                'female', 'f' => 'F',
-                'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
-                default => '',
-            };
-        });
+        return match (strtolower($gender)) {
+            'male', 'm' => _translate('Male'),
+            'female', 'f' => _translate('Female'),
+            'not_recorded', 'notrecorded', 'unreported' => _translate('Unreported'),
+            default => '',
+        };
     }
-    public static function removeFromAssociativeArray($fullArray, $unwantedKeys)
+    public static function removeFromAssociativeArray(array $fullArray, array $unwantedKeys)
     {
         return array_diff_key($fullArray, array_flip($unwantedKeys));
     }
@@ -338,7 +336,7 @@ final class MiscUtility
 
 
     // Helper function to convert file size string to bytes
-    public static function convertToBytes($sizeString): int
+    public static function convertToBytes(string $sizeString): int
     {
         return match (substr($sizeString, -1)) {
             'M', 'm' => (int)$sizeString * 1048576,
@@ -394,19 +392,27 @@ final class MiscUtility
         }
     }
 
-    public static function removeMatchingElements($array, $removeArray)
+    public static function removeMatchingElements(array $array, array $removeArray): array
     {
         return array_values(array_diff($array, $removeArray));
     }
 
-    public static function arrayEmptyStringsToNull(array $array): array
+    public static function arrayEmptyStringsToNull(?array $array, bool $convertEmptyJson = false): array
     {
+        if (empty($array)) {
+            return $array;
+        }
+
         foreach ($array as $key => &$value) {
             if (is_array($value)) {
-                // Apply the function recursively if the value is an array
-                $value = self::arrayEmptyStringsToNull($value);
-            } elseif ($value === '') {
-                // Directly convert empty strings to null
+                if (empty($value)) {
+                    $value = null; // Convert empty arrays to null
+                } else {
+                    // Apply the function recursively if the value is an array
+                    $value = self::arrayEmptyStringsToNull($value, $convertEmptyJson);
+                }
+            } elseif ($value === '' || ($convertEmptyJson && is_string($value) && ($value === '{}' || $value === '[]'))) {
+                // Convert empty strings or empty JSON strings/arrays to null
                 $value = null;
             }
         }
@@ -414,32 +420,16 @@ final class MiscUtility
         return $array;
     }
 
-    public static function generateUUID($version = 'v4', $name = null, $namespace = null): string
+
+    public static function generateUUID($attachExtraString = true): string
     {
-        try {
-            switch ($version) {
-                case 'v1':
-                    return Uuid::uuid1()->toString();
-                case 'v3':
-                    if ($namespace === null || $name === null) {
-                        throw new SystemException("Namespace and name must be provided for UUID version 3.");
-                    }
-                    return Uuid::uuid3($namespace, $name)->toString();
-                case 'v4':
-                    return Uuid::uuid4()->toString();
-                case 'v5':
-                    if ($namespace === null || $name === null) {
-                        throw new SystemException("Namespace and name must be provided for UUID version 5.");
-                    }
-                    return Uuid::uuid5($namespace, $name)->toString();
-                default:
-                    throw new SystemException("Unsupported UUID version: '$version'.");
-            }
-        } catch (Throwable $e) {
-            // Catch any errors caused by an unsatisfiable dependency when generating the UUID
-            LoggerUtility::log('error', $e->getMessage());
-            throw new SystemException("Could not generate UUID: " . $e->getMessage());
-        }
+        $uuid = Uuid::uuid4()->toString();
+        $uuid .= $attachExtraString ? '-' . Self::generateRandomString(6) : '';
+        return $uuid;
+    }
+    public static function generateUUIDv5($name = null, $namespace = Uuid::NAMESPACE_URL): string
+    {
+        return Uuid::uuid5($namespace, $name)->toString();
     }
 
     public static function getFileExtension($filename): string

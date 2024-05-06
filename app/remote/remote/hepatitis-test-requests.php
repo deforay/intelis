@@ -58,7 +58,7 @@ try {
     $hepatitisRemoteResult = $db->rawQuery($hepatitisQuery);
     $response = [];
     $counter = 0;
-
+    $response = [];
     $sampleIds = $facilityIds = [];
     if ($db->count > 0) {
         $counter = $db->count;
@@ -66,19 +66,18 @@ try {
         $sampleIds = array_column($hepatitisRemoteResult, 'hepatitis_id');
         $facilityIds = array_column($hepatitisRemoteResult, 'facility_id');
 
-
         /** @var HepatitisService $hepatitisService */
         $hepatitisService = ContainerRegistry::get(HepatitisService::class);
-        $comorbidities = $hepatitisService->getComorbidityByHepatitisId($sampleIds);
-        $risks = $hepatitisService->getRiskFactorsByHepatitisId($sampleIds);
-
-
-        $response['result'] = $hepatitisRemoteResult ?? [];
-        $response['risks'] = $risks ?? [];
-        $response['comorbidities'] = $comorbidities ?? [];
+        foreach ($hepatitisRemoteResult as $r) {
+            $response[$r['hepatitis_id']] = $r;
+            $response[$r['hepatitis_id']]['data_from_comorbidities'] = $hepatitisService->getComorbidityByHepatitisId($r['hepatitis_id']);
+            $response[$r['hepatitis_id']]['data_from_risks'] = $hepatitisService->getRiskFactorsByHepatitisId($r['hepatitis_id']);
+        }
     }
-
-    $payload = json_encode($response);
+    $payload = json_encode(array(
+        'labId' => $labId,
+        'result' => $response,
+    ));
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
 

@@ -158,8 +158,11 @@ if (!empty($sOrder)) {
 }
 $_SESSION['cd4TatData'] = $sQuery;
 
+if (isset($sLimit) && isset($sOffset)) {
+	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+}
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
 /*
  * Output

@@ -88,7 +88,7 @@ $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' group by ms.move_sample_id';
 if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' order by ' . $sOrder;
+    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
 
 if (isset($sLimit) && isset($sOffset)) {

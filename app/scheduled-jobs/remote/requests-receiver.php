@@ -649,36 +649,50 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                 }
             }
             // Symptoms details saving
-            $db->where('covid19_id', $id);
-            $db->delete("covid19_patient_symptoms");
-            foreach ($remoteData['data_from_symptoms'] as $symId => $value) {
-                $symptomData = [];
-                $symptomData["covid19_id"] = $id;
-                $symptomData["symptom_id"] = $value['symptom_id'];
-                $symptomData["symptom_detected"] = $value['symptom_detected'];
-                $symptomData["symptom_details"] = $value['symptom_details'];
-                $db->insert("covid19_patient_symptoms", $symptomData);
+            if(isset($remoteData['data_from_symptoms']) && !empty($remoteData['data_from_symptoms'])){
+                $db->where('covid19_id', $id);
+                $db->delete("covid19_patient_symptoms");
+                foreach ($remoteData['data_from_symptoms'] as $symId => $value) {
+                    $symptomData = [];
+                    $symptomData["covid19_id"] = $id;
+                    $symptomData["symptom_id"] = $value['symptom_id'];
+                    $symptomData["symptom_detected"] = $value['symptom_detected'];
+                    $symptomData["symptom_details"] = $value['symptom_details'];
+                    $db->insert("covid19_patient_symptoms", $symptomData);
+                }
             }
             // comorbidities details savings
-            $db->where('covid19_id', $id);
-            $db->delete("covid19_patient_comorbidities");
-            foreach ($remoteData['data_from_comorbidities'] as $comoId => $comorbidityData) {
-                $comData = [];
-                $comData["covid19_id"] = $id;
-                $comData["comorbidity_id"] = $comorbidityData['comorbidity_id'];
-                $comData["comorbidity_detected"] = $comorbidityData['comorbidity_detected'];
-                $db->insert("covid19_patient_comorbidities", $comData);
+            if(isset($remoteData['data_from_comorbidities']) && !empty($remoteData['data_from_comorbidities'])){
+                $db->where('covid19_id', $id);
+                $db->delete("covid19_patient_comorbidities");
+                foreach ($remoteData['data_from_comorbidities'] as $comoId => $comorbidityData) {
+                    $comData = [];
+                    $comData["covid19_id"] = $id;
+                    $comData["comorbidity_id"] = $comorbidityData['comorbidity_id'];
+                    $comData["comorbidity_detected"] = $comorbidityData['comorbidity_detected'];
+                    $db->insert("covid19_patient_comorbidities", $comData);
+                }
             }
             // sub tests details saving
-            $unwantedColumns = [
-                'test_id'
-            ];
-            $emptyTestsArray = $general->getTableFieldsAsArray('covid19_tests', $unwantedColumns);
-            $db->where('covid19_id', $id);
-            $db->delete("covid19_tests");
-            foreach ($remoteData['data_from_tests'] as $covid19Id => $covid19TestData) {
-                $covid19TestData = MiscUtility::updateFromArray($emptyTestsArray, $covid19TestData);
-                $db->insert("covid19_tests", $covid19TestData);
+            if(isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])){
+                $db->where('covid19_id', $id);
+                $db->delete("covid19_tests");
+                foreach ($remoteData['data_from_tests'] as $covid19Id => $cdata) {
+                    $covid19TestData = array(
+                        "covid19_id"                => $id,
+                        "facility_id"               => $cdata['facility_id'],
+                        "test_name"                 => $cdata['test_name'],
+                        "tested_by"                 => $cdata['tested_by'],
+                        "sample_tested_datetime"    => $cdata['sample_tested_datetime'],
+                        "testing_platform"          => $cdata['testing_platform'],
+                        "instrument_id"             => $cdata['instrument_id'],
+                        "kit_lot_no"                => $cdata['kit_lot_no'],
+                        "kit_expiry_date"           => $cdata['kit_expiry_date'],
+                        "result"                    => $cdata['result'],
+                        "updated_datetime"          => $cdata['updated_datetime']
+                    );
+                    $db->insert("covid19_tests", $covid19TestData);
+                }
             }
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
@@ -705,7 +719,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     }
 
     $jsonResponse = $apiService->post($url, $payload);
-
+    // die($jsonResponse);
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
         $removeKeys = [
             'hepatitis_id',
@@ -725,7 +739,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             //'request_created_by',
             //'last_modified_by',
             //'request_created_datetime',
-            'data_sync'
+            'data_sync',
+            'data_from_comorbidities',
+            'data_from_risks'
         ];
 
 
@@ -827,56 +843,44 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     $id = $db->getInsertId();
                 }
             }
-        }
-
-        $options = [
-            'pointer' => '/risks',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($jsonResponse, $options);
-        foreach ($parsedData as $hepatitisId => $risks) {
-            $db->where('hepatitis_id', $hepatitisId);
-            $db->delete("hepatitis_risk_factors");
-
-            $rData = [];
-            foreach ($risks as  $riskId => $riskValue) {
-                $riskFactorsData = [];
-                $riskFactorsData["hepatitis_id"] = $hepatitisId;
-                $riskFactorsData["riskfactors_id"] = $riskId;
-                $riskFactorsData["riskfactors_detected"] = $riskValue;
-                $rData[] = $riskFactorsData;
-                //$db->insert("hepatitis_risk_factors", $riskFactorsData);
+            
+            foreach ($remoteData['data_from_risks'] as $hepatitisId => $risks) {
+                $db->where('hepatitis_id', $hepatitisId);
+                $db->delete("hepatitis_risk_factors");
+    
+                $rData = [];
+                foreach ($risks as  $riskId => $riskValue) {
+                    $riskFactorsData = [];
+                    $riskFactorsData["hepatitis_id"] = $hepatitisId;
+                    $riskFactorsData["riskfactors_id"] = $riskId;
+                    $riskFactorsData["riskfactors_detected"] = $riskValue;
+                    $rData[] = $riskFactorsData;
+                    //$db->insert("hepatitis_risk_factors", $riskFactorsData);
+                }
+                $ids = $db->insertMulti('hepatitis_risk_factors', $rData);
+                if (!$ids) {
+                    error_log('insert failed: ' . $db->getLastError());
+                }
             }
-            $ids = $db->insertMulti('hepatitis_risk_factors', $rData);
-            if (!$ids) {
-                error_log('insert failed: ' . $db->getLastError());
-            }
-        }
-
-        $options = [
-            'pointer' => '/comorbidities',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($jsonResponse, $options);
-        foreach ($parsedData as $hepatitisId => $comorbidities) {
-            $db->where('hepatitis_id', $hepatitisId);
-            $db->delete("hepatitis_patient_comorbidities");
-
-            $cData = [];
-            foreach ($comorbidities as $comoId => $comoValue) {
-                $comorbidityData = [];
-                $comorbidityData["hepatitis_id"] = $hepatitisId;
-                $comorbidityData["comorbidity_id"] = $comoId;
-                $comorbidityData["comorbidity_detected"] = $comoValue;
-                $cData[] = $comorbidityData;
-            }
-
-            $ids = $db->insertMulti('hepatitis_patient_comorbidities', $cData);
-            if (!$ids) {
-                error_log('insert failed: ' . $db->getLastError());
+            foreach ($remoteData['data_from_comorbidities'] as $hepatitisId => $comorbidities) {
+                $db->where('hepatitis_id', $hepatitisId);
+                $db->delete("hepatitis_patient_comorbidities");
+    
+                $cData = [];
+                foreach ($comorbidities as $comoId => $comoValue) {
+                    $comorbidityData = [];
+                    $comorbidityData["hepatitis_id"] = $hepatitisId;
+                    $comorbidityData["comorbidity_id"] = $comoId;
+                    $comorbidityData["comorbidity_detected"] = $comoValue;
+                    $cData[] = $comorbidityData;
+                }
+    
+                $ids = $db->insertMulti('hepatitis_patient_comorbidities', $cData);
+                if (!$ids) {
+                    error_log('insert failed: ' . $db->getLastError());
+                }
             }
         }
-
 
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
@@ -1024,8 +1028,6 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 }
 
 
-
-
 /*
  ****************************************************************
  * CD4 TEST REQUESTS
@@ -1057,17 +1059,13 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
         $parsedData = Items::fromString($jsonResponse, $options);
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                             WHERE TABLE_SCHEMA = ? AND table_name='form_cd4'";
+                            WHERE TABLE_SCHEMA = ? AND table_name='form_cd4'";
         $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
         $columnList = array_map('current', $allColResult);
 
         $removeKeys = array(
             'cd4_id',
             'sample_batch_id',
-            // 'result_value_log',
-            // 'result_value_absolute',
-            // 'result_value_absolute_decimal',
-            // 'result_value_text',
             'cd4_result',
             'sample_tested_datetime',
             'sample_received_at_lab_datetime',
@@ -1076,9 +1074,6 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            //'request_created_datetime',
-            //'request_created_by',
-            //'last_modified_by',
             'data_sync'
         );
 
@@ -1117,13 +1112,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
                     'is_sample_rejected',
                     'reason_for_sample_rejection',
                     'rejection_on',
-                    // 'result_value_absolute',
-                    // 'result_value_absolute_decimal',
-                    //  'result_value_text',
                     'cd4_result',
-                    // 'result_value_log',
-                    // 'result_value_hiv_detection',
-                    //'reason_for_failure',
                     'result_reviewed_by',
                     'result_reviewed_datetime',
                     'cd4_focal_person',

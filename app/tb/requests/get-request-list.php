@@ -221,7 +221,11 @@ try {
      }
      $_SESSION['tbRequestSearchResultQuery'] = $sQuery;
 
-     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+     if (isset($sLimit) && isset($sOffset)) {
+          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+     }
+
+     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
      $_SESSION['tbRequestSearchResultQueryCount'] = $resultCount;
 

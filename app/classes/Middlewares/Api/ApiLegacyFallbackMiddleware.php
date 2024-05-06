@@ -2,9 +2,7 @@
 
 namespace App\Middlewares\Api;
 
-use Exception;
 use Throwable;
-use App\Registries\AppRegistry;
 use Laminas\Diactoros\Response;
 use App\Exceptions\SystemException;
 use App\Utilities\LoggerUtility;
@@ -30,26 +28,43 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
 
     private function handleLegacyCode(ServerRequestInterface $request): ResponseInterface
     {
-        $uri = $this->sanitizeUri($request->getUri()->getPath());
-        AppRegistry::set('request', $request);
+
+        $filePath = $this->sanitizePath($request->getUri()->getPath());
+
+        if (!is_readable($filePath)) {
+            throw new SystemException("Could not resolve API request", 400);
+        }
 
         ob_start();
         try {
-            require_once APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri;
+            (function () use ($filePath) {
+                require_once $filePath;
+            })();
             $output = ob_get_clean();
-            $response = new Response('php://memory', 200);
+            $response = new Response();
+            $response = $response
+                ->withStatus(200)
+                ->withHeader('Content-Type', 'application/json; charset=utf-8');
             $response->getBody()->write($output);
             return $response;
         } catch (Throwable $e) {
             ob_end_clean();
-            LoggerUtility::log('error', "API Error : " . $e->getMessage(), ['exception' => $e]);
+            //LoggerUtility::log('error', "API Error : " . $e->getMessage(), ['exception' => $e]);
             throw new SystemException("API Error : " . $e->getMessage(), 500, $e);
         }
     }
 
-    private function sanitizeUri(string $uri): string
+    private function sanitizePath(string $uriPath): string
     {
-        $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
-        return trim(parse_url($uri, PHP_URL_PATH), "/");
+        $uriPath = preg_replace('/([\/.])\1+/', '$1', $uriPath);
+        $uriPath = trim(parse_url($uriPath, PHP_URL_PATH), "/");
+        $filePath = APPLICATION_PATH . DIRECTORY_SEPARATOR . $uriPath;
+        $resolvedPath = realpath($filePath);
+        if (!$resolvedPath || is_dir($resolvedPath) || !str_starts_with($resolvedPath, realpath(APPLICATION_PATH)) || !is_readable($resolvedPath)) {
+            LoggerUtility::log('error', 'Invalid API Request : ' . $resolvedPath);
+            throw new SystemException(_translate('Sorry! We could not resolve this request'), 404);
+        }
+
+        return $resolvedPath;
     }
 }

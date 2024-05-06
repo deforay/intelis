@@ -267,10 +267,14 @@ try {
 
      if (isset($sOrder) && $sOrder != "") {
           $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-          $sQuery = $sQuery . ' order by ' . $sOrder;
+          $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
      }
 
-     [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+     if (isset($sLimit) && isset($sOffset)) {
+          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+     }
+
+     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
 
      $output = array(

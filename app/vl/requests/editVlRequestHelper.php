@@ -2,6 +2,7 @@
 
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -25,12 +26,13 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 
 $formId = (int) $general->getGlobalConfig('vl_form');
 
+
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 
-// Sanitize input
-$_POST = _sanitizeInput($_POST);
+$_POST = _sanitizeInput($request->getParsedBody());
+$_POST = MiscUtility::arrayEmptyStringsToNull($_POST);
 
 $tableName = "form_vl";
 $tableName1 = "activity_log";

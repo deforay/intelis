@@ -150,7 +150,7 @@ try {
     $sQuery = $sQuery . ' group by vl.cd4_id';
     if (!empty($sOrder)) {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-        $sQuery = $sQuery . ' order by ' . $sOrder;
+        $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['resultNotAvailable'] = $sQuery;
 

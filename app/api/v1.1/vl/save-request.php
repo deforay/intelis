@@ -479,8 +479,8 @@ try {
     ]);
 }
 
+$payload = MiscUtility::convertToUtf8AndEncode($payload);
 
-$payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 $general->updateResultSyncDateTime('vl', null, $updatedLabs);

@@ -659,21 +659,16 @@ $sFormat = '';
 	}
 
 	function generateSampleCode() {
-		var pName = $("#province").val();
-		$("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-		var sDate = $("#sampleCollectionDate").val();
-		if (pName != '' && sDate != '') {
+		if ($("#sampleCollectionDate").val() != '') {
 			$.post("/vl/requests/generateSampleCode.php", {
-					sampleCollectionDate: sDate,
-					pName: pName
+					sampleCollectionDate: $("#sampleCollectionDate").val()
 				},
 				function(data) {
 					var sCodeKey = JSON.parse(data);
 					$("#sampleCode").val(sCodeKey.sampleCode);
-					$("#sampleCodeInText").html(sCodeKey.sampleCode);
+					$("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
 					$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
 					$("#sampleCodeKey").val(sCodeKey.maxId);
-					checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
 				});
 		}
 	}

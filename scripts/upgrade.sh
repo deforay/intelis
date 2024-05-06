@@ -142,47 +142,57 @@ awk -v dsm="${desired_sql_mode}" -v dism="${desired_innodb_strict_mode}" \
     -v dcharset="${desired_charset}" -v dcollation="${desired_collation}" \
     -v dauth="${desired_auth_plugin}" \
     'BEGIN { sql_mode_added=0; innodb_strict_mode_added=0; charset_added=0; collation_added=0; auth_plugin_added=0; }
-                /default_authentication_plugin[[:space:]]*=/ {
-                    if ($0 ~ dauth) {auth_plugin_added=1;}
-                    else {print ";" $0;}
-                    next;
-                }
-                /sql_mode[[:space:]]*=/ {
-                    if ($0 ~ dsm) {sql_mode_added=1;}
-                    else {print ";" $0;}
-                    next;
-                }
-                /innodb_strict_mode[[:space:]]*=/ {
-                    if ($0 ~ dism) {innodb_strict_mode_added=1;}
-                    else {print ";" $0;}
-                    next;
-                }
-                /character-set-server[[:space:]]*=/ {
-                    if ($0 ~ dcharset) {charset_added=1;}
-                    else {print ";" $0;}
-                    next;
-                }
-                /collation-server[[:space:]]*=/ {
-                    if ($0 ~ dcollation) {collation_added=1;}
-                    else {print ";" $0;}
-                    next;
-                }
-                /skip-external-locking|mysqlx-bind-address/ {
-                    print;
-                    if (sql_mode_added == 0) {print dsm; sql_mode_added=1;}
-                    if (innodb_strict_mode_added == 0) {print dism; innodb_strict_mode_added=1;}
-                    if (charset_added == 0) {print dcharset; charset_added=1;}
-                    if (collation_added == 0) {print dcollation; collation_added=1;}
-                    next;
-                }
-                { print; }' ${config_file} >tmpfile && mv tmpfile ${config_file}
+        /default_authentication_plugin[[:space:]]*=/ {
+            if ($0 ~ dauth) {auth_plugin_added=1;}
+            else {print ";" $0;}
+            next;
+        }
+        /sql_mode[[:space:]]*=/ {
+            if ($0 ~ dsm) {sql_mode_added=1;}
+            else {print ";" $0;}
+            next;
+        }
+        /innodb_strict_mode[[:space:]]*=/ {
+            if ($0 ~ dism) {innodb_strict_mode_added=1;}
+            else {print ";" $0;}
+            next;
+        }
+        /character-set-server[[:space:]]*=/ {
+            if ($0 ~ dcharset) {charset_added=1;}
+            else {print ";" $0;}
+            next;
+        }
+        /collation-server[[:space:]]*=/ {
+            if ($0 ~ dcollation) {collation_added=1;}
+            else {print ";" $0;}
+            next;
+        }
+        /skip-external-locking|mysqlx-bind-address/ {
+            print;
+            if (sql_mode_added == 0) {print dsm; sql_mode_added=1;}
+            if (innodb_strict_mode_added == 0) {print dism; innodb_strict_mode_added=1;}
+            if (charset_added == 0) {print dcharset; charset_added=1;}
+            if (collation_added == 0) {print dcollation; collation_added=1;}
+            next;
+        }
+        { print; }' ${config_file} >tmpfile
 
-service mysql restart || {
-    mv ${config_file}.bak ${config_file}
-    echo "Failed to restart MySQL. Exiting..."
-    log_action "Failed to restart MySQL. Exiting..."
-    exit 1
-}
+# Check if changes were made
+if ! cmp -s ${config_file} tmpfile; then
+    echo "Changes detected, updating configuration and restarting MySQL..."
+    log_action "Changes detected in MySQL configuration. Updating configuration and restarting MySQL..."
+    mv tmpfile ${config_file}
+    service mysql restart || {
+        mv ${config_file}.bak ${config_file}
+        echo "Failed to restart MySQL. Exiting..."
+        log_action "Failed to restart MySQL. Exiting..."
+        exit 1
+    }
+else
+    echo "No changes made to the MySQL configuration."
+    log_action "No changes made to the MySQL configuration."
+    rm tmpfile # Clean up, no changes
+fi
 
 # Check for Apache
 if ! command -v apache2ctl &>/dev/null; then
@@ -197,6 +207,7 @@ if ! command -v php &>/dev/null; then
     log_action "PHP is not installed. Please first run the setup script."
     exit 1
 fi
+
 ask_yes_no() {
     local timeout=15
     local default=${2:-"no"} # set default value from the argument, fallback to "no" if not provided

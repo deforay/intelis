@@ -191,7 +191,7 @@ try {
 
      if (!empty($sOrder)) {
           $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-          $sQuery = $sQuery . ' order by ' . $sOrder;
+          $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
      }
      $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
      if (isset($sLimit) && isset($sOffset)) {

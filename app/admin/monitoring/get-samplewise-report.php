@@ -21,8 +21,7 @@ try {
 
     $testType = $_POST['testType'] ?? 'vl';
     $resultColumn = "result";
-    if($testType == "cd4")
-    {
+    if ($testType == "cd4") {
         $resultColumn = "cd4_result";
     }
 
@@ -180,7 +179,11 @@ try {
     //echo $sQuery; die;
     $_SESSION['samplewiseReportsQuery'] = $sQuery;
 
-    [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+    if (isset($sLimit) && isset($sOffset)) {
+        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    }
+
+    [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
 
     $calcValueQuery = "SELECT SUM(CASE WHEN (vl.request_created_datetime is not null AND vl.request_created_datetime > '0000-00-00') THEN 1 ELSE 0 END) AS 'totalSamplesRequested',

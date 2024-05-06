@@ -17,7 +17,7 @@ use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 
 $interopConfig = [];
 if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
-	$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
+    $interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 }
 
 /** @var DatabaseService $db */

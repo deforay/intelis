@@ -199,10 +199,10 @@ if (!empty($sWhere)) {
 $sQuery = $sQuery . ' ' . $sWhere;
 if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' order by ' . $sOrder;
+    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 } else {
 
-    $sQuery = $sQuery . ' order by ' . $sOrder;
+    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
 //echo $sQuery;die;
 if (isset($sLimit) && isset($sOffset)) {

@@ -188,7 +188,11 @@ if(!empty($whereResult))
         $sQuery = $sQuery . " ORDER BY " . $sOrder;
     }
 
-    [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
+    if (isset($sLimit) && isset($sOffset)) {
+        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    }
+
+    [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
     $output = array(
         "sEcho" => (int) $_POST['sEcho'],
