@@ -719,7 +719,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     }
 
     $jsonResponse = $apiService->post($url, $payload);
-    die($jsonResponse);
+    // die($jsonResponse);
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
         $removeKeys = [
             'hepatitis_id',

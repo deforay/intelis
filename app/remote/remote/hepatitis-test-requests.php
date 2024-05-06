@@ -78,8 +78,6 @@ try {
         'labId' => $labId,
         'result' => $response,
     ));
-    print_r($response);
-    die;
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
 
