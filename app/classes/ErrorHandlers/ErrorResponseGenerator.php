@@ -99,7 +99,9 @@ class ErrorResponseGenerator
         ]);
 
         $response->getBody()->write($responseBody);
-        return $response->withHeader('Content-Type', 'application/json')->withStatus($httpCode);
+        return $response
+            ->withHeader('Content-Type', 'application/json; charset=utf-8')
+            ->withStatus($httpCode);
     }
 
     private function handleGenericErrorResponse(Throwable $exception, ResponseInterface $response, int $httpCode): ResponseInterface

@@ -35,11 +35,11 @@ if (!file_exists($logsDir)) {
         echo "Failed to create directory: $logsDir\n";
     } else {
         echo "Directory created: $logsDir\n";
-        $canLog = is_readable($logsDir) && is_writable($logsDir);
+        $canLog = file_exists($logsDir) && is_writable($logsDir);
     }
 } else {
     // Check if the directory is readable and writable
-    $canLog = is_readable($logsDir) && is_writable($logsDir);
+    $canLog = file_exists($logsDir) && is_writable($logsDir);
 }
 
 

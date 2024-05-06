@@ -2,6 +2,7 @@
 
 require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use Tuupola\Middleware\CorsMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
@@ -9,14 +10,17 @@ use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\App\AppAuthMiddleware;
 use App\Middlewares\ErrorHandlerMiddleware;
 use Laminas\Diactoros\ServerRequestFactory;
+use function Laminas\Stratigility\middleware;
 use App\Middlewares\SystemAdminAuthMiddleware;
+
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 
-use function Laminas\Stratigility\middleware;
-
 // Create a server request object from the globals
 $request = ServerRequestFactory::fromGlobals();
+
+// Set the request in the AppRegistry
+AppRegistry::set('request', $request);
 
 // Instantiate the middleware pipeline
 $middlewarePipe = new MiddlewarePipe();

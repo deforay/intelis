@@ -868,15 +868,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function generateSampleCode() {
-          var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
-          //  var provinceCode = $("#province").find(":selected").attr("data-code");
-
-          $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-          if (pName != '' && sDate != '') {
+          if (sDate != '') {
                $.post("/cd4/requests/generateSampleCode.php", {
-                         sampleCollectionDate: sDate,
-                         //provinceCode: provinceCode
+                         sampleCollectionDate: sDate
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);
@@ -884,7 +879,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          $("#sampleCodeInText").html(sCodeKey.sampleCode);
                          $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
                          $("#sampleCodeKey").val(sCodeKey.maxId);
-                         checkSampleNameValidation('form_cd4', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
+                         //checkSampleNameValidation('form_cd4', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
                     });
           }
      }
