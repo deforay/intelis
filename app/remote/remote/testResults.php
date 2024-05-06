@@ -12,7 +12,6 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
-use PhpMyAdmin\SqlParser\Utils\Misc;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 

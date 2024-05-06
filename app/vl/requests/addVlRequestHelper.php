@@ -2,6 +2,7 @@
 
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -37,8 +38,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 
-// Sanitize input
-$_POST = _sanitizeInput($_POST);
+$_POST = _sanitizeInput($request->getParsedBody());
+$_POST = MiscUtility::arrayEmptyStringsToNull($_POST);
 
 $instanceId = $general->getInstanceId();
 try {
