@@ -96,8 +96,8 @@ function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass,
     );
     $field .= '<option value="">' . _translate("-- Select --") . '</option>';
     foreach (explode(',', (string) $testAttribute['dropdown_options']) as $option) {
-        if ($isMultiple) {
-            $selected = (!empty($value) && in_array(trim($option), $value)) ? "selected" : "";
+        if ($isMultiple && is_array($option)) {
+            $selected = (!empty($value) && in_array($option, $value)) ? "selected" : "";
         } else {
             $selected = (!empty($value) && $value == $option) ? "selected" : "";
         }
