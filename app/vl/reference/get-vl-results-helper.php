@@ -64,7 +64,10 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
  * Get data to display
  */
 
-$sQuery = "SELECT * FROM r_vl_results";
+$sQuery = "SELECT r.*, GROUP_CONCAT(i.machine_name SEPARATOR ', ') AS machine_names
+            FROM r_vl_results r
+            LEFT JOIN instruments i ON JSON_CONTAINS(r.available_for_instruments, CONCAT('\"', i.instrument_id, '\"'))
+            GROUP BY r.result_id;";
 
 if (!empty($sWhere)) {
     $sWhere = ' WHERE ' . $sWhere;
@@ -93,22 +96,13 @@ $output = array(
 );
 foreach ($rResult as $aRow) {
     $machines = "";
-    if (!empty($aRow['available_for_instruments']) && MiscUtility::isJson($aRow['available_for_instruments'])) {
-        $instruments = json_decode($aRow['available_for_instruments']);
-
-        $idValues = "'" . implode("', '", $instruments) . "'";
-        $sqlInstrument = "SELECT GROUP_CONCAT(machine_name) as machine_name FROM instruments WHERE instrument_id in ($idValues)";
-
-        $instrumentRes = $db->rawQueryOne($sqlInstrument);
-        $machines = str_replace(',', ', ', $instrumentRes['machine_name']);
-    }
     $status = '<select class="form-control" name="status[]" id="' . $aRow['result_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
                <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>' . _translate("Active") . '</option>
                <option value="inactive" ' . ($aRow['status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
                </select><br><br>';
     $row = [];
-    $row[] = $aRow['result'];
-    $row[] = $machines;
+    $row[] = '<span style="cursor:pointer">'.$aRow['result'].'</span>';
+    $row[] = $aRow['machine_names'];
 
     if (_isAllowed("/vl/reference/vl-results.php")) {
         $row[] = $status;

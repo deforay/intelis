@@ -20,7 +20,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("/vl/reference/add-vl-results.php")) { ?>
+						<?php if (_isAllowed("vl-art-code-details.php")) { ?>
 							<a href="add-vl-results.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Results"); ?></a>
 						<?php } ?>
 					</div>
@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Viral Load Result"); ?></th>
 									<th scope="row"><?php echo _translate("Instruments"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (_isAllowed("/vl/reference/vl-results.php")) { ?>
+									<?php if (_isAllowed("vl-results.php")) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -60,7 +60,8 @@ require_once APPLICATION_PATH . '/header.php';
 
 	$(document).ready(function() {
 		$.blockUI();
-		oTable = $('#sampTypDataTable').dataTable({
+
+		oTable = $('#sampTypDataTable').DataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
@@ -70,21 +71,24 @@ require_once APPLICATION_PATH . '/header.php';
 			"bScrollCollapse": true,
 			"bStateSave": true,
 			"bRetrieve": true,
-			"aoColumns": [{
+			"aoColumns": [
+				{
 					"sClass": "center"
+				},
+				{
+					"sClass": "center",
+					"bVisible": false
 				},
 				{
 					"sClass": "center"
 				},
 				{
 					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
+
+				}
 			],
 			"aaSorting": [
-				[0, "asc"]
+				[1, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -98,6 +102,23 @@ require_once APPLICATION_PATH . '/header.php';
 					"success": fnCallback
 				});
 			}
+		});
+		//oTable.fnSetColumnVis(1, false);
+
+		// Add event listener for opening and closing details
+		oTable.on('click', 'td', function (e) {
+    let tr = e.target.closest('tr');
+    let row = oTable.row(tr);
+ 
+    if (row.child.isShown()) {
+        // This row is already open - close it
+        row.child.hide();
+    }
+    else {
+        // Open this row
+        row.child(format(row.data())).show();
+    }
+
 		});
 		$.unblockUI();
 	});
@@ -122,6 +143,20 @@ require_once APPLICATION_PATH . '/header.php';
 			}
 		}
 	}
+
+	function format(d) {
+		var ins = d[1].split(",");
+
+    // `d` is the original data object for the row
+    return (
+        '<dl>' +
+        '<dt>Instruments :</dt>' +
+        '<dd><ul>' +
+		ins.map(i => '<li>'+i+'</li>').join('') +
+        '</ul></dd>' +
+        '</dl>'
+    );
+}
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';
