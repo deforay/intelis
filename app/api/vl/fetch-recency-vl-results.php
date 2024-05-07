@@ -51,7 +51,7 @@ $orderSortType = !empty($_REQUEST['orderSortType']) ? $db->escape($_REQUEST['ord
 
 if (!$sampleCode && !$recencyId && (!$from || !$to)) {
     http_response_code(400);
-    throw new SystemException("Mandatory request params missing in request. Expected Recency ID(s) or a Date Range");
+    throw new SystemException("Mandatory request params missing in request. Expected Recency ID(s) or a Date Range", 400);
 }
 
 try {

@@ -4,8 +4,8 @@ namespace App\Middlewares\Api;
 
 use Throwable;
 use Laminas\Diactoros\Response;
-use App\Exceptions\SystemException;
 use App\Utilities\LoggerUtility;
+use App\Exceptions\SystemException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Slim\Exception\HttpNotFoundException;

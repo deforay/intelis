@@ -10,7 +10,9 @@ use App\Registries\ContainerRegistry;
 use Laminas\Stratigility\MiddlewarePipe;
 use App\Middlewares\Api\ApiAuthMiddleware;
 use Slim\Middleware\BodyParsingMiddleware;
+
 use function Laminas\Stratigility\middleware;
+
 use Slim\Factory\ServerRequestCreatorFactory;
 use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
@@ -22,8 +24,6 @@ $apiService = AppFactory::create();
 $serverRequestCreator = ServerRequestCreatorFactory::create();
 $request = $serverRequestCreator->createServerRequestFromGlobals();
 
-// Set the request in the AppRegistry
-AppRegistry::set('request', $request);
 
 // Instantiate the middleware pipeline
 $middlewarePipe = new MiddlewarePipe();
@@ -81,9 +81,14 @@ $apiService->any('/api/v1.1/init', function ($request, $response, $args) {
 // TODO - Next version API to use Controllers/Actions
 
 
+// Custom Middleware to set the request in the AppRegistry
+$middlewarePipe->pipe(middleware(function ($request, $handler) {
+    AppRegistry::set('request', $request);
+    return $handler->handle($request);
+}));
+
 // Allow existing PHP includes using LegacyFallbackMiddleware
 $middlewarePipe->pipe(ContainerRegistry::get(ApiLegacyFallbackMiddleware::class));
-
 
 // Content Length Middleware
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
@@ -94,6 +99,5 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
 }));
 
 $apiService->add($middlewarePipe);
-
 
 $apiService->run();

@@ -38,7 +38,7 @@ if (
     (empty($input['uniqueId']) && empty($input['sampleCode']))
 ) {
     http_response_code(400);
-    throw new SystemException('Invalid request');
+    throw new SystemException('Invalid request', 400);
 }
 
 
