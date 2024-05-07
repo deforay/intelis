@@ -18,11 +18,9 @@ function _translate(?string $text, bool $escapeText = false)
     }
 
     $translatedString = SystemService::translate($text);
-
     // Use json_encode to ensure the string is safe for JavaScript
-    return $escapeText ? json_encode($translatedString) : $translatedString;
+    return $escapeText ? trim(json_encode($translatedString), '"') : $translatedString;
 }
-
 
 function _isAllowed($currentRequest, $privileges = null)
 {
