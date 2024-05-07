@@ -424,7 +424,7 @@ final class MiscUtility
     public static function generateUUID($attachExtraString = true): string
     {
         $uuid = Uuid::uuid4()->toString();
-        $uuid .= $attachExtraString ? '-' . Self::generateRandomString(6) : '';
+        $uuid .= $attachExtraString ? '-' . self::generateRandomString(6) : '';
         return $uuid;
     }
     public static function generateUUIDv5($name = null, $namespace = Uuid::NAMESPACE_URL): string
