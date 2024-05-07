@@ -20,15 +20,15 @@ function _translate(?string $text, ?bool $escapeText = false)
     $translatedString = SystemService::translate($text);
 
     if ($escapeText) {
-        // Use htmlspecialchars to convert special characters to HTML entities,
-        // and then use json_encode to ensure it's safe for JavaScript.
-        $escapedString = json_encode(htmlspecialchars((string) $translatedString, ENT_QUOTES, 'UTF-8'));
-        // json_encode will add double quotes around the string, remove them.
-        return trim($escapedString, '"');
+        // Only use json_encode to handle escaping for JSON/JavaScript
+        $escapedString = json_encode($translatedString);
+        // json_encode will add double quotes around the string, which is actually what we want for JavaScript.
+        return $escapedString;  // Directly return the JSON encoded string
     }
 
     return $translatedString;
 }
+
 
 function _isAllowed($currentRequest, $privileges = null)
 {

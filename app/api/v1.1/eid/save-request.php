@@ -403,7 +403,7 @@ try {
             'mother_name' => (!empty($data['mothersName']) && $data['mothersName'] != 'undefined') ? $data['mothersName'] : null,
             'mother_dob' => $data['mothersDob'] ?? null,
             'mother_marital_status' => $data['mothersMaritalStatus'] ?? null,
-            'mother_treatment' => $data['motherTreatment'],
+            'mother_treatment' => $data['motherTreatment'] ?? null,
             'mother_treatment_other' => $data['motherTreatmentOther'] ?? null,
             'mother_treatment_initiation_date' => $data['motherTreatmentInitiationDate'] ?? null,
             'child_id' => $data['childId'] ?? null,

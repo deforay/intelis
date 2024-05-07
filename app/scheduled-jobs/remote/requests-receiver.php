@@ -659,8 +659,8 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     $id = $db->getInsertId();
                 }
             }
-            // Symptoms details saving
-            if(isset($remoteData['data_from_symptoms']) && !empty($remoteData['data_from_symptoms'])){
+            // Symptoms
+            if (isset($remoteData['data_from_symptoms']) && !empty($remoteData['data_from_symptoms'])) {
                 $db->where('covid19_id', $id);
                 $db->delete("covid19_patient_symptoms");
                 foreach ($remoteData['data_from_symptoms'] as $symId => $value) {
@@ -672,8 +672,8 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     $db->insert("covid19_patient_symptoms", $symptomData);
                 }
             }
-            // comorbidities details savings
-            if(isset($remoteData['data_from_comorbidities']) && !empty($remoteData['data_from_comorbidities'])){
+            // comorbidities
+            if (isset($remoteData['data_from_comorbidities']) && !empty($remoteData['data_from_comorbidities'])) {
                 $db->where('covid19_id', $id);
                 $db->delete("covid19_patient_comorbidities");
                 foreach ($remoteData['data_from_comorbidities'] as $comoId => $comorbidityData) {
@@ -684,8 +684,8 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     $db->insert("covid19_patient_comorbidities", $comData);
                 }
             }
-            // sub tests details saving
-            if(isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])){
+            // sub tests
+            if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])) {
                 $db->where('covid19_id', $id);
                 $db->delete("covid19_tests");
                 foreach ($remoteData['data_from_tests'] as $covid19Id => $cdata) {
@@ -854,11 +854,11 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     $id = $db->getInsertId();
                 }
             }
-            
+
             foreach ($remoteData['data_from_risks'] as $hepatitisId => $risks) {
                 $db->where('hepatitis_id', $hepatitisId);
                 $db->delete("hepatitis_risk_factors");
-    
+
                 $rData = [];
                 foreach ($risks as  $riskId => $riskValue) {
                     $riskFactorsData = [];
@@ -876,7 +876,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             foreach ($remoteData['data_from_comorbidities'] as $hepatitisId => $comorbidities) {
                 $db->where('hepatitis_id', $hepatitisId);
                 $db->delete("hepatitis_patient_comorbidities");
-    
+
                 $cData = [];
                 foreach ($comorbidities as $comoId => $comoValue) {
                     $comorbidityData = [];
@@ -885,7 +885,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     $comorbidityData["comorbidity_detected"] = $comoValue;
                     $cData[] = $comorbidityData;
                 }
-    
+
                 $ids = $db->insertMulti('hepatitis_patient_comorbidities', $cData);
                 if (!$ids) {
                     error_log('insert failed: ' . $db->getLastError());
