@@ -21,7 +21,7 @@ final class TestsService
             ],
             'recency' => [
                 'testName' => _translate('HIV Recency'),
-                'testShortCode' => 'Recency',
+                'testShortCode' => 'VL',
                 'tableName' => 'form_vl',
                 'primaryKey' => 'vl_sample_id',
                 'patientId' => 'patient_art_no',
@@ -81,7 +81,7 @@ final class TestsService
             ],
             'generic-tests' => [
                 'testName' => _translate('Other Tests'),
-                'testShortCode' => 'TEST',
+                'testShortCode' => 'T',
                 'tableName' => 'form_generic',
                 'primaryKey' => 'sample_id',
                 'patientId' => 'patient_id',

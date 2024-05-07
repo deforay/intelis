@@ -16,6 +16,7 @@ final class GenericTestsService extends AbstractTestService
     protected string $testType = 'generic-tests';
 
 
+
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
@@ -87,7 +88,7 @@ final class GenericTestsService extends AbstractTestService
                 throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
             }
 
-            $testType = $params['testType'] ?? null;
+            $this->testType = $params['testType'] ?? $this->testType ?? 'generic-tests';
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
@@ -95,7 +96,7 @@ final class GenericTestsService extends AbstractTestService
             // Sample Collection Date Cannot be Empty
             // Test Type cannot be empty
             if (
-                empty($testType) ||
+                empty($this->testType) ||
                 empty($sampleCollectionDate) ||
                 ($formId == COUNTRY\PNG && empty($provinceId))
             ) {
@@ -106,19 +107,25 @@ final class GenericTestsService extends AbstractTestService
             $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
             $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
             $sampleCodeParams['provinceId'] = $provinceId;
-            $sampleCodeParams['testType'] = $testType;
+            $sampleCodeParams['testType'] = $this->testType;
             $sampleCodeParams['existingMaxId'] = $params['oldSampleCodeKey'] ?? null;
             $sampleCodeParams['insertOperation'] = $params['insertOperation'] ?? false;
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode((string) $sampleJson, true);
 
-            $sQuery = "SELECT sample_id FROM form_generic ";
-            if (!empty($sampleData['sampleCode'])) {
-                $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
+            if ($this->commonService->isSTSInstance()) {
+                $sampleCodeColumn = 'remote_sample_code';
+            } else {
+                $sampleCodeColumn = 'sample_code';
             }
-            $sQuery .= " LIMIT 1";
-            $rowData = $this->db->rawQueryOne($sQuery);
+
+            $rowData = [];
+            if (!empty($sampleData['sampleCode'])) {
+                $sQuery = "SELECT {$this->primaryKey} FROM {$this->table} ";
+                $sQuery .= " WHERE $sampleCodeColumn like '{$sampleData['sampleCode']}'";
+                $rowData = $this->db->rawQueryOne($sQuery);
+            }
 
             if (empty($rowData) && !empty($sampleData['sampleCode'])) {
 
@@ -132,7 +139,7 @@ final class GenericTestsService extends AbstractTestService
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                     'province_id' => _castVariable($provinceId, 'int'),
-                    'test_type' => $testType,
+                    'test_type' => $this->testType,
                     'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                     'form_attributes' => $params['formAttributes'] ?? "{}",
                     'request_created_datetime' => DateUtility::getCurrentDateTime(),
@@ -270,13 +277,11 @@ final class GenericTestsService extends AbstractTestService
 
         if (isset($resultConfig['result_type'][1]) && $resultConfig['result_type'][1] == 'quantitative') {
             if (is_numeric($result)) {
-                if ($result >= $resultConfig['high_value']) {
+                if ($result > $resultConfig['high_value']) {
                     $return = $resultConfig['above_threshold'];
-                }
-                if ($result == $resultConfig['threshold_value']) {
+                } elseif ($result == $resultConfig['threshold_value']) {
                     $return = $resultConfig['at_threshold'];
-                }
-                if ($result < $resultConfig['low_value']) {
+                } elseif ($result < $resultConfig['low_value']) {
                     $return = $resultConfig['below_threshold'];
                 }
             } else {
@@ -292,7 +297,7 @@ final class GenericTestsService extends AbstractTestService
         return $return;
     }
 
-    public function getTestsByGenericSampleIds($genericSampleIds = []): ?array
+    public function getTestsByGenericSampleIds($genericSampleIds = null): ?array
     {
         $response = [];
 

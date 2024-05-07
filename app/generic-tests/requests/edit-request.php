@@ -1209,6 +1209,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 				$('#reasonForFailure').removeClass('isRequired');
 			}
 		});
+		getSubTestList($("#testType").val());
+		loadSubTests();
 	});
 
 	function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
@@ -1527,7 +1529,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		//     $("#vlFocalPersonPhoneNumber").val($('#labId option:selected').attr('data-focalphone'));
 		// }
 	}
-
+	
 	function getTestTypeForm() {
 		removeDynamicForm();
 		var testType = $("#testType").val();
