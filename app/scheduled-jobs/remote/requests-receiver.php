@@ -82,7 +82,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
     }
 
     $jsonResponse = $apiService->post($url, $payload);
-
+    // die($jsonResponse);
     $columnList = [];
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
@@ -160,7 +160,8 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                     'manual_result_entry',
                     'result_status',
                     'data_sync',
-                    'result_printed_datetime'
+                    'result_printed_datetime',
+                    'data_from_tests'
                 );
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
@@ -180,6 +181,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 $db->where('sample_id', $existingSampleResult['sample_id']);
                 $id = $db->update('form_generic', $request);
+                $genericId = $existingSampleResult['sample_id'];
             } else {
                 $request['source_of_request'] = 'vlsts';
                 if (!empty($request['sample_collection_date'])) {
@@ -201,25 +203,34 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
                     $id = $db->insert('form_generic', $request);
+                    $genericId = $db->getInsertId();
                 }
             }
+            if(isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])){
+                $db->where('generic_id', $genericId);
+                $db->delete("generic_test_results");
+                foreach ($remoteData['data_from_tests'] as $genericTestData) {
+                    $db->insert("generic_test_results", array(
+                        "generic_id"                    => $genericId,
+                        "facility_id"                   => $genericTestData['facility_id'],
+                        "sub_test_name"                 => $genericTestData['sub_test_name'],
+                        "final_result_unit"             => $genericTestData['final_result_unit'],
+                        "result_type"                   => $genericTestData['result_type'],
+                        "test_name"                     => $genericTestData['test_name'],
+                        "tested_by"                     => $genericTestData['tested_by'],
+                        "sample_tested_datetime"        => $genericTestData['sample_tested_datetime'],
+                        "testing_platform"              => $genericTestData['testing_platform'],
+                        "kit_lot_no"                    => $genericTestData['kit_lot_no'],
+                        "kit_expiry_date"               => $genericTestData['kit_expiry_date'],
+                        "result"                        => $genericTestData['result'],
+                        "final_result"                  => $genericTestData['final_result'],
+                        "result_unit"                   => $genericTestData['result_unit'],
+                        "final_result_interpretation"   => $genericTestData['final_result_interpretation'],
+                        "updated_datetime"              => $genericTestData['updated_datetime']
+                    ));
+                }
+            } 
         }
-
-        $options = [
-            'pointer' => '/testResults',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($jsonResponse, $options);
-
-        foreach ($parsedData as $genericId => $testResults) {
-            $db->where('generic_id', $genericId);
-            $db->delete("generic_test_results");
-            foreach ($testResults as $genericTestData) {
-                unset($genericTestData['test_id']);
-                $db->insert("generic_test_results", $genericTestData);
-            }
-        }
-
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
     }
 }
@@ -544,10 +555,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             //'request_created_by',
             //'last_modified_by',
             //'request_created_datetime',
-            'data_sync',
-            'data_from_comorbidities',
-            'data_from_symptoms',
-            'data_from_tests'
+            'data_sync'
         ];
 
 
@@ -618,7 +626,10 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     'last_modified_by',
                     'result_printed_datetime',
                     'result_dispatched_datetime',
-                    'last_modified_datetime'
+                    'last_modified_datetime',
+                    'data_from_comorbidities',
+                    'data_from_symptoms',
+                    'data_from_tests'
                 ];
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
@@ -739,9 +750,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             //'request_created_by',
             //'last_modified_by',
             //'request_created_datetime',
-            'data_sync',
-            'data_from_comorbidities',
-            'data_from_risks'
+            'data_sync'
         ];
 
 
@@ -812,7 +821,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     'last_modified_datetime',
                     'result_printed_datetime',
                     'result_dispatched_datetime',
-                    'reason_for_vl_test'
+                    'reason_for_vl_test',
+                    'data_from_comorbidities',
+                    'data_from_risks'
                 );
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));

@@ -292,7 +292,7 @@ final class GenericTestsService extends AbstractTestService
         return $return;
     }
 
-    public function getTestsByGenericSampleIds($genericSampleIds = []): ?array
+    public function getTestsByGenericSampleIds($genericSampleIds = null): ?array
     {
         $response = [];
 
