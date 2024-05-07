@@ -27,9 +27,9 @@ abstract class AbstractTestService
     {
         $this->db = $db;
         $this->commonService = $commonService;
-        $this->table = TestsService::getTestTableName($this->testType);
-        $this->primaryKey = TestsService::getTestPrimaryKeyColumn($this->testType);
-        $this->shortCode = TestsService::getTestShortCode($this->testType);
+        $this->table = $this->table ?? TestsService::getTestTableName($this->testType);
+        $this->primaryKey = $this->primaryKey ?? TestsService::getTestPrimaryKeyColumn($this->testType);
+        $this->shortCode = $this->shortCode ?? TestsService::getTestShortCode($this->testType);
     }
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);
@@ -41,35 +41,17 @@ abstract class AbstractTestService
             test_type = ? AND
             code_type = ?";
 
-        // if ($insertOperation) {
-        //     $sql .= " FOR UPDATE";
-        // }
+        if ($insertOperation) {
+            $sql .= " FOR UPDATE";
+        }
         $yearData = $this->db->rawQueryOne($sql, [
             $year,
             $testType,
             $sampleCodeType
         ]);
 
-        if (!empty($yearData['max_sequence_number'])) {
-            return max((int) $yearData['max_sequence_number'], 0);
-        }
-
-        return 0;
-    }
-
-    protected function updateSequenceCounter()
-    {
-        $sql = "INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
-                    SELECT '{$this->testType}' AS test_type,
-                        YEAR(sample_collection_date) AS year,
-                        'sample_code' AS code_type,
-                        MAX(sample_code_key) AS max_sequence_number
-                    FROM {$this->table}
-                    GROUP BY YEAR(sample_collection_date)
-                    HAVING MAX(sample_code_key) IS NOT NULL
-                    ON DUPLICATE KEY UPDATE
-                    max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number);";
-        return $this->db->rawQuery($sql);
+        $yearData['max_sequence_number'] = $yearData['max_sequence_number'] ?? 0;
+        return max((int) $yearData['max_sequence_number'], 0);
     }
 
     public function generateSampleCode($testTable, $params, $tryCount = 0)
@@ -86,6 +68,8 @@ abstract class AbstractTestService
             $this->db->beginTransaction();
         }
 
+        $this->testType = $params['testType'] ?? $this->testType ?? 'generic-tests';
+
         $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
         try {
@@ -95,12 +79,13 @@ abstract class AbstractTestService
                 $provinceCode = $params['provinceCode'] ?? '';
                 //$provinceId = $params['provinceId'] ?? null;
                 $sampleCodeFormat = $params['sampleCodeFormat'] ?? 'MMYY';
-                $prefix = $params['prefix'] ?? 'T';
+                $prefix = $params['prefix'] ?? $this->shortCode ?? 'T';
                 $existingMaxId = $params['existingMaxId'] ?? 0;
 
                 if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false) {
                     $sampleCollectionDate = 'now';
                 }
+
                 $dateObj = new DateTimeImmutable($sampleCollectionDate);
 
                 $year = $dateObj->format('y');
@@ -130,14 +115,14 @@ abstract class AbstractTestService
                         $maxId = $latestSequenceId + 1;
                     } else {
                         // If no sequence number exists in sequence_counter table, get the max sequence number from form table
-                        $sql = "SELECT MAX({$sampleCodeType}_key) AS max_sequence_number
+                        $sql = "SELECT MAX($sampleCodeKeyCol) AS max_sequence_number
                                     FROM $this->table
                                     WHERE YEAR(sample_collection_date) = ? AND
-                                    {$sampleCodeType}_key IS NOT NULL AND
-                                    {$sampleCodeType}_key != ''";
-                        if ($insertOperation) {
-                            $sql .= " FOR UPDATE";
-                        }
+                                    $sampleCodeType IS NOT NULL AND
+                                    IFNULL($sampleCodeKeyCol, '') != ''";
+                        // if ($insertOperation) {
+                        //     $sql .= " FOR UPDATE";
+                        // }
                         $yearData = $this->db->rawQueryOne($sql, [$currentYear]);
                         if (!empty($yearData)) {
                             $maxId = $yearData['max_sequence_number'] + 1;
@@ -216,6 +201,11 @@ abstract class AbstractTestService
             if ($insertOperation) {
                 $this->db->rollbackTransaction();
             }
+
+            if ($tryCount < $this->maxTries) {
+                return $this->generateSampleCode($testTable, $params, $tryCount + 1);
+            }
+
             throw new SystemException("Error while generating Sample ID for $testTable (try count = $tryCount) : " . $exception->getMessage(), $exception->getCode(), $exception);
         }
     }
