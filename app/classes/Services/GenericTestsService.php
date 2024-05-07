@@ -113,12 +113,18 @@ final class GenericTestsService extends AbstractTestService
             $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode((string) $sampleJson, true);
 
-            $sQuery = "SELECT sample_id FROM form_generic ";
-            if (!empty($sampleData['sampleCode'])) {
-                $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
+            if ($this->commonService->isSTSInstance()) {
+                $sampleCodeColumn = 'remote_sample_code';
+            } else {
+                $sampleCodeColumn = 'sample_code';
             }
-            $sQuery .= " LIMIT 1";
-            $rowData = $this->db->rawQueryOne($sQuery);
+
+            $rowData = [];
+            if (!empty($sampleData['sampleCode'])) {
+                $sQuery = "SELECT {$this->primaryKey} FROM {$this->table} ";
+                $sQuery .= " WHERE $sampleCodeColumn like '{$sampleData['sampleCode']}'";
+                $rowData = $this->db->rawQueryOne($sQuery);
+            }
 
             if (empty($rowData) && !empty($sampleData['sampleCode'])) {
 

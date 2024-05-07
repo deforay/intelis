@@ -17,8 +17,9 @@ abstract class AbstractTestService
 {
     protected DatabaseService $db;
     protected CommonService $commonService;
-    protected int $maxTries = 3; // Max tries for generating Sample ID
+    protected int $maxTries = 5; // Max tries for generating Sample ID
     protected string $table;
+    protected string $primaryKey;
     protected string $testType;
     protected string $shortCode;
 
@@ -27,6 +28,7 @@ abstract class AbstractTestService
         $this->db = $db;
         $this->commonService = $commonService;
         $this->table = TestsService::getTestTableName($this->testType);
+        $this->primaryKey = TestsService::getTestPrimaryKeyColumn($this->testType);
         $this->shortCode = TestsService::getTestShortCode($this->testType);
     }
     abstract public function getSampleCode($params);
@@ -84,10 +86,10 @@ abstract class AbstractTestService
             $this->db->beginTransaction();
         }
 
+        $formId = (int) $this->commonService->getGlobalConfig('vl_form');
+
         try {
             while ($tryCount < $this->maxTries) {
-
-                $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
                 $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
                 $provinceCode = $params['provinceCode'] ?? '';
@@ -133,9 +135,9 @@ abstract class AbstractTestService
                                     WHERE YEAR(sample_collection_date) = ? AND
                                     {$sampleCodeType}_key IS NOT NULL AND
                                     {$sampleCodeType}_key != ''";
-                        // if ($insertOperation) {
-                        //     $sql .= " FOR UPDATE";
-                        // }
+                        if ($insertOperation) {
+                            $sql .= " FOR UPDATE";
+                        }
                         $yearData = $this->db->rawQueryOne($sql, [$currentYear]);
                         if (!empty($yearData)) {
                             $maxId = $yearData['max_sequence_number'] + 1;
@@ -204,6 +206,7 @@ abstract class AbstractTestService
 
                     $this->db->upsert('sequence_counter', $data, $updateColumns);
                 }
+
                 return json_encode($sampleCodeGenerator);
             }
 

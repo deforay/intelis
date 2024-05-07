@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 use function iter\count as iterCount;
 use function iter\toArray as iterToArray;
 
-function _translate(?string $text, ?bool $escapeText = false)
+function _translate(?string $text, bool $escapeText = false)
 {
     if (empty($text) || !is_string($text)) {
         return $text;
@@ -19,14 +19,8 @@ function _translate(?string $text, ?bool $escapeText = false)
 
     $translatedString = SystemService::translate($text);
 
-    if ($escapeText) {
-        // Only use json_encode to handle escaping for JSON/JavaScript
-        $escapedString = json_encode($translatedString);
-        // json_encode will add double quotes around the string, which is actually what we want for JavaScript.
-        return $escapedString;  // Directly return the JSON encoded string
-    }
-
-    return $translatedString;
+    // Use json_encode to ensure the string is safe for JavaScript
+    return $escapeText ? json_encode($translatedString) : $translatedString;
 }
 
 
