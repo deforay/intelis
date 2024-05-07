@@ -373,9 +373,9 @@ try {
 
         $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
-        $data['motherTreatment'] = $data['motherTreatment'] ?? [];
-        $data['childTreatment'] = $data['childTreatment'] ?? [];
-        $data['childTreatmentOther'] = $data['childTreatmentOther'] ?? [];
+        $data['motherTreatment'] = (!empty($data['motherTreatment']) && $data['motherTreatment'] !== '') ? $data['motherTreatment'] : [];
+        $data['childTreatment'] = (!empty($data['childTreatment']) && $data['childTreatment'] !== '') ? $data['childTreatment'] : [];
+        $data['childTreatmentOther'] = (!empty($data['childTreatmentOther']) && $data['childTreatmentOther'] !== '') ? $data['childTreatmentOther'] : [];
 
         $eidData = [
             'vlsm_instance_id' => $instanceId,
@@ -392,7 +392,7 @@ try {
             'mother_name' => (!empty($data['mothersName']) && $data['mothersName'] != 'undefined') ? $data['mothersName'] : null,
             'mother_dob' => $data['mothersDob'] ?? null,
             'mother_marital_status' => $data['mothersMaritalStatus'] ?? null,
-            'mother_treatment' => !empty($data['motherTreatment']) ? implode(",", $data['motherTreatment']) : $data['motherTreatment'],
+            'mother_treatment' => !empty($data['motherTreatment']) && is_array($data['motherTreatment'])  ? implode(",", $data['motherTreatment']) : $data['motherTreatment'],
             'mother_treatment_other' => $data['motherTreatmentOther'] ?? null,
             'mother_treatment_initiation_date' => $data['motherTreatmentInitiationDate'] ?? null,
             'child_id' => $data['childId'] ?? null,
@@ -403,8 +403,8 @@ try {
             'health_insurance_code' => $data['healthInsuranceCode'] ?? null,
             'child_age' => $data['childAge'] ?? null,
             'child_age_in_weeks' => $data['childAgeInWeeks'] ?? null,
-            'child_treatment' => !empty($data['childTreatment']) ? implode(",", $data['childTreatment']) : $data['childTreatment'],
-            'child_treatment_other' => !empty($data['childTreatmentOther']) ? implode(",", $data['childTreatmentOther']) : $data['childTreatmentOther'],
+            'child_treatment' => !empty($data['childTreatment']) && is_array($data['childTreatment']) ? implode(",", $data['childTreatment']) : $data['childTreatment'],
+            'child_treatment_other' => !empty($data['childTreatmentOther']) && is_array($data['childTreatmentOther']) ? implode(",", $data['childTreatmentOther']) : $data['childTreatmentOther'],
             'mother_cd4' => $data['mothercd4'] ?? null,
             'mother_vl_result' => $motherVlResult,
             'mother_hiv_status' => $data['mothersHIVStatus'] ?? null,

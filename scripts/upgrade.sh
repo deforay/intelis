@@ -470,7 +470,7 @@ log_action "VLSM copied to ${vlsm_path}."
 setfacl -R -m u:$USER:rwx,u:www-data:rwx "${vlsm_path}"
 
 # Run Composer Install as www-data
-echo "Running composer update as www-data user..."
+echo "Running composer install as www-data user..."
 cd "${vlsm_path}"
 
 sudo -u www-data composer config process-timeout 30000
