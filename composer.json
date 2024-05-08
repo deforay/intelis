@@ -57,7 +57,8 @@
         "brick/phonenumber": "^0.6.0",
         "phpmyadmin/sql-parser": "^5.9",
         "nikic/iter": "^2.3",
-        "symfony/cache": "^6.4"
+        "symfony/cache": "^6.4",
+        "gregwar/captcha": "^1.2"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"

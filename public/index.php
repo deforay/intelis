@@ -89,7 +89,6 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
 
 $middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
 
-
 // Handle the request and generate the response
 $response = $middlewarePipe->handle($request);
 
