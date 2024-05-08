@@ -1,25 +1,21 @@
 <?php
 
-
 namespace App\Interop;
 
-use App\Utilities\LoggerUtility;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
+use App\Utilities\LoggerUtility;
 use GuzzleHttp\Exception\GuzzleException;
 
 class Dhis2
 {
-	private const string DEFAULT_USERNAME = 'admin';
-	private const string DEFAULT_PASSWORD = 'district';
-	private const string DEFAULT_CONTENT_TYPE = 'application/json';
-
+	private const DEFAULT_USERNAME = 'admin';
+	private const DEFAULT_PASSWORD = 'district';
+	private const DEFAULT_CONTENT_TYPE = 'application/json';
 	private readonly Client $httpClient;
 	private bool $authenticated = false;
 	private string $contentType;
 	public string $currentRequestUrl;
-
-
 
 	public function __construct(string $dhis2url, string $username = self::DEFAULT_USERNAME, string $password = self::DEFAULT_PASSWORD, string $contentType = self::DEFAULT_CONTENT_TYPE)
 	{
@@ -201,7 +197,7 @@ class Dhis2
 		}
 
 		try {
-            return $this->httpClient->get($this->currentRequestUrl . $path . $queryString);
+			return $this->httpClient->get($this->currentRequestUrl . $path . $queryString);
 		} catch (GuzzleException $e) {
 			LoggerUtility::log('error', $e->getMessage(), [
 				'url' => $this->currentRequestUrl . $path . $queryString
@@ -224,9 +220,9 @@ class Dhis2
 		}
 
 		try {
-            return $this->httpClient->post($this->currentRequestUrl . $path . $queryString, [
-                'json' => $data
-            ]);
+			return $this->httpClient->post($this->currentRequestUrl . $path . $queryString, [
+				'json' => $data
+			]);
 		} catch (GuzzleException $e) {
 			LoggerUtility::log('error', $e->getMessage(), [
 				'url' => $this->currentRequestUrl . $path . $queryString,
@@ -250,9 +246,9 @@ class Dhis2
 		}
 
 		try {
-            return $this->httpClient->put($path . $queryString, [
-                'json' => $data
-            ]);
+			return $this->httpClient->put($path . $queryString, [
+				'json' => $data
+			]);
 		} catch (GuzzleException $e) {
 			LoggerUtility::log('error', $e->getMessage(), [
 				'url' => $this->currentRequestUrl . $path . $queryString,
