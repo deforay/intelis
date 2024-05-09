@@ -29,7 +29,7 @@ function _isAllowed($currentRequest, $privileges = null)
     return $usersService->isAllowed($currentRequest, $privileges);
 }
 
-function _sanitizeInput(string|array|null $data, $customFilters = [])
+function _sanitizeInput(string|array|null $data, $nullifyEmptyStrings = false, $customFilters = [])
 {
     // Check for null, empty array, or empty string and return appropriately
     if ($data === null) {
@@ -64,6 +64,10 @@ function _sanitizeInput(string|array|null $data, $customFilters = [])
         }
     }
     unset($value); // Break reference link
+
+    if ($nullifyEmptyStrings === true) {
+        $data = MiscUtility::arrayEmptyStringsToNull($data);
+    }
 
     return $data;
 }
