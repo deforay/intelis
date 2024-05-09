@@ -111,7 +111,7 @@ $testTypeList = SystemService::getActiveModules(true);
 										<?php echo _translate("Instrument Name"); ?><span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder="<?php echo _translate('eg. Roche or Abbott'); ?>" title="<?php echo _translate('Please enter instrument name'); ?>" value="<?php echo $sInfo['machine_name']; ?>" onblur="checkNameValidation('instruments','machine_name',this,'<?php echo "instrument_id##" . $sInfo['instrument_id']; ?>','<?php echo _translate('This instrument name already exists.Try another name'); ?>',null);" />
+										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder="<?php echo _translate('eg. Roche or Abbott'); ?>" title="<?php echo _translate('Please enter instrument name'); ?>" value="<?php echo $sInfo['machine_name']; ?>" onchange="setConfigFileName();" onblur="checkNameValidation('instruments','machine_name',this,'<?php echo "instrument_id##" . $sInfo['instrument_id']; ?>','<?php echo _translate('This instrument name already exists.Try another name'); ?>',null);" />
 									</div>
 								</div>
 							</div>
@@ -175,7 +175,19 @@ $testTypeList = SystemService::getActiveModules(true);
 										<?= _translate("Instrument File Name"); ?><span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder="<?php echo _translate('eg. roche.php or abbott.php'); ?>" title="<?php echo _translate('Please enter file name'); ?>" value="<?php echo $sInfo['import_machine_file_name']; ?>" />
+										<!--<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder="<?php echo _translate('eg. roche.php or abbott.php'); ?>" title="<?php echo _translate('Please enter file name'); ?>" value="<?php echo $sInfo['import_machine_file_name']; ?>" />-->
+										<select name="configurationFile" id="configurationFile" class="form-control">
+											<?php
+											$configDir = realpath(__DIR__);
+											$log_directory = $configDir . DIRECTORY_SEPARATOR . 'vl';
+											foreach(glob($log_directory.'/*.*') as $file) {
+												$arr = explode('/',$file);
+												?>
+												<option value="<?= $arr[7]; ?>" <?php if($sInfo['import_machine_file_name']==$arr[7]) echo "selected='selected'"; ?>><?= $arr[7]; ?></option>
+												<?php
+											}
+										?>
+											</select>
 									</div>
 								</div>
 							</div>
@@ -781,6 +793,31 @@ $testTypeList = SystemService::getActiveModules(true);
 		} else {
 			$(".latLong" + id).css("display", "none");
 			// $("#pocdevice"+id).val('no');
+		}
+	}
+
+	function setConfigFileName() {
+		var configName = $("#configurationName").val();
+		if ($.trim(configName) != '') {
+			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
+			if (configName.length > 0) {
+				configName = configName.replace(/\s+/g, ' ');
+				configName = configName.replace(/ /g, '-');
+				configName = configName.replace(/\-$/, '');
+				var configFileName = configName.toLowerCase() + ".php";
+				var path = '<?php echo $log_directory.'/'; ?>'+configFileName;
+				$.post("/includes/checkFileExists.php", {
+				fileName: path,
+			},
+			function(data) {
+				if (data === 'not exists') {
+					$("#configurationFile").append('<option value="">'+configFileName+'</option>');
+				}
+			});
+			
+			}
+		} else {
+			$("#configurationFile").val("");
 		}
 	}
 </script>
