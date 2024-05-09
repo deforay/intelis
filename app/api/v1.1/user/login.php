@@ -78,7 +78,7 @@ try {
         $data['access'] = $usersService->getUserRolePrivileges($userResult['user_id']);
 
         $payload = [
-            'status' => 'success',
+            'status' => 1,
             'message' => 'Login Success',
             'timestamp' => time(),
             'transactionId' => $transactionId,
@@ -90,7 +90,7 @@ try {
 } catch (Throwable $exc) {
     http_response_code(500);
     $payload = [
-        'status' => 'failed',
+        'status' => 2,
         'message' => 'Login failed. Please contact system administrator.',
         'timestamp' => time(),
         'transactionId' => $transactionId
