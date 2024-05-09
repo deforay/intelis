@@ -23,6 +23,16 @@ final class MiscUtility
         }
     }
 
+    public static function generateRandomNumber(int $length = 8): string
+    {
+        $result = '';
+        for ($i = 0; $i < $length; $i++) {
+            $result .= random_int(0, 9);
+        }
+        return $result;
+    }
+
+
     public static function randomHexColor(): string
     {
         $hexColorPart = function () {
