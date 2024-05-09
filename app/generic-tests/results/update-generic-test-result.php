@@ -666,7 +666,6 @@ $reasonForChange = $reasonForChangeArr[1];
 								</div>
 							</div>
 							<div id="otherSection" class="disabledForm"></div>
-							<?php if (_isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 								<div class="box box-primary">
 									<div class="box-header with-border">
 										<h3 class="box-title"><?= _translate('Laboratory Information'); ?></h3>
@@ -898,7 +897,6 @@ $reasonForChange = $reasonForChangeArr[1];
 										<?php } ?>
 										<div class="row" id="labSection"></div>
 									</div>
-								<?php } ?>
 								</div>
 						</div>
 					</div>
