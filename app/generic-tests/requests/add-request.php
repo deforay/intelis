@@ -1571,7 +1571,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
                               width: '100%'
                          });
-                         var length = $('#mySelectList > option').length;
+                         var length = $('#subTestResult > option').length;
                          if (length > 1) {
                               $('.subTestFields').show();
                          } else {
