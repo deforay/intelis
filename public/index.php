@@ -19,9 +19,6 @@ use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 // Create a server request object from the globals
 $request = ServerRequestFactory::fromGlobals();
 
-// Set the request in the AppRegistry
-AppRegistry::set('request', $request);
-
 // Instantiate the middleware pipeline
 $middlewarePipe = new MiddlewarePipe();
 
@@ -84,8 +81,13 @@ if (fnmatch('/system-admin*', $uri)) {
 // ACL Middleware
 // TODO: Implement ACL Middleware
 
-$middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
+// Custom Middleware to set the request in the AppRegistry
+$middlewarePipe->pipe(middleware(function ($request, $handler) {
+    AppRegistry::set('request', $request);
+    return $handler->handle($request);
+}));
 
+$middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
 
 // Handle the request and generate the response
 $response = $middlewarePipe->handle($request);

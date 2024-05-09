@@ -4,14 +4,13 @@ use App\Services\UsersService;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
-
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
-
 
 $input = $request->getParsedBody();
 
@@ -27,6 +26,12 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $transactionId = MiscUtility::generateUUID();
 
 try {
+
+    if (empty($input) || empty($input['userName']) || (empty($input['password']))) {
+        http_response_code(400);
+        throw new SystemException('Invalid request', 400);
+    }
+
     if (!empty($input['userName']) && !empty($input['password'])) {
         $userQuery = "SELECT ud.user_id,
                         ud.user_name,
@@ -90,7 +95,12 @@ try {
         'timestamp' => time(),
         'transactionId' => $transactionId
     ];
-    error_log($exc->getMessage());
+
+    LoggerUtility::log('error', $exc->getMessage(), [
+        'file' => $exc->getLine(),
+        'line' => $exc->getFile(),
+        'trace' => $exc->getTraceAsString()
+    ]);
 }
 $payload = json_encode($payload);
 

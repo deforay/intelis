@@ -285,7 +285,10 @@ try {
             $reasonForChanges = json_encode($allChange);
         }
         $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
-
+        /* Field missing corrections */
+        $data['dob'] = $data['dob'] ?? $data['patientDob'] ?? null;
+        $data['sampleTestingDateAtLab'] = $data['sampleTestingDateAtLab'] ?? $data['sampleTestedDateTime'] ?? null;
+        
         $vlFulldata = [
             'vlsm_instance_id' => $instanceId,
             'sample_collection_date' => $sampleCollectionDate,
@@ -294,7 +297,7 @@ try {
             'facility_id' => $data['facilityId'] ?? null,
             'patient_gender' => $data['patientGender'] ?? null,
             'health_insurance_code' => $data['healthInsuranceCode'] ?? null,
-            'patient_dob' => DateUtility::isoDateFormat($data['dob'] ?? ''),
+            'patient_dob' => DateUtility::isoDateFormat($data['dob']),
             'patient_age_in_years' => $data['ageInYears'] ?? null,
             'patient_age_in_months' => $data['ageInMonths'] ?? null,
             'is_patient_pregnant' => $data['patientPregnant'] ?? null,
@@ -329,7 +332,7 @@ try {
             'vl_test_platform' => $data['testingPlatform'] ?? null,
             'sample_received_at_hub_datetime' => DateUtility::isoDateFormat($data['sampleReceivedAtHubOn'] ?? '', true),
             'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($data['sampleReceivedDate'] ?? '', true),
-            'sample_tested_datetime' => DateUtility::isoDateFormat($data['sampleTestingDateAtLab'] ?? $data['sampleTestedDateTime'] ?? '', true),
+            'sample_tested_datetime' => DateUtility::isoDateFormat($data['sampleTestingDateAtLab'], true),
             'sample_dispatched_datetime' => DateUtility::isoDateFormat($data['sampleDispatchedOn'] ?? '', true),
             'result_dispatched_datetime' => DateUtility::isoDateFormat($data['resultDispatchedOn'] ?? '', true),
             'result_value_hiv_detection' => $hivDetection,

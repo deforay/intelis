@@ -23,6 +23,16 @@ final class MiscUtility
         }
     }
 
+    public static function generateRandomNumber(int $length = 8): string
+    {
+        $result = '';
+        for ($i = 0; $i < $length; $i++) {
+            $result .= random_int(0, 9);
+        }
+        return $result;
+    }
+
+
     public static function randomHexColor(): string
     {
         $hexColorPart = function () {
@@ -424,7 +434,7 @@ final class MiscUtility
     public static function generateUUID($attachExtraString = true): string
     {
         $uuid = Uuid::uuid4()->toString();
-        $uuid .= $attachExtraString ? '-' . Self::generateRandomString(6) : '';
+        $uuid .= $attachExtraString ? '-' . self::generateRandomString(6) : '';
         return $uuid;
     }
     public static function generateUUIDv5($name = null, $namespace = Uuid::NAMESPACE_URL): string
