@@ -10,6 +10,7 @@ use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
+
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -24,18 +25,14 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$packageTable = "package_details";
-
 $tableName = TestsService::getTestTableName($_POST['module']);
 $primaryKey = TestsService::getTestPrimaryKeyColumn($_POST['module']);
-
-
 
 try {
     $selectedSample = explode(",", (string) $_POST['selectedSample']);
     $uniqueSampleId = array_unique($selectedSample);
     if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "") {
-        $data = array(
+        $data = [
             'package_code'              => $_POST['packageCode'],
             'module'                    => $_POST['module'],
             'added_by'                  => $_SESSION['userId'],
@@ -43,10 +40,10 @@ try {
             'number_of_samples'         => count($selectedSample),
             'package_status'            => 'pending',
             'request_created_datetime'  => DateUtility::getCurrentDateTime(),
-            'last_modified_datetime' => DateUtility::getCurrentDateTime()
-        );
+            'last_modified_datetime'    => DateUtility::getCurrentDateTime()
+        ];
 
-        $db->insert($packageTable, $data);
+        $db->insert('package_details', $data);
         $lastId = $db->getInsertId();
         if ($lastId > 0) {
             for ($j = 0; $j < count($selectedSample); $j++) {
