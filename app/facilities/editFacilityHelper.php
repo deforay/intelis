@@ -24,9 +24,7 @@ $geolocation = ContainerRegistry::get(GeoLocationsService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
-
-$_POST = MiscUtility::arrayEmptyStringsToNull($_POST);
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 // Get the uploaded files from the request object
 $uploadedFiles = $request->getUploadedFiles();

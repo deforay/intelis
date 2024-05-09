@@ -38,8 +38,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 
-$_POST = _sanitizeInput($request->getParsedBody());
-$_POST = MiscUtility::arrayEmptyStringsToNull($_POST);
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 $instanceId = $general->getInstanceId();
 try {
