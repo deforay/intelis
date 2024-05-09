@@ -210,9 +210,10 @@ try {
      } */
 
      if (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) {
+          $subTestResult = $_POST['subTestResult'];
           $_POST['subTestResult'] = implode("##", $_POST['subTestResult']);
      } else {
-          $_POST['subTestResult'] = '';
+          $_POST['subTestResult'] =  $subTestResult ='';
      }
 
 
@@ -296,9 +297,10 @@ try {
           if (!empty($_POST['testName'])) {
                $db->where('generic_id', $_POST['vlSampleId']);
                $db->delete('generic_test_results');
-               if (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) {
+               if (isset($subTestResult) && is_array($subTestResult)) {
                     foreach ($_POST['testName'] as $subTestName => $subTests) {
                          foreach ($subTests as $testKey => $testKitName) {
+                              // die($_POST['finalResult'][$subTestName]);
                               if (!empty($testKitName)) {
                                    $testData = array(
                                         'generic_id' => $_POST['vlSampleId'],
@@ -318,8 +320,15 @@ try {
                                         'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
                                    );
                                    $db->insert('generic_test_results', $testData);
-                                   if (isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])) {
+                                   if (isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName]) && !empty($finalResult)) {
                                         $finalResult = $_POST['finalResult'][$subTestName];
+                                   }else{
+                                        foreach($_POST['finalResult'] as $key => $value){
+                                             if(isset($value) && !empty($value) && empty($finalResult)){
+                                                  $finalResult = $value;
+                                             }
+                                             
+                                         }
                                    }
                               }
                          }
@@ -357,8 +366,8 @@ try {
                         }
                     }
                 }
-               $genericData['result'] = $finalResult;
           }
+          $genericData['result'] = $finalResult;
      } else {
           $db->where('generic_id', $_POST['vlSampleId']);
           $db->delete('generic_test_results');
