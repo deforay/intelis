@@ -219,7 +219,7 @@ if (!empty($interfaceData)) {
                 'result_value_absolute_decimal' => $absDecimalVal,
                 'result_value_text' => $txtVal,
                 'result' => $vlResult,
-                'vl_test_platform' => $result['machine_used'],
+                'vl_test_platform' => $instrumentDetails['machine_name'] ?? $result['machine_used'],
                 'result_status' => SAMPLE_STATUS\ACCEPTED,
                 'manual_result_entry' => 'no',
                 'result_printed_datetime' => null,
