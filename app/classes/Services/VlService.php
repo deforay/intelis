@@ -320,14 +320,14 @@ final class VlService extends AbstractTestService
         $originalResultValue = $result;
         $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results') === 'yes';
 
-        // Handling inequality operators and scientific notation in the result
+        // Handling inequality operators (< and >), and scientific notation in the result
         if (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $result, $matches)) {
             $operator = $matches[1];
             $numericValue = floatval($matches[2]);
 
             if (!empty($unit) && str_contains($unit, 'Log')) {
                 $logVal = $numericValue;
-                $absDecimalVal = pow(10, $logVal);
+                $absDecimalVal = round(pow(10, $logVal), 2);
             } else {
                 $absDecimalVal = $numericValue;
                 $logVal = log10($absDecimalVal);
