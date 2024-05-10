@@ -27,9 +27,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
-//system config
-$sarr = $general->getSystemConfig();
-
 if ($general->isSTSInstance()) {
     $sCode = 'remote_sample_code';
 } elseif ($general->isLISInstance() || $general->isStandaloneInstance()) {
@@ -55,8 +52,6 @@ $vlForm = (int) $general->getGlobalConfig('vl_form');
 
 $aColumns = array('p.package_code', 'p.module', 'facility_name', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
 $orderColumns = array('p.package_id', 'p.module', 'facility_name', 'p.package_code', 'p.package_id', 'p.request_created_datetime');
-
-
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {

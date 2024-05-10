@@ -69,7 +69,7 @@ $sResult = $db->rawQuery($sQuery);
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+                    <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
                         <tr>
                             <td><strong>
                                     <?php echo _translate("Sample Collection Date"); ?> :
@@ -136,14 +136,15 @@ $sResult = $db->rawQuery($sQuery);
                                 </strong></td>
                             <td>
                                 <select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
+
+                                    <option value="5">
+                                        <?php echo _translate("Failed"); ?>
+                                    </option>
                                     <option value="1">
                                         <?php echo _translate("Hold"); ?>
                                     </option>
                                     <option value="2">
                                         <?php echo _translate("Lost"); ?>
-                                    </option>
-                                    <option value="5">
-                                        <?php echo _translate("Failed"); ?>
                                     </option>
                                     <option value="10">
                                         <?php echo _translate("Expired"); ?>
@@ -193,7 +194,7 @@ $sResult = $db->rawQuery($sQuery);
                         <input type="hidden" name="checkedTests" id="checkedTests" />
                         <table aria-describedby="table" id="cd4FailedRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
-                            <tr>
+                                <tr>
                                     <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
                                     <th>
                                         <?php echo _translate("Sample ID"); ?>

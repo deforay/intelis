@@ -135,14 +135,15 @@ $sResult = $db->rawQuery($sQuery);
                                 </strong></td>
                             <td>
                                 <select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
+
+                                    <option value="5">
+                                        <?php echo _translate("Failed"); ?>
+                                    </option>
                                     <option value="1">
                                         <?php echo _translate("Hold"); ?>
                                     </option>
                                     <option value="2">
                                         <?php echo _translate("Lost"); ?>
-                                    </option>
-                                    <option value="5">
-                                        <?php echo _translate("Failed"); ?>
                                     </option>
                                     <option value="10">
                                         <?php echo _translate("Expired"); ?>
