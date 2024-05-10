@@ -140,7 +140,6 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 						$('#logViewer').append(data);
 						let linesReturned = (data.match(/class='logLine'/g) || []).length;
 						start += linesReturned; // Update the start index based on actual lines returned
-						$('#userDate').val('<?php echo $_SESSION['selectedDate'];?>');
 					}
 					loading = false;
 				},
@@ -178,6 +177,13 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 			}
 		});
 	});
+
+	function listDate(date){
+		console.log(date);
+		$('#userDate').val(date);
+		$('#logViewer').html('');
+		loadLogs();
+	}
 </script>
 
 
