@@ -1685,7 +1685,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			},
 			function(data) {
 				if (data != "") {
-					$("#subTestResult").append(data);
+					$("#subTestResult").html(data);
 					$("#subTestResult").multipleSelect({
 						placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
 						width: '100%'

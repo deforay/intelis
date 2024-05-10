@@ -99,7 +99,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_generic as vl
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS *, vl.last_modified_datetime FROM form_generic as vl
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
           LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.specimen_type
           INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
@@ -206,8 +206,9 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['sample_type_name']);
      $row[] = $aRow['result'];
-     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
-     $row[] = $aRow['last_modified_datetime'];
+     // $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
+     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+     // print_r($aRow);die;
      $row[] = $status;
 
      $output['aaData'][] = $row;

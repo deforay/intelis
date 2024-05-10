@@ -10,8 +10,7 @@ use App\Registries\ContainerRegistry;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
-$_POST = MiscUtility::arrayEmptyStringsToNull($_POST);
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

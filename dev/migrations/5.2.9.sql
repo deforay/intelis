@@ -501,3 +501,5 @@ ALTER TABLE `user_details` ADD `user_attributes` JSON NULL DEFAULT NULL AFTER `u
 ALTER TABLE `instruments` CHANGE `additional_text` `additional_text` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 -- Thana 06-May-2024
 ALTER TABLE `r_hepatitis_results` CHANGE `result_id` `result_id` INT NOT NULL AUTO_INCREMENT;
+-- Thana 07-May-2024
+ALTER TABLE `generic_test_results` CHANGE `sample_tested_datetime` `sample_tested_datetime` DATETIME NULL DEFAULT NULL;
