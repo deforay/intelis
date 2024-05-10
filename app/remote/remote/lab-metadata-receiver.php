@@ -89,7 +89,7 @@ try {
                 foreach ($tableInfo['data'][$j] as $key => $resultRow) {
                     $counter++;
                     // Overwrite the values in $emptyLabArray with the values in $resultRow
-                    $data = array_merge($emptyDataArray, array_intersect_key($resultRow, $emptyDataArray));
+                    $data = MiscUtility::updateFromArray($emptyTableArray, $resultRow);
                     $data['updated_datetime'] = DateUtility::getCurrentDateTime();
                     $primaryKey = $checkColumn = $tableInfo['primaryKey'][$j];
                     $tableName = $tableInfo['table'][$j];

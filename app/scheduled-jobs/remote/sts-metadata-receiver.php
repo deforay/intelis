@@ -386,15 +386,9 @@ try {
                     $id = $db->delete('testing_labs');
                 }
 
-                // $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name = ? ";
-
-                // $columnList = array_map(
-                //     'current',
-                //     $db->rawQuery($tableColumns, [$systemConfig['database']['db'], $dataToSync[$dataType]['tableName']])
-                // );
                 $unwantedColumnList = [];
                 if ($dataType === 'users') {
-                    $unwantedColumnList = ['user_id', 'user_name', 'phone_number', 'email', 'updated_datetime'];
+                    $unwantedColumnList = ['login_id', 'role_id', 'password'];
                 }
 
                 $emptyTableArray = $general->getTableFieldsAsArray($dataToSync[$dataType]['tableName'], $unwantedColumnList);

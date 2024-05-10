@@ -1222,7 +1222,7 @@ final class CommonService
         // Create an array with all column names set to null
         $tableFieldsAsArray = array_fill_keys($columnNames, null);
         if (!empty($unwantedColumns)) {
-            $tableFieldsAsArray = array_diff_key($tableFieldsAsArray, array_flip($unwantedColumns));
+            $tableFieldsAsArray = MiscUtility::removeFromAssociativeArray($tableFieldsAsArray, $unwantedColumns);
         }
 
         return $tableFieldsAsArray;

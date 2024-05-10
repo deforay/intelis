@@ -23,6 +23,7 @@ $formResult = $db->query($formQuery);
 $globalConfig = $general->getGlobalConfig();
 
 $db->where("login_id", NULL, 'IS NOT');
+$db->where("role_id", NULL, 'IS NOT');
 $count = $db->getValue("user_details", "count(*)");
 if ($count != 0) {
   header("Location:/login/login.php");

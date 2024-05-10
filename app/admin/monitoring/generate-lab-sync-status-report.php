@@ -56,6 +56,6 @@ foreach ($output as $rowNo => $rowData) {
     $sheet->fromArray($rowData, null, 'A' . $rRowCount);
 }
 $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-$filename = 'VLSM-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
+$filename = 'VLSM-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomNumber(6) . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

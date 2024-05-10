@@ -24,7 +24,7 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim((string) $_SESSION['vlSt
 
     $colNo = 1;
 
-    $sheet->fromArray($headings, null, 'A1');
+    $sheet->fromArray($headings, null, 'A1'); // Write headings
 
     foreach ($rResult as $aRow) {
 

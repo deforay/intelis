@@ -80,13 +80,8 @@ foreach ($resultSet as $aRow) {
 $excel = new Spreadsheet();
 $sheet = $excel->getActiveSheet();
 
-$sheet->fromArray($headings, null, 'A1');
-
-$rowNo = 2;
-foreach ($output as $rowData) {
-	$rRowCount = $rowNo++;
-	$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-}
+$sheet->fromArray($headings, null, 'A1'); // Write headings
+$sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
 
 $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 $filename = 'VLSM-SAMPLE-STORAGE-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';

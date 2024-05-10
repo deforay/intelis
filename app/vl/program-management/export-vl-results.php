@@ -113,13 +113,13 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 		}
 		if ($formId == COUNTRY\CAMEROON && $arr['vl_excel_export_format'] == "cresar") {
 			$lineOfTreatment = '';
-			if($aRow['line_of_treatment']==1)
+			if ($aRow['line_of_treatment'] == 1)
 				$lineOfTreatment = '1st Line';
-			elseif($aRow['line_of_treatment']==2)
+			elseif ($aRow['line_of_treatment'] == 2)
 				$lineOfTreatment = '2nd Line';
-			elseif($aRow['line_of_treatment']==3)
+			elseif ($aRow['line_of_treatment'] == 3)
 				$lineOfTreatment = '3rd Line';
-			elseif($aRow['line_of_treatment']=='n/a')
+			elseif ($aRow['line_of_treatment'] == 'n/a')
 				$lineOfTreatment = 'N/A';
 			$row[] = $aRow['sample_code'];
 			$row[] = $aRow['facility_state'];
@@ -274,13 +274,8 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 		$sheet = $excel->getActiveSheet();
 		//$sheet->setTitle('VL Results');
 
-		$sheet->fromArray($headings, null, 'A1');
-
-		$rowNo = 2;
-		foreach ($output as $rowData) {
-			$rRowCount = $rowNo++;
-			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-		}
+		$sheet->fromArray($headings, null, 'A1'); // Write headings
+		$sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
 
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';

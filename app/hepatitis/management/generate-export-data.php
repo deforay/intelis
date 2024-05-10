@@ -114,12 +114,8 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 	} else {
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();
-		$sheet->fromArray($headings, null, 'A1');
-
-		foreach ($output as $rowNo => $rowData) {
-			$rRowCount = $rowNo + 2;
-			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-		}
+		$sheet->fromArray($headings, null, 'A1'); // Write headings
+		$sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
 
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';

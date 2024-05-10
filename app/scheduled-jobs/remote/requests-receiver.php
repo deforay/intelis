@@ -92,10 +92,6 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                            WHERE TABLE_SCHEMA = ? AND table_name='form_generic'";
-        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-        $columnList = array_map('current', $allColResult);
 
         $removeKeys = array(
             'sample_id',
@@ -110,18 +106,14 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
             'result_approved_datetime',
             'data_sync'
         );
-        $columnList = array_diff($columnList, $removeKeys);
+
+        $emptyLabArray = $general->getTableFieldsAsArray('form_generic', $removeKeys);
+
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $counter++;
-            $request = [];
-            foreach ($columnList as $colName) {
-                if (isset($remoteData[$colName])) {
-                    $request[$colName] = $remoteData[$colName];
-                } else {
-                    $request[$colName] = null;
-                }
-            }
+
+            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
@@ -206,7 +198,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                     $genericId = $db->getInsertId();
                 }
             }
-            if(isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])){
+            if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])) {
                 $db->where('generic_id', $genericId);
                 $db->delete("generic_test_results");
                 foreach ($remoteData['data_from_tests'] as $genericTestData) {
@@ -229,7 +221,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                         "updated_datetime"              => $genericTestData['updated_datetime']
                     ));
                 }
-            } 
+            }
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
     }
@@ -267,11 +259,6 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                            WHERE TABLE_SCHEMA = ? AND table_name='form_vl'";
-        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-        $columnList = array_map('current', $allColResult);
-
         $removeKeys = array(
             'vl_sample_id',
             'sample_batch_id',
@@ -293,18 +280,13 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
             'data_sync'
         );
 
-        $columnList = array_diff($columnList, $removeKeys);
+        $emptyLabArray = $general->getTableFieldsAsArray('form_vl', $removeKeys);
+
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $counter++;
-            $request = [];
-            foreach ($columnList as $colName) {
-                if (isset($remoteData[$colName])) {
-                    $request[$colName] = $remoteData[$colName];
-                } else {
-                    $request[$colName] = null;
-                }
-            }
+
+            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
@@ -416,12 +398,6 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
 
-
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                            WHERE TABLE_SCHEMA = ? AND table_name='form_eid'";
-        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-        $columnList = array_map('current', $allColResult);
-
         $removeKeys = [
             'eid_id',
             'sample_batch_id',
@@ -436,18 +412,13 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             'data_sync'
         ];
 
-        $columnList = array_diff($columnList, $removeKeys);
+        $emptyLabArray = $general->getTableFieldsAsArray('form_eid', $removeKeys);
+
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $counter++;
-            $request = [];
-            foreach ($columnList as $colName) {
-                if (isset($remoteData[$colName])) {
-                    $request[$colName] = $remoteData[$colName];
-                } else {
-                    $request[$colName] = null;
-                }
-            }
+
+            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
@@ -541,6 +512,13 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     }
     $jsonResponse = $apiService->post($url, $payload);
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+
+        $options = [
+            'pointer' => '/result',
+            'decoder' => new ExtJsonDecoder(true)
+        ];
+        $parsedData = Items::fromString($jsonResponse, $options);
+
         $removeKeys = [
             'covid19_id',
             'sample_batch_id',
@@ -558,32 +536,13 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             'data_sync'
         ];
 
+        $emptyLabArray = $general->getTableFieldsAsArray('form_covid19', $removeKeys);
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                            WHERE TABLE_SCHEMA = ? AND table_name='form_covid19'";
-        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-        $columnList = array_map('current', $allColResult);
-        $columnList = array_diff($columnList, $removeKeys);
-
-
-        $options = [
-            'pointer' => '/result',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $counter++;
-            $request = [];
-            $covid19Id = $remoteData['covid19_id'];
-            foreach ($columnList as $colName) {
-                if (isset($remoteData[$colName])) {
-                    $request[$colName] = $remoteData[$colName];
-                } else {
-                    $request[$colName] = null;
-                }
-            }
 
+            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
@@ -732,6 +691,14 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     $jsonResponse = $apiService->post($url, $payload);
     // die($jsonResponse);
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+
+        $options = [
+            'pointer' => '/result',
+            'decoder' => new ExtJsonDecoder(true)
+        ];
+        $parsedData = Items::fromString($jsonResponse, $options);
+
+
         $removeKeys = [
             'hepatitis_id',
             'sample_batch_id',
@@ -753,33 +720,13 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             'data_sync'
         ];
 
+        $emptyLabArray = $general->getTableFieldsAsArray('form_hepatitis', $removeKeys);
 
-
-
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                            WHERE TABLE_SCHEMA = ? AND table_name='form_hepatitis'";
-        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-        $columnList = array_map('current', $allColResult);
-        $columnList = array_diff($columnList, $removeKeys);
-
-        $options = [
-            'pointer' => '/result',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
-            $request = [];
-            $hepatitisId = $remoteData['hepatitis_id'];
-            foreach ($columnList as $colName) {
-                if (isset($remoteData[$colName])) {
-                    $request[$colName] = $remoteData[$colName];
-                } else {
-                    $request[$colName] = null;
-                }
-            }
+            $counter++;
 
-
+            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
@@ -918,7 +865,16 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
     $jsonResponse = $apiService->post($url, $payload);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
-        $removeKeys = array(
+
+
+        $options = [
+            'pointer' => '/result',
+            'decoder' => new ExtJsonDecoder(true)
+        ];
+        $parsedData = Items::fromString($jsonResponse, $options);
+
+
+        $removeKeys = [
             'tb_id',
             'sample_batch_id',
             'result',
@@ -934,30 +890,15 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             //'last_modified_by',
             //'request_created_datetime',
             'data_sync'
-        );
-
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                            WHERE TABLE_SCHEMA = ? AND table_name='form_tb'";
-        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-        $columnList = array_map('current', $allColResult);
-        $columnList = array_diff($columnList, $removeKeys);
-
-        $options = [
-            'pointer' => '/result',
-            'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = Items::fromString($jsonResponse, $options);
+
+        $emptyLabArray = $general->getTableFieldsAsArray('form_tb', $removeKeys);
+
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
-            $request = [];
-            $tbId = $remoteData['tb_id'];
-            foreach ($columnList as $colName) {
-                if (isset($remoteData[$colName])) {
-                    $request[$colName] = $remoteData[$colName];
-                } else {
-                    $request[$colName] = null;
-                }
-            }
+            $counter++;
+
+            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
@@ -1069,11 +1010,6 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                            WHERE TABLE_SCHEMA = ? AND table_name='form_cd4'";
-        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
-        $columnList = array_map('current', $allColResult);
-
         $removeKeys = array(
             'cd4_id',
             'sample_batch_id',
@@ -1088,18 +1024,13 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
             'data_sync'
         );
 
-        $columnList = array_diff($columnList, $removeKeys);
+        $emptyLabArray = $general->getTableFieldsAsArray('form_cd4', $removeKeys);
+
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $counter++;
-            $request = [];
-            foreach ($columnList as $colName) {
-                if (isset($remoteData[$colName])) {
-                    $request[$colName] = $remoteData[$colName];
-                } else {
-                    $request[$colName] = null;
-                }
-            }
+
+            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
