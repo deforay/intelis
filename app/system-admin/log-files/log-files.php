@@ -177,13 +177,6 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 			}
 		});
 	});
-
-	function listDate(date){
-		console.log(date);
-		$('#userDate').val(date);
-		$('#logViewer').html('');
-		loadLogs();
-	}
 </script>
 
 
