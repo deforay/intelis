@@ -23,13 +23,13 @@ if (file_exists($file)) {
         echo "<div class='logLine' style='position: relative;'><span class='lineNumber'>{$lineNumber}</span>{$entry}</div>";
     }
 } else {
+    $htm ="";
     $notFoundStatus = true;
-    $selectedDate = $_GET['date'];
-    foreach(range(1,31) as $n){
+    $selectedDate = date('d-M-Y');
+    foreach(range(1,365) as $n){
         $dateObj = new DateTime($selectedDate);
         $dateObj->modify('-1 day');
         $selectedDate = $dateObj->format('Y-m-d');
-        $_SESSION['selectedDate'] = date('d-M-Y', strtotime($selectedDate));
         $file = ROOT_PATH . '/logs/' . $selectedDate . '-logfile.log';
         if(file_exists($file)){
             $notFoundStatus = false;
@@ -41,8 +41,9 @@ if (file_exists($file)) {
                 $lineNumber = $start + $index + 1; // Calculate line number
                 $entry = htmlspecialchars($entry); // Convert special characters to HTML entities
                 $entry = str_replace("\n", "<br>", $entry); // Replace newlines with <br> tags
-                echo "<div class='logLine' style='position: relative;'><span class='lineNumber'>{$lineNumber}</span>{$entry}</div>";
+                $htm .= "<div class='logLine' style='position: relative;'><span class='lineNumber'>{$lineNumber}</span>{$entry}</div>";
             }
+            echo "<h4>".$_GET['date']."  not found any logs. Latest logs was available in ".date('d-M-Y', strtotime($selectedDate))."</h4><br>" . $htm;
             exit(0);
         }
     }
