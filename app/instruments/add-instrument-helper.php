@@ -90,7 +90,7 @@ try {
             }
         }
 
-        $_SESSION['alertMsg'] = _translate("Instrumemnt import configuration initited for ") . $_POST['configurationName'] . _translate("Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _translate(" present in instruments folder");
+        $_SESSION['alertMsg'] = _translate("Instrument import configuration initited for ") . $_POST['configurationName'] . _translate("Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _translate(" present in instruments folder");
     }
     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     header("Location:/instruments/instruments.php");

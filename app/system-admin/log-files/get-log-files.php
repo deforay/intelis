@@ -23,5 +23,30 @@ if (file_exists($file)) {
         echo "<div class='logLine' style='position: relative;'><span class='lineNumber'>{$lineNumber}</span>{$entry}</div>";
     }
 } else {
-    echo '<div class="logLine">No files found</div>';
+    $notFoundStatus = true;
+    $selectedDate = $_GET['date'];
+    foreach(range(1,31) as $n){
+        $dateObj = new DateTime($selectedDate);
+        $dateObj->modify('-1 day');
+        $selectedDate = $dateObj->format('Y-m-d');
+        $_SESSION['selectedDate'] = date('d-M-Y', strtotime($selectedDate));
+        $file = ROOT_PATH . '/logs/' . $selectedDate . '-logfile.log';
+        if(file_exists($file)){
+            $notFoundStatus = false;
+            $fileContent = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $logEntries = array_slice($fileContent, $start, $linesPerPage);
+            $logEntries = array_reverse($logEntries); // Reverse the order of log entries
+
+            foreach ($logEntries as $index => $entry) {
+                $lineNumber = $start + $index + 1; // Calculate line number
+                $entry = htmlspecialchars($entry); // Convert special characters to HTML entities
+                $entry = str_replace("\n", "<br>", $entry); // Replace newlines with <br> tags
+                echo "<div class='logLine' style='position: relative;'><span class='lineNumber'>{$lineNumber}</span>{$entry}</div>";
+            }
+            exit(0);
+        }
+    }
+    if($notFoundStatus){
+        echo '<div class="logLine">No files found</div>';
+    }
 }

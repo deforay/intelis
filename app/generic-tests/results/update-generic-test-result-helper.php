@@ -161,16 +161,15 @@ try {
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $vldata['result_status'] = SAMPLE_STATUS\REJECTED;
     }
-
+    // echo "<pre>";print_r($_POST);die;
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         $finalResult = "";
         if (!empty($_POST['testName'])) {
              $db->where('generic_id', $_POST['vlSampleId']);
              $db->delete('generic_test_results');
-             if (isset($subTestResult) && is_array($subTestResult)) {
+             if (isset($subTestResult) && is_array($subTestResult) && isset($subTestResult[0]) && !empty($subTestResult[0])) {
                   foreach ($_POST['testName'] as $subTestName => $subTests) {
                        foreach ($subTests as $testKey => $testKitName) {
-                            // die($_POST['finalResult'][$subTestName]);
                             if (!empty($testKitName)) {
                                  $testData = array(
                                       'generic_id' => $_POST['vlSampleId'],
@@ -237,14 +236,13 @@ try {
                   }
               }
         }
-        $genericData['result'] = $finalResult;
+        $vldata['result'] = $finalResult;
    } else {
         $db->where('generic_id', $_POST['vlSampleId']);
         $db->delete('generic_test_results');
         $genericData['sample_tested_datetime'] = null;
    }
 
-    // echo "<pre>";print_r($vldata['result']);die;
     $db->where('sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);
     // var_dump($db->getLastError());die;
