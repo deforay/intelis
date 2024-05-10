@@ -1,11 +1,13 @@
 <?php
 
-use App\Services\DatabaseService;
+use App\Services\TestsService;
 use App\Services\UsersService;
+use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\DateUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -20,6 +22,10 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 //system config
 $sarr = $general->getSystemConfig();
@@ -30,45 +36,20 @@ if ($general->isSTSInstance()) {
     $sCode = 'sample_code';
 }
 
-
-// in case module is not set, we pick vl as the default one
-switch ($_POST['module']) {
-    case 'eid':
-        $module = 'eid';
-        $tableName = "form_eid";
-        $primaryKey = "eid_id";
-        break;
-    case 'cd4':
-        $module = 'cd4';
-        $tableName = "form_cd4";
-        $primaryKey = "cd4_id";
-        break;
-    case 'covid19':
-        $module = 'covid19';
-        $tableName = "form_covid19";
-        $primaryKey = "covid19_id";
-        break;
-    case 'hepatitis':
-        $module = 'hepatitis';
-        $tableName = "form_hepatitis";
-        $primaryKey = "hepatitis_id";
-        break;
-    case 'tb':
-        $module = 'tb';
-        $tableName = "form_tb";
-        $primaryKey = "tb_id";
-        break;
-    case 'generic-tests':
-        $module = 'generic-tests';
-        $tableName = "form_generic";
-        $primaryKey = "sample_id";
-        break;
-    default:
-        $module = 'vl';
-        $tableName = "form_vl";
-        $primaryKey = "vl_sample_id";
-        break;
+if (empty($_POST['module'])) {
+    echo json_encode([]);
+    exit;
 }
+
+$module = $_POST['module'];
+$tableName = TestsService::getTestTableName($module);
+$primaryKey = TestsService::getTestPrimaryKeyColumn($module);
+
+$sql = "UPDATE package_details
+                SET lab_id = (SELECT lab_id FROM $tableName WHERE form_vl.sample_package_id = package_details.package_id limit 1)
+                WHERE package_details.lab_id is null OR package_details.lab_id = 0";
+
+$db->rawQuery($sql);
 
 $vlForm = (int) $general->getGlobalConfig('vl_form');
 
@@ -160,12 +141,12 @@ if (isset($sLimit) && isset($sOffset)) {
 /*
  * Output
  */
-$output = array(
+$output = [
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,
     "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
-);
+];
 
 $editUrl = '/specimen-referral-manifest/edit-manifest.php?t=' . $_POST['module'];
 

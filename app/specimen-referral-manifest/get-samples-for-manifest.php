@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -32,37 +33,14 @@ if ($general->isSTSInstance()) {
 $module = (!empty($_POST['module'])) ? $_POST['module'] : "";
 $testType = (!empty($_POST['testType'])) ? $_POST['testType'] : "";
 
-$query = "";
-if ($module == 'vl') {
-	$patientId = 'patient_art_no';
-	$sampleId  = 'vl_sample_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.patient_art_no,vl.vl_sample_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_vl as vl ";
-} else if ($module == 'eid') {
-	$patientId = 'child_id';
-	$sampleId  = 'eid_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.child_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_eid as vl ";
-} else if ($module == 'covid19') {
-	$patientId = 'patient_id';
-	$sampleId  = 'covid19_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.patient_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_covid19 as vl ";
-} else if ($module == 'hepatitis') {
-	$patientId = 'patient_id';
-	$sampleId  = 'hepatitis_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id,vl.patient_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_hepatitis as vl ";
-} else if ($module == 'tb') {
-	$patientId = 'patient_id';
-	$sampleId  = 'tb_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_vl.patient_id,package_id,vl.is_encrypted,pd.package_id FROM form_tb as vl ";
-} else if ($module == 'cd4') {
-	$patientId = 'patient_art_no';
-	$sampleId  = 'cd4_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.patient_art_no,vl.cd4_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_cd4 as vl ";
-} else if ($module == 'generic-tests') {
-	$patientId = 'patient_id';
-	$sampleId  = 'sample_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id,vl.patient_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_generic as vl ";
-}
-$query .= " LEFT JOIN package_details as pd ON vl.sample_package_id = pd.package_id ";
+
+$testTable = TestsService::getTestTableName($module);
+$testPrimaryKey = TestsService::getTestPrimaryKeyColumn($module);
+$patientId = TestsService::getPatientIdColumn($module);
+
+$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.$testPrimaryKey,vl.$patientId,vl.sample_package_id,vl.is_encrypted,pd.package_id
+			FROM $testTable as vl
+			LEFT JOIN package_details as pd ON vl.sample_package_id = pd.package_id ";
 
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) ";
@@ -119,7 +97,7 @@ $key = (string) $general->getGlobalConfig('key');
 			}
 			if (!empty($sample[$sampleCode])) {
 				if ((!isset($sample['sample_package_id']) || !isset($sample['package_id'])) || ($sample['sample_package_id'] != $sample['package_id'])) { ?>
-					<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
+					<option value="<?php echo $sample[$testPrimaryKey]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
 		<?php }
 			}
 		} ?>
@@ -142,7 +120,7 @@ $key = (string) $general->getGlobalConfig('key');
 			}
 			if (!empty($sample[$sampleCode])) {
 				if (isset($sample['package_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['package_id']) { ?>
-					<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
+					<option value="<?php echo $sample[$testPrimaryKey]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
 		<?php }
 			}
 		} ?>
