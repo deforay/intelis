@@ -258,6 +258,9 @@ final class MiscUtility
     {
         $handle = fopen($filename, 'w'); // Open file for writing
 
+        // Write the UTF-8 BOM
+        fwrite($handle, "\xEF\xBB\xBF");
+
         // The headings first
         if (!empty($headings)) {
             fputcsv($handle, $headings, $delimiter, $enclosure);
@@ -320,13 +323,13 @@ final class MiscUtility
         return json_encode(self::convertToUtf8($data));
     }
 
-    public static function getGenderFromString(string $gender)
+    public static function getGenderFromString(?string $gender)
     {
         return match (strtolower($gender)) {
             'male', 'm' => _translate('Male'),
             'female', 'f' => _translate('Female'),
             'not_recorded', 'notrecorded', 'unreported' => _translate('Unreported'),
-            default => '',
+            default => _translate('Unreported')
         };
     }
     public static function removeFromAssociativeArray(array $fullArray, array $unwantedKeys)
