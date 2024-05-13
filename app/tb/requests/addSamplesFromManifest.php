@@ -196,7 +196,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					}
 				});
 		} else {
-			alert("<?php echo _translate("Please enter the Sample Manifest Code then hit submit", true); ?>");
+			alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
 		}
 	}
 

@@ -226,7 +226,7 @@ require_once APPLICATION_PATH . '/header.php';
 					}
 				});
 		} else {
-			alert("<?php echo _translate("Please enter the Sample Manifest Code then hit submit", true); ?>");
+			alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
 		}
 	}
 
