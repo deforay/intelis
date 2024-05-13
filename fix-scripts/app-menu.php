@@ -146,15 +146,15 @@ try {
     $menuData = array_combine($menuKeys, $menuValues);
     $cd4ConfigId = $appMenuService->insertMenu($menuData);
 
-    $menuValues = ['admin', NULL, 'no', 'Sample Type', '/cd4/reference/cd4-sample-type.php', '/cd4/reference/add-cd4-sample-type.php,/cd4/reference/edit-cd4-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4-sample-type', $cd4ConfigId, 43, 'active', DateUtility::getCurrentDateTime()];
+    $menuValues = ['admin', 'cd4', 'no', 'Sample Type', '/cd4/reference/cd4-sample-type.php', '/cd4/reference/add-cd4-sample-type.php,/cd4/reference/edit-cd4-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4-sample-type', $cd4ConfigId, 43, 'active', DateUtility::getCurrentDateTime()];
     $menuData = array_combine($menuKeys, $menuValues);
     $appMenuService->insertMenu($menuData);
 
-    $menuValues = ['admin', NULL, 'no', 'Test Reasons', '/cd4/reference/cd4-test-reasons.php', '/cd4/reference/add-cd4-test-reasons.php,/cd4/reference/edit-cd4-test-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-test-reasons', $cd4ConfigId, 44, 'active', DateUtility::getCurrentDateTime()];
+    $menuValues = ['admin', 'cd4', 'no', 'Test Reasons', '/cd4/reference/cd4-test-reasons.php', '/cd4/reference/add-cd4-test-reasons.php,/cd4/reference/edit-cd4-test-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-test-reasons', $cd4ConfigId, 44, 'active', DateUtility::getCurrentDateTime()];
     $menuData = array_combine($menuKeys, $menuValues);
     $appMenuService->insertMenu($menuData);
 
-    $menuValues = ['admin', NULL, 'no', 'Rejection Reasons', '/cd4/reference/cd4-sample-rejection-reasons.php', '/cd4/reference/add-cd4-sample-rejection-reasons.php,/cd4/reference/edit-cd4-sample-rejection-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4-test-reasons', $cd4ConfigId, 45, 'active', DateUtility::getCurrentDateTime()];
+    $menuValues = ['admin', 'cd4', 'no', 'Rejection Reasons', '/cd4/reference/cd4-sample-rejection-reasons.php', '/cd4/reference/add-cd4-sample-rejection-reasons.php,/cd4/reference/edit-cd4-sample-rejection-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4-test-reasons', $cd4ConfigId, 45, 'active', DateUtility::getCurrentDateTime()];
     $menuData = array_combine($menuKeys, $menuValues);
     $appMenuService->insertMenu($menuData);
 

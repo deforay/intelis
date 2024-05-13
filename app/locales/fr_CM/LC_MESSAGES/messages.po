@@ -23825,16 +23825,6 @@ msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
 
-#~ msgid "Please select Other Tests method in Results Pdf"
-#~ msgstr ""
-#~ "Veuillez sélectionner la méthode \"Autres tests\" dans le fichier PDF DEs "
-#~ "résultats"
-
-#~ msgid "Please enter the Sample Manifest Code then hit submit"
-#~ msgstr ""
-#~ "Veuillez saisir l'exemple de code de manifeste, puis cliquez sur "
-#~ "\"soumettre\""
-
 #~ msgid "Enter Child Age in weeks"
 #~ msgstr "Saisir l'âge de l'enfant en semaines"
 

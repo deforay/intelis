@@ -62,17 +62,15 @@ final class SystemService
         }
     }
 
-    public static function translate($text)
+    public static function translate(?string $text)
     {
-        if ($text != null) {
-            if (empty($_SESSION['translations']) || empty($_SESSION['translations']->find(null, $text))) {
-                return $text;
-            } else {
-                return $_SESSION['translations']->find(null, $text)->getTranslation();
-            }
+        if (empty($text) || empty($_SESSION['translations']) || empty($_SESSION['translations']->find(null, $text))) {
+            return $text;
+        } else {
+            return $_SESSION['translations']->find(null, $text)->getTranslation();
         }
-        return $text;
     }
+
     public function getDateFormat($category = null, $inputFormat = null)
     {
         $dateFormat = $inputFormat ?? $this->commonService->getGlobalConfig('gui_date_format') ?? 'd-M-Y';

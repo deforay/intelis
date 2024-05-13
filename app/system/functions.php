@@ -11,15 +11,36 @@ use App\Registries\ContainerRegistry;
 use function iter\count as iterCount;
 use function iter\toArray as iterToArray;
 
+// function _translate(?string $text, bool $escapeText = false)
+// {
+//     if (empty($text) || !is_string($text)) {
+//         return $text;
+//     }
+
+//     $translatedString = SystemService::translate($text);
+//     // Use json_encode to ensure the string is safe for JavaScript
+//     return $escapeText ? trim(json_encode($translatedString), '"') : $translatedString;
+// }
+
+
 function _translate(?string $text, bool $escapeText = false)
 {
-    if (empty($text) || !is_string($text)) {
+    if (empty($text) || !is_string($text) || $_SESSION['APP_LOCALE'] == 'en_US') {
         return $text;
     }
 
     $translatedString = SystemService::translate($text);
-    // Use json_encode to ensure the string is safe for JavaScript
-    return $escapeText ? trim(json_encode($translatedString), '"') : $translatedString;
+
+    if ($escapeText && $_SESSION['APP_LOCALE'] != 'en_US') {
+        // Use json_encode to ensure it's safe for JavaScript.
+        // json_encode will add double quotes around the string, remove them.
+        $escapedString = trim(json_encode($translatedString), '"');
+
+        // Use htmlspecialchars to convert special characters to HTML entities,
+        $translatedString = htmlspecialchars($escapedString, ENT_QUOTES, 'UTF-8');
+    }
+
+    return $translatedString;
 }
 
 function _isAllowed($currentRequest, $privileges = null)
