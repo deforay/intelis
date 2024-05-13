@@ -369,7 +369,7 @@ foreach ($rejectionTypeResult as $type) {
 				},
 			],
 			"aaSorting": [
-				[<?php echo ($sarr['sc_user_type'] != 'standalone') ? 9 : 8 ?>, "desc"]
+				[<?php echo ($general->isStandaloneInstance()) ? 9 : 10 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
