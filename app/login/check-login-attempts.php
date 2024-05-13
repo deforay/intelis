@@ -21,23 +21,24 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $ipAddress = $general->getClientIpAddress();
 $data = 0;
-$ipdata = 0;
-if (!empty($loginId)) {
 
-	$loginAttemptCount = $db->rawQueryOne(
-		"SELECT COUNT(*) AS FailedAttempts
+if (!empty($loginId)) {
+	// Query to check both failed and successful login attempts in the last 15 minutes
+	$loginAttempts = $db->rawQueryOne(
+		"SELECT
+            SUM(CASE WHEN ulh.login_status = 'failed' THEN 1 ELSE 0 END) AS FailedAttempts,
+            SUM(CASE WHEN ulh.login_status = 'success' THEN 1 ELSE 0 END) AS SuccessAttempts
 			FROM user_login_history ulh
 			WHERE ulh.login_id = ? AND
-			ulh.login_status = 'failed' AND
 			ulh.login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 MINUTE)",
 		[$loginId, DateUtility::getCurrentDateTime()]
 	);
 
-	$loginCount = $loginAttemptCount['FailedAttempts'];
+	$failedAttempts = $loginAttempts['FailedAttempts'];
+	$successAttempts = $loginAttempts['SuccessAttempts'];
 
-	// If someone is failing to login with same login ID,
-	// then we need to show the captcha
-	if ($loginCount >= 3) {
+	// Show CAPTCHA only if there are 3 or more failed attempts and no successful logins recently
+	if ($failedAttempts >= 3 && $successAttempts == 0) {
 		$data = 1;
 	}
 }

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
@@ -11,16 +10,14 @@ use App\Registries\ContainerRegistry;
 
 final class AppMenuService
 {
-    protected ?DatabaseService $db;
+    protected $db;
     protected string $table = 's_app_menu';
-    protected CommonService $commonService;
-    protected UsersService $usersService;
+    protected $commonService;
 
-    public function __construct(?DatabaseService $db, CommonService $commonService, UsersService $usersService)
+    public function __construct(DatabaseService $db, CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
         $this->commonService = $commonService;
-        $this->usersService = $usersService;
     }
 
     public function getMenuDisplayTexts(): array
@@ -45,11 +42,15 @@ final class AppMenuService
             $this->db->where('id', $menuId);
         }
 
-        $mode = match ($_SESSION['instance']['type']) {
-            'remoteuser' => "(show_mode like 'sts' or show_mode like 'always')",
-            'vluser' => "(show_mode like 'lis' or show_mode like 'always')",
-            default => "(show_mode like 'always')",
-        };
+        if ($this->commonService->isSTSInstance()) {
+            $mode = "(show_mode like 'sts' or show_mode like 'always')";
+        } elseif ($this->commonService->isLISInstance()) {
+            $mode = "(show_mode like 'lis' or show_mode like 'always')";
+        } else {
+            $mode = "(show_mode like 'always')";
+        }
+
+
         $this->db->where($mode);
         $this->db->where('parent_id', $parentId);
         $this->db->orderBy("display_order", "asc");
@@ -58,7 +59,9 @@ final class AppMenuService
         foreach ($menuData as $key => $menu) {
             $menu['access'] = true;
             if ($menu['link'] != "" && !empty($menu['link'])) {
-                $menu['access'] = _isAllowed($menu['link']);
+                if (!str_starts_with($menu['link'], '#')) {
+                    $menu['access'] = _isAllowed($menu['link']);
+                }
             }
 
             if ($menu['has_children'] == 'yes') {
@@ -90,7 +93,7 @@ final class AppMenuService
 
         if ($exists) {
             // Menu item already exists, do not insert
-            return false;
+            return $exists['id'];
         }
 
         // Insert the new menu item

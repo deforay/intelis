@@ -14,7 +14,6 @@ final class FacilitiesService
         3 => "health_facilities",
     ];
 
-    protected $usersService;
     protected string $table = 'facility_details';
 
     public function __construct(DatabaseService $db)
