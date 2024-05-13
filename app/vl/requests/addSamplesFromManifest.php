@@ -226,7 +226,7 @@ require_once APPLICATION_PATH . '/header.php';
 					}
 				});
 		} else {
-			alert('<?php echo _translate("Please enter the Sample Manifest Code then hit submit", true); ?>');
+			alert("<?php echo _translate("Please enter the Sample Manifest Code then hit submit", true); ?>");
 		}
 	}
 
@@ -281,7 +281,7 @@ require_once APPLICATION_PATH . '/header.php';
 			},
 			function(data) {
 				if (data > 0) {
-					alert('<?php echo _translate("Samples from this Manifest have been activated", true); ?>');
+					alert("<?php echo _translate("Samples from this Manifest have been activated", true); ?>");
 					$('.activateSample').hide();
 				}
 				oTable.fnDraw();

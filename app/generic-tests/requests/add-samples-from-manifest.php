@@ -242,7 +242,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					}
 				});
 		} else {
-			alert('<?php echo _translate("Please enter the Sample Manifest Code then hit submit", true); ?>');
+			alert("<?php echo _translate("Please enter the Sample Manifest Code then hit submit", true); ?>");
 		}
 	}
 
@@ -297,7 +297,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			},
 			function(data) {
 				if (data > 0) {
-					alert('<?php echo _translate("Samples from this Manifest have been activated", true); ?>');
+					alert("<?php echo _translate("Samples from this Manifest have been activated", true); ?>");
 					$('.activateSample').hide();
 				}
 				oTable.fnDraw();

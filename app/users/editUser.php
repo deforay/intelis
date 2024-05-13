@@ -476,7 +476,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                const validImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
                if (!validImageTypes.includes(fileType)) {
                     $('#userSignature').val('');
-                    alert('<?= _translate("Invalid file type. Please upload correct image format like JPG or JPEG or PNG", true); ?>');
+                    alert("<?= _translate("Invalid file type. Please upload correct image format like JPG or JPEG or PNG", true); ?>");
                     return false;
                }
           });

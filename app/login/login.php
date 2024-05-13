@@ -223,7 +223,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 							},
 							function(data) {
 								if (data == 'fail') {
-									alert('<?php echo _translate("Text you entered from the image is incorrect. Please try again", true); ?>');
+									alert("<?php echo _translate("Text you entered from the image is incorrect. Please try again", true); ?>");
 									getCaptcha('capChaw');
 									document.getElementById("challengeResponse").value = "";
 									return false;
@@ -233,8 +233,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 								}
 							});
 					} else {
-						alert('<?php echo _translate("Please enter the text from the image to proceed.", true); ?>');
-						// $('.ppwd').focus();
+						alert("<?php echo _translate("Please enter the text from the image to proceed.", true); ?>");
 						return false;
 					}
 				} else {

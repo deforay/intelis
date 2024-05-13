@@ -104,7 +104,7 @@ require_once APPLICATION_PATH . '/header.php';
 					function(data) {
 						if (data != "") {
 							oTable.fnDraw();
-							alert('<?php echo _translate("Updated successfully", true); ?>.');
+							alert("<?php echo _translate("Updated successfully", true); ?>");
 						}
 					});
 			} else {
