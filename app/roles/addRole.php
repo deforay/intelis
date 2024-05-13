@@ -259,7 +259,7 @@ $rInfo = $db->query($resourcesQuery);
 								</label>
 								<div class="col-sm-10">
 									<p class="form-control-static">
-										<?php echo _translate('Unless you choose "access" the people belonging to this role will not be able to access other rights like "add", "edit" etc'); ?>.
+										<?php echo _translate('Unless you choose the access privilege, the people belonging to this role will not be able to access other privileges like add, edit etc.'); ?>.
 									</p>
 								</div>
 							</div>

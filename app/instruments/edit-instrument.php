@@ -180,14 +180,14 @@ $testTypeList = SystemService::getActiveModules(true);
 											<?php
 											$configDir = realpath(__DIR__);
 											$log_directory = $configDir . DIRECTORY_SEPARATOR . 'vl';
-											foreach(glob($log_directory.'/*.*') as $file) {
-												$arr = explode('/',$file);
-												?>
-												<option value="<?= $arr[7]; ?>" <?php if($sInfo['import_machine_file_name']==$arr[7]) echo "selected='selected'"; ?>><?= $arr[7]; ?></option>
-												<?php
+											foreach (glob($log_directory . '/*.*') as $file) {
+												$arr = explode('/', $file);
+											?>
+												<option value="<?= $arr[7]; ?>" <?php if ($sInfo['import_machine_file_name'] == $arr[7]) echo "selected='selected'"; ?>><?= $arr[7]; ?></option>
+											<?php
 											}
-										?>
-											</select>
+											?>
+										</select>
 									</div>
 								</div>
 							</div>
@@ -369,7 +369,7 @@ $testTypeList = SystemService::getActiveModules(true);
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByTb" class="form-control user-tb select2" title='<?php echo _translate("Please enter Approved By for TB Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByTb" class="form-control user-tb select2" title='<?php echo _translate("Please select Approved By for TB Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['tb'], '--Select--'); ?>
 													</select>
 												</td>
@@ -655,14 +655,14 @@ $testTypeList = SystemService::getActiveModules(true);
 	$(document).ready(function() {
 		$('#additionalText').summernote({
 			toolbar: [
-			// [groupName, [list of button]]
-			['style', ['bold', 'italic', 'underline', 'clear']],
-			['font', ['strikethrough', 'superscript', 'subscript']],
-			['fontsize', ['fontsize']],
-			['color', ['color']],
-			['para', ['ul', 'ol', 'paragraph']],
-			['height', ['height']]
-		]
+				// [groupName, [list of button]]
+				['style', ['bold', 'italic', 'underline', 'clear']],
+				['font', ['strikethrough', 'superscript', 'subscript']],
+				['fontsize', ['fontsize']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['height', ['height']]
+			]
 		});
 
 		$('input[name="fileName[]"]').each(function() {
@@ -805,16 +805,16 @@ $testTypeList = SystemService::getActiveModules(true);
 				configName = configName.replace(/ /g, '-');
 				configName = configName.replace(/\-$/, '');
 				var configFileName = configName.toLowerCase() + ".php";
-				var path = '<?php echo $log_directory.'/'; ?>'+configFileName;
+				var path = '<?php echo $log_directory . '/'; ?>' + configFileName;
 				$.post("/includes/checkFileExists.php", {
-				fileName: path,
-			},
-			function(data) {
-				if (data === 'not exists') {
-					$("#configurationFile").append('<option value="">'+configFileName+'</option>');
-				}
-			});
-			
+						fileName: path,
+					},
+					function(data) {
+						if (data === 'not exists') {
+							$("#configurationFile").append('<option value="">' + configFileName + '</option>');
+						}
+					});
+
 			}
 		} else {
 			$("#configurationFile").val("");

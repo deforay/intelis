@@ -120,19 +120,19 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 										<?php echo _translate("Instrument File"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<!--<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder='<?php echo _translate("eg. roche.php or abbott.php"); ?>' title='<?php echo _translate("Please enter machine name"); ?>' onblur='checkNameValidation("instruments","import_machine_file_name",this,null,"<?php echo _translate("This file name already exists.Try another name"); ?>",null)' />--> 
+										<!--<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder='<?php echo _translate("eg. roche.php or abbott.php"); ?>' title='<?php echo _translate("Please enter machine name"); ?>' onblur='checkNameValidation("instruments","import_machine_file_name",this,null,"<?php echo _translate("This file name already exists.Try another name"); ?>",null)' />-->
 										<select name="configurationFile" id="configurationFile" class="form-control">
 											<?php
 											$configDir = realpath(__DIR__);
 											$log_directory = $configDir . DIRECTORY_SEPARATOR . 'vl';
-											foreach(glob($log_directory.'/*.*') as $file) {
-												$arr = explode('/',$file);
-												?>
+											foreach (glob($log_directory . '/*.*') as $file) {
+												$arr = explode('/', $file);
+											?>
 												<option value="<?= $arr[7]; ?>"><?= $arr[7]; ?></option>
-												<?php
+											<?php
 											}
-										?>
-											</select>
+											?>
+										</select>
 									</div>
 								</div>
 							</div>
@@ -298,7 +298,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _translate("Please enter Approved By for TB Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _translate("Please select Approved By for TB Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -315,7 +315,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _translate("Please enter Approved By for TB Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _translate("Please select Approved By for TB Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -521,14 +521,14 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 	$(document).ready(function() {
 		$('#additionalText').summernote({
 			toolbar: [
-			// [groupName, [list of button]]
-			['style', ['bold', 'italic', 'underline', 'clear']],
-			['font', ['strikethrough', 'superscript', 'subscript']],
-			['fontsize', ['fontsize']],
-			['color', ['color']],
-			['para', ['ul', 'ol', 'paragraph']],
-			['height', ['height']]
-		]
+				// [groupName, [list of button]]
+				['style', ['bold', 'italic', 'underline', 'clear']],
+				['font', ['strikethrough', 'superscript', 'subscript']],
+				['fontsize', ['fontsize']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['height', ['height']]
+			]
 		});
 
 
@@ -628,16 +628,16 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 				configName = configName.replace(/ /g, '-');
 				configName = configName.replace(/\-$/, '');
 				var configFileName = configName.toLowerCase() + ".php";
-				var path = '<?php echo $log_directory.'/'; ?>'+configFileName;
+				var path = '<?php echo $log_directory . '/'; ?>' + configFileName;
 				$.post("/includes/checkFileExists.php", {
-				fileName: path,
-			},
-			function(data) {
-				if (data === 'not exists') {
-					$("#configurationFile").append('<option value="">'+configFileName+'</option>');
-				}
-			});
-			
+						fileName: path,
+					},
+					function(data) {
+						if (data === 'not exists') {
+							$("#configurationFile").append('<option value="">' + configFileName + '</option>');
+						}
+					});
+
 			}
 		} else {
 			$("#configurationFile").val("");

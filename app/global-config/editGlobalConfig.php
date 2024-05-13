@@ -1490,7 +1490,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												<div class="form-group">
 													<label for="covid19TestsTableInResultsPdf" class="col-lg-2 control-label"><?php echo _translate("Show Other Tests table in Results PDF"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
-														<select name="genericTestsTableInResultsPdf" id="genericTestsTableInResultsPdf" class="form-control readPage isRequired" title="<?php echo _translate('Please select Other Tests method in Results Pdf'); ?>">
+														<select name="genericTestsTableInResultsPdf" id="genericTestsTableInResultsPdf" class="form-control readPage isRequired" title="<?php echo _translate('Show Test Results Table?'); ?>">
 															<option value=""><?php echo _translate("-- Select --"); ?></option>
 															<option value='yes' <?php echo ($arr['generic_tests_table_in_results_pdf'] == 'yes') ? "selected='selected'" : ""; ?>> <?php echo _translate("Yes"); ?> </option>
 															<option value='no' <?php echo ($arr['generic_tests_table_in_results_pdf'] == 'no') ? "selected='selected'" : ""; ?>> <?php echo _translate("No"); ?> </option>
