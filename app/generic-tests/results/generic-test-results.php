@@ -55,7 +55,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	$sampleType = (isset($_COOKIE['sampleType']) && $_COOKIE['sampleType'] != '') ? $_COOKIE['sampleType'] : '';
 	$facilityName = (isset($_COOKIE['facilityName']) && $_COOKIE['facilityName'] != '') ? explode(',', (string) $_COOKIE['facilityName']) : [];
 	$gender = (isset($_COOKIE['gender']) && $_COOKIE['gender'] != '') ? $_COOKIE['gender'] : '';
-	$status = (isset($_COOKIE['status']) && $_COOKIE['status'] != '') ? $_COOKIE['status'] : '';
+	$status = (isset($_COOKIE['status']) && $_COOKIE['status'] != '') ? $_COOKIE['status'] : 'no_result';
 }
 ?>
 <style>
