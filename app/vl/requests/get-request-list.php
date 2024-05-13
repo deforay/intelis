@@ -86,6 +86,7 @@ try {
                vl.is_patient_pregnant,
                vl.is_patient_breastfeeding,
                vl.request_clinician_name,
+               vl.cv_number,
                vl.lab_tech_comments,
                vl.sample_received_at_hub_datetime,
                vl.sample_received_at_lab_datetime,

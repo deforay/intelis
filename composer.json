@@ -58,7 +58,8 @@
         "phpmyadmin/sql-parser": "^5.9",
         "nikic/iter": "^2.3",
         "symfony/cache": "^6.4",
-        "gregwar/captcha": "^1.2"
+        "gregwar/captcha": "^1.2",
+        "openspout/openspout": "^4.24"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"
