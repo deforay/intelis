@@ -201,10 +201,10 @@ try {
         }
     }
 
-    if (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) {
+    if (isset($_POST['subTestResult']) && is_array($_POST['subTestResult']) && !empty($_POST['subTestResult'][0])) {
         $_POST['subTestResult'] = implode("##", $_POST['subTestResult']);
     } else {
-        $_POST['subTestResult'] = '';
+        $_POST['subTestResult'] = 'default';
     }
 
     $genericData = array(
@@ -263,7 +263,7 @@ try {
         'manual_result_entry' => 'yes',
         //'vl_result_category'                    => $vl_result_category
         'test_type' => $_POST['testType'],
-        'sub_tests' =>  $_POST['subTestResult'],
+        'sub_tests' => (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) ? implode("##", $_POST['subTestResult']) : $_POST['subTestResult'],
         'test_type_form' => json_encode($_POST['dynamicFields']),
         // 'reason_for_failure'                    => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
     );
@@ -285,7 +285,7 @@ try {
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         if (!empty($_POST['testName'])) {
             $finalResult = "";
-            if (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) {
+            if (isset($_POST['subTestResult']) && !empty($_POST['subTestResult'])) {
                 foreach ($_POST['testName'] as $subTestName => $subTests) {
                     foreach ($subTests as $testKey => $testKitName) {
                         if (!empty($testKitName)) {
@@ -301,7 +301,7 @@ try {
                                 'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null,
                                 'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey],
                                 'result' => $_POST['testResult'][$subTestName][$testKey],
-    
+
                                 'final_result' => $_POST['finalResult'][$subTestName],
                                 'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName],
                                 'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
@@ -313,7 +313,7 @@ try {
                         }
                     }
                 }
-            }else{
+            } else {
                 foreach ($_POST['testName'] as $testKey => $testKitName) {
                     if (!empty($_POST['testName'][$testKey][0])) {
                         $testData = array(
@@ -329,13 +329,14 @@ try {
                             'result_unit' => $_POST['testResultUnit'][$testKey][0] ?? null,
                             'result' => $_POST['testResult'][$testKey][0] ?? null
                         );
-                        foreach($_POST['finalResult'] as $key => $value){
-                            if(isset($value) && !empty($value)){
+                        foreach ($_POST['finalResult'] as $key => $value) {
+                            if (isset($value) && !empty($value)) {
                                 $testData['final_result'] = $value;
                             }
-                            if(isset($_POST['finalTestResultUnit'][$key]) && !empty($_POST['finalTestResultUnit'][$key])){
+                            if (isset($_POST['finalTestResultUnit'][$key]) && !empty($_POST['finalTestResultUnit'][$key])) {
                                 $testData['final_result_unit'] = $_POST['finalTestResultUnit'][$key];
-                            }if(isset($_POST['resultInterpretation'][$key]) && !empty($_POST['resultInterpretation'][$key])){
+                            }
+                            if (isset($_POST['resultInterpretation'][$key]) && !empty($_POST['resultInterpretation'][$key])) {
                                 $testData['final_result_interpretation'] = $_POST['resultInterpretation'][$key];
                             }
                         }

@@ -161,7 +161,7 @@ final class FacilitiesService
     public function getHealthFacilities($testType = null, $byPassFacilityMap = false, $allColumns = false, $condition = [], $onlyActive = true, $userId = null)
     {
 
-        $userId = $userId ?: $_SESSION['userId'] ?: null;
+        $userId = $userId ?? $_SESSION['userId'] ?? null;
         if (!$byPassFacilityMap && !empty($userId)) {
             $facilityMap = $_SESSION['facilityMap'] ?? $this->getUserFacilityMap($userId);
             if (!empty($facilityMap)) {

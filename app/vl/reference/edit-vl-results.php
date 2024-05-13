@@ -27,7 +27,7 @@ $instrumentsService = ContainerRegistry::get(InstrumentsService::class);
 $resultQuery = "SELECT * from r_vl_results where result_id = '" . $id . "' ";
 $resultInfo = $db->query($resultQuery);
 
-$activeInstruments = $instrumentsService->getInstruments(null, true);
+$activeInstruments = $instrumentsService->getInstruments(testType: null, dropDown: true, withFacility: true);
 $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instruments'], true);
 $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $selectedInstruments);
 ?>
@@ -140,9 +140,9 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#instruments").multipleSelect({
-                placeholder: 'Select Instruments',
-                width: '100%'
-            });
+			placeholder: 'Select Instruments',
+			width: '100%'
+		});
 
 	});
 

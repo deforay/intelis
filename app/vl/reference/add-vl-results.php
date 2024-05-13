@@ -17,7 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var InstrumentsService $instrumentsService */
 $instrumentsService = ContainerRegistry::get(InstrumentsService::class);
 
-$activeInstruments = $instrumentsService->getInstruments(null, true);
+$activeInstruments = $instrumentsService->getInstruments(testType: null, dropDown: true, withFacility: true);
 $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null);
 ?>
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
@@ -141,11 +141,11 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null)
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-	
+
 		$("#instruments").multipleSelect({
-                placeholder: 'Select Instruments',
-                width: '100%'
-            });
+			placeholder: 'Select Instruments',
+			width: '100%'
+		});
 	});
 
 	function validateNow() {
