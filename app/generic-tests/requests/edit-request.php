@@ -265,7 +265,7 @@ foreach ($pdResult as $provinceName) {
 $facility = $general->generateSelectOptions($healthFacilities, $genericResultInfo['facility_id'], '-- Select --');
 //facility details
 if (isset($genericResultInfo['facility_id']) && $genericResultInfo['facility_id'] > 0) {
-	$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
+	$facilityQuery = "SELECT f.*,u.user_name as contact_person FROM facility_details as f LEFT JOIN user_details as u ON u.user_id=f.contact_person where f.facility_id= ? AND f.status='active'";
 	$facilityResult = $db->rawQuery($facilityQuery, array($genericResultInfo['facility_id']));
 }
 if (!isset($facilityResult[0]['facility_code'])) {
