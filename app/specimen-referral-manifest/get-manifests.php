@@ -43,7 +43,7 @@ $tableName = TestsService::getTestTableName($module);
 $primaryKey = TestsService::getTestPrimaryKeyColumn($module);
 
 $sql = "UPDATE package_details
-                SET lab_id = (SELECT lab_id FROM $tableName WHERE form_vl.sample_package_id = package_details.package_id limit 1)
+                SET lab_id = (SELECT lab_id FROM $tableName WHERE $tableName.sample_package_id = package_details.package_id limit 1)
                 WHERE package_details.lab_id is null OR package_details.lab_id = 0";
 
 $db->rawQuery($sql);

@@ -1,7 +1,6 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
