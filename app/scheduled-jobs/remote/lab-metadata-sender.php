@@ -59,6 +59,15 @@ try {
         $payload["labStorage"] = $labStorage;
     }
 
+     // LAB STORAGE HISTORY
+     if (!empty($lastUpdatedOn)) {
+        $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
+    }
+    $labStorageHistory = $db->get('lab_storage_history');
+    if (!empty($labStorageHistory)) {
+        $payload["labStorageHistory"] = $labStorageHistory;
+    }
+
     // PATIENTS
     if (!empty($lastUpdatedOn)) {
         $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
