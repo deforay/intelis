@@ -683,6 +683,14 @@ $testTypeList = SystemService::getActiveModules(true);
 			]
 		});
 
+		$('#configurationFile').on('change', function() {
+			$('input[name="fileName[]"]').each(function() {
+				if ($(this).val() === '') {
+					$(this).val($('#configurationFile').val());
+				}
+			});
+		});
+
 		$('input[name="fileName[]"]').each(function() {
 			if ($(this).val() === '') {
 				$(this).val($('#configurationFile').val());
