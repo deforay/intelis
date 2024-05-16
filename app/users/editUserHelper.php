@@ -70,25 +70,6 @@ try {
         }
 
 
-        if (isset($uploadedFiles['userSignature']) && $uploadedFiles['userSignature']->getError() === UPLOAD_ERR_OK) {
-            $file = $uploadedFiles['userSignature'];
-            $fileName = $file->getClientFilename();
-            $fileExtension = pathinfo((string) $fileName, PATHINFO_EXTENSION);
-            $tmpFilePath = $file->getStream()->getMetadata('uri');
-            $fileSize = $file->getSize();
-            $fileMimeType = $file->getClientMediaType();
-            $signatureImage = "usign-" . $userId . "." . $fileExtension;
-            $signatureImage = $signatureImagePath . DIRECTORY_SEPARATOR . $signatureImage;
-            $file->moveTo($signatureImage);
-
-            $resizeObj = new ImageResizeUtility($signatureImage);
-            $resizeObj->resizeToWidth(250);
-            $resizeObj->save($signatureImage);
-            $data['user_signature'] = $signatureImage;
-        } else {
-            $signatureImage = $userInfo['user_signature'] ?? null;
-        }
-
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
         if ($sanitizedUserSignature instanceof UploadedFile && $sanitizedUserSignature->getError() === UPLOAD_ERR_OK) {
@@ -102,7 +83,7 @@ try {
 
             $resizeObj = new ImageResizeUtility($signatureImagePath);
             $resizeObj->resizeToWidth(250);
-            $resizeObj->save($filePath);
+            $resizeObj->save($signatureImagePath);
 
             $data['user_signature'] = $signatureImage;
         } else {
@@ -133,7 +114,6 @@ try {
             $data['hash_algorithm'] = 'phb';
             $data['force_password_reset'] = 1;
         }
-
 
         $db->where('user_id', $userId);
         $db->update("user_details", $data);
