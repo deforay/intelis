@@ -15,6 +15,7 @@ use App\Utilities\ImageResizeUtility;
 
 try {
 
+    $data = [];
 
     /** @var DatabaseService $db */
     $db = ContainerRegistry::get(DatabaseService::class);
@@ -37,10 +38,10 @@ try {
 
     $origJson = $request->getBody()->getContents();
 
-    if (MiscUtility::isJSON($origJson) === false) {
-        LoggerUtility::log("error", "Invalid JSON Payload : " . $origJson);
-        throw new SystemException("Invalid JSON Payload");
-    }
+    // if (MiscUtility::isJSON($origJson) === false) {
+    //     LoggerUtility::log("error", "Invalid JSON Payload : " . $origJson);
+    //     throw new SystemException("Invalid JSON Payload");
+    // }
     $transactionId = MiscUtility::generateUUID();
 
     $uploadedFiles = $request->getUploadedFiles();
@@ -52,7 +53,7 @@ try {
     ini_set('max_execution_time', 20000);
     $authToken = $apiService->getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
-    if (!empty($origJson)) {
+    if (!empty($origJson) && MiscUtility::isJSON($origJson)) {
         $input = _sanitizeInput($request->getParsedBody());
     } elseif (!empty($_REQUEST)) {
         $input = _sanitizeInput($_REQUEST);
@@ -201,6 +202,6 @@ try {
     ]);
 }
 
-$trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
+$trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data ?? []), 'save-user', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
 echo $payload;
