@@ -37,6 +37,19 @@ $tableName = [
 
 foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
     if ($status) {
+        //FAILED SAMPLES
+        if ($module === 'vl') {
+            $db->where('result', ['fail', 'failed', 'err', 'error'], 'IN');
+            $db->where("result_status != " . SAMPLE_STATUS\REJECTED); // not rejected
+            $db->where("result_status != " . SAMPLE_STATUS\TEST_FAILED); // not rejected
+            $db->update(
+                $tableName[$module],
+                [
+                    "result_status" => SAMPLE_STATUS\TEST_FAILED
+                ]
+            );
+        }
+
         //EXPIRING SAMPLES
         $expiryDays = $general->getGlobalConfig($module . '_sample_expiry_after_days');
         if (empty($expiryDays)) {

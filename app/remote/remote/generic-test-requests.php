@@ -34,8 +34,9 @@ try {
 
 	$labId = $data['labName'] ?? $data['labId'] ?? null;
 
+
 	if (empty($labId)) {
-		exit(0);
+		throw new SystemException('Lab ID is missing in the request', 400);
 	}
 
 

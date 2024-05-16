@@ -36,8 +36,9 @@ try {
 
   $labId = $data['labName'] ?? $data['labId'] ?? null;
 
+
   if (empty($labId)) {
-    exit(0);
+    throw new SystemException('Lab ID is missing in the request', 400);
   }
 
   $transactionId = $general->generateUUID();
@@ -73,9 +74,9 @@ try {
 
     /** @var Covid19Service $covid19Service */
     $covid19Service = ContainerRegistry::get(Covid19Service::class);
-    foreach($covid19RemoteResult as $r){
+    foreach ($covid19RemoteResult as $r) {
       $response[$r['covid19_id']] = $r;
-      $response[$r['covid19_id']]['data_from_comorbidities'] = $covid19Service->getCovid19ComorbiditiesByFormId($r['covid19_id'],false, true);
+      $response[$r['covid19_id']]['data_from_comorbidities'] = $covid19Service->getCovid19ComorbiditiesByFormId($r['covid19_id'], false, true);
       $response[$r['covid19_id']]['data_from_symptoms'] = $covid19Service->getCovid19SymptomsByFormId($r['covid19_id'], false, true);
       $response[$r['covid19_id']]['data_from_tests'] = $covid19Service->getCovid19TestsByFormId($r['covid19_id']);
     }

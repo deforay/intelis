@@ -313,7 +313,7 @@ final class DatabaseService extends MysqliDb
                 $count = count($queryResult);
             }
 
-            return [$queryResult, $count];
+            return [$queryResult, max((int)$count, 0)];
         } catch (Throwable $e) {
             throw new SystemException($e->getMessage(), 500, $e);
         }

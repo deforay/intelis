@@ -1,12 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Services\UsersService;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\SystemService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\SystemService;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -33,6 +33,17 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 $sQuery = "SELECT * from instruments where instrument_id=?";
 $sInfo = $db->rawQueryOne($sQuery, [$id]);
 
+$configDir = realpath(__DIR__);
+$directory = $configDir . DIRECTORY_SEPARATOR . 'vl';
+$dir = new DirectoryIterator($directory);
+$fileList = [];
+foreach ($dir as $fileinfo) {
+	if (!$fileinfo->isFile()) {
+		continue;
+	}
+	$fileList[] = $fileinfo->getFilename();
+}
+sort($fileList);
 
 if (!empty($sInfo['supported_tests'])) {
 	$sInfo['supported_tests'] = json_decode((string) $sInfo['supported_tests'], true);
@@ -177,13 +188,11 @@ $testTypeList = SystemService::getActiveModules(true);
 									<div class="col-lg-7">
 										<!--<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder="<?php echo _translate('eg. roche.php or abbott.php'); ?>" title="<?php echo _translate('Please enter file name'); ?>" value="<?php echo $sInfo['import_machine_file_name']; ?>" />-->
 										<select name="configurationFile" id="configurationFile" class="form-control">
+											<option value=""><?php echo _translate('Select File'); ?></option>
 											<?php
-											$configDir = realpath(__DIR__);
-											$log_directory = $configDir . DIRECTORY_SEPARATOR . 'vl';
-											foreach (glob($log_directory . '/*.*') as $file) {
-												$arr = explode('/', $file);
+											foreach ($fileList as $fileName) {
 											?>
-												<option value="<?= $arr[7]; ?>" <?php if ($sInfo['import_machine_file_name'] == $arr[7]) echo "selected='selected'"; ?>><?= $arr[7]; ?></option>
+												<option value="<?= $fileName; ?>" <?php if ($sInfo['import_machine_file_name'] == $fileName) echo "selected='selected'"; ?>><?= $fileName; ?></option>
 											<?php
 											}
 											?>
@@ -571,7 +580,16 @@ $testTypeList = SystemService::getActiveModules(true);
 													<input type="text" value="<?php echo $machine['date_format'] ?: 'd/m/Y H:i'; ?>" name="dateFormat[]" id="dateFormat<?php echo $i; ?>" class="form-control" placeholder='<?php echo _translate("Date Format"); ?>' title='<?php echo _translate("Please enter date format"); ?>' />
 												</td>
 												<td>
-													<input type="text" value="<?php echo $machine['file_name']; ?>" name="fileName[]" id="fileName<?php echo $i; ?>" class="form-control" placeholder='<?php echo _translate("File Name"); ?>' title='<?php echo _translate("Please enter file name"); ?>' />
+													<select name="configurationFile" id="configurationFile" class="form-control">
+														<option value=""><?php echo _translate('Select File'); ?></option>
+														<?php
+														foreach ($fileList as $fileName) {
+														?>
+															<option value="<?= $fileName; ?>" <?php if ($machine['file_name'] == $fileName) echo "selected='selected'"; ?>><?= $fileName; ?></option>
+														<?php
+														}
+														?>
+													</select>
 												</td>
 												<td>
 													<div class="col-md-3">

@@ -5,7 +5,6 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
@@ -28,21 +27,22 @@ $apiService = ContainerRegistry::get(ApiService::class);
 $request = AppRegistry::get('request');
 $data = $apiService->getJsonFromRequest($request, true);
 
-$labId = $data['labName'] ?? $data['labId'] ?? null;
 
-if (empty($labId)) {
-  LoggerUtility::log('error', 'Lab ID is missing in the CD4 request', [
-    'line' => __LINE__,
-    'file' => __FILE__
-  ]);
-  exit(0);
-}
 $payload = [];
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
 try {
   $db->beginTransaction();
   $transactionId = $general->generateUUID();
+
+
+
+  $labId = $data['labName'] ?? $data['labId'] ?? null;
+
+  if (empty($labId)) {
+    throw new SystemException('Lab ID is missing in the request', 400);
+  }
+
 
   $counter = 0;
 

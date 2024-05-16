@@ -5,7 +5,6 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
@@ -30,21 +29,18 @@ $data = $apiService->getJsonFromRequest($request, true);
 
 $labId = $data['labName'] ?? $data['labId'] ?? null;
 
-if (empty($labId)) {
-  LoggerUtility::log('error', 'Lab ID is missing in the VL request', [
-    'line' => __LINE__,
-    'file' => __FILE__
-  ]);
-  exit(0);
-}
 $payload = [];
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
 try {
+
+
   $db->beginTransaction();
   $transactionId = $general->generateUUID();
 
-  $counter = 0;
+  if (empty($labId)) {
+    throw new SystemException('Lab ID is missing in the request', 400);
+  }
 
   $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
   $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
@@ -80,31 +76,31 @@ try {
   }
 
   // Construct the final SQL query
-  $vlQuery = "SELECT $columnSelection FROM form_vl WHERE $condition";
+  $sQuery = "SELECT $columnSelection FROM form_vl WHERE $condition";
 
   if (!empty($data['manifestCode'])) {
-    $vlQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
+    $sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
   } else {
-    $vlQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
+    $sQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
   }
 
-  $vlRemoteResult = $db->rawQuery($vlQuery);
+  [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+
+  // Convert the result to an array
+  $rResult = iter\toArray($rResult);
 
   $sampleIds = $facilityIds = [];
-  if ($db->count > 0) {
+  if ($resultCount > 0) {
 
-    $payload = $vlRemoteResult;
-    $counter = $db->count;
+    $sampleIds = array_column($rResult, 'vl_sample_id');
+    $facilityIds = array_column($rResult, 'facility_id');
 
-    $sampleIds = array_column($vlRemoteResult, 'vl_sample_id');
-    $facilityIds = array_column($vlRemoteResult, 'facility_id');
-
-    $payload = json_encode($vlRemoteResult);
+    $payload = json_encode($rResult);
   } else {
     $payload = json_encode([]);
   }
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', $_SERVER['REQUEST_URI'], MiscUtility::convertToUtf8AndEncode($data), $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'vl', $_SERVER['REQUEST_URI'], MiscUtility::convertToUtf8AndEncode($data), $payload, 'json', $labId);
   $general->updateTestRequestsSyncDateTime('vl', $facilityIds, $labId);
 
   $db->commitTransaction();

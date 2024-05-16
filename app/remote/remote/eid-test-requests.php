@@ -34,12 +34,9 @@ try {
 
   $labId = $data['labName'] ?? $data['labId'] ?? null;
 
+
   if (empty($labId)) {
-    LoggerUtility::log('error', 'Lab ID is missing in the EID request', [
-      'line' => __LINE__,
-      'file' => __FILE__
-    ]);
-    exit(0);
+    throw new SystemException('Lab ID is missing in the request', 400);
   }
 
   $transactionId = $general->generateUUID();

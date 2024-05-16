@@ -1,18 +1,13 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\BatchService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 try {
 
@@ -54,30 +49,30 @@ try {
 
 
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
-   
+
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
         //$file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         //$mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
         $inputFileName = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName;
         $spreadsheet = IOFactory::load($inputFileName);
-        
+
         $sheet = $spreadsheet->getActiveSheet();
 
         $testingSheet = $spreadsheet->getSheetByName('Liste des échantillons');
         $testedDate = $testingSheet->getCell('F6')->getValue();
         $testedBy =  $testingSheet->getCell('F7')->getValue();
-        $dateObj = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($testedDate);
+        $dateObj = Date::excelToDateTimeObject($testedDate);
         $testDate = $dateObj->format('Y-m-d');
         $sheetData   = $sheet->toArray(null, true, true, true);
 
         $resultArray = array_slice($sheetData, 7);
 
-       // $sheet1 = $spreadsheet->getActiveSheet()->getCell('C7')->getValue();
-      //  echo $sheet1; die;
+        // $sheet1 = $spreadsheet->getActiveSheet()->getCell('C7')->getValue();
+        //  echo $sheet1; die;
         $data = array();
 
         foreach ($resultArray as $row) {
-            
+
             $data[] = array(
                 'module' => 'vl',
                 'lab_id' => base64_decode((string) $_POST['labId']),
@@ -96,7 +91,6 @@ try {
         }
 
         $db->insertMulti("temp_sample_import", $data);
-            
     }
 
     $_SESSION['alertMsg'] = "Results imported successfully";
