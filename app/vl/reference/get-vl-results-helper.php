@@ -66,8 +66,9 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT r.*, GROUP_CONCAT(i.machine_name SEPARATOR ', ') AS machine_names
             FROM r_vl_results r
-            LEFT JOIN instruments i ON JSON_CONTAINS(r.available_for_instruments, CONCAT('\"', i.instrument_id, '\"'))
+            LEFT JOIN instruments i ON JSON_CONTAINS(r.available_for_instruments, JSON_QUOTE(i.instrument_id))
             GROUP BY r.result_id;";
+
 
 if (!empty($sWhere)) {
     $sWhere = ' WHERE ' . $sWhere;
@@ -101,7 +102,7 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
                </select><br><br>';
     $row = [];
-    $row[] = '<span style="cursor:pointer">'.$aRow['result'].'</span>';
+    $row[] = '<span style="cursor:pointer">' . $aRow['result'] . '</span>';
     $row[] = $aRow['machine_names'];
 
     if (_isAllowed("/vl/reference/vl-results.php")) {

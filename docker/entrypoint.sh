@@ -12,7 +12,6 @@ echo "Waiting for MySQL to be ready..."
 while ! mysqladmin ping -h"db" --silent; do
     sleep 1
 done
-
 echo "MySQL is ready."
 
 # Update VLSM config.production.php with database credentials
@@ -61,6 +60,7 @@ for phpini in /usr/local/etc/php/php.ini; do
     }' $phpini >temp.ini && mv temp.ini $phpini
 done
 
+# Navigate to the application directory and run composer post-install scripts
 cd /var/www/html/
 composer post-install
 

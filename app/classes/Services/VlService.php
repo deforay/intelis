@@ -142,12 +142,15 @@ final class VlService extends AbstractTestService
     public function processViralLoadResultFromForm(array $params): array
     {
         $isRejected = 'no';
-        $finalResult = $params['vlResult'] ?? null;
+        $params['vlResult'] = $params['vlResult'] ?? $params['result'] ?? null;
+        $params['vlLog'] = $params['vlLog'] ?? $params['result_value_log'] ?? null;
+        $finalResult = $params['vlResult'];
         $absDecimalVal = $absVal = $logVal = $txtVal = null;
         $hivDetection = $params['hivDetection'] ?? null;
-        $resultStatus = null;
+        $resultStatus = $params['result_status'] ?? null;
+        $params['isSampleRejected'] = $params['isSampleRejected'] ?? null;
 
-        if (($params['isSampleRejected'] ?? null) == 'yes') {
+        if ($resultStatus == SAMPLE_STATUS\REJECTED || $params['isSampleRejected'] == 'yes') {
             $isRejected = 'yes';
             $finalResult = $params['vlResult'] = $params['vlLog'] = null;
             $resultStatus = SAMPLE_STATUS\REJECTED;
@@ -218,10 +221,22 @@ final class VlService extends AbstractTestService
             $vlResult = str_ireplace('-', '', $vlResult);
             $vlResult = trim(str_ireplace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
 
+
+
             if ($vlResult == "-1.00") {
                 $finalResult = $vlResult = "Not Detected";
             }
-            if ($vlResultType == 'numeric') {
+
+            if (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
+                return [
+                    'logVal' => null,
+                    'result' => null,
+                    'absDecimalVal' => null,
+                    'absVal' => null,
+                    'txtVal' => $finalResult,
+                    'resultStatus' => SAMPLE_STATUS\TEST_FAILED
+                ];
+            } elseif ($vlResultType == 'numeric') {
                 //passing only number
                 return $this->interpretViralLoadNumericResult($vlResult, $unit);
             } else {

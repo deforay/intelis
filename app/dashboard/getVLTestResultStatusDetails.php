@@ -1,17 +1,11 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
-
-
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
-
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 
 /** @var DatabaseService $db */
@@ -36,9 +30,8 @@ try {
      $sIndexColumn = $primaryKey;
 
      $sTable = $tableName;
-     /*
- * Paging
- */
+
+
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
@@ -87,10 +80,6 @@ try {
 
 
 
-     /*
- * SQL queries
- * Get data to display
- */
      $sQuery = "SELECT * FROM form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
@@ -131,24 +120,14 @@ try {
           $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
      }
 
-     $rResult = $db->rawQuery($sQuery);
-     /* Data set length after filtering */
-     $aResultFilterTotal = $db->rawQuery("SELECT vl.vl_sample_id,vl.facility_id,vl.patient_first_name,vl.result,f.facility_name,f.facility_code,vl.patient_art_no,s.sample_name,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere  ORDER BY vl.last_modified_datetime DESC, $sOrder");
-     $iFilteredTotal = count($aResultFilterTotal);
 
-     /* Total data set length */
-     $aResultTotal = $db->rawQuery("select COUNT(vl_sample_id) as total FROM form_vl where result_status = '" . $_POST['status'] . "' AND vlsm_country_id = '" . $configResult[0]['value'] . "'");
-     // $aResultTotal = $countResult->fetch_row();
-     //print_r($aResultTotal);
-     $iTotal = $aResultTotal[0]['total'];
+     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-     /*
- * Output
- */
+
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
-          "iTotalRecords" => $iTotal,
-          "iTotalDisplayRecords" => $iFilteredTotal,
+          "iTotalRecords" => $resultCount,
+          "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
      );
 

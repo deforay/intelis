@@ -338,7 +338,7 @@ final class MiscUtility
     }
 
     // Updates entries in targetArray with values from sourceArray where keys exist in targetArray
-    public static function updateFromArray(array $targetArray, array $sourceArray)
+    public static function updateFromArray(?array $targetArray, ?array $sourceArray)
     {
 
         if (empty($targetArray) || empty($sourceArray)) {

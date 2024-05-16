@@ -13,35 +13,40 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
-/** @var Slim\Psr7\Request $request */
-$request = AppRegistry::get('request');
-
-$origJson = $request->getBody()->getContents();
-if (MiscUtility::isJSON($origJson) === false) {
-    throw new SystemException("Invalid JSON Payload");
-}
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
-
-/** @var FacilitiesService $facilitiesService */
-$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-
-/** @var ApiService $apiService */
-$apiService = ContainerRegistry::get(ApiService::class);
-
-$transactionId = MiscUtility::generateUUID();
-
-$uploadedFiles = $request->getUploadedFiles();
-
-$sanitizedSignFile = _sanitizeFiles($uploadedFiles['sign'], ['png', 'jpg', 'jpeg', 'gif']);
-
 try {
+
+
+    /** @var DatabaseService $db */
+    $db = ContainerRegistry::get(DatabaseService::class);
+
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
+
+    /** @var UsersService $usersService */
+    $usersService = ContainerRegistry::get(UsersService::class);
+
+    /** @var FacilitiesService $facilitiesService */
+    $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+    /** @var ApiService $apiService */
+    $apiService = ContainerRegistry::get(ApiService::class);
+
+
+    /** @var Slim\Psr7\Request $request */
+    $request = AppRegistry::get('request');
+
+    $origJson = $request->getBody()->getContents();
+
+    if (MiscUtility::isJSON($origJson) === false) {
+        LoggerUtility::log("error", "Invalid JSON Payload : " . $origJson);
+        throw new SystemException("Invalid JSON Payload");
+    }
+    $transactionId = MiscUtility::generateUUID();
+
+    $uploadedFiles = $request->getUploadedFiles();
+
+    $sanitizedSignFile = _sanitizeFiles($uploadedFiles['sign'], ['png', 'jpg', 'jpeg', 'gif']);
+
     ini_set('memory_limit', -1);
     set_time_limit(0);
     ini_set('max_execution_time', 20000);

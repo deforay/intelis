@@ -1,7 +1,7 @@
 # First stage: PHP with Apache
 FROM php:8.2-apache AS php-apache
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libzip-dev libjpeg62-turbo-dev libfreetype6-dev \
@@ -9,22 +9,17 @@ RUN apt-get update && \
     git zip unzip rsync vim openssl curl acl gettext cron \
     default-mysql-client && \
     apt-get upgrade -y openssl apache2 curl libxml2 && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install required PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install pdo_mysql zip mysqli mbstring \
-    curl intl exif bcmath gd gettext
-
-RUN a2enmod rewrite headers deflate env;
+    curl intl exif bcmath gd gettext && \
+    a2enmod rewrite headers deflate env && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy custom PHP configuration
-COPY ./docker/php-apache/custom-php.ini /usr/local/etc/php/conf.d/custom-php.ini
-
-# Copy Apache configuration
+# Copy custom PHP and Apache configuration
+COPY ./docker/php-apache/custom-php.ini /usr/local/etc/php/conf.d/
 COPY ./docker/php-apache/app.conf /etc/apache2/sites-enabled/000-default.conf
 
 # Second stage: web server
@@ -34,15 +29,15 @@ FROM php-apache AS php-web
 WORKDIR /var/www/html
 
 # Copy the application code to the container
-COPY . /var/www/html/
+COPY . .
 
-# Install project dependencies using composer
-RUN composer install --no-dev --optimize-autoloader --no-progress
-
-RUN composer dump-autoload --optimize
+# Install project dependencies using Composer
+RUN composer install --no-dev --optimize-autoloader --no-progress && \
+    composer dump-autoload --optimize
 
 # Fix permissions
-RUN setfacl -R -m u:www-data:rwx /var/www/html;
+RUN setfacl -R -m u:www-data:rwx /var/www/html && \
+    setfacl -dR -m u:www-data:rwx /var/www/html
 
 # Use custom entrypoint script for the web server
 COPY ./docker/entrypoint.sh /usr/local/bin/entrypoint.sh

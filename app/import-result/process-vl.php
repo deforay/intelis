@@ -290,7 +290,7 @@ try {
                 $data['result_status'] = SAMPLE_STATUS\REJECTED;
             }
 
-            //get bacth code
+            //get batch code
             $bquery = "SELECT * FROM batch_details WHERE batch_code= ?";
             $bvlResult = $db->rawQueryOne($bquery, [$accResult[$i]['batch_code']]);
             if ($bvlResult) {

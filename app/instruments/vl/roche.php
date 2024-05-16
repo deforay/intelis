@@ -1,8 +1,8 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\BatchService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;

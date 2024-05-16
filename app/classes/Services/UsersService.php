@@ -201,8 +201,10 @@ final class UsersService
     {
         $uQuery = "SELECT `user_id`
                     FROM $this->table
-                    WHERE (`user_name` LIKE ?)
-                    OR (JSON_CONTAINS(LOWER(interface_user_name), JSON_QUOTE(LOWER(?)), '$'))";
+                        WHERE (`user_name` LIKE ?)
+                            OR (JSON_VALID(interface_user_name) AND
+                            JSON_CONTAINS(LOWER(interface_user_name), JSON_QUOTE(LOWER(?)), '$'))";
+
 
         $result = $this->db->rawQueryOne($uQuery, [$name, $name]);
         if ($result == null) {

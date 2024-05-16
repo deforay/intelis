@@ -85,6 +85,9 @@ try {
         if (!empty($tableInfo)) {
             foreach ($tableInfo['table'] as $j => $table) {
                 $emptyDataArray = $general->getTableFieldsAsArray($table);
+                if (empty($emptyDataArray)) {
+                    continue;
+                }
                 $deletedId = [];
                 foreach ($tableInfo['data'][$j] as $key => $resultRow) {
                     $counter++;
