@@ -101,6 +101,7 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
                </select><br><br>';
     $row = [];
+    $row[] = "";
     $row[] = '<span style="cursor:pointer">'.$aRow['result'].'</span>';
     $row[] = $aRow['machine_names'];
 

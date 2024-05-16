@@ -29,6 +29,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<table aria-describedby="table" id="sampTypDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
+									<th></th>
 									<th scope="row"><?php echo _translate("Viral Load Result"); ?></th>
 									<th scope="row"><?php echo _translate("Instruments"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
@@ -73,6 +74,10 @@ require_once APPLICATION_PATH . '/header.php';
 			"bRetrieve": true,
 			"aoColumns": [
 				{
+					"sClass": "center dt-control",
+					"bSortable": false
+				},
+				{
 					"sClass": "center"
 				},
 				{
@@ -88,7 +93,7 @@ require_once APPLICATION_PATH . '/header.php';
 				}
 			],
 			"aaSorting": [
-				[1, "asc"]
+				[2, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -106,7 +111,7 @@ require_once APPLICATION_PATH . '/header.php';
 		//oTable.fnSetColumnVis(1, false);
 
 		// Add event listener for opening and closing details
-		oTable.on('click', 'td', function (e) {
+		oTable.on('click', 'td.dt-control', function (e) {
     let tr = e.target.closest('tr');
     let row = oTable.row(tr);
  
@@ -145,7 +150,7 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	function format(d) {
-		var ins = d[1].split(",");
+		var ins = d[2].split(",");
 
     // `d` is the original data object for the row
     return (
