@@ -13,16 +13,16 @@ use App\Exceptions\SystemException;
  */
 class ImageResizeUtility
 {
-    const int CROPTOP = 1;
-    const int CROPCENTRE = 2;
-    const int CROPCENTER = 2;
-    const int CROPBOTTOM = 3;
-    const int CROPLEFT = 4;
-    const int CROPRIGHT = 5;
-    const int CROPTOPCENTER = 6;
-    const int IMG_FLIP_HORIZONTAL = 0;
-    const int IMG_FLIP_VERTICAL = 1;
-    const int IMG_FLIP_BOTH = 2;
+    const CROPTOP = 1;
+    const CROPCENTRE = 2;
+    const CROPCENTER = 2;
+    const CROPBOTTOM = 3;
+    const CROPLEFT = 4;
+    const CROPRIGHT = 5;
+    const CROPTOPCENTER = 6;
+    const IMG_FLIP_HORIZONTAL = 0;
+    const IMG_FLIP_VERTICAL = 1;
+    const IMG_FLIP_BOTH = 2;
 
     public int $quality_jpg = 85;
     public int $quality_webp = 85;
