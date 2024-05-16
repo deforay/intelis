@@ -102,7 +102,8 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
                </select><br><br>';
     $row = [];
-    $row[] = '<span style="cursor:pointer">' . $aRow['result'] . '</span>';
+    $row[] = "";
+    $row[] = '<span style="cursor:pointer">'.$aRow['result'].'</span>';
     $row[] = $aRow['machine_names'];
 
     if (_isAllowed("/vl/reference/vl-results.php")) {

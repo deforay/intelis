@@ -53,9 +53,13 @@ try {
             } elseif ($name === 'labId') {
                 $labId = $data;
             } elseif ($name === 'labStorage') {
-
+                
                 $tableInfo['primaryKey'][$i] = 'storage_id';
                 $tableInfo['table'][$i] = 'lab_storage';
+            } elseif ($name === 'labStorageHistory') {
+
+                $tableInfo['primaryKey'][$i] = 'history_id';
+                $tableInfo['table'][$i] = 'lab_storage_history';
             } elseif ($name === 'instruments') {
 
                 $tableInfo['primaryKey'][$i] = 'instrument_id';

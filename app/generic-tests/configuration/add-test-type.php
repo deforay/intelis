@@ -11,7 +11,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $generic = ContainerRegistry::get(GenericTestsService::class);
 $sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", array("sample_type_id", "sample_type_name"), true, "sample_type_status='active'");
 $symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", array("symptom_id", "symptom_name"), true, "symptom_status='active'");
-$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
+$testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
 ?>
 <style>
 	.tooltip-inner {
@@ -281,7 +281,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 								<label for="resultUnit" class="col-lg-4 control-label"><?php echo _translate("Test Result Unit"); ?> </label>
 								<div class="col-lg-7">
 									<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>' multiple>
-										<?= $general->generateSelectOptions($testResultUnitInfo, null, '-- Select --') ?>
+										<?= $general->generateSelectOptions($testResultUnitInfo, null, false) ?>
 									</select>
 								</div>
 							</div>
