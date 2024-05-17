@@ -1,11 +1,11 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\FacilitiesService;
 use App\Services\DatabaseService;
-use App\Utilities\MiscUtility;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -45,6 +45,8 @@ $result = $db->rawQuery($query);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+$signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 
 $activeFacilities = [];
 $display = 'display:none';
@@ -203,7 +205,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                   <div class="fileinput fileinput-new userSignature" data-provides="fileinput">
                                                        <div class="fileinput-preview thumbnail image-placeholder" data-trigger="fileinput" style="width:200px; height:150px;">
                                                             <?php
-                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && file_exists($userInfo['user_signature'])) {
+
+                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && MiscUtility::imageExists($signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
                                                                  $signFileName = basename($userInfo['user_signature']);
                                                             ?>
                                                                  <img src="/uploads/users-signature/<?php echo $signFileName; ?>" alt="Signature image">

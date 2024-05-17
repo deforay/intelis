@@ -71,7 +71,7 @@ try {
 
             $resizeObj = new ImageResizeUtility($signatureImagePath);
             $resizeObj->resizeToWidth(250);
-            $resizeObj->save($filePath);
+            $resizeObj->save($signatureImagePath);
 
             $data['user_signature'] = $signatureImage;
         }
