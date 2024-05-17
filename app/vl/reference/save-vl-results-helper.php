@@ -19,9 +19,10 @@ $tableName = "r_vl_results";
 $primaryKey = "result_id";
 // print_r(base64_decode($_POST['resultId']));die;
 try {
+	//echo '<pre>'; print_r($_POST); die;
 	if (isset($_POST['resultName']) && trim((string) $_POST['resultName']) != "") {
-		if (!empty($_POST['instruments'])) {
-			$jsonInstruments = json_encode($_POST['instruments'], true);
+		if (!empty($_POST['selectedInstruments'])) {
+			$jsonInstruments = json_encode(explode(',',$_POST['selectedInstruments']), true);
 		} else {
 			$jsonInstruments = null;
 		}

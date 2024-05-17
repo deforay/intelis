@@ -19,7 +19,7 @@ $district   = $_POST['districtId'];
 $selectedFacility = $_POST['selectedFacility'];
 $selectedFacilityArray = explode(',',$selectedFacility);
 
-$facilityQuery = "SELECT facility_id, facility_name FROM facility_details WHERE `status` = 'active' " ;
+$facilityQuery = "SELECT facility_id, facility_name FROM facility_details WHERE `status` = 'active' ";
 
 if(isset($province) && $province!="")
 {
