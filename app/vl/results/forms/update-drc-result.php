@@ -249,7 +249,7 @@ $storageInfo = $storageService->getLabStorage();
 													<option value="<?php echo $arv['art_code']; ?>" <?php echo ($arv['art_code'] == $vlQueryInfo['current_regimen']) ? 'selected="selected"' : ''; ?>><?php echo $arv['art_code']; ?>
 													</option>
 												<?php }
-												if ($sarr['sc_user_type'] != 'vluser') { ?>
+												if ($general->isLISInstance() === false) { ?>
 													<option value="other">Autre</option>
 												<?php } ?>
 											</select>

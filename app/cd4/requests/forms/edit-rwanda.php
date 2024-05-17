@@ -427,7 +427,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                            ?>
                                                                       </optgroup>
                                                                  <?php }
-                                                                 if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                                 if ($general->isLISInstance() === false) { ?>
                                                                       <!-- <option value="other">Other</option> -->
                                                                  <?php } ?>
                                                             </select>
@@ -707,7 +707,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                                      } ?>
                                                                                 </optgroup>
                                                                            <?php }
-                                                                           if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                                           if ($general->isLISInstance() === false) { ?>
                                                                                 <option value="other">Other (Please Specify) </option>
                                                                            <?php } ?>
                                                                       </select>

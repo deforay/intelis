@@ -21,7 +21,7 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (_isAllowed("/vl/reference/vl-art-code-details.php") && $_SESSION['instance']['type'] != 'vluser') { ?>
+            <?php if (_isAllowed("/vl/reference/vl-art-code-details.php") && $general->isLISInstance() === false) { ?>
               <a href="/vl/reference/add-vl-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Sample Rejection Reasons"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->

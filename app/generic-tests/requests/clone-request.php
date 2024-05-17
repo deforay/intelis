@@ -783,7 +783,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 																} ?>
 															</optgroup>
 														<?php }
-														if ($sarr['sc_user_type'] != 'vluser') { ?>
+														if ($general->isLISInstance() === false) { ?>
 															<option value="other">Other (Please Specify) </option>
 														<?php } ?>
 													</select>

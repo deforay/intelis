@@ -3,9 +3,7 @@ $title = _translate("TB Sample Type");
 
 require_once APPLICATION_PATH . '/header.php';
 
-// if($sarr['sc_user_type']=='vluser'){
-//   include('../remote/pullDataFromRemote.php');
-// }
+
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -42,7 +40,7 @@ require_once APPLICATION_PATH . '/header.php';
             </div>
           </span>
           <div class="box-header with-border">
-            <?php if (_isAllowed("tb-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+            <?php if (_isAllowed("tb-sample-type.php") && $general->isLISInstance() === false) { ?>
               <a href="add-tb-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add TB Sample Type"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
@@ -54,7 +52,7 @@ require_once APPLICATION_PATH . '/header.php';
                 <tr>
                   <th scope="row"><?php echo _translate("Sample Name"); ?></th>
                   <th scope="row"><?php echo _translate("Sample Status"); ?></th>
-                  <?php if (_isAllowed("tb-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+                  <?php if (_isAllowed("tb-sample-type.php") && $general->isLISInstance() === false) { ?>
                     <!-- <th scope="row">Action</th> -->
                   <?php } ?>
                 </tr>

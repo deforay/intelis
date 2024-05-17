@@ -9,10 +9,6 @@ $primaryKey = "test_reason_id";
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$sarr = $general->getSystemConfig();
-
-
-
 $aColumns = array('test_reason_name', 'test_reason_status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -128,7 +124,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['test_reason_name']);
-    if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("vl-art-code-details.php") && $general->isLISInstance() === false) {
         $row[] = $status;
     } else {
         $row[] = ($aRow['test_reason_status']);

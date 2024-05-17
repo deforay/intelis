@@ -267,7 +267,7 @@ try {
      }
 
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
-          if (trim((string) $sPrintDate) == trim((string) $eTestDate)) {
+          if (trim((string) $sPrintDate) == trim((string) $ePrintDate)) {
                $sWhere[] = "  DATE(vl.result_printed_datetime) = '$sPrintDate'";
           } else {
                $sWhere[] = " DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";

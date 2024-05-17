@@ -122,7 +122,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     $row[] = ($aRow['testkit_name']);
     $row[] = date("d-m-Y H:i:s", strtotime((string) $aRow['updated_datetime']));
-    if (_isAllowed("covid19-sample-type.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("covid19-sample-type.php") && $general->isLISInstance() === false) {
         $row[] = $status;
         $row[] = $edit;
     } else {

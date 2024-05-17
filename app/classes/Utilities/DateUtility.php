@@ -168,7 +168,7 @@ final class DateUtility
         $modifiedDate = clone $carbonDate;
 
         // Check if interval is negative
-        if (strpos($interval, '-') === 0) {
+        if (str_starts_with($interval, '-')) {
             // Subtract interval: remove the '-' and subtract
             $modifiedDate->sub(CarbonInterval::createFromDateString(ltrim($interval, '-')));
         } else {
@@ -177,14 +177,11 @@ final class DateUtility
         }
 
         // Perform the comparison based on the operator
-        switch ($operator) {
-            case '>':
-                return $carbonDate->greaterThan($modifiedDate);
-            case '<':
-                return $carbonDate->lessThan($modifiedDate);
-            default:
-                throw new SystemException("Invalid comparison operator: $operator. Use '>' or '<'.");
-        }
+        return match ($operator) {
+            '>' => $carbonDate->greaterThan($modifiedDate),
+            '<' => $carbonDate->lessThan($modifiedDate),
+            default => throw new SystemException("Invalid comparison operator: $operator. Use '>' or '<'."),
+        };
     }
 
     public static function convertDateRange(?string $dateRange, $seperator = "to"): array

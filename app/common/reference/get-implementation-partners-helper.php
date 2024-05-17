@@ -115,7 +115,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['i_partner_name']);
-    if (_isAllowed("/common/reference/add-implementation-partners.php") && $_SESSION['instance']['type'] != 'vluser') {
+    if (_isAllowed("/common/reference/add-implementation-partners.php") && $general->isLISInstance() === false) {
         $row[] = $status;
     } else {
         $row[] = $aRow['i_partner_status'];

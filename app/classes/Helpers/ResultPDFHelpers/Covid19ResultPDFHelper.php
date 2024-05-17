@@ -52,7 +52,7 @@ class Covid19ResultPDFHelper extends Fpdi
                 $this->templateImported = true;
             }
             $tplIdx = $this->importPage(1);
-            $this->useTemplate($tplIdx, 0, 0);
+            $this->useTemplate($tplIdx);
         } else {
             // Logo
             if (!empty($this->htitle) && $this->htitle != '') {

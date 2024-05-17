@@ -121,7 +121,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['rejection_reason_name']);
     $row[] = ($aRow['rejection_type']);
     $row[] = ($aRow['rejection_reason_code']);
-    if (_isAllowed("cd4-sample-type.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("cd4-sample-type.php") && $general->isLISInstance() === false) {
         $row[] = $status;
     } else {
         $row[] = ($aRow['rejection_reason_status']);

@@ -19,6 +19,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var AppMenuService $appMenuService */
 $appMenuService = ContainerRegistry::get(AppMenuService::class);
 
+if ($db->isConnected() === false) {
+	throw new Exception("Database connection failed. Please check your database settings", 500);
+}
+
 $_SESSION['modules'] = $_SESSION['modules'] ?? [];
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();

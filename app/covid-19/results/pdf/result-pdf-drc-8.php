@@ -9,6 +9,10 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 if (!class_exists('DRCCovid19PDF8')) {
 
     class DRCCovid19PDF8 extends Covid19ResultPDFHelper
@@ -85,11 +89,15 @@ if (!class_exists('DRCCovid19PDF8')) {
         // Page footer
         public function Footer()
         {
+
+
+            /** @var CommonService $general */
+            $general = ContainerRegistry::get(CommonService::class);
             $this->writeHTML("<hr>");
             // Set font
             $this->SetFont('helvetica', 'I', 8);
             setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
-            if ($this->systemConfig['sc_user_type'] == 'vluser' && $this->dataSync == 0) {
+            if ($general->isLISInstance() && $this->dataSync == 0) {
                 $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
             } else {
                 $generatedAtTestingLab = "";

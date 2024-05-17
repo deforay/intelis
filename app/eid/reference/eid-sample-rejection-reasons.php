@@ -20,7 +20,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("eid-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (_isAllowed("eid-sample-type.php") && $general->isLISInstance() === false) { ?>
 							<a href="add-eid-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add EID Sample Rejection Reasons"); ?></a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
@@ -34,7 +34,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Type"); ?></th>
 									<th scope="row"><?php echo _translate("Code"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (_isAllowed("eid-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (_isAllowed("eid-sample-type.php") && $general->isLISInstance() === false) { ?>
 										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>

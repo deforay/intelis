@@ -169,34 +169,23 @@ function _castVariable(mixed $variable, ?string $expectedType = null, ?bool $isN
         if ($isNullable) {
             return null;
         } else {
-            switch ($expectedType) {
-                case 'array':
-                    return [];
-                case 'json':
-                    return '{}';
-                case 'string':
-                    return '';
-                default:
-                    return null;
-            }
+            return match ($expectedType) {
+                'array' => [],
+                'json' => '{}',
+                'string' => '',
+                default => null,
+            };
         }
     } else {
-        switch ($expectedType) {
-            case 'int':
-                return (int) $variable;
-            case 'float':
-                return (float) $variable;
-            case 'string':
-                return (string) $variable;
-            case 'bool':
-                return (bool) $variable;
-            case 'array':
-                return is_array($variable) ? $variable : (array) $variable;
-            case 'json':
-                return is_string($variable) ? json_decode($variable, true) : json_encode($variable);
-            default:
-                return $variable;
-        }
+        return match ($expectedType) {
+            'int' => (int)$variable,
+            'float' => (float)$variable,
+            'string' => (string)$variable,
+            'bool' => (bool)$variable,
+            'array' => is_array($variable) ? $variable : (array)$variable,
+            'json' => is_string($variable) ? json_decode($variable, true) : json_encode($variable),
+            default => $variable,
+        };
     }
 }
 

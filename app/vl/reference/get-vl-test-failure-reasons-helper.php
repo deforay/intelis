@@ -11,9 +11,6 @@ $primaryKey = "failure_id";
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$sarr = $general->getSystemConfig();
-
-
 $aColumns = array('failure_reason', 'status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -119,7 +116,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['failure_reason']);
-    if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("vl-art-code-details.php") && $general->isLISInstance() === false) {
         $row[] = $status;
     } else {
         $row[] = ($aRow['status']);

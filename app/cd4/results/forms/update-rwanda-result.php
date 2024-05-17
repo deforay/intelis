@@ -31,7 +31,7 @@ if (!isset($facilityResult[0]['facility_mobile_numbers'])) {
 $user = '';
 if (!isset($facilityResult[0]['contact_person'])) {
 	$facilityResult[0]['contact_person'] = '';
-}else {
+} else {
 	$contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
 	if (!empty($contactUser)) {
 		$user = $contactUser['user_name'];
@@ -192,22 +192,22 @@ $disable = "disabled = 'disabled'";
 								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;">
 									<?php echo ($user); ?></div>
 							</div>-->
-                            <div class="row">
-                                             <!--<div class="col-xs-3 col-md-3">
+							<div class="row">
+								<!--<div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="facilityCode">Affiliated District Hospital </label>
                                                        <input type="text" class="form-control" style="width:100%;" name="facilityCode" id="facilityCode" placeholder="Affiliated District Hospital" title="Please enter Affiliated District Hospital" < ?php echo $disable; ?>>
                                                   </div>
                                              </div>-->
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="">
-                                                       <label for="labId">Affiliated CD4 Testing Hub <span class="mandatory">*</span></label>
-                                                       <select name="labId" id="labId" class="form-control isRequired" title="Please choose a CD4 testing hub" style="width:100%;" <?php echo $disable; ?>>
-                                                            <?= $general->generateSelectOptions($testingLabs, $cd4QueryInfo['lab_id'], '-- Select --'); ?>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                        </div>
+								<div class="col-xs-3 col-md-3">
+									<div class="">
+										<label for="labId">Affiliated CD4 Testing Hub <span class="mandatory">*</span></label>
+										<select name="labId" id="labId" class="form-control isRequired" title="Please choose a CD4 testing hub" style="width:100%;" <?php echo $disable; ?>>
+											<?= $general->generateSelectOptions($testingLabs, $cd4QueryInfo['lab_id'], '-- Select --'); ?>
+										</select>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="box box-primary">
@@ -257,8 +257,8 @@ $disable = "disabled = 'disabled'";
 											<input type="radio" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
 										</label>
 										<label class="radio-inline" style="margin-left:0px;">
-										<input type="radio" class="" id="genderNotRecorded" name="gender" value="unreported" title="Please check gender" <?php echo $disable;?> <?php echo ($cd4QueryInfo['patient_gender']=='unreported')?"checked='checked'":""?>>Unreported
-									</label>
+											<input type="radio" class="" id="genderNotRecorded" name="gender" value="unreported" title="Please check gender" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>Unreported
+										</label>
 									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">
@@ -268,30 +268,30 @@ $disable = "disabled = 'disabled'";
 									</div>
 								</div>
 							</div>
-                            <div class="row femaleSection" style="display:<?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" ;>
-										<div class="col-xs-3 col-md-3">
-											<div class="form-group">
-												<label for="patientPregnant">Is Patient Pregnant? <span class="mandatory">*</span></label><br>
-												<label class="radio-inline">
-													<input type="radio" class="<?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregYes" name="patientPregnant" value="yes" title="Please check if patient is pregnant" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
-												</label>
-												<label class="radio-inline">
-													<input type="radio" id="pregNo" name="patientPregnant" value="no" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
-												</label>
-											</div>
-										</div>
-										<div class="col-xs-3 col-md-3">
-											<div class="form-group">
-												<label for="breastfeeding">Is Patient Breastfeeding? <span class="mandatory">*</span></label><br>
-												<label class="radio-inline">
-													<input type="radio" class="<?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check if patient is breastfeeding" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
-												</label>
-												<label class="radio-inline">
-													<input type="radio" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
-												</label>
-											</div>
-										</div>
+							<div class="row femaleSection" style="display:<?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" ;>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="patientPregnant">Is Patient Pregnant? <span class="mandatory">*</span></label><br>
+										<label class="radio-inline">
+											<input type="radio" class="<?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregYes" name="patientPregnant" value="yes" title="Please check if patient is pregnant" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+										</label>
+										<label class="radio-inline">
+											<input type="radio" id="pregNo" name="patientPregnant" value="no" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
+										</label>
 									</div>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="breastfeeding">Is Patient Breastfeeding? <span class="mandatory">*</span></label><br>
+										<label class="radio-inline">
+											<input type="radio" class="<?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check if patient is breastfeeding" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+										</label>
+										<label class="radio-inline">
+											<input type="radio" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
+										</label>
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="box box-primary">
 							<div class="box-header with-border">
@@ -320,16 +320,16 @@ $disable = "disabled = 'disabled'";
 											</select>
 										</div>
 									</div>
-                                    <div class="col-xs-3 col-md-3">
-                                                       <div class="form-group">
-                                                            <label for="">Is sample re-ordered as part of corrective action? <span class="mandatory">*</span></label>
-                                                                 <select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" title="Please choose adherence">
-                                                                      <option value=""> -- Select -- </option>
-                                                                      <option value="yes" <?php echo $cd4QueryInfo['sample_reordered']=='yes' ? 'selected="selected"' : ''; ?>>Yes</option>
-                                                                      <option value="no" <?php echo $cd4QueryInfo['sample_reordered']=='no' ? 'selected="selected"' : ''; ?>>No</option>
-                                                                 </select>
-                                                       </div>
-                                                  </div>
+									<div class="col-xs-3 col-md-3">
+										<div class="form-group">
+											<label for="">Is sample re-ordered as part of corrective action? <span class="mandatory">*</span></label>
+											<select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" title="Please choose adherence">
+												<option value=""> -- Select -- </option>
+												<option value="yes" <?php echo $cd4QueryInfo['sample_reordered'] == 'yes' ? 'selected="selected"' : ''; ?>>Yes</option>
+												<option value="no" <?php echo $cd4QueryInfo['sample_reordered'] == 'no' ? 'selected="selected"' : ''; ?>>No</option>
+											</select>
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="box box-primary">
@@ -404,134 +404,133 @@ $disable = "disabled = 'disabled'";
 												<div class="form-group">
 													<div class="col-lg-12">
 														<label class="radio-inline">
-                                                        <?php
-                                                                $cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
-                                                                $cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
-                                                                $checked = '';
-                                                                $display = '';
-                                                                $cd4Date = '';
-                                                                $cd4Value = '';
-                                                                $cd4ValuePercentage = '';
-                                                                if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'baselineInitiation' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'baselineInitiation') {
-                                                                    $checked = 'checked="checked"';
-                                                                    $display = 'block';
-                                                                   $cd4Date = $cd4QueryInfo['last_cd4_date'];
-                                                                    $cd4Value = $cd4QueryInfo['last_cd4_result'];
-                                                                    $cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
-
-                                                                 } else {
-                                                              $checked = '';
-                                                            $display = 'none';
-                                                          }
-                                                       ?>
-                                                       <input type="radio" class="isRequired" id="baselineInitiation" name="reasonForCD4Testing" value="baselineInitiation" title="Please check CD4 indication testing type" onclick="showTesting('baselineInitiation');" <?= $checked; ?> <?php echo $disable; ?>>
-                                                       <strong>Baseline at ART initiation or re-initiation</strong>
+															<?php
+															$cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
+															$cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
+															$checked = '';
+															$display = '';
+															$cd4Date = '';
+															$cd4Value = '';
+															$cd4ValuePercentage = '';
+															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'baselineInitiation' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'baselineInitiation') {
+																$checked = 'checked="checked"';
+																$display = 'block';
+																$cd4Date = $cd4QueryInfo['last_cd4_date'];
+																$cd4Value = $cd4QueryInfo['last_cd4_result'];
+																$cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
+															} else {
+																$checked = '';
+																$display = 'none';
+															}
+															?>
+															<input type="radio" class="isRequired" id="baselineInitiation" name="reasonForCD4Testing" value="baselineInitiation" title="Please check CD4 indication testing type" onclick="showTesting('baselineInitiation');" <?= $checked; ?> <?php echo $disable; ?>>
+															<strong>Baseline at ART initiation or re-initiation</strong>
 														</label>
 													</div>
 												</div>
 											</div>
 										</div>
 										<div class="row baselineInitiation hideTestData well" style="display:<?php echo $display; ?>;">
-                                                            <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Last CD4 date</label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control date viralTestData" id="baselineInitiationLastCd4Date" name="baselineInitiationLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?>/>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                 <label for="baselineInitiationCD4Value" class="col-lg-5 control-label">  Absolute value & Percentage  :</label>
-                                                                 <div class="col-lg-7">
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4Result" name="baselineInitiationLastCd4Result" placeholder="Enter CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?>/>(cells/ml)</div>
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4ResultPercentage" name="baselineInitiationLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?>/></div>
-                                                                 </div>
-                                                            </div>
-                                                       </div>
+											<div class="col-md-6">
+												<label class="col-lg-5 control-label">Last CD4 date</label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control date viralTestData" id="baselineInitiationLastCd4Date" name="baselineInitiationLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?> />
+												</div>
+											</div>
+											<div class="col-md-6">
+												<label for="baselineInitiationCD4Value" class="col-lg-5 control-label"> Absolute value & Percentage :</label>
+												<div class="col-lg-7">
+													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4Result" name="baselineInitiationLastCd4Result" placeholder="Enter CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?> />(cells/ml)</div>
+													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4ResultPercentage" name="baselineInitiationLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?> /></div>
+												</div>
+											</div>
+										</div>
 										<div class="row">
 											<div class="col-md-6">
 												<div class="form-group">
 													<div class="col-lg-12">
 														<label class="radio-inline">
-                                                        <?php
-                                                                                     $cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
-                                                                                     $cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
-                                                                                     $checked = '';
-                                                                                     $display = '';
-                                                                                     if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'assessmentAHD' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'assessmentAHD') {
-                                                                                          $checked = 'checked="checked"';
-                                                                                          $display = 'block';
-                                                                                          $cd4Date = $cd4QueryInfo['last_cd4_date'];
-                                                                                          $cd4Value = $cd4QueryInfo['last_cd4_result'];
-                                                                                          $cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
-                                                                                     } else {
-                                                                                          $checked = '';
-                                                                                          $display = 'none';
-                                                                                     }
-                                                                                     ?>
-                                                                           <input type="radio" class="" id="assessmentAHD" name="reasonForCD4Testing" value="assessmentAHD" title="Please check CD4 indication testing type" onclick="showTesting('assessmentAHD');" <?= $checked; ?> <?php echo $disable; ?>>
-                                                                                <strong>Assessment for Advanced HIV Disease (AHD)</strong>
+															<?php
+															$cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
+															$cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
+															$checked = '';
+															$display = '';
+															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'assessmentAHD' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'assessmentAHD') {
+																$checked = 'checked="checked"';
+																$display = 'block';
+																$cd4Date = $cd4QueryInfo['last_cd4_date'];
+																$cd4Value = $cd4QueryInfo['last_cd4_result'];
+																$cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
+															} else {
+																$checked = '';
+																$display = 'none';
+															}
+															?>
+															<input type="radio" class="" id="assessmentAHD" name="reasonForCD4Testing" value="assessmentAHD" title="Please check CD4 indication testing type" onclick="showTesting('assessmentAHD');" <?= $checked; ?> <?php echo $disable; ?>>
+															<strong>Assessment for Advanced HIV Disease (AHD)</strong>
 														</label>
 													</div>
 												</div>
 											</div>
 										</div>
 										<div class="row assessmentAHD hideTestData well" style="display: <?= $display; ?>;margin-bottom:20px;">
-                                                            <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Last CD4 date</label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control date viralTestData" id="assessmentAHDLastCd4Date" name="assessmentAHDLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?>/>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                 <label for="assessmentAHDCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
-                                                                 <div class="col-lg-7">
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4Result" name="assessmentAHDLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?>/>(cells/ml)</div>
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4ResultPercentage" name="assessmentAHDLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?>/></div>
-                                                                 </div>
-                                                            </div>
-                                                       </div>
+											<div class="col-md-6">
+												<label class="col-lg-5 control-label">Last CD4 date</label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control date viralTestData" id="assessmentAHDLastCd4Date" name="assessmentAHDLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?> />
+												</div>
+											</div>
+											<div class="col-md-6">
+												<label for="assessmentAHDCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
+												<div class="col-lg-7">
+													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4Result" name="assessmentAHDLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?> />(cells/ml)</div>
+													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4ResultPercentage" name="assessmentAHDLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?> /></div>
+												</div>
+											</div>
+										</div>
 										<div class="row">
 											<div class="col-md-8">
 												<div class="form-group">
 													<div class="col-lg-12">
 														<label class="radio-inline">
-                                                        <?php
-                                                                                     $cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
-                                                                                     $cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
-                                                                                     $checked = '';
-                                                                                     $display = '';
-                                                                                     if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'treatmentCoinfection' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'treatmentCoinfection') {
-                                                                                          $checked = 'checked="checked"';
-                                                                                          $display = 'block';
-                                                                                          $cd4Date = $cd4QueryInfo['last_cd4_date'];
-                                                                                          $cd4Value = $cd4QueryInfo['last_cd4_result'];
-                                                                                          $cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
-                                                                                     } else {
-                                                                                          $checked = '';
-                                                                                          $display = 'none';
-                                                                                     }
-                                                                                     ?>
-                                                                                <input type="radio" class="" id="treatmentCoinfection" name="reasonForCD4Testing" value="treatmentCoinfection" title="Please check CD4 indication testing type" onclick="showTesting('treatmentCoinfection');" <?= $checked; ?> <?php echo $disable; ?>>
-                                                                                <strong>Treatment follow up of TB-HIV co-infection </strong>
+															<?php
+															$cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
+															$cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
+															$checked = '';
+															$display = '';
+															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'treatmentCoinfection' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'treatmentCoinfection') {
+																$checked = 'checked="checked"';
+																$display = 'block';
+																$cd4Date = $cd4QueryInfo['last_cd4_date'];
+																$cd4Value = $cd4QueryInfo['last_cd4_result'];
+																$cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
+															} else {
+																$checked = '';
+																$display = 'none';
+															}
+															?>
+															<input type="radio" class="" id="treatmentCoinfection" name="reasonForCD4Testing" value="treatmentCoinfection" title="Please check CD4 indication testing type" onclick="showTesting('treatmentCoinfection');" <?= $checked; ?> <?php echo $disable; ?>>
+															<strong>Treatment follow up of TB-HIV co-infection </strong>
 														</label>
 													</div>
 												</div>
 											</div>
 										</div>
-                                        <div class="row treatmentCoinfection hideTestData well" style="display:<?= $display; ?>;">
-                                                            <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Last CD4 date</label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control date viralTestData" id="treatmentCoinfectionLastCd4Date" name="treatmentCoinfectionLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?> />
-                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                 <label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
-                                                                 <div class="col-lg-7">
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4Result" name="treatmentCoinfectionLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?> />(cells/ml)</div>
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4ResultPercentage" name="treatmentCoinfectionLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?> /></div>
-                                                                 </div>
-                                                            </div>
-                                                       </div>
+										<div class="row treatmentCoinfection hideTestData well" style="display:<?= $display; ?>;">
+											<div class="col-md-6">
+												<label class="col-lg-5 control-label">Last CD4 date</label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control date viralTestData" id="treatmentCoinfectionLastCd4Date" name="treatmentCoinfectionLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?> />
+												</div>
+											</div>
+											<div class="col-md-6">
+												<label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
+												<div class="col-lg-7">
+													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4Result" name="treatmentCoinfectionLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?> />(cells/ml)</div>
+													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4ResultPercentage" name="treatmentCoinfectionLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?> /></div>
+												</div>
+											</div>
+										</div>
 
 										<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
 											<div class="row">
@@ -604,172 +603,172 @@ $disable = "disabled = 'disabled'";
 										</div>
 									</div>
 								</div>
-                                <form class="form-inline" method="post" name="cd4RequestFormRwd" id="cd4RequestFormRwd" autocomplete="off" action="cd4-update-result-helper.php">
-                                                  <div class="box box-primary">
-                                                       <div class="box-header with-border">
-                                                            <h3 class="box-title">Laboratory Information</h3>
-                                                       </div>
-                                                       <div class="box-body">
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label for="testingPlatform" class="col-lg-5 control-label">CD4 Testing Platform </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> >
-                                                                                <option value="">-- Select --</option>
-                                                                                <?php foreach ($importResult as $mName) { ?>
-                                                                                     <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($cd4QueryInfo['cd4_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
-                                                                                <?php } ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" <?php echo $labFieldDisabled; ?> value="<?php echo $cd4QueryInfo['sample_received_at_lab_datetime']; ?>" />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" value="<?php echo $cd4QueryInfo['sample_tested_datetime']; ?>"/>
-                                                                      </div>
-                                                                 </div>
-																 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Tested By </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
-                                                                                <?= $general->generateSelectOptions($userInfo,$cd4QueryInfo['tested_by'], '-- Select --'); ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="isSampleRejected" id="isSampleRejected" class="form-control" title="Please check if sample is rejected or not">
-                                                                                <option value="">-- Select --</option>
-                                                                                <option value="yes" <?= ($cd4QueryInfo['is_sample_rejected'] === 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
-                                                                                <option value="no" <?= ($cd4QueryInfo['is_sample_rejected'] === 'no') ? 'selected="selected"' : ''; ?>>No</option>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
+								<form class="form-inline" method="post" name="cd4RequestFormRwd" id="cd4RequestFormRwd" autocomplete="off" action="cd4-update-result-helper.php">
+									<div class="box box-primary">
+										<div class="box-header with-border">
+											<h3 class="box-title">Laboratory Information</h3>
+										</div>
+										<div class="box-body">
+											<div class="row">
+												<div class="col-md-6">
+													<label for="testingPlatform" class="col-lg-5 control-label">CD4 Testing Platform </label>
+													<div class="col-lg-7">
+														<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?>>
+															<option value="">-- Select --</option>
+															<?php foreach ($importResult as $mName) { ?>
+																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($cd4QueryInfo['cd4_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
+															<?php } ?>
+														</select>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
+													<div class="col-lg-7">
+														<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" <?php echo $labFieldDisabled; ?> value="<?php echo $cd4QueryInfo['sample_received_at_lab_datetime']; ?>" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date </label>
+													<div class="col-lg-7">
+														<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" value="<?php echo $cd4QueryInfo['sample_tested_datetime']; ?>" />
+													</div>
+												</div>
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="reviewedBy">Tested By </label>
+													<div class="col-lg-7">
+														<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
+															<?= $general->generateSelectOptions($userInfo, $cd4QueryInfo['tested_by'], '-- Select --'); ?>
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? </label>
+													<div class="col-lg-7">
+														<select name="isSampleRejected" id="isSampleRejected" class="form-control" title="Please check if sample is rejected or not">
+															<option value="">-- Select --</option>
+															<option value="yes" <?= ($cd4QueryInfo['is_sample_rejected'] === 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
+															<option value="no" <?= ($cd4QueryInfo['is_sample_rejected'] === 'no') ? 'selected="selected"' : ''; ?>>No</option>
+														</select>
+													</div>
+												</div>
 
-                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
-                                                                      <label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
-                                                                                <option value="">-- Select --</option>
-                                                                                <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                                     <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
-                                                                                          <?php foreach ($rejectionResult as $reject) {
-                                                                                               if ($type['rejection_type'] == $reject['rejection_type']) {
-                                                                                          ?>
-                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($cd4QueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
-                                                                                          <?php }
-                                                                                          } ?>
-                                                                                     </optgroup>
-                                                                                <?php }
-                                                                                if ($sarr['sc_user_type'] != 'vluser') { ?>
-                                                                                     <option value="other">Other (Please Specify) </option>
-                                                                                <?php } ?>
-                                                                           </select>
-                                                                           <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
-                                                                      </div>
-                                                                 </div>
+												<div class="col-md-6 rejectionReason" style="display:none;">
+													<label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
+													<div class="col-lg-7">
+														<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
+															<option value="">-- Select --</option>
+															<?php foreach ($rejectionTypeResult as $type) { ?>
+																<optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
+																	<?php foreach ($rejectionResult as $reject) {
+																		if ($type['rejection_type'] == $reject['rejection_type']) {
+																	?>
+																			<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($cd4QueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
+																	<?php }
+																	} ?>
+																</optgroup>
+															<?php }
+															if ($general->isLISInstance() === false) { ?>
+																<option value="other">Other (Please Specify) </option>
+															<?php } ?>
+														</select>
+														<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
+													</div>
+												</div>
 
-                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
-                                                                      <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input value="<?php echo DateUtility::humanReadableDateFormat($cd4QueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                            <div class="col-md-6 cd4Result">
-                                                                      <label class="col-lg-5 control-label" for="cd4Result">Sample Results (CD4 count -Absolute value): </label>
-                                                                      <div class="col-lg-7 resultInputContainer">
-                                                                           <input value="<?= $cd4QueryInfo['cd4_result']; ?>" class="form-control" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" />
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6 cd4Result">
-                                                                      <label class="col-lg-5 control-label" for="cd4ResultPercentage">Sample Results (Percentage) :</label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" value="<?= $cd4QueryInfo['cd4_result_percentage']; ?>" class="form-control" id="cd4ResultPercentage" name="cd4ResultPercentage" placeholder="CD4 Result Value percentage" title="Please enter CD4 Result Value percentage" style="width:100%;" />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" value="<?php echo $cd4QueryInfo['result_approved_datetime']; ?>"/>
-                                                                      </div>
-                                                                 </div>
-																 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
-                                                                                <option value="">-- Select --</option>
-                                                                                <?php foreach ($userResult as $uName) { ?>
-                                                                                     <option value="<?php echo $uName['user_id']; ?>" <?php echo ($cd4QueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?> ><?php echo ($uName['user_name']); ?></option>
-                                                                                <?php } ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
+												<div class="col-md-6 rejectionReason" style="display:none;">
+													<label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
+													<div class="col-lg-7">
+														<input value="<?php echo DateUtility::humanReadableDateFormat($cd4QueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6 cd4Result">
+													<label class="col-lg-5 control-label" for="cd4Result">Sample Results (CD4 count -Absolute value): </label>
+													<div class="col-lg-7 resultInputContainer">
+														<input value="<?= $cd4QueryInfo['cd4_result']; ?>" class="form-control" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" />
+													</div>
+												</div>
+												<div class="col-md-6 cd4Result">
+													<label class="col-lg-5 control-label" for="cd4ResultPercentage">Sample Results (Percentage) :</label>
+													<div class="col-lg-7">
+														<input type="text" value="<?= $cd4QueryInfo['cd4_result_percentage']; ?>" class="form-control" id="cd4ResultPercentage" name="cd4ResultPercentage" placeholder="CD4 Result Value percentage" title="Please enter CD4 Result Value percentage" style="width:100%;" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
+													<div class="col-lg-7">
+														<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" value="<?php echo $cd4QueryInfo['result_approved_datetime']; ?>" />
+													</div>
+												</div>
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+													<div class="col-lg-7">
+														<select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
+															<option value="">-- Select --</option>
+															<?php foreach ($userResult as $uName) { ?>
+																<option value="<?php echo $uName['user_id']; ?>" <?php echo ($cd4QueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
+															<?php } ?>
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="row">
 
-																 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> value="<?php echo $cd4QueryInfo['result_dispatched_datetime']; ?>"/>
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
-                                                                      <div class="col-lg-7">
-                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?>><?php echo trim((string) $cd4QueryInfo['lab_tech_comments']); ?></textarea>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                       </div>
-                                                  </div>
-                                        </div>
-                                        <div class="box-footer">
-                                             <!-- BARCODESTUFF START -->
-                                             <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
-                                                  <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
-                                                       <div class="progress" style="width:100%">
-                                                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                                                            </div>
-                                                       </div>
-                                                  </div> <!-- /printer_data_loading -->
-                                                  <div id="printer_details" style="display:none">
-                                                       <span id="selected_printer">No printer selected!</span>
-                                                       <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
-                                                  </div><br /> <!-- /printer_details -->
-                                                  <div id="printer_select" style="display:none">
-                                                       Zebra Printer Options<br />
-                                                       Printer: <select id="printers"></select>
-                                                  </div> <!-- /printer_select -->
-                                             <?php } ?>
-                                             <!-- BARCODESTUFF END -->
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-                                             <input type="hidden" name="saveNext" id="saveNext" />
-                                             <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                                                  <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
-                                                  <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
-                                             <?php } ?>
-                                             <input type="hidden" name="cd4SampleId" id="cd4SampleId" value="<?= ($cd4QueryInfo['cd4_id']); ?>" />
-                                             <input type="hidden" name="provinceId" id="provinceId" />
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
-                                             <a href="/cd4/requests/cd4-requests.php" class="btn btn-default"> Cancel</a>
-                                        </div>
-                                        <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
-                                        <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
+													<div class="col-lg-7">
+														<input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> value="<?php echo $cd4QueryInfo['result_dispatched_datetime']; ?>" />
+													</div>
+												</div>
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
+													<div class="col-lg-7">
+														<textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?>><?php echo trim((string) $cd4QueryInfo['lab_tech_comments']); ?></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+							</div>
+							<div class="box-footer">
+								<!-- BARCODESTUFF START -->
+								<?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
+									<div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
+										<div class="progress" style="width:100%">
+											<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+											</div>
+										</div>
+									</div> <!-- /printer_data_loading -->
+									<div id="printer_details" style="display:none">
+										<span id="selected_printer">No printer selected!</span>
+										<button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
+									</div><br /> <!-- /printer_details -->
+									<div id="printer_select" style="display:none">
+										Zebra Printer Options<br />
+										Printer: <select id="printers"></select>
+									</div> <!-- /printer_select -->
+								<?php } ?>
+								<!-- BARCODESTUFF END -->
+								<a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+								<input type="hidden" name="saveNext" id="saveNext" />
+								<?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+									<input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
+									<input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
+								<?php } ?>
+								<input type="hidden" name="cd4SampleId" id="cd4SampleId" value="<?= ($cd4QueryInfo['cd4_id']); ?>" />
+								<input type="hidden" name="provinceId" id="provinceId" />
+								<a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
+								<a href="/cd4/requests/cd4-requests.php" class="btn btn-default"> Cancel</a>
+							</div>
+							<input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
+							<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 
 							</form>
 						</div>
@@ -894,5 +893,4 @@ $disable = "disabled = 'disabled'";
 			document.getElementById('cd4RequestFormRwd').submit();
 		}
 	}
-
 </script>

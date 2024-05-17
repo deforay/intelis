@@ -1,7 +1,16 @@
 <?php
+require_once APPLICATION_PATH . '/header.php';
+
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 $title = _translate("CD4 Sample Rejection Reasons");
 
-require_once APPLICATION_PATH . '/header.php';
+
 
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -21,7 +30,7 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (_isAllowed("/cd4/reference/cd4-sample-type.php") && $_SESSION['instance']['type'] != 'vluser') { ?>
+            <?php if (_isAllowed("/cd4/reference/cd4-sample-type.php") && $general->isLISInstance() === false) { ?>
               <a href="/cd4/reference/add-cd4-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add CD4 Sample Rejection Reasons"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->

@@ -1,6 +1,13 @@
 <?php
 
 
+
+use App\Registries\ContainerRegistry;
+use App\Services\FacilitiesService;
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
 $lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
@@ -393,7 +400,7 @@ $sFormat = '';
                                                                                 ?>
                                                                            </optgroup>
                                                                       <?php }
-                                                                      if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                                      if ($general->isLISInstance() === false) { ?>
                                                                            <option value="other">Other</option>
                                                                       <?php } ?>
                                                                  </select>
@@ -714,7 +721,7 @@ $sFormat = '';
                                                                                           } ?>
                                                                                      </optgroup>
                                                                                 <?php }
-                                                                                if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                                                if ($general->isLISInstance() === false) { ?>
                                                                                      <option value="other">Other (Please Specify) </option>
                                                                                 <?php } ?>
                                                                            </select>

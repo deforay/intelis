@@ -1,4 +1,12 @@
 <?php
+
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 $title = _translate("Add Samples from Manifest");
 
 require_once APPLICATION_PATH . '/header.php';

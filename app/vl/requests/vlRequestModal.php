@@ -1,5 +1,10 @@
 <?php
 
+use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $sQuery = "SELECT * FROM r_vl_sample_type";
 $sResult = $db->rawQuery($sQuery);

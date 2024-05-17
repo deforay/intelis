@@ -122,7 +122,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['symptom_name']);
-    if (_isAllowed("covid19-sample-type.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("covid19-sample-type.php") && $general->isLISInstance() === false) {
         $row[] = $status;
     } else {
         $row[] = ($aRow['symptom_status']);

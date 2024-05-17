@@ -23,10 +23,6 @@ try {
     /** @var FacilitiesService $facilitiesService */
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-
-    $gconfig = $general->getGlobalConfig();
-    $sarr = $general->getSystemConfig();
-
     $tableName = "form_vl";
     $primaryKey = "vl_sample_id";
 

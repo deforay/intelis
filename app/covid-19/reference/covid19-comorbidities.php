@@ -1,11 +1,18 @@
 <?php
-$title = _translate("Covid-19 Co-morbidities");
+
 
 require_once APPLICATION_PATH . '/header.php';
 
-// if($sarr['sc_user_type']=='vluser'){
-//   include('../remote/pullDataFromRemote.php');
-// }
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+
+$title = _translate("Covid-19 Co-morbidities");
+
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -42,7 +49,7 @@ require_once APPLICATION_PATH . '/header.php';
 						</div>
 					</span>
 					<div class="box-header with-border">
-						<?php if (_isAllowed("covid19-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (_isAllowed("covid19-sample-type.php") && $general->isLISInstance() === false) { ?>
 							<a href="add-covid19-comorbidities.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Covid-19 Co-morbidities"); ?></a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
@@ -54,7 +61,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<tr>
 									<th scope="row"><?php echo _translate("Comorbidity Name"); ?></th>
 									<th scope="row"><?php echo _translate("Comorbidity Status"); ?></th>
-									<?php if (_isAllowed("covid19-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (_isAllowed("covid19-sample-type.php") && $general->isLISInstance() === false) { ?>
 										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>

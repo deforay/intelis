@@ -1,5 +1,9 @@
 <?php
+use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $tableName = "facility_details";
 $primaryKey = "facility_id";

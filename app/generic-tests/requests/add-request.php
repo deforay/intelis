@@ -579,7 +579,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                                                 } ?>
                                                                            </optgroup>
                                                                       <?php }
-                                                                      if ($_SESSION['instance']['type'] != 'vluser') { ?>
+                                                                      if ($general->isLISInstance() === false) { ?>
                                                                            <option value="other"><?= _translate("Other (Please Specify)"); ?> </option>
                                                                       <?php } ?>
                                                                  </select>

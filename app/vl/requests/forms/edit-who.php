@@ -1,6 +1,12 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
@@ -417,7 +423,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 																} ?>
 															</optgroup>
 														<?php }
-														if ($sarr['sc_user_type'] != 'vluser') {  ?>
+														if ($general->isLISInstance() === false) {  ?>
 															<option value="other">Other</option>
 														<?php } ?>
 													</select>
@@ -718,7 +724,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 																	} ?>
 																</optgroup>
 															<?php }
-															if ($sarr['sc_user_type'] != 'vluser') {  ?>
+															if ($general->isLISInstance() === false) {  ?>
 																<option value="other">Other (Please Specify) </option>
 															<?php } ?>
 														</select>
