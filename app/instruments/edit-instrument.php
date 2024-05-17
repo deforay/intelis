@@ -85,6 +85,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 $testTypeList = SystemService::getActiveModules(true);
 
 ?>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -187,7 +188,7 @@ $testTypeList = SystemService::getActiveModules(true);
 									</label>
 									<div class="col-lg-7">
 										<!--<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder="<?php echo _translate('eg. roche.php or abbott.php'); ?>" title="<?php echo _translate('Please enter file name'); ?>" value="<?php echo $sInfo['import_machine_file_name']; ?>" />-->
-										<select name="configurationFile" id="configurationFile" class="form-control">
+										<select name="configurationFile" id="configurationFile" class="form-control select2">
 											<option value=""><?php echo _translate('Select File'); ?></option>
 											<?php
 											foreach ($fileList as $fileName) {
@@ -580,7 +581,7 @@ $testTypeList = SystemService::getActiveModules(true);
 													<input type="text" value="<?php echo $machine['date_format'] ?: 'd/m/Y H:i'; ?>" name="dateFormat[]" id="dateFormat<?php echo $i; ?>" class="form-control" placeholder='<?php echo _translate("Date Format"); ?>' title='<?php echo _translate("Please enter date format"); ?>' />
 												</td>
 												<td>
-													<select name="configurationFile" id="configurationFile" class="form-control">
+													<select name="fileName[]" id="fileName<?php echo $i; ?>" class="form-control select2 instrumentFile">
 														<option value=""><?php echo _translate('Select File'); ?></option>
 														<?php
 														foreach ($fileList as $fileName) {
@@ -621,7 +622,16 @@ $testTypeList = SystemService::getActiveModules(true);
 												<input type="text" value="d/m/Y H:i" name="dateFormat[]" id="dateFormat0" class="form-control" placeholder='<?php echo _translate("Date Format"); ?>' title='<?php echo _translate("Please enter date format"); ?>' />
 											</td>
 											<td>
-												<input type="text" name="fileName[]" id="fileName0" class="form-control" placeholder='<?php echo _translate("File Name"); ?>' title='<?php echo _translate("Please enter file name"); ?>' />
+													<select name="fileName[]" id="fileName0" class="form-control select2 instrumentFile">
+														<option value=""><?php echo _translate('Select File'); ?></option>
+														<?php
+														foreach ($fileList as $fileName) {
+														?>
+															<option value="<?= $fileName; ?>" <?php if ($machine['file_name'] == $fileName) echo "selected='selected'"; ?>><?= $fileName; ?></option>
+														<?php
+														}
+														?>
+													</select>
 											</td>
 											<td>
 												<div class="col-md-3">
@@ -735,6 +745,33 @@ $testTypeList = SystemService::getActiveModules(true);
 		});
 	});
 
+	function setConfigFileName() {
+		var configName = $("#configurationName").val();
+		if ($.trim(configName) != '') {
+			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
+			if (configName.length > 0) {
+				configName = configName.replace(/\s+/g, ' ');
+				configName = configName.replace(/ /g, '-');
+				configName = configName.replace(/\-$/, '');
+				var configFileName = configName.toLowerCase() + ".php";
+				var path = '<?php echo $log_directory . '/'; ?>' + configFileName;
+				$.post("/includes/checkFileExists.php", {
+						fileName: path,
+					},
+					function(data) {
+						if (data === 'not exists') {
+								$("#configurationFile").append('<option value="">' + configFileName + '</option>');
+								$(".instrumentFile").append('<option value="">' + configFileName + '</option>');
+								$('.select2').select2({ width: '100%'});
+						}
+					});
+
+			}
+		} else {
+			$("#configurationFile").val("");
+		}
+	}
+
 	function validateNow() {
 		flag = deforayValidator.init({
 			formId: 'editImportConfigForm'
@@ -762,6 +799,7 @@ $testTypeList = SystemService::getActiveModules(true);
 	}
 
 	function insRow() {
+		
 		rl = document.getElementById("machineTable").rows.length;
 		var a = document.getElementById("machineTable").insertRow(rl);
 		a.setAttribute("style", "display:none");
@@ -775,7 +813,16 @@ $testTypeList = SystemService::getActiveModules(true);
 
 		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDuplication(this, \'configMachineName\');"/ >';
 		c.innerHTML = '<input type="text" value="d/m/Y H:i" name="dateFormat[]" id="dateFormat' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("Date Format"); ?>" title="<?php echo _translate("Please enter date format"); ?>" />';
-		d.innerHTML = '<input type="text" name="fileName[]" id="fileName' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("File Name"); ?>" title="<?php echo _translate("Please enter file name"); ?>"/>';
+		//d.innerHTML = '<input type="text" name="fileName[]" id="fileName' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("File Name"); ?>" title="<?php echo _translate("Please enter file name"); ?>"/>';
+		d.innerHTML = '<select name="fileName[]" id="fileName'+ tableRowId +'" class="form-control select2 instrumentFile"><option value=""><?php echo _translate('Select File'); ?></option>\
+	<?php
+														foreach ($fileList as $fileName) {
+														?>
+															<option value="<?= $fileName; ?>" <?php if ($machine['file_name'] == $fileName) echo 'selected="selected"'; ?>><?= $fileName; ?></option>\
+														<?php
+														}
+														?>
+													</select>';
 		e.innerHTML = '<div class="col-md-3" >\
 						<input type="checkbox" id="pocdevice' + tableRowId + '" name="pocdevice[]" value="" onclick="getLatiLongi(' + tableRowId + ');">\
 						</div>\
@@ -789,7 +836,31 @@ $testTypeList = SystemService::getActiveModules(true);
 						</div>';
 		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
-		tableRowId++;
+		$('#fileName' + tableRowId +', .select2').select2({ width: '100%'});
+		var configName = $("#configurationName").val();
+		if ($.trim(configName) != '') {
+			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
+			if (configName.length > 0) {
+				configName = configName.replace(/\s+/g, ' ');
+				configName = configName.replace(/ /g, '-');
+				configName = configName.replace(/\-$/, '');
+				var configFileName = configName.toLowerCase() + ".php";
+				var path = '<?php echo $log_directory . '/'; ?>' + configFileName;
+				
+				$.post("/includes/checkFileExists.php", {
+						fileName: path,
+					},
+					function(data) {
+						if (data === 'not exists') {
+							$('#fileName'+ tableRowId).append('<option value="">' + configFileName + '</option>');
+							$('#fileName' + tableRowId).select2({ width: '100%'});
+						}
+						
+					});
+				}
+			}
+			tableRowId++;
+
 	}
 
 	function removeAttributeRow(el) {
@@ -822,30 +893,7 @@ $testTypeList = SystemService::getActiveModules(true);
 		}
 	}
 
-	function setConfigFileName() {
-		var configName = $("#configurationName").val();
-		if ($.trim(configName) != '') {
-			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
-			if (configName.length > 0) {
-				configName = configName.replace(/\s+/g, ' ');
-				configName = configName.replace(/ /g, '-');
-				configName = configName.replace(/\-$/, '');
-				var configFileName = configName.toLowerCase() + ".php";
-				var path = '<?php echo $log_directory . '/'; ?>' + configFileName;
-				$.post("/includes/checkFileExists.php", {
-						fileName: path,
-					},
-					function(data) {
-						if (data === 'not exists') {
-							$("#configurationFile").append('<option value="">' + configFileName + '</option>');
-						}
-					});
 
-			}
-		} else {
-			$("#configurationFile").val("");
-		}
-	}
 </script>
 
 <?php

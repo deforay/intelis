@@ -103,7 +103,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = "";
-    $row[] = '<span style="cursor:pointer">'.$aRow['result'].'</span>';
+    $row[] = $aRow['result'];
     $row[] = $aRow['machine_names'];
 
     if (_isAllowed("/vl/reference/vl-results.php")) {

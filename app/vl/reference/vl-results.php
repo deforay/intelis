@@ -43,7 +43,6 @@ require_once APPLICATION_PATH . '/header.php';
 									<td colspan="3" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
-
 						</table>
 					</div>
 					<!-- /.box-body -->
@@ -62,6 +61,7 @@ require_once APPLICATION_PATH . '/header.php';
 	$(document).ready(function() {
 		$.blockUI();
 
+	
 		oTable = $('#sampTypDataTable').DataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
@@ -150,17 +150,23 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	function format(d) {
-		var ins = d[2].split(",");
+		//alert(d[2]);
+			if(d[2] != null){
+			var ins = d[2].split(",");
 
-    // `d` is the original data object for the row
-    return (
-        '<dl>' +
-        '<dt>Instruments :</dt>' +
-        '<dd><ul>' +
-		ins.map(i => '<li>'+i+'</li>').join('') +
-        '</ul></dd>' +
-        '</dl>'
-    );
+		// `d` is the original data object for the row
+		return (
+			'<dl>' +
+			'<dt>Instruments :</dt>' +
+			'<dd><ul>' +
+			ins.map(i => '<li>'+i+'</li>').join('') +
+			'</ul></dd>' +
+			'</dl>'
+		);
+	}
+	else{
+		return false;
+	}
 }
 </script>
 <?php

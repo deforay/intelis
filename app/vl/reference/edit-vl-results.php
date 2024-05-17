@@ -29,7 +29,8 @@ $resultInfo = $db->query($resultQuery);
 
 $activeInstruments = $instrumentsService->getInstruments(testType: null, dropDown: true, withFacility: true);
 $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instruments'], true);
-$instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $selectedInstruments);
+//$instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $selectedInstruments);
+//echo '<pre>'; print_r($activeInstruments); die;
 ?>
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
@@ -103,23 +104,48 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="resultStatus" class="col-lg-4 control-label">
-										<?php echo _translate("Available For Instrument"); ?>
-									</label>
-									<div class="col-lg-7">
-										<select style="width: 275px;" id="instruments" name="instruments[]" title="<?php echo _translate('Please select instruments'); ?>" multiple="multiple">
-											<?= $instrumentsDropdown; ?>
-										</select>
-									</div>
-								</div>
-							</div>
+							
 						</div>
+						<div class="row">
+						<div class="col-md-12">
+                                        <h4 style="font-weight:bold;"> <?php echo _translate("Available For Instrument"); ?></h4>
+
+                                        <div class="col-md-5">
+                                             <select name="instruments[]" id="search" class="form-control" size="8" multiple="multiple">
+											 	<?php foreach ($activeInstruments as $key=>$ins) {
+                                                       if (!empty($selectedInstruments) && !in_array($key, $selectedInstruments)) { ?>
+                                                            <option value="<?php echo $key; ?>"><?php echo $ins; ?> </option>
+                                                  <?php }
+                                                  } ?>
+                                             </select>
+                                             <div class="sampleCounterDiv"><?= _translate("Number of unselected instruments"); ?> : <span id="unselectedCount"></span></div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                             <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+                                             <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+                                             <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+                                             <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                             <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+											 	<?php foreach ($selectedInstruments as $value) {
+                                                       if (!empty($activeInstruments) && array_key_exists($value, $activeInstruments)) { ?>
+                                                            <option value="<?php echo $value; ?>"><?php echo $activeInstruments[$value]; ?> </option>
+                                                  <?php }
+                                                  } ?>
+											 </select>
+                                             <div class="sampleCounterDiv"><?= _translate("Number of selected instruments"); ?> : <span id="selectedCount"></span></div>
+                                        </div>
+                                   </div>
+</div>
 						<br>
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
+					<input type="hidden" name="selectedInstruments" id="selectedInstruments" />
+
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 						<a href="vl-results.php" class="btn btn-default"> Cancel</a>
 					</div>
@@ -139,14 +165,43 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("#instruments").multipleSelect({
-			placeholder: 'Select Instruments',
-			width: '100%'
-		});
+
+		$('#search').multiselect({
+               search: {
+                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+               },
+               fireSearch: function(value) {
+                    return value.length > 2;
+               },
+               startUp: function($left, $right) {
+                    updateCounts($left, $right);
+               },
+               afterMoveToRight: function($left, $right, $options) {
+                    updateCounts($left, $right);
+               },
+               afterMoveToLeft: function($left, $right, $options) {
+                    updateCounts($left, $right);
+               }
+          });
+
 
 	});
 
+	function updateCounts($left, $right) {
+          let selectedCount = $right.find('option').length;
+          $("#unselectedCount").html($left.find('option').length);
+          $("#selectedCount").html(selectedCount);
+
+     }
+
 	function validateNow() {
+		$("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES
+          var selVal = [];
+          $('#search_to option').each(function(i, selected) {
+               selVal[i] = $(selected).val();
+          });
+          $("#selectedInstruments").val(selVal);
 
 		flag = deforayValidator.init({
 			formId: 'editresult'
