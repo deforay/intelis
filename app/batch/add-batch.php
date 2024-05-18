@@ -1,12 +1,12 @@
 <?php
 
 use App\Services\BatchService;
+use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\UsersService;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -61,6 +61,7 @@ $batchService = ContainerRegistry::get(BatchService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities($_GET['type']);
 
+
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 /** @var UsersService $usersService */
@@ -101,7 +102,7 @@ $fundingSourceList = $general->getFundingSources();
         color: #000000 !important;
     }
 
-    #ms-sampleCode {
+    #ms-unbatchedSamples {
         width: 100%;
     }
 
@@ -194,13 +195,13 @@ $fundingSourceList = $general->getFundingSources();
                     </td>
                 </tr>
             </table>
-           
+
             &nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
-										<?php echo _translate("Show Advanced Search Options"); ?>
-									</span></button>
+                    <?php echo _translate("Show Advanced Search Options"); ?>
+                </span></button>
             <table aria-describedby="table" id="advanceFilter" class="table batchDiv" aria-hidden="true" style="display: none;margin-top:20px;width: 100%;<?php echo $genericHide; ?>">
-          
-            <tr>
+
+                <tr>
                     <th style="width: 20%;" scope="col">
                         <?php echo _translate("Facility"); ?>
                     </th>
@@ -228,6 +229,18 @@ $fundingSourceList = $general->getFundingSources();
                     </th>
                     <td style="width: 30%;">
                         <input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _translate('Select Received at Lab Date'); ?>" readonly style="width:100%;background:#fff;" />
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 20%;" scope="col">
+                        <?php echo _translate("Last Modified"); ?>
+                    </th>
+                    <td style="width: 30%;">
+                        <input type="text" id="lastModifiedDateTime" name="lastModifiedDateTime" class="form-control daterange" placeholder="<?php echo _translate('Last Modified'); ?>" readonly style="width:100%;background:#fff;" />
+                    </td>
+                    <th style="width: 20%;" scope="col">
+                    </th>
+                    <td style="width: 30%;">
                     </td>
                 </tr>
                 <tr>
@@ -270,26 +283,26 @@ $fundingSourceList = $general->getFundingSources();
                             <?php } ?>
                         </select>
                     </td>
-                    
+
                 </tr>
                 <tr>
                     <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
                                 <?php echo _translate("Reset Filters"); ?>
                             </span></button>
-                            &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
-										<?php echo _translate("Hide Advanced Search Options"); ?>
-									</span></button>
+                        &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
+                                <?php echo _translate("Hide Advanced Search Options"); ?>
+                            </span></button>
                     </td>
                 </tr>
             </table>
-            
+
             <!-- /.box-header -->
             <div class="box-body batchDiv" style="<?php echo $genericHide; ?>">
                 <!-- form start -->
                 <form class="form-horizontal" method="post" style="display:none;" name="addBatchForm" id="addBatchForm" autocomplete="off" action="save-batch-helper.php">
                     <div class="box-body">
-                      
+
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="form-group">
@@ -312,7 +325,7 @@ $fundingSourceList = $general->getFundingSources();
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <input type="hidden" name="selectedSample" id="selectedSample" />
+                        <input type="hidden" name="batchedSamples" id="batchedSamples" />
                         <input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
                         <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _translate('Please select machine'); ?>" onclick="validateNow();return false;"><?php echo _translate("Save and Next"); ?></a>
                         <a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
@@ -348,8 +361,8 @@ $fundingSourceList = $general->getFundingSources();
         });
 
         $("#userId").select2({
-			placeholder: "<?= _translate('Select User', true); ?>"
-		});
+            placeholder: "<?= _translate('Select User', true); ?>"
+        });
 
         $('.daterange').daterangepicker({
                 locale: {
@@ -366,9 +379,15 @@ $fundingSourceList = $general->getFundingSources();
                     'Today': [moment(), moment()],
                     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
                     'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
                     'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+                    'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+                    'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+                    'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+                    'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                    'Current Year To Date': [moment().startOf('year'), moment()]
                 }
             },
             function(start, end) {
@@ -379,23 +398,23 @@ $fundingSourceList = $general->getFundingSources();
     });
 
     function validateNow() {
+
         var selVal = [];
         $('#search_to option').each(function(i, selected) {
             selVal[i] = $(selected).val();
         });
-        $("#selectedSample").val(selVal);
+        $("#batchedSamples").val(selVal);
         var selected = $("#machine").find('option:selected');
         noOfSamples = selected.data('no-of-samples');
         if (noOfSamples < selVal.length) {
-            alert("<?= _translate("You have selected more than allowed number of samples", true); ?>");
+            alert("<?= _translate("You have selected more than the allowed number of samples for this platform", true); ?>");
             return false;
         }
 
         if (selVal == "") {
-            alert("<?= _translate("Please select one or more samples", true); ?>");
+            alert("<?= _translate("Please select at least one sample", true); ?>");
             return false;
         }
-
         flag = deforayValidator.init({
             formId: 'addBatchForm'
         });
@@ -446,6 +465,7 @@ $fundingSourceList = $general->getFundingSources();
         batchXhr = $.post("/batch/get-samples-batch.php", {
                 sampleCollectionDate: $("#sampleCollectionDate").val(),
                 sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
+                lastModifiedDateTime: $("#lastModifiedDateTime").val(),
                 type: '<?= $_GET['type']; ?>',
                 testType: $('#testType').val(),
                 facilityId: facilityId,
@@ -489,8 +509,8 @@ $fundingSourceList = $general->getFundingSources();
     }
 
     function hideAdvanceSearch(hideId, showId) {
-		$("#" + hideId).hide();
-		$("#" + showId).show();
-	}
+        $("#" + hideId).hide();
+        $("#" + showId).show();
+    }
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';

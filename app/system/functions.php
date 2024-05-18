@@ -11,18 +11,6 @@ use App\Registries\ContainerRegistry;
 use function iter\count as iterCount;
 use function iter\toArray as iterToArray;
 
-// function _translate(?string $text, bool $escapeText = false)
-// {
-//     if (empty($text) || !is_string($text)) {
-//         return $text;
-//     }
-
-//     $translatedString = SystemService::translate($text);
-//     // Use json_encode to ensure the string is safe for JavaScript
-//     return $escapeText ? trim(json_encode($translatedString), '"') : $translatedString;
-// }
-
-
 function _translate(?string $text, bool $escapeText = false)
 {
     if (empty($text) || !is_string($text) || $_SESSION['APP_LOCALE'] == 'en_US') {

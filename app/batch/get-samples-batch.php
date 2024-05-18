@@ -33,13 +33,13 @@ $resultColumn = 'result';
 $testType = $_POST['type'];
 
 
-if($_POST['type']=='cd4')
-{
+if ($_POST['type'] == 'cd4') {
     $resultColumn = 'cd4_result';
-} 
+}
 
 [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$sampleReceivedStartDate, $sampleReceivedEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedAtLab'] ?? '');
+[$lastModifiedStartDate, $lastModifiedEndDate] = DateUtility::convertDateRange($_POST['lastModifiedDateTime'] ?? '');
 
 $query = "(SELECT vl.sample_code,
                     vl.$primaryKeyColumn,
@@ -88,6 +88,14 @@ if (!empty($_POST['sampleReceivedAtLab']) && trim((string) $_POST['sampleReceive
     }
 }
 
+if (!empty($_POST['lastModifiedDateTime']) && trim((string) $_POST['lastModifiedDateTime']) != '') {
+    if (trim((string) $lastModifiedStartDate) == trim((string) $lastModifiedEndDate)) {
+        $swhere[] = $where[] = ' DATE(last_modified_datetime) = "' . $lastModifiedStartDate . '"';
+    } else {
+        $swhere[] = $where[] = ' DATE(last_modified_datetime) BETWEEN "' . $lastModifiedStartDate . '" AND "' . $lastModifiedEndDate . '"';
+    }
+}
+
 if (!empty($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
     $swhere[] = $where[] = ' funding_source = "' . $_POST['fundingSource'] . '"';
 }
@@ -131,18 +139,17 @@ if (isset($_POST['batchId'])) {
 
 $result = $db->rawQuery($query);
 if (isset($_POST['batchId'])) {
-    ?>
+?>
     <?php
     foreach ($result as $sample) {
         if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
             <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name']; ?></option>
     <?php }
     }
- 
 } else { ?>
 
     <div class="col-md-5" id="sampleDetails">
-        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+        <select name="unbatchedSamples[]" id="search" class="form-control" size="8" multiple="multiple">
             <?php foreach ($result as $sample) {
                 if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
                     <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . ($sample['facility_name']); ?></option>
@@ -153,10 +160,12 @@ if (isset($_POST['batchId'])) {
     </div>
 
     <div class="col-md-2">
+        <button type="button" id="search_undo" class="btn btn-block"><em class="fa-solid fa-rotate-left"></em> <?= _translate("Undo"); ?></button>
         <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
         <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
         <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
         <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+        <button type="button" id="search_redo" class="btn btn-block"><em class="fa-solid fa-rotate-right"></em> <?= _translate("Redo"); ?></button>
     </div>
 
     <div class="col-md-5">

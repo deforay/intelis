@@ -1,10 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\BatchService;
-use App\Services\DatabaseService;
+use App\Services\TestsService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -22,44 +23,18 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var BatchService $batchService */
 $batchService = ContainerRegistry::get(BatchService::class);
 
+$testTable = "form_vl";
+$testTablePrimaryKey = "vl_sample_id";
 
-$refTable = "form_vl";
-$refPrimaryColumn = "vl_sample_id";
+$table = TestsService::getTestTableName($_POST['type']);
+$primaryKeyColumn = TestsService::getTestPrimaryKeyColumn($_POST['type']);
 
 if (isset($_POST['type'])) {
-    switch ($_POST['type']) {
-        case 'vl':
-            $refTable = "form_vl";
-            $refPrimaryColumn = "vl_sample_id";
-            break;
-        case 'eid':
-            $refTable = "form_eid";
-            $refPrimaryColumn = "eid_id";
-            break;
-        case 'covid19':
-            $refTable = "form_covid19";
-            $refPrimaryColumn = "covid19_id";
-            break;
-        case 'hepatitis':
-            $refTable = "form_hepatitis";
-            $refPrimaryColumn = "hepatitis_id";
-            break;
-        case 'tb':
-            $refTable = "form_tb";
-            $refPrimaryColumn = "tb_id";
-            break;
-        case 'cd4':
-            $refTable = "form_cd4";
-            $refPrimaryColumn = "cd4_id";
-            break;
-        case 'generic-tests':
-            $refTable = "form_generic";
-            $refPrimaryColumn = "sample_id";
-            break;
-        default:
-            throw new SystemException('Invalid test type - ' . $_POST['type'], 500);
-    }
+    $testTable = TestsService::getTestTableName($_POST['type']);
+    $testTablePrimaryKey = TestsService::getTestPrimaryKeyColumn($_POST['type']);
 }
+
+
 
 $tableName1 = "batch_details";
 try {
@@ -78,38 +53,31 @@ try {
             $db->where('batch_id', $id);
             $db->update($tableName1, $data);
             if ($id > 0) {
-                $value = ['sample_batch_id' => null];
                 $db->where('sample_batch_id', $id);
-                $db->update($refTable, $value);
+                $db->update($testTable, ['sample_batch_id' => null]);
                 $xplodResultSample = [];
-                if (isset($_POST['selectedSample']) && trim((string) $_POST['selectedSample']) != "") {
-                    $xplodResultSample = explode(",", (string) $_POST['selectedSample']);
+                if (isset($_POST['batchedSamples']) && trim((string) $_POST['batchedSamples']) != "") {
+                    $xplodResultSample = explode(",", (string) $_POST['batchedSamples']);
                 }
-                $sample = [];
+                $selectedSamples = [];
                 //Mergeing disabled samples into existing samples
-                if (!empty($_POST['sampleCode'])) {
+                if (!empty($_POST['unbatchedSamples'])) {
                     if (!empty($xplodResultSample)) {
-                        $sample = array_unique(array_merge($_POST['sampleCode'], $xplodResultSample));
+                        $selectedSamples = array_unique(array_merge($_POST['unbatchedSamples'], $xplodResultSample));
                     } else {
-                        $sample = $_POST['sampleCode'];
+                        $selectedSamples = $_POST['unbatchedSamples'];
                     }
                 } elseif (!empty($xplodResultSample)) {
-                    $sample = $xplodResultSample;
+                    $selectedSamples = $xplodResultSample;
                 }
 
-                for ($j = 0; $j < count($sample); $j++) {
-                    $value = array('sample_batch_id' => $id);
-                    $db->where($refPrimaryColumn, $sample[$j]);
-                    $db->update($refTable, $value);
-                }
-                header("Location:add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
+                $uniqueSampleIds = array_unique($selectedSamples);
+                $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");
+                $db->update($testTable, ['sample_batch_id' => $id]);
+                header("Location:edit-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
             }
-            //else {
-            // header("Location:batches.php?type=" . $_POST['type']);
-            //}
         } else {
-            $exist = $batchService->doesBatchCodeExist($_POST['batchCode']);
-            if ($exist) {
+            if ($batchService->doesBatchCodeExist($_POST['batchCode'])) {
                 $_SESSION['alertMsg'] = _translate("Something went wrong. Please try again later.");
                 header("Location:batches.php?type=" . $_POST['type']);
             } else {
@@ -124,21 +92,13 @@ try {
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'request_created_datetime' => DateUtility::getCurrentDateTime()
                 ];
-
                 $db->insert($tableName1, $data);
                 $lastId = $db->getInsertId();
-                if ($lastId > 0 && trim((string) $_POST['selectedSample']) != '') {
-                    $selectedSample = explode(",", (string) $_POST['selectedSample']);
-                    $uniqueSampleId = array_unique($selectedSample);
-                    for ($j = 0; $j <= count($selectedSample); $j++) {
-                        if (isset($uniqueSampleId[$j])) {
-
-                            $vlSampleId = $uniqueSampleId[$j];
-                            $value = array('sample_batch_id' => $lastId);
-                            $db->where($refPrimaryColumn, $vlSampleId);
-                            $db->update($refTable, $value);
-                        }
-                    }
+                if ($lastId > 0 && trim((string) $_POST['batchedSamples']) != '') {
+                    $selectedSamples = explode(",", (string) $_POST['batchedSamples']);
+                    $uniqueSampleIds = array_unique($selectedSamples);
+                    $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");
+                    $db->update($testTable, ['sample_batch_id' => $lastId]);
                     header("Location:add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
                 } else {
                     header("Location:batches.php?type=" . $_POST['type']);
