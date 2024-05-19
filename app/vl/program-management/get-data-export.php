@@ -53,7 +53,7 @@ try {
 
      $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-     $sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+     $sWhere[] = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
      $sWhere[] = " (IFNULL(reason_for_vl_testing, 0)  != 9999 or reason_for_vl_testing is null) ";
 

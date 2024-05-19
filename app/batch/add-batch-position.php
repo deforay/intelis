@@ -16,8 +16,10 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $sortBy = $_GET['sortBy'] ?? 'sampleCode';
 
 $sortType = match ($_GET['sortType']) {
+	'a' => 'asc',
 	'asc' => 'asc',
 	'desc' => 'desc',
+	'd' => 'desc',
 	default => 'asc',
 };
 
@@ -309,7 +311,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 									?>
 								</ul>
 								<table class="table table-striped" style="width:50%; margin:3em auto;">
-									<caption><strong>Enter Label Names</strong></caption>
+									<caption><strong><?= _translate("Labels for Controls/Calibrators") ?></strong></caption>
 									<?php echo $labelNewContent; ?>
 								</table>
 							</div>

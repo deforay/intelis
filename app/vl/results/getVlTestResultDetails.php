@@ -49,7 +49,7 @@ try {
 
      $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-     $sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+     $sWhere[] = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
      $sQuery = "SELECT vl.vl_sample_id,
      vl.sample_code,

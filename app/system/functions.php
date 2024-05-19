@@ -1,10 +1,9 @@
 <?php
 
+use voku\helper\AntiXSS;
 use App\Services\UsersService;
 use App\Utilities\MiscUtility;
-use Laminas\Filter\StringTrim;
 use App\Services\SystemService;
-use Laminas\Filter\FilterChain;
 use App\Exceptions\SystemException;
 use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
@@ -38,47 +37,26 @@ function _isAllowed($currentRequest, $privileges = null)
     return $usersService->isAllowed($currentRequest, $privileges);
 }
 
-function _sanitizeInput(string|array|null $data, $nullifyEmptyStrings = false, $customFilters = [])
+function _sanitizeInput($input, $nullifyEmptyStrings = false)
 {
-    // Check for null, empty array, or empty string and return appropriately
-    if ($data === null) {
-        return null;
-    } elseif (is_array($data) && empty($data)) {
-        return [];
-    } elseif (is_string($data) && $data === '') {
-        return '';
-    }
+    $antiXss = new AntiXSS();
 
-    // Default Laminas filter chain with StripTags and StringTrim
-    $defaultFilterChain = new FilterChain();
-    $defaultFilterChain->attach(new StringTrim());
-
-    // Convert single string to array for uniform processing
-    $data = is_array($data) ? $data : [$data];
-
-    // Apply filters
-    foreach ($data as $key => &$value) {
-        // Skip processing for null values
-        if ($value === null) {
-            continue;
+    // Recursive sanitization
+    if (is_array($input)) {
+        foreach ($input as $key => $value) {
+            $input[$key] = _sanitizeInput($value, $nullifyEmptyStrings);
         }
+    } else {
+        // Sanitize using AntiXSS
+        $input = $antiXss->xss_clean($input);
 
-        if (is_array($value)) {
-            // Recursive call for nested arrays
-            $value = _sanitizeInput($value, $customFilters[$key] ?? []);
-        } else {
-            // Use custom filter if defined, otherwise default filter
-            $filterChain = $customFilters[$key] ?? $defaultFilterChain;
-            $value = $filterChain->filter($value);
+        // Convert empty strings to null if $nullifyEmptyStrings is true
+        if ($nullifyEmptyStrings && $input === '') {
+            $input = null;
         }
     }
-    unset($value); // Break reference link
 
-    if ($nullifyEmptyStrings === true) {
-        $data = MiscUtility::arrayEmptyStringsToNull($data);
-    }
-
-    return $data;
+    return $input;
 }
 
 function _sanitizeFiles($files, $allowedTypes = [], $sanitizeFileName = true, $maxSize = null)

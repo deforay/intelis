@@ -834,31 +834,61 @@ final class CommonService
         }
         return $response;
     }
-    public function multipleColumnSearch($searchText, $allColumns)
+    public function multipleColumnSearch(?string $searchText, ?array $allColumns, bool $splitSearch = false): string
     {
+        // Initialize the where clause array
         $sWhere = [];
 
-        if (!empty($searchText)) {
-            // Split the search query into separate words
-            $searchArray = explode(" ", (string) $searchText);
-            $colSize = count($allColumns);
+        // Ensure the search text and columns are not empty
+        if (!empty($searchText) && !empty($allColumns) && is_array($allColumns)) {
+            // Trim the search text
+            $searchText = trim($searchText);
 
-            foreach ($searchArray as $search) {
-                $sWhereSub = [];
-
-                for ($i = 0; $i < $colSize; $i++) {
-                    if (empty($allColumns[$i])) {
-                        continue;
-                    }
-                    $sWhereSub[] = "$allColumns[$i] LIKE '%$search%'";
+            // Add the condition for the entire search string
+            $sWhereSub = [];
+            foreach ($allColumns as $column) {
+                if (!empty($column)) {
+                    // Escape the entire search text to prevent SQL injection
+                    $escapedSearchText = $this->db->escape($searchText);
+                    // Add the search condition for the current column
+                    $sWhereSub[] = "$column LIKE '%$escapedSearchText%'";
                 }
+            }
+            if (!empty($sWhereSub)) {
+                $sWhere[] = " (" . implode(' OR ', $sWhereSub) . ") ";
+            }
 
-                $sWhere[] = " (" . implode(' OR ', array_filter($sWhereSub)) . ") ";
+            if ($splitSearch) {
+                // Split the search query into separate words
+                $searchArray = array_filter(explode(" ", $searchText));
+
+                // Loop through each search word
+                foreach ($searchArray as $search) {
+                    if (!empty($search)) {
+                        // Initialize sub where clause array
+                        $sWhereSub = [];
+
+                        // Loop through each column to generate search conditions for each word
+                        foreach ($allColumns as $column) {
+                            if (!empty($column)) {
+                                // Escape the search term to prevent SQL injection
+                                $escapedSearch = $this->db->escape($search);
+                                // Add the search condition for the current column
+                                $sWhereSub[] = "$column LIKE '%$escapedSearch%'";
+                            }
+                        }
+                        if (!empty($sWhereSub)) {
+                            $sWhere[] = " (" . implode(' OR ', $sWhereSub) . ") ";
+                        }
+                    }
+                }
             }
         }
 
-        return $sWhere;
+        // Combine all where clauses into a single SQL string
+        return !empty($sWhere) ? implode(' AND ', $sWhere) : '';
     }
+
 
     public function generateDataTablesSorting($postData, $orderColumns)
     {
