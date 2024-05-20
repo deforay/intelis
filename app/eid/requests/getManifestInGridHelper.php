@@ -43,7 +43,12 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-$sWhere[] = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+
+$sWhere = [];
+if (!empty($columnSearch) && $columnSearch != '') {
+     $sWhere[] = $columnSearch;
+}
 
 $sQuery = "SELECT vl.sample_collection_date,
                     vl.eid_id,

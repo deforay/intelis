@@ -834,7 +834,7 @@ final class CommonService
         }
         return $response;
     }
-    public function multipleColumnSearch(?string $searchText, ?array $allColumns, bool $splitSearch = false): string
+    public function multipleColumnSearch(?string $searchText, ?array $allColumns, bool $splitSearch = false): ?string
     {
         // Initialize the where clause array
         $sWhere = [];
@@ -886,7 +886,7 @@ final class CommonService
         }
 
         // Combine all where clauses into a single SQL string
-        return !empty($sWhere) ? implode(' AND ', $sWhere) : '';
+        return !empty($sWhere) ? implode(' OR ', $sWhere) : null;
     }
 
 
