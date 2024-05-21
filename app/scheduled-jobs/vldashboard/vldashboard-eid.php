@@ -12,7 +12,8 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
-if (php_sapi_name() == 'cli') {
+$cliMode = php_sapi_name() === 'cli';
+if ($cliMode) {
     require_once(__DIR__ . "/../../../bootstrap.php");
 }
 

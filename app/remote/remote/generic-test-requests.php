@@ -91,25 +91,27 @@ try {
 		'last_modified_datetime'
 	);
 
-	$genericQuery = "SELECT * FROM form_generic
+	$sQuery = "SELECT * FROM form_generic
                     WHERE $condition ";
 
 	if (!empty($data['manifestCode'])) {
-		$genericQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
+		$sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
 	} else {
-		$genericQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
+		$sQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
 	}
-	$genericRemoteResult = $db->rawQuery($genericQuery);
+
+	[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery, returnGenerator: false);
+
 	$response = $sampleIds = $facilityIds = [];
-	if ($db->count > 0) {
-		$payload = $genericRemoteResult;
-		$counter = $db->count;
-		$sampleIds = array_column($genericRemoteResult, 'sample_id');
-		$facilityIds = array_column($genericRemoteResult, 'facility_id');
+	if ($resultCount > 0) {
+		$payload = $rResult;
+		$counter = $resultCount;
+		$sampleIds = array_column($rResult, 'sample_id');
+		$facilityIds = array_column($rResult, 'facility_id');
 
 		/** @var GenericTestsService $general */
 		$generic = ContainerRegistry::get(GenericTestsService::class);
-		foreach ($genericRemoteResult as $r) {
+		foreach ($rResult as $r) {
 			$response[$r['sample_id']] = $r;
 			$response[$r['sample_id']]['data_from_tests'] = $generic->getTestsByGenericSampleIds($r['sample_id']);
 		}

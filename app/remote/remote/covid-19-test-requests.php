@@ -1,11 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -54,27 +54,26 @@ try {
     $condition = "lab_id =" . $labId;
   }
 
-  $covid19Query = "SELECT * FROM form_covid19
-                    WHERE $condition ";
+  $sQuery = "SELECT * FROM form_covid19 WHERE $condition ";
 
   if (!empty($data['manifestCode'])) {
-    $covid19Query .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
+    $sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
   } else {
-    $covid19Query .= " AND data_sync=0 AND last_modified_datetime > SUBDATE('" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
+    $sQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE('" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
   }
-  $covid19RemoteResult = $db->rawQuery($covid19Query);
+  [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery, returnGenerator: false);
   $response  = $sampleIds = $facilityIds = [];
   $counter = 0;
   $response = [];
-  if ($db->count > 0) {
-    $counter = $db->count;
-    $sampleIds = array_column($covid19RemoteResult, 'covid19_id');
-    $facilityIds = array_column($covid19RemoteResult, 'facility_id');
+  if ($resultCount > 0) {
+    $counter = $resultCount;
+    $sampleIds = array_column($rResult, 'covid19_id');
+    $facilityIds = array_column($rResult, 'facility_id');
 
 
     /** @var Covid19Service $covid19Service */
     $covid19Service = ContainerRegistry::get(Covid19Service::class);
-    foreach ($covid19RemoteResult as $r) {
+    foreach ($rResult as $r) {
       $response[$r['covid19_id']] = $r;
       $response[$r['covid19_id']]['data_from_comorbidities'] = $covid19Service->getCovid19ComorbiditiesByFormId($r['covid19_id'], false, true);
       $response[$r['covid19_id']]['data_from_symptoms'] = $covid19Service->getCovid19SymptomsByFormId($r['covid19_id'], false, true);
@@ -83,7 +82,7 @@ try {
     /* $symptoms = $covid19Service->getCovid19SymptomsByFormId($sampleIds);
     $comorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($sampleIds);
     $testResults = $covid19Service->getCovid19TestsByFormId($sampleIds);
-    $response['result'] = $covid19RemoteResult;
+    $response['result'] = $rResult;
     $response['symptoms'] = $symptoms;
     $response['comorbidities'] = $comorbidities;
     $response['testResults'] = $testResults; */

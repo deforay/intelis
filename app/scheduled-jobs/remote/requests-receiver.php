@@ -1,7 +1,8 @@
 <?php
 //this file gets the requests from the remote server and updates the local database
 
-if (php_sapi_name() == 'cli') {
+$cliMode = php_sapi_name() === 'cli';
+if ($cliMode) {
     require_once(__DIR__ . "/../../../bootstrap.php");
 }
 
@@ -72,11 +73,11 @@ $request = [];
 if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
 
     $url = $remoteUrl . '/remote/remote/generic-test-requests.php';
-    $payload = array(
+    $payload = [
         'labId' => $labId,
         'module' => 'generic-tests',
         "Key" => "vlsm-lab-data--",
-    );
+    ];
     if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "generic-tests" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
@@ -86,6 +87,10 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
     $columnList = [];
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+
+        if ($cliMode) {
+            echo "Syncing data for Custom Tests" . PHP_EOL;
+        }
 
         $options = [
             'pointer' => '/result',
@@ -111,7 +116,6 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
-            $counter++;
 
             $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
@@ -222,7 +226,15 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                     ));
                 }
             }
+            if ($id === true) {
+                $counter++;
+            }
         }
+
+        if ($cliMode && $counter > 0) {
+            echo "Synced $counter records" . PHP_EOL;
+        }
+
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
     }
 }
@@ -254,6 +266,10 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
+        if ($cliMode) {
+            echo "Syncing data for HIV VL" . PHP_EOL;
+        }
+
         $options = [
             'decoder' => new ExtJsonDecoder(true)
         ];
@@ -284,14 +300,14 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
-            $counter++;
 
             $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
             $existingSampleQuery = "SELECT vl_sample_id, sample_code
-                            FROM form_vl AS vl WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                                        FROM form_vl AS vl
+                                        WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
             $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
             if (!empty($existingSampleResult)) {
 
@@ -363,6 +379,12 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                     $id = $db->insert('form_vl', $request);
                 }
             }
+            if ($id === true) {
+                $counter++;
+            }
+        }
+        if ($cliMode && $counter > 0) {
+            echo "Synced $counter records" . PHP_EOL;
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
     }
@@ -393,6 +415,10 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
+        if ($cliMode) {
+            echo "Syncing data for EID" . PHP_EOL;
+        }
+
         $options = [
             'decoder' => new ExtJsonDecoder(true)
         ];
@@ -416,7 +442,6 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
-            $counter++;
 
             $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
@@ -486,8 +511,13 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                     $id = $db->insert('form_eid', $request);
                 }
             }
+            if ($id === true) {
+                $counter++;
+            }
         }
-
+        if ($cliMode && $counter > 0) {
+            echo "Synced $counter records" . PHP_EOL;
+        }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'eid', $url, $payload, $jsonResponse, 'json', $labId);
     }
 }
@@ -512,6 +542,10 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     }
     $jsonResponse = $apiService->post($url, $payload);
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+
+        if ($cliMode) {
+            echo "Syncing data for Covid-19" . PHP_EOL;
+        }
 
         $options = [
             'pointer' => '/result',
@@ -540,7 +574,6 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
-            $counter++;
 
             $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
@@ -664,6 +697,12 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     $db->insert("covid19_tests", $covid19TestData);
                 }
             }
+            if ($id === true) {
+                $counter++;
+            }
+        }
+        if ($cliMode && $counter > 0) {
+            echo "Synced $counter records" . PHP_EOL;
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
     }
@@ -691,6 +730,10 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     $jsonResponse = $apiService->post($url, $payload);
     // die($jsonResponse);
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+
+        if ($cliMode) {
+            echo "Syncing data for Hepatitis" . PHP_EOL;
+        }
 
         $options = [
             'pointer' => '/result',
@@ -724,7 +767,6 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
-            $counter++;
 
             $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
@@ -838,8 +880,13 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     error_log('insert failed: ' . $db->getLastError());
                 }
             }
+            if ($id === true) {
+                $counter++;
+            }
         }
-
+        if ($cliMode && $counter > 0) {
+            echo "Synced $counter records" . PHP_EOL;
+        }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
 }
@@ -866,6 +913,10 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
+
+        if ($cliMode) {
+            echo "Syncing data for TB" . PHP_EOL;
+        }
 
         $options = [
             'pointer' => '/result',
@@ -896,7 +947,6 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
-            $counter++;
 
             $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
@@ -972,8 +1022,13 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                     $id = $db->getInsertId();
                 }
             }
+            if ($id === true) {
+                $counter++;
+            }
         }
-
+        if ($cliMode && $counter > 0) {
+            echo "Synced $counter records" . PHP_EOL;
+        }
 
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'tb', $url, $payload, $jsonResponse, 'json', $labId);
     }
@@ -1005,12 +1060,16 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
+        if ($cliMode) {
+            echo "Syncing data for CD4" . PHP_EOL;
+        }
+
         $options = [
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
 
-        $removeKeys = array(
+        $removeKeys = [
             'cd4_id',
             'sample_batch_id',
             'cd4_result',
@@ -1022,13 +1081,12 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
             'result_approved_by',
             'result_approved_datetime',
             'data_sync'
-        );
+        ];
 
         $emptyLabArray = $general->getTableFieldsAsArray('form_cd4', $removeKeys);
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
-            $counter++;
 
             $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
@@ -1101,6 +1159,12 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
                     $id = $db->insert('form_cd4', $request);
                 }
             }
+            if ($id === true) {
+                $counter++;
+            }
+        }
+        if ($cliMode && $counter > 0) {
+            echo "Synced $counter records" . PHP_EOL;
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
     }

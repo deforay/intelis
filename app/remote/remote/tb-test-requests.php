@@ -42,25 +42,25 @@ try {
     }
 
 
-    $tbQuery = "SELECT * FROM form_tb WHERE $condition ";
+    $sQuery = "SELECT * FROM form_tb WHERE $condition ";
 
     if (!empty($data['manifestCode'])) {
-        $tbQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
+        $sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
     } else {
-        $tbQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
+        $sQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
     }
 
-    $tbRemoteResult = $db->rawQuery($tbQuery);
+    [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery, returnGenerator: false);
     $response = [];
     $counter = 0;
     $sampleIds = $facilityIds = [];
-    if ($db->count > 0) {
-        $counter = $db->count;
+    if ($resultCount > 0) {
+        $counter = $resultCount;
 
-        $sampleIds = array_column($tbRemoteResult, 'tb_id');
-        $facilityIds = array_column($tbRemoteResult, 'facility_id');
+        $sampleIds = array_column($rResult, 'tb_id');
+        $facilityIds = array_column($rResult, 'facility_id');
 
-        $response['result'] = $tbRemoteResult;
+        $response['result'] = $rResult;
     }
 
     $payload = json_encode($response);
