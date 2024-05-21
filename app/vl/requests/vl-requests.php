@@ -46,7 +46,10 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$formId = (int) $general->getGlobalConfig('vl_form');
+
+$globalConfig = $general->getGlobalConfig();
+
+$formId = (int) $globalConfig['vl_form'];
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -179,10 +182,10 @@ foreach ($srcResults as $list) {
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<option value="suppressed">
-										<= <?php echo $arr['viral_load_threshold_limit']; ?> <?php echo _translate("cp/ml"); ?> </option>
+										<= <?php echo $globalConfig['viral_load_threshold_limit']; ?> <?php echo _translate("cp/ml"); ?> </option>
 									<option value="not suppressed">
 										>
-										<?php echo $arr['viral_load_threshold_limit']; ?>
+										<?php echo $globalConfig['viral_load_threshold_limit']; ?>
 										<?php echo _translate("cp/ml"); ?>
 									</option>
 								</select>

@@ -21,7 +21,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("geographical-divisions-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (_isAllowed("geographical-divisions-details.php") && $general->isLISInstance() === false) { ?>
 							<a href="add-patient.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Patients"); ?></a>
 						<?php } ?>
 					</div>

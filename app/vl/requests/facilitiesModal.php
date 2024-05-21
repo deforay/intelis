@@ -1,5 +1,10 @@
 <?php
 
+use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);

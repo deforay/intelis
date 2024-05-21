@@ -55,6 +55,15 @@ try {
 
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
 
+
+        if (
+            ($usersService->continuousFailedLogins($_POST['username']) === true) &&
+            ((!empty($_SESSION['captchaCode']) && empty($_POST['captcha'])) ||
+                ($_POST['captcha'] != $_SESSION['captchaCode']))
+        ) {
+            throw new SystemException(_translate("You have exhausted the maximum number of login attempts. Please retry login after some time."));
+        }
+
         $userRow = $db->rawQueryOne(
             "SELECT * FROM user_details as ud
                                         INNER JOIN roles as r ON ud.role_id=r.role_id
@@ -62,44 +71,11 @@ try {
             [$_POST['username'], 'active']
         );
 
-        $loginAttemptCount = $db->rawQueryOne(
-            "SELECT COUNT(*) AS FailedAttempts
-                FROM user_login_history ulh
-                WHERE ulh.login_id = ? AND
-                ulh.login_status = 'failed' AND
-                ulh.login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 MINUTE)",
-            [$_POST['username'], DateUtility::getCurrentDateTime()]
-        );
 
         $usersService->recordLoginAttempt($_POST['username'], 'failed');
 
-        $maxLoginAttempts = 3;
 
-        if (
-            ($loginAttemptCount['FailedAttempts'] >= $maxLoginAttempts) &&
-            ((!empty($_SESSION['captchaCode']) && empty($_POST['captcha'])) ||
-                ($_POST['captcha'] != $_SESSION['captchaCode']))
-        ) {
-            throw new SystemException(_translate("You have exhausted the maximum number of login attempts. Please retry login after some time."));
-        }
-
-        if (empty($userRow)) {
-            throw new SystemException(_translate("Please check your login credentials"));
-        } elseif ($userRow['hash_algorithm'] == 'sha1') {
-            if (sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']) == $userRow['password']) {
-                $newPassword = $usersService->passwordHash($_POST['password']);
-                $db->where('user_id', $userRow['user_id']);
-                $db->update(
-                    'user_details',
-                    [
-                        'hash_algorithm' => 'phb',
-                        'password' => $newPassword
-                    ]
-                );
-            } else {
-                throw new SystemException(_translate("Please check your login credentials"));
-            }
-        } elseif (!password_verify((string) $_POST['password'], (string) $userRow['password'])) {
+        if (empty($userRow) || !password_verify((string) $_POST['password'], (string) $userRow['password'])) {
             $usersService->recordLoginAttempt($_POST['username'], 'failed', $userRow['user_id']);
             throw new SystemException(_translate("Please check your login credentials"));
         }

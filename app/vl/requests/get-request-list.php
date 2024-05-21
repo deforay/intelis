@@ -1,6 +1,6 @@
 <?php
 
-use Kint\Kint;
+
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -55,7 +55,12 @@ try {
 
      $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-     $sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+     $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+
+     $sWhere = [];
+     if (!empty($columnSearch) && $columnSearch != '') {
+          $sWhere[] = $columnSearch;
+     }
 
      $sQuery = "SELECT
                vl.vl_sample_id,
@@ -267,7 +272,7 @@ try {
      }
 
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
-          if (trim((string) $sPrintDate) == trim((string) $eTestDate)) {
+          if (trim((string) $sPrintDate) == trim((string) $ePrintDate)) {
                $sWhere[] = "  DATE(vl.result_printed_datetime) = '$sPrintDate'";
           } else {
                $sWhere[] = " DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";

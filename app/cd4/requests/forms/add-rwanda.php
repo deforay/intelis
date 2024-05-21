@@ -380,7 +380,7 @@ $sFormat = '';
                                                                                 ?>
                                                                            </optgroup>
                                                                       <?php }
-                                                                      if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                                      if ($general->isLISInstance() === false) { ?>
                                                                            <!-- <option value="other">Other</option> -->
                                                                       <?php } ?>
                                                                  </select>
@@ -610,7 +610,7 @@ $sFormat = '';
                                                                                           } ?>
                                                                                      </optgroup>
                                                                                 <?php }
-                                                                                if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                                                if ($general->isLISInstance() === false) { ?>
                                                                                      <option value="other">Other (Please Specify) </option>
                                                                                 <?php } ?>
                                                                            </select>

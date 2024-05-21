@@ -1,11 +1,15 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $title = "VL | Add New Request";
 

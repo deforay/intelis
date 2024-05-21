@@ -1,8 +1,13 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\DatabaseService;
+use App\Services\CommonService;
 use App\Services\StorageService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -301,7 +306,7 @@ $storageInfo = $storageService->getLabStorage();
 													<option value="<?php echo $arv['art_code']; ?>" <?php echo ($arv['art_code'] == $vlQueryInfo['current_regimen']) ? 'selected="selected"' : ''; ?>><?php echo $arv['art_code']; ?>
 													</option>
 												<?php }
-												if ($sarr['sc_user_type'] != 'vluser') { ?>
+												if ($general->isLISInstance() === false) { ?>
 													<option value="other">Autre</option>
 												<?php } ?>
 											</select>
@@ -365,7 +370,7 @@ $storageInfo = $storageService->getLabStorage();
 												<?php foreach ($vlTestReasonResult as $tReason) { ?>
 													<option value="<?php echo $tReason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $tReason['test_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($tReason['test_reason_name']); ?></option>
 												<?php }
-												if ($sarr['sc_user_type'] != 'vluser') { ?>
+												if ($general->isLISInstance() === false) { ?>
 													<option value="other">Autre</option>
 												<?php } ?>
 											</select>

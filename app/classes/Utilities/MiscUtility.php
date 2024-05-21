@@ -117,6 +117,7 @@ final class MiscUtility
             return true;
         } else {
             LoggerUtility::log('error', 'JSON decoding error: ' . json_last_error_msg());
+            LoggerUtility::log('error', 'JSON decoding error: ' . $string);
             return false;
         }
     }

@@ -168,9 +168,7 @@ try {
 
             $client = new Client();
             try {
-                $response = $client->post($apiUrl, [
-                    'multipart' => $multipart
-                ]);
+                $response = $client->post($apiUrl, ['multipart' => $multipart]);
 
                 // $result = $response->getBody()->getContents();
                 // $deResult = json_decode($result, true);

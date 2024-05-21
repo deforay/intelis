@@ -278,7 +278,7 @@ $sFormat = '';
 												<?php foreach ($aResult as $arv) { ?>
 													<option value="<?php echo $arv['art_code']; ?>"><?php echo $arv['art_code']; ?></option>
 												<?php }
-												if ($sarr['sc_user_type'] != 'vluser') { ?>
+												if ($general->isLISInstance() === false) { ?>
 													<option value="other">Autre</option>
 												<?php } ?>
 											</select>
@@ -519,7 +519,7 @@ $sFormat = '';
 													<?php foreach ($rejectionResult as $rjctReason) { ?>
 														<option value="<?php echo $rjctReason['rejection_reason_id']; ?>"><?php echo ($rjctReason['rejection_reason_name']); ?></option>
 													<?php }
-													if ($sarr['sc_user_type'] != 'vluser') { ?>
+													if ($general->isLISInstance() === false) { ?>
 														<option value="other">Autre</option>
 													<?php } ?>
 												</select>

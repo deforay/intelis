@@ -447,7 +447,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 																} ?>
 															</optgroup>
 														<?php }
-														if ($sarr['sc_user_type'] != 'vluser') {  ?>
+														if ($general->isLISInstance() === false) {  ?>
 															<option value="other">Other</option>
 														<?php } ?>
 													</select>
@@ -721,7 +721,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 																	} ?>
 																</optgroup>
 															<?php }
-															if ($sarr['sc_user_type'] != 'vluser') {  ?>
+															if ($general->isLISInstance() === false) {  ?>
 																<option value="other">Other (Please Specify) </option>
 															<?php } ?>
 														</select>

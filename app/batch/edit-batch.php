@@ -58,7 +58,7 @@ if ($testType == 'vl') {
 	$refTable = "form_cd4";
 	$refPrimaryColumn = "cd4_id";
 	$sampleTypeTable = "r_cd4_sample_types";
-}elseif ($testType == 'generic-tests') {
+} elseif ($testType == 'generic-tests') {
 	$title = "Other Lab Tests";
 	$refTable = "form_generic";
 	$refPrimaryColumn = "sample_id";
@@ -92,9 +92,8 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 $patientIdColumn = TestsService::getPatientIdColumn($_GET['type']);
 
 $resultColumn = 'result';
-if($_GET['type']=='cd4')
-{
-    $resultColumn = 'cd4_result';
+if ($_GET['type'] == 'cd4') {
+	$resultColumn = 'cd4_result';
 }
 
 $batchQuery = "SELECT * from batch_details as b_d
@@ -152,7 +151,7 @@ $fundingSourceList = $general->getFundingSources();
 		color: #000000 !important;
 	}
 
-	#ms-sampleCode {
+	#ms-unbatchedSamples {
 		width: 100%;
 	}
 
@@ -191,8 +190,8 @@ $fundingSourceList = $general->getFundingSources();
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			&nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
-										<?php echo _translate("Show Advanced Search Options"); ?>
-									</span></button>
+					<?php echo _translate("Show Advanced Search Options"); ?>
+				</span></button>
 			<table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-top:20px;width: 100%; display:none;">
 				<tr>
 					<th style="width: 20%;" scope="col"><?php echo _translate("Facility"); ?></th>
@@ -202,11 +201,11 @@ $fundingSourceList = $general->getFundingSources();
 						</select>
 					</td>
 					<td><label for="fundingSource"><?= _translate("Samples Entered By"); ?></label></td>
-                    <td>
-                        <select class="form-control" name="userId" id="userId" title="Please choose source de financement" style="width:100%;">
-                            <?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
-                        </select>
-                    </td>
+					<td>
+						<select class="form-control" name="userId" id="userId" title="Please choose source de financement" style="width:100%;">
+							<?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
+						</select>
+					</td>
 				</tr>
 				<tr>
 					<th style="width: 20%;" scope="col">Date Sample Receieved at Lab</th>
@@ -252,14 +251,14 @@ $fundingSourceList = $general->getFundingSources();
 							<?php } ?>
 						</select>
 					</td>
-					
+
 				</tr>
 				<tr>
 					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
 						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Reset Filters"); ?></span></button>
 						&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
-										<?php echo _translate("Hide Advanced Search Options"); ?>
-									</span></button>
+								<?php echo _translate("Hide Advanced Search Options"); ?>
+							</span></button>
 					</td>
 				</tr>
 			</table>
@@ -296,7 +295,7 @@ $fundingSourceList = $general->getFundingSources();
 						</div>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-5">
-								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+								<select name="unbatchedSamples[]" id="search" class="form-control" size="8" multiple="multiple">
 
 								</select>
 								<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
@@ -325,7 +324,7 @@ $fundingSourceList = $general->getFundingSources();
 					<div class="box-footer">
 						<input type="hidden" name="type" id="type" value="<?php echo $testType; ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo $batchInfo[0]['batch_id']; ?>" />
-						<input type="hidden" name="selectedSample" id="selectedSample" />
+						<input type="hidden" name="batchedSamples" id="batchedSamples" />
 						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
 						<a href="batches.php?type=<?php echo $testType; ?>" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
@@ -355,7 +354,7 @@ $fundingSourceList = $general->getFundingSources();
 		$('#search_to option').each(function(i, selected) {
 			selVal[i] = $(selected).val();
 		});
-		$("#selectedSample").val(selVal);
+		$("#batchedSamples").val(selVal);
 		var selected = $("#machine").find('option:selected');
 		noOfSamples = selected.data('no-of-samples');
 		if (noOfSamples < selVal.length) {
@@ -458,10 +457,10 @@ $fundingSourceList = $general->getFundingSources();
 
 	function getSampleCodeDetails() {
 
-		
+
 		$.blockUI();
-	
-		
+
+
 		var facilityId = $("#facilityName").val();
 
 		$.post("/batch/get-samples-batch.php", {

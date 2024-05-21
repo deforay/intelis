@@ -13,6 +13,24 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
+$sortBy = $_GET['sortBy'] ?? 'sampleCode';
+
+$sortType = match ($_GET['sortType']) {
+	'a' => 'asc',
+	'asc' => 'asc',
+	'desc' => 'desc',
+	'd' => 'desc',
+	default => 'asc',
+};
+
+$orderBy = match ($sortBy) {
+	'sampleCode' => 'sample_code',
+	'lastModified' => 'last_modified_datetime',
+	default => 'sample_code',
+};
+
+$orderBy = $orderBy . ' ' . $sortType;
+
 
 $testTableData = TestsService::getAllData($_GET['type']);
 
@@ -35,8 +53,6 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 if (!isset($id) || trim($id) == '') {
 	header("Location:batches.php?type=" . $_GET['type']);
 }
-
-
 
 $content = '';
 $newContent = '';
@@ -64,17 +80,17 @@ if (empty($batchInfo)) {
 $newJsonToArray = [];
 if (isset($configControl[$testType]['noHouseCtrl']) && trim((string) $configControl[$testType]['noHouseCtrl']) != '' && $configControl[$testType]['noHouseCtrl'] > 0) {
 	foreach (range(1, $configControl[$testType]['noHouseCtrl']) as $h) {
-		$newJsonToArray[] = "no_of_in_house_controls_" . $h;
+		$newJsonToArray[] = "in_house_controls_" . $h;
 	}
 }
 if (isset($configControl[$testType]['noManufacturerCtrl']) && trim((string) $configControl[$testType]['noManufacturerCtrl']) != '' && $configControl[$testType]['noManufacturerCtrl'] > 0) {
 	foreach (range(1, $configControl[$testType]['noManufacturerCtrl']) as $m) {
-		$newJsonToArray[] = "no_of_manufacturer_controls_" . $m;
+		$newJsonToArray[] = "manufacturer_controls_" . $m;
 	}
 }
 if (isset($configControl[$testType]['noCalibrators']) && trim((string) $configControl[$testType]['noCalibrators']) != '' && $configControl[$testType]['noCalibrators'] > 0) {
 	foreach (range(1, $configControl[$testType]['noCalibrators']) as $c) {
-		$newJsonToArray[] = "no_of_calibrators_" . $c;
+		$newJsonToArray[] = "calibrators_" . $c;
 	}
 }
 
@@ -110,7 +126,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 	$samplesQuery = "SELECT $primaryKeyColumn, $patientIdColumn, sample_code
 						FROM $table
 						WHERE sample_batch_id= ?
-						ORDER BY sample_code ASC";
+						ORDER BY $orderBy";
 	$samplesInfo = $db->rawQuery($samplesQuery, [$id]);
 	foreach ($samplesInfo as $sample) {
 		$displaySampleOrderArray[] = $sample[$primaryKeyColumn];
@@ -185,36 +201,36 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 	$existingValue = $batchControlNames;
 	if (isset($configControl[$testType]['noHouseCtrl']) && trim((string) $configControl[$testType]['noHouseCtrl']) != '' && $configControl[$testType]['noHouseCtrl'] > 0) {
 		foreach (range(1, $configControl[$testType]['noHouseCtrl']) as $h) {
-			$displayOrder[] = "no_of_in_house_controls_" . $h;
+			$displayOrder[] = "in_house_controls_" . $h;
 			$label = "";
-			if (!empty($batchControlNames) && array_key_exists("no_of_in_house_controls_" . $h, $batchControlNames)) {
-				$label = $batchControlNames["no_of_in_house_controls_" . $h];
+			if (!empty($batchControlNames) && array_key_exists("in_house_controls_" . $h, $batchControlNames)) {
+				$label = $batchControlNames["in_house_controls_" . $h];
 			}
-			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Controls ' . $h . '</li>';
-			$labelNewContent .= ' <tr><th>no_of_in_house_controls_' . $h . ':</th><td> <input class="form-control" type="text" name="controls[no_of_in_house_controls_' . $h . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
+			$content .= '<li class="ui-state-default" id="in_house_controls_' . $h . '">In-House Control ' . $h . '</li>';
+			$labelNewContent .= ' <tr><th>In-House Control ' . $h . ':</th><td> <input class="form-control" type="text" name="controls[in_house_controls_' . $h . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
 		}
 	}
 	if (isset($configControl[$testType]['noManufacturerCtrl']) && trim((string) $configControl[$testType]['noManufacturerCtrl']) != '' && $configControl[$testType]['noManufacturerCtrl'] > 0) {
 		foreach (range(1, $configControl[$testType]['noManufacturerCtrl']) as $m) {
-			$displayOrder[] = "no_of_manufacturer_controls_" . $m;
-			if (!empty($batchControlNames) && array_key_exists("no_of_manufacturer_controls_" . $m, $batchControlNames)) {
-				$label = $batchControlNames["no_of_manufacturer_controls_" . $m];
+			$displayOrder[] = "manufacturer_controls_" . $m;
+			if (!empty($batchControlNames) && array_key_exists("manufacturer_controls_" . $m, $batchControlNames)) {
+				$label = $batchControlNames["manufacturer_controls_" . $m];
 			}
-			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '"> ' . $label . '</li>';
-			$labelNewContent .= ' <tr><th>manufacturer_controls_' . $m . ' :</th><td> <input class="form-control" type="text" name="controls[no_of_manufacturer_controls_' . $m . ']" value="' . $label . '" placeholder="Enter label name"/></td></tr>';
+			$content .= '<li class="ui-state-default" id="manufacturer_controls_' . $m . '"> ' . $label . '</li>';
+			$labelNewContent .= ' <tr><th>Manufacturer Control ' . $m . ' :</th><td> <input class="form-control" type="text" name="controls[manufacturer_controls_' . $m . ']" value="' . $label . '" placeholder="Enter label name"/></td></tr>';
 		}
 	}
 	if (isset($configControl[$testType]['noCalibrators']) && trim((string) $configControl[$testType]['noCalibrators']) != '' && $configControl[$testType]['noCalibrators'] > 0) {
 		foreach (range(1, $configControl[$testType]['noCalibrators']) as $c) {
-			$displayOrder[] = "no_of_calibrators_" . $c;
-			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
-			$labelNewContent .= ' <tr><th>' . $label . ' :</th><td> <input class="form-control" type="text" name="controls[no_of_calibrators_' . $c . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
+			$displayOrder[] = "calibrators_" . $c;
+			$content .= '<li class="ui-state-default" id="calibrators_' . $c . '">Calibrator ' . $c . '</li>';
+			$labelNewContent .= ' <tr><th>' . $label . ' :</th><td> <input class="form-control" type="text" name="controls[calibrators_' . $c . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
 		}
 	}
 	$samplesQuery = "SELECT $primaryKeyColumn, $patientIdColumn, sample_code
 					FROM  $table
 					WHERE sample_batch_id=$id
-					ORDER BY sample_code ASC";
+					ORDER BY $orderBy";
 	$samplesInfo = $db->query($samplesQuery);
 	foreach ($samplesInfo as $sample) {
 		$displayOrder[] = "s_" . $sample[$primaryKeyColumn];
@@ -262,12 +278,29 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<h4><strong><?= _translate("Batch Code"); ?> : <?php echo $batchInfo[0]['batch_code']; ?></strong></h4>
-				<button type="button" id="updateSerialNumbersButton" class="btn btn-primary pull-right" onclick="updateSerialNumbers();return false;">Update Serial Numbers</button>
+				<div class="row">
+					<div class="col-lg-4">
+						<select class="form-control" id="sortBy" onchange="">
+							<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified">Order By Last Modified</option>
+							<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode">Order By Sample Code</option>
+						</select>
+					</div>
+					<div class="col-lg-2">
+						<select class="form-control" id="sortType" onchange="">
+							<option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc">Ascending</option>
+							<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc">Descending</option>
+						</select>
+					</div>
+					<div class="col-lg-2 col-md-2 col-xs-2">
+						<button type="button" class="btn btn-primary pull-right" onclick="sortBatch();return false;">Reset Sorting</button>
+					</div>
+				</div>
 			</div>
+
+
 			<!-- /.box-header -->
-			<div class="box-body">
-				<!-- <pre><?php print_r($configControl); ?></pre> -->
-				<!-- form start -->
+			<div class="box-body" style="margin-top:10px;">
+				<button style="margin-bottom:30px;" type="button" id="updateSerialNumbersButton" class="btn btn-primary pull-right" onclick="updateSerialNumbers();return false;">Update Serial Numbers</button>
 				<form class="form-horizontal" method='post' name='addBatchControlsPosition' id='addBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
 					<div class="box-body">
 						<div class="row" id="displayOrderDetails">
@@ -277,7 +310,8 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 									echo $content . $newContent;
 									?>
 								</ul>
-								<table class="table" style="width:50%; margin-left:300px;">
+								<table class="table table-striped" style="width:50%; margin:3em auto;">
+									<caption><strong><?= _translate("Labels for Controls/Calibrators") ?></strong></caption>
 									<?php echo $labelNewContent; ?>
 								</table>
 							</div>
@@ -347,6 +381,20 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 			$(this).text(updatedText);
 		});
 		$("#updateSerialNumbersButton").hide();
+	}
+
+	function sortBatch() {
+		let sortBy = $("#sortBy").val();
+		let sortType = $("#sortType").val();
+
+
+		let url = new URL(window.location.href);
+		let params = new URLSearchParams(url.search);
+		params.set('sortBy', sortBy);
+		params.set('sortType', sortType);
+
+		url.search = params.toString();
+		window.location.href = url.toString();
 	}
 </script>
 <?php

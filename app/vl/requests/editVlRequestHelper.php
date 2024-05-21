@@ -306,7 +306,7 @@ try {
                $d = [
                     'storage_id' => $storageId,
                     'storage_code' => $freezerCode,
-                    'lab_id' => $params['labId'],
+                    'lab_id' => $_POST['labId'],
                     'storage_status' => 'active'
                ];
                $db->insert('lab_storage', $d);

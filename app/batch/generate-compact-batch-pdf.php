@@ -43,8 +43,7 @@ $primaryKey = $testTableData['primaryKey'];
 $patientFirstName = $testTableData['patientFirstName'];
 $patientLastName = $testTableData['patientLastName'];
 $resultColumn = 'result';
-if($_GET['type']=='cd4')
-{
+if ($_GET['type'] == 'cd4') {
     $resultColumn = 'cd4_result';
 }
 
@@ -229,11 +228,11 @@ if (!empty($id)) {
                         $tbl .= '<td colspan="3" align="center">';
                         $tbl .= 'Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
                         if ($barcodeFormat == 'QRCODE') {
-                            $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">'.'<br>';
+                            $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">' . '<br>';
                         } else {
-                            $tbl .= '<img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">'.'<br>';
+                            $tbl .= '<img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">' . '<br>';
                         }
-                        
+
                         if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                             $tbl .= 'Remote Sample ID : ' . $sampleResult[0]['remote_sample_code'] . '<br>';
                             $tbl .= 'Patient Code : ' . $sampleResult[0][$patientIdColumn] . '<br>';
@@ -291,10 +290,10 @@ if (!empty($id)) {
                                                 FROM $table
                                                 WHERE $primaryKey =?";
                         }
-                        
+
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
-                        
-                        
+
+
                         $lotDetails = '';
                         $lotExpirationDate = '';
                         if (!empty($sampleResult[0]['lot_expiration_date'])) {
@@ -325,7 +324,7 @@ if (!empty($id)) {
                             $tbl .= 'Lot Number / Exp. Date : ' . $lotDetails . '<br>';
                             $tbl .= 'Test Result : ' . ucwords((string) $sampleResult[0][$resultColumn]) . '<br>';
                         }
-                        
+
                         $tbl .= '</td>';
                         // Start a new row after every third sample code
                         if ($sampleCounter % 3 == 0) {
@@ -357,7 +356,7 @@ if (!empty($id)) {
             if (isset($bResult['number_of_in_house_controls']) && $bResult['number_of_in_house_controls'] != '' && $bResult['number_of_in_house_controls'] != null) {
                 $noOfInHouseControls = $bResult['number_of_in_house_controls'];
                 for ($i = 1; $i <= $bResult['number_of_in_house_controls']; $i++) {
-                    $tbl .= '<td colspan="3" align="center">' . _translate('In-House Controls') . ' ' . $i . '<br>
+                    $tbl .= '<td colspan="3" align="center">' . _translate('In-House Control') . ' ' . $i . '<br>
                             <br>
                             <br>
                             <br>
@@ -373,7 +372,7 @@ if (!empty($id)) {
                 $noOfManufacturerControls = $bResult['number_of_manufacturer_controls'];
                 for ($i = 1; $i <= $bResult['number_of_manufacturer_controls']; $i++) {
                     $sNo = $noOfInHouseControls + $i;
-                    $tbl .= '<td colspan="3" align="center">' . _translate('Manfacturing Controls') . ' ' . $i . '<br>
+                    $tbl .= '<td colspan="3" align="center">' . _translate('Manfacturing Control') . ' ' . $i . '<br>
                             <br>
                             <br>
                             <br>
@@ -389,7 +388,7 @@ if (!empty($id)) {
                 $noOfCalibrators = $bResult['number_of_calibrators'];
                 for ($i = 1; $i <= $bResult['number_of_calibrators']; $i++) {
                     $sNo = $noOfInHouseControls + $noOfManufacturerControls + $i;
-                    $tbl .= '<td colspan="3" align="center">' . _translate('Calibrators') . ' ' . $i . '<br>
+                    $tbl .= '<td colspan="3" align="center">' . _translate('Calibrator') . ' ' . $i . '<br>
                             <br>
                             <br>
                             <br>

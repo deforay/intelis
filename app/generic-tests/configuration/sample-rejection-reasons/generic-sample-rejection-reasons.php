@@ -27,7 +27,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (_isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php") && $general->isLISInstance() === false) { ?>
 							<a href="/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Sample Rejection Reasons"); ?></a>
 						<?php } ?>
 					</div>
@@ -40,7 +40,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 									<th scope="row"><?php echo _translate("Rejection Reason Type"); ?></th>
 									<th scope="row"><?php echo _translate("Rejection Reason Code"); ?></th>
 									<th scope="row"><?php echo _translate("Rejection Reason Status"); ?></th>
-									<?php if (_isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (_isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php") && $general->isLISInstance() === false) { ?>
 										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>

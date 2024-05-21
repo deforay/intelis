@@ -20,7 +20,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("tb-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (_isAllowed("tb-sample-type.php") && $general->isLISInstance() === false) { ?>
 							<a href="add-tb-results.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add TB Results"); ?></a>
 						<?php } ?>
 					</div>
@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Result Name"); ?></th>
 									<th scope="row"><?php echo _translate("Result Type"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (_isAllowed("tb-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (_isAllowed("tb-sample-type.php") && $general->isLISInstance() === false) { ?>
 										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>

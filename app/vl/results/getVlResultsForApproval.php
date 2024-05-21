@@ -182,9 +182,9 @@ foreach ($rResult as $aRow) {
      }
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
           $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
-          $patientFname = $general->crypto('decrypt', $patientFname, $key);
-          $patientMname = $general->crypto('decrypt', $patientMname, $key);
-          $patientLname = $general->crypto('decrypt', $patientLname, $key);
+          $patientFname = $general->crypto('decrypt', $aRow['patient_first_name'], $key);
+          $patientMname = $general->crypto('decrypt', $aRow['patient_middle_name'], $key);
+          $patientLname = $general->crypto('decrypt', $aRow['patient_last_name'], $key);
      } else {
           $patientFname = $aRow['patient_first_name'];
           $patientMname = $aRow['patient_middle_name'];

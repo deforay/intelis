@@ -53,7 +53,7 @@ try {
             } elseif ($name === 'labId') {
                 $labId = $data;
             } elseif ($name === 'labStorage') {
-                
+
                 $tableInfo['primaryKey'][$i] = 'storage_id';
                 $tableInfo['table'][$i] = 'lab_storage';
             } elseif ($name === 'labStorageHistory') {
@@ -123,11 +123,11 @@ try {
                         }
                     } catch (Throwable $e) {
 
-                        if (!empty($db->getLastError())) {
-                            error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
-                            error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-                            error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
-                        }
+
+                        LoggerUtility::log('error', (__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno()));
+                        LoggerUtility::log('error', (__FILE__ . ":" . __LINE__ . ":" . $db->getLastError()));
+                        LoggerUtility::log('error', (__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery()));
+
                         LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                         continue;
                     }

@@ -5,7 +5,6 @@ namespace App\Services;
 use DateTime;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use Laminas\Diactoros\ServerRequest;
@@ -441,5 +440,29 @@ final class UsersService
         $saveData['user_attributes'] = !empty($data) ? $this->db->func($data) : null;
         $this->db->where('user_id', $userId);
         return $this->db->update($this->table, $saveData);
+    }
+
+    public function continuousFailedLogins($loginId, $intervalMinutes = 15)
+    {
+        // Get current date and time
+        $currentDateTime = DateUtility::getCurrentDateTime();
+
+        // Query database for login attempts within the specified interval
+        $loginAttempts = $this->db->rawQueryOne(
+            "SELECT
+            SUM(CASE WHEN ulh.login_status = 'failed' THEN 1 ELSE 0 END) AS failedAttempts,
+            SUM(CASE WHEN ulh.login_status = 'success' THEN 1 ELSE 0 END) AS successAttempts
+        FROM user_login_history ulh
+        WHERE ulh.login_id = ? AND
+        ulh.login_attempted_datetime >= DATE_SUB(?, INTERVAL ? MINUTE)",
+            [$loginId, $currentDateTime, $intervalMinutes]
+        );
+
+        // Ensure the results are not null
+        $failedAttempts = $loginAttempts['failedAttempts'] ?? 0;
+        $successAttempts = $loginAttempts['successAttempts'] ?? 0;
+
+        // Check if the user has failed to login continuously
+        return ($failedAttempts >= 3 && $successAttempts == 0);
     }
 }

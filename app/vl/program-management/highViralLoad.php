@@ -623,7 +623,7 @@ $state = $geolocationService->getProvinces("yes");
 																	} ?>
 																</optgroup>
 															<?php }
-															if ($sarr['sc_user_type'] != 'vluser') { ?>
+															if ($general->isLISInstance() === false) { ?>
 																<option value="other">Other (Please Specify) </option>
 															<?php } ?>
 														</select>
@@ -1738,8 +1738,8 @@ $state = $geolocationService->getProvinces("yes");
 			$("#" + pregnant).attr("disabled", false);
 			$("#" + breastFeeding).attr("disabled", false);
 		} else {
-			$('select#'+ pregnant).val('');
-        	$('select#'+ breastFeeding).val('');
+			$('select#' + pregnant).val('');
+			$('select#' + breastFeeding).val('');
 			$("#" + pregnant).attr("disabled", true);
 			$("#" + breastFeeding).attr("disabled", true);
 		}
@@ -1750,7 +1750,7 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function getByProvince(districtId, facilityId, provinceId) {
-		if(provinceId != '') {
+		if (provinceId != '') {
 			$.blockUI();
 			$("#" + districtId).html('');
 			$("#" + facilityId).html('');
@@ -1770,7 +1770,7 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function getByDistrict(facilityId, districtId) {
-		if(districtId != '') {
+		if (districtId != '') {
 			$("#" + facilityId).html('');
 			$.post("/common/get-by-district-id.php", {
 					districtId: districtId,

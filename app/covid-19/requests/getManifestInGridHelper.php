@@ -38,7 +38,12 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-$sWhere = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+
+$sWhere = [];
+if (!empty($columnSearch) && $columnSearch != '') {
+     $sWhere[] = $columnSearch;
+}
 
 $sQuery = "SELECT * FROM form_covid19 as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id

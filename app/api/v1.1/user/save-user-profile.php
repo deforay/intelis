@@ -92,10 +92,10 @@ try {
 
     $aRow = null;
     if (!empty($userId) || !empty($post['email'])) {
-        if (!empty($post['email'])) {
-            $db->where("email", $db->escape($post['email']));
-        } elseif (!empty($userId)) {
+        if (!empty($userId)) {
             $db->where("user_id", $userId);
+        } elseif (!empty($post['email'])) {
+            $db->where("email", $db->escape($post['email']));
         }
         $aRow = $db->getOne("user_details");
     }
@@ -146,9 +146,10 @@ try {
     }
     $id = false;
     $data = MiscUtility::arrayEmptyStringsToNull($data);
-    if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
+    unset($data['login_id'], $data['role_id'], $data['password'], $data['hash_algorithm'], $data['status']);
+    if (isset($aRow['user_id']) && !empty($aRow['user_id']) && $aRow['user_id'] != "") {
         // Unset the fields that should not be updated
-        unset($data['login_id'], $data['role_id'], $data['password'], $data['hash_algorithm'], $data['status']);
+        //unset($data['login_id'], $data['role_id'], $data['password'], $data['hash_algorithm'], $data['status']);
         $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
     } else {

@@ -3,9 +3,7 @@ $title = _translate("Hepatitis Co-morbidities");
 
 require_once APPLICATION_PATH . '/header.php';
 
-// if($sarr['sc_user_type']=='vluser'){
-//   include('../remote/pullDataFromRemote.php');
-// }
+
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -24,7 +22,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("hepatitis-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (_isAllowed("hepatitis-sample-type.php") && $general->isLISInstance() === false) { ?>
 							<a href="add-hepatitis-comorbidities.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Hepatitis Co-morbidities"); ?></a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
@@ -36,7 +34,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<tr>
 									<th scope="row"><?php echo _translate("Comorbidity Name"); ?></th>
 									<th scope="row"><?php echo _translate("Comorbidity Status"); ?></th>
-									<?php if (_isAllowed("hepatitis-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (_isAllowed("hepatitis-sample-type.php") && $general->isLISInstance() === false) { ?>
 										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>

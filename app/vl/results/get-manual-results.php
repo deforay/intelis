@@ -15,11 +15,9 @@ try {
 
      $db->beginReadOnlyTransaction();
 
-
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
 
-     $sarr = $general->getSystemConfig();
      $key = (string) $general->getGlobalConfig('key');
 
 

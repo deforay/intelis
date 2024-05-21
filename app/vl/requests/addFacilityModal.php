@@ -1,11 +1,20 @@
 <?php
 
 
+use App\Registries\AppRegistry;
+use App\Services\DatabaseService;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
-
-use App\Registries\AppRegistry;
-
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 $_GET = _sanitizeInput($request->getQueryParams());

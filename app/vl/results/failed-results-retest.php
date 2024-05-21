@@ -19,7 +19,6 @@ try {
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
-    $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
     if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {

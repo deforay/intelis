@@ -21,7 +21,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("/common/reference/add-implementation-partners.php") && $_SESSION['instance']['type'] != 'vluser') { ?>
+						<?php if (_isAllowed("/common/reference/add-implementation-partners.php") && $general->isLISInstance() === false) { ?>
 							<a href="/common/reference/add-implementation-partners.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Implementation Partners"); ?></a>
 						<?php } ?>
 					</div>

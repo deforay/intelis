@@ -3,6 +3,7 @@
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -10,20 +11,25 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var  FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
 $lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
-if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
+$globalConfig = $general->getGlobalConfig();
+
+if ($globalConfig['sample_code'] == 'auto' || $globalConfig['sample_code'] == 'alphanumeric' || $globalConfig['sample_code'] == 'MMYY' || $globalConfig['sample_code'] == 'YY') {
      $sampleClass = '';
      $maxLength = '';
-     if ($arr['max_length'] != '' && $arr['sample_code'] == 'alphanumeric') {
-          $maxLength = $arr['max_length'];
+     if ($globalConfig['max_length'] != '' && $globalConfig['sample_code'] == 'alphanumeric') {
+          $maxLength = $globalConfig['max_length'];
           $maxLength = "maxlength=" . $maxLength;
      }
 } else {
      $sampleClass = '';
      $maxLength = '';
-     if ($arr['max_length'] != '') {
-          $maxLength = $arr['max_length'];
+     if ($globalConfig['max_length'] != '') {
+          $maxLength = $globalConfig['max_length'];
           $maxLength = "maxlength=" . $maxLength;
      }
 }
@@ -497,7 +503,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                                           } ?>
                                                                                      </optgroup>
                                                                                 <?php }
-                                                                                if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                                                if ($general->isLISInstance() === false) { ?>
                                                                                      <option value="other"><?= _translate("Other (Please Specify)"); ?> </option>
                                                                                 <?php } ?>
                                                                            </select>
@@ -642,8 +648,8 @@ foreach ($testReasonsResultDetails as $row) {
                                              <!-- BARCODESTUFF END -->
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;"><?= _translate("Save"); ?></a>
                                              <input type="hidden" name="saveNext" id="saveNext" />
-                                             <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
-                                             <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+                                             <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $globalConfig['sample_code']; ?>" />
+                                             <?php if ($globalConfig['sample_code'] == 'auto' || $globalConfig['sample_code'] == 'YY' || $globalConfig['sample_code'] == 'MMYY') { ?>
                                                   <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
                                                   <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
                                              <?php } ?>
@@ -655,7 +661,7 @@ foreach ($testReasonsResultDetails as $row) {
                               </div>
                          </div>
                          <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
-                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
+                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $globalConfig['vl_form']; ?>" />
 
                     </form>
                </div>
@@ -1251,9 +1257,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if ($('#isSampleRejected').val() == "yes") {
                $('.vlResult, #vlResult').removeClass('isRequired');
           }
-          var format = '<?php echo $arr['sample_code']; ?>';
+          var format = '<?php echo $globalConfig['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
-          var minLength = '<?php echo $arr['min_length']; ?>';
+          var minLength = '<?php echo $globalConfig['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
                alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
@@ -1270,7 +1276,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.btn-disabled').attr('disabled', 'yes');
                $(".btn-disabled").prop("onclick", null).off("click");
                $.blockUI();
-               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+               <?php if ($globalConfig['sample_code'] == 'auto' || $globalConfig['sample_code'] == 'YY' || $globalConfig['sample_code'] == 'MMYY') { ?>
                     insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', '1', 'sampleCollectionDate');
                <?php } else { ?>
                     document.getElementById('vlRequestFormSs').submit();
@@ -1282,9 +1288,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if ($('#isSampleRejected').val() == "yes") {
                $('.vlResult, #vlResult').removeClass('isRequired');
           }
-          var format = '<?php echo $arr['sample_code']; ?>';
+          var format = '<?php echo $globalConfig['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
-          var minLength = '<?php echo $arr['min_length']; ?>';
+          var minLength = '<?php echo $globalConfig['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
                alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
@@ -1300,7 +1306,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.btn-disabled').attr('disabled', 'yes');
                $(".btn-disabled").prop("onclick", null).off("click");
                $.blockUI();
-               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+               <?php if ($globalConfig['sample_code'] == 'auto' || $globalConfig['sample_code'] == 'YY' || $globalConfig['sample_code'] == 'MMYY') { ?>
                     insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate');
                <?php } else { ?>
                     document.getElementById('vlRequestFormSs').submit();

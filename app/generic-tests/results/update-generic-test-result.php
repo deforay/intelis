@@ -770,7 +770,7 @@ $reasonForChange = $reasonForChangeArr[1];
 															} ?>
 														</optgroup>
 													<?php }
-													if ($sarr['sc_user_type'] != 'vluser') { ?>
+													if ($general->isLISInstance() === false) { ?>
 														<option value="other"><?= _translate("Other (Please Specify)"); ?> </option>
 													<?php } ?>
 												</select>

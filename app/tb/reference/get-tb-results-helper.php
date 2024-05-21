@@ -123,7 +123,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     $row[] = ($aRow['result']);
     $row[] = ($aRow['result_type']);
-    if (_isAllowed("tb-sample-type.php") && $sarr['sc_user_type'] != 'vluser') {
+    if (_isAllowed("tb-sample-type.php") && $general->isLISInstance() === false) {
         $row[] = $status;
     } else {
         $row[] = ($aRow['status']);

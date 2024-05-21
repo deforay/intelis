@@ -121,7 +121,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['funding_source_name']);
-    if (_isAllowed("/common/reference/add-funding-sources.php") && $_SESSION['instance']['type'] != 'vluser') {
+    if (_isAllowed("/common/reference/add-funding-sources.php") && $general->isLISInstance() === false) {
         $row[] = $status;
     } else {
         $row[] = $aRow['funding_source_status'];

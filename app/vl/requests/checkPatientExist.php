@@ -3,9 +3,13 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 $artNo = $_POST['artPatientNo'];
 
