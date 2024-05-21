@@ -161,13 +161,17 @@ try {
 
      if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
           if ($_POST['status'] == 'no_result') {
-               $statusCondition = ' (vl.hcv_vl_count is NULL OR vl.hcv_vl_count  ="" OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  ="") AND vl.result_status != ' . SAMPLE_STATUS\REJECTED;
+               $statusCondition = ' ((vl.hcv_vl_count is NULL OR vl.hcv_vl_count  = "" OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  = "") AND vl.result_status = ' . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . ')';
           } else if ($_POST['status'] == 'result') {
-               $statusCondition = ' ((vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !="" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !="") AND vl. != ' . SAMPLE_STATUS\REJECTED . ')';
+               $statusCondition = ' vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  != "" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  != "" ';
           } else {
-               $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS\REJECTED;
+               $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
           }
           $sWhere[] = $statusCondition;
+     }
+     else{      // Only approved results can be printed
+          $sWhere[] = " ((vl.result_status = ".SAMPLE_STATUS\ACCEPTED." AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = ".SAMPLE_STATUS\REJECTED." AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
+
      }
 
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
@@ -179,7 +183,7 @@ try {
 
      ///$dWhere = '';
      // Only approved results can be printed
-     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
+     /*if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
           if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
                if (!empty($sWhere)) {
                     $sWhere[] = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
@@ -187,21 +191,18 @@ try {
                     $sWhere[] = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
                }
           }
-     }
+     }*/
      if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
           // $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
      }
 
-     if (!empty($sWhere))
-          $sWhere = implode(' AND ', $sWhere);
 
-
-     $sQuery = $sQuery . ' WHERE ' . $sWhere;
-     //echo $sQuery; die();
-     $_SESSION['vlResultQuery'] = $sQuery;
-     //echo $_SESSION['vlResultQuery'];die;
-
+          if (!empty($sWhere)) {
+               $sWhere = implode(' AND ', $sWhere);
+               $sQuery = $sQuery . ' WHERE ' . $sWhere;
+          }
+     
      if (!empty($sOrder)) {
           $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
           $sQuery = $sQuery . ' ORDER BY ' . $sOrder;

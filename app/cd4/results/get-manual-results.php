@@ -195,14 +195,19 @@ try {
      }
      if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
           if ($_POST['status'] == 'no_result') {
-               $statusCondition = '  (vl.cd4_result is NULL OR vl.cd4_result ="")  AND vl.result_status != ' . SAMPLE_STATUS\REJECTED;
+               $statusCondition = '  (vl.cd4_result is NULL OR vl.cd4_result = "") AND vl.result_status = ' . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
           } else if ($_POST['status'] == 'result') {
-               $statusCondition = ' (vl.cd4_result is NOT NULL AND vl.cd4_result !="")  OR vl.result_status = ' . SAMPLE_STATUS\REJECTED;
+               $statusCondition = ' (vl.cd4_result is NOT NULL AND vl.cd4_result != "") ';
           } else {
-               $statusCondition = ' vl.result_status= ' . SAMPLE_STATUS\REJECTED;
+               $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
           }
           $sWhere[] = $statusCondition;
-     }
+      }
+      else{      // Only approved results can be printed
+      
+          $sWhere[] = ' ((vl.result_status = '.SAMPLE_STATUS\ACCEPTED.' AND vl.cd4_result is NOT NULL AND vl.cd4_result !="") OR (vl.result_status = '.SAMPLE_STATUS\REJECTED.' AND (vl.cd4_result is NULL OR vl.cd4_result = ""))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = "0000-00-00")';
+      }
+      
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
           if (trim((string) $_POST['gender']) == "unreported") {
                $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
@@ -215,13 +220,6 @@ try {
      }
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
           $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
-     }
-
-     // Only approved results can be printed
-     if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
-          $sWhere[] = " ((vl.result_status = 7 AND vl.cd4_result is NOT NULL AND vl.cd4_result !='') OR (vl.result_status = 4 AND (vl.cd4_result is NULL OR vl.cd4_result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
-     } else {
-          $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
      }
 
      if (!empty($_SESSION['facilityMap'])) {

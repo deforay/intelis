@@ -190,7 +190,6 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null)
 			placeholder: 'Select Instruments',
 			width: '100%'
 		});
-	
 
 
 	});
