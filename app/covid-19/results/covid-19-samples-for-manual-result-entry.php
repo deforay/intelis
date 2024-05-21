@@ -168,13 +168,17 @@ try {
      }
      if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
           if ($_POST['status'] == 'no_result') {
-               $statusCondition = ' (vl.result is NULL OR vl.result ="") AND vl.result_status != ' . SAMPLE_STATUS\REJECTED;
-          } elseif ($_POST['status'] == 'result') {
-               $statusCondition = ' (vl.result is NOT NULL AND vl.result !="" OR vl.result_status !=' . SAMPLE_STATUS\REJECTED . ')';
+               $statusCondition = '  (vl.result is NULL OR vl.result = "") AND vl.result_status = ' . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+          } else if ($_POST['status'] == 'result') {
+               $statusCondition = ' (vl.result is NOT NULL AND vl.result != "") ';
           } else {
-               $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS\REJECTED;
+               $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
           }
           $sWhere[] = $statusCondition;
+     }
+     else{      // Only approved results can be printed
+
+          $sWhere[] = ' ((vl.result_status = '.SAMPLE_STATUS\ACCEPTED.' AND vl.result is NOT NULL AND vl.result !="") OR (vl.result_status = '.SAMPLE_STATUS\REJECTED.' AND (vl.result is NULL OR vl.result = ""))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = "0000-00-00")';
      }
 
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
@@ -184,14 +188,7 @@ try {
           $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
      }
 
-     // Only approved results can be printed
-     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
-          if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
-               $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
-          }
-     } else {
-          $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-     }
+    
      if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
      }
