@@ -30,7 +30,7 @@ $resultInfo = $db->query($resultQuery);
 $activeInstruments = $instrumentsService->getInstruments(testType: null, dropDown: true, withFacility: true);
 $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instruments'], true);
 //$instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $selectedInstruments);
-//echo '<pre>'; print_r($activeInstruments); die;
+//echo '<pre>'; print_r($selectedInstruments); die;
 ?>
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
@@ -113,9 +113,14 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
                                         <div class="col-md-5">
                                              <select name="instruments[]" id="search" class="form-control" size="8" multiple="multiple">
 											 	<?php foreach ($activeInstruments as $key=>$ins) {
-                                                       if (!empty($selectedInstruments) && !in_array($key, $selectedInstruments)) { ?>
-                                                            <option value="<?php echo $key; ?>"><?php echo $ins; ?> </option>
-                                                  <?php }
+                                                       if (!empty($selectedInstruments) && (in_array($key, $selectedInstruments))==true) { 
+                                                           echo "";
+                                                    }
+												  else{
+													?>
+ 													<option value="<?php echo $key; ?>"><?php echo $ins; ?> </option>
+													<?php
+												  }
                                                   } ?>
                                              </select>
                                              <div class="sampleCounterDiv"><?= _translate("Number of unselected instruments"); ?> : <span id="unselectedCount"></span></div>
