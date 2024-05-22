@@ -80,26 +80,26 @@ try {
   }
 
   // Construct the final SQL query
-  $cd4Query = "SELECT $columnSelection FROM form_cd4 WHERE $condition";
+  $sQuery = "SELECT $columnSelection FROM form_cd4 WHERE $condition";
 
   if (!empty($data['manifestCode'])) {
-    $cd4Query .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
+    $sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
   } else {
-    $cd4Query .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
+    $sQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
   }
 
-  $cd4RemoteResult = $db->rawQuery($cd4Query);
+  [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery, returnGenerator: false);
 
   $sampleIds = $facilityIds = [];
-  if ($db->count > 0) {
+  if ($resultCount > 0) {
 
-    $payload = $cd4RemoteResult;
-    $counter = $db->count;
+    $payload = $rResult;
+    $counter = $resultCount;
 
-    $sampleIds = array_column($cd4RemoteResult, 'cd4_id');
-    $facilityIds = array_column($cd4RemoteResult, 'facility_id');
+    $sampleIds = array_column($rResult, 'cd4_id');
+    $facilityIds = array_column($rResult, 'facility_id');
 
-    $payload = json_encode($cd4RemoteResult);
+    $payload = json_encode($rResult);
   } else {
     $payload = json_encode([]);
   }

@@ -1,6 +1,7 @@
 <?php
 
-if (php_sapi_name() == 'cli') {
+$cliMode = php_sapi_name() === 'cli';
+if ($cliMode) {
     require_once(__DIR__ . "/../../../bootstrap.php");
 }
 
@@ -59,8 +60,8 @@ try {
         $payload["labStorage"] = $labStorage;
     }
 
-     // LAB STORAGE HISTORY
-     if (!empty($lastUpdatedOn)) {
+    // LAB STORAGE HISTORY
+    if (!empty($lastUpdatedOn)) {
         $db->where(' (updated_datetime > "' . $lastUpdatedOn . '" OR updated_datetime IS NULL)');
     }
     $labStorageHistory = $db->get('lab_storage_history');

@@ -54,17 +54,14 @@ try {
     $condition = "lab_id =" . $labId;
   }
 
-  $eidQuery = "SELECT * FROM form_eid
-                    WHERE $condition ";
+  $sQuery = "SELECT * FROM form_eid WHERE $condition ";
 
   if (!empty($data['manifestCode'])) {
-    $eidQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
+    $sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
   } else {
-    $eidQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
+    $sQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
   }
 
-
-  $eidRemoteResult = $db->rawQuery($eidQuery);
 
   $removeKeys = array(
     'sample_code',
@@ -96,17 +93,20 @@ try {
     'result_printed_datetime',
     'last_modified_datetime'
   );
+
+  [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery, returnGenerator: false);
+
   $sampleIds = $facilityIds = [];
   $counter = 0;
-  if ($db->count > 0) {
-    $payload = $eidRemoteResult;
-    // foreach ($eidRemoteResult as $row) {
+  if ($resultCount > 0) {
+    $payload = $rResult;
+    // foreach ($rResult as $row) {
     //   $payload[] = array_diff_key($row, array_flip($removeKeys));
     // }
 
-    $counter = $db->count;
-    $sampleIds = array_column($eidRemoteResult, 'eid_id');
-    $facilityIds = array_column($eidRemoteResult, 'facility_id');
+    $counter = $resultCount;
+    $sampleIds = array_column($rResult, 'eid_id');
+    $facilityIds = array_column($rResult, 'facility_id');
 
     $payload = json_encode($payload);
   } else {
