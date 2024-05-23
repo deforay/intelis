@@ -2,11 +2,10 @@
 
 // imported in hepatitis-edit-request.php based on country in global config
 
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\FacilitiesService;
-use App\Services\HepatitisService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
@@ -379,7 +378,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th style="width:15%;">Is Result Authorized ?</th>
+                                            <th style=" width:15%;">Is Result Authorized ?</th>
                                             <td style="width:35%;">
                                                 <select name=" isResultAuthorized" id="isResultAuthorized" class="labSecInput disabled-field form-control rejected-input" title="Is Result authorized ?" style="width:100%">
                                                     <option value="">-- Select --</option>
