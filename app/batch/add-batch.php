@@ -240,12 +240,6 @@ $fundingSourceList = $general->getFundingSources();
                         <input type="text" id="lastModifiedDateTime" name="lastModifiedDateTime" class="form-control daterange" placeholder="<?php echo _translate('Last Modified'); ?>" readonly style="width:100%;background:#fff;" />
                     </td>
                     <th style="width: 20%;" scope="col">
-                    </th>
-                    <td style="width: 30%;">
-                    </td>
-                </tr>
-                <tr>
-                    <th style="width: 20%;" scope="col">
                         <?php echo _translate("Positions"); ?>
                     </th>
                     <td style="width: 30%;">
@@ -258,6 +252,8 @@ $fundingSourceList = $general->getFundingSources();
                             </option>
                         </select>
                     </td>
+                </tr>
+                <tr>
                     <th scope="col"><?php echo _translate("Sample Type"); ?></th>
                     <td>
                         <select class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
@@ -271,9 +267,7 @@ $fundingSourceList = $general->getFundingSources();
                             ?>
                         </select>
                     </td>
-                </tr>
-                <tr>
-                    <td><label for="fundingSource"><?= _translate("Funding Source"); ?></label></td>
+                    <th><label for="fundingSource"><?= _translate("Funding Source"); ?></label></th>
                     <td>
                         <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
                             <option value=""> -- Select -- </option>
@@ -284,8 +278,23 @@ $fundingSourceList = $general->getFundingSources();
                             <?php } ?>
                         </select>
                     </td>
-
                 </tr>
+                <tr>
+                    <td><label for="sortBy"><?= _translate("Sort By"); ?></label></td>
+
+                    <td><select class="form-control" id="sortBy" name="sortBy" onchange="">
+                        <option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified">Order By Last Modified</option>
+                        <option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode">Order By Sample Code</option>
+                    </select></td>
+                    <td><label for="sortType"><?= _translate("Sort Type"); ?></label></td>
+					<td>
+						<select class="form-control" id="sortType" onchange="">
+							<option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc">Ascending</option>
+							<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc">Descending</option>
+						</select>
+                    </td>
+                </tr>
+               
                 <tr>
                     <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
@@ -317,7 +326,8 @@ $fundingSourceList = $general->getFundingSources();
                                         <input type="hidden" name="positions" id="positions" value="" />
                                     </div>
                                 </div>
-                                <p></p>
+                               <p><button type='button' class='btn btn-default selectSamples' onclick='selectNoOfSamples()'><?php echo _translate('Automatically select samples for Batch'); ?></button></p>
+
                             </div>
                         </div>
 
@@ -475,6 +485,8 @@ $fundingSourceList = $general->getFundingSources();
                 sName: $("#sampleType").val(),
                 fundingSource: $("#fundingSource").val(),
                 userId: $("#userId").val(),
+                sortBy: $("#sortBy").val(),
+                sortType: $("#sortType").val(),
             },
             function(data) {
                 if (data != "") {
@@ -489,8 +501,6 @@ $fundingSourceList = $general->getFundingSources();
         var selected = $(this).find('option:selected');
             noOfSamples = selected.data('no-of-samples');
 
-            $("p").html("<button type='button' class='btn btn-default selectSamples' onclick='selectNoOfSamples("+noOfSamples+")'>Automatically select samples for Batch</button>");
-
         var self = this.value;
         if (self != '') {
             getSampleCodeDetails();
@@ -501,7 +511,6 @@ $fundingSourceList = $general->getFundingSources();
             $('#alertText').html('');
         }
     });
-    
 
     function getBatchForm(obj) {
         if (obj.value != "") {
@@ -521,16 +530,28 @@ $fundingSourceList = $general->getFundingSources();
         $("#" + showId).show();
     }
 
-    function selectNoOfSamples(samplesCount)
+    function selectNoOfSamples()
     {
+        $.blockUI();
+
+        var samplesCount = $("#machine").find(':selected').data('no-of-samples');
+
             var i = 0;
             $("#search option").each(function(){
-                if (i < samplesCount)
+                if (i < samplesCount){
                     $(this).attr("selected","selected");
+                }
+                else{
+                    $(this).removeAttr("selected");
+                }
                 i++;
+
         });
         $("#search_rightSelected").trigger("click");
         $(".selectSamples").hide();
+
+        $.unblockUI();
+
     }
 
   

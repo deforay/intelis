@@ -254,6 +254,21 @@ $fundingSourceList = $general->getFundingSources();
 
 				</tr>
 				<tr>
+                    <td><label for="sortBy"><?= _translate("Sort By"); ?></label></td>
+
+                    <td><select class="form-control" id="sortBy" name="sortBy" onchange="">
+                        <option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified">Order By Last Modified</option>
+                        <option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode">Order By Sample Code</option>
+                    </select></td>
+                    <td><label for="sortType"><?= _translate("Sort Type"); ?></label></td>
+					<td>
+						<select class="form-control" id="sortType" onchange="">
+							<option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc">Ascending</option>
+							<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc">Descending</option>
+						</select>
+                    </td>
+                </tr>
+				<tr>
 					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
 						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Reset Filters"); ?></span></button>
 						&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
@@ -473,6 +488,8 @@ $fundingSourceList = $general->getFundingSources();
 				sName: $("#sampleType").val(),
 				fundingSource: $("#fundingSource").val(),
 				userId: $("#userId").val(),
+				sortBy: $("#sortBy").val(),
+                sortType: $("#sortType").val(),
 			},
 			function(data) {
 				if (data != "") {

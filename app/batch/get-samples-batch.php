@@ -25,6 +25,24 @@ if (empty($_POST['type'])) {
     exit;
 }
 
+$sortBy = $_POST['sortBy'] ?? 'sampleCode';
+
+$sortType = match ($_POST['sortType']) {
+	'a' => 'asc',
+	'asc' => 'asc',
+	'desc' => 'desc',
+	'd' => 'desc',
+	default => 'asc',
+};
+
+$orderBy = match ($sortBy) {
+	'sampleCode' => 'sample_code',
+	'lastModified' => 'last_modified_datetime',
+	default => 'sample_code',
+};
+
+$orderBy = $orderBy . ' ' . $sortType;
+
 $table = TestsService::getTestTableName($_POST['type']);
 $primaryKeyColumn = TestsService::getTestPrimaryKeyColumn($_POST['type']);
 $sampleTypeColumn = TestsService::getSpecimenTypeColumn($_POST['type']);
@@ -105,7 +123,7 @@ if (!empty($_POST['userId']) && trim((string) $_POST['userId']) != '') {
 }
 
 if (!empty($where)) {
-    $query = $query . ' WHERE ' . implode(" AND ", $where);
+    $query = $query . ' WHERE ' . implode(" AND ", $where) . " ORDER BY vl.".$orderBy;
 }
 $query .= ")";
 
@@ -134,13 +152,12 @@ if (isset($_POST['batchId'])) {
     if (!empty($swhere)) {
         $squery = $squery . ' WHERE ' . implode(" AND ", $swhere);
     }
-    $query .= $squery . " ORDER BY vl.last_modified_datetime ASC)";
+    $query .= $squery . " ORDER BY vl.".$orderBy.")";
 }
 
 $result = $db->rawQuery($query);
 if (isset($_POST['batchId'])) {
-?>
-    <?php
+
     foreach ($result as $sample) {
         if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
             <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name']; ?></option>
