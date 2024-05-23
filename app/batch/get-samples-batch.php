@@ -147,7 +147,6 @@ if (isset($_POST['batchId'])) {
     <?php }
     }
 } else { ?>
-
     <div class="col-md-5" id="sampleDetails">
         <select name="unbatchedSamples[]" id="search" class="form-control" size="8" multiple="multiple">
             <?php foreach ($result as $sample) {
@@ -185,6 +184,13 @@ if (isset($_POST['batchId'])) {
         let selectedCount = $right.find('option').length;
         $("#unselectedCount").html($left.find('option').length);
         $("#selectedCount").html(selectedCount);
+        if(selectedCount > 0)
+        {
+            $('.selectSamples').hide();
+        }
+        else{
+            $('.selectSamples').show();
+        }
         let alertText = selectedCount > 0 ?
             "<?php echo _translate('Number of samples selected out of maximum number of samples allowed for the selected platform'); ?> : " + selectedCount + '/' + noOfSamples :
             "<?php echo _translate('Maximum number of samples allowed for the selected platform'); ?> : " + noOfSamples;

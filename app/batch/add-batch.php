@@ -199,6 +199,7 @@ $fundingSourceList = $general->getFundingSources();
             &nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
                     <?php echo _translate("Show Advanced Search Options"); ?>
                 </span></button>
+                
             <table aria-describedby="table" id="advanceFilter" class="table batchDiv" aria-hidden="true" style="display: none;margin-top:20px;width: 100%;<?php echo $genericHide; ?>">
 
                 <tr>
@@ -316,6 +317,7 @@ $fundingSourceList = $general->getFundingSources();
                                         <input type="hidden" name="positions" id="positions" value="" />
                                     </div>
                                 </div>
+                                <p></p>
                             </div>
                         </div>
 
@@ -352,6 +354,7 @@ $fundingSourceList = $general->getFundingSources();
     sortedTitle = [];
     let batchXhr = null;
     $(document).ready(function() {
+      
         $("#testType").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Test Type"); ?>"
@@ -483,17 +486,22 @@ $fundingSourceList = $general->getFundingSources();
     }
 
     $("#machine").change(function() {
+        var selected = $(this).find('option:selected');
+            noOfSamples = selected.data('no-of-samples');
+
+            $("p").html("<button type='button' class='btn btn-default selectSamples' onclick='selectNoOfSamples("+noOfSamples+")'>Select Maximum Number Of Samples</button>");
+
         var self = this.value;
         if (self != '') {
             getSampleCodeDetails();
             $("#platform").val($("#machine").val());
-            var selected = $(this).find('option:selected');
-            noOfSamples = selected.data('no-of-samples');
+           
             $('#alertText').html("<?= _translate("Maximum number of samples allowed for the selected platform", true); ?> : " + noOfSamples);
         } else {
             $('#alertText').html('');
         }
     });
+    
 
     function getBatchForm(obj) {
         if (obj.value != "") {
@@ -512,5 +520,19 @@ $fundingSourceList = $general->getFundingSources();
         $("#" + hideId).hide();
         $("#" + showId).show();
     }
+
+    function selectNoOfSamples(samplesCount)
+    {
+            var i = 0;
+            $("#search option").each(function(){
+                if (i < samplesCount)
+                    $(this).attr("selected","selected");
+                i++;
+        });
+        $("#search_rightSelected").trigger("click");
+        $(".selectSamples").hide();
+    }
+
+  
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';
