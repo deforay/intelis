@@ -3,13 +3,13 @@
 // This file is included in /vl/results/generate-result-pdf.php
 
 use App\Services\UsersService;
-use App\Services\InstrumentsService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\ResultPdfService;
 use App\Helpers\PdfWatermarkHelper;
+use App\Services\InstrumentsService;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
-use App\Utilities\MiscUtility;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -390,16 +390,14 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:8px 2px 2px 2px;">';
      $logValue = '';
-     if (isset($arr['vl_display_log_result']) && trim((string) $arr['vl_display_log_result']) == "yes") {
-          if (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] === 'yes' && $result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
+     if ($result['is_sample_rejected'] !== 'yes' && isset($arr['vl_display_log_result']) && trim((string) $arr['vl_display_log_result']) == "yes") {
+          if ($result['result_value_log'] != '' && !empty($result['result_value_log'])) {
                $logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
+          } elseif (is_numeric($result['result'])) {
+               $logV = round(log10($result['result']), 2);
+               $logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logV;
           } else {
-               if (is_numeric($result['result'])) {
-                    $logV = round(log10($result['result']), 2);
-                    $logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logV;
-               } else {
-                    $logValue = '';
-               }
+               $logValue = '';
           }
      }
      $vlFinalResult = '&nbsp;&nbsp;' . _translate("Viral Load Result") . ' (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']);

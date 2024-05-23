@@ -1,16 +1,18 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+$_POST = _sanitizeInput($_POST, nullifyEmptyStrings: true);
 
 try {
      $db->beginReadOnlyTransaction();
@@ -191,8 +193,8 @@ try {
           $sWhere[] =  ' (vl.community_sample IS NOT NULL AND vl.community_sample ="' . $_POST['communitySample'] . '") ';
      }
      /* Sample status filter */
-     if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
-          $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
+     if (isset($_POST['status']) && !empty($_POST['status'])) {
+          $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status = ' . $_POST['status'] . ')';
      }
      /* Show only recorded sample filter */
      if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) == 'yes') {
@@ -244,14 +246,14 @@ try {
           if (trim((string) $sPrintDate) == trim((string) $eTestDate)) {
                $sWhere[] =  '  DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
           } else {
-               $sWhere[] =  '  DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
+               $sWhere[] =  "  DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";
           }
      }
      if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
           if (trim((string) $sSampleReceivedDate) == trim((string) $eSampleReceivedDate)) {
                $sWhere[] =  '  DATE(vl.sample_received_at_lab_datetime) like "' . $sSampleReceivedDate . '"';
           } else {
-               $sWhere[] =  '  DATE(vl.sample_received_at_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $eSampleReceivedDate . '"';
+               $sWhere[] =  "  DATE(vl.sample_received_at_lab_datetime) BETWEEN '$sSampleReceivedDate' AND '$eSampleReceivedDate'";
           }
      }
      if (isset($_POST['requestCreatedDatetime']) && trim((string) $_POST['requestCreatedDatetime']) != '') {
@@ -269,7 +271,7 @@ try {
           if (trim((string) $sRequestCreatedDatetime) == trim((string) $eRequestCreatedDatetime)) {
                $sWhere[] =  '  DATE(vl.request_created_datetime) like "' . $sRequestCreatedDatetime . '"';
           } else {
-               $sWhere[] =  '  DATE(vl.request_created_datetime) >= "' . $sRequestCreatedDatetime . '" AND DATE(vl.request_created_datetime) <= "' . $eRequestCreatedDatetime . '"';
+               $sWhere[] =  "  DATE(vl.request_created_datetime) BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime'";
           }
      }
 
@@ -298,12 +300,12 @@ try {
 
      $_SESSION['vlResultQueryCount'] = $resultCount;
 
-     $output = array(
+     $output = [
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
-     );
+     ];
 
      foreach ($rResult as $aRow) {
 
