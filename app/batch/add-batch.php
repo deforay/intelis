@@ -489,7 +489,7 @@ $fundingSourceList = $general->getFundingSources();
         var selected = $(this).find('option:selected');
             noOfSamples = selected.data('no-of-samples');
 
-            $("p").html("<button type='button' class='btn btn-default selectSamples' onclick='selectNoOfSamples("+noOfSamples+")'>Select Maximum Number Of Samples</button>");
+            $("p").html("<button type='button' class='btn btn-default selectSamples' onclick='selectNoOfSamples("+noOfSamples+")'>Automatically select samples for Batch</button>");
 
         var self = this.value;
         if (self != '') {
