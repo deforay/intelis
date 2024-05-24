@@ -234,13 +234,14 @@ try {
                $sWhere[] =  " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date' ";
           }
      }
-     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '' && $_POST['status'] == 7) {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
           if (trim((string) $sTestDate) == trim((string) $eTestDate)) {
                $sWhere[] = "  DATE(vl.sample_tested_datetime) = '$sTestDate' ";
           } else {
                $sWhere[] =  " DATE(vl.sample_tested_datetime) BETWEEN '$sTestDate' AND '$eTestDate' ";
           }
      }
+    
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
           [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
           if (trim((string) $sPrintDate) == trim((string) $eTestDate)) {
@@ -274,7 +275,6 @@ try {
                $sWhere[] =  "  DATE(vl.request_created_datetime) BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime'";
           }
      }
-
 
      if (!empty($_SESSION['facilityMap'])) {
           $sWhere[] =  "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
