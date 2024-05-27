@@ -7,6 +7,7 @@ use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestsService;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -85,6 +86,7 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 $testTypeList = SystemService::getActiveModules(true);
 
 ?>
+<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -153,7 +155,7 @@ $testTypeList = SystemService::getActiveModules(true);
 										<?php echo _translate("Supported Tests"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
+										<select multiple class="" id="supportedTests" name="supportedTests[]">
 											<!--<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 												<option value='vl' <?php echo (in_array('vl', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _translate("Viral Load"); ?></option>
 											<?php }
@@ -172,8 +174,10 @@ $testTypeList = SystemService::getActiveModules(true);
 												if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 												<option value='generic-tests' <?php echo (in_array('generic-tests', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _translate("Other Lab Tests"); ?></option>
 											<?php } ?>-->
+											<option value=""><?php echo _translate("Select Test Types"); ?></option>
+
 											<?php foreach ($testTypeList as $testType) { ?>
-												<option value="<?= $testType; ?>" <?php echo (in_array($testType, $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?= ucfirst($testType); ?></option>
+												<option value="<?= $testType; ?>" <?php echo (in_array($testType, $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo TestsService::getTestName($testType); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -719,11 +723,11 @@ $testTypeList = SystemService::getActiveModules(true);
 			placeholder: '<?php echo _translate("-- Select --"); ?>'
 		});
 
-		$("#supportedTests").select2({
-			placeholder: '<?php echo _translate("Select Test Types"); ?>'
-		});
+		$("#supportedTests").selectize({
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+});
 
-		$('#supportedTests').on('select2:select', function(e) {
+		$('#supportedTests').on('change', function(e) {
 			var data = $('#supportedTests').val();
 			/* var arr = ['vl', 'eid', 'covid19', 'hepatitis', 'tb'];
 			$.each(arr, function(index, value) {
@@ -895,6 +899,7 @@ $testTypeList = SystemService::getActiveModules(true);
 
 
 </script>
+<script type="text/javascript" src="/assets/js/selectize.js"></script>
 
 <?php
 require_once APPLICATION_PATH . '/footer.php';

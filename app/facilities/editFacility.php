@@ -370,6 +370,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<label for="testType" class="col-lg-4 control-label test-type"><?php echo _translate("Test Type"); ?></label>
 									<div class="col-lg-7">
 										<select class="" id="testType" name="testType[]" title="<?php echo _translate('Choose at least one test type'); ?>" onchange="getTestType();" multiple>
+											<option value=""><?php echo _translate("Select Test Types"); ?></option>
+
 											<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 												<option value='vl' <?php echo (preg_match("/vl/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("Viral Load"); ?></option>
 											<?php }
@@ -740,6 +742,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
 <script type="text/javascript">
 	var deletedRowVar = [];
@@ -754,10 +757,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			width: '150px'
 		});
 
-		$("#testType").select2({
-			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
-			width: '100%'
-		});
+		$("#testType").selectize({
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+});
 
 		$("#contactPerson").select2({
 			placeholder: '<?php echo _translate("Select Lab Manager", true); ?>',
@@ -1099,5 +1101,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		console.log($('#deletedRow').val());
 	}
 </script>
+<script type="text/javascript" src="/assets/js/selectize.js"></script>
+
 <?php
 require_once APPLICATION_PATH . '/footer.php';

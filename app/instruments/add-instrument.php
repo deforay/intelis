@@ -6,6 +6,8 @@ use App\Services\DatabaseService;
 use App\Services\SystemService;
 use App\Services\UsersService;
 use App\Services\FacilitiesService;
+use App\Services\TestsService;
+
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -48,6 +50,8 @@ sort($fileList);
 		border: 1px solid #000;
 	}
 </style>
+<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -116,9 +120,10 @@ sort($fileList);
 										<?php echo _translate("Supported Tests"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
+										<select multiple class="" id="supportedTests" name="supportedTests[]">
+										<option value=""><?php echo _translate("Select Test Types"); ?></option>
 											<?php foreach ($testTypeList as $testType) { ?>
-												<option value="<?= $testType; ?>"><?= ucfirst($testType); ?></option>
+												<option value="<?= $testType; ?>"><?php echo TestsService::getTestName($testType); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -556,12 +561,14 @@ sort($fileList);
 			placeholder: '<?php echo _translate("-- Select --"); ?>'
 		});
 
-		$("#supportedTests").select2({
-			placeholder: '<?php echo _translate("Select Test Types"); ?>'
-		});
+		$("#supportedTests").selectize({
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+});
+
 		$('input').tooltip();
 
-		$('#supportedTests').on('select2:select', function(e) {
+		//$('#supportedTests').on('select2:select', function(e) {
+			$('#supportedTests').on('change', function(e) {
 			var data = $('#supportedTests').val();
 			//console.log(data);
 			$(".ctlCalibrator, .lowVlResultText, .user-access-form").hide();
@@ -761,6 +768,7 @@ sort($fileList);
 		}
 	}
 </script>
+<script type="text/javascript" src="/assets/js/selectize.js"></script>
 
 <?php
 require_once APPLICATION_PATH . '/footer.php';
