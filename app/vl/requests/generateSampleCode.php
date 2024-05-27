@@ -1,5 +1,6 @@
 <?php
 
+use Throwable;
 use App\Services\VlService;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
@@ -26,6 +27,6 @@ try {
     $sampleCodeParams['insertOperation'] = false;
     echo $vlService->getSampleCode($sampleCodeParams);
   }
-} catch (Exception | SystemException $exception) {
+} catch (Throwable $exception) {
   LoggerUtility::log('error', "Error while generating Sample Code : " . $exception->getMessage());
 }

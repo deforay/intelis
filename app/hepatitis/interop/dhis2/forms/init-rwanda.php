@@ -134,7 +134,7 @@ try {
             }
         }
     }
-} catch (InvalidArgumentException | PathNotFoundException | Exception $e) {
+} catch (Throwable $e) {
     LoggerUtility::log('error', $e->getMessage(), [
         'line' => $e->getLine(),
         'file' => $e->getFile()

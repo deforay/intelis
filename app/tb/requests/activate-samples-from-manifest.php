@@ -1,11 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
+use Throwable;
 use App\Services\TbService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -78,7 +78,7 @@ try {
         }
     }
     $db->commitTransaction();
-} catch (Exception | SystemException $exception) {
+} catch (Throwable $exception) {
     $db->rollbackTransaction();
     error_log("Error while generating Sample Codes : " . $exception->getMessage());
 }

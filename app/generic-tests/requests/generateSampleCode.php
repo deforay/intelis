@@ -28,6 +28,6 @@ try {
         $sampleCodeParams['insertOperation'] = false;
         echo $genericTestsService->getSampleCode($sampleCodeParams);
     }
-} catch (Exception | SystemException $exception) {
+} catch (\Throwable $exception) {
     error_log("Error while generating Sample Code : " . $exception->getMessage());
 }

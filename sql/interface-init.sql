@@ -29,7 +29,7 @@ CREATE DATABASE IF NOT EXISTS interfacing;
 -- Table structure for table `app_log`
 --
 
-CREATE TABLE `app_log` (
+CREATE TABLE IF NOT EXISTS `app_log` (
   `id` int(11) NOT NULL,
   `log` text NOT NULL,
   `added_on` datetime DEFAULT CURRENT_TIMESTAMP
@@ -41,7 +41,7 @@ CREATE TABLE `app_log` (
 -- Table structure for table `orders`
 --
 
-CREATE TABLE `orders` (
+CREATE TABLE IF NOT EXISTS `orders` (
   `id` int(11) NOT NULL,
   `order_id` varchar(255) NOT NULL,
   `test_id` varchar(255) DEFAULT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE `orders` (
 -- Table structure for table `raw_data`
 --
 
-CREATE TABLE `raw_data` (
+CREATE TABLE IF NOT EXISTS `raw_data` (
   `id` int(11) NOT NULL,
   `data` mediumtext NOT NULL,
   `machine` varchar(500) NOT NULL,

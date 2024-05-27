@@ -1,7 +1,8 @@
 <?php
 
-use App\Registries\AppRegistry;
+use Throwable;
 use App\Services\CD4Service;
+use App\Registries\AppRegistry;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -25,6 +26,6 @@ try {
     $sampleCodeParams['insertOperation'] = false;
     echo $cd4Service->getSampleCode($sampleCodeParams);
   }
-} catch (Exception | SystemException $exception) {
+} catch (Throwable $exception) {
   error_log("Error while generating Sample Code : " . $exception->getMessage());
 }

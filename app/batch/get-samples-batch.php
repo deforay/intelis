@@ -28,17 +28,17 @@ if (empty($_POST['type'])) {
 $sortBy = $_POST['sortBy'] ?? 'sampleCode';
 
 $sortType = match ($_POST['sortType']) {
-	'a' => 'asc',
-	'asc' => 'asc',
-	'desc' => 'desc',
-	'd' => 'desc',
-	default => 'asc',
+    'a' => 'asc',
+    'asc' => 'asc',
+    'desc' => 'desc',
+    'd' => 'desc',
+    default => 'asc',
 };
 
 $orderBy = match ($sortBy) {
-	'sampleCode' => 'sample_code',
-	'lastModified' => 'last_modified_datetime',
-	default => 'sample_code',
+    'sampleCode' => 'sample_code',
+    'lastModified' => 'last_modified_datetime',
+    default => 'sample_code',
 };
 
 $orderBy = $orderBy . ' ' . $sortType;
@@ -123,7 +123,7 @@ if (!empty($_POST['userId']) && trim((string) $_POST['userId']) != '') {
 }
 
 if (!empty($where)) {
-    $query = $query . ' WHERE ' . implode(" AND ", $where) . " ORDER BY vl.".$orderBy;
+    $query = $query . ' WHERE ' . implode(" AND ", $where) . " ORDER BY vl." . $orderBy;
 }
 $query .= ")";
 
@@ -152,7 +152,7 @@ if (isset($_POST['batchId'])) {
     if (!empty($swhere)) {
         $squery = $squery . ' WHERE ' . implode(" AND ", $swhere);
     }
-    $query .= $squery . " ORDER BY vl.".$orderBy.")";
+    $query .= $squery . " ORDER BY vl." . $orderBy . ")";
 }
 
 $result = $db->rawQuery($query);
@@ -201,12 +201,10 @@ if (isset($_POST['batchId'])) {
         let selectedCount = $right.find('option').length;
         $("#unselectedCount").html($left.find('option').length);
         $("#selectedCount").html(selectedCount);
-        if(selectedCount > 0)
-        {
+        if (selectedCount > 0) {
             $('.selectSamples').hide();
-        }
-        else{
-            $('.selectSamples').show();
+        } else {
+            //$('.selectSamples').show();
         }
         let alertText = selectedCount > 0 ?
             "<?php echo _translate('Number of samples selected out of maximum number of samples allowed for the selected platform'); ?> : " + selectedCount + '/' + noOfSamples :

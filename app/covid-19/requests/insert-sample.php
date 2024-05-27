@@ -19,7 +19,7 @@ try {
     echo $covid19Service->insertSample($_POST);
     // Commit transaction
     $db->commitTransaction();
-} catch (Exception | SystemException $exception) {
+} catch (\Throwable $exception) {
     // Rollback transaction in case of error
     $db->rollbackTransaction();
     LoggerUtility::log('error', $exception->getMessage(), [

@@ -84,7 +84,7 @@ try {
         }
     }
     $db->commitTransaction();
-} catch (Exception | SystemException $exception) {
+} catch (\Throwable $exception) {
     $db->rollbackTransaction();
     error_log("Error while generating Sample Codes : " . $exception->getMessage());
 }

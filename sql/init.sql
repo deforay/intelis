@@ -1843,7 +1843,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_cd4_data__ai AFTER INSERT ON `form_cd4` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_cd4_data__ai AFTER INSERT ON `form_cd4` FOR EACH ROW
     INSERT INTO `audit_form_cd4` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_cd4` AS d WHERE d.cd4_id = NEW.cd4_id */;;
 DELIMITER ;
@@ -1860,7 +1860,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_cd4_data__au AFTER UPDATE ON `form_cd4` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_cd4_data__au AFTER UPDATE ON `form_cd4` FOR EACH ROW
     INSERT INTO `audit_form_cd4` SELECT 'update', NULL, NOW(), d.*
     FROM `form_cd4` AS d WHERE d.cd4_id = NEW.cd4_id */;;
 DELIMITER ;
@@ -1877,7 +1877,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_cd4_data__bd BEFORE DELETE ON `form_cd4` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_cd4_data__bd BEFORE DELETE ON `form_cd4` FOR EACH ROW
     INSERT INTO `audit_form_cd4` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_cd4` AS d WHERE d.cd4_id = OLD.cd4_id */;;
 DELIMITER ;
@@ -2074,7 +2074,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_covid19_data__ai AFTER INSERT ON `form_covid19` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_covid19_data__ai AFTER INSERT ON `form_covid19` FOR EACH ROW
     INSERT INTO `audit_form_covid19` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_covid19` AS d WHERE d.covid19_id = NEW.covid19_id */;;
 DELIMITER ;
@@ -2091,7 +2091,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_covid19_data__au AFTER UPDATE ON `form_covid19` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_covid19_data__au AFTER UPDATE ON `form_covid19` FOR EACH ROW
     INSERT INTO `audit_form_covid19` SELECT 'update', NULL, NOW(), d.*
     FROM `form_covid19` AS d WHERE d.covid19_id = NEW.covid19_id */;;
 DELIMITER ;
@@ -2108,7 +2108,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_covid19_data__bd BEFORE DELETE ON `form_covid19` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_covid19_data__bd BEFORE DELETE ON `form_covid19` FOR EACH ROW
     INSERT INTO `audit_form_covid19` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_covid19` AS d WHERE d.covid19_id = OLD.covid19_id */;;
 DELIMITER ;
@@ -2330,7 +2330,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_eid_data__ai AFTER INSERT ON `form_eid` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_eid_data__ai AFTER INSERT ON `form_eid` FOR EACH ROW
     INSERT INTO `audit_form_eid` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_eid` AS d WHERE d.eid_id = NEW.eid_id */;;
 DELIMITER ;
@@ -2347,7 +2347,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_eid_data__au AFTER UPDATE ON `form_eid` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_eid_data__au AFTER UPDATE ON `form_eid` FOR EACH ROW
     INSERT INTO `audit_form_eid` SELECT 'update', NULL, NOW(), d.*
     FROM `form_eid` AS d WHERE d.eid_id = NEW.eid_id */;;
 DELIMITER ;
@@ -2364,7 +2364,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_eid_data__bd BEFORE DELETE ON `form_eid` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_eid_data__bd BEFORE DELETE ON `form_eid` FOR EACH ROW
     INSERT INTO `audit_form_eid` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_eid` AS d WHERE d.eid_id = OLD.eid_id */;;
 DELIMITER ;
@@ -2554,7 +2554,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER `form_form_generic_data__ai` AFTER INSERT ON `form_generic` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `form_form_generic_data__ai` AFTER INSERT ON `form_generic` FOR EACH ROW
             INSERT INTO `audit_form_generic` SELECT 'ai', NULL, NOW(), d.*
             FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id */;;
 DELIMITER ;
@@ -2571,7 +2571,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_generic_data__ai AFTER INSERT ON `form_generic` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_generic_data__ai AFTER INSERT ON `form_generic` FOR EACH ROW
     INSERT INTO `audit_form_generic` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id */;;
 DELIMITER ;
@@ -2605,7 +2605,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_generic_data__au AFTER UPDATE ON `form_generic` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_generic_data__au AFTER UPDATE ON `form_generic` FOR EACH ROW
     INSERT INTO `audit_form_generic` SELECT 'update', NULL, NOW(), d.*
     FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id */;;
 DELIMITER ;
@@ -2622,7 +2622,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_generic_data__bd BEFORE DELETE ON `form_generic` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_generic_data__bd BEFORE DELETE ON `form_generic` FOR EACH ROW
     INSERT INTO `audit_form_generic` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_generic` AS d WHERE d.sample_id = OLD.sample_id */;;
 DELIMITER ;
@@ -2783,7 +2783,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_hepatitis_data__ai AFTER INSERT ON `form_hepatitis` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_hepatitis_data__ai AFTER INSERT ON `form_hepatitis` FOR EACH ROW
     INSERT INTO `audit_form_hepatitis` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_hepatitis` AS d WHERE d.hepatitis_id = NEW.hepatitis_id */;;
 DELIMITER ;
@@ -2800,7 +2800,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_hepatitis_data__au AFTER UPDATE ON `form_hepatitis` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_hepatitis_data__au AFTER UPDATE ON `form_hepatitis` FOR EACH ROW
     INSERT INTO `audit_form_hepatitis` SELECT 'update', NULL, NOW(), d.*
     FROM `form_hepatitis` AS d WHERE d.hepatitis_id = NEW.hepatitis_id */;;
 DELIMITER ;
@@ -2817,7 +2817,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_hepatitis_data__bd BEFORE DELETE ON `form_hepatitis` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_hepatitis_data__bd BEFORE DELETE ON `form_hepatitis` FOR EACH ROW
     INSERT INTO `audit_form_hepatitis` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_hepatitis` AS d WHERE d.hepatitis_id = OLD.hepatitis_id */;;
 DELIMITER ;
@@ -2962,7 +2962,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_tb_data__ai AFTER INSERT ON `form_tb` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_tb_data__ai AFTER INSERT ON `form_tb` FOR EACH ROW
     INSERT INTO `audit_form_tb` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_tb` AS d WHERE d.tb_id = NEW.tb_id */;;
 DELIMITER ;
@@ -2979,7 +2979,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_tb_data__au AFTER UPDATE ON `form_tb` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_tb_data__au AFTER UPDATE ON `form_tb` FOR EACH ROW
     INSERT INTO `audit_form_tb` SELECT 'update', NULL, NOW(), d.*
     FROM `form_tb` AS d WHERE d.tb_id = NEW.tb_id */;;
 DELIMITER ;
@@ -2996,7 +2996,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_tb_data__bd BEFORE DELETE ON `form_tb` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_tb_data__bd BEFORE DELETE ON `form_tb` FOR EACH ROW
     INSERT INTO `audit_form_tb` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_tb` AS d WHERE d.tb_id = OLD.tb_id */;;
 DELIMITER ;
@@ -3291,7 +3291,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_vl_data__ai AFTER INSERT ON `form_vl` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_vl_data__ai AFTER INSERT ON `form_vl` FOR EACH ROW
     INSERT INTO `audit_form_vl` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_vl` AS d WHERE d.vl_sample_id = NEW.vl_sample_id */;;
 DELIMITER ;
@@ -3308,7 +3308,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_vl_data__au AFTER UPDATE ON `form_vl` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_vl_data__au AFTER UPDATE ON `form_vl` FOR EACH ROW
     INSERT INTO `audit_form_vl` SELECT 'update', NULL, NOW(), d.*
     FROM `form_vl` AS d WHERE d.vl_sample_id = NEW.vl_sample_id */;;
 DELIMITER ;
@@ -3325,7 +3325,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`mamp`@`localhost`*/ /*!50003 TRIGGER form_vl_data__bd BEFORE DELETE ON `form_vl` FOR EACH ROW
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER form_vl_data__bd BEFORE DELETE ON `form_vl` FOR EACH ROW
     INSERT INTO `audit_form_vl` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_vl` AS d WHERE d.vl_sample_id = OLD.vl_sample_id */;;
 DELIMITER ;

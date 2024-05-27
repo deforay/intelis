@@ -31,6 +31,6 @@ try {
     $sampleCodeParams['insertOperation'] = false;
     echo $eidService->getSampleCode($sampleCodeParams);
   }
-} catch (Exception | SystemException $exception) {
+} catch (\Throwable $exception) {
   error_log("Error while generating Sample ID : " . $exception->getMessage());
 }

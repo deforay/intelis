@@ -3,8 +3,16 @@
 // Request STS to send metadata to this instance of LIS
 
 $cliMode = php_sapi_name() === 'cli';
+$forceFlag = false;
+
 if ($cliMode) {
     require_once(__DIR__ . "/../../../bootstrap.php");
+
+    // Parse CLI arguments
+    $options = getopt('f', ['force']);
+    if (isset($options['f']) || isset($options['force'])) {
+        $forceFlag = true;
+    }
 }
 
 use JsonMachine\Items;
@@ -73,15 +81,14 @@ $cd4DataToSync = [];
 
 
 $payload = [
-    'globalConfigLastModified'      => $general->getLastModifiedDateTime('global_config'),
-    'provinceLastModified'          => $general->getLastModifiedDateTime('geographical_divisions'),
-    'facilityLastModified'          => $general->getLastModifiedDateTime('facility_details'),
-    'healthFacilityLastModified'    => $general->getLastModifiedDateTime('health_facilities'),
-    'testingLabsLastModified'       => $general->getLastModifiedDateTime('testing_labs'),
-    'fundingSourcesLastModified'    => $general->getLastModifiedDateTime('r_funding_sources'),
-    'partnersLastModified'          => $general->getLastModifiedDateTime('r_implementation_partners'),
-    'geoDivisionsLastModified'      => $general->getLastModifiedDateTime('geographical_divisions'),
-    'patientsLastModified'          => $general->getLastModifiedDateTime('patients'),
+    'globalConfigLastModified'      => $forceFlag ? null : $general->getLastModifiedDateTime('global_config'),
+    'facilityLastModified'          => $forceFlag ? null : $general->getLastModifiedDateTime('facility_details'),
+    'healthFacilityLastModified'    => $forceFlag ? null : $general->getLastModifiedDateTime('health_facilities'),
+    'testingLabsLastModified'       => $forceFlag ? null : $general->getLastModifiedDateTime('testing_labs'),
+    'fundingSourcesLastModified'    => $forceFlag ? null : $general->getLastModifiedDateTime('r_funding_sources'),
+    'partnersLastModified'          => $forceFlag ? null : $general->getLastModifiedDateTime('r_implementation_partners'),
+    'geoDivisionsLastModified'      => $forceFlag ? null : $general->getLastModifiedDateTime('geographical_divisions'),
+    'patientsLastModified'          => $forceFlag ? null : $general->getLastModifiedDateTime('patients'),
     "Key"                           => "vlsm-get-remote",
 ];
 
@@ -152,19 +159,19 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
         "generic_test_result_units_map"
     ];
     foreach ($toSyncTables as $table) {
-        $payload[$general->stringToCamelCase($table) . 'LastModified'] = $general->getLastModifiedDateTime($table);
+        $payload[$general->stringToCamelCase($table) . 'LastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime($table);
 
         $genericDataToSync[$general->stringToCamelCase($table)] = ["primaryKey" => $general->getPrimaryKeyField($table), "tableName" => $table];
     }
 }
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
 
-    $payload['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
-    $payload['vlRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
-    $payload['vlTestReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_test_reasons');
-    $payload['vlSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_type');
-    $payload['vlFailureReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_test_failure_reasons');
-    $payload['vlResultsLastModified'] = $general->getLastModifiedDateTime('r_vl_results');
+    $payload['vlArtCodesLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_vl_art_regimen');
+    $payload['vlRejectionReasonsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
+    $payload['vlTestReasonsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_vl_test_reasons');
+    $payload['vlSampleTypesLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_vl_sample_type');
+    $payload['vlFailureReasonsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_vl_test_failure_reasons');
+    $payload['vlResultsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_vl_results');
 
     // This array is used to sync data that we will later receive from the API call
     $vlDataToSync = [
@@ -196,10 +203,10 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 }
 
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
-    $payload['eidRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_eid_sample_rejection_reasons');
-    $payload['eidSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_eid_sample_type');
-    $payload['eidResultsLastModified'] = $general->getLastModifiedDateTime('r_eid_results ');
-    $payload['eidReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_eid_test_reasons  ');
+    $payload['eidRejectionReasonsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_eid_sample_rejection_reasons');
+    $payload['eidSampleTypesLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_eid_sample_type');
+    $payload['eidResultsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_eid_results ');
+    $payload['eidReasonForTestingLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_eid_test_reasons  ');
 
 
     // This array is used to sync data that we will later receive from the API call
@@ -226,13 +233,13 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
 
-    $payload['covid19RejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_rejection_reasons');
-    $payload['covid19SampleTypesLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_type');
-    $payload['covid19ComorbiditiesLastModified'] = $general->getLastModifiedDateTime('r_covid19_comorbidities');
-    $payload['covid19ResultsLastModified'] = $general->getLastModifiedDateTime('r_covid19_results');
-    $payload['covid19SymptomsLastModified'] = $general->getLastModifiedDateTime('r_covid19_symptoms');
-    $payload['covid19ReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_covid19_test_reasons');
-    $payload['covid19QCTestKitsLastModified'] = $general->getLastModifiedDateTime('r_covid19_qc_testkits');
+    $payload['covid19RejectionReasonsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_covid19_sample_rejection_reasons');
+    $payload['covid19SampleTypesLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_covid19_sample_type');
+    $payload['covid19ComorbiditiesLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_covid19_comorbidities');
+    $payload['covid19ResultsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_covid19_results');
+    $payload['covid19SymptomsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_covid19_symptoms');
+    $payload['covid19ReasonForTestingLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_covid19_test_reasons');
+    $payload['covid19QCTestKitsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_covid19_qc_testkits');
 
 
 
@@ -270,11 +277,11 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 }
 
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
-    $payload['hepatitisRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_sample_rejection_reasons');
-    $payload['hepatitisSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_sample_type');
-    $payload['hepatitisComorbiditiesLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_comorbidities');
-    $payload['hepatitisResultsLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_results');
-    $payload['hepatitisReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_test_reasons');
+    $payload['hepatitisRejectionReasonsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_hepatitis_sample_rejection_reasons');
+    $payload['hepatitisSampleTypesLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_hepatitis_sample_type');
+    $payload['hepatitisComorbiditiesLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_hepatitis_comorbidities');
+    $payload['hepatitisResultsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_hepatitis_results');
+    $payload['hepatitisReasonForTestingLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_hepatitis_test_reasons');
 
     // This array is used to sync data that we will later receive from the API call
     $hepatitisDataToSync = [
@@ -302,10 +309,10 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 }
 
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
-    $payload['tbRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_tb_sample_rejection_reasons');
-    $payload['tbSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_tb_sample_type');
-    $payload['tbResultsLastModified'] = $general->getLastModifiedDateTime('r_tb_results');
-    $payload['tbReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_tb_test_reasons');
+    $payload['tbRejectionReasonsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_tb_sample_rejection_reasons');
+    $payload['tbSampleTypesLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_tb_sample_type');
+    $payload['tbResultsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_tb_results');
+    $payload['tbReasonForTestingLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_tb_test_reasons');
 
     // This array is used to sync data that we will later receive from the API call
     $tbDataToSync = [
@@ -329,9 +336,9 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 }
 
 if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
-    $payload['cd4RejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_cd4_sample_rejection_reasons');
-    $payload['cd4SampleTypesLastModified'] = $general->getLastModifiedDateTime('r_cd4_sample_types');
-    $payload['cd4ReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_cd4_test_reasons');
+    $payload['cd4RejectionReasonsLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_cd4_sample_rejection_reasons');
+    $payload['cd4SampleTypesLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_cd4_sample_types');
+    $payload['cd4ReasonForTestingLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_cd4_test_reasons');
 
     // This array is used to sync data that we will later receive from the API call
     $cd4DataToSync = [
@@ -373,7 +380,13 @@ try {
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
         $db->rawQuery("SET FOREIGN_KEY_CHECKS = 0;"); // Disable foreign key checks
+
         foreach ($parsedData as $dataType => $dataValues) {
+
+            // Truncate table if force flag is set
+            if ($cliMode && $forceFlag) {
+                $db->rawQuery("TRUNCATE TABLE {$dataToSync[$dataType]['tableName']}");
+            }
 
             if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
                 if ($dataType === 'healthFacilities' && !empty($dataValues)) {
@@ -474,10 +487,11 @@ try {
     }
 } catch (Throwable $e) {
     LoggerUtility::log('error', "Error while syncing data from remote: " . $e->getLine() . " " . $e->getMessage());
-}
-$db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Enable foreign key checks
-// unset global config cache so that it can be reloaded with new values
-// this is set in CommonService::getGlobalConfig()
-$fileCache->delete('app_global_config');
+} finally {
+    $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Enable foreign key checks
+    // unset global config cache so that it can be reloaded with new values
+    // this is set in CommonService::getGlobalConfig()
+    $fileCache->delete('app_global_config');
 
-$id = $db->update('s_vlsm_instance', ['last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()]);
+    $id = $db->update('s_vlsm_instance', ['last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()]);
+}

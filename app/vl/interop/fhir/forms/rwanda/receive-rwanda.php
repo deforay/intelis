@@ -368,7 +368,7 @@ try {
     echo MiscUtility::prettyJson($response);
 
     $db->commitTransaction();
-} catch (Exception | SystemException $exception) {
+} catch (\Throwable $exception) {
     $db->rollbackTransaction();
     LoggerUtility::log('error', "Error while receiving FHIR data : " . $exception->getMessage());
 }

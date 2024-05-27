@@ -26,6 +26,6 @@ try {
     $sampleCodeParams['insertOperation'] = false;
     echo $covid19Service->getSampleCode($sampleCodeParams);
   }
-} catch (Exception | SystemException $exception) {
+} catch (\Throwable $exception) {
   error_log("Error while generating Sample Code : " . $exception->getMessage());
 }

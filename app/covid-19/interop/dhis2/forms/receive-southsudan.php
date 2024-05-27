@@ -2,6 +2,7 @@
 
 // this file is included in /covid-19/interop/dhis2/covid-19-receive.php
 
+use Throwable;
 use App\Interop\Dhis2;
 use JsonMachine\Items;
 use App\Utilities\DateUtility;
@@ -302,7 +303,7 @@ try {
 
     echo (json_encode($response));
     $db->commitTransaction();
-} catch (Exception | SystemException $exception) {
+} catch (Throwable $exception) {
     $db->rollbackTransaction();
     error_log("Error while generating receiving DHIS2 data : " . $exception->getMessage());
 }

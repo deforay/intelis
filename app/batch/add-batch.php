@@ -199,7 +199,7 @@ $fundingSourceList = $general->getFundingSources();
             &nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
                     <?php echo _translate("Show Advanced Search Options"); ?>
                 </span></button>
-                
+
             <table aria-describedby="table" id="advanceFilter" class="table batchDiv" aria-hidden="true" style="display: none;margin-top:20px;width: 100%;<?php echo $genericHide; ?>">
 
                 <tr>
@@ -283,18 +283,18 @@ $fundingSourceList = $general->getFundingSources();
                     <td><label for="sortBy"><?= _translate("Sort By"); ?></label></td>
 
                     <td><select class="form-control" id="sortBy" name="sortBy" onchange="">
-                        <option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified">Order By Last Modified</option>
-                        <option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode">Order By Sample Code</option>
-                    </select></td>
+                            <option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified">Order By Last Modified</option>
+                            <option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode">Order By Sample Code</option>
+                        </select></td>
                     <td><label for="sortType"><?= _translate("Sort Type"); ?></label></td>
-					<td>
-						<select class="form-control" id="sortType" onchange="">
-							<option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc">Ascending</option>
-							<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc">Descending</option>
-						</select>
+                    <td>
+                        <select class="form-control" id="sortType" onchange="">
+                            <option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc">Ascending</option>
+                            <option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc">Descending</option>
+                        </select>
                     </td>
                 </tr>
-               
+
                 <tr>
                     <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
@@ -326,7 +326,7 @@ $fundingSourceList = $general->getFundingSources();
                                         <input type="hidden" name="positions" id="positions" value="" />
                                     </div>
                                 </div>
-                               <p><button type='button' class='btn btn-default selectSamples' onclick='selectNoOfSamples()'><?php echo _translate('Automatically select samples for Batch'); ?></button></p>
+                                <p><button type='button' class='btn btn-default selectSamples' onclick='autoselectBatchSamples()'><?php echo _translate('Automatically select samples for Batch'); ?></button></p>
 
                             </div>
                         </div>
@@ -364,7 +364,7 @@ $fundingSourceList = $general->getFundingSources();
     sortedTitle = [];
     let batchXhr = null;
     $(document).ready(function() {
-      
+
         $("#testType").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Test Type"); ?>"
@@ -499,13 +499,13 @@ $fundingSourceList = $general->getFundingSources();
 
     $("#machine").change(function() {
         var selected = $(this).find('option:selected');
-            noOfSamples = selected.data('no-of-samples');
+        noOfSamples = selected.data('no-of-samples');
 
         var self = this.value;
         if (self != '') {
             getSampleCodeDetails();
             $("#platform").val($("#machine").val());
-           
+
             $('#alertText').html("<?= _translate("Maximum number of samples allowed for the selected platform", true); ?> : " + noOfSamples);
         } else {
             $('#alertText').html('');
@@ -530,22 +530,16 @@ $fundingSourceList = $general->getFundingSources();
         $("#" + showId).show();
     }
 
-    function selectNoOfSamples()
-    {
+    function autoselectBatchSamples() {
         $.blockUI();
 
-        var samplesCount = $("#machine").find(':selected').data('no-of-samples');
-
-            var i = 0;
-            $("#search option").each(function(){
-                if (i < samplesCount){
-                    $(this).attr("selected","selected");
-                }
-                else{
-                    $(this).removeAttr("selected");
-                }
-                i++;
-
+        let samplesCount = $("#machine").find(':selected').data('no-of-samples');
+        $("#search option").removeAttr("selected");
+        $("#search_rightSelected").trigger("click");
+        $("#search option").each(function(index) {
+            if (index < samplesCount) {
+                $(this).attr("selected", "selected");
+            }
         });
         $("#search_rightSelected").trigger("click");
         $(".selectSamples").hide();
@@ -553,7 +547,5 @@ $fundingSourceList = $general->getFundingSources();
         $.unblockUI();
 
     }
-
-  
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';

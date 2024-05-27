@@ -342,7 +342,7 @@ try {
 
 
     $db->commitTransaction();
-} catch (Exception | SystemException $exception) {
+} catch (\Throwable $exception) {
     $responsePayload = json_encode([
         'transactionId' => $transactionId,
         'received' => $receivedCounter,

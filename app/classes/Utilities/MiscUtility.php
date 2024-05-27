@@ -329,7 +329,6 @@ final class MiscUtility
         return match (strtolower($gender)) {
             'male', 'm' => _translate('Male'),
             'female', 'f' => _translate('Female'),
-            'not_recorded', 'notrecorded', 'unreported', 'not recorded' => _translate('Unreported'),
             default => _translate('Unreported')
         };
     }

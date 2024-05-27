@@ -1,5 +1,6 @@
 <?php
 
+use Throwable;
 use App\Services\CD4Service;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -21,7 +22,7 @@ try {
     echo $cd4Service->insertSample($_POST);
     // Commit transaction
     $db->commitTransaction();
-} catch (Exception | SystemException $exception) {
+} catch (Throwable $exception) {
     // Rollback transaction in case of error
     $db->rollbackTransaction();
     if ($db->getLastErrno() > 0) {

@@ -28,6 +28,6 @@ try {
         $sampleCodeParams['insertOperation'] = false;
         echo $tbService->getSampleCode($sampleCodeParams);
     }
-} catch (Exception | SystemException $exception) {
+} catch (Throwable $exception) {
     error_log("Error while generating Sample ID : " . $exception->getMessage());
 }
