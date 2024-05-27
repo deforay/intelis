@@ -428,7 +428,6 @@ try {
             try {
                 // Truncate table if force flag is set
                 if ($cliMode && $forceFlag && $dataToSync[$dataType]['canTruncate'] !== false) {
-                    echo "TRUNCATE TABLE {$dataToSync[$dataType]['tableName']}" . PHP_EOL;
                     $db->rawQuery("TRUNCATE TABLE {$dataToSync[$dataType]['tableName']}");
                 }
 

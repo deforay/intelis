@@ -269,7 +269,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/cd4/requests/cd4-requests.php', NULL, 'View', NULL, 'always'), (NULL, 'cd4-requests', '/cd4/requests/export-cd4-requests.php', NULL, 'Export CD4 Requests', NULL, 'always');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/specimen-referral-manifest/add-manifest.php?t=cd4', NULL, 'Add CD4 Manifests', NULL, 'always');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/specimen-referral-manifest/edit-manifest.php?t=cd4', NULL, 'Edit CD4 Manifests', NULL, 'always');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/specimen-referral-manifest/view-manifest.php?t=cd4', NULL, 'View CD4 Manifests', NULL, 'always');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-requests', '/specimen-referral-manifest/view-manifests.php?t=cd4', NULL, 'View CD4 Manifests', NULL, 'always');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-batches', '/batch/batches.php?type=cd4', '[\r\n    \"/batch/generate-batch-pdf.php?type=cd4\"\r\n]', 'View Batches', NULL, 'always'), (NULL, 'cd4-batches', '/batch/add-batch.php?type=cd4', '[\r\n    \"/batch/add-batch-position.php?type=cd4\"\r\n]', 'Add Batch', NULL, 'always');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-batches', '/batch/edit-batch.php?type=cd4', '[ "/batch/delete-batch.php?type=cd4", "/batch/edit-batch-position.php?type=cd4" ]', 'Edit Batches', NULL, 'always');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'cd4-results', '/cd4/results/cd4-result-status.php', NULL, 'Manage Result Status', NULL, 'always'), (NULL, 'cd4-results', '/cd4/results/email-results.php', '[\"/cd4/results/email-results.php\",\"/cd4/results/email-results-confirm.php\"]', 'Email Test Results', NULL, 'always'), (NULL, 'cd4-results', '/import-result/import-file.php?t=cd4', '["/import-result/imported-results.php?t=cd4","/import-result/importedStatistics.php?t=cd4"]', 'Import Result from Files', NULL, 'always');
@@ -505,3 +505,8 @@ ALTER TABLE `instruments` CHANGE `additional_text` `additional_text` LONGTEXT CH
 ALTER TABLE `r_hepatitis_results` CHANGE `result_id` `result_id` INT NOT NULL AUTO_INCREMENT;
 -- Thana 07-May-2024
 ALTER TABLE `generic_test_results` CHANGE `sample_tested_datetime` `sample_tested_datetime` DATETIME NULL DEFAULT NULL;
+
+
+-- Amit 27-May-2024
+UPDATE `privileges` SET `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=cd4' WHERE `privilege_name` LIKE '/specimen-referral-manifest/view-manifest.php?t=cd4';
+UPDATE `s_app_menu` SET `display_text` = 'CD4' WHERE `link` LIKE '#cd4'
