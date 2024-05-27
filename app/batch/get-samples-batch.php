@@ -204,7 +204,7 @@ if (isset($_POST['batchId'])) {
         if (selectedCount > 0) {
             $('.selectSamples').hide();
         } else {
-            //$('.selectSamples').show();
+            $('.selectSamples').show();
         }
         let alertText = selectedCount > 0 ?
             "<?php echo _translate('Number of samples selected out of maximum number of samples allowed for the selected platform'); ?> : " + selectedCount + '/' + noOfSamples :
@@ -229,7 +229,9 @@ if (isset($_POST['batchId'])) {
             },
             afterMoveToLeft: function($left, $right, $options) {
                 updateCounts($left, $right);
-            }
+            },
+            keepRenderingSort: true
+
         });
 
     });

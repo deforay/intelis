@@ -531,20 +531,10 @@ $fundingSourceList = $general->getFundingSources();
     }
 
     function autoselectBatchSamples() {
-        $.blockUI();
-
         let samplesCount = $("#machine").find(':selected').data('no-of-samples');
-        $("#search option").removeAttr("selected");
-        $("#search_rightSelected").trigger("click");
-        $("#search option").each(function(index) {
-            if (index < samplesCount) {
-                $(this).attr("selected", "selected");
-            }
-        });
+        $("#search option:lt(" + samplesCount + ")").prop('selected', true);
         $("#search_rightSelected").trigger("click");
         $(".selectSamples").hide();
-
-        $.unblockUI();
 
     }
 </script>
