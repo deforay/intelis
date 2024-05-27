@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@selectize/selectize": "^0.15.2"
+  }
+}
