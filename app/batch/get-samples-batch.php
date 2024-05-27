@@ -211,6 +211,18 @@ if (isset($_POST['batchId'])) {
             "<?php echo _translate('Maximum number of samples allowed for the selected platform'); ?> : " + noOfSamples;
         $('#alertText').html(alertText);
     }
+
+    function postMoveSelectNextItem($options, $leftOrRight) {
+        let idx = $options.eq($options.length - 1).index() + 1;
+        let optlen = $leftOrRight.find('option').length - 2;
+        $leftOrRight.focus();
+        if (idx < optlen) {
+            $leftOrRight.find('option:eq(' + idx + ')').prop('selected', 'selected');
+        } else {
+            $leftOrRight.find('option:eq(' + optlen + ')').prop('selected', 'selected');
+        }
+    }
+
     $(document).ready(function() {
 
         $('#search').multiselect({
@@ -223,6 +235,14 @@ if (isset($_POST['batchId'])) {
             },
             startUp: function($left, $right) {
                 updateCounts($left, $right);
+            },
+            beforeMoveToRight: function($left, $right, $options) {
+                postMoveSelectNextItem($options, $left);
+                return true;
+            },
+            beforeMoveToLeft: function($left, $right, $options) {
+                postMoveSelectNextItem($options, $right);
+                return true;
             },
             afterMoveToRight: function($left, $right, $options) {
                 updateCounts($left, $right);
