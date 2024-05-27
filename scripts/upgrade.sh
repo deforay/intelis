@@ -295,6 +295,11 @@ echo "All system checks passed. Continuing with the update..."
 echo "Updating Ubuntu packages..."
 apt-get update && apt-get upgrade -y
 
+if ! grep -q "ondrej/apache2" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
+    add-apt-repository ppa:ondrej/apache2 -y
+    apt-get upgrade apache2 -y
+fi
+
 # Configure any packages that were not fully installed
 echo "Configuring any partially installed packages..."
 sudo dpkg --configure -a

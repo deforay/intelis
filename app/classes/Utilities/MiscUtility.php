@@ -158,7 +158,7 @@ final class MiscUtility
             return htmlspecialchars("Error in JSON encoding: " . json_last_error_msg(), ENT_QUOTES, 'UTF-8');
         }
 
-        return htmlspecialchars($encodedJson, ENT_QUOTES, 'UTF-8');
+        return $encodedJson;
     }
 
     /**

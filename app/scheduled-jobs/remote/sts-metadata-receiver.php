@@ -98,10 +98,6 @@ $commonDataToSync = [
         'primaryKey' => 'name',
         'tableName' => 'global_config'
     ],
-    'province'  => [
-        'primaryKey' => 'geo_id',
-        'tableName' => 'geographical_divisions'
-    ],
     'users'  => [
         'primaryKey' => 'user_id',
         'tableName' => 'user_details'
@@ -383,110 +379,125 @@ try {
 
         foreach ($parsedData as $dataType => $dataValues) {
 
-            // Truncate table if force flag is set
-            if ($cliMode && $forceFlag) {
-                $db->rawQuery("TRUNCATE TABLE {$dataToSync[$dataType]['tableName']}");
+            if (empty($dataType) || $dataType === '' || empty($dataToSync[$dataType]['tableName']) || $dataToSync[$dataType]['tableName'] == '') {
+                continue;
             }
 
-            if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
-                if ($dataType === 'healthFacilities' && !empty($dataValues)) {
-                    $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
-                    $db->where('facility_id', $updatedFacilities, 'IN');
-                    $id = $db->delete('health_facilities');
-                } elseif ($dataType === 'testingLabs' && !empty($dataValues)) {
-                    $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
-                    $db->where('facility_id', $updatedFacilities, 'IN');
-                    $id = $db->delete('testing_labs');
+            try {
+                // Truncate table if force flag is set
+                if ($cliMode && $forceFlag) {
+                    $db->rawQuery("TRUNCATE TABLE {$dataToSync[$dataType]['tableName']}");
                 }
 
-                $unwantedColumnList = [];
-                if ($dataType === 'users') {
-                    $unwantedColumnList = ['login_id', 'role_id', 'password'];
-                }
+                if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
+                    if ($dataType === 'healthFacilities' && !empty($dataValues)) {
+                        $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
+                        $db->where('facility_id', $updatedFacilities, 'IN');
+                        $id = $db->delete('health_facilities');
+                    } elseif ($dataType === 'testingLabs' && !empty($dataValues)) {
+                        $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
+                        $db->where('facility_id', $updatedFacilities, 'IN');
+                        $id = $db->delete('testing_labs');
+                    }
 
-                $emptyTableArray = $general->getTableFieldsAsArray($dataToSync[$dataType]['tableName'], $unwantedColumnList);
+                    $unwantedColumnList = [];
+                    if ($dataType === 'users') {
+                        $unwantedColumnList = ['(log)in_id', 'role_id', 'password'];
+                    }
 
-                if ($cliMode) {
-                    echo "Syncing data for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
-                }
+                    $emptyTableArray = $general->getTableFieldsAsArray($dataToSync[$dataType]['tableName'], $unwantedColumnList);
 
-                foreach ($dataValues as $tableDataValues) {
+                    if ($cliMode) {
+                        echo "Syncing data for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
+                    }
 
-                    $tableData = MiscUtility::updateFromArray($emptyTableArray, $tableDataValues);
-                    $updateColumns = array_keys($tableData);
-                    $primaryKey = $dataToSync[$dataType]['primaryKey'];
+                    foreach ($dataValues as $tableDataValues) {
 
-                    $db->upsert($dataToSync[$dataType]['tableName'], $tableData, $updateColumns, [$primaryKey]);
+                        $tableData = MiscUtility::updateFromArray($emptyTableArray, $tableDataValues);
+                        $updateColumns = array_keys($tableData);
+                        $primaryKey = $dataToSync[$dataType]['primaryKey'];
 
-                    // Updating logo and report template
-                    if ($dataType === 'facilities') {
-                        if (!empty($tableData['facility_logo'])) {
-                            $labLogoFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
-                            MiscUtility::makeDirectory($labLogoFolder);
+                        $db->upsert($dataToSync[$dataType]['tableName'], $tableData, $updateColumns, [$primaryKey]);
 
-                            $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" . $tableData['facility_logo'];
-                            $localFilePath = $labLogoFolder . "/" . "actual-" . $tableData['facility_logo'];
+                        // Updating logo and report template
+                        if ($dataType === 'facilities') {
+                            if (!empty($tableData['facility_logo'])) {
+                                $labLogoFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
+                                MiscUtility::makeDirectory($labLogoFolder);
 
-                            $apiService->downloadFile($remoteFileUrl, $localFilePath);
+                                $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" . $tableData['facility_logo'];
+                                $localFilePath = $labLogoFolder . "/" . "actual-" . $tableData['facility_logo'];
 
-                            $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
-                            $localFilePath = $labLogoFolder . "/" . $tableData['facility_logo'];
-                            $apiService->downloadFile($remoteFileUrl, $localFilePath);
-                        }
+                                $apiService->downloadFile($remoteFileUrl, $localFilePath);
 
-                        $facilityAttributes = !empty($tableData['facility_attributes']) ? json_decode($tableData['facility_attributes'], true) : [];
+                                $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
+                                $localFilePath = $labLogoFolder . "/" . $tableData['facility_logo'];
+                                $apiService->downloadFile($remoteFileUrl, $localFilePath);
+                            }
 
-                        if (!empty($facilityAttributes['report_template'])) {
-                            $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'] . DIRECTORY_SEPARATOR . "report-template";
-                            MiscUtility::makeDirectory($labDataFolder);
+                            $facilityAttributes = !empty($tableData['facility_attributes']) ? json_decode($tableData['facility_attributes'], true) : [];
 
-                            $remoteFileUrl = $systemConfig['remoteURL'] . "/uploads/labs/{$tableData['facility_id']}/report-template/{$facilityAttributes['report_template']}";
-                            MiscUtility::dumpToErrorLog($remoteFileUrl);
-                            $localFilePath = $labDataFolder . "/" . $facilityAttributes['report_template'];
-                            MiscUtility::dumpToErrorLog($localFilePath);
-                            $x = $apiService->downloadFile($remoteFileUrl, $localFilePath);
-                            MiscUtility::dumpToErrorLog($x);
+                            if (!empty($facilityAttributes['report_template'])) {
+                                $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'] . DIRECTORY_SEPARATOR . "report-template";
+                                MiscUtility::makeDirectory($labDataFolder);
+
+                                $remoteFileUrl = $systemConfig['remoteURL'] . "/uploads/labs/{$tableData['facility_id']}/report-template/{$facilityAttributes['report_template']}";
+                                MiscUtility::dumpToErrorLog($remoteFileUrl);
+                                $localFilePath = $labDataFolder . "/" . $facilityAttributes['report_template'];
+                                MiscUtility::dumpToErrorLog($localFilePath);
+                                $x = $apiService->downloadFile($remoteFileUrl, $localFilePath);
+                                MiscUtility::dumpToErrorLog($x);
+                            }
                         }
                     }
                 }
-            }
 
-            // signatories
-            if ($dataType === 'labReportSignatories') {
-                foreach ($dataValues as $key => $sign) {
+                // signatories
+                if ($dataType === 'labReportSignatories') {
+                    foreach ($dataValues as $key => $sign) {
 
-                    // Delete old signatures, before we save new ones
-                    $db->where('lab_id  = ' . $sign['lab_id']);
-                    $id = $db->delete('lab_report_signatories');
+                        // Delete old signatures, before we save new ones
+                        $db->where('lab_id  = ' . $sign['lab_id']);
+                        $id = $db->delete('lab_report_signatories');
 
-                    $signaturesFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $sign['lab_id'] . DIRECTORY_SEPARATOR . 'signatures';
+                        $signaturesFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $sign['lab_id'] . DIRECTORY_SEPARATOR . 'signatures';
 
-                    if (!file_exists($signaturesFolder)) {
-                        // make new folder
-                        mkdir($signaturesFolder, 0777, true);
-                    } else {
-                        // in case folder exists, we can delete all old files
-                        $images = glob("$signaturesFolder/*.{jpg,png,gif,jpeg}", GLOB_BRACE);
-                        foreach ($images as $image) {
-                            @unlink($image);
+                        if (!file_exists($signaturesFolder)) {
+                            // make new folder
+                            mkdir($signaturesFolder, 0777, true);
+                        } else {
+                            // in case folder exists, we can delete all old files
+                            $images = glob("$signaturesFolder/*.{jpg,png,gif,jpeg}", GLOB_BRACE);
+                            foreach ($images as $image) {
+                                @unlink($image);
+                            }
                         }
-                    }
-                    // Save Data to DB
-                    unset($sign['signatory_id']);
-                    if (isset($sign['signature']) && $sign['signature'] != "") {
-                        /* To save file from the url */
-                        $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/labs/' . $sign['lab_id'] . '/signatures/' . $sign['signature'];
-                        $localFileLocation = $signaturesFolder . DIRECTORY_SEPARATOR . $sign['signature'];
-                        if ($apiService->downloadFile($remoteFileUrl, $localFileLocation)) {
-                            $db->insert('lab_report_signatories', $sign);
+                        // Save Data to DB
+                        unset($sign['signatory_id']);
+                        if (isset($sign['signature']) && $sign['signature'] != "") {
+                            /* To save file from the url */
+                            $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/labs/' . $sign['lab_id'] . '/signatures/' . $sign['signature'];
+                            $localFileLocation = $signaturesFolder . DIRECTORY_SEPARATOR . $sign['signature'];
+                            if ($apiService->downloadFile($remoteFileUrl, $localFileLocation)) {
+                                $db->insert('lab_report_signatories', $sign);
+                            }
                         }
                     }
                 }
+            } catch (Throwable $e) {
+                LoggerUtility::log('error', $db->getLastError());
+                LoggerUtility::log('error', $db->getLastQuery());
+                LoggerUtility::log('error', "Error while syncing data from remote: " . $e->getLine() . " " . $e->getMessage(), [
+                    'trace' => $e->getTraceAsString()
+                ]);
+                continue;
             }
         }
     }
 } catch (Throwable $e) {
-    LoggerUtility::log('error', "Error while syncing data from remote: " . $e->getLine() . " " . $e->getMessage());
+    LoggerUtility::log('error', "Error while syncing data from remote: " . $e->getLine() . " " . $e->getMessage(), [
+        'trace' => $e->getTraceAsString()
+    ]);
 } finally {
     $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Enable foreign key checks
     // unset global config cache so that it can be reloaded with new values

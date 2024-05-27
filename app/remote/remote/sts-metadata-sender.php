@@ -264,13 +264,6 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
     }
     $response['globalConfig'] = $general->fetchDataFromTable('global_config', $condition);
 
-    // $condition = [];
-    // if (!empty($data['provinceLastModified'])) {
-    //     $condition = "updated_datetime > '" . $data['provinceLastModified'] . "'";
-    // }
-    // $response['province'] = $general->fetchDataFromTable('geographical_divisions', $condition);
-
-
     $condition = [];
     $signatureCondition = [];
     // Using same facilityLastModified to check if any signatures were added
@@ -330,6 +323,7 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
         $condition = "updated_datetime > '" . $data['patientsLastModified'] . "'";
     }
     $response['patients'] = $general->fetchDataFromTable('patients', $condition);
+
 
     if (!empty($response)) {
         // using array_filter without callback will remove keys with empty values
