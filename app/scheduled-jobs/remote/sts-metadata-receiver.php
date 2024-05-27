@@ -96,39 +96,48 @@ $payload = [
 $commonDataToSync = [
     'globalConfig'  => [
         'primaryKey' => 'name',
-        'tableName' => 'global_config'
+        'tableName' => 'global_config',
+        'canTruncate' => true
     ],
     'users'  => [
         'primaryKey' => 'user_id',
-        'tableName' => 'user_details'
+        'tableName' => 'user_details',
+        'canTruncate' => false
     ],
     'facilities'  => [
         'primaryKey' => 'facility_id',
-        'tableName' => 'facility_details'
+        'tableName' => 'facility_details',
+        'canTruncate' => true
     ],
     'healthFacilities'  => [
         'primaryKey' => 'facility_id',
-        'tableName' => 'health_facilities'
+        'tableName' => 'health_facilities',
+        'canTruncate' => true
     ],
     'testingLabs'  => [
         'primaryKey' => 'facility_id',
-        'tableName' => 'testing_labs'
+        'tableName' => 'testing_labs',
+        'canTruncate' => true
     ],
     'fundingSources'  => [
         'primaryKey' => 'funding_source_id',
-        'tableName' => 'r_funding_sources'
+        'tableName' => 'r_funding_sources',
+        'canTruncate' => true
     ],
     'partners'  => [
         'primaryKey' => 'i_partner_id',
         'tableName' => 'r_implementation_partners',
+        'canTruncate' => true
     ],
     'geoDivisions'  => [
         'primaryKey' => 'geo_id',
-        'tableName' => 'geographical_divisions'
+        'tableName' => 'geographical_divisions',
+        'canTruncate' => true
     ],
     'patients'  => [
         'primaryKey' => 'system_patient_code',
-        'tableName'  =>  'patients'
+        'tableName'  =>  'patients',
+        'canTruncate' => false
     ]
 ];
 
@@ -157,7 +166,11 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
     foreach ($toSyncTables as $table) {
         $payload[$general->stringToCamelCase($table) . 'LastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime($table);
 
-        $genericDataToSync[$general->stringToCamelCase($table)] = ["primaryKey" => $general->getPrimaryKeyField($table), "tableName" => $table];
+        $genericDataToSync[$general->stringToCamelCase($table)] = [
+            "primaryKey" => $general->getPrimaryKeyField($table),
+            "tableName" => $table,
+            "canTruncate" => true
+        ];
     }
 }
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
@@ -174,26 +187,32 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
         'vlSampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_vl_sample_type',
+            'canTruncate' => true
         ],
         'vlArtCodes' => [
             'primaryKey' => 'art_id',
             'tableName' => 'r_vl_art_regimen',
+            'canTruncate' => true
         ],
         'vlRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_vl_sample_rejection_reasons',
+            'canTruncate' => true
         ],
         'vlTestReasons' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_vl_test_reasons',
+            'canTruncate' => true
         ],
         'vlFailureReasons' => [
             'primaryKey' => 'failure_id',
             'tableName' => 'r_vl_test_failure_reasons',
+            'canTruncate' => true
         ],
         'vlResults' => [
             'primaryKey' => 'result_id',
             'tableName' => 'r_vl_results',
+            'canTruncate' => true
         ]
     ];
 }
@@ -210,18 +229,22 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         'eidRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_eid_sample_rejection_reasons',
+            'canTruncate' => true
         ],
         'eidSampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_eid_sample_type',
+            'canTruncate' => true
         ],
         'eidResults' => [
             'primaryKey' => 'result_id',
             'tableName' => 'r_eid_results',
+            'canTruncate' => true
         ],
         'eidReasonForTesting' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_eid_test_reasons',
+            'canTruncate' => true
         ]
     ];
 }
@@ -244,30 +267,37 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         'covid19RejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_covid19_sample_rejection_reasons',
+            'canTruncate' => true
         ],
         'covid19SampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_covid19_sample_type',
+            'canTruncate' => true
         ],
         'covid19Comorbidities' => [
             'primaryKey' => 'comorbidity_id',
             'tableName' => 'r_covid19_comorbidities',
+            'canTruncate' => true
         ],
         'covid19Results' => [
             'primaryKey' => 'result_id',
             'tableName' => 'r_covid19_results',
+            'canTruncate' => true
         ],
         'covid19Symptoms' => [
             'primaryKey' => 'symptom_id',
             'tableName' => 'r_covid19_symptoms',
+            'canTruncate' => true
         ],
         'covid19ReasonForTesting' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_covid19_test_reasons',
+            'canTruncate' => true
         ],
         'covid19QCTestKits' => [
             'primaryKey' => 'testkit_id',
             'tableName' => 'r_covid19_qc_testkits',
+            'canTruncate' => true
         ]
     ];
 }
@@ -284,22 +314,27 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         'hepatitisReasonForTesting' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_hepatitis_test_reasons',
+            'canTruncate' => true
         ],
         'hepatitisResults' => [
             'primaryKey' => 'result_id',
             'tableName' => 'r_hepatitis_results',
+            'canTruncate' => true
         ],
         'hepatitisComorbidities' => [
             'primaryKey' => 'comorbidity_id',
             'tableName' => 'r_hepatitis_comorbidities',
+            'canTruncate' => true
         ],
         'hepatitisSampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_hepatitis_sample_type',
+            'canTruncate' => true
         ],
         'hepatitisRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_hepatitis_sample_rejection_reasons',
+            'canTruncate' => true
         ]
     ];
 }
@@ -315,18 +350,22 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
         'tbReasonForTesting' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_tb_test_reasons',
+            'canTruncate' => true
         ],
         'tbResults' => [
             'primaryKey' => 'result_id',
             'tableName' => 'r_tb_results',
+            'canTruncate' => true
         ],
         'tbSampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_tb_sample_type',
+            'canTruncate' => true
         ],
         'tbRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_tb_sample_rejection_reasons',
+            'canTruncate' => true
         ]
     ];
 }
@@ -341,14 +380,17 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
         'cd4SampleTypes' => [
             'primaryKey' => 'sample_id',
             'tableName' => 'r_cd4_sample_types',
+            'canTruncate' => true
         ],
         'cd4RejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_cd4_sample_rejection_reasons',
+            'canTruncate' => true
         ],
         'cd4ReasonForTesting' => [
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_cd4_test_reasons',
+            'canTruncate' => true
         ]
     ];
 }
@@ -385,7 +427,8 @@ try {
 
             try {
                 // Truncate table if force flag is set
-                if ($cliMode && $forceFlag) {
+                if ($cliMode && $forceFlag && $dataToSync[$dataType]['canTruncate'] !== false) {
+                    echo "TRUNCATE TABLE {$dataToSync[$dataType]['tableName']}" . PHP_EOL;
                     $db->rawQuery("TRUNCATE TABLE {$dataToSync[$dataType]['tableName']}");
                 }
 
