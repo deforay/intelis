@@ -174,6 +174,8 @@ $testTypeList = SystemService::getActiveModules(true);
 												if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 												<option value='generic-tests' <?php echo (in_array('generic-tests', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _translate("Other Lab Tests"); ?></option>
 											<?php } ?>-->
+											<option value=""><?php echo _translate("Select Test Types"); ?></option>
+
 											<?php foreach ($testTypeList as $testType) { ?>
 												<option value="<?= $testType; ?>" <?php echo (in_array($testType, $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo TestsService::getTestName($testType); ?></option>
 											<?php } ?>

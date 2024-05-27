@@ -64,6 +64,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 </style>
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
+<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -341,6 +343,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										</label>
 										<div class="col-lg-7">
 											<select class="" id="testType" name="testType[]" title="<?php echo _translate('Choose at least one test type'); ?>" onchange="getTestType();" multiple>
+											<option value=""><?php echo _translate("Select Test Types"); ?></option>
+
 												<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 													<option value="vl">
 														<?php echo _translate("Viral Load"); ?>
@@ -773,10 +777,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("#testType").select2({
-			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
-			width: '100%'
-		});
+	
+
+		$("#testType").selectize({
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+});
+
 		$(".testSignType").select2({
 			placeholder: '<?php echo _translate("Select Test Type", true); ?>',
 			width: '100%'
@@ -1057,6 +1063,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		});
 	}
 </script>
+<script type="text/javascript" src="/assets/js/selectize.js"></script>
 
 <?php
 require_once APPLICATION_PATH . '/footer.php';
