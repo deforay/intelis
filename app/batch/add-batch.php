@@ -282,15 +282,16 @@ $fundingSourceList = $general->getFundingSources();
                 <tr>
                     <td><label for="sortBy"><?= _translate("Sort By"); ?></label></td>
 
-                    <td><select class="form-control" id="sortBy" name="sortBy" onchange="">
-                            <option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified">Order By Last Modified</option>
-                            <option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode">Order By Sample Code</option>
+                    <td><select class="form-control" id="sortBy" name="sortBy">
+                            <option <?= $sortBy == 'requestModified' ? "selected='selected'" : '' ?> value="requestModified"><?= _translate("Request Created"); ?></option>
+							<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
+							<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample Code"); ?></option>
                         </select></td>
                     <td><label for="sortType"><?= _translate("Sort Type"); ?></label></td>
                     <td>
-                        <select class="form-control" id="sortType" onchange="">
-                            <option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc">Ascending</option>
-                            <option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc">Descending</option>
+                        <select class="form-control" id="sortType">
+                            <option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc"><?= _translate("Ascending"); ?></option>
+							<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc"><?= _translate("Descending"); ?></option>
                         </select>
                     </td>
                 </tr>
