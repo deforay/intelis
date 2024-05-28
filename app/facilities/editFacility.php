@@ -369,7 +369,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								<div class="form-group">
 									<label for="testType" class="col-lg-4 control-label test-type"><?php echo _translate("Test Type"); ?></label>
 									<div class="col-lg-7">
-										<select class="" id="testType" name="testType[]" title="<?php echo _translate('Choose at least one test type'); ?>" onchange="getTestType();" multiple>
+										<select id="testType" name="testType[]" title="<?php echo _translate('Choose at least one test type'); ?>" onchange="getTestType();" multiple>
 											<option value=""><?php echo _translate("Select Test Types"); ?></option>
 
 											<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
@@ -838,7 +838,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	// });
 
 	function validateNow() {
-
+		$('.selectize-control, .selectize-dropdown').removeClass('isRequired');
 		var selVal = [];
 		$('#search_to option').each(function(i, selected) {
 			selVal[i] = $(selected).val();
