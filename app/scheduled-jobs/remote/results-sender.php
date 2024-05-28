@@ -13,6 +13,7 @@ use App\Services\Covid19Service;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Utilities\LoggerUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -29,15 +30,16 @@ $version = VERSION;
 // putting this into a variable to make this editable
 $systemConfig = SYSTEM_CONFIG;
 
-if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
-    error_log("Please check if STS URL is set");
+$remoteUrl = $general->getRemoteURL();
+
+if (empty($remoteUrl)) {
+    LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
 try {
     // Checking if the network connection is available
-    $remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
     if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
-        error_log("No network connectivity while trying remote sync.");
+        LoggerUtility::log('error', "No network connectivity while trying remote sync.");
         return false;
     }
 

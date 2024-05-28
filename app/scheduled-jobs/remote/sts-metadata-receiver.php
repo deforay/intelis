@@ -51,7 +51,9 @@ if ($general->isLISInstance() === false) {
     exit(0);
 }
 
-if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
+$remoteUrl = $general->getRemoteURL();
+
+if (empty($remoteUrl)) {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
@@ -59,8 +61,6 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
 $version = VERSION;
-
-$remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
 
 if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
     LoggerUtility::log('error', "No internet connectivity while trying remote sync.");
@@ -163,16 +163,20 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
         "generic_test_symptoms_map",
         "generic_test_result_units_map"
     ];
-    foreach ($toSyncTables as $table) {
-        $payload[$general->stringToCamelCase($table) . 'LastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime($table);
 
-        $genericDataToSync[$general->stringToCamelCase($table)] = [
+    $payload = array_map(function ($table) use ($general, $forceFlag) {
+        return [$general->stringToCamelCase($table) . 'LastModified' => $forceFlag ? null : $general->getLastModifiedDateTime($table)];
+    }, $toSyncTables);
+
+    $genericDataToSync = array_map(function ($table) use ($general) {
+        return [$general->stringToCamelCase($table) => [
             "primaryKey" => $general->getPrimaryKeyField($table),
             "tableName" => $table,
             "canTruncate" => true
-        ];
-    }
+        ]];
+    }, $toSyncTables);
 }
+
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
 
     $payload['vlArtCodesLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_vl_art_regimen');

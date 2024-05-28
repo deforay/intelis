@@ -32,6 +32,32 @@ final class CommonService
         $this->fileCache = $fileCache;
     }
 
+    public function getRemoteURL()
+    {
+        $remoteUrl = SYSTEM_CONFIG['remoteURL'];
+        if (!isset($remoteUrl) || $remoteUrl == '' || empty($remoteUrl)) {
+            return null;
+        }
+
+        // Add https:// if no scheme is present
+        if (!preg_match("~^(?:f|ht)tps?://~i", $remoteUrl)) {
+            $remoteUrl = "https://" . $remoteUrl;
+        }
+
+        // Parse the URL and get the scheme and host
+        $parsedUrl = parse_url($remoteUrl);
+        if (isset($parsedUrl['scheme']) && isset($parsedUrl['host'])) {
+            $baseUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
+
+            // Remove trailing slash if present
+            return rtrim($baseUrl, '/');
+        } else {
+            return null;
+        }
+    }
+
+
+
     /**
      *
      * @param int $length

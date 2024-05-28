@@ -1,10 +1,10 @@
 <?php
 
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Services\SystemService;
-use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -16,6 +16,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $systemService = ContainerRegistry::get(SystemService::class);
 
 $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
+
+$remoteUrl = $general->getRemoteURL();
 
 
 if (_isAllowed("sync-history.php")) {
@@ -51,7 +53,7 @@ if (empty($syncLatestTime)) {
 			</small>
 			<?php
 
-			if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && $general->isLISInstance()) { ?>
+			if (!empty($remoteUrl) && isset($_SESSION['userName']) && $general->isLISInstance()) { ?>
 
 				<small class="pull-right">
 					<a href="javascript:syncRemoteData();">
@@ -102,10 +104,10 @@ if (empty($syncLatestTime)) {
 <script src="/assets/js/highcharts-exporting.js"></script>
 <script src="/assets/js/highcharts-offline-exporting.js"></script>
 <script src="/assets/js/highcharts-accessibility.js"></script>
-<!-- Import jQuery 
+<!-- Import jQuery
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
 
- Import Trumbowyg 
+ Import Trumbowyg
 <script src="/assets/js/trumbowyg.min.js"></script>-->
 <script type="text/javascript" src="/assets/js/summernote.min.js"></script>
 
@@ -153,7 +155,7 @@ if (empty($syncLatestTime)) {
 	function setCrossLogin() {
 		StorageHelper.storeInSessionStorage('crosslogin', 'true');
 	}
-	<?php if (!empty(trim((string) SYSTEM_CONFIG['remoteURL'])) && $general->isLISInstance()) { ?>
+	<?php if (!empty($remoteUrl) && $general->isLISInstance()) { ?>
 		remoteSync = true;
 
 		function syncRemoteData() {
@@ -301,11 +303,11 @@ if (empty($syncLatestTime)) {
 
 			// Every 5 mins check if STS is reachable
 			(function checkSTSConnection() {
-				if (<?= empty(trim((string) SYSTEM_CONFIG['remoteURL'])) ? 1 : 0 ?>) {
+				if (<?= empty($remoteUrl) ? 1 : 0 ?>) {
 					$('.is-remote-server-reachable').hide();
 				} else {
 					$.ajax({
-						url: '<?= SYSTEM_CONFIG['remoteURL']; ?>' + '/api/version.php',
+						url: '<?= $remoteUrl; ?>' + '/api/version.php',
 						cache: false,
 						success: function(data) {
 							$('.is-remote-server-reachable').fadeIn(1000);
