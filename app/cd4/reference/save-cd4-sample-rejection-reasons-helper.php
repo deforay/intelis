@@ -24,8 +24,8 @@ try {
 
 		$data = array(
 			'rejection_reason_name' 	=> $_POST['rejectionReasonName'],
-			'rejection_type' 			=> $_POST['rejectionType'],
-			'rejection_reason_code'	=> $_POST['rejectionReasonCode'],
+			'rejection_type' 			=> $_POST['rejectionType'] ?? 'general',
+			'rejection_reason_code'		=> $_POST['rejectionReasonCode'],
 			'rejection_reason_status' 	=> $_POST['rejectionReasonStatus'],
 			'updated_datetime' 			=> DateUtility::getCurrentDateTime()
 		);
