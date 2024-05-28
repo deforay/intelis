@@ -454,4 +454,32 @@ final class MiscUtility
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
         return strtolower($extension);
     }
+
+    public static function displayProgressBar($current, $total, $size = 30)
+    {
+        static $startTime;
+
+        // Calculate the percentage
+        $progress = ($current / $total);
+        $bar = floor($progress * $size);
+
+        // Start the timer
+        if (empty($startTime)) {
+            $startTime = time();
+        }
+
+        // Calculate elapsed time
+        $elapsed = time() - $startTime;
+
+        // Generate the progress bar string
+        $progressBar = str_repeat('=', $bar) . str_repeat(' ', $size - $bar);
+
+        // Output the progress bar
+        printf("\r[%s] %d%% Complete (%d/%d) - %d sec elapsed", $progressBar, $progress * 100, $current, $total, $elapsed);
+
+        // Flush output
+        if ($current === $total) {
+            echo "\n";
+        }
+    }
 }
