@@ -558,12 +558,12 @@ foreach ($testReasonsResultDetails as $row) {
                                                                            <input name="cvNumber" id="cvNumber" class="form-control" placeholder="<?= _translate('Enter CV Number'); ?>" title="<?= _translate('Please enter CV Number'); ?>" value="<?= $vlQueryInfo['cv_number']; ?>" <?php echo $labFieldDisabled; ?>>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-6">
+                                                                 <!-- <div class="col-md-6">
                                                                       <label for="serialNo" class="col-lg-5 control-label"><?= _translate('Lab Sample Code'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <input name="serialNo" id="serialNo" class="form-control" placeholder="<?= _translate('Enter Lab Sample Code'); ?>" title="<?= _translate('Please enter Lab Sample Code'); ?>" value="<?= $vlQueryInfo['external_sample_code']; ?>" <?php echo $labFieldDisabled; ?>>
                                                                       </div>
-                                                                 </div>
+                                                                 </div> -->
                                                                  <div class="col-md-6">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label"><?= _translate('VL Testing Platform'); ?> </label>
                                                                       <div class="col-lg-7">
