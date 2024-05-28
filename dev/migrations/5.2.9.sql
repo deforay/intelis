@@ -510,3 +510,7 @@ ALTER TABLE `generic_test_results` CHANGE `sample_tested_datetime` `sample_teste
 -- Amit 27-May-2024
 UPDATE `privileges` SET `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=cd4' WHERE `privilege_name` LIKE '/specimen-referral-manifest/view-manifest.php?t=cd4';
 UPDATE `s_app_menu` SET `display_text` = 'CD4' WHERE `link` LIKE '#cd4'
+
+-- Thana 28-May-2024
+ALTER TABLE `batch_details` ADD `created_by` VARCHAR(500) NULL DEFAULT NULL AFTER `control_names`;
+
