@@ -42,7 +42,6 @@ $apiService = ContainerRegistry::get(ApiService::class);
 /** @var FileCacheUtility $fileCache */
 $fileCache = ContainerRegistry::get(FileCacheUtility::class);
 
-
 $systemConfig = SYSTEM_CONFIG;
 
 $systemType = $general->getSystemConfig('sc_user_type');
@@ -51,9 +50,7 @@ if ($general->isLISInstance() === false) {
     exit(0);
 }
 
-$remoteUrl = $general->getRemoteURL();
-
-if (empty($remoteUrl)) {
+if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
@@ -62,8 +59,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
 $version = VERSION;
 
-if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
-    LoggerUtility::log('error', "No internet connectivity while trying remote sync.");
+$remoteUrl = $general->getRemoteURL();
+
+if (empty($remoteUrl)) {
+    LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
 
@@ -163,20 +162,16 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
         "generic_test_symptoms_map",
         "generic_test_result_units_map"
     ];
+    foreach ($toSyncTables as $table) {
+        $payload[$general->stringToCamelCase($table) . 'LastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime($table);
 
-    $payload = array_map(function ($table) use ($general, $forceFlag) {
-        return [$general->stringToCamelCase($table) . 'LastModified' => $forceFlag ? null : $general->getLastModifiedDateTime($table)];
-    }, $toSyncTables);
-
-    $genericDataToSync = array_map(function ($table) use ($general) {
-        return [$general->stringToCamelCase($table) => [
+        $genericDataToSync[$general->stringToCamelCase($table)] = [
             "primaryKey" => $general->getPrimaryKeyField($table),
             "tableName" => $table,
             "canTruncate" => true
-        ]];
-    }, $toSyncTables);
+        ];
+    }
 }
-
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
 
     $payload['vlArtCodesLastModified'] = $forceFlag ? null : $general->getLastModifiedDateTime('r_vl_art_regimen');
@@ -457,7 +452,11 @@ try {
                         echo "Syncing data for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
                     }
 
-                    foreach ($dataValues as $tableDataValues) {
+
+                    $totalRows = count($dataValues); // Get the total number of rows for the current table
+                    foreach ($dataValues as $index => $tableDataValues) {
+                        MiscUtility::displayProgressBar($index + 1, $totalRows); // Update the progress bar for each row
+
 
                         $tableData = MiscUtility::updateFromArray($emptyTableArray, $tableDataValues);
                         $updateColumns = array_keys($tableData);

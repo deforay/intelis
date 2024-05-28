@@ -12,6 +12,7 @@ use App\Services\VlService;
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
@@ -22,6 +23,7 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
     LoggerUtility::log('error', 'Interfacing is not enabled. Please enable it in configuration.');
     exit;
 }
+
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -88,14 +90,15 @@ if ($mysqlConnected) {
 }
 
 
-
-
 $additionalColumns = [
     'form_hepatitis' => ['hepatitis_test_type'],
 ];
 
 $numberOfResults = 0;
 if (!empty($interfaceData)) {
+
+
+    $totalResults = count($interfaceData); // Get the total number of items
 
     $availableModules = [];
 
@@ -110,6 +113,8 @@ if (!empty($interfaceData)) {
     //$allowRepeatedTests = false;
 
     foreach ($interfaceData as $key => $result) {
+
+        MiscUtility::displayProgressBar($key + 1, $totalResults); // Update progress bar
 
         if (empty($result['order_id']) && empty($result['test_id'])) {
             continue;
