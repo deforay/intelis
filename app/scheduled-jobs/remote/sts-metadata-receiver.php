@@ -97,7 +97,7 @@ $commonDataToSync = [
     'globalConfig'  => [
         'primaryKey' => 'name',
         'tableName' => 'global_config',
-        'canTruncate' => true
+        'canTruncate' => false
     ],
     'users'  => [
         'primaryKey' => 'user_id',
