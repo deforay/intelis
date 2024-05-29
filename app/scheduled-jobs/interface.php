@@ -100,6 +100,8 @@ if (!empty($interfaceData)) {
 
     $totalResults = count($interfaceData); // Get the total number of items
 
+    echo "Processing results from Interface Tool" . PHP_EOL;
+
     $availableModules = [];
 
     $activeModules = SystemService::getActiveModules(onlyTests: true);
