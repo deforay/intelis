@@ -129,7 +129,6 @@ try {
         $vlData['result_modified'] = "no";
     }
 
-
     $db->where('cd4_id', $_POST['cd4SampleId']);
     $id = $db->update($tableName, $vlData);
     if ($id === true) {

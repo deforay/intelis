@@ -611,34 +611,34 @@ $disable = "disabled = 'disabled'";
 										<div class="box-body">
 											<div class="row">
 												<div class="col-md-6">
-													<label for="testingPlatform" class="col-lg-5 control-label">CD4 Testing Platform </label>
+													<label for="testingPlatform" class="col-lg-5 control-label">CD4 Testing Platform<span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
-														<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?>>
+														<select name="testingPlatform" id="testingPlatform" class="form-control isRequired" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?>>
 															<option value="">-- Select --</option>
 															<?php foreach ($importResult as $mName) { ?>
-																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($cd4QueryInfo['cd4_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
+															<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($cd4QueryInfo['cd4_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
 															<?php } ?>
 														</select>
 													</div>
 												</div>
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
+													<label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" <?php echo $labFieldDisabled; ?> value="<?php echo $cd4QueryInfo['sample_received_at_lab_datetime']; ?>" />
+														<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" <?php echo $labFieldDisabled; ?> value="<?php echo $cd4QueryInfo['sample_received_at_lab_datetime']; ?>" />
 													</div>
 												</div>
 											</div>
 											<div class="row">
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date </label>
+													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" value="<?php echo $cd4QueryInfo['sample_tested_datetime']; ?>" />
+														<input type="text" class="form-control dateTime isRequired" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" value="<?php echo $cd4QueryInfo['sample_tested_datetime']; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="reviewedBy">Tested By </label>
+													<label class="col-lg-5 control-label" for="reviewedBy">Tested By<span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
-														<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
+														<select name="testedBy" id="testedBy" class="select2 form-control isRequired" title="Please choose tested by" style="width: 100%;">
 															<?= $general->generateSelectOptions($userInfo, $cd4QueryInfo['tested_by'], '-- Select --'); ?>
 														</select>
 													</div>
@@ -646,9 +646,9 @@ $disable = "disabled = 'disabled'";
 											</div>
 											<div class="row">
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? </label>
+													<label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<select name="isSampleRejected" id="isSampleRejected" class="form-control" title="Please check if sample is rejected or not">
+														<select name="isSampleRejected" id="isSampleRejected" class="form-control isRequired" title="Please check if sample is rejected or not">
 															<option value="">-- Select --</option>
 															<option value="yes" <?= ($cd4QueryInfo['is_sample_rejected'] === 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
 															<option value="no" <?= ($cd4QueryInfo['is_sample_rejected'] === 'no') ? 'selected="selected"' : ''; ?>>No</option>
@@ -688,29 +688,29 @@ $disable = "disabled = 'disabled'";
 											</div>
 											<div class="row">
 												<div class="col-md-6 cd4Result">
-													<label class="col-lg-5 control-label" for="cd4Result">Sample Results (CD4 count -Absolute value): </label>
+													<label class="col-lg-5 control-label" for="cd4Result">Sample Results (CD4 count -Absolute value)<span class="mandatory">*</span> </label>
 													<div class="col-lg-7 resultInputContainer">
-														<input value="<?= $cd4QueryInfo['cd4_result']; ?>" class="form-control" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" />
+														<input value="<?= $cd4QueryInfo['cd4_result']; ?>" class="form-control isRequired" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" />
 													</div>
 												</div>
 												<div class="col-md-6 cd4Result">
-													<label class="col-lg-5 control-label" for="cd4ResultPercentage">Sample Results (Percentage) :</label>
+													<label class="col-lg-5 control-label" for="cd4ResultPercentage">Sample Results (Percentage) <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" value="<?= $cd4QueryInfo['cd4_result_percentage']; ?>" class="form-control" id="cd4ResultPercentage" name="cd4ResultPercentage" placeholder="CD4 Result Value percentage" title="Please enter CD4 Result Value percentage" style="width:100%;" />
+														<input type="text" value="<?= $cd4QueryInfo['cd4_result_percentage']; ?>" class="form-control isRequired" id="cd4ResultPercentage" name="cd4ResultPercentage" placeholder="CD4 Result Value percentage" title="Please enter CD4 Result Value percentage" style="width:100%;" />
 													</div>
 												</div>
 											</div>
 											<div class="row">
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
+													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" value="<?php echo $cd4QueryInfo['result_approved_datetime']; ?>" />
+														<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control isRequired" placeholder="Approved on" title="Please enter the Approved on" value="<?php echo $cd4QueryInfo['result_approved_datetime']; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+													<label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
+														<select name="approvedBy" id="approvedBy" class="form-control isRequired" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
 															<option value="">-- Select --</option>
 															<?php foreach ($userResult as $uName) { ?>
 																<option value="<?php echo $uName['user_id']; ?>" <?php echo ($cd4QueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
@@ -722,9 +722,9 @@ $disable = "disabled = 'disabled'";
 											<div class="row">
 
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
+													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> value="<?php echo $cd4QueryInfo['result_dispatched_datetime']; ?>" />
+														<input type="text" class="form-control dateTime isRequired" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> value="<?php echo $cd4QueryInfo['result_dispatched_datetime']; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
