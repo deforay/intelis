@@ -258,6 +258,29 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
         $counter += (count($response['tbRejectionReasons']) + count($response['tbSampleTypes']) + count($response['tbResults']) + count($response['tbReasonForTesting']));
     }
 
+    if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) {
+
+        $condition = [];
+        if (!empty($data['cd4RejectionReasonsLastModified'])) {
+            $condition = "updated_datetime > '" . $data['cd4RejectionReasonsLastModified'] . "'";
+        }
+        $response['cd4RejectionReasons'] = $general->fetchDataFromTable('r_cd4_sample_rejection_reasons', $condition);
+
+        $condition = [];
+        if (!empty($data['cd4SampleTypesLastModified'])) {
+            $condition = "updated_datetime > '" . $data['cd4SampleTypesLastModified'] . "'";
+        }
+        $response['cd4SampleTypes'] = $general->fetchDataFromTable('r_cd4_sample_types', $condition);
+
+        $condition = [];
+        if (!empty($data['cd4ReasonForTestingLastModified'])) {
+            $condition = "updated_datetime > '" . $data['cd4ReasonForTestingLastModified'] . "'";
+        }
+        $response['cd4ReasonForTesting'] = $general->fetchDataFromTable('r_cd4_test_reasons', $condition);
+
+        $counter += (count($response['cd4RejectionReasons']) + count($response['cd4SampleTypes']) + count($response['cd4ReasonForTesting']));
+    }
+
     $condition = [];
     if (!empty($data['globalConfigLastModified'])) {
         $condition = "updated_datetime > '" . $data['globalConfigLastModified'] . "' AND remote_sync_needed = 'yes'";
