@@ -496,25 +496,6 @@ if (empty($syncLatestTime)) {
 			}
 		});
 	}
-	function setCurrentDateTime(tbl){
-		if(tbl != ""){
-			$.blockUI();
-			$.post("/support/setCurrentDateTime.php", {
-				table: tbl
-			},
-			function(data) {
-				$.unblockUI();
-				Toastify({
-					text: "<?= _translate('Updated successfully!') ?>",
-					duration: 3000,
-					style: {
-						background: 'green'
-					}
-				}).showToast();
-			});
-		}
-		$.unblockUI();
-	}
 </script>
 </body>
 
