@@ -15,18 +15,17 @@ $_GET = _sanitizeInput($request->getQueryParams());
 
 $sortBy = $_GET['sortBy'] ?? 'sampleCode';
 
-$sortType = match ($_GET['sortType']) {
-	'a' => 'asc',
-	'asc' => 'asc',
-	'desc' => 'desc',
-	'd' => 'desc',
+$sortType = match ($_POST['sortType']) {
+	'a', 'asc' => 'asc',
+	'd', 'desc' => 'desc',
 	default => 'asc',
 };
+
 
 $orderBy = match ($sortBy) {
 	'sampleCode' => 'sample_code',
 	'lastModified' => 'last_modified_datetime',
-	'requestModified' => 'request_created_datetime',
+	'requestCreated' => 'request_created_datetime',
 	default => 'sample_code',
 };
 
@@ -282,7 +281,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 				<div class="row">
 					<div class="col-lg-4">
 						<select class="form-control" id="sortBy">
-							<option <?= $sortBy == 'requestModified' ? "selected='selected'" : '' ?> value="requestModified"><?= _translate("Request Created"); ?></option>
+							<option <?= $sortBy == 'requestCreated' ? "selected='selected'" : '' ?> value="requestCreated"><?= _translate("Request Created"); ?></option>
 							<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
 							<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample Code"); ?></option>
 						</select>
