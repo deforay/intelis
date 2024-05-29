@@ -512,20 +512,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <h3 class="box-title"><?= _translate('Reserved for Laboratory Use'); ?> </h3>
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+
                                         <tr>
+                                            <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
+                                            <td>
+                                                <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                            </td>
                                             <th><?= _translate('Testing Platform'); ?> </th>
                                             <td>
                                                 <select name="eidPlatform" id="eidPlatform" class="form-control" title="<?= _translate('Please choose VL Testing Platform'); ?>" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
+
+                                        <tr>
                                             <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
-
-                                        <tr>
-
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -534,7 +538,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value="no"> <?= _translate('No'); ?> </option>
                                                 </select>
                                             </td>
-
 
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">

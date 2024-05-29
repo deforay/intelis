@@ -742,7 +742,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
-<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
 <script type="text/javascript">
 	var deletedRowVar = [];
@@ -1101,7 +1100,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		console.log($('#deletedRow').val());
 	}
 </script>
-<script type="text/javascript" src="/assets/js/selectize.js"></script>
 
 <?php
 require_once APPLICATION_PATH . '/footer.php';

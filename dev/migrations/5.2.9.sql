@@ -514,3 +514,6 @@ UPDATE `s_app_menu` SET `display_text` = 'CD4' WHERE `link` LIKE '#cd4'
 -- Thana 28-May-2024
 ALTER TABLE `batch_details` ADD `created_by` VARCHAR(500) NULL DEFAULT NULL AFTER `control_names`;
 
+--Jeyabanu 29-May-2024
+ALTER TABLE `form_eid` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `audit_form_eid` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;

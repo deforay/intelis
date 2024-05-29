@@ -104,6 +104,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 	<link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css">
 	<!--<link rel="stylesheet" type="text/css" href="/assets/css/trumbowyg.min.css">-->
 	<link href="/assets/css/summernote.min.css" rel="stylesheet">
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
 	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>

@@ -208,7 +208,6 @@ try {
 	}
 
 
-
 	if (isset($_POST['newArtRegimen']) && trim((string) $_POST['newArtRegimen']) != "") {
 		$artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower((string) $_POST['newArtRegimen']) . "' OR art_code='" . (strtolower((string) $_POST['newArtRegimen'])) . "')";
 		$artResult = $db->rawQuery($artQuery);
@@ -306,6 +305,7 @@ try {
 	$eidData = array(
 		'facility_id' => $_POST['facilityId'] ?? null,
 		'province_id' => $_POST['provinceId'] ?? null,
+		'lab_assigned_code' => $_POST['labAssignedCode'] ?? null,
 		'lab_id' => $_POST['labId'] ?? null,
 		'lab_testing_point' => $_POST['labTestingPoint'] ?? null,
 		'system_patient_code' => $systemGeneratedCode,

@@ -293,6 +293,7 @@ try {
 		'vlsm_country_id' => $_POST['formId'],
 		'facility_id' => $_POST['facilityId'] ?? null,
 		'province_id' => $_POST['provinceId'] ?? null,
+		'lab_assigned_code' => $_POST['labAssignedCode'] ?? null,
 		'lab_id' => $_POST['labId'] ?? null,
 		'system_patient_code' => $systemGeneratedCode,
 		'lab_testing_point' => $_POST['labTestingPoint'] ?? null,
