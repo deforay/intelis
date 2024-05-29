@@ -315,4 +315,24 @@
             }
         }
     }
+
+    function forceMetadataSync(tbl){
+		if(tbl != ""){
+			$.blockUI();
+			$.post("/common/force-metadata-sync.php", {
+				table: tbl
+			},
+			function(data) {
+				$.unblockUI();
+				Toastify({
+					text: "<?= _translate("Sync Forced Successfully", true); ?>",
+					duration: 3000,
+					style: {
+						background: 'green'
+					}
+				}).showToast();
+			});
+		}
+		$.unblockUI();
+	}
 </script>

@@ -1,4 +1,10 @@
 <?php
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("Viral Load Sample Type");
 
 require_once APPLICATION_PATH . '/header.php';
@@ -21,7 +27,7 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <a href="javascript:void(0);" onclick="setCurrentDateTime('<?php echo base64_encode('r_vl_sample_type');?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+            <a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo CommonService::encrypt('r_vl_sample_type', base64_decode((string) $keyFromGlobalConfig));?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
             <?php if (_isAllowed("vl-art-code-details.php") && $general->isLISInstance() === false) { ?>
               <a href="add-vl-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Viral Load Sample Type"); ?></a>
             <?php } ?>
