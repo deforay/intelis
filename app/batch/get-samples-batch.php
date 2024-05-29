@@ -27,18 +27,17 @@ if (empty($_POST['type'])) {
 
 $sortBy = $_POST['sortBy'] ?? 'sampleCode';
 
+
 $sortType = match ($_POST['sortType']) {
-    'a' => 'asc',
-    'asc' => 'asc',
-    'desc' => 'desc',
-    'd' => 'desc',
+    'a', 'asc' => 'asc',
+    'd', 'desc' => 'desc',
     default => 'asc',
 };
 
 $orderBy = match ($sortBy) {
     'sampleCode' => 'sample_code',
     'lastModified' => 'last_modified_datetime',
-    'requestModified' => 'request_created_datetime',
+    'requestCreated' => 'request_created_datetime',
     default => 'sample_code',
 };
 

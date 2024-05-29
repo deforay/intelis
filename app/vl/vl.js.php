@@ -29,7 +29,6 @@
         }
     }
 
-
     function checkARTInitiationDate() {
         var dobInput = $("#dob").val();
         var artInitiationDateInput = $("#dateOfArtInitiation").val();
@@ -141,8 +140,7 @@
         $.unblockUI();
     }
 
-    function getTreatmentLine(artRegimen)
-    {
+    function getTreatmentLine(artRegimen) {
         var char = artRegimen.charAt(0);
         $("#lineOfTreatment").val(char);
     }

@@ -5,6 +5,7 @@ CREATE TABLE `audit_form_vl` SELECT * from `form_vl` WHERE 1=0;
 ALTER TABLE `audit_form_vl`
    MODIFY COLUMN `vl_sample_id` int(11) NOT NULL,
    ENGINE = MyISAM,
+   CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
    ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
    ADD `revision` INT(6) NOT NULL AUTO_INCREMENT AFTER `action`,
    ADD `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`,
@@ -37,6 +38,7 @@ CREATE TABLE `audit_form_eid` SELECT * from `form_eid` WHERE 1=0;
 ALTER TABLE `audit_form_eid`
    MODIFY COLUMN `eid_id` int(11) NOT NULL,
    ENGINE = MyISAM,
+   CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
    ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
    ADD `revision` INT(6) NOT NULL AUTO_INCREMENT AFTER `action`,
    ADD `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`,
@@ -67,6 +69,7 @@ CREATE TABLE `audit_form_covid19` SELECT * from `form_covid19` WHERE 1=0;
 ALTER TABLE `audit_form_covid19`
    MODIFY COLUMN `covid19_id` int(11) NOT NULL,
    ENGINE = MyISAM,
+   CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
    ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
    ADD `revision` INT(6) NOT NULL AUTO_INCREMENT AFTER `action`,
    ADD `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`,
@@ -97,6 +100,7 @@ CREATE TABLE `audit_form_hepatitis` SELECT * from `form_hepatitis` WHERE 1=0;
 ALTER TABLE `audit_form_hepatitis`
    MODIFY COLUMN `hepatitis_id` int(11) NOT NULL,
    ENGINE = MyISAM,
+   CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
    ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
    ADD `revision` INT(6) NOT NULL AUTO_INCREMENT AFTER `action`,
    ADD `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`,
@@ -129,6 +133,7 @@ CREATE TABLE `audit_form_tb` SELECT * from `form_tb` WHERE 1=0;
 ALTER TABLE `audit_form_tb`
    MODIFY COLUMN `tb_id` int(11) NOT NULL,
    ENGINE = MyISAM,
+   CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
    ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
    ADD `revision` INT(6) NOT NULL AUTO_INCREMENT AFTER `action`,
    ADD `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`,
@@ -159,6 +164,7 @@ CREATE TABLE `audit_form_generic` SELECT * from `form_generic` WHERE 1=0;
 ALTER TABLE `audit_form_generic`
    MODIFY COLUMN `sample_id` int(11) NOT NULL,
    ENGINE = MyISAM,
+   CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
    ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
    ADD `revision` INT(6) NOT NULL AUTO_INCREMENT AFTER `action`,
    ADD `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`,
@@ -190,6 +196,7 @@ CREATE TABLE `audit_form_cd4` SELECT * from `form_cd4` WHERE 1=0;
 ALTER TABLE `audit_form_cd4`
    MODIFY COLUMN `cd4_id` int(11) NOT NULL,
    ENGINE = MyISAM,
+   CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
    ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
    ADD `revision` INT(6) NOT NULL AUTO_INCREMENT AFTER `action`,
    ADD `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`,

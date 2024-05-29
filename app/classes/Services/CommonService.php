@@ -1283,4 +1283,20 @@ final class CommonService
 
         return $tableFieldsAsArray;
     }
+
+    public function updateCurrentDateTime($tables){
+        $status = false;
+
+        if(!isset($tables) || empty($tables)){
+            return false;
+        }
+        if(is_array($tables)){
+            foreach($tables as $table){
+                $status = $this->db->update($table, array("updated_datetime" => DateUtility::getCurrentDateTime()));
+            }
+        }else{
+            $status = $this->db->update($tables, array("updated_datetime" => DateUtility::getCurrentDateTime()));
+        }
+        return $status;
+    }
 }

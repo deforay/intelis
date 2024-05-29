@@ -1,4 +1,10 @@
 <?php
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("Viral Load Art Code Details");
 
 require_once APPLICATION_PATH . '/header.php';
@@ -21,6 +27,7 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (_isAllowed("/vl/reference/add-vl-art-code-details.php") && $general->isLISInstance() === false) { ?>
+							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo CommonService::encrypt('r_vl_art_regimen', base64_decode((string) $keyFromGlobalConfig));?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 							<a href="/vl/reference/add-vl-art-code-details.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL ART Regimen"); ?></a>
 						<?php } ?>
 					</div>

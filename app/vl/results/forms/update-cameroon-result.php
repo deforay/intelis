@@ -579,12 +579,20 @@ foreach ($testReasonsResultDetails as $row) {
 														<input name="cvNumber" id="cvNumber" class="form-control" placeholder="<?= _translate('Enter CV Number'); ?>" title="<?= _translate('Please enter CV Number'); ?>" value="<?= $vlQueryInfo['cv_number']; ?>" <?php echo $labFieldDisabled; ?>>
 													</div>
 												</div>
+												<div class="col-md-6">
+													<label for="labAssignedCode" class="col-lg-5 control-label"><?= _translate('Lab Assigned Code'); ?> </label>
+													<div class="col-lg-7">
+														<input name="labAssignedCode" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>"  value="<?= $vlQueryInfo['lab_assigned_code']; ?>" <?php echo $labFieldDisabled; ?>>
+													</div>
+												</div>
 												<!-- <div class="col-md-6">
 													<label for="serialNo" class="col-lg-5 control-label"><?= _translate('Lab Sample Code'); ?> </label>
 													<div class="col-lg-7">
 														<input name="serialNo" id="serialNo" class="form-control" placeholder="<?= _translate('Enter Lab Sample Code'); ?>" title="<?= _translate('Please enter Lab Sample Code'); ?>" value="<?= $vlQueryInfo['external_sample_code']; ?>" <?php echo $labFieldDisabled; ?>>
 													</div>
 												</div> -->
+											</div>
+											<div class="row">
 												<div class="col-md-6">
 													<label for="testingPlatform" class="col-lg-5 control-label"><?= _translate('VL Testing Platform'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
@@ -596,24 +604,20 @@ foreach ($testReasonsResultDetails as $row) {
 														</select>
 													</div>
 												</div>
-
-											</div>
-											<div class="row">
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="sampleReceivedDate"><?= _translate('Date Sample Received at Testing Lab'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate('Sample Received Date'); ?>" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" title="<?= _translate('Please select sample received date'); ?>" <?php echo $labFieldDisabled; ?> />
 													</div>
 												</div>
+											</div>
+											<div class="row">
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab"><?= _translate('Sample Testing Date'); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate('Sample Testing Date'); ?>" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" title="<?= _translate('Please select sample testing date'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
 													</div>
 												</div>
-
-											</div>
-											<div class="row">
 
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="isSampleRejected"><?= _translate('Is Sample Rejected?'); ?><span class="mandatory">*</span> </label>
@@ -626,6 +630,8 @@ foreach ($testReasonsResultDetails as $row) {
 													</div>
 												</div>
 
+											</div>
+											<div class="row rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 												<div class="col-md-6 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionReason"><?= _translate('Rejection Reason'); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
@@ -641,37 +647,35 @@ foreach ($testReasonsResultDetails as $row) {
 																	} ?>
 																</optgroup>
 															<?php } ?>
-
+	
 														</select>
 													</div>
 												</div>
-											</div>
-											<div class="row">
-
 												<div class="col-md-6 rejectionReason" style="display:none;">
 													<label class="col-lg-5 control-label labels" for="rejectionDate"><?= _translate('Rejection Date'); ?> </label>
 													<div class="col-lg-7">
 														<input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="<?= _translate('Select Rejection Date'); ?>" title="<?= _translate('Please select rejection date'); ?>" />
 													</div>
 												</div>
+											</div>
+											<div class="row">
 												<div class="col-md-6 vlResult">
 													<label class="col-lg-5 control-label" for="vlResult"><?= _translate('Viral Load Result (copies/ml)'); ?> </label>
 													<div class="col-lg-7 resultInputContainer">
 														<input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" name="vlResult" placeholder="<?= _translate('Viral Load Result'); ?>" title="<?= _translate('Please enter viral load result'); ?>" value="<?= ($vlQueryInfo['result']); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" disabled />
 														<datalist id="possibleVlResults">
-
+	
 														</datalist>
 													</div>
 												</div>
-											</div>
-											<div class="row">
-
 												<div class="col-md-6 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 													<label class="col-lg-5 control-label" for="vlLog"><?= _translate('Viral Load (Log)'); ?> </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="<?= _translate('Viral Load Log'); ?>" title="<?= _translate('Please enter viral load log'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
 													</div>
 												</div>
+											</div>
+											<div class="row">
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="reviewedOn"><?= _translate('Reviewed On'); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
@@ -688,8 +692,6 @@ foreach ($testReasonsResultDetails as $row) {
 												</div>
 											</div>
 											<div class="row">
-
-
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="approvedOnDateTime"><?= _translate('Approved On'); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
@@ -717,19 +719,19 @@ foreach ($testReasonsResultDetails as $row) {
 													</div>
 												</div>
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="labComments"><?= _translate('Lab Tech. Comments'); ?> </label>
-													<div class="col-lg-7">
-														<textarea class="form-control" name="labComments" id="labComments" placeholder="<?= _translate('Lab comments'); ?>" <?php echo $labFieldDisabled; ?>><?php echo trim((string) $vlQueryInfo['lab_tech_comments']); ?></textarea>
-													</div>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="testedBy"><?= _translate('Tested By'); ?> <span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
 														<select name="testedBy" id="testedBy" class="select2 form-control isRequired" title="Please choose tested by" style="width: 100%;">
 															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['tested_by'], '-- Select --'); ?>
 														</select>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="labComments"><?= _translate('Lab Tech. Comments'); ?> </label>
+													<div class="col-lg-7">
+														<textarea class="form-control" name="labComments" id="labComments" placeholder="<?= _translate('Lab comments'); ?>" <?php echo $labFieldDisabled; ?>><?php echo trim((string) $vlQueryInfo['lab_tech_comments']); ?></textarea>
 													</div>
 												</div>
 											</div>
