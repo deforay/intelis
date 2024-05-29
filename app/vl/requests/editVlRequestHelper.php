@@ -256,6 +256,7 @@ try {
           'request_clinician_phone_number' => $_POST['reqClinicianPhoneNumber'] ?? null,
           'test_requested_on' => DateUtility::isoDateFormat($_POST['requestDate'] ?? null),
           'cv_number' => $_POST['cvNumber'] ?? null,
+          'lab_assigned_code' => $_POST['labAssignedCode'] ?? null,
           'vl_focal_person' => $_POST['vlFocalPerson'] ?? null,
           'vl_focal_person_phone_number' => $_POST['vlFocalPersonPhoneNumber'] ?? null,
           'lab_id' => $_POST['labId'] ?? null,
