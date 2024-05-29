@@ -31,15 +31,20 @@
 
 
     function checkARTInitiationDate() {
-        var dob = changeFormat($("#dob").val());
-        var artInitiationDate = $("#dateOfArtInitiation").val();
-        if ($.trim(dob) != '' && $.trim(artInitiationDate) != '') {
+        var dobInput = $("#dob").val();
+        var artInitiationDateInput = $("#dateOfArtInitiation").val();
 
-            date1 = new Date(dob);
-            date2 = new Date(artInitiationDate);
+        if ($.trim(dobInput) !== '' && $.trim(artInitiationDateInput) !== '') {
+            var dob = dayjs(dobInput, globalDayjsDateFormat);
+            var artInitiationDate = dayjs(artInitiationDateInput, globalDayjsDateFormat);
 
-            if (date2.getTime() < date1.getTime()) {
-                alert("<?= _translate("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
+            if (!dob.isValid() || !artInitiationDate.isValid()) {
+                alert("<?= _translate('Invalid date format. Please check the input dates.'); ?>");
+                return;
+            }
+
+            if (artInitiationDate.isBefore(dob)) {
+                alert("<?= _translate('ART Initiation Date cannot be earlier than Patient Date of Birth'); ?>");
                 $("#dateOfArtInitiation").val("");
             }
         }
