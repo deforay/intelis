@@ -1,7 +1,16 @@
 <?php
-$title = _translate("Add Samples from Manifest");
 
 require_once APPLICATION_PATH . '/header.php';
+
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$remoteUrl = $general->getRemoteURL();
+
+$title = _translate("Add Samples from Manifest");
 
 ?>
 <style>
@@ -231,8 +240,8 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	/* Remote Syn only package code matches */
-	<?php if ($general->isLISInstance()) { ?>
-		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
+	<?php if (!empty($remoteUrl) && $general->isLISInstance()) { ?>
+		var remoteUrl = '<?= $remoteUrl; ?>';
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({
@@ -290,4 +299,5 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 </script>
 <?php
+
 require_once APPLICATION_PATH . '/footer.php';

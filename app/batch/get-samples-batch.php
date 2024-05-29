@@ -38,6 +38,7 @@ $sortType = match ($_POST['sortType']) {
 $orderBy = match ($sortBy) {
     'sampleCode' => 'sample_code',
     'lastModified' => 'last_modified_datetime',
+    'requestModified' => 'request_created_datetime',
     default => 'sample_code',
 };
 

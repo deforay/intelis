@@ -497,9 +497,15 @@ foreach ($testReasonsResultDetails as $row) {
                                                                  <div class="col-md-6">
                                                                       <label for="cvNumber" class="col-lg-5 control-label"><?= _translate('CV Number'); ?> </label>
                                                                       <div class="col-lg-7">
-                                                                           <input name="cvNumber" id="cvNumber" class="form-control" placeholder="<?= _translate('Enter CV Number'); ?>" title="<?= _translate('Please enter CV Number'); ?>" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
+                                                                           <input name="cvNumber" id="cvNumber" class="form-control" placeholder="<?= _translate('Enter CV Number'); ?>" title="<?= _translate('Please enter CV Number'); ?>">
                                                                       </div>
                                                                  </div>
+                                                                 <!-- <div class="col-md-6">
+                                                                      <label for="serialNo" class="col-lg-5 control-label"><?= _translate('Lab Sample Code'); ?> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input name="serialNo" id="serialNo" class="form-control" placeholder="<?= _translate('Enter Lab Sample Code'); ?>" title="<?= _translate('Please enter Lab Sample Code'); ?>">
+                                                                      </div>
+                                                                 </div> -->
                                                                  <div class="col-md-6">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label"><?= _translate('VL Testing Platform'); ?> </label>
                                                                       <div class="col-lg-7">

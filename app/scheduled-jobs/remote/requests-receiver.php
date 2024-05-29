@@ -15,6 +15,7 @@ use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -36,15 +37,15 @@ $version = VERSION;
 
 $systemConfig = SYSTEM_CONFIG;
 
-if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
-    error_log("Please check if STS URL is set");
+$remoteUrl = $general->getRemoteURL();
+
+if (empty($remoteUrl)) {
+    LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
 
-$remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
-
 if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
-    error_log("No internet connectivity while trying remote sync.");
+    LoggerUtility::log('error', "No internet connectivity while trying remote sync.");
     return false;
 }
 $arr = $general->getGlobalConfig();

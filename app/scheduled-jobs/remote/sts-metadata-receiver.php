@@ -42,7 +42,6 @@ $apiService = ContainerRegistry::get(ApiService::class);
 /** @var FileCacheUtility $fileCache */
 $fileCache = ContainerRegistry::get(FileCacheUtility::class);
 
-
 $systemConfig = SYSTEM_CONFIG;
 
 $systemType = $general->getSystemConfig('sc_user_type');
@@ -60,10 +59,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
 $version = VERSION;
 
-$remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
+$remoteUrl = $general->getRemoteURL();
 
-if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
-    LoggerUtility::log('error', "No internet connectivity while trying remote sync.");
+if (empty($remoteUrl)) {
+    LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
 
@@ -453,7 +452,11 @@ try {
                         echo "Syncing data for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
                     }
 
-                    foreach ($dataValues as $tableDataValues) {
+
+                    $totalRows = count($dataValues); // Get the total number of rows for the current table
+                    foreach ($dataValues as $index => $tableDataValues) {
+                        MiscUtility::displayProgressBar($index + 1, $totalRows); // Update the progress bar for each row
+
 
                         $tableData = MiscUtility::updateFromArray($emptyTableArray, $tableDataValues);
                         $updateColumns = array_keys($tableData);

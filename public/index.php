@@ -3,6 +3,7 @@
 require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use Tuupola\Middleware\CorsMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
@@ -16,6 +17,13 @@ use App\Middlewares\SystemAdminAuthMiddleware;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$remoteUrl = $general->getRemoteURL();
+
 // Create a server request object from the globals
 $request = ServerRequestFactory::fromGlobals();
 
@@ -28,8 +36,8 @@ $host = $request->getUri()->getHost();
 
 $allowedDomains = [];
 
-if (isset(SYSTEM_CONFIG['remoteURL'])) {
-    $allowedDomains[] = parse_url(SYSTEM_CONFIG['remoteURL'], PHP_URL_HOST);
+if (!empty($remoteUrl)) {
+    $allowedDomains[] = $remoteUrl;
 }
 
 $allowedDomains[] = $host;

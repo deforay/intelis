@@ -7,7 +7,19 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
+
+$remoteUrl = $general->getRemoteURL();
 
 $title = _translate("View All Requests");
 $hidesrcofreq = false;
@@ -39,19 +51,6 @@ $interopConfig = [];
 if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
 	$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 }
-
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var FacilitiesService $facilitiesService */
-$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-
-/** @var GeoLocationsService $geolocationService */
-$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 
 $global = $general->getGlobalConfig();
@@ -1113,8 +1112,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#" + showId).show();
 	}
 
-	<?php if ($general->isLISInstance()) { ?>
-		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
+	<?php if (!empty($remoteUrl) && $general->isLISInstance()) { ?>
+		var remoteUrl = '<?= $remoteUrl; ?>';
 
 		function forceResultSync(sampleCode) {
 			$.blockUI({

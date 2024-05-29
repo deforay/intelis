@@ -28,7 +28,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 $output = [];
 
-$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate('KP'), _translate("Universal Insurance Code"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"),_translate('CV Number'), _translate("Is Sample Rejected?"), _translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
+$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate('KP'), _translate("Universal Insurance Code"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate('CV Number'), _translate("Is Sample Rejected?"), _translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
 
 if ($general->isStandaloneInstance()) {
 	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
@@ -41,12 +41,12 @@ if ($formId != COUNTRY\DRC) {
 if ($formId != COUNTRY\CAMEROON) {
 	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Universal Insurance Code")]);
 }
-	// ... and a writer to create the new file
-	$writer = new Writer();
-	$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomNumber(6) . '.xlsx';
-	$writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+// ... and a writer to create the new file
+$writer = new Writer();
+$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomNumber(6) . '.xlsx';
+$writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 
-	$writer->addRow(Row::fromValues($headings));
+$writer->addRow(Row::fromValues($headings));
 
 $no = 1;
 
@@ -73,7 +73,6 @@ foreach ($resultSet as $aRow) {
 	}
 
 	$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
-
 
 	if ($aRow['patient_first_name'] != '') {
 		$patientFname = $aRow['patient_first_name'];
@@ -164,5 +163,5 @@ foreach ($resultSet as $aRow) {
 }
 
 
-	$writer->close();
-	echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+$writer->close();
+echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

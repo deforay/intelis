@@ -29,15 +29,17 @@ $version = VERSION;
 $systemConfig = SYSTEM_CONFIG;
 
 $lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_lab_metadata_sync');
-if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
-    error_log("Please check if STS URL is set");
+
+$remoteUrl = $general->getRemoteURL();
+
+if (empty($remoteUrl)) {
+    LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
 try {
     // Checking if the network connection is available
-    $remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
     if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
-        error_log("No network connectivity while trying remote sync.");
+        LoggerUtility::log('error', "No network connectivity while trying remote sync.");
         return false;
     }
 

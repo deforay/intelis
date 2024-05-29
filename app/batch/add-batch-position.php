@@ -26,6 +26,7 @@ $sortType = match ($_GET['sortType']) {
 $orderBy = match ($sortBy) {
 	'sampleCode' => 'sample_code',
 	'lastModified' => 'last_modified_datetime',
+	'requestModified' => 'request_created_datetime',
 	default => 'sample_code',
 };
 
@@ -280,15 +281,16 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 				<h4><strong><?= _translate("Batch Code"); ?> : <?php echo $batchInfo[0]['batch_code']; ?></strong></h4>
 				<div class="row">
 					<div class="col-lg-4">
-						<select class="form-control" id="sortBy" onchange="">
-							<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified">Order By Last Modified</option>
-							<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode">Order By Sample Code</option>
+						<select class="form-control" id="sortBy">
+							<option <?= $sortBy == 'requestModified' ? "selected='selected'" : '' ?> value="requestModified"><?= _translate("Request Created"); ?></option>
+							<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
+							<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample Code"); ?></option>
 						</select>
 					</div>
 					<div class="col-lg-2">
-						<select class="form-control" id="sortType" onchange="">
-							<option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc">Ascending</option>
-							<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc">Descending</option>
+						<select class="form-control" id="sortType">
+							<option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc"><?= _translate("Ascending"); ?></option>
+							<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc"><?= _translate("Descending"); ?></option>
 						</select>
 					</div>
 					<div class="col-lg-2 col-md-2 col-xs-2">

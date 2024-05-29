@@ -5,7 +5,14 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\CD4ResultPDFHelper;
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$remoteUrl = $general->getRemoteURL();
 
 
 if (!empty($result)) {
@@ -381,9 +388,8 @@ if (!empty($result)) {
      $html .= '</table>';
      if (!empty($result['cd4_result'])) {
           $pdf->writeHTML($html);
-          if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+          if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty($remoteUrl)) {
                $viewId = CommonService::encryptViewQRCode($result['unique_id']);
-               $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
                $pdf->write2DBarcode($remoteUrl . '/cd4/results/view.php?q=' . $viewId, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
           }
           $pdf->lastPage();

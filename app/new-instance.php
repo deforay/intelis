@@ -6,6 +6,8 @@ use App\Registries\ContainerRegistry;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$remoteUrl = $general->getRemoteURL();
+
 $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 2', array('facility_id', 'facility_name', 'facility_code'));
 ?>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
@@ -129,7 +131,7 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 			width: '100%',
 			placeholder: "<?= _translate("Select Lab", escapeText: true); ?>"
 		});
-		<?php if (!empty(trim((string) SYSTEM_CONFIG['remoteURL'])) && $general->isLISInstance() && empty($labResults)) { ?>
+		<?php if (!empty($remoteUrl) && $general->isLISInstance() && empty($labResults)) { ?>
 
 			window.parent.remoteSync = true;
 			async function syncData() {
