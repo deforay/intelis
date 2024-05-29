@@ -78,7 +78,7 @@
     },
     "scripts": {
         "cleanup": "php app/scheduled-jobs/cleanup.php 30",
-        "fix-collation": "php maintenance/change-db-collation.php",
+        "collation": "php maintenance/change-db-collation.php",
         "db-backup": "php app/scheduled-jobs/db-backups.php",
         "interface": "php app/scheduled-jobs/interface.php",
         "purge-cache": "php app/includes/clear-cache.php",
