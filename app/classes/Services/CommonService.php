@@ -1283,4 +1283,14 @@ final class CommonService
 
         return $tableFieldsAsArray;
     }
+
+    public function updateCurrentDateTime(array $tables){
+        if(!isset($tables) || empty($tables)){
+            throw new SystemException('No table found to update!');
+        }
+
+        foreach($tables as $table){
+            $this->db->update($table, array("updated_datetime" => DateUtility::getCurrentDateTime()));
+        }
+    }
 }

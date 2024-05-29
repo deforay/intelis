@@ -21,6 +21,7 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (_isAllowed("/vl/reference/add-vl-art-code-details.php") && $general->isLISInstance() === false) { ?>
+							<a href="javascript:void(0);" onclick="setCurrentDateTime('<?php echo base64_encode('r_vl_art_regimen');?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 							<a href="/vl/reference/add-vl-art-code-details.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL ART Regimen"); ?></a>
 						<?php } ?>
 					</div>
