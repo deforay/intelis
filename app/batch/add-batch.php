@@ -207,7 +207,7 @@ $fundingSourceList = $general->getFundingSources();
                         <?php echo _translate("Facility"); ?>
                     </th>
                     <td style="width: 30%;">
-                        <select style="width: 100%;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+                        <select style="width: 100%;" class="" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
                             <?= $facilitiesDropdown; ?>
                         </select>
                     </td>
@@ -370,9 +370,11 @@ $fundingSourceList = $general->getFundingSources();
             width: '100%',
             placeholder: "<?php echo _translate("Select Test Type"); ?>"
         });
-        $("#facilityName").select2({
-            placeholder: "<?php echo _translate("Select Facilities"); ?>"
+
+        $("#facilityName").selectize({
+                plugins: ["restore_on_backspace", "remove_button", "clear_button"],
         });
+
 
         $("#userId").select2({
             placeholder: "<?= _translate('Select User', true); ?>"
