@@ -67,7 +67,7 @@ $sQuery = "SELECT
           FROM form_vl as vl
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
           LEFT JOIN r_vl_sample_type as s ON vl.specimen_type=s.sample_id
-          LEFT JOIN instruments as i ON vl.vl_test_platform=i.machine_name
+          LEFT JOIN instruments as i ON vl.instrument_id=i.instrument_id
           INNER JOIN facility_details as l ON vl.lab_id=l.facility_id";
 
 $sWhere[] =  " vl.vl_result_category = 'not suppressed' AND vl.patient_age_in_years IS NOT NULL AND vl.patient_gender IS NOT NULL AND vl.current_regimen IS NOT NULL ";
