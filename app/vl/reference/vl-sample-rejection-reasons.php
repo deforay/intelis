@@ -3,10 +3,8 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("Viral Load Sample Rejection Reasons");
-
 require_once APPLICATION_PATH . '/header.php';
 
 ?>

@@ -3,12 +3,9 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("Viral Load Sample Type");
-
 require_once APPLICATION_PATH . '/header.php';
-
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">

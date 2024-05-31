@@ -1,5 +1,4 @@
 <?php
-
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
@@ -8,7 +7,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("CD4 Sample Type");
-
 require_once APPLICATION_PATH . '/header.php';
 
 ?>

@@ -1,17 +1,12 @@
 <?php
-require_once APPLICATION_PATH . '/header.php';
-
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
-
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("CD4 Sample Rejection Reasons");
-
-
-
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">

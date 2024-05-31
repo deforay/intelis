@@ -1,7 +1,4 @@
 <?php
-$title = _translate("Other Lab Tests Sample Types");
-require_once APPLICATION_PATH . '/header.php';
-
 use App\Services\UsersService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -11,6 +8,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
+$title = _translate("Other Lab Tests Sample Types");
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">

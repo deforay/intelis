@@ -1,7 +1,4 @@
 <?php
-
-require_once APPLICATION_PATH . '/header.php';
-
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
@@ -12,6 +9,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = "Test Type Configuration";
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
