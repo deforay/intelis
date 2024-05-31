@@ -144,6 +144,9 @@ try {
 		if (!empty($_POST['reportTopMargin'])) {
 			$facilityAttributes['report_top_margin'] = $_POST['reportTopMargin'];
 		}
+		if (!empty($_POST['bottomTextLocation'])) {
+			$facilityAttributes['bottom_text_location'] = $_POST['bottomTextLocation'];
+		}
 
 
 		// Mapping facility with users

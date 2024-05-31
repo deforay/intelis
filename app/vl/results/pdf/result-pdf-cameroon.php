@@ -26,6 +26,8 @@ $arr = $general->getGlobalConfig();
 
 $key = (string) $general->getGlobalConfig('key');
 
+$facilityAttributes = json_decode((string) $result['facility_attributes']);
+
 if (!empty($result)) {
      $result = MiscUtility::arrayEmptyStringsToNull($result);
      $displayPageNoInFooter = true;
@@ -410,6 +412,7 @@ if (!empty($result)) {
           $html .= '<td colspan="3" style="font-size:10px;padding-top:10px;">' . _translate("Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR (Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)") . '</td>';
           $html .= '</tr>';
      }
+
      //$html .= '<tr><td colspan="3"></td></tr>';
      $html .= '</table>';
      $html .= '</td>';
@@ -442,6 +445,62 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:1px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
+
+
+
+     // Define the HTML block you want to position at the bottom
+     $bottomHtml = '<table>';
+
+     if (!empty($descriptionText) && $descriptionText != "") {
+          $bottomHtml .= '<tr>
+                              <td colspan="3" style="font-size:10px;text-align:left;">' . $descriptionText . '</td>';
+          $bottomHtml .= '</tr>';
+     } else {
+          $bottomHtml .= '<tr><td colspan="3" style="font-size:10px;text-align:left;">';
+          $bottomHtml .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log<sub>10</sub> or a reduction or increase of a factor of 3 in the number of copies/mL");
+          $bottomHtml .= '</td></tr>';
+
+          $bottomHtml .= '<tr><td colspan="3" style="line-height:2px;"></td></tr>';
+
+          $bottomHtml .= '<tr><td colspan="3" style="font-size:11px;text-align:left;color:#808080;">(*)&nbsp;';
+          $bottomHtml .= '<u><strong>' . _translate("Detection Limit (DL)") . '</strong></u> : ' . _translate("&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 Log<sub>10</sub>) copies/mL for DBS");
+          $bottomHtml .= '<br> &nbsp;&nbsp;&nbsp;&nbsp;';
+          $bottomHtml .= '<u><strong>' . _translate("Quantification Limits (QL)") . '</strong></u> : ' .  _translate("Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for DBS");
+          $bottomHtml .= '</td></tr>';
+     }
+
+     $bottomHtml .= '<tr><td colspan="3" style="line-height:2px;"></td></tr>';
+
+     $bottomHtml .= '<tr>';
+     $bottomHtml .= '<td colspan="3" style="line-height:2px;font-size:2em;border-bottom:2px solid #d3d3d3;padding-"><br><br></td>';
+     $bottomHtml .= '</tr>';
+     $bottomHtml .= '<tr>';
+     $bottomHtml .= '<td colspan="3">';
+     $bottomHtml .= '<table>';
+     $bottomHtml .= '<tr>';
+     $bottomHtml .= '<td style="font-size:10px;text-align:left;width:75%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> = VL < = 1000 copies/ml: ' . _translate("Continue on current regimen") . '</td>';
+     $bottomHtml .= '<td style="font-size:10px;text-align:left;">' . _translate("Printed on") . ' : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
+     $bottomHtml .= '</tr>';
+     $bottomHtml .= '<tr>';
+     $bottomHtml .= '<td colspan="2" style="font-size:10px;text-align:left;width:75%;">
+                              <img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:8px;height:8px;"/> = VL > 1000 copies/ml: ' .
+          _translate("Clinical and counselling action required") .
+          '</td>';
+     $bottomHtml .= '</tr>';
+     $bottomHtml .= '</table>';
+     $bottomHtml .= '</td>';
+     $bottomHtml .= '</tr>';
+     $bottomHtml .= '</table>';
+
+
+     if($facilityAttributes->bottom_text_location=='belowPlatformName'){
+     // Use writeHTMLCell() to position the bottom HTML content
+          $html .= '<tr><td colspan="5">'.$bottomHtml.'</td></tr><tr><td colspan="5">&nbsp;</td></tr>';
+     }
+     else{
+          $html .= '';
+     }
+
 
      if ($displaySignatureTable) {
 
@@ -532,51 +591,9 @@ if (!empty($result)) {
      // $html .= '</tr>';
      // $html .= '</table>';
 
-     // Define the HTML block you want to position at the bottom
-     $bottomHtml = '<table>';
-
-     if (!empty($descriptionText) && $descriptionText != "") {
-          $bottomHtml .= '<tr>
-                              <td colspan="3" style="font-size:10px;text-align:left;">' . $descriptionText . '</td>';
-          $bottomHtml .= '</tr>';
-     } else {
-          $bottomHtml .= '<tr><td colspan="3" style="font-size:10px;text-align:left;">';
-          $bottomHtml .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log<sub>10</sub> or a reduction or increase of a factor of 3 in the number of copies/mL");
-          $bottomHtml .= '</td></tr>';
-
-          $bottomHtml .= '<tr><td colspan="3" style="line-height:2px;"></td></tr>';
-
-          $bottomHtml .= '<tr><td colspan="3" style="font-size:11px;text-align:left;color:#808080;">(*)&nbsp;';
-          $bottomHtml .= '<u><strong>' . _translate("Detection Limit (DL)") . '</strong></u> : ' . _translate("&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 Log<sub>10</sub>) copies/mL for DBS");
-          $bottomHtml .= '<br> &nbsp;&nbsp;&nbsp;&nbsp;';
-          $bottomHtml .= '<u><strong>' . _translate("Quantification Limits (QL)") . '</strong></u> : ' .  _translate("Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for DBS");
-          $bottomHtml .= '</td></tr>';
-     }
-
-     $bottomHtml .= '<tr><td colspan="3" style="line-height:2px;"></td></tr>';
-
-     $bottomHtml .= '<tr>';
-     $bottomHtml .= '<td colspan="3" style="line-height:2px;font-size:2em;border-bottom:2px solid #d3d3d3;padding-"><br><br></td>';
-     $bottomHtml .= '</tr>';
-     $bottomHtml .= '<tr>';
-     $bottomHtml .= '<td colspan="3">';
-     $bottomHtml .= '<table>';
-     $bottomHtml .= '<tr>';
-     $bottomHtml .= '<td style="font-size:10px;text-align:left;width:75%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> = VL < = 1000 copies/ml: ' . _translate("Continue on current regimen") . '</td>';
-     $bottomHtml .= '<td style="font-size:10px;text-align:left;">' . _translate("Printed on") . ' : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
-     $bottomHtml .= '</tr>';
-     $bottomHtml .= '<tr>';
-     $bottomHtml .= '<td colspan="2" style="font-size:10px;text-align:left;width:75%;">
-                              <img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:8px;height:8px;"/> = VL > 1000 copies/ml: ' .
-          _translate("Clinical and counselling action required") .
-          '</td>';
-     $bottomHtml .= '</tr>';
-     $bottomHtml .= '</table>';
-     $bottomHtml .= '</td>';
-     $bottomHtml .= '</tr>';
-     $bottomHtml .= '</table>';
-
+   
      if ($result['result'] != '' || (empty($result['result']) && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
+          
           $pdf->writeHTML($html);
 
           // Calculate where to start the bottom HTML
@@ -584,8 +601,10 @@ if (!empty($result)) {
           $bottom_content_height = 50; // Adjust based on your content's estimated height
           $start_y = $page_height - $bottom_content_height - $margin_bottom;
 
-          // Use writeHTMLCell() to position the bottom HTML content
-          $pdf->writeHTMLCell(0, 0, '', $start_y, $bottomHtml, 0, 1, 0, true, 'L', true);
+          if($facilityAttributes->bottom_text_location=='aboveFooter'){
+     
+               $pdf->writeHTMLCell(0, 0, '', $start_y, $bottomHtml, 0, 1, 0, true, 'L', true);
+          }
 
           $pdf->lastPage();
 

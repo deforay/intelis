@@ -477,7 +477,15 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                             <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _translate('Please specify other point of entry') ?>" placeholder="<?= _translate('Please specify other point of entry') ?>" style="display:<?php echo ($eidInfo['lab_testing_point'] == 'other') ? 'none' : '' ?>;" value="<?php echo ($eidInfo['lab_testing_point_other']); ?>" />
                                         </td>
                                     </tr>
+                                    <?php if($general->isLISInstance()){ ?>
 
+                                    <tr>
+                                        <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
+                                            <td>
+                                                <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" />
+                                            </td>
+                                    </tr>
+                                    <?php } ?>
                                 </table>
 
                                 <br><br>
@@ -534,10 +542,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
-                                            <td>
-                                                <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" />
-                                            </td>
+                                           
                                             <th><?= _translate('Testing Platform'); ?> </th>
                                             <td>
                                                 <select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">

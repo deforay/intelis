@@ -38,6 +38,7 @@ $orderBy = match ($sortBy) {
     'sampleCode' => 'sample_code',
     'lastModified' => 'last_modified_datetime',
     'requestCreated' => 'request_created_datetime',
+    'labAssignedCode' => 'lab_assigned_code',
     default => 'sample_code',
 };
 
@@ -136,6 +137,7 @@ if (isset($_POST['batchId'])) {
         vl.facility_id,
         vl.result_status,
         vl.sample_batch_id,
+        vl.lab_assigned_code,
         f.facility_name,
         f.facility_code
         FROM $table as vl
@@ -187,8 +189,12 @@ if (isset($_POST['batchId'])) {
     <div class="col-md-5">
         <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
             <?php foreach ($result as $sample) {
+                $code = "";
+                if($sample['lab_assigned_code']!=""){
+                    $code = ' - '.$sample['lab_assigned_code'];
+                }
                 if (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) { ?>
-                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name']; ?></option>
+                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . $code; ?></option>
             <?php }
             } ?>
         </select>

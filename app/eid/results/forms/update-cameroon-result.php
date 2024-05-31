@@ -459,7 +459,15 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _translate('Please specify other point of entry') ?>" placeholder="<?= _translate('Please specify other point of entry') ?>" style="display:<?php echo ($eidInfo['lab_testing_point'] == 'other') ? 'block' : 'none' ?>;" value="<?php echo ($eidInfo['lab_testing_point_other']); ?>" />
                                     </td>
                                 </tr>
+                                <?php if($general->isLISInstance()){ ?>
 
+                                <tr>
+                                        <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
+                                                <td>
+                                                    <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" />
+                                                </td>
+                                </tr>
+                            <?php } ?>
                             </table>
                             <br><br>
                             <table aria-describedby="table" class="table" aria-hidden="true">
@@ -505,10 +513,6 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                        <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
-                                            <td>
-                                                <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" />
-                                            </td>
                                         <th><?= _translate('Testing Platform'); ?><span class="mandatory">*</span> </th>
                                         <td>
                                             <select class="form-control isRequired" name="eidPlatform" id="eidPlatform" title="<?= _translate('Please select the testing platform'); ?>">
