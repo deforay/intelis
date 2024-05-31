@@ -50,7 +50,6 @@ sort($fileList);
 		border: 1px solid #000;
 	}
 </style>
-<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -768,7 +767,6 @@ sort($fileList);
 		}
 	}
 </script>
-<script type="text/javascript" src="/assets/js/selectize.js"></script>
 
 <?php
 require_once APPLICATION_PATH . '/footer.php';

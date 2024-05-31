@@ -517,3 +517,6 @@ ALTER TABLE `batch_details` ADD `created_by` VARCHAR(500) NULL DEFAULT NULL AFTE
 ALTER TABLE `form_vl` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
 ALTER TABLE `audit_form_vl` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
 
+--Jeyabanu 29-May-2024
+ALTER TABLE `form_eid` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `audit_form_eid` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;

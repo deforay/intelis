@@ -534,18 +534,21 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
+                                            <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
+                                            <td>
+                                                <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" />
+                                            </td>
                                             <th><?= _translate('Testing Platform'); ?> </th>
                                             <td>
                                                 <select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
+                                        <tr>
                                             <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo $eidInfo['sample_received_at_lab_datetime']; ?>" onchange="" style="width:100%;" />
                                             </td>
-
-                                        <tr>
 
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>
                                             <td>
@@ -555,7 +558,6 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                     <option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> <?= _translate('No'); ?> </option>
                                                 </select>
                                             </td>
-
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
                                             <th scope="row" class="rejected" style="display: none;"><?= _translate('Reason for Rejection'); ?></th>

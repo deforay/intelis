@@ -110,6 +110,7 @@ if (empty($syncLatestTime)) {
  Import Trumbowyg
 <script src="/assets/js/trumbowyg.min.js"></script>-->
 <script type="text/javascript" src="/assets/js/summernote.min.js"></script>
+<script type="text/javascript" src="/assets/js/selectize.js"></script>
 
 
 <?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>

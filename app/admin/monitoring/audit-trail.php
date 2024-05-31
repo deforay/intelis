@@ -181,7 +181,7 @@ $resultColumn = getColumns($db, $tableName);
 						<div class="box-body">
 							<?php if (!empty($posts)) { ?>
 								<h3> Audit Trail for Sample <?php echo htmlspecialchars((string) $sampleCode); ?></h3>
-								<select name="auditColumn[]" id="auditColumn" class="form-control" multiple="multiple">
+								<select name="auditColumn[]" id="auditColumn" class="" multiple="multiple">
 									<?php
 									//echo '<pre>'; print_r($resultColumn); die;
 									$i = 0;
@@ -327,8 +327,8 @@ $resultColumn = getColumns($db, $tableName);
 	}
 	$(document).ready(function() {
 
-		$("#auditColumn").select2({
-			placeholder: "<?php echo _translate("Select Columns"); ?>"
+		$("#auditColumn").selectize({
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		table = $("#auditTable").DataTable({
 			dom: 'Bfrtip',
@@ -391,7 +391,7 @@ $resultColumn = getColumns($db, $tableName);
 		});
 
 
-		$('#auditColumn').on("select2:select select2:unselect", function(e) {
+		$('#auditColumn').on("change", function(e) {
 
 			var columns = $(this).val()
 

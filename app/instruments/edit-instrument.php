@@ -86,7 +86,6 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 $testTypeList = SystemService::getActiveModules(true);
 
 ?>
-<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -899,7 +898,6 @@ $testTypeList = SystemService::getActiveModules(true);
 
 
 </script>
-<script type="text/javascript" src="/assets/js/selectize.js"></script>
 
 <?php
 require_once APPLICATION_PATH . '/footer.php';

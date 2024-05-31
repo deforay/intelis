@@ -142,7 +142,7 @@ try {
                LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing
                LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
                LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner
-               LEFT JOIN instruments as ins ON ins.machine_name=vl.vl_test_platform
+               LEFT JOIN instruments as ins ON ins.instrument_id=vl.instrument_id
                LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action";
 
      /* Sample collection date filter */
