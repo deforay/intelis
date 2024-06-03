@@ -1,18 +1,11 @@
 <?php
-
-
-require_once APPLICATION_PATH . '/header.php';
-
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
-
-
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-
+$keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("Covid-19 Co-morbidities");
-
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -49,6 +42,7 @@ $title = _translate("Covid-19 Co-morbidities");
 						</div>
 					</span>
 					<div class="box-header with-border">
+						<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_covid19_comorbidities', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php if (_isAllowed("covid19-sample-type.php") && $general->isLISInstance() === false) { ?>
 							<a href="add-covid19-comorbidities.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Covid-19 Co-morbidities"); ?></a>
 						<?php } ?>

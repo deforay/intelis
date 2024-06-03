@@ -84,7 +84,6 @@ try {
     'import_machine_name' => $_POST['machineName'] ?? null,
     'sample_tested_datetime' => $_POST['sampleTestedDateTime'],
     'is_sample_rejected' => ($_POST['isSampleRejected'] ?? null),
-    'lab_assigned_code' => $_POST['labAssignedCode'] ?? null,
     'lab_id' => $_POST['labId'] ?? null,
     'result' => $_POST['result'] ?? null,
     'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,

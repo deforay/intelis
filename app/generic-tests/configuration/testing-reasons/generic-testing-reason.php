@@ -1,13 +1,16 @@
 <?php
-$title = _translate("Other Lab Tests Testing Reasons");
-
 require_once APPLICATION_PATH . '/header.php';
 
 use App\Services\UsersService;
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+$keyFromGlobalConfig = $general->getGlobalConfig('key');
+$title = _translate("Other Lab Tests Testing Reasons");
 
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -27,6 +30,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
+						<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_test_reasons', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php if (_isAllowed("/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php")) { ?>
 							<a href="/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Testing Reason"); ?></a>
 						<?php } ?>

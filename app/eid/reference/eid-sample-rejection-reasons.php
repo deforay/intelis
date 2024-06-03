@@ -1,6 +1,11 @@
 <?php
-$title = _translate("EID Sample Rejection Reasons");
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+$keyFromGlobalConfig = $general->getGlobalConfig('key');
+$title = _translate("EID Sample Rejection Reasons");
 require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -20,6 +25,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
+						<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_eid_sample_rejection_reasons', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php if (_isAllowed("eid-sample-type.php") && $general->isLISInstance() === false) { ?>
 							<a href="add-eid-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add EID Sample Rejection Reasons"); ?></a>
 						<?php } ?>

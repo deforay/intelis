@@ -1,14 +1,15 @@
 <?php
-$title = _translate("Other Lab Tests Sample Rejection Reasons");
-
-require_once APPLICATION_PATH . '/header.php';
-
 use App\Services\UsersService;
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
-
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+$keyFromGlobalConfig = $general->getGlobalConfig('key');
+$title = _translate("Other Lab Tests Sample Rejection Reasons");
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -27,6 +28,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
+						<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_sample_rejection_reasons', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php if (_isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php") && $general->isLISInstance() === false) { ?>
 							<a href="/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Sample Rejection Reasons"); ?></a>
 						<?php } ?>
