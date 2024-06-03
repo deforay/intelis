@@ -597,6 +597,9 @@ foreach ($srcResults as $list) {
 									<div class="col-md-3">
 										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="health_insurance_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Health Insurance Code"); ?></label>
 									</div>
+									<div class="col-md-3">
+										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_assigned_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
+									</div>
 								<?php } ?>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
@@ -654,6 +657,9 @@ foreach ($srcResults as $list) {
 									<?php if ($formId == COUNTRY\CAMEROON) { ?>
 										<th>
 											<?php echo _translate("Health Insurance Code"); ?>
+										</th>
+										<th>
+											<?php echo _translate("Lab Assigned Code"); ?>
 										</th>
 									<?php } ?>
 									<th>
@@ -911,6 +917,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				<?php
 				if ($formId == COUNTRY\CAMEROON) {
 					echo '{
+						"sClass": "center",
+						"bVisible": false
+					},
+					{
 						"sClass": "center",
 						"bVisible": false
 					},';
