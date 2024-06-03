@@ -523,3 +523,6 @@ ALTER TABLE `audit_form_eid` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NU
 
 --Thana 31-May-2024
 UPDATE `s_app_menu` SET `link` = '/covid-19/reference/covid19-sample-rejection-reasons.php' WHERE `s_app_menu`.`id` = 44;
+
+--Thana 03-Jun-2024
+UPDATE privileges SET shared_privileges = '["/tb/reference/tb-sample-rejection-reasons.php","/tb/reference/add-tb-sample-rejection-reason.php","/tb/reference/add-tb-sample-type.php","/tb/reference/tb-test-reasons.php","/tb/reference/add-tb-test-reasons.php","/tb/reference/tb-results.php","/tb/reference/add-tb-results.php"]' WHERE privilege_name = '/tb/management/tb-sample-type.php';
