@@ -258,7 +258,14 @@ foreach ($testReasonsResultDetails as $row) {
                                                   </select>
                                              </div>
                                         </div>
-
+                                        <?php if($general->isLISInstance()){ ?>
+                                        <div class="row">
+                                             <div class="col-xs-3 col-md-3">
+                                                  <label for="labAssignedCode"><?= _translate('Lab Assigned Code'); ?> </label>
+                                                  <input name="labAssignedCode" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>"  value="<?= $vlQueryInfo['lab_assigned_code']; ?>" <?php echo $labFieldDisabled; ?>>
+                                             </div>
+                                        </div>
+                                        <?php } ?>
                                    </div>
                               </div>
                               <div class="box box-primary">
@@ -558,12 +565,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                            <input name="cvNumber" id="cvNumber" class="form-control" placeholder="<?= _translate('Enter CV Number'); ?>" title="<?= _translate('Please enter CV Number'); ?>" value="<?= $vlQueryInfo['cv_number']; ?>" <?php echo $labFieldDisabled; ?>>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-6">
-                                                                      <label for="labAssignedCode" class="col-lg-5 control-label"><?= _translate('Lab Assigned Code'); ?> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input name="labAssignedCode" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>"  value="<?= $vlQueryInfo['lab_assigned_code']; ?>" <?php echo $labFieldDisabled; ?>>
-                                                                      </div>
-                                                                 </div>
+                                                               
                                                                  <!-- <div class="col-md-6">
                                                                       <label for="serialNo" class="col-lg-5 control-label"><?= _translate('Lab Sample Code'); ?> </label>
                                                                       <div class="col-lg-7">

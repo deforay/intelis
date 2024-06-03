@@ -26,6 +26,7 @@ $orderBy = match ($sortBy) {
 	'sampleCode' => 'sample_code',
 	'lastModified' => 'last_modified_datetime',
 	'requestCreated' => 'request_created_datetime',
+	'labAssignedCode' => 'lab_assigned_code',
 	default => 'sample_code',
 };
 
@@ -284,6 +285,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 							<option <?= $sortBy == 'requestCreated' ? "selected='selected'" : '' ?> value="requestCreated"><?= _translate("Request Created"); ?></option>
 							<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
 							<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample Code"); ?></option>
+							<option <?= $sortBy == 'labAssignedCode' ? "selected='selected'" : '' ?> value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
 						</select>
 					</div>
 					<div class="col-lg-2">

@@ -623,6 +623,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									</div>
 								</div>
 							</div>
+							<div class="col-md-6">
+									<div class="form-group">
+										<label for="bottomTextLocation" class="col-lg-4 control-label">
+											<?php echo _translate("Bottom Text Location"); ?>
+										</label>
+										<div class="col-lg-7">
+											<select class="form-control" name="bottomTextLocation" id="bottomTextLocation" title="<?php echo _translate('Please enter the Bottom Text Location'); ?>">
+												<option value="aboveFooter" <?php echo (isset($facilityAttributes->bottom_text_location) && $facilityAttributes->bottom_text_location === 'aboveFooter') ? "selected='selected'" : "" ?>><?php echo _translate("Above Footer"); ?></option>
+												<option value="belowPlatformName" <?php echo (isset($facilityAttributes->bottom_text_location) && $facilityAttributes->bottom_text_location === 'belowPlatformName') ? "selected='selected'" : "" ?>><?php echo _translate("Below Platform Name"); ?></option>
+											</select>
+										</div>
+									</div>
+							</div>
 						</div>
 					<?php } ?>
 					<div class="row" id="sampleType"></div>

@@ -459,7 +459,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _translate('Please specify other point of entry') ?>" placeholder="<?= _translate('Please specify other point of entry') ?>" style="display:none;" />
                                         </td>
                                     </tr>
+                                    <?php if($general->isLISInstance()){ ?>
 
+                                        <tr>
+                                            <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
+                                                <td>
+                                                    <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                </td>
+                                        </tr>
+                                    <?php } ?>
                                 </table>
 
                                 <br><br>
@@ -514,17 +522,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                         <tr>
-                                            <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
-                                            <td>
-                                                <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
-                                            </td>
                                             <th><?= _translate('Testing Platform'); ?> </th>
                                             <td>
                                                 <select name="eidPlatform" id="eidPlatform" class="form-control" title="<?= _translate('Please choose VL Testing Platform'); ?>" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-
                                         <tr>
                                             <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
                                             <td>
