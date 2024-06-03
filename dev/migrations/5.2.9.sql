@@ -535,3 +535,6 @@ VALUES
 ('Copy Request On Save and Next Form', 'tb_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'tb', 'yes', NULL, NULL, 'active'), 
 ('Copy Request On Save and Next Form', 'generic_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'generic-tests', 'yes', NULL, NULL, 'active'), 
 ('Copy Request On Save and Next Form', 'cd4_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'cd4', 'yes', NULL, NULL, 'active');
+
+--Brindha 03-Jun-2024
+ ALTER TABLE `form_generic` ADD `is_encrypted` varchar(10) DEFAULT 'no' AFTER `patient_address`;

@@ -66,11 +66,12 @@ $query = "(SELECT vl.sample_code,
                     vl.facility_id,
                     vl.result_status,
                     vl.sample_batch_id,
+                    vl.lab_assigned_code,
                     f.facility_name,
                     f.facility_code
                     FROM $table as vl
                     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
-
+            
 $where[] = " (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no' OR IFNULL(vl.is_sample_rejected, 'no') = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.$resultColumn is NULL or vl.$resultColumn = '') AND (vl.sample_code NOT LIKE '' AND vl.sample_code IS NOT NULL)";
 
 if (isset($_POST['batchId'])) {
@@ -161,16 +162,24 @@ $result = $db->rawQuery($query);
 if (isset($_POST['batchId'])) {
 
     foreach ($result as $sample) {
+        $labCode = "";
+        if($sample['lab_assigned_code']!=""){
+            $labCode = ' - '.$sample['lab_assigned_code'];
+        }
         if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
-            <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name']; ?></option>
+            <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . $labCode; ?></option>
     <?php }
     }
 } else { ?>
     <div class="col-md-5" id="sampleDetails">
         <select name="unbatchedSamples[]" id="search" class="form-control" size="8" multiple="multiple">
             <?php foreach ($result as $sample) {
+                 $labCode = "";
+                 if($sample['lab_assigned_code']!=""){
+                     $labCode = ' - '.$sample['lab_assigned_code'];
+                 }
                 if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
-                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . ($sample['facility_name']); ?></option>
+                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . ($sample['facility_name']) . $labCode; ?></option>
             <?php }
             } ?>
         </select>
@@ -189,12 +198,12 @@ if (isset($_POST['batchId'])) {
     <div class="col-md-5">
         <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
             <?php foreach ($result as $sample) {
-                $code = "";
+                $labCode = "";
                 if($sample['lab_assigned_code']!=""){
-                    $code = ' - '.$sample['lab_assigned_code'];
+                    $labCode = ' - '.$sample['lab_assigned_code'];
                 }
                 if (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) { ?>
-                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . $code; ?></option>
+                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . '-----'.$labCode; ?></option>
             <?php }
             } ?>
         </select>
