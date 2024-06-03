@@ -3,6 +3,7 @@
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
+use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -10,7 +11,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
+$cpyReq = $general->getGlobalConfig('vl_copy_request_save_and_next');
 $arr = $general->getGlobalConfig();
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
@@ -150,13 +151,9 @@ foreach ($testReasonsResultDetails as $row) {
                                                        <label for="facilityId"><?= _translate('Facility'); ?> <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" id="facilityId" name="facilityId" title="<?= _translate('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
-                                                            <?php //echo $facility;
-                                                            foreach ($healthFacilitiesAllColumns as $hFacility) {
-                                                            ?>
-                                                                 <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>"><?php echo $hFacility['facility_name']; ?></option>
-                                                            <?php
-                                                            }
-                                                            ?>
+                                                            <?php foreach ($healthFacilitiesAllColumns as $hFacility) { ?>
+                                                                 <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>" <?php echo (isset($_SESSION['vlData']['facility_id']) && $_SESSION['vlData']['facility_id'] == $hFacility['facility_id']) ? 'selected="selected"' : '';?>><?php echo $hFacility['facility_name']; ?></option>
+                                                            <?php } ?>
                                                        </select>
                                                   </div>
                                              </div>
@@ -184,7 +181,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                             <?php
                                                             foreach ($fundingSourceList as $fundingSource) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo (isset($_SESSION['vlData']['funding_source']) && $_SESSION['vlData']['funding_source'] == $fundingSource['funding_source_id']) ? 'selected="selected"' : '';?>><?= $fundingSource['funding_source_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
                                                   </div>
@@ -197,7 +194,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                             <?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+                                                                 <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo (isset($_SESSION['vlData']['implementing_partner']) && $_SESSION['vlData']['implementing_partner'] == $implementingPartner['i_partner_id']) ? 'selected="selected"' : '';?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
                                                   </div>
@@ -207,7 +204,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                   <select name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" style="width:100%;">
                                                        <option value="">-- Select --</option>
                                                        <?php foreach ($lResult as $labName) { ?>
-                                                            <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?= $labName['facility_name']; ?></option>
+                                                            <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($_SESSION['vlData']['lab_id']) && $_SESSION['vlData']['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : '';?>><?= $labName['facility_name']; ?></option>
                                                        <?php } ?>
                                                   </select>
                                              </div>
@@ -216,7 +213,7 @@ foreach ($testReasonsResultDetails as $row) {
                                              <div class="row">
                                                   <div class="col-xs-3 col-md-3">
                                                        <label for="labAssignedCode"><?= _translate('Lab Assigned Code'); ?> </label>
-                                                       <input name="labAssignedCode" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>">
+                                                       <input name="labAssignedCode" value="<?php echo $_SESSION['vlData']['lab_assigned_code'] ?? null;?>" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>">
                                                   </div>
                                              </div>
                                         <?php } ?>
@@ -374,7 +371,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                       $selected = "selected='selected'";
                                                                  }
                                                                  foreach ($sResult as $name) { ?>
-                                                                      <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?= _translate($name['sample_name']); ?></option>
+                                                                      <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>" <?php echo (isset($_SESSION['vlData']['specimen_type']) && $_SESSION['vlData']['specimen_type'] == $name['sample_id']) ? 'selected="selected"' : '';?>><?= _translate($name['sample_name']); ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>
@@ -383,13 +380,13 @@ foreach ($testReasonsResultDetails as $row) {
                                                   <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for="reqClinician" class=""><?= _translate('Name Of Requester'); ?></label>
-                                                            <input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="<?= _translate('Requesting Clinician name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" />
+                                                            <input type="text" class="form-control" id="reqClinician" value="<?php echo $_SESSION['vlData']['request_clinician_name'] ?? null;?>" name="reqClinician" placeholder="<?= _translate('Requesting Clinician name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" />
                                                        </div>
                                                   </div>
                                                   <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for="reqClinicianPhoneNumber" class=""><?= _translate('Contact Number'); ?> </label>
-                                                            <input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Please enter request clinician phone number'); ?>" />
+                                                            <input type="text" class="form-control phone-number" value="<?php echo $_SESSION['vlData']['request_clinician_phone_number'] ?? null;?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Please enter request clinician phone number'); ?>" />
 
                                                        </div>
                                                   </div>
@@ -806,6 +803,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
           ?>
           // BARCODESTUFF END
+          <?php if(isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes'){ 
+               unset($_SESSION['vlData']);?>
+               fillFacilityDetails();
+          <?php } ?>
      });
 
      function hivDetectionChange() {
