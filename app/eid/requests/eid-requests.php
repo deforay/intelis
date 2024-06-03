@@ -470,6 +470,11 @@ foreach ($srcResults as $list) {
 									<th>
 										<?php echo _translate("Result"); ?>
 									</th>
+									<?php if ($formId == COUNTRY\CAMEROON) { ?>
+									<th>
+										<?php echo _translate("Lab Assigned Code"); ?>
+									</th>
+									<?php } ?>
 									<th>
 										<?php echo _translate("Last Modified On"); ?>
 									</th>
@@ -692,9 +697,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					"sClass": "center"
 				}, {
 					"sClass": "center"
-				}, {
+				}, 
+				<?php
+				if ($formId == COUNTRY\CAMEROON) {
+					echo '{
+						"sClass": "center",
+					},';
+				}
+				?>
+				{
 					"sClass": "center"
-				}, {
+				},
+				 {
 					"sClass": "center"
 				},
 				<?php if ((_isAllowed("/eid/requests/eid-edit-request.php")) && !$hidesrcofreq) { ?> {
