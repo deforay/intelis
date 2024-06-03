@@ -194,7 +194,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row" style="width:15%" class="labels"><?= _translate("Is Mother Alive?"); ?>:</th>
                                         <td style="width:35%">
-                                            <select class="form-control" name="mothersHIVStatus" id="mothersHIVStatus" title="Please select the Alive or not" style="width:100%;">
+                                            <select class="form-control" name="isMotherAlive" id="isMotherAlive" title="Please select the Alive or not" style="width:100%;">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes"> <?= _translate("Yes"); ?> </option>
                                                 <option value="no"> <?= _translate("No"); ?> </option>
@@ -238,8 +238,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control" multiple name="motherTreatment[]" id="motherTreatment" title="Please select ART given to the Mother during" style="width:100%;">
                                                 <option value="No ART given"><?= _translate("No ART given"); ?></option>
                                                 <option value="Pregnancy"><?= _translate("Pregnancy"); ?></option>
-                                                <option value="Labour/Delivery"><?= _translate("Pregnancy"); ?></option>
-                                                <option value="Postnatal"><?= _translate("Pregnancy"); ?></option>
+                                                <option value="Labour/Delivery"><?= _translate("Labour/Delivery"); ?></option>
+                                                <option value="Postnatal"><?= _translate("Postnatal"); ?></option>
                                                 <option value="Unknown"><?= _translate("Unknown"); ?></option>
                                             </select>
                                         </td>

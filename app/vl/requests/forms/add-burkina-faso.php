@@ -1346,7 +1346,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
 
           if ($.trim(patientArray['gender']) != '') {
-               $('#breastfeedingYes').removeClass('isRequired');
+               $("#gender").val(patientArray['gender']);
+               /*$('#breastfeedingYes').removeClass('isRequired');
                $('#pregYes').removeClass('isRequired');
                if (patientArray['gender'] == 'male' || patientArray['gender'] == 'unreported') {
                     $('.femaleSection').hide();
@@ -1376,7 +1377,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               $("#breastfeedingNo").prop('checked', true);
                          }
                     }
-               }
+               }*/
           }
           if ($.trim(patientArray['consent_to_receive_sms']) != '') {
                if (patientArray['consent_to_receive_sms'] == 'yes') {

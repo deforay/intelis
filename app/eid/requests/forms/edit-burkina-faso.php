@@ -251,8 +251,8 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                             <select class="form-control" multiple name="motherTreatment[]" id="motherTreatment" title="Please select ART given to the Mother during" style="width:100%;">
                                                 <option value="No ART given" <?php echo in_array('No ART given', $eidInfo['mother_treatment']) ? "selected='selected'" : ""; ?>><?= _translate("No ART given"); ?></option>
                                                 <option value="Pregnancy" <?php echo in_array('Pregnancy', $eidInfo['mother_treatment']) ? "selected='selected'" : ""; ?>><?= _translate("Pregnancy"); ?></option>
-                                                <option value="Labour/Delivery" <?php echo in_array('Labour/Delivery', $eidInfo['mother_treatment']) ? "selected='selected'" : ""; ?>><?= _translate("Pregnancy"); ?></option>
-                                                <option value="Postnatal" <?php echo in_array('Postnatal', $eidInfo['mother_treatment']) ? "selected='selected'" : ""; ?>><?= _translate("Pregnancy"); ?></option>
+                                                <option value="Labour/Delivery" <?php echo in_array('Labour/Delivery', $eidInfo['mother_treatment']) ? "selected='selected'" : ""; ?>><?= _translate("Labour/Delivery"); ?></option>
+                                                <option value="Postnatal" <?php echo in_array('Postnatal', $eidInfo['mother_treatment']) ? "selected='selected'" : ""; ?>><?= _translate("Postnatal"); ?></option>
                                                 <option value="Unknown" <?php echo in_array('Unknown', $eidInfo['mother_treatment']) ? "selected='selected'" : ""; ?>><?= _translate("Unknown"); ?></option>
                                             </select>
                                         </td>

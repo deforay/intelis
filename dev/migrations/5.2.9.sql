@@ -520,3 +520,6 @@ ALTER TABLE `audit_form_vl` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NUL
 --Jeyabanu 29-May-2024
 ALTER TABLE `form_eid` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
 ALTER TABLE `audit_form_eid` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+
+--Brindha 03-Jun-2024
+ ALTER TABLE `form_generic` ADD `is_encrypted` varchar(10) DEFAULT 'no' AFTER `patient_address`;
