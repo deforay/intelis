@@ -444,16 +444,16 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 										</div>
 									</div>
 									<!--<div class="row">
-                    <div class="col-md-7">
-                        <div class="form-group">
-                        <label for="auto_approval" class="col-lg-4 control-label">Auto Approval </label>
-                        <div class="col-lg-8">
-                            <input type="radio" class="" id="auto_approval_yes" name="auto_approval" value="yes" < ?php echo($arr['auto_approval'] == 'yes')?'checked':''; ?>>&nbsp;&nbsp;Yes&nbsp;&nbsp;
-                            <input type="radio" class="" id="auto_approval_no" name="auto_approval" value="no" < ?php echo($arr['auto_approval'] == 'no' || $arr['auto_approval'] == '')?'checked':''; ?>>&nbsp;&nbsp;No
-                        </div>
-                        </div>
-                    </div>
-                    </div>-->
+										<div class="col-md-7">
+											<div class="form-group">
+											<label for="auto_approval" class="col-lg-4 control-label">Auto Approval </label>
+											<div class="col-lg-8">
+												<input type="radio" class="" id="auto_approval_yes" name="auto_approval" value="yes" < ?php echo($arr['auto_approval'] == 'yes')?'checked':''; ?>>&nbsp;&nbsp;Yes&nbsp;&nbsp;
+												<input type="radio" class="" id="auto_approval_no" name="auto_approval" value="no" < ?php echo($arr['auto_approval'] == 'no' || $arr['auto_approval'] == '')?'checked':''; ?>>&nbsp;&nbsp;No
+											</div>
+											</div>
+										</div>
+									</div>-->
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -559,8 +559,23 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
-									<?php } ?>
-									<?php if (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] != '') { ?>
+									<?php } 
+									if (isset($arr['vl_copy_request_save_and_next']) && $arr['vl_copy_request_save_and_next'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="vl_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<select id="vl_copy_request_save_and_next" name="vl_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
+															<option value=""><?php echo _translate("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['vl_copy_request_save_and_next']) && $arr['vl_copy_request_save_and_next'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Enable"); ?></option>
+															<option value="no" <?php echo (isset($arr['vl_copy_request_save_and_next']) && $arr['vl_copy_request_save_and_next'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("Disable"); ?></option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php } if (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -575,8 +590,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
-									<?php } ?>
-									<?php if (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] != '') { ?>
+									<?php } if (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -754,7 +768,22 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 											</div>
 										</div>
 									</div>
-									<?php if (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] != '') { ?>
+									<?php if (isset($arr['eid_copy_request_save_and_next']) && $arr['eid_copy_request_save_and_next'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="eid_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<select id="eid_copy_request_save_and_next" name="eid_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
+															<option value=""><?php echo _translate("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['eid_copy_request_save_and_next']) && $arr['eid_copy_request_save_and_next'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Enable"); ?></option>
+															<option value="no" <?php echo (isset($arr['eid_copy_request_save_and_next']) && $arr['eid_copy_request_save_and_next'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("Disable"); ?></option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php } if (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -944,6 +973,21 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
+									<?php } if (isset($arr['covid19_copy_request_save_and_next']) && $arr['covid19_copy_request_save_and_next'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="covid19_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<select id="covid19_copy_request_save_and_next" name="covid19_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
+															<option value=""><?php echo _translate("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['covid19_copy_request_save_and_next']) && $arr['covid19_copy_request_save_and_next'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Enable"); ?></option>
+															<option value="no" <?php echo (isset($arr['covid19_copy_request_save_and_next']) && $arr['covid19_copy_request_save_and_next'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("Disable"); ?></option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
 									<?php } ?>
 									<div class="row">
 										<div class="col-md-12">
@@ -1107,7 +1151,22 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 											</div>
 										</div>
 									</div>
-									<?php if (isset($arr['hepatitis_sample_expiry_after_days']) && $arr['hepatitis_sample_expiry_after_days'] != '') { ?>
+									<?php if (isset($arr['hepatitis_copy_request_save_and_next']) && $arr['hepatitis_copy_request_save_and_next'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="hepatitis_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<select id="hepatitis_copy_request_save_and_next" name="hepatitis_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
+															<option value=""><?php echo _translate("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['hepatitis_copy_request_save_and_next']) && $arr['hepatitis_copy_request_save_and_next'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Enable"); ?></option>
+															<option value="no" <?php echo (isset($arr['hepatitis_copy_request_save_and_next']) && $arr['hepatitis_copy_request_save_and_next'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("Disable"); ?></option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php } if (isset($arr['hepatitis_sample_expiry_after_days']) && $arr['hepatitis_sample_expiry_after_days'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -1236,7 +1295,22 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 											</div>
 										</div>
 									</div>
-									<?php if (isset($arr['tb_sample_expiry_after_days']) && $arr['tb_sample_expiry_after_days'] != '') { ?>
+									<?php if (isset($arr['tb_copy_request_save_and_next']) && $arr['tb_copy_request_save_and_next'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="tb_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<select id="tb_copy_request_save_and_next" name="tb_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
+															<option value=""><?php echo _translate("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['tb_copy_request_save_and_next']) && $arr['tb_copy_request_save_and_next'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Enable"); ?></option>
+															<option value="no" <?php echo (isset($arr['tb_copy_request_save_and_next']) && $arr['tb_copy_request_save_and_next'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("Disable"); ?></option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php } if (isset($arr['tb_sample_expiry_after_days']) && $arr['tb_sample_expiry_after_days'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -1376,6 +1450,21 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
+									<?php } if (isset($arr['cd4_copy_request_save_and_next']) && $arr['cd4_copy_request_save_and_next'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="cd4_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<select id="cd4_copy_request_save_and_next" name="cd4_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
+															<option value=""><?php echo _translate("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['cd4_copy_request_save_and_next']) && $arr['cd4_copy_request_save_and_next'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Enable"); ?></option>
+															<option value="no" <?php echo (isset($arr['cd4_copy_request_save_and_next']) && $arr['cd4_copy_request_save_and_next'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("Disable"); ?></option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
 									<?php } ?>
 									<div class="row">
 										<div class="col-md-12">
@@ -1510,7 +1599,22 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 											</div>
 										</div>
 									</div>
-									<?php if (isset($arr['generic_sample_expiry_after_days']) && $arr['generic_sample_expiry_after_days'] != '') { ?>
+									<?php if (isset($arr['generic_copy_request_save_and_next']) && $arr['generic_copy_request_save_and_next'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="generic_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<select id="generic_copy_request_save_and_next" name="generic_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
+															<option value=""><?php echo _translate("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['generic_copy_request_save_and_next']) && $arr['generic_copy_request_save_and_next'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Enable"); ?></option>
+															<option value="no" <?php echo (isset($arr['generic_copy_request_save_and_next']) && $arr['generic_copy_request_save_and_next'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("Disable"); ?></option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php } if (isset($arr['generic_sample_expiry_after_days']) && $arr['generic_sample_expiry_after_days'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">

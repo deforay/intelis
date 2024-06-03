@@ -347,8 +347,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												</optgroup>
 												<optgroup label="Xpert MTB">
 													<option value="MTB/RIF" <?php echo (is_array($testTypeRequested) && in_array("MTB/RIF", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF</option>
-													<option value="MTB/RIF ULTRA" <?php echo (is_array($tbInfo['tests_requested']) && in_array("MTB/RIF ULTRA", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF ULTRA</option>
-													<option value="TB LAM" <?php echo (is_array($tbInfo['tests_requested']) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
+													<option value="MTB/RIF ULTRA" <?php echo (is_array($testTypeRequested) && in_array("MTB/RIF ULTRA", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF ULTRA</option>
+													<option value="TB LAM" <?php echo (is_array($testTypeRequested) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
 												</optgroup>
                                             </select>
                                         </td>
@@ -366,35 +366,28 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <th class="th-label"><label class="label-control" for="labId"><?= _translate("Testing Laboratory");?></label> </th>
-                                            <td class="td-input">
-                                                <select name="labId" id="labId" class="form-control select2" title="Please select Testing Testing Laboratory" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
-                                                </select>
-                                            </td>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleReceivedDate"><?= _translate("Date of Reception");?> </label></th>
                                             <td class="td-input">
                                                 <input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleTestedDateTime"><?= _translate("Date of Sample Tested");?></label></th>
                                             <td class="td-input">
                                                 <input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
                                             </td>
-
+                                        </tr>
+                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleDispatchedDate"><?= _translate("Sample Dispatched On");?></label></th>
                                             <td class="td-input">
                                                 <input type="text" value="<?php echo $tbInfo['sample_dispatched_datetime']; ?>" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="testedBy"><?= _translate("Tested By");?></label></th>
                                             <td class="td-input">
                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="isSampleRejected"><?= _translate("Is Sample Rejected?");?></label></th>
                                             <td class="td-input">
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">

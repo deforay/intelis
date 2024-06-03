@@ -520,3 +520,21 @@ ALTER TABLE `audit_form_vl` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NUL
 --Jeyabanu 29-May-2024
 ALTER TABLE `form_eid` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
 ALTER TABLE `audit_form_eid` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+
+--Thana 31-May-2024
+UPDATE `s_app_menu` SET `link` = '/covid-19/reference/covid19-sample-rejection-reasons.php' WHERE `s_app_menu`.`id` = 44;
+
+--Thana 03-Jun-2024
+UPDATE privileges SET shared_privileges = '["/tb/reference/tb-sample-rejection-reasons.php","/tb/reference/add-tb-sample-rejection-reason.php","/tb/reference/add-tb-sample-type.php","/tb/reference/tb-test-reasons.php","/tb/reference/add-tb-test-reasons.php","/tb/reference/tb-results.php","/tb/reference/add-tb-results.php"]' WHERE privilege_name = '/tb/management/tb-sample-type.php';
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) 
+VALUES 
+('Copy Request On Save and Next Form', 'vl_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'vl', 'yes', NULL, NULL, 'active'), 
+('Copy Request On Save and Next Form', 'eid_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'eid', 'yes', NULL, NULL, 'active'), 
+('Copy Request On Save and Next Form', 'covid19_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'covid19', 'yes', NULL, NULL, 'active'), 
+('Copy Request On Save and Next Form', 'hepatitis_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'hepatitis', 'yes', NULL, NULL, 'active'), 
+('Copy Request On Save and Next Form', 'tb_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'tb', 'yes', NULL, NULL, 'active'), 
+('Copy Request On Save and Next Form', 'generic_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'generic-tests', 'yes', NULL, NULL, 'active'), 
+('Copy Request On Save and Next Form', 'cd4_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'cd4', 'yes', NULL, NULL, 'active');
+
+--Brindha 03-Jun-2024
+ ALTER TABLE `form_generic` ADD `is_encrypted` varchar(10) DEFAULT 'no' AFTER `patient_address`;

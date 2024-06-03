@@ -225,7 +225,7 @@ if (!empty($id)) {
 
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
-                        $tbl .= '<td colspan="3" align="center">';
+                        $tbl .= '<td colspan="2" align="center">';
                         $tbl .= 'Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
                         if ($barcodeFormat == 'QRCODE') {
                             $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">' . '<br>';
@@ -244,21 +244,21 @@ if (!empty($id)) {
                         }
                         $tbl .= '</td>';
 
-                        if ($sampleCounter % 3 == 0) {
+                        if ($sampleCounter % 2 == 0) {
                             $tbl .= '</tr><tr>'; // Close the current row and start a new row
                         }
                     } else {
                         $label = str_replace("_", " ", (string) $jsonToArray[$alphaNumeric[$j]]);
                         $label = str_replace("in house", "In-House", $label);
                         $label = (str_replace("no of ", " ", $label));
-                        $tbl .= '<td colspan="3" align="center">';
+                        $tbl .= '<td colspan="2" align="center">';
                         $tbl .= $label . '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';
                         $tbl .= '</td>';
-                        if ($sampleCounter % 3 == 0) {
+                        if ($sampleCounter % 2 == 0) {
                             $tbl .= '</tr><tr>'; // Close the current row and start a new row
                         }
                     }
@@ -308,7 +308,7 @@ if (!empty($id)) {
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
 
-                        $tbl .= '<td colspan="3" align="center">';
+                        $tbl .= '<td colspan="2" align="center">';
                         $tbl .= 'Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
                         if ($barcodeFormat == 'QRCODE') {
                             $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">' . '<br>';
@@ -327,14 +327,14 @@ if (!empty($id)) {
 
                         $tbl .= '</td>';
                         // Start a new row after every third sample code
-                        if ($sampleCounter % 3 == 0) {
+                        if ($sampleCounter % 2 == 0) {
                             $tbl .= '</tr><tr>'; // Close the current row and start a new row
                         }
                     } else {
                         $label = str_replace("_", " ", (string) $jsonToArray[$j]);
                         $label = str_replace("in house", "In-House", $label);
                         $label = (str_replace("no of ", " ", $label));
-                        $tbl .= '<td colspan="3" align="center">';
+                        $tbl .= '<td colspan="2" align="center">';
                         $tbl .= $label . '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';
@@ -342,7 +342,7 @@ if (!empty($id)) {
                         $tbl .= '<br>';
                         $tbl .= '</td>';
                         // Start a new row after every third sample code
-                        if ($sampleCounter % 3 == 0) {
+                        if ($sampleCounter % 2 == 0) {
                             $tbl .= '</tr><tr>'; // Close the current row and start a new row
                         }
                     }
@@ -356,13 +356,13 @@ if (!empty($id)) {
             if (isset($bResult['number_of_in_house_controls']) && $bResult['number_of_in_house_controls'] != '' && $bResult['number_of_in_house_controls'] != null) {
                 $noOfInHouseControls = $bResult['number_of_in_house_controls'];
                 for ($i = 1; $i <= $bResult['number_of_in_house_controls']; $i++) {
-                    $tbl .= '<td colspan="3" align="center">' . _translate('In-House Control') . ' ' . $i . '<br>
+                    $tbl .= '<td colspan="2" align="center">' . _translate('In-House Control') . ' ' . $i . '<br>
                             <br>
                             <br>
                             <br>
                             <br>
                             </td>';
-                    if ($i % 3 == 0) {
+                    if ($i % 2 == 0) {
                         $tbl .= '</tr><tr>'; // Close the current row and start a new row
                     }
                 }
@@ -372,13 +372,13 @@ if (!empty($id)) {
                 $noOfManufacturerControls = $bResult['number_of_manufacturer_controls'];
                 for ($i = 1; $i <= $bResult['number_of_manufacturer_controls']; $i++) {
                     $sNo = $noOfInHouseControls + $i;
-                    $tbl .= '<td colspan="3" align="center">' . _translate('Manfacturing Control') . ' ' . $i . '<br>
+                    $tbl .= '<td colspan="2" align="center">' . _translate('Manfacturing Control') . ' ' . $i . '<br>
                             <br>
                             <br>
                             <br>
                             <br>
                             </td>';
-                    if ($i % 3 == 0) {
+                    if ($i % 2 == 0) {
                         $tbl .= '</tr><tr>'; // Close the current row and start a new row
                     }
                 }
@@ -388,13 +388,13 @@ if (!empty($id)) {
                 $noOfCalibrators = $bResult['number_of_calibrators'];
                 for ($i = 1; $i <= $bResult['number_of_calibrators']; $i++) {
                     $sNo = $noOfInHouseControls + $noOfManufacturerControls + $i;
-                    $tbl .= '<td colspan="3" align="center">' . _translate('Calibrator') . ' ' . $i . '<br>
+                    $tbl .= '<td colspan="2" align="center">' . _translate('Calibrator') . ' ' . $i . '<br>
                             <br>
                             <br>
                             <br>
                             <br>
                             </td>';
-                    if ($i % 3 == 0) {
+                    if ($i % 2 == 0) {
                         $tbl .= '</tr><tr>'; // Close the current row and start a new row
                     }
                 }
@@ -439,7 +439,7 @@ if (!empty($id)) {
                     $patientIdentifier = trim($patientIdentifier . " " . $patientFirstName . " " . $patientLastName);
                 }
 
-                $tbl .= '<td colspan="3" align="center">';
+                $tbl .= '<td colspan="2" align="center">';
                 $tbl .= 'Sample ID : ' . $sample['sample_code'] . '<br>';
                 if ($barcodeFormat == 'QRCODE') {
                     $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"><br>';
@@ -456,7 +456,7 @@ if (!empty($id)) {
                     $tbl .= 'Test Result : ' . $sample[$resultColumn] . '<br>';
                 }
                 $tbl .= '</td>';
-                if ($sampleCounter % 3 == 0) {
+                if ($sampleCounter % 2 == 0) {
                     $tbl .= '</tr><tr>'; // Close the current row and start a new row
                 }
                 if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {

@@ -1,6 +1,10 @@
 <?php
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+$keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("Hepatitis Sample Type");
-
 require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -20,6 +24,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
+						<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_hepatitis_sample_type', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php if (_isAllowed("hepatitis-sample-type.php") && $general->isLISInstance() === false) { ?>
 							<a href="add-hepatitis-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Hepatitis Sample Type"); ?></a>
 						<?php } ?>

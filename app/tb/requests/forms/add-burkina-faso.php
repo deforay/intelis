@@ -345,35 +345,28 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <th class="th-label"><label class="label-control" for="labId"><?= _translate("Testing Laboratory");?></label> </th>
-                                            <td class="td-input">
-                                                <select name="labId" id="labId" class="form-control select2" title="Please select Testing Testing Laboratory" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                                </select>
-                                            </td>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleReceivedDate"><?= _translate("Date of Reception");?> </label></th>
                                             <td class="td-input">
                                                 <input type="text" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleTestedDateTime"><?= _translate("Date of Sample Tested");?></label></th>
                                             <td class="td-input">
                                                 <input type="text" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
                                             </td>
-
+                                        </tr>
+                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleDispatchedDate"><?= _translate("Sample Dispatched On");?></label></th>
                                             <td class="td-input">
                                                 <input type="text" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="testedBy"><?= _translate("Tested By");?></label></th>
                                             <td class="td-input">
                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="isSampleRejected"><?= _translate("Is Sample Rejected?");?></label></th>
                                             <td class="td-input">
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
