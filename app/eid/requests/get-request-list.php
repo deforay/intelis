@@ -20,6 +20,7 @@ try {
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
 
+     $formId = (int) $general->getGlobalConfig('vl_form');
 
      /** @var EidService $eidService */
      $eidService = ContainerRegistry::get(EidService::class);
@@ -315,6 +316,9 @@ try {
           $row[] = ($aRow['facility_state']);
           $row[] = ($aRow['facility_district']);
           $row[] = ucwords($eidResults[$aRow['result']] ?? $aRow['result']);
+          if ($formId == COUNTRY\CAMEROON) {
+               $row[] = ($aRow['lab_assigned_code']);
+          }
           $row[] = $aRow['last_modified_datetime'];
           $row[] = ($aRow['status_name']);
 

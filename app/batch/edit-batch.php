@@ -102,7 +102,7 @@ $batchQuery = "SELECT * from batch_details as b_d
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
 $bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
                     vl.$refPrimaryColumn,vl.$patientIdColumn,vl.facility_id,
-                    vl.$resultColumn,vl.result_status,
+                    vl.$resultColumn,vl.result_status,vl.lab_assigned_code,
                     f.facility_name,f.facility_code
                     FROM $refTable as vl
                     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -123,7 +123,7 @@ $bQuery .= ") UNION
 
                     (SELECT vl.sample_code,vl.sample_batch_id,
                         vl.$refPrimaryColumn,vl.$patientIdColumn ,vl.facility_id,
-                        vl.$resultColumn,vl.result_status,
+                        vl.$resultColumn,vl.result_status,vl.lab_assigned_code,
                         f.facility_name,f.facility_code
                         FROM $refTable as vl
                         INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -325,8 +325,12 @@ $fundingSourceList = $general->getFundingSources();
 							<div class="col-md-5">
 								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 									<?php foreach ($result as $key => $sample) {
+										 $labCode = "";
+										 if($sample['lab_assigned_code']!=""){
+											 $labCode = ' - '.$sample['lab_assigned_code'];
+										 }
 										if (trim((string) $sample['sample_batch_id']) == $id) { ?>
-											<option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " .  ($sample['facility_name']); ?></option>
+											<option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " .  ($sample['facility_name']) . $labCode; ?></option>
 									<?php }
 									} ?>
 								</select>
