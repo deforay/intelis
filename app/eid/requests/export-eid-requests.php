@@ -24,6 +24,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 
 $arr = $general->getGlobalConfig();
@@ -36,9 +37,9 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 $output = [];
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Lab Assigned Code","Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 } else {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Lab Assigned Code","Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 }
 
 
@@ -46,6 +47,9 @@ if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID",
     unset($headings[$key]);
 }
 
+if ($formId != COUNTRY\CAMEROON) {
+	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Lab Assigned Code")]);
+}
 
 $no = 1;
 $resultSet = $db->rawQuery($_SESSION['eidRequestSearchResultQuery']);
@@ -102,6 +106,9 @@ foreach ($resultSet as $aRow) {
     $row[] = $sampleRejection;
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
+    if ($formId == COUNTRY\CAMEROON) {
+        $row[] = ($aRow['lab_assigned_code']);
+    }
     $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
     $row[] = $aRow['lab_tech_comments'];
     $row[] = $aRow['funding_source_name'] ?? null;

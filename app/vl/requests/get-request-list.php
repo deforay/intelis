@@ -105,6 +105,7 @@ try {
                vl.is_encrypted,
                vl.form_attributes,
                vl.health_insurance_code,
+               vl.lab_assigned_code,
                s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
@@ -353,6 +354,7 @@ try {
           $row[] = $aRow['sample_name'];
           if ($formId == COUNTRY\CAMEROON) {
                $row[] = $aRow['health_insurance_code'];
+               $row[] = $aRow['lab_assigned_code'];
           }
           $row[] = $aRow['result'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);

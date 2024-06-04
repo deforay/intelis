@@ -12,13 +12,11 @@ if (php_sapi_name() !== 'cli') {
     exit('This script can only be run from the command line.');
 }
 
-
 require_once(__DIR__ . '/../bootstrap.php');
 
 use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-
 
 $dbName = SYSTEM_CONFIG['database']['db'];
 /** @var DatabaseService $db */
@@ -33,7 +31,9 @@ function convertTableAndColumns(DatabaseService $db, string $tableName)
     $columns = $db->rawQuery("SHOW FULL COLUMNS FROM `$tableName`");
     foreach ($columns as $column) {
         if (preg_match('/char|varchar|text|tinytext|mediumtext|longtext/i', $column['Type'])) {
-            $db->rawQuery("ALTER TABLE `$tableName` MODIFY `{$column['Field']}` {$column['Type']} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+            if ($column['Collation'] !== 'utf8mb4_general_ci') {
+                $db->rawQuery("ALTER TABLE `$tableName` MODIFY `{$column['Field']}` {$column['Type']} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+            }
         }
     }
 }

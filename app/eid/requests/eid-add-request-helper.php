@@ -475,6 +475,10 @@ try {
 		$_SESSION['alertMsg'] = _translate("Please try again later");
 	}
 	if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
+		$cpyReq = $general->getGlobalConfig('eid_copy_request_save_and_next');
+		if(isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes'){
+			$_SESSION['eidData'] = $eidData;
+		}
 		header("Location:/eid/requests/eid-add-request.php");
 	} else {
 		header("Location:/eid/requests/eid-requests.php");

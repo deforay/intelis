@@ -222,7 +222,7 @@ sudo dpkg --configure -a
 apt-get autoremove -y
 
 echo "Installing basic packages..."
-apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server
+apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev
 
 echo "Setting up locale..."
 locale-gen en_US en_US.UTF-8
@@ -230,9 +230,21 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 update-locale
 
-systemctl enable ssh
+# Check if SSH service is enabled
+if ! systemctl is-enabled ssh >/dev/null 2>&1; then
+    echo "Enabling SSH service..."
+    systemctl enable ssh
+else
+    echo "SSH service is already enabled."
+fi
 
-systemctl start ssh
+# Check if SSH service is running
+if ! systemctl is-active ssh >/dev/null 2>&1; then
+    echo "Starting SSH service..."
+    systemctl start ssh
+else
+    echo "SSH service is already running."
+fi
 
 # Apache Setup
 if command -v apache2 &>/dev/null; then
