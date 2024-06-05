@@ -308,11 +308,23 @@ sudo dpkg --configure -a
 apt-get autoremove -y
 
 echo "Installing basic packages..."
-apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server
+apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev
 
-systemctl enable ssh
+# Check if SSH service is enabled
+if ! systemctl is-enabled ssh >/dev/null 2>&1; then
+    echo "Enabling SSH service..."
+    systemctl enable ssh
+else
+    echo "SSH service is already enabled."
+fi
 
-systemctl start ssh
+# Check if SSH service is running
+if ! systemctl is-active ssh >/dev/null 2>&1; then
+    echo "Starting SSH service..."
+    systemctl start ssh
+else
+    echo "SSH service is already running."
+fi
 
 log_action "Ubuntu packages updated/installed."
 
