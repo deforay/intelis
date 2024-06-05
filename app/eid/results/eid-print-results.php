@@ -39,6 +39,8 @@ $batResult = $db->rawQuery($batQuery);
 // $implementingPartnerList = $db->query($implementingPartnerQry);
 
 $state = $geolocationService->getProvinces("yes");
+$formId = (int) $general->getGlobalConfig('vl_form');
+
 ?>
 <style>
     .select2-selection__choice {
@@ -145,12 +147,14 @@ $state = $geolocationService->getProvinces("yes");
                                                                 <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
                                                             </div>
                                                         <?php } ?>
-
+														<div class="col-md-3">
+															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
+														</div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Child's ID"); ?></label>
+                                                            <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="child_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Child's ID"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Child's Name"); ?></label> <br>
+                                                            <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="child_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Child's Name"); ?></label> <br>
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="mother_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Mother's ID"); ?></label>
@@ -164,6 +168,12 @@ $state = $geolocationService->getProvinces("yes");
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
                                                         </div>
+                                                        <?php if($formId == COUNTRY\CAMEROON) { ?>
+														<div class="col-md-3">
+															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_assigned_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
+														</div>
+														<?php } ?>
+
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="province" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
                                                         </div>
@@ -199,6 +209,11 @@ $state = $geolocationService->getProvinces("yes");
                                                         <th><?php echo _translate("Mother Name"); ?></th>
                                                         <th scope="row"><?php echo _translate("Facility Name"); ?></th>
                                                         <th scope="row"><?php echo _translate("Testing Lab"); ?></th>
+                                                        <?php if($formId == COUNTRY\CAMEROON) { ?>
+														<th scope="row">
+															<?php echo _translate("Lab Assigned Code"); ?>
+														</th>
+														<?php } ?>
                                                         <th><?php echo _translate("Province/State"); ?></th>
                                                         <th><?php echo _translate("District/County"); ?></th>
                                                         <th><?php echo _translate("Result"); ?></th>
@@ -292,12 +307,14 @@ $state = $geolocationService->getProvinces("yes");
                                                                 <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
                                                             </div>
                                                         <?php } ?>
-
+														<div class="col-md-3">
+															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="batch_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
+														</div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Child's ID"); ?></label>
+                                                            <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="child_id" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Child's ID"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Child's Name"); ?></label> <br>
+                                                            <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="child_name" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Child's Name"); ?></label> <br>
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="mother_id" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Mother's ID"); ?></label>
@@ -311,6 +328,12 @@ $state = $geolocationService->getProvinces("yes");
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
                                                         </div>
+                                                        <?php if($formId == COUNTRY\CAMEROON) { ?>
+														<div class="col-md-3">
+															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="lab_assigned_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
+														</div>
+														<?php } ?>
+
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="province" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
                                                         </div>
@@ -345,6 +368,11 @@ $state = $geolocationService->getProvinces("yes");
                                                         <th><?php echo _translate("Mother Name"); ?></th>
                                                         <th scope="row"><?php echo _translate("Facility Name"); ?></th>
                                                         <th scope="row"><?php echo _translate("Testing Lab"); ?></th>
+                                                        <?php if($formId == COUNTRY\CAMEROON) { ?>
+														<th scope="row">
+															<?php echo _translate("Lab Assigned Code"); ?>
+														</th>
+														<?php } ?>
                                                         <th><?php echo _translate("Province/State"); ?></th>
                                                         <th><?php echo _translate("District/County"); ?></th>
                                                         <th><?php echo _translate("Result"); ?></th>
@@ -576,6 +604,14 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     "sClass": "center"
                 },
+                <?php
+				if ($formId == COUNTRY\CAMEROON) {
+					echo '{
+						"sClass": "center",
+						"bVisible": false
+					},';
+				}
+				?>
                 {
                     "sClass": "center"
                 },
@@ -717,6 +753,14 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     "sClass": "center"
                 },
+                <?php
+				if ($formId == COUNTRY\CAMEROON) {
+					echo '{
+						"sClass": "center",
+						"bVisible": false
+					},';
+				}
+				?>
                 {
                     "sClass": "center"
                 },

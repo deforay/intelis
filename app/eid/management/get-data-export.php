@@ -29,6 +29,7 @@ try {
 
      $sarr = $general->getSystemConfig();
      $key = (string) $general->getGlobalConfig('key');
+     $formId = (int) $general->getGlobalConfig('vl_form');
 
 
      $tableName = "form_eid";
@@ -294,6 +295,10 @@ try {
           $row[] = $aRow['child_name'];
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['lab_name']);
+          if($formId == COUNTRY\CAMEROON){
+               $row[] = ($aRow['lab_assigned_code']);
+          }
+
           $row[] = $aRow['mother_id'];
           $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
           $row[] = ($aRow['status_name']);

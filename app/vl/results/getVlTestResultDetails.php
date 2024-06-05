@@ -21,6 +21,7 @@ try {
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
      $key = (string) $general->getGlobalConfig('key');
+     $formId = (int) $general->getGlobalConfig('vl_form');
 
 
      /** @var FacilitiesService $facilitiesService */
@@ -67,6 +68,7 @@ try {
      vl.patient_first_name,
      vl.patient_middle_name,
      vl.patient_last_name,
+     vl.lab_assigned_code,
      f.facility_name,
      f.facility_district,
      f.facility_state,
@@ -252,6 +254,10 @@ try {
           $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['lab_name']);
+          if ($formId == COUNTRY\CAMEROON) {
+               $row[] = $aRow['lab_assigned_code'];
+          }
+
           if (empty($_POST['from']) || $_POST['from'] != "enterresult") {
                $row[] = ($aRow['facility_state']);
                $row[] = ($aRow['facility_district']);
