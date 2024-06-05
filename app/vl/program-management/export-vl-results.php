@@ -54,7 +54,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 	}
 
 	$no = 1;
-	$resultSet = $db->rawQueryGenerator($_SESSION['vlRequestQuery']);
+	$resultSet = $db->rawQueryGenerator($_SESSION['vlResultQuery']);
 	foreach ($resultSet as $aRow) {
 		$row = [];
 
