@@ -107,6 +107,7 @@ foreach ($srcResults as $list) {
 
 	<?php } ?>
 </style>
+<link rel="stylesheet" type="text/css" href="/assets/css/tooltipster.bundle.min.css" />
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<?php if (!$hidesrcofreq) { ?>
@@ -729,6 +730,7 @@ foreach ($srcResults as $list) {
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/js/tooltipster.bundle.min.js"></script>
 
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
@@ -952,6 +954,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 						checkBoxes[c].setAttribute("checked", true);
 					}
 				}
+				$('.top-tooltip').tooltipster({
+					contentAsHTML: true
+				});
 			},
 			"bProcessing": true,
 			"bServerSide": true,
