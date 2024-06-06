@@ -47,12 +47,12 @@ $fundingSourceList = $general->getFundingSources();
 $implementingPartnerList = $general->getImplementationPartners();
 
 
-
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
 $state = $geolocationService->getProvinces("yes");
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 ?>
 <style>
@@ -264,6 +264,11 @@ $state = $geolocationService->getProvinces("yes");
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Name"); ?></label>
 								</div>
+									<?php if($formId == COUNTRY\CAMEROON) { ?>
+								<div class="col-md-3">
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_assigned_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
+								</div>
+									<?php } ?>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="mother_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Mother's ID"); ?></label> <br>
 								</div>
@@ -297,6 +302,9 @@ $state = $geolocationService->getProvinces("yes");
 									<th><?php echo _translate("Child's Name"); ?></th>
 									<th scope="row"><?php echo _translate("Facility Name"); ?></th>
 									<th><?php echo _translate("Lab Name"); ?></th>
+									<?php if($formId == COUNTRY\CAMEROON){ ?>
+									<th><?php echo _translate("Lab Assigned Code"); ?></th>
+									<?php } ?>
 									<th><?php echo _translate("Mother's ID"); ?></th>
 									<th><?php echo _translate("Result"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
@@ -501,6 +509,13 @@ $state = $geolocationService->getProvinces("yes");
 				{
 					"sClass": "center"
 				},
+				<?php
+				if ($formId == COUNTRY\CAMEROON) {
+					echo '{
+						"sClass": "center"
+					},';
+				}
+				?> 
 				{
 					"sClass": "center"
 				},

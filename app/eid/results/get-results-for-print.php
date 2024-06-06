@@ -18,6 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $sarr = $general->getSystemConfig();
 $key = (string) $general->getGlobalConfig('key');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 
 /** @var EidService $eidService */
@@ -293,6 +294,10 @@ foreach ($rResult as $aRow) {
     // $row[] = ($patientFname);
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['labName'];
+    if ($formId == COUNTRY\CAMEROON) {
+        $row[] = $aRow['lab_assigned_code'];
+   }
+
     $row[] = ($aRow['facility_state']);
     $row[] = ($aRow['facility_district']);
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];

@@ -26,6 +26,7 @@ try {
      $gconfig = $general->getGlobalConfig();
      $sarr = $general->getSystemConfig();
      $key = (string) $general->getGlobalConfig('key');
+     $formId = (int) $general->getGlobalConfig('vl_form');
 
 
      $tableName = "form_vl";
@@ -109,6 +110,7 @@ try {
                vl.form_attributes,
                vl.vl_result_category,
                vl.result_value_hiv_detection,
+               vl.lab_assigned_code,
                s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
@@ -329,6 +331,10 @@ try {
           $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['lab_name']);
+          if($formId == COUNTRY\CAMEROON) { 
+               $row[] = $aRow['lab_assigned_code'];
+          }
+
           $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
           $row[] = ($aRow['sample_name']);
           $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');

@@ -36,6 +36,9 @@ $batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='vl' AND batc
 $batResult = $db->rawQuery($batQuery);
 
 $state = $geolocationService->getProvinces("yes");
+
+$formId = (int) $general->getGlobalConfig('vl_form');
+
 ?>
 <style>
 	.select2-selection__choice {
@@ -233,7 +236,9 @@ $state = $geolocationService->getProvinces("yes");
 																<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
 															</div>
 														<?php } ?>
-
+														<div class="col-md-3">
+															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
+														</div>
 														<div class="col-md-3">
 															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label>
 														</div>
@@ -246,6 +251,11 @@ $state = $geolocationService->getProvinces("yes");
 														<div class="col-md-3">
 															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
 														</div>
+														<?php if($formId == COUNTRY\CAMEROON) { ?>
+														<div class="col-md-3">
+															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_assigned_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
+														</div>
+														<?php } ?>
 														<div class="col-md-3">
 															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="province" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
 														</div>
@@ -294,6 +304,11 @@ $state = $geolocationService->getProvinces("yes");
 														<th scope="row">
 															<?php echo _translate("Testing Lab"); ?>
 														</th>
+														<?php if($formId == COUNTRY\CAMEROON) { ?>
+														<th scope="row">
+															<?php echo _translate("Lab Assigned Code"); ?>
+														</th>
+														<?php } ?>
 														<th>
 															<?php echo _translate("Province/State"); ?>
 														</th>
@@ -482,7 +497,9 @@ $state = $geolocationService->getProvinces("yes");
 																<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
 															</div>
 														<?php } ?>
-
+														<div class="col-md-3">
+															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="batch_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
+														</div>
 														<div class="col-md-3">
 															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_art_no" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label>
 														</div>
@@ -495,6 +512,11 @@ $state = $geolocationService->getProvinces("yes");
 														<div class="col-md-3">
 															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="lab_id" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
 														</div>
+														<?php if($formId == COUNTRY\CAMEROON) { ?>
+														<div class="col-md-3">
+															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="lab_assigned_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
+														</div>
+														<?php } ?>
 														<div class="col-md-3">
 															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="province" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
 														</div>
@@ -542,6 +564,11 @@ $state = $geolocationService->getProvinces("yes");
 														<th scope="row">
 															<?php echo _translate("Testing Lab"); ?>
 														</th>
+														<?php if($formId == COUNTRY\CAMEROON) { ?>
+														<th scope="row">
+															<?php echo _translate("Lab Assigned Code"); ?>
+														</th>
+														<?php } ?>
 														<th>
 															<?php echo _translate("Province/State"); ?>
 														</th>
@@ -766,6 +793,14 @@ $state = $geolocationService->getProvinces("yes");
 				{
 					"sClass": "center"
 				},
+				<?php
+				if ($formId == COUNTRY\CAMEROON) {
+					echo '{
+						"sClass": "center",
+						"bVisible": false
+					},';
+				}
+				?>
 				{
 					"sClass": "center",
 					"bVisible": false
@@ -917,6 +952,14 @@ $state = $geolocationService->getProvinces("yes");
 				{
 					"sClass": "center"
 				},
+				<?php
+				if ($formId == COUNTRY\CAMEROON) {
+					echo '{
+						"sClass": "center",
+						"bVisible": false
+					},';
+				}
+				?>
 				{
 					"sClass": "center",
 					"bVisible": false
