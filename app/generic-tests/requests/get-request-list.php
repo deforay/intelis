@@ -167,21 +167,29 @@ try {
 
           $row = [];
 
-          $tooltipContent = '';
+          $sampleCodeTooltip = '';
+          $patientTooltip = '';
           if (!empty($aRow['sample_package_code'])) {
-               $tooltipContent .= 'Manifest Code: ' . $aRow['sample_package_code'] . '<br>';
+               $sampleCodeTooltip .= _translate("Manifest Code", true) . " : " . $aRow['sample_package_code'] . '<br>';
           }
           if (!empty($aRow['batch_code'])) {
-               $tooltipContent .= 'Batch Code: ' . $aRow['batch_code'];
+               $sampleCodeTooltip .= _translate("Batch Code", true) . " : " . $aRow['batch_code'];
           }
-          if (!empty($tooltipContent)) {
-               $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['sample_code'] . '</span>';
+          if (!empty($aRow['patient_dob'])) {
+               $patientTooltip .= _translate("Patient DoB/Age", true) . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']) . (!empty($aRow['patient_age_in_years']) ? '/' . $aRow['patient_age_in_years'] : '') . '<br>';
+          }
+          if (!empty($aRow['patient_gender'])) {
+               $patientTooltip .= _translate("Patient Gender", true) . " : " . $aRow['patient_gender'] . '<br>';
+          }
+
+          if (!empty($sampleCodeTooltip)) {
+               $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['sample_code'] . '</span>';
           } else {
                $row[] = '<span>' . $aRow['sample_code'] . '</span>';
           }
           if ($_SESSION['instance']['type'] != 'standalone') {
-               if (!empty($tooltipContent)) {
-                    $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['remote_sample_code'] . '</span>';
+               if (!empty($sampleCodeTooltip)) {
+                    $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['remote_sample_code'] . '</span>';
                } else {
                     $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
                }
@@ -189,7 +197,11 @@ try {
           $row[] = $aRow['test_standard_name'];
           $row[] = $aRow['sample_collection_date'];
           $row[] = $aRow['batch_code'];
-          $row[] = $aRow['patient_id'];
+          if (!empty($patientTooltip)) {
+               $row[] = '<span class="top-tooltip" title="' . $patientTooltip . '">' . $aRow['patient_id'] . '</span>';
+          } else {
+               $row[] = '<span>' . $aRow['patient_id'] . '</span>';
+          }
           $row[] = trim(implode(" ", array($patientFname, $patientMname, $patientLname)));
           $row[] = ($aRow['lab_name']);
           $row[] = ($aRow['facility_name']);

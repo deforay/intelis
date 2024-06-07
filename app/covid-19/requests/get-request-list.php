@@ -278,38 +278,50 @@ try {
 
 
           $row = [];
-          $tooltipContent = '';
-          if (!empty($aRow['sample_package_code'])) {
-               $tooltipContent .= 'Manifest Code: ' . $aRow['sample_package_code'] . '<br>';
-          }
-          if (!empty($aRow['batch_code'])) {
-               $tooltipContent .= 'Batch Code: ' . $aRow['batch_code'];
-          }
-          if (!empty($tooltipContent)) {
-               $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['sample_code'] . '</span>';
-          } else {
-               $row[] = '<span>' . $aRow['sample_code'] . '</span>';
-          }
-          //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['covid19_id'] . '"  value="' . $aRow['covid19_id'] . '" onclick="toggleTest(this);"  />';
-          if ($_SESSION['instance']['type'] != 'standalone') {
-               if (!empty($tooltipContent)) {
-                    $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['remote_sample_code'] . '</span>';
-               } else {
-                    $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
-               }
-          }
-
+          $sampleCodeTooltip = '';
+          $patientTooltip = '';
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
                $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
                $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
                $aRow['patient_surname'] = $general->crypto('decrypt', $aRow['patient_surname'], $key);
           }
 
+          if (!empty($aRow['sample_package_code'])) {
+               $sampleCodeTooltip .= _translate("Manifest Code", true) . " : " . $aRow['sample_package_code'] . '<br>';
+          }
+          if (!empty($aRow['batch_code'])) {
+               $sampleCodeTooltip .= _translate("Batch Code", true) . " : " . $aRow['batch_code'];
+          }
+
+          if (!empty($aRow['patient_dob'])) {
+               $patientTooltip .= _translate("Patient DoB/Age", true) . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']) . (!empty($aRow['patient_age']) ? '/' . $aRow['patient_age'] : '') . '<br>';
+          }
+          if (!empty($aRow['patient_gender'])) {
+               $patientTooltip .= _translate("Patient Gender", true) . " : " . $aRow['patient_gender'] . '<br>';
+          }
+          
+          //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['covid19_id'] . '"  value="' . $aRow['covid19_id'] . '" onclick="toggleTest(this);"  />';
+          if (!empty($sampleCodeTooltip)) {
+               $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['sample_code'] . '</span>';
+          } else {
+               $row[] = '<span>' . $aRow['sample_code'] . '</span>';
+          }
+          if ($_SESSION['instance']['type'] != 'standalone') {
+               if (!empty($sampleCodeTooltip)) {
+                    $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['remote_sample_code'] . '</span>';
+               } else {
+                    $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
+               }
+          }
           $row[] = $aRow['sample_collection_date'];
           $row[] = $aRow['batch_code'];
           $row[] = ($aRow['lab_name']);
           $row[] = ($aRow['facility_name']);
-          $row[] = $aRow['patient_id'];
+          if (!empty($patientTooltip)) {
+               $row[] = '<span class="top-tooltip" title="' . $patientTooltip . '">' . $aRow['patient_id'] . '</span>';
+          } else {
+               $row[] = '<span>' . $aRow['patient_id'] . '</span>';
+          }
           $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
           $row[] = ($aRow['facility_state']);
           $row[] = ($aRow['facility_district']);

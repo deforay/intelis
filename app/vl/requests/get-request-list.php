@@ -334,36 +334,51 @@ try {
 
 
           $row = [];
-          $tooltipContent = '';
-          if (!empty($aRow['sample_package_code'])) {
-               $tooltipContent .= 'Manifest Code: ' . $aRow['sample_package_code'] . '<br>';
-          }
-          if (!empty($aRow['batch_code'])) {
-               $tooltipContent .= 'Batch Code: ' . $aRow['batch_code'];
-          }
-
-          if (!empty($tooltipContent)) {
-               $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['sample_code'] . '</span>';
-          } else {
-               $row[] = '<span>' . $aRow['sample_code'] . '</span>';
-          }
-
-          if ($_SESSION['instance']['type'] != 'standalone') {
-               if (!empty($tooltipContent)) {
-                    $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['remote_sample_code'] . '</span>';
-               } else {
-                    $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
-               }
-          }
-          $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-          $row[] = $aRow['batch_code'];
+          $sampleCodeTooltip = '';
+          $patientTooltip = '';
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes' && !empty($key)) {
                $aRow['patient_art_no'] = CommonService::crypto('decrypt', $aRow['patient_art_no'], $key);
                $patientFname = CommonService::crypto('decrypt', $patientFname, $key);
                $patientMname = CommonService::crypto('decrypt', $patientMname, $key);
                $patientLname = CommonService::crypto('decrypt', $patientLname, $key);
           }
-          $row[] = $aRow['patient_art_no'];
+          if (!empty($aRow['sample_package_code'])) {
+               $sampleCodeTooltip .= _translate("Manifest Code", true) . " : " . $aRow['sample_package_code'] . '<br>';
+          }
+          if (!empty($aRow['batch_code'])) {
+               $sampleCodeTooltip .= _translate("Batch Code", true) . " : " . $aRow['batch_code'];
+          }
+          
+          if (!empty($aRow['patient_dob'])) {
+               $patientTooltip .= _translate("Patient DoB/Age", true) . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']) . (!empty($aRow['patient_age_in_years']) ? '/' . $aRow['patient_age_in_years'] : '') . '<br>';
+          }
+          if (!empty($aRow['patient_gender'])) {
+               $patientTooltip .= _translate("Patient Gender", true) . " : " . $aRow['patient_gender'] . '<br>';
+          }
+          if (!empty($aRow['current_regimen'])) {
+               $patientTooltip .= _translate("Current Regimen", true) . " : " . $aRow['current_regimen'];
+          }
+
+          if (!empty($sampleCodeTooltip)) {
+               $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['sample_code'] . '</span>';
+          } else {
+               $row[] = '<span>' . $aRow['sample_code'] . '</span>';
+          }
+
+          if ($_SESSION['instance']['type'] != 'standalone') {
+               if (!empty($sampleCodeTooltip)) {
+                    $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['remote_sample_code'] . '</span>';
+               } else {
+                    $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
+               }
+          }
+          $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
+          $row[] = $aRow['batch_code'];
+          if (!empty($patientTooltip)) {
+               $row[] = '<span class="top-tooltip" title="' . $patientTooltip . '">' . $aRow['patient_art_no'] . '</span>';
+          } else {
+               $row[] = '<span>' . $aRow['patient_art_no'] . '</span>';
+          }
           $row[] = trim(implode(" ", array($patientFname, $patientMname, $patientLname)));
           $row[] = $aRow['lab_name'];
           $row[] = $aRow['facility_name'];
