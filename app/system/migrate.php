@@ -42,30 +42,20 @@ if (!file_exists($logsDir)) {
     $canLog = file_exists($logsDir) && is_writable($logsDir);
 }
 
+
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
 
 // Check if connection was successful
 if ($db->isConnected() === false) {
     exit("Database connection failed. Please check your database settings\n");
 }
 
-$options = getopt("yqv:");  // Parse command line options for -y, -q, and -v
-$autoContinueOnError = isset($options['y']);  // Set a flag if -y option is provided
-$quietMode = isset($options['q']);  // Set a flag if -q option is provided
-$userProvidedVersion = isset($options['v']) ? $options['v'] : null;  // Get the user-provided version if exists
 
-if ($quietMode) {
-    error_reporting(0);  // Suppress warnings and notices
-}
-
-if ($userProvidedVersion) {
-    $currentVersion = $userProvidedVersion;
-} else {
-    $db->where('name', 'sc_version');
-    $currentVersion = $db->getValue('system_config', 'value');
-}
-
+$db->where('name', 'sc_version');
+$currentVersion = $db->getValue('system_config', 'value');
 $migrationFiles = glob(ROOT_PATH . '/dev/migrations/*.sql');
 
 // Extract version numbers and map them to files
@@ -76,13 +66,24 @@ $versions = array_map(function ($file) {
 // Sort versions
 usort($versions, 'version_compare');
 
+
+$options = getopt("yq");  // Parse command line options for -y and -q
+$autoContinueOnError = isset($options['y']);  // Set a flag if -y option is provided
+
+// Only output messages if -q option is not provided
+$quietMode = isset($options['q']);  // Set a flag if -q option is provided
+
+if ($quietMode) {
+    error_reporting(0);  // Suppress warnings and notices
+}
+
 foreach ($versions as $version) {
-    $file = ROOT_PATH . '/dev/migrations/' . $version . '.sql';
+    $file = APPLICATION_PATH . '/../dev/migrations/' . $version . '.sql';
 
     if (version_compare($version, $currentVersion, '>=')) {
-        if (!$quietMode) {
-            echo "Migrating to version $version...\n";
-        }
+        //if (!$quietMode) {
+        echo "Migrating to version $version...\n";
+        //}
 
         $sql_contents = file_get_contents($file);
         $parser = new Parser($sql_contents);
@@ -96,6 +97,7 @@ foreach ($versions as $version) {
                 $db->rawQuery($query);
                 $errorOccurred = false;
             } catch (Exception $e) {
+
                 $message = "Exception : " . $e->getMessage() . PHP_EOL;
 
                 $errorOccurred = true;
@@ -129,9 +131,9 @@ foreach ($versions as $version) {
         }
         unset($sql_contents, $parser);
 
-        if (!$quietMode) { // Only output messages if -q option is not provided
-            echo "Migration to version $version completed." . PHP_EOL;
-        }
+        //if (!$quietMode) { // Only output messages if -q option is not provided
+        echo "Migration to version $version completed." . PHP_EOL;
+        //}
 
         //$db->where('name', 'sc_version')->update('system_config', ['value' => $version]);
         $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Re-enable foreign key checks
