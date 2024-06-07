@@ -106,6 +106,7 @@ try {
                vl.form_attributes,
                vl.health_insurance_code,
                vl.lab_assigned_code,
+               vl.sample_package_code,
                s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
@@ -333,9 +334,26 @@ try {
 
 
           $row = [];
-          $row[] = $aRow['sample_code'];
+          $tooltipContent = '';
+          if (!empty($aRow['sample_package_code'])) {
+               $tooltipContent .= 'Manifest Code: ' . $aRow['sample_package_code'] . '<br>';
+          }
+          if (!empty($aRow['batch_code'])) {
+               $tooltipContent .= 'Batch Code: ' . $aRow['batch_code'];
+          }
+
+          if (!empty($tooltipContent)) {
+               $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['sample_code'] . '</span>';
+          } else {
+               $row[] = '<span>' . $aRow['sample_code'] . '</span>';
+          }
+
           if ($_SESSION['instance']['type'] != 'standalone') {
-               $row[] = $aRow['remote_sample_code'];
+               if (!empty($tooltipContent)) {
+                    $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['remote_sample_code'] . '</span>';
+               } else {
+                    $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
+               }
           }
           $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
           $row[] = $aRow['batch_code'];

@@ -257,11 +257,25 @@ try {
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
           $row = [];
-
+          $tooltipContent = '';
+          if (!empty($aRow['sample_package_code'])) {
+               $tooltipContent .= 'Manifest Code: ' . $aRow['sample_package_code'] . '<br>';
+          }
+          if (!empty($aRow['batch_code'])) {
+               $tooltipContent .= 'Batch Code: ' . $aRow['batch_code'];
+          }
+          if (!empty($tooltipContent)) {
+               $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '') . '</span>';
+          } else {
+               $row[] = '<span>' . $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '') . '</span>';
+          }
           //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow[$primaryKey] . '"  value="' . $aRow[$primaryKey] . '" onclick="toggleTest(this);"  />';
-          $row[] = $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '');
           if ($_SESSION['instance']['type'] != 'standalone') {
-               $row[] = $aRow['remote_sample_code'];
+               if (!empty($tooltipContent)) {
+                    $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['remote_sample_code'] . '</span>';
+               } else {
+                    $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
+               }
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
                $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);

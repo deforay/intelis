@@ -167,9 +167,24 @@ try {
 
           $row = [];
 
-          $row[] = $aRow['sample_code'];
+          $tooltipContent = '';
+          if (!empty($aRow['sample_package_code'])) {
+               $tooltipContent .= 'Manifest Code: ' . $aRow['sample_package_code'] . '<br>';
+          }
+          if (!empty($aRow['batch_code'])) {
+               $tooltipContent .= 'Batch Code: ' . $aRow['batch_code'];
+          }
+          if (!empty($tooltipContent)) {
+               $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['sample_code'] . '</span>';
+          } else {
+               $row[] = '<span>' . $aRow['sample_code'] . '</span>';
+          }
           if ($_SESSION['instance']['type'] != 'standalone') {
-               $row[] = $aRow['remote_sample_code'];
+               if (!empty($tooltipContent)) {
+                    $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['remote_sample_code'] . '</span>';
+               } else {
+                    $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
+               }
           }
           $row[] = $aRow['test_standard_name'];
           $row[] = $aRow['sample_collection_date'];
