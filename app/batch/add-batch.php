@@ -340,6 +340,8 @@ $fundingSourceList = $general->getFundingSources();
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <input type="hidden" name="batchedSamples" id="batchedSamples" />
+                        <input type="hidden" name="sortBy" class="sortBy" />
+                        <input type="hidden" name="sortType" class="sortType" />
                         <input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
                         <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _translate('Please select machine'); ?>" onclick="validateNow();return false;"><?php echo _translate("Save and Next"); ?></a>
                         <a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
@@ -432,9 +434,13 @@ $fundingSourceList = $general->getFundingSources();
             alert("<?= _translate("Please select at least one sample", true); ?>");
             return false;
         }
+        $(".sortBy").val($("#sortBy").val());
+        $(".sortType").val($("#sortType").val());
+
         flag = deforayValidator.init({
             formId: 'addBatchForm'
         });
+
         if (flag) {
             $("#positions").val($('#positions-type').val());
             $.blockUI();

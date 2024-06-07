@@ -374,25 +374,26 @@ ALTER TABLE `batch_details` ADD `control_names` JSON NULL DEFAULT NULL AFTER `la
 ALTER TABLE `r_generic_test_reasons` ADD `parent_reason` INT NULL DEFAULT NULL AFTER `test_reason`;
 
 
--- Jeyabanu 09-Apr-2024
-CREATE TABLE `lab_storage_history` (
-  `history_id` int NOT NULL AUTO_INCREMENT,
-  `test_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `sample_unique_id` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `volume` decimal(10,2) NOT NULL,
-  `freezer_id` char(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `rack` int NOT NULL,
-  `box` int NOT NULL,
-  `position` int NOT NULL,
-  `sample_status` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `updated_datetime` timestamp NOT NULL,
-  `updated_by` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`history_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  -- Jeyabanu 09-Apr-2024
+  CREATE TABLE IF NOT EXISTS `lab_storage_history` (
+    `history_id` int NOT NULL AUTO_INCREMENT,
+    `test_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+    `sample_unique_id` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
+    `volume` decimal(10,2) NOT NULL,
+    `freezer_id` char(50) COLLATE utf8mb4_general_ci NOT NULL,
+    `rack` int NOT NULL,
+    `box` int NOT NULL,
+    `position` int NOT NULL,
+    `sample_status` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+    `updated_datetime` timestamp NOT NULL,
+    `updated_by` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+    PRIMARY KEY (`history_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 -- Amit 09-Apr-2024
 ALTER TABLE `instrument_controls` ADD `updated_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `number_of_calibrators`;
+ALTER TABLE `s_vlsm_instance` ADD `last_vldash_sync` DATETIME NULL DEFAULT NULL;
 ALTER TABLE `s_vlsm_instance` ADD `last_lab_metadata_sync` DATETIME NULL DEFAULT NULL AFTER `last_vldash_sync`;
 
 -- Amit 10-Apr-2024
@@ -526,16 +527,19 @@ UPDATE `s_app_menu` SET `link` = '/covid-19/reference/covid19-sample-rejection-r
 
 --Thana 03-Jun-2024
 UPDATE privileges SET shared_privileges = '["/tb/reference/tb-sample-rejection-reasons.php","/tb/reference/add-tb-sample-rejection-reason.php","/tb/reference/add-tb-sample-type.php","/tb/reference/tb-test-reasons.php","/tb/reference/add-tb-test-reasons.php","/tb/reference/tb-results.php","/tb/reference/add-tb-results.php"]' WHERE privilege_name = '/tb/management/tb-sample-type.php';
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) 
-VALUES 
-('Copy Request On Save and Next Form', 'vl_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'vl', 'yes', NULL, NULL, 'active'), 
-('Copy Request On Save and Next Form', 'eid_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'eid', 'yes', NULL, NULL, 'active'), 
-('Copy Request On Save and Next Form', 'covid19_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'covid19', 'yes', NULL, NULL, 'active'), 
-('Copy Request On Save and Next Form', 'hepatitis_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'hepatitis', 'yes', NULL, NULL, 'active'), 
-('Copy Request On Save and Next Form', 'tb_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'tb', 'yes', NULL, NULL, 'active'), 
-('Copy Request On Save and Next Form', 'generic_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'generic-tests', 'yes', NULL, NULL, 'active'), 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`)
+VALUES
+('Copy Request On Save and Next Form', 'vl_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'vl', 'yes', NULL, NULL, 'active'),
+('Copy Request On Save and Next Form', 'eid_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'eid', 'yes', NULL, NULL, 'active'),
+('Copy Request On Save and Next Form', 'covid19_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'covid19', 'yes', NULL, NULL, 'active'),
+('Copy Request On Save and Next Form', 'hepatitis_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'hepatitis', 'yes', NULL, NULL, 'active'),
+('Copy Request On Save and Next Form', 'tb_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'tb', 'yes', NULL, NULL, 'active'),
+('Copy Request On Save and Next Form', 'generic_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'generic-tests', 'yes', NULL, NULL, 'active'),
 ('Copy Request On Save and Next Form', 'cd4_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'cd4', 'yes', NULL, NULL, 'active');
 
 --Brindha 03-Jun-2024
  ALTER TABLE `form_generic` ADD `is_encrypted` varchar(10) DEFAULT 'no' AFTER `patient_address`;
  ALTER TABLE `audit_form_generic` ADD `is_encrypted` VARCHAR(10) DEFAULT 'no' AFTER `patient_address`;
+
+ --Jeyabanu 06-Jun-2024
+ ALTER TABLE `batch_details` ADD `batch_attributes` JSON NULL DEFAULT NULL AFTER `batch_status`;
