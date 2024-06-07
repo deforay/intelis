@@ -540,3 +540,6 @@ VALUES
 --Brindha 03-Jun-2024
  ALTER TABLE `form_generic` ADD `is_encrypted` varchar(10) DEFAULT 'no' AFTER `patient_address`;
  ALTER TABLE `audit_form_generic` ADD `is_encrypted` VARCHAR(10) DEFAULT 'no' AFTER `patient_address`;
+
+ --Jeyabanu 06-Jun-2024
+ ALTER TABLE `batch_details` ADD `batch_attributes` JSON NULL DEFAULT NULL AFTER `batch_status`;

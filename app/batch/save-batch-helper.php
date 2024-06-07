@@ -39,10 +39,17 @@ if (isset($_POST['type'])) {
 $tableName1 = "batch_details";
 try {
 
-
     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != "") {
         if (!empty($_POST['batchId'])) {
             $id = intval($_POST['batchId']);
+            $batchAttributes = [];
+            if (!empty($_POST['sortBy'])) {
+                $batchAttributes['sort_by'] = $_POST['sortBy'];
+            }
+            if (!empty($_POST['sortType'])) {
+                $batchAttributes['sort_type'] = $_POST['sortType'];
+            }
+
             $data = [
                 'batch_code' => $_POST['batchCode'],
                 'position_type' => $_POST['positions'],
@@ -50,6 +57,9 @@ try {
                 'last_modified_by' => $_SESSION['userId'],
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
+            if (!empty($batchAttributes)) {
+                $data['batch_attributes'] = json_encode($batchAttributes, true);
+            }
             $db->where('batch_id', $id);
             $db->update($tableName1, $data);
             if ($id > 0) {
@@ -92,6 +102,17 @@ try {
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'request_created_datetime' => DateUtility::getCurrentDateTime()
                 ];
+                $batchAttributes = [];
+                if (!empty($_POST['sortBy'])) {
+                    $batchAttributes['sort_by'] = $_POST['sortBy'];
+                }
+                if (!empty($_POST['sortType'])) {
+                    $batchAttributes['sort_type'] = $_POST['sortType'];
+                }
+
+                if (!empty($batchAttributes)) {
+                    $data['batch_attributes'] = json_encode($batchAttributes, true);
+                }
                 $db->insert($tableName1, $data);
                 $lastId = $db->getInsertId();
                 if ($lastId > 0 && trim((string) $_POST['batchedSamples']) != '') {
