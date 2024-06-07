@@ -308,7 +308,10 @@ try {
           }
          
           if (!empty($aRow['child_dob'])) {
-               $childTooltip .= _translate("Child DoB/Age", true) . " : " . DateUtility::humanReadableDateFormat($aRow['child_dob']) . (!empty($aRow['child_age']) ? '/' . $aRow['child_age'] : '') . '<br>';
+               $childTooltip .= _translate("Child DoB", true) . " : " . DateUtility::humanReadableDateFormat($aRow['child_dob']) . '<br>';
+          }
+          if (!empty($aRow['child_age'])) {
+               $childTooltip .= _translate("Child Age", true) . " : " . $aRow['child_age'] . '<br>';
           }
           if (!empty($aRow['child_gender'])) {
                $childTooltip .= _translate("Child Gender", true) . " : " . $aRow['child_gender'] . '<br>';

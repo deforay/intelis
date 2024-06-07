@@ -294,7 +294,10 @@ try {
           }
 
           if (!empty($aRow['patient_dob'])) {
-               $patientTooltip .= _translate("Patient DoB/Age", true) . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']) . (!empty($aRow['patient_age']) ? '/' . $aRow['patient_age'] : '') . '<br>';
+               $patientTooltip .= _translate("Patient DoB", true) . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']) . '<br>';
+          }
+          if (!empty($aRow['patient_age'])) {
+               $patientTooltip .= _translate("Patient Age", true) . " : " . $aRow['patient_age'] . '<br>';
           }
           if (!empty($aRow['patient_gender'])) {
                $patientTooltip .= _translate("Patient Gender", true) . " : " . $aRow['patient_gender'] . '<br>';

@@ -176,7 +176,10 @@ try {
                $sampleCodeTooltip .= _translate("Batch Code", true) . " : " . $aRow['batch_code'];
           }
           if (!empty($aRow['patient_dob'])) {
-               $patientTooltip .= _translate("Patient DoB/Age", true) . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']) . (!empty($aRow['patient_age_in_years']) ? '/' . $aRow['patient_age_in_years'] : '') . '<br>';
+               $patientTooltip .= _translate("Patient DoB", true) . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']) . '<br>';
+          }
+          if (!empty($aRow['patient_age_in_years'])) {
+               $patientTooltip .= _translate("Patient Age", true) . " : " . $aRow['patient_age_in_years'] . '<br>';
           }
           if (!empty($aRow['patient_gender'])) {
                $patientTooltip .= _translate("Patient Gender", true) . " : " . $aRow['patient_gender'] . '<br>';
