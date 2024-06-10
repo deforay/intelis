@@ -239,12 +239,12 @@ sort($fileList);
 													<?php echo _translate("VL"); ?><input type="hidden" name="userTestType[]" id="userTestTypeVl" value="vl" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByVl" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for VL Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByVl" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for VL Test"); ?>' onchange="changeDefaultReviewer(this.value,'vl');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByVl" class="form-control select2" title='<?php echo _translate("Please enter Approved By for VL Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByVl" class="form-control select2" title='<?php echo _translate("Please enter Approved By for VL Test"); ?>' onchange="changeDefaultApprover(this.value,'vl');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -256,12 +256,12 @@ sort($fileList);
 													<?php echo _translate("EID"); ?><input type="hidden" name="userTestType[]" id="userTestTypeEid" value="eid" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByEid" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for EID Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByEid" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for EID Test"); ?>' onchange="changeDefaultReviewer(this.value,'eid');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByEid" class="form-control select2" title='<?php echo _translate("Please enter Approved By for EID Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByEid" class="form-control select2" title='<?php echo _translate("Please enter Approved By for EID Test"); ?>' onchange="changeDefaultApprover(this.value,'eid');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -273,12 +273,12 @@ sort($fileList);
 													<?php echo _translate("Covid-19"); ?><input type="hidden" name="userTestType[]" id="userTestTypeCovid19" value="covid19" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByCovid19" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for Covid19 Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByCovid19" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for Covid19 Test"); ?>' onchange="changeDefaultReviewer(this.value,'covid19');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByCovid19" class="form-control select2" title='<?php echo _translate("Please enter Approved By for Covid19 Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByCovid19" class="form-control select2" title='<?php echo _translate("Please enter Approved By for Covid19 Test"); ?>' onchange="changeDefaultApprover(this.value,'covid19');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -290,12 +290,12 @@ sort($fileList);
 													<?php echo _translate("Hepatitis"); ?><input type="hidden" name="userTestType[]" id="userTestTypeHepatitis" value="hepatitis" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for Hepatitis Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for Hepatitis Test"); ?>' onchange="changeDefaultReviewer(this.value,'hepatitis');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control select2" title='<?php echo _translate("Please enter Approved By for Hepatitis Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control select2" title='<?php echo _translate("Please enter Approved By for Hepatitis Test"); ?>' onchange="changeDefaultApprover(this.value,'hepatitis');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -307,12 +307,12 @@ sort($fileList);
 													<?php echo _translate("TB"); ?><input type="hidden" name="userTestType[]" id="userTestTypeTb" value="tb" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByTb" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for TB Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByTb" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for TB Test"); ?>' onchange="changeDefaultReviewer(this.value,'tb');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _translate("Please select Approved By for TB Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _translate("Please select Approved By for TB Test"); ?>' onchange="changeDefaultApprover(this.value,'tb');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -324,12 +324,29 @@ sort($fileList);
 													<?php echo _translate("CD4"); ?><input type="hidden" name="userTestType[]" id="userTestTypeCd4" value="cd4" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByCd4" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for CD4 Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByCd4" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for CD4 Test"); ?>' onchange="changeDefaultReviewer(this.value,'cd4');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _translate("Please select Approved By for TB Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _translate("Please select Approved By for TB Test"); ?>' onchange="changeDefaultApprover(this.value,'cd4');">
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php }
+										if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>
+											<tr class="generic-access user-access-form" style="display: none;">
+												<td style="text-align:center;">
+													<?php echo _translate("Other Lab Tests"); ?><input type="hidden" name="userTestType[]" id="testType1" value="generic-tests" />
+												</td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByGeneric" class="form-control user-generic select2" title='<?php echo _translate("Please enter Reviewed By for Other Lab Test"); ?>' onchange="changeDefaultReviewer(this.value,'generic-tests');">
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByGeneric" class="form-control user-generic select2" title='<?php echo _translate("Please enter Approved By for Other Lab Test"); ?>' onchange="changeDefaultApprover(this.value,'generic-tests');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -764,6 +781,33 @@ sort($fileList);
 		} else {
 			$(".latLong" + id).css("display", "none");
 			// $("#pocdevice"+id).val('no');
+		}
+	}
+
+	function changeDefaultReviewer(value,testType) {
+		var userConfirmed = confirm("Do you want to update existing records? ");
+
+		if (userConfirmed && value !='') {
+			$.post("/common/reference/update-default-reviewer.php", {
+				defaultReviewer: value,
+				testType: testType,
+			},
+			function(data) {
+				alert("<?php echo _translate("Updated successfully"); ?>.");
+			});
+		}
+	}
+	function changeDefaultApprover(value,testType) {
+		var userConfirmed = confirm("Do you want to update existing records? ");
+
+		if (userConfirmed && value !='') {
+			$.post("/common/reference/update-default-approver.php", {
+				defaultApprover: value,
+				testType: testType,
+			},
+			function(data) {
+				alert("<?php echo _translate("Updated successfully"); ?>.");
+			});
 		}
 	}
 </script>

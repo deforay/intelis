@@ -292,38 +292,53 @@ try {
 
 
           $row = [];
-          $tooltipContent = '';
-          if (!empty($aRow['sample_package_code'])) {
-               $tooltipContent .= 'Manifest Code: ' . $aRow['sample_package_code'] . '<br>';
-          }
-          if (!empty($aRow['batch_code'])) {
-               $tooltipContent .= 'Batch Code: ' . $aRow['batch_code'];
-          }
-          if (!empty($tooltipContent)) {
-               $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['sample_code'] . '</span>';
-          } else {
-               $row[] = '<span>' . $aRow['sample_code'] . '</span>';
-          }
-
-          //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['eid_id'] . '"  value="' . $aRow['eid_id'] . '" onclick="toggleTest(this);"  />';
-          if ($_SESSION['instance']['type'] != 'standalone') {
-               if (!empty($tooltipContent)) {
-                    $row[] = '<span class="top-tooltip" title="' . $tooltipContent . '">' . $aRow['remote_sample_code'] . '</span>';
-               } else {
-                    $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
-               }
-          }
+          $sampleCodeTooltip = '';
+          $childTooltip = '';
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
                $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
                $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
                $aRow['mother_id'] = $general->crypto('decrypt', $aRow['mother_id'], $key);
                $aRow['mother_name'] = $general->crypto('decrypt', $aRow['mother_name'], $key);
           }
+          if (!empty($aRow['sample_package_code'])) {
+               $sampleCodeTooltip .= _translate("Manifest Code", true) . " : " . $aRow['sample_package_code'] . '<br>';
+          }
+          if (!empty($aRow['batch_code'])) {
+               $sampleCodeTooltip .= _translate("Batch Code", true) . " : " . $aRow['batch_code'];
+          }
+         
+          if (!empty($aRow['child_dob'])) {
+               $childTooltip .= _translate("Child DoB", true) . " : " . DateUtility::humanReadableDateFormat($aRow['child_dob']) . '<br>';
+          }
+          if (!empty($aRow['child_age'])) {
+               $childTooltip .= _translate("Child Age", true) . " : " . $aRow['child_age'] . '<br>';
+          }
+          if (!empty($aRow['child_gender'])) {
+               $childTooltip .= _translate("Child Gender", true) . " : " . $aRow['child_gender'] . '<br>';
+          }
+
+          //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['eid_id'] . '"  value="' . $aRow['eid_id'] . '" onclick="toggleTest(this);"  />';
+          if (!empty($sampleCodeTooltip)) {
+               $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['sample_code'] . '</span>';
+          } else {
+               $row[] = '<span>' . $aRow['sample_code'] . '</span>';
+          }
+          if ($_SESSION['instance']['type'] != 'standalone') {
+               if (!empty($sampleCodeTooltip)) {
+                    $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['remote_sample_code'] . '</span>';
+               } else {
+                    $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
+               }
+          }
           $row[] = $aRow['sample_collection_date'];
           $row[] = $aRow['batch_code'];
           $row[] = ($aRow['labName']);
           $row[] = ($aRow['facility_name']);
-          $row[] = $aRow['child_id'];
+          if (!empty($childTooltip)) {
+               $row[] = '<span class="top-tooltip" title="' . $childTooltip . '">' . $aRow['child_id'] . '</span>';
+          } else {
+               $row[] = '<span>' . $aRow['child_id'] . '</span>';
+          }
           $row[] = $aRow['child_name'];
           $row[] = $aRow['mother_id'];
           $row[] = $aRow['mother_name'];
