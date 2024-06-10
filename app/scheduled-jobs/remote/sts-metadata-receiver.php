@@ -4,16 +4,21 @@
 
 $cliMode = php_sapi_name() === 'cli';
 $forceFlag = false;
+$truncateFlag = false;
 
 if ($cliMode) {
     require_once(__DIR__ . "/../../../bootstrap.php");
 
     // Parse CLI arguments
-    $options = getopt('f', ['force']);
+    $options = getopt('ft', ['force', 'truncate']);
     if (isset($options['f']) || isset($options['force'])) {
         $forceFlag = true;
     }
+    if (isset($options['t']) || isset($options['truncate'])) {
+        $truncateFlag = true;
+    }
 }
+
 
 use JsonMachine\Items;
 use App\Services\ApiService;
@@ -50,7 +55,7 @@ if ($general->isLISInstance() === false) {
     exit(0);
 }
 
-if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
+if (!isset($systemConfig['remoteURL']) || empty($systemConfig['remoteURL']) || $systemConfig['remoteURL'] === '') {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
@@ -425,8 +430,8 @@ try {
             }
 
             try {
-                // Truncate table if force flag is set
-                if ($cliMode && $forceFlag && $dataToSync[$dataType]['canTruncate'] !== false) {
+                // Truncate table if truncate flag is set and table can be truncated
+                if ($cliMode && $truncateFlag && $dataToSync[$dataType]['canTruncate'] !== false) {
                     $db->rawQuery("TRUNCATE TABLE {$dataToSync[$dataType]['tableName']}");
                 }
 
@@ -443,7 +448,7 @@ try {
 
                     $unwantedColumnList = [];
                     if ($dataType === 'users') {
-                        $unwantedColumnList = ['(log)in_id', 'role_id', 'password'];
+                        $unwantedColumnList = ['login_id', 'role_id', 'password'];
                     }
 
                     $emptyTableArray = $general->getTableFieldsAsArray($dataToSync[$dataType]['tableName'], $unwantedColumnList);

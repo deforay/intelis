@@ -432,7 +432,9 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
 
      jQuery(document).ready(function($) {
-          getFacilitiesToMap();
+          <?php if ($general->isSTSInstance()) { ?>
+               getFacilitiesToMap();
+          <?php } ?>
 
           $('#search').multiselect({
                search: {

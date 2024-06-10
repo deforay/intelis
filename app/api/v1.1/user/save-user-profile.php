@@ -53,11 +53,11 @@ try {
     ini_set('max_execution_time', 20000);
     $authToken = $apiService->getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
-    if (!empty($origJson) && MiscUtility::isJSON($origJson)) {
-        $input = _sanitizeInput($request->getParsedBody());
-    } elseif (!empty($_REQUEST)) {
+    if (!empty($_REQUEST) && !empty($_REQUEST['post']) && MiscUtility::isJSON($_REQUEST['post'])) {
         $input = _sanitizeInput($_REQUEST);
         $input['post'] = json_decode((string) $input['post'], true);
+    } elseif (!empty($origJson) && MiscUtility::isJSON($origJson)) {
+        $input = _sanitizeInput($request->getParsedBody());
     } else {
         throw new SystemException("2 Invalid request. Please check your request parameters.");
     }
