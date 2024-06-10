@@ -19,33 +19,31 @@ $value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
 $multiple = [];
+
 if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
     $isMultiple = !empty($_POST['type']) && $_POST['type'] == "multiple";
     if ($isMultiple) {
-        $value = implode(",", array_map(function ($row) {
-            return "'" . trim($row) . "'";
-        }, explode(",", $value)));
+        $value = array_map('trim', explode(",", $value));
     }
+
     try {
-        $inCondition = $isMultiple ? "IN(?)" : "= ?";
+        $inCondition = $isMultiple ? "IN (?)" : "= ?";
         $tableCondition = '';
+        $parameters = [$value];
 
         if (!empty($fnct) && $fnct != 'null') {
             $table = explode("##", (string) $fnct);
             $tableCondition = "AND $table[0] != ?";
-        }
-
-        $sQuery = "SELECT COUNT(*) AS count
-                        FROM $tableName
-                        WHERE $fieldName $inCondition $tableCondition";
-        $parameters = [$value];
-
-        if (!empty($tableCondition)) {
             $parameters[] = $table[1];
         }
 
-        $result = $db->rawQueryOne($sQuery, $parameters);
-        $data = $result['count'] ?? 0;
+        $sQuery = "SELECT 1
+                    FROM $tableName
+                    WHERE $fieldName $inCondition $tableCondition
+                    LIMIT 1";
+
+        $result = $db->rawQuery($sQuery, $parameters);
+        $data = !empty($result) ? 1 : 0;
     } catch (Exception $e) {
         LoggerUtility::log('error', $e->getMessage());
         LoggerUtility::log('error', $e->getTraceAsString());

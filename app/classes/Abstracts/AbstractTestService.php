@@ -164,9 +164,7 @@ abstract class AbstractTestService
 
                 // We check for duplication only if we are inserting a new record
                 if ($insertOperation) {
-                    $checkDuplicateQuery = "SELECT $sampleCodeType, $sampleCodeKeyCol
-                                                FROM $testTable
-                                                WHERE $sampleCodeType= ?";
+                    $checkDuplicateQuery = "SELECT 1 FROM $testTable WHERE $sampleCodeType = ? LIMIT 1";
                     $checkDuplicateResult = $this->db->rawQueryOne($checkDuplicateQuery, [$sampleCodeGenerator['sampleCode']]);
                     if (!empty($checkDuplicateResult)) {
                         // Rollback the current transaction to release locks and undo changes

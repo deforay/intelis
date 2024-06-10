@@ -35,14 +35,20 @@ set_error_handler(function ($severity, $message, $file, $line) {
     // Check if debug mode is enabled
     if (SYSTEM_CONFIG['system']['debug_mode'] || APPLICATION_ENV === 'development') {
         // In debug mode, log all error levels but only throw exceptions for severe errors
-        LoggerUtility::log('error', $exception->getMessage(), ['exception' => $exception]);
+        LoggerUtility::log('error', $exception->getMessage(), [
+            'exception' => $exception,
+            'trace' => debug_backtrace()
+        ]);
         if (in_array($severity, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE])) {
             throw $exception;
         }
     } else {
         // In production mode, log and throw exceptions only for severe errors
         if (in_array($severity, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE])) {
-            LoggerUtility::log('error', $exception->getMessage(), ['exception' => $exception]);
+            LoggerUtility::log('error', $exception->getMessage(), [
+                'exception' => $exception,
+                'trace' => debug_backtrace()
+            ]);
             throw $exception;
         }
         // Optionally, log other errors without throwing exceptions
@@ -51,7 +57,10 @@ set_error_handler(function ($severity, $message, $file, $line) {
 });
 
 set_exception_handler(function ($exception) {
-    LoggerUtility::log('error', $exception->getMessage(), ['exception' => $exception]);
+    LoggerUtility::log('error', $exception->getMessage(), [
+        'exception' => $exception,
+        'trace' => debug_backtrace()
+    ]);
     // Handle the final response for uncaught exceptions here or exit gracefully.
 });
 

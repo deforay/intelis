@@ -491,6 +491,10 @@ $rInfo = $db->query($resourcesQuery);
 		//str=obj.value;
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
+		if (removeDots.trim() == "") {
+			return;
+		}
+
 		$.post("/includes/checkDuplicate.php", {
 				tableName: tableName,
 				fieldName: fieldName,
