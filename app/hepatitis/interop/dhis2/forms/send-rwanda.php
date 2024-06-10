@@ -25,7 +25,7 @@ $query = "SELECT hep.*, fd.facility_name, fd.other_id
           WHERE (hep.source_of_request LIKE 'dhis2' OR hep.unique_id like 'dhis2%')
           AND (hep.result_sent_to_source is null or hep.result_sent_to_source NOT LIKE 'sent')
           AND hep.result_status = " . SAMPLE_STATUS\ACCEPTED . " LIMIT 100";
-$formResults = $db->rawQueryGenerator($query);
+$formResults = $db->rawQuery($query);
 $counter = 0;
 
 $transactionId = $general->generateUUID();
