@@ -31,13 +31,14 @@ defined('SYSTEM_CONFIG') ||
 
 set_error_handler(function ($severity, $message, $file, $line) {
     $exception = new ErrorException($message, 0, $severity, $file, $line);
+    $trace = debug_backtrace();
 
     // Check if debug mode is enabled
     if (SYSTEM_CONFIG['system']['debug_mode'] || APPLICATION_ENV === 'development') {
         // In debug mode, log all error levels but only throw exceptions for severe errors
         LoggerUtility::log('error', $exception->getMessage(), [
             'exception' => $exception,
-            'trace' => debug_backtrace()
+            'trace' => $trace
         ]);
         if (in_array($severity, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE])) {
             throw $exception;
@@ -47,7 +48,7 @@ set_error_handler(function ($severity, $message, $file, $line) {
         if (in_array($severity, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE])) {
             LoggerUtility::log('error', $exception->getMessage(), [
                 'exception' => $exception,
-                'trace' => debug_backtrace()
+                'trace' => $trace
             ]);
             throw $exception;
         }
@@ -59,7 +60,7 @@ set_error_handler(function ($severity, $message, $file, $line) {
 set_exception_handler(function ($exception) {
     LoggerUtility::log('error', $exception->getMessage(), [
         'exception' => $exception,
-        'trace' => debug_backtrace()
+        'trace' => $exception->getTraceAsString()
     ]);
     // Handle the final response for uncaught exceptions here or exit gracefully.
 });
@@ -67,7 +68,10 @@ set_exception_handler(function ($exception) {
 register_shutdown_function(function () {
     $error = error_get_last();
     if ($error && ($error['type'] === E_ERROR || $error['type'] === E_PARSE || $error['type'] === E_CORE_ERROR || $error['type'] === E_COMPILE_ERROR)) {
-        LoggerUtility::log('critical', $error['message'], $error);
+        LoggerUtility::log('critical', $error['message'], [
+            'error' => $error,
+            'trace' => debug_backtrace()
+        ]);
     }
 });
 
