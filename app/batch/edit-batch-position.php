@@ -54,6 +54,27 @@ $batchQuery = "SELECT * FROM batch_details as b_d
 				WHERE batch_id= ?";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
 
+$batchAttributes = json_decode((string) $batchInfo[0]['batch_attributes']);
+
+$sortBy = $batchAttributes->sort_by ?? 'sampleCode';
+
+$sortType = match ($batchAttributes->sort_type) {
+	'a', 'asc' => 'asc',
+	'd', 'desc' => 'desc',
+	default => 'asc',
+};
+
+
+$orderBy = match ($sortBy) {
+	'sampleCode' => 'sample_code',
+	'lastModified' => 'last_modified_datetime',
+	'requestCreated' => 'request_created_datetime',
+	'labAssignedCode' => 'lab_assigned_code',
+	default => 'sample_code',
+};
+
+$orderBy = $orderBy . ' ' . $sortType;
+
 // Config control
 $configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id= ? ";
 $configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['instrument_id']]);
@@ -86,7 +107,7 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 		$displayOrder[] = $jsonToArray[$index];
 		$xplodJsonToArray = explode("_", (string) $jsonToArray[$index]);
 		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-			$sampleQuery = "SELECT sample_code, $patientIdColumn FROM $table WHERE  $primaryKeyColumn = ?";
+			$sampleQuery = "SELECT sample_code, $patientIdColumn FROM $table WHERE  $primaryKeyColumn = ? ";
 			if (isset($testType) && $testType == 'generic-tests') {
 				$sampleQuery .= " AND test_type = $testType";
 			}
@@ -118,7 +139,7 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 			$content .= '<li class="ui-state-default" id="calibrators_' . $c . '">Calibrator ' . $c . '</li>';
 		}
 	}
-	$samplesQuery = "SELECT $primaryKeyColumn ,$patientIdColumn, sample_code FROM $table WHERE sample_batch_id=? ORDER BY sample_code ASC";
+	$samplesQuery = "SELECT $primaryKeyColumn ,$patientIdColumn, sample_code FROM $table WHERE sample_batch_id=? ORDER BY $orderBy";
 	$samplesInfo = $db->rawQuery($samplesQuery, [$id]);
 	foreach ($samplesInfo as $sample) {
 		$displayOrder[] = "s_" . $sample[$primaryKeyColumn];

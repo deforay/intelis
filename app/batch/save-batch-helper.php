@@ -82,6 +82,8 @@ try {
                 }
 
                 $uniqueSampleIds = array_unique($selectedSamples);
+                echo $_POST['positions']; 
+
                 $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");
                 $db->update($testTable, ['sample_batch_id' => $id]);
                 header("Location:edit-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
