@@ -139,7 +139,7 @@ try {
      $processedResults = $vlService->processViralLoadResultFromForm($_POST);
 
      //Update patient Information in Patients Table
-     $patientsService->updatePatient($_POST, 'form_vl');
+     $systemPatientCode = $patientsService->savePatient($_POST, 'form_vl');
 
      $isRejected = $processedResults['isRejected'];
      $finalResult = $processedResults['finalResult'];
@@ -187,7 +187,7 @@ try {
           $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
      }
 
-     $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
+     //$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
      $vlData = array(
           'vlsm_instance_id' => $instanceId,
@@ -195,7 +195,7 @@ try {
           'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
           'external_sample_code' => $_POST['serialNo'] ?? null,
           'facility_id' => $_POST['facilityId'] ?? null,
-          'system_patient_code' => $systemGeneratedCode,
+          'system_patient_code' => $systemPatientCode,
           'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),
           'sample_dispatched_datetime' => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
           'patient_gender' => $_POST['gender'] ?? null,

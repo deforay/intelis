@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Exception;
+use Throwable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -68,10 +69,9 @@ final class PatientsService
     }
     public function getSystemPatientCodeBySampleId($sampleId, $testTable)
     {
-        $col = "system_patient_code";
         $this->db->where("sample_code", $sampleId);
-        $result = $this->db->getOne($testTable, $col);
-        return $result[$col];
+        $result = $this->db->getOne($testTable, 'system_patient_code');
+        return $result['system_patient_code'];
     }
 
 
@@ -102,12 +102,11 @@ final class PatientsService
 
             $systemPatientCode = $this->getSystemPatientId($data['patient_code'], $params['patientGender'], DateUtility::isoDateFormat($params['dob'] ?? ''));
 
-            if (!empty($systemPatientCode)) {
-                $data['system_patient_code'] = $systemPatientCode;
-            } else {
-                $data['system_patient_code'] = $this->commonService->generateUUID();
+            if (empty($systemPatientCode) || $systemPatientCode === '') {
+                $systemPatientCode = $this->commonService->generateUUID();
             }
 
+            $data['system_patient_code'] = $systemPatientCode;
             $data['patient_first_name'] = $params['patientFirstName'] ?? null;
             $data['patient_middle_name'] = $params['patientMiddleName'] ?? null;
             $data['patient_last_name'] = $params['patientLastName'] ?? null;
@@ -142,6 +141,8 @@ final class PatientsService
             $data['patient_registered_by'] = $params['registeredBy'] ?? null;
 
             $updateColumns = array_keys($data);
+            unset($updateColumns['patient_registered_on']);
+            unset($updateColumns['patient_registered_by']);
             $id = $this->db->upsert($this->table, $data, $updateColumns, ['system_patient_code']);
 
             if ($id === false) {
@@ -150,7 +151,8 @@ final class PatientsService
             }
 
             $this->db->commitTransaction();
-        } catch (Exception $e) {
+            return $systemPatientCode;
+        } catch (Throwable $e) {
             $this->db->rollbackTransaction();
             throw $e;
         }
