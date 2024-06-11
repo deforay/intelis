@@ -309,12 +309,12 @@ $testTypeList = SystemService::getActiveModules(true);
 													<?php echo _translate("VL"); ?><input type="hidden" name="userTestType[]" id="testType1" value="vl" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByVl" class="form-control user-vl select2" title='<?php echo _translate("Please enter Reviewed By for VL Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByVl" class="form-control user-vl select2" title='<?php echo _translate("Please enter Reviewed By for VL Test"); ?>' onchange="changeDefaultReviewer(this.value,'vl');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['vl'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByVl" class="form-control user-vl select2" title='<?php echo _translate("Please enter Approved By for VL Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByVl" class="form-control user-vl select2" title='<?php echo _translate("Please enter Approved By for VL Test"); ?>' onchange="changeDefaultApprover(this.value,'vl');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['vl'], '--Select--'); ?>
 													</select>
 												</td>
@@ -326,12 +326,12 @@ $testTypeList = SystemService::getActiveModules(true);
 													<?php echo _translate("EID"); ?><input type="hidden" name="userTestType[]" id="testType1" value="eid" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByEid" class="form-control user-eid select2" title='<?php echo _translate("Please enter Reviewed By for EID Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByEid" class="form-control user-eid select2" title='<?php echo _translate("Please enter Reviewed By for EID Test"); ?>' onchange="changeDefaultReviewer(this.value,'eid');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['eid'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByEid" class="form-control user-eid select2" title='<?php echo _translate("Please enter Approved By for EID Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByEid" class="form-control user-eid select2" title='<?php echo _translate("Please enter Approved By for EID Test"); ?>' onchange="changeDefaultApprover(this.value,'eid');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['eid'], '--Select--'); ?>
 													</select>
 												</td>
@@ -343,12 +343,12 @@ $testTypeList = SystemService::getActiveModules(true);
 													<?php echo _translate("Covid-19"); ?><input type="hidden" name="userTestType[]" id="testType1" value="covid19" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByCovid19" class="form-control user-covid19 select2" title='<?php echo _translate("Please enter Reviewed By for Covid19 Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByCovid19" class="form-control user-covid19 select2" title='<?php echo _translate("Please enter Reviewed By for Covid19 Test"); ?>' onchange="changeDefaultReviewer(this.value,'covid19');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['covid19'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByCovid19" class="form-control user-covid19 select2" title='<?php echo _translate("Please enter Approved By for Covid19 Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByCovid19" class="form-control user-covid19 select2" title='<?php echo _translate("Please enter Approved By for Covid19 Test"); ?>' onchange="changeDefaultApprover(this.value,'covid19');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['covid19'], '--Select--'); ?>
 													</select>
 												</td>
@@ -360,12 +360,12 @@ $testTypeList = SystemService::getActiveModules(true);
 													<?php echo _translate("Hepatitis"); ?><input type="hidden" name="userTestType[]" id="testType1" value="hepatitis" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control user-hepatitis select2" title='<?php echo _translate("Please enter Reviewed By for Hepatitis Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control user-hepatitis select2" title='<?php echo _translate("Please enter Reviewed By for Hepatitis Test"); ?>' onchange="changeDefaultReviewer(this.value,'hepatitis');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['hepatitis'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control user-hepatitis select2" title='<?php echo _translate("Please enter Approved By for Hepatitis Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control user-hepatitis select2" title='<?php echo _translate("Please enter Approved By for Hepatitis Test"); ?>' onchange="changeDefaultApprover(this.value,'hepatitis');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['hepatitis'], '--Select--'); ?>
 													</select>
 												</td>
@@ -377,12 +377,12 @@ $testTypeList = SystemService::getActiveModules(true);
 													<?php echo _translate("TB"); ?><input type="hidden" name="userTestType[]" id="testType1" value="tb" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByTb" class="form-control user-tb select2" title='<?php echo _translate("Please enter Reviewed By for TB Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByTb" class="form-control user-tb select2" title='<?php echo _translate("Please enter Reviewed By for TB Test"); ?>' onchange="changeDefaultReviewer(this.value,'tb');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['tb'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByTb" class="form-control user-tb select2" title='<?php echo _translate("Please select Approved By for TB Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByTb" class="form-control user-tb select2" title='<?php echo _translate("Please select Approved By for TB Test"); ?>' onchange="changeDefaultApprover(this.value,'tb');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['tb'], '--Select--'); ?>
 													</select>
 												</td>
@@ -394,12 +394,12 @@ $testTypeList = SystemService::getActiveModules(true);
 													<?php echo _translate("CD4"); ?><input type="hidden" name="userTestType[]" id="testType1" value="cd4" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByCd4" class="form-control user-cd4 select2" title='<?php echo _translate("Please enter Reviewed By for CD4 Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByCd4" class="form-control user-cd4 select2" title='<?php echo _translate("Please enter Reviewed By for CD4 Test"); ?>' onchange="changeDefaultReviewer(this.value,'cd4');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['cd4'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByCd4" class="form-control user-cd4 select2" title='<?php echo _translate("Please enter Approved By for CD4 Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByCd4" class="form-control user-cd4 select2" title='<?php echo _translate("Please enter Approved By for CD4 Test"); ?>' onchange="changeDefaultApprover(this.value,'cd4');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['cd4'], '--Select--'); ?>
 													</select>
 												</td>
@@ -411,12 +411,12 @@ $testTypeList = SystemService::getActiveModules(true);
 													<?php echo _translate("Other Lab Tests"); ?><input type="hidden" name="userTestType[]" id="testType1" value="generic-tests" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByGeneric" class="form-control user-generic select2" title='<?php echo _translate("Please enter Reviewed By for Other Lab Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByGeneric" class="form-control user-generic select2" title='<?php echo _translate("Please enter Reviewed By for Other Lab Test"); ?>' onchange="changeDefaultReviewer(this.value,'generic-tests');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['generic-tests'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByGeneric" class="form-control user-generic select2" title='<?php echo _translate("Please enter Approved By for Other Lab Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByGeneric" class="form-control user-generic select2" title='<?php echo _translate("Please enter Approved By for Other Lab Test"); ?>' onchange="changeDefaultApprover(this.value,'generic-tests');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['generic-tests'], '--Select--'); ?>
 													</select>
 												</td>
@@ -521,7 +521,7 @@ $testTypeList = SystemService::getActiveModules(true);
 										<?php }
 										if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>
 											<tr id="generic-testsTable" class="ctlCalibrator" <?php echo $genericTests; ?>>
-												<td align="left" style="text-align:center;">
+												<td align="left">
 													<?php echo _translate("Other Lab Tests"); ?><input type="hidden" name="testType[]" id="testType1" value="generic-tests" />
 												</td>
 												<td><input type="text" value="<?php echo $configControl['generic-tests']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _translate("No of In-House Controls in Other Lab Tests"); ?>' title='<?php echo _translate("Please enter No of In-House Controls in Other Lab Tests"); ?>' />
@@ -893,6 +893,33 @@ $testTypeList = SystemService::getActiveModules(true);
 		} else {
 			$(".latLong" + id).css("display", "none");
 			// $("#pocdevice"+id).val('no');
+		}
+	}
+
+	function changeDefaultReviewer(value,testType) {
+		var userConfirmed = confirm("Do you want to update existing records? ");
+
+		if (userConfirmed && value !='') {
+			$.post("/common/reference/update-default-reviewer.php", {
+				defaultReviewer: value,
+				testType: testType,
+			},
+			function(data) {
+				alert("<?php echo _translate("Updated successfully"); ?>.");
+			});
+		}
+	}
+	function changeDefaultApprover(value,testType) {
+		var userConfirmed = confirm("Do you want to update existing records? ");
+
+		if (userConfirmed && value !='') {
+			$.post("/common/reference/update-default-approver.php", {
+				defaultApprover: value,
+				testType: testType,
+			},
+			function(data) {
+				alert("<?php echo _translate("Updated successfully"); ?>.");
+			});
 		}
 	}
 

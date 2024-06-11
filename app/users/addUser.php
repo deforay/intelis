@@ -334,7 +334,9 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
      facilityName = true;
 
      jQuery(document).ready(function($) {
-          getFacilitiesToMap();
+          <?php if ($general->isSTSInstance()) { ?>
+               getFacilitiesToMap();
+          <?php } ?>
           $('#search').multiselect({
                search: {
                     left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',

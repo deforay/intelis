@@ -31,18 +31,25 @@ defined('SYSTEM_CONFIG') ||
 
 set_error_handler(function ($severity, $message, $file, $line) {
     $exception = new ErrorException($message, 0, $severity, $file, $line);
+    $trace = debug_backtrace();
 
     // Check if debug mode is enabled
     if (SYSTEM_CONFIG['system']['debug_mode'] || APPLICATION_ENV === 'development') {
         // In debug mode, log all error levels but only throw exceptions for severe errors
-        LoggerUtility::log('error', $exception->getMessage(), ['exception' => $exception]);
+        LoggerUtility::log('error', $exception->getMessage(), [
+            'exception' => $exception,
+            'trace' => $trace
+        ]);
         if (in_array($severity, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE])) {
             throw $exception;
         }
     } else {
         // In production mode, log and throw exceptions only for severe errors
         if (in_array($severity, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE])) {
-            LoggerUtility::log('error', $exception->getMessage(), ['exception' => $exception]);
+            LoggerUtility::log('error', $exception->getMessage(), [
+                'exception' => $exception,
+                'trace' => $trace
+            ]);
             throw $exception;
         }
         // Optionally, log other errors without throwing exceptions
@@ -51,14 +58,20 @@ set_error_handler(function ($severity, $message, $file, $line) {
 });
 
 set_exception_handler(function ($exception) {
-    LoggerUtility::log('error', $exception->getMessage(), ['exception' => $exception]);
+    LoggerUtility::log('error', $exception->getMessage(), [
+        'exception' => $exception,
+        'trace' => $exception->getTraceAsString()
+    ]);
     // Handle the final response for uncaught exceptions here or exit gracefully.
 });
 
 register_shutdown_function(function () {
     $error = error_get_last();
     if ($error && ($error['type'] === E_ERROR || $error['type'] === E_PARSE || $error['type'] === E_CORE_ERROR || $error['type'] === E_COMPILE_ERROR)) {
-        LoggerUtility::log('critical', $error['message'], $error);
+        LoggerUtility::log('critical', $error['message'], [
+            'error' => $error,
+            'trace' => debug_backtrace()
+        ]);
     }
 });
 

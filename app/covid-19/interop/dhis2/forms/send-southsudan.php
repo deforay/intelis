@@ -88,7 +88,7 @@ $query = "SELECT
             AND result_status = 7
             AND result_sent_to_source NOT LIKE 'sent' LIMIT 100";
 
-$formResults = $db->rawQueryGenerator($query);
+$formResults = $db->rawQuery($query);
 $counter = 0;
 
 foreach ($formResults as $row) {

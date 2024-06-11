@@ -14,10 +14,10 @@ use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 
 $interopConfig = [];
 if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
-	$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
+    $interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 }
 
-if(empty($interopConfig)){
+if (empty($interopConfig)) {
     echo "Interop config not found";
     die();
 }
@@ -61,7 +61,7 @@ $query = "SELECT vl.*,
             AND (result IS NOT NULL OR (is_sample_rejected IS NOT NULL AND is_sample_rejected = 'yes'))
             AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent') LIMIT 100";
 
-$formResults = $db->rawQueryGenerator($query);
+$formResults = $db->rawQuery($query);
 
 $counter = 0;
 $json = "";

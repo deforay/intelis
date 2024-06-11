@@ -19,11 +19,13 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 $syncType = 'DHIS2-Hepatitis-Send';
 
-$query = "SELECT * FROM form_hepatitis
-          WHERE (source_of_request LIKE 'dhis2' OR unique_id like 'dhis2%')
-          AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')
-          AND result_status = " . SAMPLE_STATUS\ACCEPTED . " LIMIT 100";
-$formResults = $db->rawQueryGenerator($query);
+$query = "SELECT hep.*, fd.facility_name, fd.other_id
+          FROM form_hepatitis as hep
+          LEFT JOIN facility_details as fd ON hep.facility_id = fd.facility_id
+          WHERE (hep.source_of_request LIKE 'dhis2' OR hep.unique_id like 'dhis2%')
+          AND (hep.result_sent_to_source is null or hep.result_sent_to_source NOT LIKE 'sent')
+          AND hep.result_status = " . SAMPLE_STATUS\ACCEPTED . " LIMIT 100";
+$formResults = $db->rawQuery($query);
 $counter = 0;
 
 $transactionId = $general->generateUUID();
@@ -75,11 +77,7 @@ foreach ($formResults as $row) {
 
 
   if (!empty($row['facility_id'])) {
-    $facQuery = "SELECT facility_id, facility_name, other_id
-                  FROM facility_details
-                  WHERE facility_id = ? ";
-    $facResult = $db->rawQueryOne($facQuery, [$row['facility_id']]);
-    $orgUnitId = $facResult['other_id'];
+    $orgUnitId = $row['other_id'];
   } else {
     continue;
   }
@@ -210,7 +208,7 @@ foreach ($formResults as $row) {
       "event" => $eventId,
       "eventDate" => $eventDate,
       "program" => $programID,
-      "orgUnit" => $facResult['other_id'],
+      "orgUnit" => $orgUnitId,
       "programStage" => $pStage,
       "status" => "COMPLETED",
       "trackedEntityInstance" => $trackedEntityInstance,

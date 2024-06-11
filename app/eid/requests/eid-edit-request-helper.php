@@ -297,9 +297,9 @@ try {
 	}
 
 	//Update patient Information in Patients Table
-	$patientsService->updatePatient($_POST, 'form_eid');
+	$systemPatientCode = $patientsService->savePatient($_POST, 'form_eid');
 
-	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['childId'], $_POST['childGender'], DateUtility::isoDateFormat($_POST['childDob'] ?? ''));
+	//$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['childId'], $_POST['childGender'], DateUtility::isoDateFormat($_POST['childDob'] ?? ''));
 
 
 	$eidData = array(
@@ -308,7 +308,7 @@ try {
 		'lab_assigned_code' => $_POST['labAssignedCode'] ?? null,
 		'lab_id' => $_POST['labId'] ?? null,
 		'lab_testing_point' => $_POST['labTestingPoint'] ?? null,
-		'system_patient_code' => $systemGeneratedCode,
+		'system_patient_code' => $systemPatientCode,
 		'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
 		'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
 		'mother_id' => $_POST['mothersId'] ?? null,
@@ -471,8 +471,8 @@ try {
 		$eidData['is_encrypted'] = 'yes';
 	}
 
-	//Update patient Information in Patients Table
-	$patientsService->updatePatient($_POST, 'form_eid');
+	// //Update patient Information in Patients Table
+	// $patientsService->savePatient($_POST, 'form_eid');
 
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Exception;
+use Throwable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -68,10 +69,9 @@ final class PatientsService
     }
     public function getSystemPatientCodeBySampleId($sampleId, $testTable)
     {
-        $col = "system_patient_code";
         $this->db->where("sample_code", $sampleId);
-        $result = $this->db->getOne($testTable, $col);
-        return $result[$col];
+        $result = $this->db->getOne($testTable, 'system_patient_code');
+        return $result['system_patient_code'];
     }
 
 
@@ -102,12 +102,11 @@ final class PatientsService
 
             $systemPatientCode = $this->getSystemPatientId($data['patient_code'], $params['patientGender'], DateUtility::isoDateFormat($params['dob'] ?? ''));
 
-            if (!empty($systemPatientCode)) {
-                $data['system_patient_code'] = $systemPatientCode;
-            } else {
-                $data['system_patient_code'] = $this->commonService->generateUUID();
+            if (empty($systemPatientCode) || $systemPatientCode === '') {
+                $systemPatientCode = $this->commonService->generateUUID();
             }
 
+            $data['system_patient_code'] = $systemPatientCode;
             $data['patient_first_name'] = $params['patientFirstName'] ?? null;
             $data['patient_middle_name'] = $params['patientMiddleName'] ?? null;
             $data['patient_last_name'] = $params['patientLastName'] ?? null;
@@ -142,6 +141,8 @@ final class PatientsService
             $data['patient_registered_by'] = $params['registeredBy'] ?? null;
 
             $updateColumns = array_keys($data);
+            unset($updateColumns['patient_registered_on']);
+            unset($updateColumns['patient_registered_by']);
             $id = $this->db->upsert($this->table, $data, $updateColumns, ['system_patient_code']);
 
             if ($id === false) {
@@ -150,69 +151,11 @@ final class PatientsService
             }
 
             $this->db->commitTransaction();
-        } catch (Exception $e) {
+            return $systemPatientCode;
+        } catch (Throwable $e) {
             $this->db->rollbackTransaction();
             throw $e;
         }
-    }
-
-    public function updatePatient($params, $testTable)
-    {
-        $systemPatientCode = $this->getSystemPatientCodeBySampleId($params['sampleCode'], $testTable);
-        if ($testTable == "form_vl" || $testTable == "form_generic") {
-            $patientId = $params['artNo'];
-            $params['patientGender'] = $params['gender'];
-        } elseif ($testTable == "form_eid") {
-            $patientId = $params['childId'];
-            $params['patientFirstName'] = $params['childName'];
-            $params['dob'] = $params['childDob'];
-            $params['patientGender'] = $params['childGender'];
-            $params['patientPhoneNumber'] = $params['caretakerPhoneNumber'];
-            $params['patientAddress'] = $params['caretakerAddress'];
-            $params['ageInMonths'] = $params['childAge'];
-        } else {
-            $params['patientFirstName'] = $params['firstName'];
-            $params['patientLastName'] = $params['lastName'];
-            $patientId = $params['patientId'];
-        }
-        $data['patient_code'] = $patientId;
-
-
-        $data['patient_first_name'] = (!empty($params['patientFirstName']) ? $params['patientFirstName'] : null);
-        $data['patient_middle_name'] = (!empty($params['patientMiddleName']) ? $params['patientMiddleName'] : null);
-        $data['patient_last_name'] = (!empty($params['patientLastName']) ? $params['patientLastName'] : null);
-
-        $data['is_encrypted'] = 'no';
-        if (isset($params['encryptPII']) && $params['encryptPII'] == 'yes') {
-            $key = base64_decode((string) $this->commonService->getGlobalConfig('key'));
-            $encryptedPatientId = $this->commonService->crypto('encrypt', $data['patient_code'], $key);
-            $encryptedPatientFirstName = $this->commonService->crypto('encrypt', $data['patient_first_name'], $key);
-            $encryptedPatientMiddleName = $this->commonService->crypto('encrypt', $data['patient_middle_name'], $key);
-            $encryptedPatientLastName = $this->commonService->crypto('encrypt', $data['patient_last_name'], $key);
-
-            $data['patient_code'] = $encryptedPatientId;
-            $data['patient_first_name'] = $encryptedPatientFirstName;
-            $data['patient_middle_name'] = $encryptedPatientMiddleName;
-            $data['patient_last_name'] = $encryptedPatientLastName;
-            $data['is_encrypted'] = 'yes';
-        }
-
-        $data['patient_province'] = (!empty($params['patientProvince']) ? $params['patientProvince'] : null);
-        $data['patient_district'] = (!empty($params['patientDistrict']) ? $params['patientDistrict'] : null);
-        $data['patient_gender'] = (!empty($params['patientGender']) ? $params['patientGender'] : null);
-        $data['patient_age_in_years'] = (!empty($params['ageInYears']) ? $params['ageInYears'] : null);
-        $data['patient_age_in_months'] = (!empty($params['ageInMonths']) ? $params['ageInMonths'] : null);
-        $data['patient_dob'] = DateUtility::isoDateFormat($params['dob'] ?? '');
-        $data['patient_phone_number'] = (!empty($params['patientPhoneNumber']) ? $params['patientPhoneNumber'] : null);
-        $data['is_patient_pregnant'] = (!empty($params['patientPregnant']) ? $params['patientPregnant'] : null);
-        $data['is_patient_breastfeeding'] = (!empty($params['breastfeeding']) ? $params['breastfeeding'] : null);
-        $data['patient_address'] = (!empty($params['patientAddress']) ? $params['patientAddress'] : null);
-        $data['updated_datetime'] = DateUtility::getCurrentDateTime();
-        $data['patient_registered_on'] = DateUtility::getCurrentDateTime();
-        $data['patient_registered_by'] = $params['registeredBy'] ?? null;
-
-        $this->db->where("system_patient_code", $systemPatientCode);
-        return $this->db->update($this->table, $data);
     }
 
     public function getSystemPatientId($patientCode, $patientGender, $patientDob)

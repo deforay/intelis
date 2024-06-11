@@ -1,10 +1,11 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Services\PatientsService;
+use App\Registries\ContainerRegistry;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -131,9 +132,9 @@ try {
 	}
 
 	//Update patient Information in Patients Table
-	$patientsService->updatePatient($_POST, 'form_hepatitis');
+	$systemPatientCode = $patientsService->savePatient($_POST, 'form_hepatitis');
 
-	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
+	//$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
 	$hepatitisData = array(
 		'external_sample_code' => $_POST['externalSampleCode'] ?? null,
@@ -142,7 +143,7 @@ try {
 		'test_number' => $_POST['testNumber'] ?? null,
 		'province_id' => $_POST['provinceId'] ?? null,
 		'lab_id' => $_POST['labId'] ?? null,
-		'system_patient_code' => $systemGeneratedCode,
+		'system_patient_code' => $systemPatientCode,
 		'implementing_partner' => $_POST['implementingPartner'] ?? null,
 		'funding_source' => $_POST['fundingSource'] ?? null,
 		'patient_id' => $_POST['patientId'] ?? null,

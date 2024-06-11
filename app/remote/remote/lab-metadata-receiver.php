@@ -88,8 +88,8 @@ try {
         $transactionId = $transactionId ?? $general->generateUUID();
         if (!empty($tableInfo)) {
             foreach ($tableInfo['table'] as $j => $table) {
-                $emptyDataArray = $general->getTableFieldsAsArray($table);
-                if (empty($emptyDataArray)) {
+                $emptyTableArray = $general->getTableFieldsAsArray($table);
+                if (empty($emptyTableArray)) {
                     continue;
                 }
                 $deletedId = [];

@@ -213,9 +213,13 @@ try {
      }
 
 
+     //Update patient Information in Patients Table
+     $systemPatientCode = $patientsService->savePatient($_POST, 'form_generic');
+
      $genericData = array(
           'vlsm_instance_id' => $instanceId,
           'vlsm_country_id' => $formId,
+          'system_patient_code' => $systemPatientCode,
           'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
           'external_sample_code' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] : null),
           'facility_id' => (isset($_POST['facilityId']) && $_POST['facilityId'] != '') ? $_POST['facilityId'] : null,
@@ -284,8 +288,6 @@ try {
           $genericData['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : null;
      }
 
-     //Update patient Information in Patients Table
-     $patientsService->updatePatient($_POST, 'form_generic');
 
      // echo "<pre>";print_r($_POST);die;
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
