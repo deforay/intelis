@@ -185,7 +185,7 @@ try {
         ];
     }
 
-    $payload = json_encode($payload);
+    $payload = MiscUtility::encodeUtf8Json($payload);
 } catch (Exception | SystemException $exc) {
     $payload = [
         'status' => 'failed',
@@ -194,7 +194,7 @@ try {
         'error' => $exc->getLine() . " | " . $exc->getMessage(),
     ];
 
-    $payload = json_encode($payload);
+    $payload = MiscUtility::encodeUtf8Json($payload);
 
     LoggerUtility::log("error", "Save User Profile API : " . $exc->getMessage(), [
         'file' => __FILE__,

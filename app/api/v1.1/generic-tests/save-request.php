@@ -496,6 +496,6 @@ try {
         'trace' => $exc->getTraceAsString()
     ]);
 }
-$payload = json_encode($payload);
+$payload = MiscUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], _getIteratorCount($input), 'save-request', 'generic-tests', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

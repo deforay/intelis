@@ -111,11 +111,11 @@ final class ApiService
     public function post($url, $payload, $gzip = true): string|null
     {
         $options = [
-            RequestOptions::HEADERS => ['Content-Type' => 'application/json']
+            RequestOptions::HEADERS => ['Content-Type' => 'application/json; charset=utf-8']
         ];
         try {
             if ($gzip) {
-                $compressedPayload = gzencode(json_encode($payload));
+                $compressedPayload = gzencode(MiscUtility::encodeUtf8Json($payload));
                 $options[RequestOptions::BODY] = $compressedPayload;
                 $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
                 $options[RequestOptions::HEADERS]['Accept-Encoding'] = 'gzip, deflate';
@@ -132,7 +132,7 @@ final class ApiService
         }
     }
 
-    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true): string|null
+    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true): ?string
     {
         // Prepare multipart data
         $multipartData = [];
@@ -162,7 +162,8 @@ final class ApiService
 
             // Initialize the options array for multipart form data
             $options = [
-                RequestOptions::MULTIPART => $multipartData
+                RequestOptions::MULTIPART => $multipartData,
+                RequestOptions::HEADERS => ['Content-Type' => 'multipart/form-data; charset=utf-8']
             ];
 
             // Send the request
@@ -174,6 +175,7 @@ final class ApiService
             return null; // Error occurred while making the request
         }
     }
+
 
     public function getJsonFromRequest(ServerRequestInterface $request, bool $decode = false)
     {
@@ -288,7 +290,7 @@ final class ApiService
     public function sendJsonResponse(mixed $payload)
     {
         // Ensure payload is a JSON string
-        $jsonPayload = is_array($payload) || is_object($payload) ? json_encode($payload) : $payload;
+        $jsonPayload = is_array($payload) || is_object($payload) ? MiscUtility::encodeUtf8Json($payload) : $payload;
 
         // Check for json_encode errors
         if (json_last_error() != JSON_ERROR_NONE) {
@@ -309,6 +311,7 @@ final class ApiService
         header('Content-Length: ' . mb_strlen($gzipPayload, '8bit'));
         return $gzipPayload;
     }
+
 
     /**
      * Retrieves the bearer token from the Authorization header using ServerRequestInterface.

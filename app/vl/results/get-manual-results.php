@@ -206,10 +206,9 @@ try {
                $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
           }
           $sWhere[] = $statusCondition;
-     }
-     else{      // Only approved results can be printed
+     } else {      // Only approved results can be printed
 
-          $sWhere[] = ' ((vl.result_status = '.SAMPLE_STATUS\ACCEPTED.' AND vl.result is NOT NULL AND vl.result !="") OR (vl.result_status = '.SAMPLE_STATUS\REJECTED.' AND (vl.result is NULL OR vl.result = ""))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = "0000-00-00")';
+          $sWhere[] = ' ((vl.result_status = ' . SAMPLE_STATUS\ACCEPTED . ' AND vl.result is NOT NULL AND vl.result !="") OR (vl.result_status = ' . SAMPLE_STATUS\REJECTED . ' AND (vl.result is NULL OR vl.result = ""))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = "0000-00-00")';
      }
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
           if (trim((string) $_POST['gender']) == "unreported") {
@@ -305,7 +304,7 @@ try {
           $output['aaData'][] = $row;
      }
 
-     echo MiscUtility::convertToUtf8AndEncode($output);
+     echo MiscUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
 } catch (Exception $exc) {

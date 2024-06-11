@@ -102,7 +102,7 @@ try {
         'trace' => $exc->getTraceAsString()
     ]);
 }
-$payload = json_encode($payload);
+$payload = MiscUtility::encodeUtf8Json($payload);
 
 $trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], 1, 'login', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 

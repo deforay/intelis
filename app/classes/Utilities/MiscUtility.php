@@ -116,29 +116,46 @@ final class MiscUtility
         if (json_last_error() === JSON_ERROR_NONE) {
             return true;
         } else {
-            LoggerUtility::log('error', 'JSON decoding error: ' . json_last_error_msg());
-            LoggerUtility::log('error', 'JSON decoding error: ' . $string);
+            // LoggerUtility::log('error', 'JSON decoding error: ' . json_last_error_msg());
+            // LoggerUtility::log('error', 'JSON decoding error: ' . $string);
             return false;
         }
     }
 
+    public static function toUtf8(array|string|null $input): array|string|null
+    {
+        if (is_array($input)) {
+            return array_map([self::class, 'toUtf8'], $input);
+        }
+        if (is_string($input)) {
+            $encoding = mb_detect_encoding($input, mb_detect_order(), true) ?? 'UTF-8';
+            return mb_convert_encoding($input, 'UTF-8', $encoding);
+        }
+        return $input;
+    }
+
+    public static function encodeUtf8Json(array|string|null $data): string
+    {
+        if (is_null($data)) {
+            return '{}';
+        }
+        if (is_array($data) && empty($data)) {
+            return '[]';
+        }
+
+        return self::toJSON(self::toUtf8($data));
+    }
 
     public static function toJSON($data): ?string
     {
-        if (!empty($data)) {
-            if (self::isJSON($data)) {
-                return $data;
-            } else {
-                $json = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-                if ($json !== false) {
-                    return $json;
-                } else {
-                    LoggerUtility::log('error', 'Data could not be encoded as JSON: ' . json_last_error_msg());
-                }
-            }
+        $json = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        if ($json === false) {
+            LoggerUtility::log('error', 'Data could not be encoded as JSON: ' . json_last_error_msg());
+            return null;
         }
-        return null;
+        return $json;
     }
+
 
     public static function prettyJson($json): string
     {
@@ -301,27 +318,6 @@ final class MiscUtility
     public static function finalizeCsv($handle)
     {
         fclose($handle);
-    }
-
-    public static function convertToUtf8(array|string|null $input)
-    {
-        if (is_array($input)) {
-            return array_map([self::class, 'convertToUtf8'], $input);
-        }
-        if (is_string($input)) {
-            $encoding = mb_detect_encoding($input, mb_detect_order(), true) ?? 'UTF-8';
-            return mb_convert_encoding($input, 'UTF-8', $encoding);
-        }
-        return $input;
-    }
-
-    public static function convertToUtf8AndEncode(array|string|null $data)
-    {
-        if (empty($data)) {
-            return is_array($data) ? '[]' : '{}';
-        }
-
-        return json_encode(self::convertToUtf8($data));
     }
 
     public static function getGenderFromString(?string $gender)

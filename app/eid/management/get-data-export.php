@@ -295,7 +295,7 @@ try {
           $row[] = $aRow['child_name'];
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['lab_name']);
-          if($formId == COUNTRY\CAMEROON){
+          if ($formId == COUNTRY\CAMEROON) {
                $row[] = ($aRow['lab_assigned_code']);
           }
 
@@ -309,7 +309,7 @@ try {
           $output['aaData'][] = $row;
      }
 
-     echo MiscUtility::convertToUtf8AndEncode($output);
+     echo MiscUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
 } catch (Exception $exc) {

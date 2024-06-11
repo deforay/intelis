@@ -372,19 +372,19 @@ try {
         }
 
         $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
-        if(isset($data['motherTreatment']) && !empty($data['motherTreatment'] )){
+        if (isset($data['motherTreatment']) && !empty($data['motherTreatment'])) {
             $data['motherTreatment'] = !is_array($data['motherTreatment']) ? [$data['motherTreatment']] : implode(",", $data['motherTreatment']);
-        }else{
+        } else {
             $data['motherTreatment'] = null;
         }
-        if(isset($data['childTreatmentOther']) && !empty($data['childTreatmentOther'] )){
+        if (isset($data['childTreatmentOther']) && !empty($data['childTreatmentOther'])) {
             $data['childTreatmentOther'] = !is_array($data['childTreatmentOther']) ? [$data['childTreatmentOther']] : implode(",", $data['childTreatmentOther']);
-        }else{
+        } else {
             $data['childTreatmentOther'] = null;
         }
-        if(isset($data['childTreatment']) && !empty($data['childTreatment'] )){
+        if (isset($data['childTreatment']) && !empty($data['childTreatment'])) {
             $data['childTreatment'] = !is_array($data['childTreatment']) ? [$data['childTreatment']] : implode(",", $data['childTreatment']);
-        }else{
+        } else {
             $data['childTreatment'] = null;
         }
 
@@ -536,7 +536,7 @@ try {
         'trace' => $exc->getTraceAsString()
     ]);
 }
-$payload = json_encode($payload);
+$payload = MiscUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 $general->updateResultSyncDateTime('eid', null, $updatedLabs);

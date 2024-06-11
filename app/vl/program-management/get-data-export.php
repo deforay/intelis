@@ -243,7 +243,7 @@ try {
                $sWhere[] =  " DATE(vl.sample_tested_datetime) BETWEEN '$sTestDate' AND '$eTestDate' ";
           }
      }
-    
+
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
           [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
           if (trim((string) $sPrintDate) == trim((string) $eTestDate)) {
@@ -331,7 +331,7 @@ try {
           $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['lab_name']);
-          if($formId == COUNTRY\CAMEROON) { 
+          if ($formId == COUNTRY\CAMEROON) {
                $row[] = $aRow['lab_assigned_code'];
           }
 
@@ -349,7 +349,7 @@ try {
           $output['aaData'][] = $row;
      }
 
-     echo MiscUtility::convertToUtf8AndEncode($output);
+     echo MiscUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
 } catch (Exception $exc) {

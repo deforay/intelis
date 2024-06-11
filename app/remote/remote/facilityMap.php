@@ -1,4 +1,6 @@
 <?php
+
+use App\Utilities\MiscUtility;
 //this file in remote
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
@@ -9,4 +11,4 @@ if (!empty($fMapResult)) {
 } else {
   $fMapResult = "";
 }
-echo json_encode($fMapResult);
+echo MiscUtility::encodeUtf8Json($fMapResult);
