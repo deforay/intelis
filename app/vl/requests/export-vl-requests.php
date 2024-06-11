@@ -28,7 +28,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 $output = [];
 
-$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"),_translate("Lab Assigned Code"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate('KP'), _translate("Universal Insurance Code"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate('CV Number'), _translate("Is Sample Rejected?"), _translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
+$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"),_translate("Lab Assigned Code"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"),  _translate("Patient Contact Number"), _translate("Clinician Contact Number"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate('KP'), _translate("Universal Insurance Code"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate('CV Number'), _translate("Is Sample Rejected?"), _translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
 
 if ($general->isStandaloneInstance()) {
 	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
@@ -114,9 +114,16 @@ foreach ($resultSet as $aRow) {
 			$patientMname = $general->crypto('decrypt', $patientMname, $key);
 			$patientLname = $general->crypto('decrypt', $patientLname, $key);
 		}
+		else{
+			$patientFname = $aRow['patient_first_name'];
+			$patientMname = $aRow['patient_middle_name'];
+			$patientLname = $aRow['patient_last_name'];
+		}
 		$row[] = $aRow['patient_art_no'];
 		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 	}
+	$row[] = $aRow['patient_mobile_number'];
+	$row[] = $aRow['request_clinician_phone_number'];
 	$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
 	$aRow['patient_age_in_years'] ??= 0;
 	$row[] = ($aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
