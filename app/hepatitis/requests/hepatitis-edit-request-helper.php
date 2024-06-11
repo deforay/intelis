@@ -132,7 +132,7 @@ try {
 	}
 
 	//Update patient Information in Patients Table
-	$systemPatientCode = $patientsService->updatePatient($_POST, 'form_hepatitis');
+	$systemPatientCode = $patientsService->savePatient($_POST, 'form_hepatitis');
 
 	//$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 

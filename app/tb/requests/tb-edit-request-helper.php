@@ -177,7 +177,7 @@ try {
     $reason['reason'] = array($reason['reason'] => 'yes');
 
     //Update patient Information in Patients Table
-    $systemPatientCode = $patientsService->updatePatient($_POST, 'form_tb');
+    $systemPatientCode = $patientsService->savePatient($_POST, 'form_tb');
 
     //$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 

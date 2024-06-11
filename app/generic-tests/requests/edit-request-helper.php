@@ -214,7 +214,7 @@ try {
 
 
      //Update patient Information in Patients Table
-     $systemPatientCode = $patientsService->updatePatient($_POST, 'form_generic');
+     $systemPatientCode = $patientsService->savePatient($_POST, 'form_generic');
 
      $genericData = array(
           'vlsm_instance_id' => $instanceId,
