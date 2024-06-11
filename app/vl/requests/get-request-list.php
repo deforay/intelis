@@ -70,6 +70,8 @@ try {
                vl.patient_first_name,
                vl.patient_middle_name,
                vl.patient_last_name,
+               vl.patient_mobile_number,
+               vl.request_clinician_phone_number,
                vl.patient_dob,
                vl.patient_gender,
                vl.key_population,
