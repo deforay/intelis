@@ -2,6 +2,7 @@
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
@@ -73,12 +74,12 @@ try {
             $tableData[$r['hepatitis_id']]['data_from_risks'] = $hepatitisService->getRiskFactorsByHepatitisId($r['hepatitis_id']);
         }
     }
-    $payload = json_encode(array(
+    $payload = MiscUtility::encodeUtf8Json(array(
         'labId' => $labId,
         'result' => $tableData,
     ));
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], MiscUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
     $general->updateTestRequestsSyncDateTime('hepatitis', $facilityIds, $labId);
     $db->commitTransaction();

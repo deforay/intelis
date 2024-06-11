@@ -92,12 +92,12 @@ try {
     $sampleIds = array_column($rResult, 'vl_sample_id');
     $facilityIds = array_column($rResult, 'facility_id');
 
-    $payload = json_encode($rResult);
+    $payload = MiscUtility::encodeUtf8Json($rResult);
   } else {
     $payload = json_encode([]);
   }
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'vl', $_SERVER['REQUEST_URI'], MiscUtility::convertToUtf8AndEncode($data), $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'vl', $_SERVER['REQUEST_URI'], MiscUtility::encodeUtf8Json($data), $payload, 'json', $labId);
   $general->updateTestRequestsSyncDateTime('vl', $facilityIds, $labId);
 
   $db->commitTransaction();

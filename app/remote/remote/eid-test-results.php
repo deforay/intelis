@@ -158,7 +158,7 @@ try {
     }
 
 
-    $payload = json_encode($sampleCodes);
+    $payload = MiscUtility::encodeUtf8Json($sampleCodes);
 
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);

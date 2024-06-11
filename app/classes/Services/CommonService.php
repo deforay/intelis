@@ -634,8 +634,8 @@ final class CommonService
     public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
     {
         try {
-            $requestData = MiscUtility::toJSON($requestData);
-            $responseData = MiscUtility::toJSON($responseData);
+            $requestData = MiscUtility::encodeUtf8Json($requestData);
+            $responseData = MiscUtility::encodeUtf8Json($responseData);
 
             $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
             if (!empty($requestData) && $requestData != '[]') {
@@ -1284,17 +1284,18 @@ final class CommonService
         return $tableFieldsAsArray;
     }
 
-    public function updateCurrentDateTime($tables){
+    public function updateCurrentDateTime($tables)
+    {
         $status = false;
 
-        if(!isset($tables) || empty($tables)){
+        if (!isset($tables) || empty($tables)) {
             return false;
         }
-        if(is_array($tables)){
-            foreach($tables as $table){
+        if (is_array($tables)) {
+            foreach ($tables as $table) {
                 $status = $this->db->update($table, array("updated_datetime" => DateUtility::getCurrentDateTime()));
             }
-        }else{
+        } else {
             $status = $this->db->update($tables, array("updated_datetime" => DateUtility::getCurrentDateTime()));
         }
         return $status;

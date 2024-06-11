@@ -121,6 +121,6 @@ try {
     error_log($exc->getMessage());
 }
 
-$payload = json_encode($payload);
+$payload = MiscUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-recency-vl-result', 'vl', $requestUrl, $_REQUEST, $payload, 'json');
 echo $payload;

@@ -1,8 +1,9 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -108,12 +109,12 @@ try {
     $sampleIds = array_column($rResult, 'eid_id');
     $facilityIds = array_column($rResult, 'facility_id');
 
-    $payload = json_encode($payload);
+    $payload = MiscUtility::encodeUtf8Json($payload);
   } else {
     $payload = json_encode([]);
   }
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'eid', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'eid', $_SERVER['REQUEST_URI'], MiscUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
 
   $general->updateTestRequestsSyncDateTime('eid', $facilityIds, $labId);

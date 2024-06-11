@@ -306,7 +306,7 @@ try {
           if (!empty($aRow['batch_code'])) {
                $sampleCodeTooltip .= _translate("Batch Code", true) . " : " . $aRow['batch_code'];
           }
-         
+
           if (!empty($aRow['child_dob'])) {
                $childTooltip .= _translate("Child DoB", true) . " : " . DateUtility::humanReadableDateFormat($aRow['child_dob']) . '<br>';
           }
@@ -387,7 +387,7 @@ try {
           }
           $output['aaData'][] = $row;
      }
-     echo MiscUtility::convertToUtf8AndEncode($output);
+     echo MiscUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
 } catch (Exception $exc) {

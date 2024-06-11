@@ -160,7 +160,7 @@ try {
         if (!empty($data['testingPoints'])) {
             $data['testingPoints'] = explode(",", (string) $data['testingPoints']);
             $data['testingPoints'] = array_map('trim', $data['testingPoints']);
-            $data['testingPoints'] = json_encode($data['testingPoints']);
+            $data['testingPoints'] = MiscUtility::encodeUtf8Json($data['testingPoints']);
         } else {
             $data['testingPoints'] = null;
         }
@@ -247,6 +247,6 @@ try {
 }
 
 
-$payload = json_encode($payload);
+$payload = MiscUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'facility', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

@@ -302,7 +302,7 @@ try {
           if (!empty($aRow['patient_gender'])) {
                $patientTooltip .= _translate("Patient Gender", true) . " : " . $aRow['patient_gender'] . '<br>';
           }
-          
+
           //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['covid19_id'] . '"  value="' . $aRow['covid19_id'] . '" onclick="toggleTest(this);"  />';
           if (!empty($sampleCodeTooltip)) {
                $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['sample_code'] . '</span>';
@@ -366,7 +366,7 @@ try {
           }
           $output['aaData'][] = $row;
      }
-     echo MiscUtility::convertToUtf8AndEncode($output);
+     echo MiscUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
 } catch (Exception $exc) {

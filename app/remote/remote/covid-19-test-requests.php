@@ -2,6 +2,7 @@
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
@@ -87,12 +88,12 @@ try {
     $response['comorbidities'] = $comorbidities;
     $response['testResults'] = $testResults; */
   }
-  $payload = json_encode(array(
+  $payload = MiscUtility::encodeUtf8Json(array(
     'labId' => $labId,
     'result' => $response,
   ));
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', $_SERVER['REQUEST_URI'], MiscUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
   $general->updateTestRequestsSyncDateTime('covid19', $facilityIds, $labId);
   $db->commitTransaction();

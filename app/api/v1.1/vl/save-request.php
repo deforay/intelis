@@ -288,7 +288,7 @@ try {
         /* Field missing corrections */
         $data['dob'] = $data['dob'] ?? $data['patientDob'] ?? null;
         $data['sampleTestingDateAtLab'] = $data['sampleTestingDateAtLab'] ?? $data['sampleTestedDateTime'] ?? null;
-        
+
         $vlFulldata = [
             'vlsm_instance_id' => $instanceId,
             'sample_collection_date' => $sampleCollectionDate,
@@ -482,7 +482,7 @@ try {
     ]);
 }
 
-$payload = MiscUtility::convertToUtf8AndEncode($payload);
+$payload = MiscUtility::encodeUtf8Json($payload);
 
 $general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 

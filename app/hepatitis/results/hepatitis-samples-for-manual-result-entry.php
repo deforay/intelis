@@ -168,10 +168,8 @@ try {
                $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
           }
           $sWhere[] = $statusCondition;
-     }
-     else{      // Only approved results can be printed
-          $sWhere[] = " ((vl.result_status = ".SAMPLE_STATUS\ACCEPTED." AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = ".SAMPLE_STATUS\REJECTED." AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
-
+     } else {      // Only approved results can be printed
+          $sWhere[] = " ((vl.result_status = " . SAMPLE_STATUS\ACCEPTED . " AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = " . SAMPLE_STATUS\REJECTED . " AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
      }
 
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
@@ -198,11 +196,11 @@ try {
      }
 
 
-          if (!empty($sWhere)) {
-               $sWhere = implode(' AND ', $sWhere);
-               $sQuery = $sQuery . ' WHERE ' . $sWhere;
-          }
-     
+     if (!empty($sWhere)) {
+          $sWhere = implode(' AND ', $sWhere);
+          $sQuery = $sQuery . ' WHERE ' . $sWhere;
+     }
+
      if (!empty($sOrder)) {
           $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
           $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -269,7 +267,7 @@ try {
           $output['aaData'][] = $row;
      }
 
-     echo MiscUtility::convertToUtf8AndEncode($output);
+     echo MiscUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
 } catch (Exception $exc) {

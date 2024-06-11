@@ -267,7 +267,7 @@ try {
     ];
     LoggerUtility::log('error', $exc->getMessage());
 }
-$payload = json_encode($payload);
+$payload = MiscUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'get-request', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 http_response_code(200);
 echo $payload;

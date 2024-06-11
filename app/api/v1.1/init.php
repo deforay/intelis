@@ -457,6 +457,6 @@ if ($status) {
     ];
     http_response_code(401);
 }
-$payload = json_encode($payload);
+$payload = MiscUtility::encodeUtf8Json($payload);
 $trackId = $general->addApiTracking($transactionId, $user['user_id'], 1, 'init', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 echo $payload;

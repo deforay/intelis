@@ -126,6 +126,6 @@ try {
     LoggerUtility::log('error', $exc->getMessage());
 }
 
-$payload = json_encode($payload);
+$payload = MiscUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'manifest', $input['testType'], $requestUrl, $origJson, $payload, 'json');
 echo $payload;

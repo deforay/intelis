@@ -282,7 +282,7 @@ try {
         $output['aaData'][] = $row;
     }
 
-    echo MiscUtility::convertToUtf8AndEncode($output);
+    echo MiscUtility::encodeUtf8Json($output);
 
     $db->commitTransaction();
 } catch (Exception $exc) {

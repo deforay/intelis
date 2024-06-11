@@ -294,7 +294,7 @@ try {
                     $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
                }
           }
-          
+
           $row[] = $aRow['sample_collection_date'];
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['labName'];
@@ -343,7 +343,7 @@ try {
           $output['aaData'][] = $row;
      }
 
-     echo MiscUtility::convertToUtf8AndEncode($output);
+     echo MiscUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
 } catch (Exception $exc) {

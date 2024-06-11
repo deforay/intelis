@@ -2,9 +2,10 @@
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -63,9 +64,9 @@ try {
         $response['result'] = $rResult;
     }
 
-    $payload = json_encode($response);
+    $payload = MiscUtility::encodeUtf8Json($response);
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'tb', $_SERVER['REQUEST_URI'], json_encode($data), $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'tb', $_SERVER['REQUEST_URI'], MiscUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
 
     $general->updateTestRequestsSyncDateTime('tb', $facilityIds, $labId);
