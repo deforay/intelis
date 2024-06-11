@@ -29,23 +29,16 @@ try {
 
     $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $allowedExtensions = array(
-        'xls',
-        'xlsx',
-        'csv'
-    );
-    if (
-        isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
-        || $_FILES['resultFile']['size'] <= 0
-    ) {
+    $allowedExtensions = ['xls', 'xlsx', 'csv'];
+
+    if (isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK || $_FILES['resultFile']['size'] <= 0) {
         throw new SystemException('Please select a file to upload', 400);
     }
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
-    $fileName          = str_replace(" ", "-", $fileName);
+    $fileName          = str_replace(" ", "-", $fileName) . "-" . $general->generateRandomString(12);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName          = $_POST['fileName'] . "." . $extension;
-
 
 
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
@@ -69,11 +62,12 @@ try {
 
         // $sheet1 = $spreadsheet->getActiveSheet()->getCell('C7')->getValue();
         //  echo $sheet1; die;
-        $data = array();
+
+        $data = [];
 
         foreach ($resultArray as $row) {
 
-            $data[] = array(
+            $data[] = [
                 'module' => 'vl',
                 'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
@@ -87,7 +81,7 @@ try {
                 'import_machine_file_name' => $fileName,
                 'result_imported_datetime' => DateUtility::getCurrentDateTime(),
                 'imported_by' => $_SESSION['userId'],
-            );
+            ];
         }
 
         $db->insertMulti("temp_sample_import", $data);

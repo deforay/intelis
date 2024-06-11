@@ -87,7 +87,7 @@ try {
                 b.batch_id,
                 COUNT(vl.sample_code) AS total_samples
                 FROM batch_details b
-                INNER JOIN $formTable vl ON vl.sample_batch_id = b.batch_id";
+                LEFT JOIN $formTable vl ON vl.sample_batch_id = b.batch_id";
 
     if (!empty($sWhere)) {
         $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
