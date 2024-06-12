@@ -11,6 +11,7 @@ use App\Services\PatientsService;
 use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
+use App\Services\StorageService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -23,6 +24,9 @@ $vlService = ContainerRegistry::get(VlService::class);
 
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);
+
+/** @var StorageService $storageService */
+$storageService = ContainerRegistry::get(StorageService::class);
 
 $formId = (int) $general->getGlobalConfig('vl_form');
 
@@ -299,8 +303,8 @@ try {
 
           if (isset($countChar) && $countChar > 2) {
                $storageId = $_POST['freezer'];
-               $getStorage = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_code', $_POST['freezer']);
-               $freezerCode = $getStorage['storage_code'];
+               $storageInfo = $storageService->getLabStorage(true, "storage_id = '".$_POST['freezer']."'");
+               $freezerCode = $storageInfo[0]['storage_code'];
           } else {
                $storageId = $general->generateUUID();
                $freezerCode = $_POST['freezer'];

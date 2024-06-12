@@ -149,9 +149,9 @@ foreach ($resultSet as $aRow) {
 	$row[] = $sampleRejection;
 	if ($formId == COUNTRY\DRC) {
 		$formAttributes = json_decode($aRow['form_attributes']);
-		$storageObj = $formAttributes->storage;
+		$storageObj = json_decode($formAttributes->storage);
 
-		$row[] = $storageObj->freezerCode;
+		$row[] = $storageObj->storageCode;
 		$row[] = $storageObj->rack;
 		$row[] = $storageObj->box;
 		$row[] = $storageObj->position;

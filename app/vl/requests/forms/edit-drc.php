@@ -57,8 +57,7 @@ $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || 
 
 $formAttributes = json_decode($vlQueryInfo['form_attributes']);
 
-$storageObj = $formAttributes->storage;
-
+$storageObj = json_decode($formAttributes->storage);
 $storageInfo = $storageService->getLabStorage();
 
 ?>
@@ -485,7 +484,7 @@ $storageInfo = $storageService->getLabStorage();
 												</label></td>
 											<td style="width: 25%;">
 												<select class="form-control select2 editableSelect" id="freezer" name="freezer" placeholder="<?php echo _translate('Enter Freezer'); ?>" title="<?php echo _translate('Please enter Freezer'); ?>">
-													<?= $general->generateSelectOptions($storageInfo, $storageObj->freezer, '-- Select --') ?>
+													<?= $general->generateSelectOptions($storageInfo, $storageObj->storageId, '-- Select --') ?>
 												</select>
 
 											<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>

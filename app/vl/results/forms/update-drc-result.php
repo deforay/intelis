@@ -55,7 +55,7 @@ $duVisibility = (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((st
 $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'none' : 'block';
 
 $formAttributes = json_decode($vlQueryInfo['form_attributes']);
-$storageObj = $formAttributes->storage;
+$storageObj = json_decode($formAttributes->storage);
 
 $storageInfo = $storageService->getLabStorage();
 

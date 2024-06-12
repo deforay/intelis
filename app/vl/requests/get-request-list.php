@@ -348,8 +348,21 @@ try {
                $sampleCodeTooltip .= _translate("Manifest Code", true) . " : " . $aRow['sample_package_code'] . '<br>';
           }
           if (!empty($aRow['batch_code'])) {
-               $sampleCodeTooltip .= _translate("Batch Code", true) . " : " . $aRow['batch_code'];
+               $sampleCodeTooltip .= _translate("Batch Code", true) . " : " . $aRow['batch_code'] . '<br>';
           }
+          $formAttributes = json_decode($aRow['form_attributes']);
+          
+          if(!empty($formAttributes->storage)){
+               $storageObj = json_decode($formAttributes->storage);
+
+               $freezer = $storageObj->storageCode;
+               $rack = $storageObj->rack;
+               $box = $storageObj->box;
+               $position = $storageObj->position;
+
+               $sampleCodeTooltip .=  _translate("Freezer", true) .' - '.$freezer.', '. _translate("Rack").' - '.$rack.', '. _translate("Box").' - '.$box.', '. _translate("Position").' - '.$position;
+          }
+         
 
           if (!empty($aRow['patient_dob'])) {
                $patientTooltip .= _translate("Patient DoB", true) . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']) . '<br>';
