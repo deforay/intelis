@@ -21,7 +21,7 @@ $storageService = ContainerRegistry::get(StorageService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$currentStorage = explode("-",$_POST['currentStorage']);
+$currentStorage = explode("-", $_POST['currentStorage']);
 
 $getFreezer = $storageService->getStorageByCode($currentStorage[0]);
 $currentFreezerId = $getFreezer['storage_id'];
@@ -29,7 +29,7 @@ $currentFreezerId = $getFreezer['storage_id'];
 $currentStorageInfo = $storageService->getFreezerHistoryById($_POST['historyId']);
 $data = array();
 
-if (is_numeric($_POST['removalReason'])===false) {
+if (is_numeric($_POST['removalReason']) === false) {
     $reasonData = array(
         'removal_reason_name'   => $_POST['removalReason'],
         'removal_reason_status' => "active",
@@ -56,8 +56,8 @@ $data[] = array(
     'updated_by' => $_SESSION['userId']
 );
 
-if (isset($_POST['freezerId']) && $_POST['freezerId']!="") {
-    if($currentFreezerId != $_POST['freezerId']) //Moving samples from current freezer to another freezer
+if (isset($_POST['freezerId']) && $_POST['freezerId'] != "") {
+    if ($currentFreezerId != $_POST['freezerId']) //Moving samples from current freezer to another freezer
     {
         $data[] = array(
             'test_type' => 'vl',
@@ -74,9 +74,8 @@ if (isset($_POST['freezerId']) && $_POST['freezerId']!="") {
             'updated_by' => $_SESSION['userId']
         );
     }
-
 }
 
-    $save = $db->insertMulti('lab_storage_history', $data);
+$save = $db->insertMulti('lab_storage_history', $data);
 
 echo $save;

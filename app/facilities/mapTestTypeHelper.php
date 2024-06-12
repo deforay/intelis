@@ -29,15 +29,16 @@ try {
         $db->delete($tableName);
         $mappedFacilities = json_decode((string) $_POST['selectedFacilities'], true);
         if (!empty($mappedFacilities)) {
-            $data = [];
+
             foreach ($mappedFacilities as $facility) {
-                $data[] = [
+                $data = [
                     'test_type'     => $testType,
                     'facility_id'   => $facility,
                     'updated_datetime'  => $currentDateTime
                 ];
+                $db->insert($tableName, $data);
             }
-            $db->insertMulti($tableName, $data);
+
 
             // Issue : When one test type was updated, the other test types for those same facilities don't get synced
             // To overcome this, we update the datetime of all test types for those facilities

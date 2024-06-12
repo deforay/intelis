@@ -1,13 +1,20 @@
 <?php
 
+use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
+
 
 try {
 
@@ -16,6 +23,11 @@ try {
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
+    /** @var DatabaseService $db */
+    $db = ContainerRegistry::get(DatabaseService::class);
+
+    /** @var VlService $vlService */
+    $vlService = ContainerRegistry::get(VlService::class);
 
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
@@ -29,23 +41,16 @@ try {
 
     $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $allowedExtensions = array(
-        'xls',
-        'xlsx',
-        'csv'
-    );
-    if (
-        isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
-        || $_FILES['resultFile']['size'] <= 0
-    ) {
+    $allowedExtensions = ['xls', 'xlsx', 'csv'];
+
+    if (isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK || $_FILES['resultFile']['size'] <= 0) {
         throw new SystemException('Please select a file to upload', 400);
     }
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
-    $fileName          = str_replace(" ", "-", $fileName);
+    $fileName          = str_replace(" ", "-", $fileName) . "-" . $general->generateRandomString(12);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName          = $_POST['fileName'] . "." . $extension;
-
 
 
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
@@ -56,7 +61,7 @@ try {
         $inputFileName = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName;
         $spreadsheet = IOFactory::load($inputFileName);
 
-        $sheet = $spreadsheet->getActiveSheet();
+        $sheet = $spreadsheet->getSheetByName('Résultats finaux');
 
         $testingSheet = $spreadsheet->getSheetByName('Liste des échantillons');
         $testedDate = $testingSheet->getCell('F6')->getValue();
@@ -67,32 +72,45 @@ try {
 
         $resultArray = array_slice($sheetData, 7);
 
+        //dump($resultArray);
+
         // $sheet1 = $spreadsheet->getActiveSheet()->getCell('C7')->getValue();
         //  echo $sheet1; die;
-        $data = array();
+
+        $data = [];
 
         foreach ($resultArray as $row) {
-
-            $data[] = array(
+            if (empty($row['C'])) {
+                continue;
+            }
+            $interpretedResults = $vlService->interpretViralLoadResult($row['D']);
+            // dump($row['C']);
+            // dump($row['D']);
+            // dump($interpretedResults);
+            $data[] = [
                 'module' => 'vl',
                 'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'result_reviewed_by' => $_SESSION['userId'],
                 'sample_code' => $row['C'],
-                'result_value_log' => $row['E'],
-                'sample_type' => $d['sampleType'],
-                'result' => $row['D'],
+                'result_value_log' => $interpretedResults['logVal'],
+                'sample_type' => 'S',
+                'result' => $interpretedResults['result'],
+                'result_value_text' => $interpretedResults['txtVal'],
+                'result_value_absolute' => $interpretedResults['absVal'],
+                'result_value_absolute_decimal' => $interpretedResults['absDecimalVal'],
                 'sample_tested_datetime' => $testDate,
                 'result_status' => 6,
                 'import_machine_file_name' => $fileName,
                 'result_imported_datetime' => DateUtility::getCurrentDateTime(),
                 'imported_by' => $_SESSION['userId'],
-            );
+            ];
         }
 
-        $db->insertMulti("temp_sample_import", $data);
+        foreach ($data as $d) {
+            $db->insert("temp_sample_import", $d);
+        }
     }
-
     $_SESSION['alertMsg'] = "Results imported successfully";
     //Add event log
 

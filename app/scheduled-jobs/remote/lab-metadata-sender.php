@@ -22,6 +22,11 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
+// only for LIS instances
+if ($general->isLISInstance() === false) {
+    exit(0);
+}
+
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
 

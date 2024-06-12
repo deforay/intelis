@@ -849,36 +849,25 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                 $db->where('hepatitis_id', $hepatitisId);
                 $db->delete("hepatitis_risk_factors");
 
-                $rData = [];
+
                 foreach ($risks as  $riskId => $riskValue) {
                     $riskFactorsData = [];
                     $riskFactorsData["hepatitis_id"] = $hepatitisId;
                     $riskFactorsData["riskfactors_id"] = $riskId;
                     $riskFactorsData["riskfactors_detected"] = $riskValue;
-                    $rData[] = $riskFactorsData;
-                    //$db->insert("hepatitis_risk_factors", $riskFactorsData);
-                }
-                $ids = $db->insertMulti('hepatitis_risk_factors', $rData);
-                if (!$ids) {
-                    error_log('insert failed: ' . $db->getLastError());
+                    $db->insert("hepatitis_risk_factors", $riskFactorsData);
                 }
             }
             foreach ($remoteData['data_from_comorbidities'] as $hepatitisId => $comorbidities) {
                 $db->where('hepatitis_id', $hepatitisId);
                 $db->delete("hepatitis_patient_comorbidities");
 
-                $cData = [];
                 foreach ($comorbidities as $comoId => $comoValue) {
                     $comorbidityData = [];
                     $comorbidityData["hepatitis_id"] = $hepatitisId;
                     $comorbidityData["comorbidity_id"] = $comoId;
                     $comorbidityData["comorbidity_detected"] = $comoValue;
-                    $cData[] = $comorbidityData;
-                }
-
-                $ids = $db->insertMulti('hepatitis_patient_comorbidities', $cData);
-                if (!$ids) {
-                    error_log('insert failed: ' . $db->getLastError());
+                    $db->insert('hepatitis_patient_comorbidities', $comorbidityData);
                 }
             }
             if ($id === true) {

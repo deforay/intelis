@@ -32,7 +32,7 @@ try {
         } else {
             $dateOut = NULL;
         }
-        $data[] = array(
+        $data = array(
             'test_type' => 'vl',
             'sample_unique_id'     => $_POST['sampleUniqueId'][$i],
             'volume'     => $_POST['volume'][$i],
@@ -46,8 +46,8 @@ try {
             'updated_datetime'    => DateUtility::getCurrentDateTime(),
             'updated_by' => $_SESSION['userId']
         );
+        $db->insert('lab_storage_history', $data);
     }
-    $db->insertMulti('lab_storage_history', $data);
 
     $_SESSION['alertMsg'] = _translate("Sample added to the freezer successfully");
 
