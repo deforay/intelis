@@ -75,7 +75,9 @@ if (isset($_POST['freezerId']) && $_POST['freezerId'] != "") {
         );
     }
 }
-
-$save = $db->insertMulti('lab_storage_history', $data);
+for($i = 0; $i < count($data); $i++){
+    $save = $db->insert('lab_storage_history', $data[$i]);
+}
+//$save = $db->insertMulti('lab_storage_history', $data);
 
 echo $save;
