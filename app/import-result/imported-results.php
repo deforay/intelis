@@ -13,11 +13,7 @@ $userResult = $db->rawQuery($userQuery);
 $tQuery = "SELECT module, sample_review_by FROM temp_sample_import WHERE imported_by =? limit 1";
 
 $tResult = $db->rawQueryOne($tQuery, array($_SESSION['userId']));
-if (!empty($tResult['sample_review_by'])) {
-	$reviewBy = $tResult['sample_review_by'];
-} else {
-	$reviewBy = $_SESSION['userId'];
-}
+
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -25,12 +21,37 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
 $module = $_GET['t'];
+$machine = base64_decode($_GET['machine']);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+
+$condition = " instrument_id = '$machine'";
+$getMachineInfo = $general->getDataByTableAndFields('instruments', array('approved_by','reviewed_by'), false, $condition);
+
+$approvedByAttr = json_decode($getMachineInfo[0]['approved_by']);
+$reviewedByAttr = json_decode($getMachineInfo[0]['reviewed_by']);
+$reviewedBy = $reviewedByAttr->$module;
+$approvedBy = $approvedByAttr->$module;
+
+if (!empty($tResult['sample_review_by'])) {
+	$reviewBy = $tResult['sample_review_by'];
+} else {
+	//$reviewBy = $_SESSION['userId'];
+	if(!empty($reviewedBy))
+		$reviewBy = $reviewedBy;
+	else
+		$reviewBy = $_SESSION['userId'];
+}
+if(!empty($approvedBy))
+		$approveBy = $approvedBy;
+	else
+		$approveBy = $_SESSION['userId'];
+
 $arr = $general->getGlobalConfig();
 $errorInImport = false;
 if ($module == 'vl') {
@@ -289,7 +310,7 @@ foreach ($rejectionTypeResult as $type) {
 										<?php
 										foreach ($userResult as $uName) {
 										?>
-											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $_SESSION['userId']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
+											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $approveBy) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
 										<?php
 										}
 										?>

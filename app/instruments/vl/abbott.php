@@ -228,6 +228,7 @@ try {
             if ($d['sampleCode'] == $d['sampleType'] . $inc) {
                 $d['sampleCode'] = '';
             }
+
             $data = array(
                 'module' => 'vl',
                 'lab_id' => base64_decode((string) $_POST['labId']),
@@ -302,6 +303,7 @@ try {
             }
             $inc++;
         }
+        $machine = $_POST['machineName'];
     }
 
     $_SESSION['alertMsg'] = "Results imported successfully";
@@ -311,7 +313,7 @@ try {
     $resource = 'import-results-manually';
     $general->activityLog($eventType, $action, $resource);
 
-    header("Location:/import-result/imported-results.php?t=$type");
+    header("Location:/import-result/imported-results.php?t=$type&machine=$machine");
 } catch (Exception $exc) {
     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     error_log($exc->getMessage());
