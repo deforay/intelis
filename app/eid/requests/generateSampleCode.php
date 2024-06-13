@@ -22,9 +22,6 @@ try {
   if (empty($sampleCollectionDate)) {
     echo json_encode([]);
   } else {
-
-    $sampleFrom = $_POST['sampleFrom'] ?? '';
-
     $sampleCodeParams = [];
     $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
     $sampleCodeParams['provinceCode'] = $provinceCode;

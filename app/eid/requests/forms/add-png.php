@@ -472,7 +472,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                             </div>
                         </div>
-                        <?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
+                        <?php if (!$general->isSTSInstance()) { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -759,59 +759,35 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $.unblockUI();
     }
 
+    let debounceTimeout;
 
     function generateSampleCode() {
-        if (sampleCodeGenerationEvent) {
-            sampleCodeGenerationEvent.abort();
-        }
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
 
-        var pName = $("#province").val();
-        var sDate = $("#sampleCollectionDate").val();
-        var provinceCode = $("#province").find(":selected").attr("data-code");
+            let pName = $("#province").val();
+            let sDate = $("#sampleCollectionDate").val();
+            let provinceCode = $("#province").find(":selected").attr("data-code");
 
-        if (pName != '' && sDate != '') {
-            $.blockUI();
-            var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
-            sampleCodeGenerationEvent = $.post("/eid/requests/generateSampleCode.php", {
-                    sampleCollectionDate: sDate,
-                    autoTyp: 'auto2',
-                    provinceCode: provinceCode,
-                    'sampleFrom': 'png',
-                    'provinceId': $("#province").find(":selected").attr("data-province-id")
-                },
-                function(data) {
-                    var sCodeKey = JSON.parse(data);
-                    $("#sampleCode").val(sCodeKey.sampleCode);
-                    $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                    $("#sampleCodeKey").val(sCodeKey.maxId);
-                    $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-                    $.unblockUI();
-                });
-        }
+            if (pName != '' && sDate != '') {
+                $.blockUI();
+                provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
+                $.post("/eid/requests/generateSampleCode.php", {
+                        sampleCollectionDate: sDate,
+                        provinceCode: provinceCode,
+                        'provinceId': $("#province").find(":selected").attr("data-province-id")
+                    },
+                    function(data) {
+                        let sCodeKey = JSON.parse(data);
+                        $("#sampleCode").val(sCodeKey.sampleCode);
+                        $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
+                        $("#sampleCodeKey").val(sCodeKey.maxId);
+                        $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+                        $.unblockUI();
+                    });
+            }
+        }, 300);
     }
-    // function generateSampleCode() {
-    //     var pName = $("#province").find(":selected").attr("data-code");
-    //     var sDate = $("#sampleCollectionDate").val();
-
-    //     if (pName != '' && sDate != '') {
-    //         provinceCode
-    //         $.post("/eid/requests/generateSampleCode.php", {
-    //                 sampleCollectionDate: sDate,
-    //                 pName: pName,
-    //                 autoTyp: 'auto2',
-    //                 //provinceCode: $("#province").find(":selected").attr("data-code"),
-    //                 sampleFrom: 'png'
-    //             },
-    //             function(data) {
-    //                 var sCodeKey = JSON.parse(data);
-    //                 $("#sampleCode").val(sCodeKey.sampleCode);
-    //                 $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-    //                 $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-    //                 $("#sampleCodeKey").val(sCodeKey.sampleCodeKey);
-    //                 $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-    //             });
-    //     }
-    // }
 
     function getfacilityDistrictwise(obj) {
         $.blockUI();

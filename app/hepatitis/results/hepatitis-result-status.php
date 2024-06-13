@@ -160,7 +160,7 @@ foreach ($rejectionTypeResult as $type) {
 								<tr>
 									<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
 									<th><?php echo _translate("Sample ID"); ?></th>
-									<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+									<?php if (!$general->isStandaloneInstance()) { ?>
 										<th><?php echo _translate("Remote Sample ID"); ?></th>
 									<?php } ?>
 									<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
@@ -235,7 +235,7 @@ foreach ($rejectionTypeResult as $type) {
 
 	function loadVlRequestData() {
 		var colmun = 11;
-		<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+		<?php if (!$general->isStandaloneInstance()) { ?>
 			colmun = 10;
 		<?php } ?>
 		$.blockUI();
@@ -257,7 +257,7 @@ foreach ($rejectionTypeResult as $type) {
 				{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -290,7 +290,7 @@ foreach ($rejectionTypeResult as $type) {
 				}
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 8 : 7; ?>, "desc"]
+				[<?= (!$general->isStandaloneInstance()) ? 8 : 7; ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");

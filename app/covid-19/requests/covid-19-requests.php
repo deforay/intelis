@@ -362,12 +362,12 @@ foreach ($srcResults as $list) {
 									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add new Covid-19 Request"); ?>
 									</a>
-									<?php if ($global['vl_form'] == 1 && $_SESSION['instance']['type'] != 'remoteuser' && !$hidesrcofreq) { ?>
+									<?php if ($global['vl_form'] == 1 && !$general->isSTSInstance() && !$hidesrcofreq) { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?php echo _translate("Bulk Import Covid-19 Request"); ?>
 										</a>
 									<?php }
-									if ($formId == COUNTRY\SOUTH_SUDAN && $_SESSION['instance']['type'] != 'remoteuser' && !$hidesrcofreq) { ?>
+									if ($formId == COUNTRY\SOUTH_SUDAN && !$general->isSTSInstance() && !$hidesrcofreq) { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?php echo _translate("Quick Add Covid-19 Request"); ?>
 										</a>
@@ -387,7 +387,7 @@ foreach ($srcResults as $list) {
 
 								<?php
 								if (_isAllowed("/covid-19/requests/covid-19-add-request.php") && !$hidesrcofreq) { ?>
-									<?php if ($formId == COUNTRY\SOUTH_SUDAN && $_SESSION['instance']['type'] != 'remoteuser') { ?>
+									<?php if ($formId == COUNTRY\SOUTH_SUDAN && !$general->isSTSInstance()) { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?= _translate("Quick Add Covid-19 Request"); ?>
 										</a>
@@ -396,7 +396,7 @@ foreach ($srcResults as $list) {
 									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?= _translate("Add new Covid-19 Request"); ?>
 									</a>
-									<?php if ($global['vl_form'] == 1 && $_SESSION['instance']['type'] != 'remoteuser') { ?>
+									<?php if ($global['vl_form'] == 1 && !$general->isSTSInstance()) { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?= _translate("Bulk Import Covid-19 Requests"); ?>
 										</a>
@@ -423,7 +423,7 @@ foreach ($srcResults as $list) {
 									<th>
 										<?php echo _translate("Sample ID"); ?>
 									</th>
-									<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+									<?php if (!$general->isStandaloneInstance()) { ?>
 										<th>
 											<?php echo _translate("Remote Sample ID"); ?>
 										</th>
@@ -658,7 +658,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {

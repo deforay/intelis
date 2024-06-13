@@ -49,7 +49,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           $childName = ($general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instance']['type'] != 'standalone') {
+          if (!$general->isStandaloneInstance()) {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = $sampleCollectionDate;

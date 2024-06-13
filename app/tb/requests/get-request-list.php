@@ -281,7 +281,7 @@ try {
           } else {
                $row[] = '<span>' . $aRow['sample_code'] . '</span>';
           }
-          if ($_SESSION['instance']['type'] != 'standalone') {
+          if (!$general->isStandaloneInstance()) {
                if (!empty($sampleCodeTooltip)) {
                     $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['remote_sample_code'] . '</span>';
                } else {

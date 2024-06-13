@@ -243,7 +243,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _translate("Sample ID"); ?></label>
 								</div>
 								<?php $i = 0;
-								if ($_SESSION['instance']['type'] != 'standalone') {
+								if (!$general->isStandaloneInstance()) {
 									$i = 1; ?>
 									<div class="col-md-3">
 										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
@@ -264,11 +264,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Name"); ?></label>
 								</div>
-									<?php if($formId == COUNTRY\CAMEROON) { ?>
-								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_assigned_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
-								</div>
-									<?php } ?>
+								<?php if ($formId == COUNTRY\CAMEROON) { ?>
+									<div class="col-md-3">
+										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_assigned_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
+									</div>
+								<?php } ?>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="mother_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Mother's ID"); ?></label> <br>
 								</div>
@@ -294,7 +294,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<thead>
 								<tr>
 									<th><?php echo _translate("Sample ID"); ?></th>
-									<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+									<?php if (!$general->isStandaloneInstance()) { ?>
 										<th><?php echo _translate("Remote Sample ID"); ?></th>
 									<?php } ?>
 									<th><?php echo _translate("Batch Code"); ?></th>
@@ -302,8 +302,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<th><?php echo _translate("Child's Name"); ?></th>
 									<th scope="row"><?php echo _translate("Facility Name"); ?></th>
 									<th><?php echo _translate("Lab Name"); ?></th>
-									<?php if($formId == COUNTRY\CAMEROON){ ?>
-									<th><?php echo _translate("Lab Assigned Code"); ?></th>
+									<?php if ($formId == COUNTRY\CAMEROON) { ?>
+										<th><?php echo _translate("Lab Assigned Code"); ?></th>
 									<?php } ?>
 									<th><?php echo _translate("Mother's ID"); ?></th>
 									<th><?php echo _translate("Result"); ?></th>
@@ -491,7 +491,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -515,8 +515,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						"sClass": "center"
 					},';
 				}
-				?> 
-				{
+				?> {
 					"sClass": "center"
 				},
 				{

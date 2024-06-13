@@ -287,7 +287,7 @@ try {
                $row[] = '<span>' . $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '') . '</span>';
           }
           //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow[$primaryKey] . '"  value="' . $aRow[$primaryKey] . '" onclick="toggleTest(this);"  />';
-          if ($_SESSION['instance']['type'] != 'standalone') {
+          if (!$general->isStandaloneInstance()) {
                if (!empty($sampleCodeTooltip)) {
                     $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['remote_sample_code'] . '</span>';
                } else {

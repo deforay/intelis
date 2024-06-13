@@ -140,7 +140,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 
 		$row[] = $no;
 		$row[] = $aRow["sample_code"];
-		if ($_SESSION['instance']['type'] != 'standalone') {
+		if (!$general->isStandaloneInstance()) {
 			$row[] = $aRow["remote_sample_code"] ?? null;
 		}
 		$row[] = $aRow['facility_name'];

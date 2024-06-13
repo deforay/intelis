@@ -119,7 +119,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0">Sample ID</label>
 								</div>
 								<?php $i = 0;
-								if ($_SESSION['instance']['type'] != 'standalone') {
+								if (!$general->isStandaloneInstance()) {
 									$i = 1; ?>
 									<div class="col-md-3">
 										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Remote Sample
@@ -170,7 +170,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 							<thead>
 								<tr>
 									<th>Sample ID</th>
-									<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+									<?php if (!$general->isStandaloneInstance()) { ?>
 										<th>Remote Sample <br />Code</th>
 									<?php } ?>
 									<th>Batch Code</th>
@@ -297,7 +297,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -328,7 +328,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 				}
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 6 : 5; ?>, "desc"]
+				[<?= (!$general->isStandaloneInstance()) ? 6 : 5; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

@@ -192,10 +192,10 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     <th class="labels" scope="row"><?= _translate('Infant Age (months)'); ?></th>
                                     <td><input type="number" max=9 maxlength="1" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" /></td>
 
-                                    
+
                                 </tr>
                                 <tr>
-                                <th class="labels" scope="row"><label for="childGender"><?= _translate('Gender'); ?> </label></th>
+                                    <th class="labels" scope="row"><label for="childGender"><?= _translate('Gender'); ?> </label></th>
                                     <td>
                                         <select class="form-control " name="childGender" id="childGender">
                                             <option value=''> <?= _translate('-- Select --'); ?> </option>
@@ -205,11 +205,11 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         </select>
                                     </td>
                                     <th scope="row"><?= _translate('Universal Health Coverage'); ?></th>
-                                        <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" value="<?= $eidInfo['health_insurance_code']; ?>" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/></td>
+                                    <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" value="<?= $eidInfo['health_insurance_code']; ?>" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32" /></td>
 
                                 </tr>
                                 <tr>
-                                <th scope="row"><?= ('Weight of the day'); ?></th>
+                                    <th scope="row"><?= ('Weight of the day'); ?></th>
                                     <td><input type="text" class="form-control forceNumeric" id="infantWeight" name="infantWeight" placeholder="<?= _translate('Infant weight of the day in Kg'); ?>" title="<?= _translate('Infant weight of the day'); ?>" style="width:100%;" value="<?= $eidInfo['child_weight']; ?>" /></td>
 
                                     <th class="labels" scope="row"><?= _translate('Caretaker phone number'); ?></th>
@@ -217,7 +217,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
 
                                 </tr>
                                 <tr>
-                                <th class="labels" scope="row"><?= _translate('Infant caretaker address'); ?></th>
+                                    <th class="labels" scope="row"><?= _translate('Infant caretaker address'); ?></th>
                                     <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _translate('Caretaker Address'); ?>" title="<?= _translate('Caretaker Address'); ?>" style="width:100%;" onchange=""><?= htmlspecialchars((string) $eidInfo['caretaker_address']); ?></textarea></td>
 
                                     <th scope="row"><?= _translate('Prophylactic ARV given to child'); ?><span class="mandatory">*</span></th>
@@ -233,7 +233,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     </td>
                                 </tr>
                                 <tr>
-                                <th scope="row"><?= _translate('Date of Initiation'); ?></th>
+                                    <th scope="row"><?= _translate('Date of Initiation'); ?></th>
                                     <td>
                                         <input type="text" class="form-control date" name="childTreatmentInitiationDate" id="childTreatmentInitiationDate" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_treatment_initiation_date']); ?>" placeholder="<?= _translate('Enter date of initiation'); ?>" />
                                     </td>
@@ -459,15 +459,15 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _translate('Please specify other point of entry') ?>" placeholder="<?= _translate('Please specify other point of entry') ?>" style="display:<?php echo ($eidInfo['lab_testing_point'] == 'other') ? 'block' : 'none' ?>;" value="<?php echo ($eidInfo['lab_testing_point_other']); ?>" />
                                     </td>
                                 </tr>
-                                <?php if($general->isLISInstance()){ ?>
+                                <?php if ($general->isLISInstance()) { ?>
 
-                                <tr>
+                                    <tr>
                                         <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
-                                                <td>
-                                                    <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" />
-                                                </td>
-                                </tr>
-                            <?php } ?>
+                                        <td>
+                                            <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" />
+                                        </td>
+                                    </tr>
+                                <?php } ?>
                             </table>
                             <br><br>
                             <table aria-describedby="table" class="table" aria-hidden="true">
@@ -479,7 +479,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                 <tr>
                                     <th scope="row" style="width:15% !important"><?= _translate('Sample Collection Date'); ?> <span class="mandatory">*</span> </th>
                                     <td style="width:35% !important;">
-                                        <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" />
+                                        <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" />
                                     </td>
                                     <th style="width:15% !important;"><?= _translate('Recollected'); ?></th>
                                     <td style="width:35% !important;">
@@ -623,7 +623,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                     <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
                     <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
                     <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
-                    <input type="hidden" id="childId" name="childId"  value="<?php echo $eidInfo['child_id']; ?>" />
+                    <input type="hidden" id="childId" name="childId" value="<?php echo $eidInfo['child_id']; ?>" />
                     <a href="/eid/results/eid-manual-results.php" class="btn btn-default"> Cancel</a>
                 </div>
                 <!-- /.box-footer -->

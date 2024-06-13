@@ -380,7 +380,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											</label>
 										</td>
 									</tr>
-									<?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
+									<?php if (!$general->isSTSInstance()) { ?>
 										<tr>
 											<td colspan="6" style="font-size: 18px; font-weight: bold;">CPHL Use Only </td>
 										</tr>
@@ -915,34 +915,32 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 			});
 	}
 
-	function generateSampleCode() {
-		if (sampleCodeGenerationEvent) {
-			sampleCodeGenerationEvent.abort();
-		}
+	let debounceTimeout;
 
-		var pName = $("#province").val();
-		var sDate = $("#sampleCollectionDate").val();
-		if (pName != '' && sDate != '') {
-			// $.blockUI();
-			var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
-			sampleCodeGenerationEvent = $.post("/vl/requests/generateSampleCode.php", {
-					sampleCollectionDate: sDate,
-					autoTyp: 'auto2',
-					provinceCode: provinceCode,
-					'sampleFrom': 'png',
-					'provinceId': $("#province").find(":selected").attr("data-province-id")
-				},
-				function(data) {
-					var sCodeKey = JSON.parse(data);
-					$("#sampleCode").val(sCodeKey.sampleCode);
-					$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-					$("#sampleCodeKey").val(sCodeKey.maxId);
-					$("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-					//checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'The laboratory ID that you entered already exists. Please try another ID', null)
-					// $.unblockUI();
-				});
-		}
+	function generateSampleCode() {
+		clearTimeout(debounceTimeout);
+		debounceTimeout = setTimeout(() => {
+			let pName = $("#province").val();
+			let sDate = $("#sampleCollectionDate").val();
+			if (pName != '' && sDate != '') {
+				// $.blockUI();
+				let provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
+				$.post("/vl/requests/generateSampleCode.php", {
+						sampleCollectionDate: sDate,
+						provinceCode: provinceCode,
+						'provinceId': $("#province").find(":selected").attr("data-province-id")
+					},
+					function(data) {
+						let sCodeKey = JSON.parse(data);
+						$("#sampleCode").val(sCodeKey.sampleCode);
+						$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
+						$("#sampleCodeKey").val(sCodeKey.maxId);
+						$("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+					});
+			}
+		}, 300);
 	}
+
 
 	$("input:radio[name=isSampleRejected]").on("change", function() {
 		if ($(this).val() == 'yes') {

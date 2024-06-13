@@ -277,7 +277,7 @@ foreach ($rResult as $aRow) {
     // $patientFname = ($general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]));
 
     $row[] = $aRow['sample_code'];
-    if ($_SESSION['instance']['type'] != 'standalone') {
+    if (!$general->isStandaloneInstance()) {
         $row[] = $aRow['remote_sample_code'];
     }
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
@@ -296,7 +296,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['labName'];
     if ($formId == COUNTRY\CAMEROON) {
         $row[] = $aRow['lab_assigned_code'];
-   }
+    }
 
     $row[] = ($aRow['facility_state']);
     $row[] = ($aRow['facility_district']);

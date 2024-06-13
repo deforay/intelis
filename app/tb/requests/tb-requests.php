@@ -303,7 +303,7 @@ foreach ($srcResults as $list) {
                                 <tr>
                                     <!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
                                     <th><?php echo _translate("Sample ID"); ?></th>
-                                    <?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+                                    <?php if (!$general->isStandaloneInstance()) { ?>
                                         <th><?php echo _translate("Remote Sample ID"); ?></th>
                                     <?php } ?>
                                     <th><?php echo _translate("Sample Collection Date"); ?></th>
@@ -504,7 +504,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             "aoColumns": [{
                     "sClass": "center"
                 },
-                <?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+                <?php if (!$general->isStandaloneInstance()) { ?> {
                         "sClass": "center"
                     },
                 <?php } ?> {
@@ -548,8 +548,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     }
                 }
                 $('.top-tooltip').tooltipster({
-					contentAsHTML: true
-				});
+                    contentAsHTML: true
+                });
             },
             "bProcessing": true,
             "bServerSide": true,

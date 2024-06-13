@@ -455,7 +455,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 
 							</div>
 						</div>
-						<?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
+						<?php if (!$general->isSTSInstance()) { ?>
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">

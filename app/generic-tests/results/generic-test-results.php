@@ -167,7 +167,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									</label>
 								</div>
 								<?php $i = 0;
-								if ($_SESSION['instance']['type'] != 'standalone') {
+								if (!$general->isStandaloneInstance()) {
 									$i = 1; ?>
 									<div class="col-md-3">
 										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
@@ -224,7 +224,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<th>
 										<?php echo _translate("Sample ID"); ?>
 									</th>
-									<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+									<?php if (!$general->isStandaloneInstance()) { ?>
 										<th>
 											<?php echo _translate("Remote Sample ID"); ?>
 										</th>
@@ -383,7 +383,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -419,7 +419,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 9 : 8; ?>, "desc"]
+				[<?= (!$general->isStandaloneInstance()) ? 9 : 8; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

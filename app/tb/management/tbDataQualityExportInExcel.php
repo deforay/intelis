@@ -58,7 +58,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
-          if ($sarr['sc_user_type'] != 'standalone') {
+          if (!$general->isStandaloneInstance()) {
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

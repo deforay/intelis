@@ -77,9 +77,8 @@ final class CD4Service extends AbstractTestService
 
             $rowData = [];
             if (!empty($sampleData['sampleCode'])) {
-                $sQuery = "SELECT {$this->primaryKey} FROM {$this->table} ";
-                $sQuery .= " WHERE $sampleCodeColumn like '{$sampleData['sampleCode']}'";
-                $rowData = $this->db->rawQueryOne($sQuery);
+                $sQuery = "SELECT {$this->primaryKey} FROM {$this->table} WHERE $sampleCodeColumn = ?";
+                $rowData = $this->db->rawQueryOne($sQuery, [$sampleData['sampleCode']]);
             }
 
             $id = 0;
@@ -89,7 +88,7 @@ final class CD4Service extends AbstractTestService
                     'vlsm_country_id' => $formId,
                     'sample_reordered' => $params['sampleReordered'] ?? 'no',
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
-                    'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
+                    'facility_id' => $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,
                     'patient_art_no' => $params['artNo'] ?? null,
                     'specimen_type' => $params['specimenType'] ?? null,
@@ -141,8 +140,9 @@ final class CD4Service extends AbstractTestService
                 if ($this->db->getLastErrno() > 0) {
                     throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
                 }
+                // Commit the transaction after the successful insert
+                $this->db->commitTransaction();
             } else {
-
                 LoggerUtility::log('info', 'Sample ID exists already. Trying to regenerate Sample ID', [
                     'file' => __FILE__,
                     'line' => __LINE__,

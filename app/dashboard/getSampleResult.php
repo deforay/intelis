@@ -92,7 +92,7 @@ if ($testType == 'eid') {
 
 try {
 
-    if ($_SESSION['instance']['type'] != 'remoteuser') {
+    if (!$general->isSTSInstance()) {
         $whereCondition = " result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "  AND ";
     } else {
         $whereCondition = "";

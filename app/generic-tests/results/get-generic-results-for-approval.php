@@ -196,7 +196,7 @@ foreach ($rResult as $aRow) {
      $row = [];
      $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['sample_id'] . '"  value="' . $aRow['sample_id'] . '" onclick="toggleTest(this);"  />';
      $row[] = $aRow['sample_code'];
-     if ($systemType != 'standalone') {
+     if (!$general->isStandaloneInstance()) {
           $row[] = $aRow['remote_sample_code'];
      }
      $row[] = $aRow['sample_collection_date'];

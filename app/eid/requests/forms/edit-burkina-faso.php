@@ -323,7 +323,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                     <tr>
                                         <th scope="row" style="width:15%" class="labels"><?= _translate("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35%;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="generateSampleCode();" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
                                         </td>
                                         <th scope="row" style="width:15%" class="labels"><?= _translate("Sample Dispatched On"); ?>
                                             <span class="mandatory">*</span>
@@ -540,7 +540,6 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                     }
                 });
             //}
-            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -562,29 +561,9 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
         $("#mothersId").val(patientArray['mother_id']);
         $("#caretakerPhoneNumber").val(patientArray['caretaker_no']);
         $("#caretakerAddress").text(patientArray['caretaker_address']);
-
-        /* setTimeout(function() {
-             $("#patientDistrict").val(patientArray[15]).trigger('change');
-         }, 3000);*/
     }
 
-    function generateSampleCode() {
-        var pName = $("#province").val();
-        var sDate = $("#sampleCollectionDate").val();
-        if (pName != '' && sDate != '') {
-            $.post("/eid/requests/generateSampleCode.php", {
-                    sampleCollectionDate: sDate,
-                    pName: pName
-                },
-                function(data) {
-                    var sCodeKey = JSON.parse(data);
-                    $("#sampleCode").val(sCodeKey.sampleCode);
-                    $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-                    $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                    $("#sampleCodeKey").val(sCodeKey.sampleCodeKey);
-                });
-        }
-    }
+
 
     function getfacilityDistrictwise(obj) {
         $.blockUI();

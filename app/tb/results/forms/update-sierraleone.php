@@ -310,7 +310,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<tr>
 										<th scope="row"><label class="label-control" for="sampleCollectionDate">Date Specimen Collected </label></th>
 										<td>
-											<input class="form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="generateSampleCode();" />
+											<input class="form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" />
 										</td>
 										<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of Specimen Reception </label></th>
 										<td>
@@ -634,7 +634,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 						$("#district").html(details[1]);
 					}
 				});
-			generateSampleCode();
 		} else if (pName == '') {
 			provinceName = true;
 			facilityName = true;
@@ -688,25 +687,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		}, 3000);
 	}
 
-	function generateSampleCode() {
-		var pName = $("#province").val();
-		var sDate = $("#sampleCollectionDate").val();
-		var provinceCode = $("#province").find(":selected").attr("data-code");
-
-		if (pName != '' && sDate != '') {
-			$.post("/tb/requests/generate-sample-code.php", {
-					sampleCollectionDate: sDate,
-					provinceCode: provinceCode
-				},
-				function(data) {
-					var sCodeKey = JSON.parse(data);
-					$("#sampleCode").val(sCodeKey.sampleCode);
-					$("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-					$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-					$("#sampleCodeKey").val(sCodeKey.sampleCodeKey);
-				});
-		}
-	}
 
 	function getfacilityDistrictwise(obj) {
 		$.blockUI();

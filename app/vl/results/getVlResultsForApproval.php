@@ -177,7 +177,7 @@ foreach ($rResult as $aRow) {
      $row = [];
      $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="toggleTest(this);"  />';
      $row[] = $aRow['sample_code'];
-     if ($systemType != 'standalone') {
+     if (!$general->isStandaloneInstance()) {
           $row[] = $aRow['remote_sample_code'];
      }
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

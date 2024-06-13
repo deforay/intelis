@@ -529,7 +529,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="sampleCollectionDate">Date de prélèvement de l'échantillon <span class="mandatory">*</span></label></th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" value="<?php echo date('d-M-Y H:i:s', strtotime((string) $covid19Info['sample_collection_date'])); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de prélèvement de l'échantillon" title="Date de prélèvement de l'échantillon" onchange="generateSampleCode();" />
+                                            <input class="form-control isRequired" value="<?php echo date('d-M-Y H:i:s', strtotime((string) $covid19Info['sample_collection_date'])); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de prélèvement de l'échantillon" title="Date de prélèvement de l'échantillon" />
                                         </td>
                                         <th scope="row" style="width:15% !important">Échantillon expédié le <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
@@ -756,7 +756,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                 </table>
                             </div>
                         </div>
-                        <?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
+                        <?php if (!$general->isSTSInstance()) { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -1231,7 +1231,6 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                     }
                 });
             //}
-            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -1262,26 +1261,6 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
         setTimeout(function() {
             $("#patientDistrict").val(patientArray['patient_district']).trigger('change');
         }, 3000);
-    }
-
-    function generateSampleCode() {
-        var pName = $("#province").val();
-        var sDate = $("#sampleCollectionDate").val();
-        var provinceCode = $("#province").find(":selected").attr("data-code");
-
-        if (pName != '' && sDate != '') {
-            $.post("/covid-19/requests/generateSampleCode.php", {
-                    sampleCollectionDate: sDate,
-                    provinceCode: provinceCode
-                },
-                function(data) {
-                    var sCodeKey = JSON.parse(data);
-                    $("#sampleCode").val(sCodeKey.sampleCode);
-                    $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-                    $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                    $("#sampleCodeKey").val(sCodeKey.sampleCodeKey);
-                });
-        }
     }
 
     function getfacilityDistrictwise(obj) {

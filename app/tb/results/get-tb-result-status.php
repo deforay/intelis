@@ -227,7 +227,7 @@ try {
         $row = [];
         $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['tb_id'] . '"  value="' . $aRow['tb_id'] . '" onclick="toggleTest(this);"  />';
         $row[] = $aRow['sample_code'];
-        if ($_SESSION['instance']['type'] != 'standalone') {
+        if (!$general->isStandaloneInstance()) {
             $row[] = $aRow['remote_sample_code'];
         }
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

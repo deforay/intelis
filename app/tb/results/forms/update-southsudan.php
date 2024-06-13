@@ -111,250 +111,250 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-					<div class="box-body">
-						<div class="box box-default disabledForm">
-							<div class="box-body">
-								<div class="box-header with-border sectionHeader">
-									<h3 class="box-title">TESTING LAB INFORMATION</h3>
-								</div>
-								<div class="box-header with-border">
-									<h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
-								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-									<tr>
-										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-											<th scope="row" style="width: 16.6%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
-											<td style="width: 16.6%;">
-												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo (isset($tbInfo['remote_sample_code']) && $tbInfo['remote_sample_code'] != "") ? $tbInfo['remote_sample_code'] : $tbInfo['sample_code']; ?></span>
-												<input type="hidden" id="sampleCode" name="sampleCode" />
-											</td>
-										<?php } else { ?>
-											<th scope="row" style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
-											<td style="width: 18%;">
-												<input type="text" value="<?php echo $tbInfo['sample_code']; ?>" class="form-control" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already exists. Please try another Sample ID',null)" />
-											</td>
-										<?php } ?>
-										<th scope="row"></th>
-										<td></td>
-										<th scope="row"></th>
-										<td></td>
-									</tr>
-								</table>
-								<div class="box-header with-border sectionHeader">
-									<h3 class="box-title">REFERRING HEALTH FACILITY INFORMATION</h3>
-								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-									<tr>
-										<td><label class="label-control" for="province">Health Facility/POE State </label></td>
-										<td>
-											<select class="form-control select2" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
-												<?php echo $province; ?>
-											</select>
-										</td>
-										<td><label class="label-control" for="district">Health Facility/POE County </label></td>
-										<td>
-											<select class="form-control select2" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-												<option value=""> -- Select -- </option>
-											</select>
-										</td>
-										<td><label class="label-control" for="facilityId">Health Facility/POE </label></td>
-										<td>
-											<select class="form-control " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
-												<?php echo $facility; ?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<th scope="row"><label for="requestedDate">Date of request </label></th>
-										<td>
-											<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
-										</td>
-										<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
-										<td>
-											<select class="form-control " name="referringUnit" id="referringUnit" title="Please choose referring unit" style="width:100%;">
-												<option value="">-- Select --</option>
-												<option value="art" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'art') ? "selected='selected'" : ""; ?>>ART</option>
-												<option value="opd" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'opd') ? "selected='selected'" : ""; ?>>OPD</option>
-												<option value="tb" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'tb') ? "selected='selected'" : ""; ?>">TB</option>
-												<option value="pmtct" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'pmtct') ? "selected='selected'" : ""; ?>>PMTCT</option>
-												<option value="medical" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'medical') ? "selected='selected'" : ""; ?>>Medical</option>
-												<option value="paediatric" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'paediatric') ? "selected='selected'" : ""; ?>>Paediatric</option>
-												<option value="nutrition" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'nutrition') ? "selected='selected'" : ""; ?>>Nutrition</option>
-												<option value="others" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'others') ? "selected='selected'" : ""; ?>>Others</option>
-											</select>
-											<input type="text" style="display: none;" name="otherReferringUnit" id="otherReferringUnit" placeholder="Enter other reffering unit" title="Please enter the other referring unit" />
-										</td>
-										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-											<td><label class="label-control" for="labId">Testing Laboratory </label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control select2" title="Please select Testing Testing Laboratory" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
-												</select>
-											</td>
-										<?php } ?>
-									</tr>
-								</table>
-
-
-								<div class="box-header with-border sectionHeader">
-									<h3 class="box-title">PATIENT INFORMATION</h3>
-								</div>
-								<div class="box-header with-border">
-									<input style="width:30%;" type="text" name="patientNoSearch" id="patientNoSearch" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
-									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
-								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-									<tr>
-										<th scope="row"><label for="patientId">Unique ART Number </label></th>
-										<td>
-											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
-										</td>
-										<th scope="row"><label for="firstName">First Name </label></th>
-										<td>
-											<input type="text" value="<?php echo $tbInfo['patient_name']; ?>" class="form-control" id="firstName" name="firstName" placeholder="First Name" title="Please enter First name" style="width:100%;" onchange="" />
-										</td>
-									</tr>
-									<tr>
-										<th scope="row"><label for="lastName">Surname </label></th>
-										<td>
-											<input type="text" value="<?php echo $tbInfo['patient_surname']; ?>" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
-										</td>
-										<th scope="row"><label for="dob">Date of Birth </label></th>
-										<td>
-											<input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control" id="dob" name="dob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears('dob', 'patientAge');" />
-										</td>
-									</tr>
-									<tr>
-										<th scope="row">Age (years)</th>
-										<td><input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" onchange="" /></td>
-										<th scope="row"><label for="patientGender">Gender </label></th>
-										<td>
-											<select class="form-control" name="patientGender" id="patientGender" title="Please select the gender">
-												<option value=''> -- Select -- </option>
-												<option value='male' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'male') ? "selected='selected'" : ""; ?>> Male </option>
-												<option value='female' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'female') ? "selected='selected'" : ""; ?>> Female </option>
-												<option value='other' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'other') ? "selected='selected'" : ""; ?>> Other </option>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<th scope="row"><label for="typeOfPatient">Type of patient </label></th>
-										<td>
-											<select class="select2 form-control" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" multiple>
-												<option value=''> -- Select -- </option>
-												<option value='new' <?php echo (isset($typeOfPatient) && in_array('new', $typeOfPatient)) ? "selected='selected'" : ""; ?>> New </option>
-												<option value='loss-to-follow-up' <?php echo (isset($typeOfPatient) && in_array('loss-to-follow-up', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
-												<option value='treatment-failure' <?php echo (isset($typeOfPatient) && in_array('treatment-failure', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Treatment Failure </option>
-												<option value='relapse' <?php echo (isset($typeOfPatient) && in_array('relapse', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Relapse </option>
-												<option value='other' <?php echo (isset($typeOfPatient) && in_array('other', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Other </option>
-											</select>
-											<input type="text" class="form-control" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
-										</td>
-									</tr>
-									<tr style=" border: 1px solid #8080804f; ">
-										<td>
-											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="diagnosis-check" id="reasonForTbTest1" name="reasonForTbTest[reason][diagnosis]" value="diagnosis" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis', 'followup-uncheck');" <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "checked" : ""; ?>>
-												<strong>Diagnosis</strong>
-											</label>
-										</td>
-										<td style="float: left;text-align: center;">
-											<div class="diagnosis hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "block" : "none"; ?>;">
-												<ul style=" display: inline-flex; list-style: none; padding: 0px; ">
-													<li>
-														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox" class="diagnosis-check reason-checkbox" id="presumptiveTb" name="reasonForTbTest[elaboration][diagnosis][Presumptive TB]" value="yes" <?php echo (isset($diagnosis['Presumptive TB']) && $diagnosis['Presumptive TB'] == "yes") ? "checked" : ""; ?>>
-														</label>
-														<label class="radio-inline" for="presumptiveTb" style="padding-left:17px !important;margin-left:0;">Presumptive TB</label>
-													</li>
-													<li>
-														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox" class="diagnosis-check reason-checkbox" id="rifampicinResistantTb" name="reasonForTbTest[elaboration][diagnosis][Rifampicin-resistant TB]" value="yes" <?php echo (isset($diagnosis['Rifampicin-resistant TB']) && $diagnosis['Rifampicin-resistant TB'] == "yes") ? "checked" : ""; ?>>
-														</label>
-														<label class="radio-inline" for="rifampicinResistantTb" style="padding-left:17px !important;margin-left:0;">Rifampicin-resistant TB</label>
-													</li>
-													<li>
-														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox" class="diagnosis-check reason-checkbox" id="mdrtb" name="reasonForTbTest[elaboration][diagnosis][MDR-TB]" value="yes" <?php echo (isset($diagnosis['MDR-TB']) && $diagnosis['MDR-TB'] == "yes") ? "checked" : ""; ?>>
-														</label>
-														<label class="radio-inline" for="mdrtb" style="padding-left:17px !important;margin-left:0;">MDR-TB</label>
-													</li>
-												</ul>
-											</div>
-										</td>
-										<td>
-											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="followup-uncheck" id="reasonForTbTest2" name="reasonForTbTest[reason][followup]" value="followup" title="Select reason for examination" onchange="checkSubReason(this,'follow-up', 'diagnosis-check');" <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "checked" : ""; ?>>
-												<strong>Follow Up</strong>
-											</label>
-										</td>
-										<td style="float: left;text-align: center;">
-											<div class="follow-up hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "block" : "none"; ?>;">
-												<input type="text" value=" <?php echo (isset($followup['value']) && $followup['value'] != "" && trim((string) $followup['value']) != "") ? $followup['value'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][followup][value]" placeholder="Enter the follow up" title="Please enter the follow up">
-											</div>
-										</td>
-									</tr>
-								</table>
-
-								<div class="box-header with-border sectionHeader">
-									<h3 class="box-title">SPECIMEN INFORMATION</h3>
-								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true">
-									<tr>
-										<th scope="row"><label class="label-control" for="sampleCollectionDate">Date Specimen Collected </label></th>
-										<td>
-											<input class="form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="generateSampleCode();" />
-										</td>
-										<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of Specimen Reception </label></th>
-										<td>
-											<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
-										</td>
-									</tr>
-									<tr>
-										<th scope="row"><label class="label-control" for="specimenType">Specimen Type </label></th>
-										<td>
-											<select name="specimenType" id="specimenType" class="form-control" title="Please choose specimen type" style="width:100%">
-												<?php echo $general->generateSelectOptions($specimenTypeResult, $tbInfo['specimen_type'], '-- Select --'); ?>
-												<option value='other'> Other </option>
-											</select>
-											<input type="text" id="sampleTypeOther" name="sampleTypeOther" placeholder="Enter sample type of others" title="Please enter the sample type if others" style="display: none;" />
-										</td>
-										<th scope="row">
-											<label class="label-control" for="testNumber">Specimen Number</label>
-										</th>
-										<td>
-											<select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
-												<option value="">--Select--</option>
-												<?php foreach (range(1, 5) as $element) {
-													$selected = (isset($tbInfo['specimen_quality']) && $tbInfo['specimen_quality'] == $element) ? "selected='selected'" : "";
-													echo '<option value="' . $element . '"' . $selected . '>' . $element . '</option>';
-												} ?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<th scope="row">
-											<label class="label-control" for="testTypeRequested">Test(s) requested </label>
-										</th>
-										<td>
-											<select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
-												<optgroup label="Microscopy">
-													<option value="ZN" <?php echo (isset($testTypeRequested) && in_array("ZN", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>ZN</option>
-													<option value="FM" <?php echo (isset($testTypeRequested) && in_array("FM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>FM</option>
-												</optgroup>
-												<optgroup label="Xpert MTB">
-													<option value="MTB/RIF" <?php echo (isset($testTypeRequested) && in_array("MTB/RIF", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF</option>
-													<option value="MTB/RIF ULTRA" <?php echo (isset($tbInfo['tests_requested']) && in_array("MTB/RIF ULTRA", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF ULTRA</option>
-													<option value="TB LAM" <?php echo (isset($tbInfo['tests_requested']) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
-												</optgroup>
-											</select>
-										</td>
-									</tr>
-								</table>
+				<div class="box-body">
+					<div class="box box-default disabledForm">
+						<div class="box-body">
+							<div class="box-header with-border sectionHeader">
+								<h3 class="box-title">TESTING LAB INFORMATION</h3>
 							</div>
+							<div class="box-header with-border">
+								<h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
+							</div>
+							<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+								<tr>
+									<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+										<th scope="row" style="width: 16.6%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
+										<td style="width: 16.6%;">
+											<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo (isset($tbInfo['remote_sample_code']) && $tbInfo['remote_sample_code'] != "") ? $tbInfo['remote_sample_code'] : $tbInfo['sample_code']; ?></span>
+											<input type="hidden" id="sampleCode" name="sampleCode" />
+										</td>
+									<?php } else { ?>
+										<th scope="row" style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
+										<td style="width: 18%;">
+											<input type="text" value="<?php echo $tbInfo['sample_code']; ?>" class="form-control" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already exists. Please try another Sample ID',null)" />
+										</td>
+									<?php } ?>
+									<th scope="row"></th>
+									<td></td>
+									<th scope="row"></th>
+									<td></td>
+								</tr>
+							</table>
+							<div class="box-header with-border sectionHeader">
+								<h3 class="box-title">REFERRING HEALTH FACILITY INFORMATION</h3>
+							</div>
+							<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+								<tr>
+									<td><label class="label-control" for="province">Health Facility/POE State </label></td>
+									<td>
+										<select class="form-control select2" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
+											<?php echo $province; ?>
+										</select>
+									</td>
+									<td><label class="label-control" for="district">Health Facility/POE County </label></td>
+									<td>
+										<select class="form-control select2" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+											<option value=""> -- Select -- </option>
+										</select>
+									</td>
+									<td><label class="label-control" for="facilityId">Health Facility/POE </label></td>
+									<td>
+										<select class="form-control " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
+											<?php echo $facility; ?>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row"><label for="requestedDate">Date of request </label></th>
+									<td>
+										<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
+									</td>
+									<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
+									<td>
+										<select class="form-control " name="referringUnit" id="referringUnit" title="Please choose referring unit" style="width:100%;">
+											<option value="">-- Select --</option>
+											<option value="art" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'art') ? "selected='selected'" : ""; ?>>ART</option>
+											<option value="opd" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'opd') ? "selected='selected'" : ""; ?>>OPD</option>
+											<option value="tb" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'tb') ? "selected='selected'" : ""; ?>">TB</option>
+											<option value="pmtct" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'pmtct') ? "selected='selected'" : ""; ?>>PMTCT</option>
+											<option value="medical" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'medical') ? "selected='selected'" : ""; ?>>Medical</option>
+											<option value="paediatric" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'paediatric') ? "selected='selected'" : ""; ?>>Paediatric</option>
+											<option value="nutrition" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'nutrition') ? "selected='selected'" : ""; ?>>Nutrition</option>
+											<option value="others" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'others') ? "selected='selected'" : ""; ?>>Others</option>
+										</select>
+										<input type="text" style="display: none;" name="otherReferringUnit" id="otherReferringUnit" placeholder="Enter other reffering unit" title="Please enter the other referring unit" />
+									</td>
+									<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+										<td><label class="label-control" for="labId">Testing Laboratory </label> </td>
+										<td>
+											<select name="labId" id="labId" class="form-control select2" title="Please select Testing Testing Laboratory" style="width:100%;">
+												<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
+											</select>
+										</td>
+									<?php } ?>
+								</tr>
+							</table>
+
+
+							<div class="box-header with-border sectionHeader">
+								<h3 class="box-title">PATIENT INFORMATION</h3>
+							</div>
+							<div class="box-header with-border">
+								<input style="width:30%;" type="text" name="patientNoSearch" id="patientNoSearch" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
+								<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
+							</div>
+							<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+								<tr>
+									<th scope="row"><label for="patientId">Unique ART Number </label></th>
+									<td>
+										<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
+									</td>
+									<th scope="row"><label for="firstName">First Name </label></th>
+									<td>
+										<input type="text" value="<?php echo $tbInfo['patient_name']; ?>" class="form-control" id="firstName" name="firstName" placeholder="First Name" title="Please enter First name" style="width:100%;" onchange="" />
+									</td>
+								</tr>
+								<tr>
+									<th scope="row"><label for="lastName">Surname </label></th>
+									<td>
+										<input type="text" value="<?php echo $tbInfo['patient_surname']; ?>" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
+									</td>
+									<th scope="row"><label for="dob">Date of Birth </label></th>
+									<td>
+										<input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control" id="dob" name="dob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears('dob', 'patientAge');" />
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">Age (years)</th>
+									<td><input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" onchange="" /></td>
+									<th scope="row"><label for="patientGender">Gender </label></th>
+									<td>
+										<select class="form-control" name="patientGender" id="patientGender" title="Please select the gender">
+											<option value=''> -- Select -- </option>
+											<option value='male' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'male') ? "selected='selected'" : ""; ?>> Male </option>
+											<option value='female' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'female') ? "selected='selected'" : ""; ?>> Female </option>
+											<option value='other' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'other') ? "selected='selected'" : ""; ?>> Other </option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row"><label for="typeOfPatient">Type of patient </label></th>
+									<td>
+										<select class="select2 form-control" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" multiple>
+											<option value=''> -- Select -- </option>
+											<option value='new' <?php echo (isset($typeOfPatient) && in_array('new', $typeOfPatient)) ? "selected='selected'" : ""; ?>> New </option>
+											<option value='loss-to-follow-up' <?php echo (isset($typeOfPatient) && in_array('loss-to-follow-up', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
+											<option value='treatment-failure' <?php echo (isset($typeOfPatient) && in_array('treatment-failure', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Treatment Failure </option>
+											<option value='relapse' <?php echo (isset($typeOfPatient) && in_array('relapse', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Relapse </option>
+											<option value='other' <?php echo (isset($typeOfPatient) && in_array('other', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Other </option>
+										</select>
+										<input type="text" class="form-control" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
+									</td>
+								</tr>
+								<tr style=" border: 1px solid #8080804f; ">
+									<td>
+										<label class="radio-inline" style="margin-left:0;">
+											<input type="radio" class="diagnosis-check" id="reasonForTbTest1" name="reasonForTbTest[reason][diagnosis]" value="diagnosis" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis', 'followup-uncheck');" <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "checked" : ""; ?>>
+											<strong>Diagnosis</strong>
+										</label>
+									</td>
+									<td style="float: left;text-align: center;">
+										<div class="diagnosis hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "block" : "none"; ?>;">
+											<ul style=" display: inline-flex; list-style: none; padding: 0px; ">
+												<li>
+													<label class="radio-inline" style="width:4%;margin-left:0;">
+														<input type="checkbox" class="diagnosis-check reason-checkbox" id="presumptiveTb" name="reasonForTbTest[elaboration][diagnosis][Presumptive TB]" value="yes" <?php echo (isset($diagnosis['Presumptive TB']) && $diagnosis['Presumptive TB'] == "yes") ? "checked" : ""; ?>>
+													</label>
+													<label class="radio-inline" for="presumptiveTb" style="padding-left:17px !important;margin-left:0;">Presumptive TB</label>
+												</li>
+												<li>
+													<label class="radio-inline" style="width:4%;margin-left:0;">
+														<input type="checkbox" class="diagnosis-check reason-checkbox" id="rifampicinResistantTb" name="reasonForTbTest[elaboration][diagnosis][Rifampicin-resistant TB]" value="yes" <?php echo (isset($diagnosis['Rifampicin-resistant TB']) && $diagnosis['Rifampicin-resistant TB'] == "yes") ? "checked" : ""; ?>>
+													</label>
+													<label class="radio-inline" for="rifampicinResistantTb" style="padding-left:17px !important;margin-left:0;">Rifampicin-resistant TB</label>
+												</li>
+												<li>
+													<label class="radio-inline" style="width:4%;margin-left:0;">
+														<input type="checkbox" class="diagnosis-check reason-checkbox" id="mdrtb" name="reasonForTbTest[elaboration][diagnosis][MDR-TB]" value="yes" <?php echo (isset($diagnosis['MDR-TB']) && $diagnosis['MDR-TB'] == "yes") ? "checked" : ""; ?>>
+													</label>
+													<label class="radio-inline" for="mdrtb" style="padding-left:17px !important;margin-left:0;">MDR-TB</label>
+												</li>
+											</ul>
+										</div>
+									</td>
+									<td>
+										<label class="radio-inline" style="margin-left:0;">
+											<input type="radio" class="followup-uncheck" id="reasonForTbTest2" name="reasonForTbTest[reason][followup]" value="followup" title="Select reason for examination" onchange="checkSubReason(this,'follow-up', 'diagnosis-check');" <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "checked" : ""; ?>>
+											<strong>Follow Up</strong>
+										</label>
+									</td>
+									<td style="float: left;text-align: center;">
+										<div class="follow-up hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "block" : "none"; ?>;">
+											<input type="text" value=" <?php echo (isset($followup['value']) && $followup['value'] != "" && trim((string) $followup['value']) != "") ? $followup['value'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][followup][value]" placeholder="Enter the follow up" title="Please enter the follow up">
+										</div>
+									</td>
+								</tr>
+							</table>
+
+							<div class="box-header with-border sectionHeader">
+								<h3 class="box-title">SPECIMEN INFORMATION</h3>
+							</div>
+							<table aria-describedby="table" class="table" aria-hidden="true">
+								<tr>
+									<th scope="row"><label class="label-control" for="sampleCollectionDate">Date Specimen Collected </label></th>
+									<td>
+										<input class="form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" />
+									</td>
+									<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of Specimen Reception </label></th>
+									<td>
+										<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+									</td>
+								</tr>
+								<tr>
+									<th scope="row"><label class="label-control" for="specimenType">Specimen Type </label></th>
+									<td>
+										<select name="specimenType" id="specimenType" class="form-control" title="Please choose specimen type" style="width:100%">
+											<?php echo $general->generateSelectOptions($specimenTypeResult, $tbInfo['specimen_type'], '-- Select --'); ?>
+											<option value='other'> Other </option>
+										</select>
+										<input type="text" id="sampleTypeOther" name="sampleTypeOther" placeholder="Enter sample type of others" title="Please enter the sample type if others" style="display: none;" />
+									</td>
+									<th scope="row">
+										<label class="label-control" for="testNumber">Specimen Number</label>
+									</th>
+									<td>
+										<select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
+											<option value="">--Select--</option>
+											<?php foreach (range(1, 5) as $element) {
+												$selected = (isset($tbInfo['specimen_quality']) && $tbInfo['specimen_quality'] == $element) ? "selected='selected'" : "";
+												echo '<option value="' . $element . '"' . $selected . '>' . $element . '</option>';
+											} ?>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">
+										<label class="label-control" for="testTypeRequested">Test(s) requested </label>
+									</th>
+									<td>
+										<select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
+											<optgroup label="Microscopy">
+												<option value="ZN" <?php echo (isset($testTypeRequested) && in_array("ZN", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>ZN</option>
+												<option value="FM" <?php echo (isset($testTypeRequested) && in_array("FM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>FM</option>
+											</optgroup>
+											<optgroup label="Xpert MTB">
+												<option value="MTB/RIF" <?php echo (isset($testTypeRequested) && in_array("MTB/RIF", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF</option>
+												<option value="MTB/RIF ULTRA" <?php echo (isset($tbInfo['tests_requested']) && in_array("MTB/RIF ULTRA", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF ULTRA</option>
+												<option value="TB LAM" <?php echo (isset($tbInfo['tests_requested']) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
+											</optgroup>
+										</select>
+									</td>
+								</tr>
+							</table>
 						</div>
-						<?php if (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
-							<form class="form-horizontal" method="post" name="editTbRequestForm" id="editTbRequestForm" autocomplete="off" action="tb-update-result-helper.php">
+					</div>
+					<?php if (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
+						<form class="form-horizontal" method="post" name="editTbRequestForm" id="editTbRequestForm" autocomplete="off" action="tb-update-result-helper.php">
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
@@ -505,20 +505,20 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</div>
 							</div>
 						<?php } ?>
-					</div>
-					<!-- /.box-body -->
-					<div class="box-footer">
-						<?php if ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'YY' || $arr['tb_sample_code'] == 'MMYY') { ?>
-							<input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
-							<input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
-							<input type="hidden" name="saveNext" id="saveNext" />
-						<?php } ?>
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-						<input type="hidden" name="formId" id="formId" value="1" />
-						<input type="hidden" name="tbSampleId" id="tbSampleId" value="<?php echo $id; ?>" />
-						<a href="/tb/results/tb-manual-results.php" class="btn btn-default"> Cancel</a>
-					</div>
-					<!-- /.box-footer -->
+				</div>
+				<!-- /.box-body -->
+				<div class="box-footer">
+					<?php if ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'YY' || $arr['tb_sample_code'] == 'MMYY') { ?>
+						<input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
+						<input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
+						<input type="hidden" name="saveNext" id="saveNext" />
+					<?php } ?>
+					<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+					<input type="hidden" name="formId" id="formId" value="1" />
+					<input type="hidden" name="tbSampleId" id="tbSampleId" value="<?php echo $id; ?>" />
+					<a href="/tb/results/tb-manual-results.php" class="btn btn-default"> Cancel</a>
+				</div>
+				<!-- /.box-footer -->
 				</form>
 				<!-- /.row -->
 			</div>
@@ -591,7 +591,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 						$("#district").html(details[1]);
 					}
 				});
-			generateSampleCode();
 		} else if (pName == '') {
 			provinceName = true;
 			facilityName = true;
@@ -643,26 +642,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		setTimeout(function() {
 			$("#patientDistrict").val(patientArray[15]).trigger('change');
 		}, 3000);
-	}
-
-	function generateSampleCode() {
-		var pName = $("#province").val();
-		var sDate = $("#sampleCollectionDate").val();
-		var provinceCode = $("#province").find(":selected").attr("data-code");
-
-		if (pName != '' && sDate != '') {
-			$.post("/tb/requests/generate-sample-code.php", {
-					sampleCollectionDate: sDate,
-					provinceCode: provinceCode
-				},
-				function(data) {
-					var sCodeKey = JSON.parse(data);
-					$("#sampleCode").val(sCodeKey.sampleCode);
-					$("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-					$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-					$("#sampleCodeKey").val(sCodeKey.sampleCodeKey);
-				});
-		}
 	}
 
 	function getfacilityDistrictwise(obj) {

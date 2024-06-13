@@ -198,7 +198,7 @@ $sResult = $db->rawQuery($sQuery);
                                     <th>
                                         <?php echo _translate("Sample ID"); ?>
                                     </th>
-                                    <?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+                                    <?php if (!$general->isStandaloneInstance()) { ?>
                                         <th>
                                             <?php echo _translate("Remote Sample ID"); ?>
                                         </th>
@@ -371,7 +371,7 @@ $sResult = $db->rawQuery($sQuery);
                 }, {
                     "sClass": "center"
                 },
-                <?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+                <?php if (!$general->isStandaloneInstance()) { ?> {
                         "sClass": "center"
                     },
                 <?php } ?> {

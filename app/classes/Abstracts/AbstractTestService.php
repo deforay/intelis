@@ -37,9 +37,9 @@ abstract class AbstractTestService
     private function getMaxId($year, $testType, $sampleCodeType, $insertOperation)
     {
         $sql = "SELECT max_sequence_number FROM sequence_counter
-            WHERE year = ? AND
-            test_type = ? AND
-            code_type = ?";
+        WHERE year = ? AND
+        test_type = ? AND
+        code_type = ?";
 
         if ($insertOperation) {
             $sql .= " FOR UPDATE";
@@ -50,8 +50,19 @@ abstract class AbstractTestService
             $sampleCodeType
         ]);
 
-        $yearData['max_sequence_number'] = $yearData['max_sequence_number'] ?? 0;
-        return max((int) $yearData['max_sequence_number'], 0);
+        $maxSeqNum = $yearData['max_sequence_number'] ?? 0;
+
+        if ($maxSeqNum == 0) {
+            $this->resetSequenceCounter($this->table, $year, $testType, $sampleCodeType);
+            $yearData = $this->db->rawQueryOne($sql, [
+                $year,
+                $testType,
+                $sampleCodeType
+            ]);
+            $maxSeqNum = $yearData['max_sequence_number'] ?? 0;
+        }
+
+        return max((int) $maxSeqNum, 0);
     }
 
     public function generateSampleCode($testTable, $params, $tryCount = 0)
@@ -95,41 +106,19 @@ abstract class AbstractTestService
                 $autoFormatedString = $year . $month . $day;
 
                 $remotePrefix = '';
-                $sampleCodeKeyCol = 'sample_code_key';
                 $sampleCodeType = 'sample_code';
                 if ($this->commonService->isSTSInstance()) {
                     $remotePrefix = 'R';
-                    $sampleCodeKeyCol = 'remote_sample_code_key';
                     $sampleCodeType = 'remote_sample_code';
                 }
 
-                $yearData = [];
                 $currentYear = $dateObj->format('Y');
                 $latestSequenceId = $this->getMaxId($currentYear, $this->testType, $sampleCodeType, $insertOperation);
 
                 if (!empty($existingMaxId) && $existingMaxId > 0) {
-                    //$existingMaxId = max($existingMaxId, $latestSequenceId);
                     $maxId = max($existingMaxId, $latestSequenceId) + 1;
                 } else {
-                    if ($latestSequenceId > 0) {
-                        $maxId = $latestSequenceId + 1;
-                    } else {
-                        // If no sequence number exists in sequence_counter table, get the max sequence number from form table
-                        $sql = "SELECT MAX($sampleCodeKeyCol) AS max_sequence_number
-                                    FROM $this->table
-                                    WHERE YEAR(sample_collection_date) = ? AND
-                                    $sampleCodeType IS NOT NULL AND
-                                    IFNULL($sampleCodeKeyCol, '') != ''";
-                        // if ($insertOperation) {
-                        //     $sql .= " FOR UPDATE";
-                        // }
-                        $yearData = $this->db->rawQueryOne($sql, [$currentYear]);
-                        if (!empty($yearData)) {
-                            $maxId = $yearData['max_sequence_number'] + 1;
-                        } else {
-                            $maxId = 1;
-                        }
-                    }
+                    $maxId = $latestSequenceId + 1;
                 }
 
                 // padding with zeroes
@@ -206,5 +195,28 @@ abstract class AbstractTestService
 
             throw new SystemException("Error while generating Sample ID for $testTable (try count = $tryCount) : " . $exception->getMessage(), $exception->getCode(), $exception);
         }
+    }
+
+    private function resetSequenceCounter($testTable, $year, $testType, $sampleCodeType)
+    {
+        $this->db->rawQuery(
+            "DELETE FROM sequence_counter WHERE year = ? AND test_type = ? AND code_type = ?",
+            [$year, $testType, $sampleCodeType]
+        );
+
+        $codeKey = $sampleCodeType . '_key';
+        $query = "INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
+                        SELECT
+                        '$testType' AS test_type,
+                        COALESCE(YEAR(sample_collection_date), YEAR(CURDATE())) AS year,
+                        '$sampleCodeType' AS code_type,
+                        COALESCE(MAX($codeKey), 0) AS max_sequence_number
+                    FROM $testTable
+                    WHERE YEAR(sample_collection_date) <= YEAR(CURDATE())
+                    GROUP BY YEAR(sample_collection_date)
+                    ON DUPLICATE KEY UPDATE
+                    max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number)";
+
+        $this->db->rawQuery($query);
     }
 }

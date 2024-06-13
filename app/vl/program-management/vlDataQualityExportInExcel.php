@@ -67,7 +67,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           }
 
           $row[] = $aRow['sample_code'];
-          if ($sarr['sc_user_type'] != 'standalone') {
+          if (!$general->isStandaloneInstance()) {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = $sampleCollectionDate;

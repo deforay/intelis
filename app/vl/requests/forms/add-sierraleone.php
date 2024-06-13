@@ -1219,19 +1219,24 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $.unblockUI();
      }
 
+     let debounceTimeout;
+
      function generateSampleCode() {
-          if ($("#sampleCollectionDate").val() != '') {
-               $.post("/vl/requests/generateSampleCode.php", {
-                         sampleCollectionDate: $("#sampleCollectionDate").val()
-                    },
-                    function(data) {
-                         var sCodeKey = JSON.parse(data);
-                         $("#sampleCode").val(sCodeKey.sampleCode);
-                         $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-                         $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                         $("#sampleCodeKey").val(sCodeKey.maxId);
-                    });
-          }
+          clearTimeout(debounceTimeout);
+          debounceTimeout = setTimeout(() => {
+               if ($("#sampleCollectionDate").val() != '') {
+                    $.post("/vl/requests/generateSampleCode.php", {
+                              sampleCollectionDate: $("#sampleCollectionDate").val()
+                         },
+                         function(data) {
+                              let sCodeKey = JSON.parse(data);
+                              $("#sampleCode").val(sCodeKey.sampleCode);
+                              $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
+                              $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
+                              $("#sampleCodeKey").val(sCodeKey.maxId);
+                         });
+               }
+          }, 300);
      }
 
      function getFacilities(obj) {

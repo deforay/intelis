@@ -240,7 +240,7 @@ try {
 
 
           $row[] = $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '');
-          if ($_SESSION['instance']['type'] != 'standalone') {
+          if (!$general->isStandaloneInstance()) {
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

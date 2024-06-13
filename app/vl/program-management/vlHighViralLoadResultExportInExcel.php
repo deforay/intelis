@@ -67,7 +67,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
                $patientLname = '';
           }
           $row[] = $aRow['sample_code'];
-          if ($sarr['sc_user_type'] != 'standalone') {
+          if (!$general->isStandaloneInstance()) {
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
@@ -144,7 +144,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
           $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
           $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
-          if ($sarr['sc_user_type'] != 'standalone') {
+          if (!$general->isStandaloneInstance()) {
                $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
           }
 

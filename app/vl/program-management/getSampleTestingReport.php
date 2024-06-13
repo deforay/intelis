@@ -24,7 +24,7 @@ $recencyWhere = " AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 
 try {
 
-    if ($_SESSION['instance']['type'] != 'remoteuser') {
+    if (!$general->isSTSInstance()) {
         $whereCondition = " AND result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . " ";
     } else {
         $whereCondition = "";

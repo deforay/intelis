@@ -662,7 +662,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                     }
                 });
             //}
-            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -720,26 +719,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             $("#patientDistrict").html("<option value=''> <?= _translate("-- Select --"); ?> </option>");
         }
         $.unblockUI();
-    }
-
-    function generateSampleCode() {
-        var pName = $("#province").val();
-        var provinceCode = $("#province").find(":selected").attr("data-code");
-
-        var sDate = $("#sampleCollectionDate").val();
-        if (pName != '' && sDate != '') {
-            $.post("/covid-19/requests/generateSampleCode.php", {
-                    sampleCollectionDate: sDate,
-                    provinceCode: provinceCode
-                },
-                function(data) {
-                    var sCodeKey = JSON.parse(data);
-                    $("#sampleCode").val(sCodeKey.sampleCode);
-                    $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-                    $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                    $("#sampleCodeKey").val(sCodeKey.sampleCodeKey);
-                });
-        }
     }
 
     function getfacilityDistrictwise(obj) {

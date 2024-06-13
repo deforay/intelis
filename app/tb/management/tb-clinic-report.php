@@ -176,7 +176,7 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th><?php echo _translate("Sample ID"); ?></th>
-														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+														<?php if (!$general->isStandaloneInstance()) { ?>
 															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th scope="row"><?php echo _translate("Facility Name"); ?></th>
@@ -280,7 +280,7 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th><?php echo _translate("Sample ID"); ?></th>
-														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+														<?php if (!$general->isStandaloneInstance()) { ?>
 															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th scope="row"><?php echo _translate("Facility Name"); ?></th>
@@ -377,7 +377,7 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th><?php echo _translate("Sample ID"); ?></th>
-														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+														<?php if (!$general->isStandaloneInstance()) { ?>
 															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th scope="row"><?php echo _translate("Facility Name"); ?></th>
@@ -430,7 +430,7 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th><?php echo _translate("Sample ID"); ?></th>
-														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+														<?php if (!$general->isStandaloneInstance()) { ?>
 															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
@@ -584,7 +584,7 @@ $state = $geolocationService->getProvinces("yes");
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -615,7 +615,7 @@ $state = $geolocationService->getProvinces("yes");
 
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 5 : 4; ?>, "desc"]
+				[<?= (!$general->isStandaloneInstance()) ? 5 : 4; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -680,7 +680,7 @@ $state = $geolocationService->getProvinces("yes");
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -706,7 +706,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 5 : 4; ?>, "desc"]
+				[<?= (!$general->isStandaloneInstance()) ? 5 : 4; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -771,7 +771,7 @@ $state = $geolocationService->getProvinces("yes");
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -794,7 +794,7 @@ $state = $geolocationService->getProvinces("yes");
 				}
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 5 : 4; ?>, "desc"]
+				[<?= (!$general->isStandaloneInstance()) ? 5 : 4; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -855,7 +855,7 @@ $state = $geolocationService->getProvinces("yes");
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -887,7 +887,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 2 : 1; ?>, "desc"]
+				[<?= (!$general->isStandaloneInstance()) ? 2 : 1; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

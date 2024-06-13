@@ -232,7 +232,7 @@ foreach ($rResult as $aRow) {
     $patientName = $general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]);
     $row = [];
     $row[] = $aRow['sample_code'];
-    if ($_SESSION['instance']['type'] != 'standalone') {
+    if (!$general->isStandaloneInstance()) {
         $row[] = $aRow['remote_sample_code'];
     }
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

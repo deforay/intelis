@@ -220,12 +220,11 @@ if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
           $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
      }
      $sWhere[] = $statusCondition;
- }
- else{      // Only approved results can be printed
- 
-     $sWhere[] = ' ((vl.result_status = '.SAMPLE_STATUS\ACCEPTED.' AND vl.result is NOT NULL AND vl.result !="") OR (vl.result_status = '.SAMPLE_STATUS\REJECTED.' AND (vl.result is NULL OR vl.result = ""))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = "0000-00-00")';
- }
- 
+} else {      // Only approved results can be printed
+
+     $sWhere[] = ' ((vl.result_status = ' . SAMPLE_STATUS\ACCEPTED . ' AND vl.result is NOT NULL AND vl.result !="") OR (vl.result_status = ' . SAMPLE_STATUS\REJECTED . ' AND (vl.result is NULL OR vl.result = ""))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = "0000-00-00")';
+}
+
 if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
      if (trim((string) $_POST['gender']) == "unreported") {
           $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
@@ -293,7 +292,7 @@ foreach ($rResult as $aRow) {
      $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_id']);
 
      $row[] = $aRow['sample_code'];
-     if ($_SESSION['instance']['type'] != 'standalone') {
+     if (!$general->isStandaloneInstance()) {
           $row[] = $aRow['remote_sample_code'];
      }
      $row[] = $aRow['batch_code'];

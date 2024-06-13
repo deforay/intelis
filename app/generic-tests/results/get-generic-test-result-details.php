@@ -307,7 +307,7 @@ try {
           $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_id']);
 
           $row[] = $aRow['sample_code'];
-          if ($_SESSION['instance']['type'] != 'standalone') {
+          if (!$general->isStandaloneInstance()) {
                $row[] = $aRow['remote_sample_code'];
           }
           // if (!empty($_POST['from']) && $_POST['from'] == "enterresult") {

@@ -485,7 +485,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                         <th scope="row" style="width:15% !important"><label for="sampleCollectionDate">Sample Collection Date<span class="mandatory">*</span></label></th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" value="<?php echo ($covid19Info['sample_collection_date']); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select the sample collection date" onchange="generateSampleCode();" />
+                                            <input class="form-control isRequired" value="<?php echo ($covid19Info['sample_collection_date']); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select the sample collection date" />
                                         </td>
                                     </tr>
                                 </table>
@@ -514,7 +514,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 </table>
                             </div>
                         </div>
-                        <?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
+                        <?php if (!$general->isSTSInstance()) { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -767,7 +767,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                     }
                 });
             //}
-            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -777,26 +776,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             $("#district").html("<option value=''> -- Select -- </option>");
         }
         $.unblockUI();
-    }
-
-    function generateSampleCode() {
-        var pName = $("#province").val();
-        var sDate = $("#sampleCollectionDate").val();
-        var provinceCode = $("#province").find(":selected").attr("data-code");
-
-        if (pName != '' && sDate != '') {
-            $.post("/covid-19/requests/generateSampleCode.php", {
-                    sampleCollectionDate: sDate,
-                    provinceCode: provinceCode
-                },
-                function(data) {
-                    var sCodeKey = JSON.parse(data);
-                    $("#sampleCode").val(sCodeKey.sampleCode);
-                    $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-                    $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                    $("#sampleCodeKey").val(sCodeKey.sampleCodeKey);
-                });
-        }
     }
 
     function getfacilityDistrictwise(obj) {

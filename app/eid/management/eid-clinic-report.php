@@ -177,7 +177,7 @@ foreach ($rejectionTypeResult as $type) {
 												<thead>
 													<tr>
 														<th><?php echo _translate("Sample ID"); ?></th>
-														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+														<?php if (!$general->isStandaloneInstance()) { ?>
 															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th><?php echo _translate("Facility Name"); ?></th>
@@ -285,7 +285,7 @@ foreach ($rejectionTypeResult as $type) {
 												<thead>
 													<tr>
 														<th><?php echo _translate("Sample ID"); ?></th>
-														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+														<?php if (!$general->isStandaloneInstance()) { ?>
 															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th><?php echo _translate("Facility Name"); ?></th>
@@ -382,7 +382,7 @@ foreach ($rejectionTypeResult as $type) {
 												<thead>
 													<tr>
 														<th><?php echo _translate("Sample ID"); ?></th>
-														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+														<?php if (!$general->isStandaloneInstance()) { ?>
 															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th><?php echo _translate("Facility Name"); ?></th>
@@ -437,7 +437,7 @@ foreach ($rejectionTypeResult as $type) {
 												<thead>
 													<tr>
 														<th><?php echo _translate("Sample ID"); ?></th>
-														<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+														<?php if (!$general->isStandaloneInstance()) { ?>
 															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th><?php echo _translate("Sample Collection Date"); ?></th>
@@ -591,7 +591,7 @@ foreach ($rejectionTypeResult as $type) {
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -623,7 +623,7 @@ foreach ($rejectionTypeResult as $type) {
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 6 : 5; ?>, "desc"]
+				[<?= (!$general->isStandaloneInstance()) ? 6 : 5; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -688,7 +688,7 @@ foreach ($rejectionTypeResult as $type) {
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -714,7 +714,7 @@ foreach ($rejectionTypeResult as $type) {
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 6 : 5; ?>, "desc"]
+				[<?= (!$general->isStandaloneInstance()) ? 6 : 5; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -779,7 +779,7 @@ foreach ($rejectionTypeResult as $type) {
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -802,7 +802,7 @@ foreach ($rejectionTypeResult as $type) {
 				}
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 5 : 4; ?>, "desc"]
+				[<?= (!$general->isStandaloneInstance()) ? 5 : 4; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -863,7 +863,7 @@ foreach ($rejectionTypeResult as $type) {
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -895,7 +895,7 @@ foreach ($rejectionTypeResult as $type) {
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instance']['type'] != 'standalone') ? 2 : 1; ?>, "desc"]
+				[<?= (!$general->isStandaloneInstance()) ? 2 : 1; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

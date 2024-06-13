@@ -21,7 +21,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 try {
 
-    if ($_SESSION['instance']['type'] != 'remoteuser') {
+    if (!$general->isSTSInstance()) {
         $whereCondition = " AND result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . " ";
     } else {
         $whereCondition = "";

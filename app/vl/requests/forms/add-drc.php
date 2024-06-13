@@ -429,7 +429,7 @@ $sFormat = '';
 								</table>
 							</div>
 						</div>
-						<?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
+						<?php if (!$general->isSTSInstance()) { ?>
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
@@ -658,19 +658,24 @@ $sFormat = '';
 		$.unblockUI();
 	}
 
+	let debounceTimeout;
+
 	function generateSampleCode() {
-		if ($("#sampleCollectionDate").val() != '') {
-			$.post("/vl/requests/generateSampleCode.php", {
-					sampleCollectionDate: $("#sampleCollectionDate").val()
-				},
-				function(data) {
-					var sCodeKey = JSON.parse(data);
-					$("#sampleCode").val(sCodeKey.sampleCode);
-					$("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-					$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-					$("#sampleCodeKey").val(sCodeKey.maxId);
-				});
-		}
+		clearTimeout(debounceTimeout);
+		debounceTimeout = setTimeout(() => {
+			if ($("#sampleCollectionDate").val() != '') {
+				$.post("/vl/requests/generateSampleCode.php", {
+						sampleCollectionDate: $("#sampleCollectionDate").val()
+					},
+					function(data) {
+						let sCodeKey = JSON.parse(data);
+						$("#sampleCode").val(sCodeKey.sampleCode);
+						$("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
+						$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
+						$("#sampleCodeKey").val(sCodeKey.maxId);
+					});
+			}
+		}, 300);
 	}
 
 	function getfacilityDistrictwise(obj) {

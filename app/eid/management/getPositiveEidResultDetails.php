@@ -217,7 +217,7 @@ try {
         $childName = $general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]);
         $row = [];
         $row[] = $aRow['sample_code'];
-        if ($sarr['sc_user_type'] != 'standalone') {
+        if (!$general->isStandaloneInstance()) {
             $row[] = $aRow['remote_sample_code'];
         }
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

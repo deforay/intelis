@@ -382,90 +382,6 @@ final class VlService extends AbstractTestService
         ];
     }
 
-
-
-
-    // public function interpretViralLoadNumericResult(string $result, ?string $unit = null): ?array
-    // {
-    //     $result = trim($result);
-    //     // If result is blank, then return null
-    //     if (empty($result)) {
-    //         return null;
-    //     }
-
-    //     // If result is NOT numeric, then process it as a text result
-    //     if ($this->checkViralLoadValueType($result) == 'text') {
-    //         return $this->interpretViralLoadTextResult($result, $unit);
-    //     }
-
-    //     $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
-    //     $originalResultValue = $result;
-
-
-    //     $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
-
-    //     $interpretAndConvertResult = !empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes';
-
-    //     if (!empty($unit) && str_contains($unit, 'Log') && is_numeric($result)) {
-    //         $logVal = (float) $result;
-    //         $originalResultValue =
-    //             $vlResult = $absVal =
-    //             $absDecimalVal = round(pow(10, $logVal), 2);
-    //     } elseif (!empty($unit) && str_contains($unit, '10')) {
-    //         $unitArray = explode(".", $unit);
-    //         $exponentArray = explode("*", $unitArray[0]);
-    //         $multiplier = pow((float) $exponentArray[0], (float) $exponentArray[1]);
-    //         $vlResult = $result * $multiplier;
-    //         $unit = $unitArray[1];
-    //     } elseif (str_contains($result, 'E+') || str_contains($result, 'E-')) {
-    //         if (str_contains($result, '< 2.00E+1')) {
-    //             $vlResult = "< 20";
-    //             $absVal = $absDecimalVal = 20;
-    //         } else {
-    //             // incase there are some brackets in the result
-    //             $resultArray = explode("(", $result);
-
-    //             $absVal = ($resultArray[0]);
-    //             $vlResult = $absDecimalVal = (float) $resultArray[0];
-    //             $logVal = round(log10($absDecimalVal), 2);
-    //         }
-    //     } else {
-    //         $vlResult = $absVal = $absDecimalVal = floatval($result);
-    //         $logVal = round(log10($absDecimalVal), 2);
-    //         $txtVal = null;
-    //     }
-
-    //     if ($interpretAndConvertResult) {
-    //         $originalResultValue = $vlResult;
-    //     }
-
-
-    //     return [
-    //         'logVal' => $logVal,
-    //         'result' => $originalResultValue,
-    //         'absDecimalVal' => $absDecimalVal,
-    //         'absVal' => $absVal,
-    //         'txtVal' => $txtVal,
-    //         'resultStatus' => $resultStatus
-    //     ];
-    // }
-
-
-    // public function getLowVLResultTextFromImportConfigs($machineFile = null)
-    // {
-    //     if ($this->db == null) {
-    //         return false;
-    //     }
-
-    //     if (!empty($machineFile)) {
-    //         $this->db->where('import_machine_file_name', $machineFile);
-    //     }
-
-    //     $this->db->where("low_vl_result_text", null, 'IS NOT');
-    //     $this->db->where("status", 'active', 'like');
-    //     return $this->db->getValue('instruments', 'low_vl_result_text', null);
-    // }
-
     public function insertSample($params, $returnSampleData = false): int | array
     {
         try {
@@ -505,9 +421,8 @@ final class VlService extends AbstractTestService
 
             $rowData = [];
             if (!empty($sampleData['sampleCode'])) {
-                $sQuery = "SELECT {$this->primaryKey} FROM {$this->table} ";
-                $sQuery .= " WHERE $sampleCodeColumn like '{$sampleData['sampleCode']}'";
-                $rowData = $this->db->rawQueryOne($sQuery);
+                $sQuery = "SELECT {$this->primaryKey} FROM {$this->table} WHERE $sampleCodeColumn = ?";
+                $rowData = $this->db->rawQueryOne($sQuery, [$sampleData['sampleCode']]);
             }
 
             $id = 0;
@@ -517,7 +432,7 @@ final class VlService extends AbstractTestService
                     'vlsm_country_id' => $formId,
                     'sample_reordered' => $params['sampleReordered'] ?? 'no',
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
-                    'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
+                    'facility_id' => $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,
                     'patient_art_no' => $params['artNo'] ?? null,
                     'specimen_type' => $params['specimenType'] ?? null,
@@ -556,6 +471,11 @@ final class VlService extends AbstractTestService
                     $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                 }
 
+                $formAttributes = [
+                    'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address' => $this->commonService->getClientIpAddress()
+                ];
+
                 if (isset($params['freezer']) && $params['freezer'] != "" && $params['freezer'] != null) {
 
                     $countChar = substr_count($params['freezer'], "-");
@@ -576,15 +496,13 @@ final class VlService extends AbstractTestService
                         $this->db->insert('lab_storage', $d);
                     }
 
-                    $formAttributes = [
-                        'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
-                        'ip_address' => $this->commonService->getClientIpAddress(),
-                        'storage' => array("storageId" => $storageId, "storageCode" => $freezerCode, "rack" => $params['rack'], "box" => $params['box'], "position" => $params['position'], "volume" => $params['volume']),
-                    ];
-                } else {
-                    $formAttributes = [
-                        'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
-                        'ip_address' => $this->commonService->getClientIpAddress()
+                    $formAttributes['storage'] = [
+                        "storageId" => $storageId,
+                        "storageCode" => $freezerCode,
+                        "rack" => $params['rack'],
+                        "box" => $params['box'],
+                        "position" => $params['position'],
+                        "volume" => $params['volume']
                     ];
                 }
                 $formAttributes = $this->commonService->jsonToSetString(json_encode($formAttributes), 'form_attributes');
@@ -596,6 +514,8 @@ final class VlService extends AbstractTestService
                 if ($this->db->getLastErrno() > 0) {
                     throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
                 }
+                // Commit the transaction after the successful insert
+                $this->db->commitTransaction();
             } else {
 
                 LoggerUtility::log('info', 'Sample ID exists already. Trying to regenerate Sample ID', [

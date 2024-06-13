@@ -406,7 +406,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
                             </div>
                         </div>
-                        <?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
+                        <?php if (!$general->isSTSInstance()) { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

@@ -433,7 +433,7 @@ foreach ($srcResults as $list) {
 									<th>
 										<?php echo _translate("Sample ID"); ?>
 									</th>
-									<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+									<?php if (!$general->isStandaloneInstance()) { ?>
 										<th>
 											<?php echo _translate("Remote Sample ID"); ?>
 										</th>
@@ -472,9 +472,9 @@ foreach ($srcResults as $list) {
 										<?php echo _translate("Result"); ?>
 									</th>
 									<?php if ($formId == COUNTRY\CAMEROON) { ?>
-									<th>
-										<?php echo _translate("Lab Assigned Code"); ?>
-									</th>
+										<th>
+											<?php echo _translate("Lab Assigned Code"); ?>
+										</th>
 									<?php } ?>
 									<th>
 										<?php echo _translate("Last Modified On"); ?>
@@ -674,7 +674,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
@@ -699,18 +699,17 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					"sClass": "center"
 				}, {
 					"sClass": "center"
-				}, 
+				},
 				<?php
 				if ($formId == COUNTRY\CAMEROON) {
 					echo '{
 						"sClass": "center",
 					},';
 				}
-				?>
-				{
+				?> {
 					"sClass": "center"
 				},
-				 {
+				{
 					"sClass": "center"
 				},
 				<?php if ((_isAllowed("/eid/requests/eid-edit-request.php")) && !$hidesrcofreq) { ?> {

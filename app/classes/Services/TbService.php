@@ -208,7 +208,7 @@ final class TbService extends AbstractTestService
                     'sample_reordered' => $params['sampleReordered'] ?? 'no',
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                     'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
-                    'facility_id' => $params['facilityId'] ?? $params['facilityId'] ?? null,
+                    'facility_id' => $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,
                     'app_sample_code' => $params['appSampleCode'] ?? null,
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
@@ -249,8 +249,9 @@ final class TbService extends AbstractTestService
                 if ($this->db->getLastErrno() > 0) {
                     throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
                 }
+                // Commit the transaction after the successful insert
+                $this->db->commitTransaction();
             } else {
-
                 LoggerUtility::log('info', 'Sample ID exists already. Trying to regenerate Sample ID', [
                     'file' => __FILE__,
                     'line' => __LINE__,

@@ -500,7 +500,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
                             </div>
                         </div>
-                        <?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
+                        <?php if (!$general->isSTSInstance()) { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -799,7 +799,6 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                     }
                 });
             //}
-            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -809,28 +808,6 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
             $("#district").html("<option value=''> -- Select -- </option>");
         }
         $.unblockUI();
-    }
-
-    function generateSampleCode() {
-        var pName = $("#province").val();
-        var sDate = $("#sampleCollectionDate").val();
-        if (pName != '' && sDate != '') {
-            $.post("/eid/requests/generateSampleCode.php", {
-                    sampleCollectionDate: sDate,
-                    pName: pName,
-                    autoTyp: 'auto2',
-                    provinceCode: $("#province").find(":selected").attr("data-code"),
-                    'sampleFrom': 'png'
-                },
-                function(data) {
-                    var sCodeKey = JSON.parse(data);
-                    $("#sampleCode").val(sCodeKey.sampleCode);
-                    $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-                    $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                    $("#sampleCodeKey").val(sCodeKey.sampleCodeKey);
-                    $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-                });
-        }
     }
 
     function getfacilityDistrictwise(obj) {

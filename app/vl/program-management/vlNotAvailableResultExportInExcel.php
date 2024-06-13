@@ -64,7 +64,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
             $patientLname = '';
         }
         $row[] = $aRow['sample_code'];
-        if ($_SESSION['instance']['type'] != 'standalone') {
+        if (!$general->isStandaloneInstance()) {
             $row[] = $aRow['remote_sample_code'];
         }
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
@@ -119,7 +119,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
         $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
         $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
-        if ($_SESSION['instance']['type'] != 'standalone') {
+        if (!$general->isStandaloneInstance()) {
             $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
         }
 

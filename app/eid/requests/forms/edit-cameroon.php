@@ -212,7 +212,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
 
                                     </tr>
                                     <tr>
-                                    <th scope="row"><label for="childGender"><?= _translate('Gender'); ?> <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="childGender"><?= _translate('Gender'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="childGender" id="childGender">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
@@ -223,11 +223,11 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate('Universal Health Coverage'); ?></th>
-                                        <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" value="<?= $eidInfo['health_insurance_code']; ?>" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32"/></td>
+                                        <td><input type="text" name="healthInsuranceCode" id="healthInsuranceCode" class="form-control" value="<?= $eidInfo['health_insurance_code']; ?>" placeholder="<?= _translate('Enter Universal Health Coverage'); ?>" title="<?= _translate('Enter Universal Health Coverage'); ?>" maxlength="32" /></td>
 
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _translate('Weight of the day'); ?></th>
+                                        <th scope="row"><?= _translate('Weight of the day'); ?></th>
                                         <td><input type="text" class="form-control forceNumeric" id="childWeight" name="childWeight" placeholder="<?= _translate('Infant weight of the day in Kg'); ?>" title="<?= _translate('Infant weight of the day'); ?>" style="width:100%;" value="<?= $eidInfo['child_weight']; ?>" /></td>
 
                                         <th scope="row"><?= _translate('Caretaker phone number'); ?></th>
@@ -236,7 +236,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
 
                                     </tr>
                                     <tr>
-                                         <th scope="row"><?= _translate('Infant caretaker address'); ?></th>
+                                        <th scope="row"><?= _translate('Infant caretaker address'); ?></th>
                                         <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _translate('Caretaker Address'); ?>" title="<?= _translate('Caretaker Address'); ?>" style="width:100%;" onchange=""><?= htmlspecialchars((string) $eidInfo['caretaker_address']); ?></textarea></td>
 
                                         <th scope="row"><?= _translate('Prophylactic ARV given to child'); ?><span class="mandatory">*</span></th>
@@ -252,7 +252,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         </td>
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _translate('Date of Initiation'); ?></th>
+                                        <th scope="row"><?= _translate('Date of Initiation'); ?></th>
                                         <td>
                                             <input type="text" class="form-control date" name="childTreatmentInitiationDate" id="childTreatmentInitiationDate" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_treatment_initiation_date']); ?>" placeholder="<?= _translate('Enter date of initiation'); ?>" />
                                         </td>
@@ -477,14 +477,14 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                             <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _translate('Please specify other point of entry') ?>" placeholder="<?= _translate('Please specify other point of entry') ?>" style="display:<?php echo ($eidInfo['lab_testing_point'] == 'other') ? 'none' : '' ?>;" value="<?php echo ($eidInfo['lab_testing_point_other']); ?>" />
                                         </td>
                                     </tr>
-                                    <?php if($general->isLISInstance()){ ?>
+                                    <?php if ($general->isLISInstance()) { ?>
 
-                                    <tr>
-                                        <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
+                                        <tr>
+                                            <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
                                             <td>
                                                 <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" />
                                             </td>
-                                    </tr>
+                                        </tr>
                                     <?php } ?>
                                 </table>
 
@@ -498,7 +498,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                     <tr>
                                         <th scope="row" style="width:15% !important"><?= _translate('Sample Collection Date'); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" value="<?php echo $eidInfo['sample_collection_date']; ?>" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" value="<?php echo $eidInfo['sample_collection_date']; ?>" />
                                         </td>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
@@ -542,7 +542,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                           
+
                                             <th><?= _translate('Testing Platform'); ?> </th>
                                             <td>
                                                 <select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">

@@ -8,8 +8,6 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 
-
-
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
      $sampleClass = '';
      $maxLength = '';
@@ -354,7 +352,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="">Date of Sample Collection <span class="mandatory">*</span></label>
-                                                       <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $cd4QueryInfo['sample_collection_date']; ?>" onchange="generateSampleCode()">
+                                                       <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $cd4QueryInfo['sample_collection_date']; ?>">
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -983,8 +981,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               $(".facilityContactPerson").html('');
                          }
                     });
-               //}
-               generateSampleCode();
           } else if (pName == '') {
                provinceName = true;
                facilityName = true;
@@ -996,27 +992,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $.unblockUI();
      }
 
-     function generateSampleCode() {
-          var pName = $("#province").val();
-          var sDate = $("#sampleCollectionDate").val();
-          var provinceCode = $("#province").find(":selected").attr("data-code");
 
-          $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-          if (pName != '' && sDate != '') {
-               $.post("/cd4/requests/generateSampleCode.php", {
-                         sampleCollectionDate: sDate,
-                         provinceCode: provinceCode
-                    },
-                    function(data) {
-                         var sCodeKey = JSON.parse(data);
-                         $("#sampleCode").val(sCodeKey.sampleCode);
-                         $("#sampleCodeInText").html(sCodeKey.sampleCode);
-                         $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                         $("#sampleCodeKey").val(sCodeKey.maxId);
-                         checkSampleNameValidation('form_cd4', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
-                    });
-          }
-     }
 
      function getFacilities(obj) {
           $.blockUI();

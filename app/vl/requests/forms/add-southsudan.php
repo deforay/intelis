@@ -143,7 +143,7 @@ $sFormat = '';
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
                                                        <label for="facilityId">Clinic/Health Center <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired select2" id="facilityId" name="facilityId" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();generateSampleCode();">
+                                                       <select class="form-control isRequired select2" id="facilityId" name="facilityId" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();">
                                                             <?php echo $facility; ?>
                                                        </select>
                                                   </div>
@@ -1073,7 +1073,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               }
                          });
                }
-               generateSampleCode();
+
           } else if (pName == '' && cName == '') {
                provinceName = true;
                facilityName = true;
@@ -1083,19 +1083,24 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $.unblockUI();
      }
 
+     let debounceTimeout;
+
      function generateSampleCode() {
-          if ($("#sampleCollectionDate").val() != '') {
-               $.post("/vl/requests/generateSampleCode.php", {
-                         sampleCollectionDate: $("#sampleCollectionDate").val()
-                    },
-                    function(data) {
-                         var sCodeKey = JSON.parse(data);
-                         $("#sampleCode").val(sCodeKey.sampleCode);
-                         $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-                         $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                         $("#sampleCodeKey").val(sCodeKey.maxId);
-                    });
-          }
+          clearTimeout(debounceTimeout);
+          debounceTimeout = setTimeout(() => {
+               if ($("#sampleCollectionDate").val() != '') {
+                    $.post("/vl/requests/generateSampleCode.php", {
+                              sampleCollectionDate: $("#sampleCollectionDate").val()
+                         },
+                         function(data) {
+                              let sCodeKey = JSON.parse(data);
+                              $("#sampleCode").val(sCodeKey.sampleCode);
+                              $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
+                              $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
+                              $("#sampleCodeKey").val(sCodeKey.maxId);
+                         });
+               }
+          }, 300);
      }
 
      function getFacilities(obj) {

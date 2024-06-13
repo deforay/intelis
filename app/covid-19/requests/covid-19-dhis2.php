@@ -53,7 +53,7 @@ $batResult = $db->rawQuery($batQuery);
 
 								<?php
 								if (_isAllowed("/covid-19/requests/covid-19-add-request.php")) { ?>
-									<?php if ($_SESSION['instance']['type'] != 'remoteuser') { ?>
+									<?php if (!$general->isSTSInstance()) { ?>
 										<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();" class="btn btn-success btn-sm pull-right"> <em class="fa-solid fa-download"></em>
 											Receive Test Requests from DHIS2</a>
 										<a style=" margin: 0px 5px; " href="javascript:sendDhis2Data();" class="btn btn-warning btn-sm pull-right"> <em class="fa-solid fa-upload"></em> Send
@@ -72,7 +72,7 @@ $batResult = $db->rawQuery($batQuery);
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
 									<th>Sample ID</th>
-									<?php if ($_SESSION['instance']['type'] != 'standalone') { ?>
+									<?php if (!$general->isStandaloneInstance()) { ?>
 										<th>Remote Sample <br />Code</th>
 									<?php } ?>
 									<th>Sample Collection<br /> Date</th>
@@ -326,7 +326,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($_SESSION['instance']['type'] != 'standalone') { ?> {
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
