@@ -290,18 +290,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 
 
 		loadStorageData();
-		var i = '<?php echo $i; ?>';
 		$(".printedData").click(function() {
 			loadStorageHistoryData();
 
-			for (colNo = 0; colNo <= i; colNo++) {
-				$("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
-				if (opTable.fnSettings().aoColumns[colNo].bVisible) {
-					$("#printiCol" + colNo + "-sort").show();
-				} else {
-					$("#printiCol" + colNo + "-sort").hide();
-				}
-			}
 		});
 	});
 
