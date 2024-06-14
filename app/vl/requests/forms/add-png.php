@@ -80,7 +80,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<label for="province">Province <span class="mandatory">*</span></label>
 										</td>
 										<td style="width:20%">
-											<select class="form-control isRequired" name="province" id="province" title="Please choose province" style="width:100%;" onchange="getfacilityDetails(this);generateSampleCode();">
+											<select class="form-control isRequired" name="province" id="province" title="Please choose province" style="width:100%;" onchange="getfacilityDetails(this);generateSampleCode(true);">
 												<?php echo $province; ?>
 											</select>
 										</td>
@@ -343,7 +343,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</td>
 										<td>
 											<label class="radio-inline">
-												<input type="text" class="form-control isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please enter the sample collection date" onchange="generateSampleCode();" style="width:100%;">
+												<input type="text" class="form-control isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please enter the sample collection date" onchange="generateSampleCode(true);" style="width:100%;">
 											</label>
 										</td>
 										<td colspan="4" class="typeOfSample">
@@ -913,32 +913,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 					duplicateName = false;
 				}
 			});
-	}
-
-	let debounceTimeout;
-
-	function generateSampleCode() {
-		clearTimeout(debounceTimeout);
-		debounceTimeout = setTimeout(() => {
-			let pName = $("#province").val();
-			let sDate = $("#sampleCollectionDate").val();
-			if (pName != '' && sDate != '') {
-				// $.blockUI();
-				let provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
-				$.post("/vl/requests/generateSampleCode.php", {
-						sampleCollectionDate: sDate,
-						provinceCode: provinceCode,
-						'provinceId': $("#province").find(":selected").attr("data-province-id")
-					},
-					function(data) {
-						let sCodeKey = JSON.parse(data);
-						$("#sampleCode").val(sCodeKey.sampleCode);
-						$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-						$("#sampleCodeKey").val(sCodeKey.maxId);
-						$("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-					});
-			}
-		}, 300);
 	}
 
 

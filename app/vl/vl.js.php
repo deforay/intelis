@@ -1,4 +1,42 @@
 <script type="text/javascript">
+    let generateSampleCodeRequest = null;
+    let lastSampleCollectionDate = '';
+    let lastProvinceCode = '';
+
+    function generateSampleCode(checkProvince = false) {
+        let sampleCollectionDate = $("#sampleCollectionDate").val();
+        let provinceElement = $("#province").find(":selected");
+        let provinceCode = (provinceElement.attr("data-code") == null || provinceElement.attr("data-code") == '') ?
+            provinceElement.attr("data-name") :
+            provinceElement.attr("data-code");
+        let provinceId = provinceElement.attr("data-province-id");
+
+        if (sampleCollectionDate !== '' && (sampleCollectionDate !== lastSampleCollectionDate || (checkProvince && provinceCode !== lastProvinceCode))) {
+            lastSampleCollectionDate = sampleCollectionDate; // Update the last sample collection date
+            lastProvinceCode = provinceCode; // Update the last province code
+
+            if (generateSampleCodeRequest) {
+                generateSampleCodeRequest.abort();
+            }
+
+            generateSampleCodeRequest = $.post("/vl/requests/generateSampleCode.php", {
+                    sampleCollectionDate: sampleCollectionDate,
+                    provinceCode: provinceCode,
+                    provinceId: provinceId
+                },
+                function(data) {
+                    let sCodeKey = JSON.parse(data);
+                    $("#sampleCode").val(sCodeKey.sampleCode);
+                    $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
+                    $("#sampleCodeKey").val(sCodeKey.maxId);
+                    $("#provinceId").val(provinceId);
+                }).always(function() {
+                generateSampleCodeRequest = null; // Reset the request object after completion
+            });
+        }
+    }
+
+
     function changeFormat(date) {
         splitDate = date.split("-");
         var fDate = new Date(splitDate[1] + splitDate[2] + ", " + splitDate[0]);

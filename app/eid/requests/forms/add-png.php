@@ -759,34 +759,35 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $.unblockUI();
     }
 
-    let debounceTimeout;
+    let generateSampleCodeRequest;
 
     function generateSampleCode() {
-        clearTimeout(debounceTimeout);
-        debounceTimeout = setTimeout(() => {
+        let pName = $("#province").val();
+        let sDate = $("#sampleCollectionDate").val();
+        let provinceCode = $("#province").find(":selected").attr("data-code");
 
-            let pName = $("#province").val();
-            let sDate = $("#sampleCollectionDate").val();
-            let provinceCode = $("#province").find(":selected").attr("data-code");
-
-            if (pName != '' && sDate != '') {
-                $.blockUI();
-                provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
-                $.post("/eid/requests/generateSampleCode.php", {
-                        sampleCollectionDate: sDate,
-                        provinceCode: provinceCode,
-                        'provinceId': $("#province").find(":selected").attr("data-province-id")
-                    },
-                    function(data) {
-                        let sCodeKey = JSON.parse(data);
-                        $("#sampleCode").val(sCodeKey.sampleCode);
-                        $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                        $("#sampleCodeKey").val(sCodeKey.maxId);
-                        $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-                        $.unblockUI();
-                    });
+        if (pName != '' && sDate != '') {
+            if (generateSampleCodeRequest) {
+                generateSampleCodeRequest.abort();
             }
-        }, 300);
+            $.blockUI();
+            provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
+            generateSampleCodeRequest = $.post("/eid/requests/generateSampleCode.php", {
+                    sampleCollectionDate: sDate,
+                    provinceCode: provinceCode,
+                    provinceId: $("#province").find(":selected").attr("data-province-id")
+                },
+                function(data) {
+                    let sCodeKey = JSON.parse(data);
+                    $("#sampleCode").val(sCodeKey.sampleCode);
+                    $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
+                    $("#sampleCodeKey").val(sCodeKey.maxId);
+                    $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+                    $.unblockUI();
+                }).always(function() {
+                generateSampleCodeRequest = null; // Reset the request object after completion
+            });
+        }
     }
 
     function getfacilityDistrictwise(obj) {

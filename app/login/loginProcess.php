@@ -1,7 +1,6 @@
 <?php
 
 use App\Services\UsersService;
-use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -95,7 +94,7 @@ try {
             $_SESSION['instance']['facilityName'] = null;
         }
 
-
+        $_SESSION['formId'] = (int) $general->getGlobalConfig('vl_form');
         $_SESSION['userId'] = $userRow['user_id'];
         $_SESSION['loginId'] = $userRow['login_id'];
         $_SESSION['userName'] = ($userRow['user_name']);

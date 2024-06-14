@@ -1049,21 +1049,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $.unblockUI();
      }
 
-     function generateSampleCode() {
-          if ($("#sampleCollectionDate").val() != '') {
-               $.post("/vl/requests/generateSampleCode.php", {
-                         sampleCollectionDate: $("#sampleCollectionDate").val()
-                    },
-                    function(data) {
-                         var sCodeKey = JSON.parse(data);
-                         $("#sampleCode").val(sCodeKey.sampleCode);
-                         $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-                         $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                         $("#sampleCodeKey").val(sCodeKey.maxId);
-                    });
-          }
-     }
-
      function getFacilities(obj) {
           $.blockUI();
           var dName = $("#district").val();
