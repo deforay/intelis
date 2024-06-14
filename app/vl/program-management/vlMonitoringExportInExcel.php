@@ -66,7 +66,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
         WHERE IFNULL(reason_for_vl_testing, 0)  != 9999";
 
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-    [$sTestDate, $sTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+    [$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
     $sWhere = [];
     if (!empty($_POST['sampleCollectionDate'])) {
