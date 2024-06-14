@@ -678,8 +678,8 @@ sort($fileList);
 					function(data) {
 						if (data === 'not exists') {
 							
-								$("#configurationFile").append('<option value="">' + configFileName + '</option>');
-								$(".instrumentFile").append('<option value="">' + configFileName + '</option>');
+								$("#configurationFile").append('<option value='+configFileName+'>' + configFileName + '</option>');
+								$(".instrumentFile").append('<option value='+configFileName+'>' + configFileName + '</option>');
 								$('.select2').select2({ width: '100%'});
 						}
 					});
@@ -743,7 +743,7 @@ sort($fileList);
 					function(data) {
 						
 						if (data === 'not exists') {
-							$(this).closest('.instrumentFile').append('<option value="">' + configFileName + '</option>');
+							$(this).closest('.instrumentFile').append('<option value='+configFileName+'>' + configFileName + '</option>');
 							$('.instrumentFile').select2({ width: '100%'});
 						}
 						

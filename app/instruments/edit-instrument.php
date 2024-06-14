@@ -763,8 +763,8 @@ $testTypeList = SystemService::getActiveModules(true);
 					},
 					function(data) {
 						if (data === 'not exists') {
-								$("#configurationFile").append('<option value="">' + configFileName + '</option>');
-								$(".instrumentFile").append('<option value="">' + configFileName + '</option>');
+								$("#configurationFile").append('<option value='+configFileName+'>' + configFileName + '</option>');
+								$(".instrumentFile").append('<option value='+configFileName+'>' + configFileName + '</option>');
 								$('.select2').select2({ width: '100%'});
 						}
 					});
