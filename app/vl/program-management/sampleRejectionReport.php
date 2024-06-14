@@ -1,20 +1,26 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\FacilitiesService;
 
 $title = _translate("Sample Rejection Report");
 
 
 require_once APPLICATION_PATH . '/header.php';
+
+use App\Registries\ContainerRegistry;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 // $tsQuery = "SELECT * FROM r_sample_status";
 // $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);
-
-
-
-
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);

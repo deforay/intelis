@@ -2,6 +2,17 @@
 $title = _translate("VL Control Report");
 
 require_once APPLICATION_PATH . '/header.php';
+
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 $sQuery = "SELECT * FROM r_sample_controls where r_sample_control_name!='s'";
 $sResult = $db->rawQuery($sQuery);
 ?>
