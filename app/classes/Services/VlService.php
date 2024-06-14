@@ -471,43 +471,6 @@ final class VlService extends AbstractTestService
                     $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                 }
 
-                $formAttributes = [
-                    'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
-                    'ip_address' => $this->commonService->getClientIpAddress()
-                ];
-
-                if (isset($params['freezer']) && $params['freezer'] != "" && $params['freezer'] != null) {
-
-                    $countChar = substr_count($params['freezer'], "-");
-
-                    if (isset($countChar) && $countChar > 2) {
-                        $storageId = $params['freezer'];
-                        $getStorage = $this->commonService->getDataFromOneFieldAndValue('lab_storage', 'storage_code', $params['freezer']);
-                        $freezerCode = $getStorage['storage_code'];
-                    } else {
-                        $storageId = $this->commonService->generateUUID();
-                        $freezerCode = $params['freezer'];
-                        $d = [
-                            'storage_id' => $storageId,
-                            'storage_code' => $freezerCode,
-                            'lab_id' => $params['labId'],
-                            'storage_status' => 'active'
-                        ];
-                        $this->db->insert('lab_storage', $d);
-                    }
-
-                    $formAttributes['storage'] = [
-                        "storageId" => $storageId,
-                        "storageCode" => $freezerCode,
-                        "rack" => $params['rack'],
-                        "box" => $params['box'],
-                        "position" => $params['position'],
-                        "volume" => $params['volume']
-                    ];
-                }
-                $formAttributes = $this->commonService->jsonToSetString(json_encode($formAttributes), 'form_attributes');
-                $tesRequestData['form_attributes'] = $this->db->func($formAttributes);
-
                 $this->db->insert("form_vl", $tesRequestData);
 
                 $id = $this->db->getInsertId();
