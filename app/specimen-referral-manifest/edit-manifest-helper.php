@@ -52,7 +52,7 @@ try {
 
         if ($lastId > 0) {
             for ($j = 0; $j < count($selectedSample); $j++) {
-                $value = array(
+                $dataToUpdate = array(
                     'sample_package_id'   => $lastId,
                     'sample_package_code' => $_POST['packageCode'],
                     'lab_id'    => $_POST['testingLab'],

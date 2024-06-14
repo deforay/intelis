@@ -151,8 +151,7 @@ if (trim($id) != '') {
         $pdf->setPageOrientation('L');
         // add a page
         $pdf->AddPage();
-        $tbl = '';
-        $tbl .= '<span style="font-size:1.7em;"> ' . $result[0]['manifest_code'] . ' <img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"> </span>';
+        $tbl = '<span style="font-size:1.7em;"> ' . $result[0]['manifest_code'] . ' <img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"> </span>';
         $tbl .= '<br>';
         $tbl .= '<table style="width:100%;border:1px solid #333;">
                     <tr nobr="true">

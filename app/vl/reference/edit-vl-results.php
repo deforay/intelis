@@ -113,7 +113,7 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
                                         <div class="col-md-5">
                                              <select name="instruments[]" id="search" class="form-control" size="8" multiple="multiple">
 											 	<?php foreach ($activeInstruments as $key=>$ins) {
-                                                       if (!empty($selectedInstruments) && (in_array($key, $selectedInstruments))==true) { 
+                                                       if (!empty($selectedInstruments) && (in_array($key, $selectedInstruments)) === true) {
                                                            echo "";
                                                     }
 												  else{

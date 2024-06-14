@@ -492,13 +492,11 @@ if (!empty($result)) {
      $bottomHtml .= '</tr>';
      $bottomHtml .= '</table>';
 
+     $bottomTextLocation = $facilityAttributes->bottom_text_location ?? 'belowPlatformName';
 
-     if($facilityAttributes->bottom_text_location=='belowPlatformName'){
-     // Use writeHTMLCell() to position the bottom HTML content
-          $html .= '<tr><td colspan="5">'.$bottomHtml.'</td></tr><tr><td colspan="5">&nbsp;</td></tr>';
-     }
-     else{
-          $html .= '';
+     if ($bottomTextLocation == 'belowPlatformName') {
+          // Use writeHTMLCell() to position the bottom HTML content
+          $html .= '<tr><td colspan="5">' . $bottomHtml . '</td></tr><tr><td colspan="5">&nbsp;</td></tr>';
      }
 
 
@@ -591,18 +589,17 @@ if (!empty($result)) {
      // $html .= '</tr>';
      // $html .= '</table>';
 
-   
+
      if ($result['result'] != '' || (empty($result['result']) && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
-          
+
           $pdf->writeHTML($html);
 
-          // Calculate where to start the bottom HTML
-          $margin_bottom = 10; // Adjust based on the height of your footer
-          $bottom_content_height = 50; // Adjust based on your content's estimated height
-          $start_y = $page_height - $bottom_content_height - $margin_bottom;
+          if ($bottomTextLocation == 'aboveFooter') {
 
-          if($facilityAttributes->bottom_text_location=='aboveFooter'){
-     
+               // Calculate where to start the bottom HTML
+               $margin_bottom = 10; // Adjust based on the height of your footer
+               $bottom_content_height = 50; // Adjust based on your content's estimated height
+               $start_y = $page_height - $bottom_content_height - $margin_bottom;
                $pdf->writeHTMLCell(0, 0, '', $start_y, $bottomHtml, 0, 1, 0, true, 'L', true);
           }
 

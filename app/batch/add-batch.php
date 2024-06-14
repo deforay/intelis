@@ -283,16 +283,16 @@ $fundingSourceList = $general->getFundingSources();
                     <td><label for="sortBy"><?= _translate("Sort By"); ?></label></td>
 
                     <td><select class="form-control" id="sortBy" name="sortBy">
-                            <option <?= $sortBy == 'requestCreated' ? "selected='selected'" : '' ?> value="requestCreated"><?= _translate("Request Created"); ?></option>
-                            <option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
-                            <option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample Code"); ?></option>
-                            <option <?= $sortBy == 'labAssignedCode' ? "selected='selected'" : '' ?> value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
+                            <option "selected='selected'" value="requestCreated"><?= _translate("Request Created"); ?></option>
+                            <option value="lastModified"><?= _translate("Last Modified"); ?></option>
+                            <option value="sampleCode"><?= _translate("Sample Code"); ?></option>
+                            <option value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
                         </select></td>
                     <td><label for="sortType"><?= _translate("Sort Type"); ?></label></td>
                     <td>
                         <select class="form-control" id="sortType">
-                            <option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc"><?= _translate("Ascending"); ?></option>
-                            <option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc"><?= _translate("Descending"); ?></option>
+                            <option "selected='selected'" value="asc"><?= _translate("Ascending"); ?></option>
+                            <option value="desc"><?= _translate("Descending"); ?></option>
                         </select>
                     </td>
                 </tr>

@@ -50,7 +50,6 @@ try {
             'role_id'               => $_POST['role'],
             'status'                => 'active',
             'app_access'            => $_POST['appAccessable'],
-            'user_signature'        => $imageName,
             'force_password_reset'  => 1
         );
 

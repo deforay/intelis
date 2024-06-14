@@ -69,5 +69,7 @@ if (!empty($facilityIdRequested)) {
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 } elseif (!empty($facilityTypeRequested)) {
 	$facilityOptions = $facilitiesService->getFacilitiesDropdown($testType, $facilityTypeRequested, null, $districtRequested, $option, $_POST['comingFromUser'] ?? null);
+    $testingLabsList = $facilitiesService->getTestingLabs($GLOBALS['testType']);
+    $testingLabsOptions = $general->generateSelectOptions($testingLabsList, null, '-- Select --');
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 }
