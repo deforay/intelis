@@ -100,6 +100,11 @@ $batchQuery = "SELECT * from batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
                     WHERE batch_id=?";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
+if(!empty($batchInfo[0]['batch_attributes'])){
+	$batchAttribute = json_decode($batchInfo[0]['batch_attributes']);
+	$sortBy = $batchAttribute->sort_by;
+	$sortType = $batchAttribute->sort_type;
+}
 $bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
                     vl.$refPrimaryColumn,vl.$patientIdColumn,vl.facility_id,
                     vl.$resultColumn,vl.result_status,vl.lab_assigned_code,
@@ -257,8 +262,10 @@ $fundingSourceList = $general->getFundingSources();
                     <td><label for="sortBy"><?= _translate("Sort By"); ?></label></td>
 
                     <td><select class="form-control" id="sortBy" name="sortBy" onchange="">
-                        <option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified">Order By Last Modified</option>
-                        <option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode">Order By Sample Code</option>
+							<option <?= $sortBy == 'requestCreated' ? "selected='selected'" : '' ?> value="requestCreated"><?= _translate("Request Created"); ?></option>
+                            <option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
+                            <option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample Code"); ?></option>
+                            <option <?= $sortBy == 'labAssignedCode' ? "selected='selected'" : '' ?> value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
                     </select></td>
                     <td><label for="sortType"><?= _translate("Sort Type"); ?></label></td>
 					<td>

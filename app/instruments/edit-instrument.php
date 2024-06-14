@@ -574,7 +574,7 @@ $testTypeList = SystemService::getActiveModules(true);
 												$style = "display:none";
 												$check = "";
 											}
-									?>
+										?>
 											<tr>
 												<td>
 													<input type="hidden" name="configMachineId[]" value="<?php echo $machine['config_machine_id']; ?>" />
@@ -630,7 +630,7 @@ $testTypeList = SystemService::getActiveModules(true);
 														<?php
 														foreach ($fileList as $fileName) {
 														?>
-															<option value="<?= $fileName; ?>" <?php if ($machine['file_name'] == $fileName) echo "selected='selected'"; ?>><?= $fileName; ?></option>
+															<option value="<?= $fileName; ?>"><?= $fileName; ?></option>
 														<?php
 														}
 														?>
@@ -757,7 +757,7 @@ $testTypeList = SystemService::getActiveModules(true);
 				configName = configName.replace(/ /g, '-');
 				configName = configName.replace(/\-$/, '');
 				var configFileName = configName.toLowerCase() + ".php";
-				var path = '<?php echo $log_directory . '/'; ?>' + configFileName;
+				var path = '<?php echo $directory . '/'; ?>' + configFileName;
 				$.post("/includes/checkFileExists.php", {
 						fileName: path,
 					},
@@ -821,7 +821,7 @@ $testTypeList = SystemService::getActiveModules(true);
 	<?php
 														foreach ($fileList as $fileName) {
 														?>
-															<option value="<?= $fileName; ?>" <?php if ($machine['file_name'] == $fileName) echo 'selected="selected"'; ?>><?= $fileName; ?></option>\
+															<option value="<?= $fileName; ?>"><?= $fileName; ?></option>\
 														<?php
 														}
 														?>
