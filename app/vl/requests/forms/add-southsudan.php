@@ -90,8 +90,18 @@ $sFormat = '';
                                         <div class="row">
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
-                                                       <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-                                                       <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter Sample ID" style="width:100%;" readonly onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
+                                                       <?php if ($general->isSTSInstance()) { ?>
+                                                            <td><label for="sampleCode">Sample ID </label></td>
+                                                            <td>
+                                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
+                                                                 <input type="hidden" id="sampleCode" name="sampleCode" />
+                                                            </td>
+                                                       <?php } else { ?>
+                                                            <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
+                                                            <td>
+                                                                 <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Sample ID" title="Please enter Sample ID" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'<?= _translate("The Sample ID that you entered already exists. Please try another Sample ID", true); ?>',null)" />
+                                                            </td>
+                                                       <?php } ?>
                                                   </div>
                                              </div>
                                              <div class="col-xs-4 col-md-4">

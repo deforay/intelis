@@ -26,6 +26,9 @@
                 },
                 function(data) {
                     let sCodeKey = JSON.parse(data);
+                    if ($('#sampleCodeInText').length > 0) {
+                        $("#sampleCodeInText").text(sCodeKey.sampleCode);
+                    }
                     $("#sampleCode").val(sCodeKey.sampleCode);
                     $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
                     $("#sampleCodeKey").val(sCodeKey.maxId);
