@@ -156,16 +156,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 				$row[] = "Yes";
 			else
 				$row[] = "No";
-			/*if ($formId == COUNTRY\DRC) {
-				$formAttributes = json_decode($aRow['form_attributes']);
-				$storageObj = $formAttributes->storage;
-
-				$row[] = $storageObj->freezerCode;
-				$row[] = $storageObj->rack;
-				$row[] = $storageObj->box;
-				$row[] = $storageObj->position;
-				$row[] = $storageObj->volume;
-			}*/
+			
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
 			$row[] = $sampleRejection;
@@ -240,6 +231,9 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = $aRow['rejection_reason'];
 			$row[] = $aRow['recommended_corrective_action_name'];
 			if ($formId == COUNTRY\DRC) {
+					$formAttributes = json_decode($aRow['form_attributes']);
+					$storageObj = json_decode($formAttributes->storage);
+
 				$row[] = $storageObj->freezerCode;
 				$row[] = $storageObj->rack;
 				$row[] = $storageObj->box;
