@@ -130,6 +130,8 @@ try {
 			'status' => 'active'
 		];
 
+		$db->insert('facility_details', $data);
+		$lastId = $db->getInsertId();
 
 		$facilityAttributes = [];
 		if (!empty($_POST['allowResultUpload'])) {
@@ -194,11 +196,8 @@ try {
 			$data['facility_logo'] = $imageName;
 		}
 
-
-		$db->insert('facility_details', $data);
-		$lastId = $db->getInsertId();
-
-
+		$db->where('facility_id', $lastId);
+		$db->update('facility_details', $data);
 
 		if ($lastId > 0 && !empty($_POST['testType'])) {
 			foreach ($_POST['testType'] as $testType) {
@@ -220,7 +219,7 @@ try {
 						$attributes['platforms'] = $_POST['availablePlatforms'];
 					}
 					if (!empty($attributes)) {
-						$data['attributes'] = json_encode($attributes, true);
+						$testTypeData['attributes'] = json_encode($attributes, true);
 					}
 					$db->insert($testingLabsTable, $testTypeData);
 				}
@@ -240,13 +239,13 @@ try {
 		if ($lastId > 0 && !empty($_POST['testData'])) {
 			// Mapping facility as a Testing Lab
 			for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
-				$dataTest = array(
+				$dataTest = [
 					'test_type' => $_POST['testData'][$tf],
 					'facility_id' => $lastId,
 					'monthly_target' => $_POST['monTar'][$tf],
 					'suppressed_monthly_target' => $_POST['supMonTar'][$tf],
 					"updated_datetime" => DateUtility::getCurrentDateTime()
-				);
+				];
 				$db->insert($testingLabsTable, $dataTest);
 			}
 		}

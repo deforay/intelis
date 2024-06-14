@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\CommonService;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -9,6 +10,9 @@ use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */

@@ -171,7 +171,7 @@ try {
             $db->delete("generic_test_results");
             foreach ($testResults as $testId => $test) {
                 $db->insert("generic_test_results", [
-                    "generic_id" => $sampleId,
+                    "generic_id" => $genId,
                     "test_name" => $test['test_name'],
                     "facility_id" => $test['facility_id'],
                     "sample_tested_datetime" => $test['sample_tested_datetime'],
