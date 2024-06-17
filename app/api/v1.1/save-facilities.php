@@ -1,18 +1,19 @@
 <?php
 
 
-use App\Registries\AppRegistry;
 use JsonMachine\Items;
 use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\LoggerUtility;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use JsonMachine\Exception\PathNotFoundException;
 
@@ -47,7 +48,7 @@ try {
     $noOfFailedRecords = 0;
 
     $origJson = $request->getBody()->getContents();
-    if (MiscUtility::isJSON($origJson) === false) {
+    if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
     }
     $appVersion = null;
@@ -160,7 +161,7 @@ try {
         if (!empty($data['testingPoints'])) {
             $data['testingPoints'] = explode(",", (string) $data['testingPoints']);
             $data['testingPoints'] = array_map('trim', $data['testingPoints']);
-            $data['testingPoints'] = MiscUtility::encodeUtf8Json($data['testingPoints']);
+            $data['testingPoints'] = JsonUtility::encodeUtf8Json($data['testingPoints']);
         } else {
             $data['testingPoints'] = null;
         }
@@ -247,6 +248,6 @@ try {
 }
 
 
-$payload = MiscUtility::encodeUtf8Json($payload);
+$payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'facility', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

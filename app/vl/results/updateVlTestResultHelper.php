@@ -7,6 +7,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -180,7 +181,7 @@ try {
             $getStorage = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_code', $_POST['freezer']);
             $freezerCode = $getStorage['storage_code'];
         } else {
-            $storageId = $general->generateUUID();
+            $storageId = MiscUtility::generateUUID();
             $freezerCode = $_POST['freezer'];
             $d = [
                 'storage_id' => $storageId,

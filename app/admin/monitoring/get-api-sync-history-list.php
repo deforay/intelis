@@ -4,6 +4,7 @@ use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 
@@ -134,7 +135,7 @@ try {
           $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'show-params.php?id=' . base64_encode((string) $aRow[$primaryKey]) . '\',1200,720);"> Show Params</a>';
           $output['aaData'][] = $row;
      }
-     echo MiscUtility::encodeUtf8Json($output);
+     echo JsonUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
 } catch (Exception $exc) {

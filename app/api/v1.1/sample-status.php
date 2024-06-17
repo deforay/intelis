@@ -3,13 +3,14 @@
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
+use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\LoggerUtility;
-use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -27,7 +28,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $request = AppRegistry::get('request');
 
 $origJson = $request->getBody()->getContents();
-if (MiscUtility::isJSON($origJson) === false) {
+if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload");
 }
 $input = $request->getParsedBody();
@@ -93,6 +94,6 @@ try {
     LoggerUtility::log('error', $exc->getMessage());
 }
 
-$payload = MiscUtility::encodeUtf8Json($payload);
+$payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'sample-status', $input['testType'], $requestUrl, $origJson, $payload, 'json');
 echo $payload;

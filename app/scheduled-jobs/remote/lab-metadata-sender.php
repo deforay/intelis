@@ -12,6 +12,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -48,12 +49,12 @@ try {
         return false;
     }
 
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
 
     $payload = [
         "transactionId" => $transactionId,
         "labId" => $labId,
-        "x-api-key" => $general->generateUUID(),
+        "x-api-key" => MiscUtility::generateUUID(),
     ];
 
     $url = $remoteUrl . '/remote/remote/lab-metadata-receiver.php';

@@ -1,12 +1,13 @@
 <?php
 //this file receives the lab results and updates in the remote db
 
-use App\Registries\AppRegistry;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -42,9 +43,9 @@ try {
     $sampleCodes = $facilityIds = [];
     $labId = null;
 
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         $unwantedColumns = [
             'eid_id',
@@ -158,7 +159,7 @@ try {
     }
 
 
-    $payload = MiscUtility::encodeUtf8Json($sampleCodes);
+    $payload = JsonUtility::encodeUtf8Json($sampleCodes);
 
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);

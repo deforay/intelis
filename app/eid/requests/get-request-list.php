@@ -3,6 +3,7 @@
 use App\Services\DatabaseService;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
@@ -387,7 +388,7 @@ try {
           }
           $output['aaData'][] = $row;
      }
-     echo MiscUtility::encodeUtf8Json($output);
+     echo JsonUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
 } catch (Exception $exc) {

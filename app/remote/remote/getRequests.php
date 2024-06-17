@@ -2,6 +2,7 @@
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -36,7 +37,7 @@ try {
 
 
   $db->beginTransaction();
-  $transactionId = $general->generateUUID();
+  $transactionId = MiscUtility::generateUUID();
 
   if (empty($labId)) {
     throw new SystemException('Lab ID is missing in the request', 400);
@@ -92,12 +93,12 @@ try {
     $sampleIds = array_column($rResult, 'vl_sample_id');
     $facilityIds = array_column($rResult, 'facility_id');
 
-    $payload = MiscUtility::encodeUtf8Json($rResult);
+    $payload = JsonUtility::encodeUtf8Json($rResult);
   } else {
     $payload = json_encode([]);
   }
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'vl', $_SERVER['REQUEST_URI'], MiscUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'vl', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
   $general->updateTestRequestsSyncDateTime('vl', $facilityIds, $labId);
 
   $db->commitTransaction();

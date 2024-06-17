@@ -1,6 +1,5 @@
 <?php
 
-use Throwable;
 use App\Services\VlService;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;

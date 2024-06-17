@@ -210,7 +210,7 @@ final class UsersService
         $result = $this->db->rawQueryOne($uQuery, [$name, $name]);
         if ($result == null) {
 
-            $userId = $this->commonService->generateUUID();
+            $userId = MiscUtility::generateUUID();
             $userData = [
                 'user_id' => $userId,
                 'user_name' => $name,

@@ -92,7 +92,7 @@ $countryFormId = (int) $general->getGlobalConfig('vl_form');
 $resultFilename = '';
 
 if (!empty($requestResult)) {
-    $_SESSION['rVal'] = $general->generateRandomString(6);
+    $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
     $pages = [];
@@ -513,13 +513,13 @@ if (!empty($requestResult)) {
         $html .= '</tr>';
         $html .= '</table>';
         $showQR = false;
-        if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+        if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
             $showQR = true;
         }
         if (($showQR || !empty($result['result'])) || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
             $viewId = CommonService::encryptViewQRCode($result['unique_id']);
             $pdf->writeHTML($html);
-            $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
+            $remoteUrl = $general->getRemoteURL();
             if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
                 $h = 175;
                 if (!empty($signResults)) {
@@ -529,8 +529,8 @@ if (!empty($requestResult)) {
                 } else {
                     $h = 142.5;
                 }
-                if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
-                    $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
+                if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
+                    $remoteUrl = $general->getRemoteURL();
                     $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $viewId, 'QRCODE,H', 170, $h, 20, 20, [], 'N');
                 }
             }

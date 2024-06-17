@@ -2,6 +2,7 @@
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -22,7 +23,7 @@ $request = AppRegistry::get('request');
 
 try {
     $db->beginTransaction();
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
     $data = $apiService->getJsonFromRequest($request, true);
 
     $labId = $data['labName'] ?? $data['labId'] ?? null;
@@ -74,12 +75,12 @@ try {
             $tableData[$r['hepatitis_id']]['data_from_risks'] = $hepatitisService->getRiskFactorsByHepatitisId($r['hepatitis_id']);
         }
     }
-    $payload = MiscUtility::encodeUtf8Json(array(
+    $payload = JsonUtility::encodeUtf8Json(array(
         'labId' => $labId,
         'result' => $tableData,
     ));
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], MiscUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
     $general->updateTestRequestsSyncDateTime('hepatitis', $facilityIds, $labId);
     $db->commitTransaction();

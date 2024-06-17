@@ -2,6 +2,7 @@
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -46,7 +47,7 @@ try {
 
 
 
-	$transactionId = $general->generateUUID();
+	$transactionId = MiscUtility::generateUUID();
 
 	$counter = 0;
 
@@ -117,11 +118,11 @@ try {
 			$response[$r['sample_id']]['data_from_tests'] = $generic->getTestsByGenericSampleIds($r['sample_id']);
 		}
 	}
-	$payload = MiscUtility::encodeUtf8Json(array(
+	$payload = JsonUtility::encodeUtf8Json(array(
 		'labId' => $labId,
 		'result' => $response,
 	));
-	$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'generic-tests', $_SERVER['REQUEST_URI'], MiscUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+	$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'generic-tests', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 	$general->updateTestRequestsSyncDateTime('generic', $facilityIds, $labId);
 	$db->commitTransaction();
 } catch (Throwable $e) {

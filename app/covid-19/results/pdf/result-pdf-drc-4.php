@@ -367,8 +367,8 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     $viewId = CommonService::encryptViewQRCode($result['unique_id']);
     $pdf->writeHTML($html);
 
-    if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
-        $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
+    if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
+        $remoteUrl = $general->getRemoteURL();
         $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . urlencode($viewId), 'QRCODE,H', 170, 60, 100, 100, [], 'N');
     }
     $pdf->lastPage();

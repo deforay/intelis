@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\UsersService;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -102,7 +103,7 @@ try {
         'trace' => $exc->getTraceAsString()
     ]);
 }
-$payload = MiscUtility::encodeUtf8Json($payload);
+$payload = JsonUtility::encodeUtf8Json($payload);
 
 $trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], 1, 'login', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 

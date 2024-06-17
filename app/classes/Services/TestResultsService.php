@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use DateTimeImmutable;
+use App\Utilities\DateUtility;
 use App\Services\DatabaseService;
 
 final class TestResultsService
 {
-
     protected ?DatabaseService $db;
 
     public function __construct(?DatabaseService $db)
@@ -74,5 +74,18 @@ final class TestResultsService
             'testingDate' => $testingDate,
             'dateFormat' => $testDateFormat,
         ];
+    }
+
+    public function resultImportStats($numberOfResults, $importMode, $importedBy)
+    {
+
+        $data = [
+            'no_of_results_imported' => $numberOfResults,
+            'imported_on' => DateUtility::getCurrentDateTime(),
+            'import_mode' => $importMode,
+            'imported_by' => $importedBy
+        ];
+
+        $this->db->insert('result_import_stats', $data);
     }
 }

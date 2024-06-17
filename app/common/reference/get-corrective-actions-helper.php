@@ -4,6 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\UsersService;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 
@@ -155,7 +156,7 @@ try {
         $output['aaData'][] = $row;
     }
 
-    echo MiscUtility::encodeUtf8Json($output);
+    echo JsonUtility::encodeUtf8Json($output);
 
     $db->commitTransaction();
 } catch (Exception $exc) {

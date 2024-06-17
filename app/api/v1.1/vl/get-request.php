@@ -5,6 +5,7 @@ use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\JsonUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -23,7 +24,7 @@ ini_set('max_execution_time', 20000);
 $request = AppRegistry::get('request');
 
 $origJson = $request->getBody()->getContents();
-if (MiscUtility::isJSON($origJson) === false) {
+if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload");
 }
 $input = $request->getParsedBody();
@@ -249,6 +250,6 @@ try {
     ];
     LoggerUtility::log('error', $exc->getMessage());
 }
-$payload = MiscUtility::encodeUtf8Json($payload);
+$payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'get-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

@@ -138,7 +138,7 @@ try {
         $_SESSION['alertMsg'] = _translate("User updated successfully");
 
         $systemType = $general->getSystemConfig('sc_user_type');
-        if (!empty(SYSTEM_CONFIG['remoteURL']) && $general->isLISInstance()) {
+        if (!empty($general->getRemoteURL()) && $general->isLISInstance()) {
             $apiData = $_POST;
             $apiData['loginId'] = null;
             $apiData['password'] = null;
@@ -146,7 +146,7 @@ try {
             $apiData['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
             $apiData['status'] = 'inactive';
             $apiData['userId'] = base64_encode($userId);
-            $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
+            $apiUrl = $general->getRemoteURL() . "/api/v1.1/user/save-user-profile.php";
 
             $multipart = [
                 [

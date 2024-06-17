@@ -60,7 +60,7 @@ try {
     $output['data'] = $rResult;
 
 
-    $filename = $general->generateRandomString(12) . time() . '.json';
+    $filename = MiscUtility::generateRandomString(12) . time() . '.json';
     $fp = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'w');
     fwrite($fp, json_encode($output));
     fclose($fp);

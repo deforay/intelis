@@ -24,7 +24,7 @@ if (!empty($userRes['user_signature'])) {
 
 
 if (!empty($requestResult)) {
-    $_SESSION['rVal'] = $general->generateRandomString(6);
+    $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
     $pages = [];

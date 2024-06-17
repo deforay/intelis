@@ -156,7 +156,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 				$row[] = "Yes";
 			else
 				$row[] = "No";
-			
+
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
 			$row[] = $sampleRejection;
@@ -231,8 +231,8 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = $aRow['rejection_reason'];
 			$row[] = $aRow['recommended_corrective_action_name'];
 			if ($formId == COUNTRY\DRC) {
-					$formAttributes = json_decode($aRow['form_attributes']);
-					$storageObj = json_decode($formAttributes->storage);
+				$formAttributes = json_decode($aRow['form_attributes']);
+				$storageObj = json_decode($formAttributes->storage);
 
 				$row[] = $storageObj->freezerCode;
 				$row[] = $storageObj->rack;
@@ -277,7 +277,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 		$sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
 
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
+		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 		$writer->save($filename);
 		echo base64_encode($filename);
 	}

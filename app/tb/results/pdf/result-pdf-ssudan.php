@@ -410,7 +410,7 @@ if (!empty($requestResult)) {
         if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
             $viewId = CommonService::encryptViewQRCode($result['unique_id']);
             $pdf->writeHTML($html);
-            $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
+            $remoteUrl = $general->getRemoteURL();
             if (isset($arr['tb_report_qr_code']) && $arr['tb_report_qr_code'] == 'yes') {
                 $h = 175;
                 if (!empty($signResults)) {

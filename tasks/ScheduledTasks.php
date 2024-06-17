@@ -70,7 +70,7 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-vl-
 
 
 // REMOTE SYNC JOBS START
-if (!empty(SYSTEM_CONFIG['remoteURL'])) {
+if (!empty($general->getRemoteURL())) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/sts-metadata-receiver.php")
         ->everyFiveMinutes()
         ->timezone($timeZone)

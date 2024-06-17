@@ -3,6 +3,7 @@
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -38,7 +39,7 @@ try {
 
     //$storageId = [];
     $labId = null;
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         $data = [];
         $options = [
@@ -85,7 +86,7 @@ try {
             $i++;
         }
 
-        $transactionId = $transactionId ?? $general->generateUUID();
+        $transactionId = $transactionId ?? MiscUtility::generateUUID();
         if (!empty($tableInfo)) {
             foreach ($tableInfo['table'] as $j => $table) {
                 $emptyTableArray = $general->getTableFieldsAsArray($table);

@@ -36,6 +36,6 @@ try {
     $sampleCodeParams['insertOperation'] = false;
     echo $hepatitisService->getSampleCode($sampleCodeParams);
   }
-} catch (\Throwable $exception) {
+} catch (Throwable $exception) {
   error_log("Error while generating Sample Code : " . $exception->getMessage());
 }

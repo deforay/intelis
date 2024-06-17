@@ -97,7 +97,7 @@ if (!empty(SYSTEM_CONFIG['modules'])) {
         }
     }
 }
-$packageNo = strtoupper($shortCode . date('ymd') . $general->generateRandomString(6));
+$packageNo = strtoupper($shortCode . date('ymd') . MiscUtility::generateRandomString(6));
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 ?>

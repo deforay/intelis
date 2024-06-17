@@ -17,6 +17,7 @@ use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
@@ -34,6 +35,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var TestResultsService $testResultsService */
+$testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $formId = (int) $general->getGlobalConfig('vl_form');
@@ -463,6 +466,6 @@ if (!empty($interfaceData)) {
 
     if ($numberOfResults > 0) {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';
-        $general->resultImportStats($numberOfResults, 'interface', $importedBy);
+        $testResultsService->resultImportStats($numberOfResults, 'interface', $importedBy);
     }
 }

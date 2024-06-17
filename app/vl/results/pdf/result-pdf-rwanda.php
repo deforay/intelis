@@ -394,9 +394,9 @@ if (!empty($result)) {
      $html .= '</table>';
      if (!empty($result['result'])) {
           $pdf->writeHTML($html);
-          if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+          if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
                $viewId = CommonService::encryptViewQRCode($result['unique_id']);
-               $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
+               $remoteUrl = $general->getRemoteURL();
                $pdf->write2DBarcode($remoteUrl . '/vl/results/view.php?q=' . $viewId, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
           }
           $pdf->lastPage();

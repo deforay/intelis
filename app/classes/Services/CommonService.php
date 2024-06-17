@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Utilities\JsonUtility;
 use COUNTRY;
 use Exception;
 use Throwable;
@@ -34,47 +35,28 @@ final class CommonService
 
     public function getRemoteURL()
     {
-        $remoteUrl = SYSTEM_CONFIG['remoteURL'];
-        if (!isset($remoteUrl) || $remoteUrl == '' || empty($remoteUrl)) {
-            return null;
-        }
+        return $this->fileCache->get('remoteURL', function () {
+            $remoteUrl = SYSTEM_CONFIG['remoteURL'];
+            if (!isset($remoteUrl) || $remoteUrl == '' || empty($remoteUrl)) {
+                return null;
+            }
 
-        // Add https:// if no scheme is present
-        if (!preg_match("~^(?:f|ht)tps?://~i", $remoteUrl)) {
-            $remoteUrl = "https://" . $remoteUrl;
-        }
+            // Add https:// if no scheme is present
+            if (!preg_match("~^(?:f|ht)tps?://~i", $remoteUrl)) {
+                $remoteUrl = "https://" . $remoteUrl;
+            }
 
-        // Parse the URL and get the scheme and host
-        $parsedUrl = parse_url($remoteUrl);
-        if (isset($parsedUrl['scheme']) && isset($parsedUrl['host'])) {
-            $baseUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
+            // Parse the URL and get the scheme and host
+            $parsedUrl = parse_url($remoteUrl);
+            if (isset($parsedUrl['scheme']) && isset($parsedUrl['host'])) {
+                $baseUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
 
-            // Remove trailing slash if present
-            return rtrim($baseUrl, '/');
-        } else {
-            return null;
-        }
-    }
-
-
-
-    /**
-     *
-     * @param int $length
-     * @return string
-     * @throws SystemException
-     */
-
-    public function generateRandomString(int $length = 32): string
-    {
-        return MiscUtility::generateRandomString($length);
-    }
-
-
-    // Returns a UUID format string
-    public function generateUUID($attachExtraString = true): string
-    {
-        return MiscUtility::generateUUID($attachExtraString);
+                // Remove trailing slash if present
+                return rtrim($baseUrl, '/');
+            } else {
+                return null;
+            }
+        });
     }
 
     public function getClientIpAddress(): ?string
@@ -194,11 +176,6 @@ final class CommonService
         }
 
         return $this->db->get($tableName, $numRows, $columns);
-        // if ($this->db->count > 0) {
-        //     return $resultset;
-        // } else {
-        //     return [];
-        // }
     }
 
     public static function encrypt($message, $key): string
@@ -279,19 +256,6 @@ final class CommonService
         $this->db->insert('activity_log', $data);
     }
 
-    public function resultImportStats($numberOfResults, $importMode, $importedBy)
-    {
-
-        $data = [
-            'no_of_results_imported' => $numberOfResults,
-            'imported_on' => DateUtility::getCurrentDateTime(),
-            'import_mode' => $importMode,
-            'imported_by' => $importedBy
-        ];
-
-        $this->db->insert('result_import_stats', $data);
-    }
-
     public function getUserMappedProvinces($facilityMap = null)
     {
         return once(function () use ($facilityMap) {
@@ -320,7 +284,6 @@ final class CommonService
             return implode('', $options);
         });
     }
-
 
     public function generateSelectOptions($optionList, $selectedOptions = [], $emptySelectText = false)
     {
@@ -634,17 +597,17 @@ final class CommonService
     public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
     {
         try {
-            $requestData = MiscUtility::encodeUtf8Json($requestData);
-            $responseData = MiscUtility::encodeUtf8Json($responseData);
+            $requestData = JsonUtility::encodeUtf8Json($requestData);
+            $responseData = JsonUtility::encodeUtf8Json($responseData);
 
             $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
             if (!empty($requestData) && $requestData != '[]') {
                 MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'requests');
-                MiscUtility::zipJson($requestData, "$folderPath/requests/$transactionId.json");
+                JsonUtility::zipJson($requestData, "$folderPath/requests/$transactionId.json");
             }
             if (!empty($responseData) && $responseData != '[]') {
                 MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'responses');
-                MiscUtility::zipJson($responseData, "$folderPath/responses/$transactionId.json");
+                JsonUtility::zipJson($responseData, "$folderPath/responses/$transactionId.json");
             }
             $this->db->reset();
             $data = [
@@ -756,7 +719,7 @@ final class CommonService
     public function jsonToSetString(?string $json, string $column, $newData = []): ?string
     {
         // Decode JSON string to array
-        $jsonData = $json && MiscUtility::isJSON($json) ? json_decode($json, true) : [];
+        $jsonData = $json && JsonUtility::isJSON($json) ? json_decode($json, true) : [];
 
         // Decode newData if it's a string
         if (is_string($newData)) {
@@ -802,8 +765,6 @@ final class CommonService
             return "'" . addslashes((string) $value) . "'";
         }
     }
-
-
 
     public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false)
     {

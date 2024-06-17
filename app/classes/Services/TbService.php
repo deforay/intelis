@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
@@ -207,7 +208,7 @@ final class TbService extends AbstractTestService
                     'vlsm_country_id' => $formId,
                     'sample_reordered' => $params['sampleReordered'] ?? 'no',
                     'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
-                    'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
+                    'unique_id' => $params['uniqueId'] ?? MiscUtility::generateUUID(),
                     'facility_id' => $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,
                     'app_sample_code' => $params['appSampleCode'] ?? null,

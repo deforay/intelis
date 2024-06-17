@@ -2,6 +2,7 @@
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -42,7 +43,7 @@ try {
     throw new SystemException('Lab ID is missing in the request', 400);
   }
 
-  $transactionId = $general->generateUUID();
+  $transactionId = MiscUtility::generateUUID();
 
   $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
@@ -88,12 +89,12 @@ try {
     $response['comorbidities'] = $comorbidities;
     $response['testResults'] = $testResults; */
   }
-  $payload = MiscUtility::encodeUtf8Json(array(
+  $payload = JsonUtility::encodeUtf8Json(array(
     'labId' => $labId,
     'result' => $response,
   ));
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', $_SERVER['REQUEST_URI'], MiscUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
   $general->updateTestRequestsSyncDateTime('covid19', $facilityIds, $labId);
   $db->commitTransaction();

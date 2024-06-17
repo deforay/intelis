@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
@@ -118,7 +119,7 @@ final class EidService extends AbstractTestService
                 $tesRequestData = [
                     'vlsm_country_id' => $formId,
                     'sample_reordered' => $params['sampleReordered'] ?? 'no',
-                    'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
+                    'unique_id' => $params['uniqueId'] ?? MiscUtility::generateUUID(),
                     'facility_id' => $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,
                     'app_sample_code' => $params['appSampleCode'] ?? null,

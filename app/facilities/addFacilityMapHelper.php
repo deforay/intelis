@@ -1,5 +1,7 @@
 <?php
 
+use App\Utilities\LoggerUtility;
+
 $tableName = "testing_lab_health_facilities_map";
 try {
 	if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != "" && trim((string) $_POST['facilityTo']) != '') {

@@ -349,11 +349,11 @@ if (!empty($result)) {
     $html .= '</table>';
     if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
         $pdf->writeHTML($html);
-        if (isset($arr['eid_report_qr_code']) && $arr['eid_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+        if (isset($arr['eid_report_qr_code']) && $arr['eid_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
             $keyFromGlobalConfig = $general->getGlobalConfig('key');
             if (!empty($keyFromGlobalConfig)) {
                 $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode((string) $keyFromGlobalConfig));
-                $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
+                $remoteUrl = $general->getRemoteURL();
                 $pdf->write2DBarcode($remoteUrl . '/eid/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
             }
         }

@@ -14,6 +14,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -43,7 +44,7 @@ try {
         return false;
     }
 
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
 
     $forceSyncModule = !empty($_GET['forceSyncModule']) ? $_GET['forceSyncModule'] : null;
     $sampleCode = !empty($_GET['sampleCode']) ? $_GET['sampleCode'] : null;

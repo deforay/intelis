@@ -1,6 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use Laminas\Filter\StringTrim;
 use App\Registries\AppRegistry;
@@ -265,7 +266,7 @@ try {
           $output['aaData'][] = $row;
      }
 
-     echo MiscUtility::encodeUtf8Json($output);
+     echo JsonUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
 } catch (Exception $exc) {

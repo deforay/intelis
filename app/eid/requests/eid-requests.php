@@ -897,7 +897,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	<?php if ($general->isLISInstance()) { ?>
-		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
+		var remoteUrl = '<?= $general->getRemoteURL(); ?>';
 
 		function forceResultSync(sampleCode) {
 			$.blockUI({

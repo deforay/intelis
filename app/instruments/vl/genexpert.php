@@ -2,6 +2,7 @@
 
 // File included in import-file-helper.php
 
+use App\Utilities\MiscUtility;
 use League\Csv\Reader;
 use App\Services\VlService;
 use App\Services\BatchService;
@@ -50,11 +51,11 @@ try {
     }
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
-    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $extension = MiscUtility::getFileExtension($fileName);
     if (!in_array($extension, $allowedExtensions)) {
         throw new SystemException("Invalid file format.");
     }
-    $fileName = $_POST['fileName'] . "-" . $general->generateRandomString(12) . "." . $extension;
+    $fileName = $_POST['fileName'] . "-" . MiscUtility::generateRandomString(12) . "." . $extension;
 
     $resultFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results";
     if (!file_exists($resultFilePath) && !is_dir($resultFilePath)) {

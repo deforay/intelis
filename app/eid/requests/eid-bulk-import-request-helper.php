@@ -38,8 +38,8 @@ try {
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', (string) $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
-    $ranNumber = $general->generateRandomString(12);
-    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $ranNumber = MiscUtility::generateRandomString(12);
+    $extension = MiscUtility::getFileExtension($fileName);
     $fileName = $ranNumber . "." . $extension;
 
     MiscUtility::makeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request", 0777, true);

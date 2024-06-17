@@ -134,7 +134,7 @@ $fileArray = array(
 
 $resultFilename = '';
 if (!empty($requestResult)) {
-	$randomFolderName = $general->generateRandomString(6);
+	$randomFolderName = MiscUtility::generateRandomString(6);
 	$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
 	MiscUtility::makeDirectory($pathFront);
 	$pages = [];

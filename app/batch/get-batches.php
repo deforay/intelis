@@ -3,6 +3,7 @@
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -175,7 +176,7 @@ try {
 
         $output['aaData'][] = $row;
     }
-    echo MiscUtility::encodeUtf8Json($output);
+    echo JsonUtility::encodeUtf8Json($output);
 
     $db->commitTransaction();
 } catch (Exception $exc) {

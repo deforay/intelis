@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
@@ -87,7 +88,7 @@ final class CD4Service extends AbstractTestService
                 $tesRequestData = [
                     'vlsm_country_id' => $formId,
                     'sample_reordered' => $params['sampleReordered'] ?? 'no',
-                    'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
+                    'unique_id' => $params['uniqueId'] ?? MiscUtility::generateUUID(),
                     'facility_id' => $params['facilityId'] ?? null,
                     'lab_id' => $params['labId'] ?? null,
                     'patient_art_no' => $params['artNo'] ?? null,

@@ -39,7 +39,7 @@ $signatureImage = null;
 
 try {
     if (trim((string) $_POST['userName']) != '' && trim((string) $_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
-        $userId = $general->generateUUID();
+        $userId = MiscUtility::generateUUID();
         $data = array(
             'user_id'               => $userId,
             'user_name'             => $_POST['userName'],
@@ -105,7 +105,7 @@ try {
         $_SESSION['alertMsg'] = _translate("User saved successfully!");
     }
     $systemType = $general->getSystemConfig('sc_user_type');
-    if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $general->isLISInstance()) {
+    if (!empty($general->getRemoteURL()) && $general->isLISInstance()) {
         $apiData = $_POST;
         $apiData['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
         $apiData['password'] = null; // We don't want to unintentionally end up creating admin users on STS
@@ -113,7 +113,7 @@ try {
         $apiData['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
         $apiData['status'] = 'inactive';
         $apiData['userId'] = base64_encode((string) $data['user_id']);
-        $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
+        $apiUrl = $general->getRemoteURL() . "/api/v1.1/user/save-user-profile.php";
 
 
         $multipart = [

@@ -3,6 +3,7 @@
 // this file is included in /hepatitis/interop/dhis2/hepatitis-receive.php
 
 use App\Interop\Dhis2;
+use App\Utilities\MiscUtility;
 use JsonMachine\Items;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -22,7 +23,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$transactionId = $general->generateUUID();
+$transactionId = MiscUtility::generateUUID();
 $processingErrors = [];
 
 /** @var HepatitisService $hepatitisService */
@@ -342,7 +343,7 @@ try {
 
 
     $db->commitTransaction();
-} catch (\Throwable $exception) {
+} catch (Throwable $exception) {
     $responsePayload = json_encode([
         'transactionId' => $transactionId,
         'received' => $receivedCounter,

@@ -249,7 +249,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	/* Remote Syn only package code matches */
 	<?php if ($general->isLISInstance()) { ?>
-		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
+		var remoteUrl = '<?php echo $general->getRemoteURL(); ?>';
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({

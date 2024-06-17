@@ -4,6 +4,7 @@ use App\Exceptions\SystemException;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -28,7 +29,7 @@ try {
   throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }
 
-$randomString = $general->generateUUID();
+$randomString = MiscUtility::generateUUID();
 fwrite($myfile, $randomString);
 fclose($myfile);
 

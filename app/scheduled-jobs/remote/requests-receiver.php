@@ -13,6 +13,7 @@ ini_set('max_execution_time', 300000);
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -30,7 +31,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $apiService = ContainerRegistry::get(ApiService::class);
 
 
-$transactionId = $general->generateUUID();
+$transactionId = MiscUtility::generateUUID();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
@@ -87,7 +88,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
     // die($jsonResponse);
     $columnList = [];
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         if ($cliMode) {
             echo "Syncing data for Custom Tests" . PHP_EOL;
@@ -265,7 +266,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 
     $jsonResponse = $apiService->post($url, $payload);
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         if ($cliMode) {
             echo "Syncing data for HIV VL" . PHP_EOL;
@@ -414,7 +415,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
     $jsonResponse = $apiService->post($url, $payload);
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         if ($cliMode) {
             echo "Syncing data for EID" . PHP_EOL;
@@ -542,7 +543,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $payload['manifestCode'] = $manifestCode;
     }
     $jsonResponse = $apiService->post($url, $payload);
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         if ($cliMode) {
             echo "Syncing data for Covid-19" . PHP_EOL;
@@ -730,7 +731,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
     $jsonResponse = $apiService->post($url, $payload);
     // die($jsonResponse);
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         if ($cliMode) {
             echo "Syncing data for Hepatitis" . PHP_EOL;
@@ -901,7 +902,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 
     $jsonResponse = $apiService->post($url, $payload);
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
 
         if ($cliMode) {
@@ -1048,7 +1049,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
 
     $jsonResponse = $apiService->post($url, $payload);
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         if ($cliMode) {
             echo "Syncing data for CD4" . PHP_EOL;

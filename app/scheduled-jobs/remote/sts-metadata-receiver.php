@@ -56,7 +56,7 @@ if ($general->isLISInstance() === false) {
     exit(0);
 }
 
-if (!isset($systemConfig['remoteURL']) || empty($systemConfig['remoteURL']) || $systemConfig['remoteURL'] === '') {
+if (empty($general->getRemoteURL())) {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
@@ -476,12 +476,12 @@ try {
                                 $labLogoFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
                                 MiscUtility::makeDirectory($labLogoFolder);
 
-                                $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" . $tableData['facility_logo'];
+                                $remoteFileUrl = $general->getRemoteURL() . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" . $tableData['facility_logo'];
                                 $localFilePath = $labLogoFolder . "/" . "actual-" . $tableData['facility_logo'];
 
                                 $apiService->downloadFile($remoteFileUrl, $localFilePath);
 
-                                $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
+                                $remoteFileUrl = $general->getRemoteURL() . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
                                 $localFilePath = $labLogoFolder . "/" . $tableData['facility_logo'];
                                 $apiService->downloadFile($remoteFileUrl, $localFilePath);
                             }
@@ -492,7 +492,7 @@ try {
                                 $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'] . DIRECTORY_SEPARATOR . "report-template";
                                 MiscUtility::makeDirectory($labDataFolder);
 
-                                $remoteFileUrl = $systemConfig['remoteURL'] . "/uploads/labs/{$tableData['facility_id']}/report-template/{$facilityAttributes['report_template']}";
+                                $remoteFileUrl = $general->getRemoteURL() . "/uploads/labs/{$tableData['facility_id']}/report-template/{$facilityAttributes['report_template']}";
                                 MiscUtility::dumpToErrorLog($remoteFileUrl);
                                 $localFilePath = $labDataFolder . "/" . $facilityAttributes['report_template'];
                                 MiscUtility::dumpToErrorLog($localFilePath);
@@ -527,7 +527,7 @@ try {
                         unset($sign['signatory_id']);
                         if (isset($sign['signature']) && $sign['signature'] != "") {
                             /* To save file from the url */
-                            $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/labs/' . $sign['lab_id'] . '/signatures/' . $sign['signature'];
+                            $remoteFileUrl = $general->getRemoteURL() . '/uploads/labs/' . $sign['lab_id'] . '/signatures/' . $sign['signature'];
                             $localFileLocation = $signaturesFolder . DIRECTORY_SEPARATOR . $sign['signature'];
                             if ($apiService->downloadFile($remoteFileUrl, $localFileLocation)) {
                                 $db->insert('lab_report_signatories', $sign);

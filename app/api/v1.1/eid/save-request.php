@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\JsonUtility;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\EidService;
@@ -47,7 +48,7 @@ try {
     $updatedLabs = [];
 
     $origJson = $request->getBody()->getContents();
-    if (MiscUtility::isJSON($origJson) === false) {
+    if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
     }
     $appVersion = null;
@@ -225,7 +226,7 @@ try {
             $params['appSampleCode'] = $data['appSampleCode'] ?? null;
             $params['provinceCode'] = $provinceCode;
             $params['provinceId'] = $provinceId;
-            $params['uniqueId'] = $uniqueId ?? $general->generateUUID();
+            $params['uniqueId'] = $uniqueId ?? MiscUtility::generateUUID();
             $params['sampleCollectionDate'] = $sampleCollectionDate;
             $params['userId'] = $user['user_id'];
             $params['accessType'] = $user['access_type'];
@@ -536,7 +537,7 @@ try {
         'trace' => $exc->getTraceAsString()
     ]);
 }
-$payload = MiscUtility::encodeUtf8Json($payload);
+$payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 $general->updateResultSyncDateTime('eid', null, $updatedLabs);
