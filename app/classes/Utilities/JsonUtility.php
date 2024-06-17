@@ -2,13 +2,12 @@
 
 namespace App\Utilities;
 
-use ZipArchive;
 use App\Utilities\LoggerUtility;
+use JsonSchema\Validator;
 
 final class JsonUtility
 {
-
-    public static function isJSON($string, $logError = false): bool
+    public static function isJSON($string, bool $logError = false): bool
     {
         if (empty($string) || !is_string($string)) {
             return false;
@@ -19,9 +18,9 @@ final class JsonUtility
         if (json_last_error() === JSON_ERROR_NONE) {
             return true;
         } else {
-            if ($logError === true) {
+            if ($logError) {
                 LoggerUtility::log('error', 'JSON decoding error: ' . json_last_error_msg());
-                LoggerUtility::log('error', 'JSON decoding error: ' . $string);
+                LoggerUtility::log('error', 'Invalid JSON: ' . $string);
             }
             return false;
         }
@@ -51,9 +50,9 @@ final class JsonUtility
         return self::toJSON(self::toUtf8($data));
     }
 
-    public static function toJSON($data): ?string
+    public static function toJSON($data, int $flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE): ?string
     {
-        $json = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $json = json_encode($data, $flags);
         if ($json === false) {
             LoggerUtility::log('error', 'Data could not be encoded as JSON: ' . json_last_error_msg());
             return null;
@@ -61,73 +60,90 @@ final class JsonUtility
         return $json;
     }
 
-
-    public static function prettyJson($json): string
+    public static function prettyJson(array|string $json): string
     {
-        if (is_array($json)) {
-            $encodedJson = json_encode($json, JSON_PRETTY_PRINT);
-        } else {
-            $decodedJson = json_decode((string) $json);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                // Handle the error, maybe log it and return a safe error message
-                return htmlspecialchars("Error in JSON decoding: " . json_last_error_msg(), ENT_QUOTES, 'UTF-8');
-            }
-            $encodedJson = json_encode($decodedJson, JSON_PRETTY_PRINT);
+        $decodedJson = is_array($json) ? $json : self::decodeJson($json);
+        if ($decodedJson === null) {
+            return htmlspecialchars("Error in JSON decoding: " . json_last_error_msg(), ENT_QUOTES, 'UTF-8');
         }
 
+        $encodedJson = json_encode($decodedJson, JSON_PRETTY_PRINT);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            // Handle the error, maybe log it and return a safe error message
             return htmlspecialchars("Error in JSON encoding: " . json_last_error_msg(), ENT_QUOTES, 'UTF-8');
         }
 
         return $encodedJson;
     }
 
-    /**
-     * Unzips a JSON file and displays its contents in a pretty format.
-     *
-     * @param string $zipFile The path to the zip file.
-     * @param string $jsonFile The name of the JSON file inside the zip archive.
-     */
-    public static function getJsonFromZip(string $zipFile, string $jsonFile): string
+    public static function mergeJson(...$jsonStrings): ?string
     {
-        if (!file_exists($zipFile)) {
-            return "{}";
-        }
-        $zip = new ZipArchive;
-        if ($zip->open($zipFile) === true) {
-            $json = $zip->getFromName($jsonFile);
-            $zip->close();
+        $mergedArray = [];
 
-            return $json;
-        } else {
-            return "{}";
+        foreach ($jsonStrings as $json) {
+            $array = self::decodeJson($json);
+            if ($array === null) {
+                return null;
+            }
+            $mergedArray = array_merge_recursive($mergedArray, $array);
         }
+
+        return self::toJSON($mergedArray);
     }
 
-    /**
-     * Zips a JSON string.
-     *
-     * @param string $json The JSON string to zip.
-     * @param string $fileName The FULL PATH of the file inside the zip archive.
-     * @return bool Returns true on success, false on failure.
-     */
-    public static function zipJson(string $json, string $fileName)
+    public static function extractJsonData($json, $path): mixed
     {
-        $result = false;
-        if (!empty($json) && !empty($fileName)) {
-            $zip = new ZipArchive();
-            $zipPath = $fileName . '.zip';
-
-            if ($zip->open($zipPath, ZipArchive::CREATE) === true) {
-                $zip->addFromString(basename($fileName), $json);
-
-                if ($zip->status == ZIPARCHIVE::ER_OK) {
-                    $result = true;
-                }
-                $zip->close();
-            }
+        $data = self::decodeJson($json);
+        if ($data === null) {
+            return null;
         }
-        return $result;
+
+        foreach (explode('.', $path) as $segment) {
+            if (!isset($data[$segment])) {
+                return null;
+            }
+            $data = $data[$segment];
+        }
+
+        return $data;
+    }
+
+    public static function decodeJson($json, bool $assoc = true): mixed
+    {
+        $data = json_decode($json, $assoc);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            LoggerUtility::log('error', 'Error decoding JSON: ' . json_last_error_msg());
+            return null;
+        }
+        return $data;
+    }
+
+    public static function minifyJson($json): string
+    {
+        $decodedJson = self::decodeJson($json);
+        if ($decodedJson === null) {
+            return '';
+        }
+
+        return self::toJSON($decodedJson, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
+
+    public static function getJsonKeys($json): array
+    {
+        $data = self::decodeJson($json);
+        if ($data === null) {
+            return [];
+        }
+
+        return array_keys($data);
+    }
+
+    public static function getJsonValues($json): array
+    {
+        $data = self::decodeJson($json);
+        if ($data === null) {
+            return [];
+        }
+
+        return array_values($data);
     }
 }

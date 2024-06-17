@@ -28,8 +28,8 @@ $zip = new ZipArchive();
 $userRequest = $userResponse = "{}";
 $folder = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api');
 
-$userRequest = JsonUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
-$userResponse = JsonUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
+$userRequest = MiscUtility::getDataFromZippedFile($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
+$userResponse = MiscUtility::getDataFromZippedFile($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
 
 ?>
 

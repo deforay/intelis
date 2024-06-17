@@ -603,11 +603,11 @@ final class CommonService
             $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
             if (!empty($requestData) && $requestData != '[]') {
                 MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'requests');
-                JsonUtility::zipJson($requestData, "$folderPath/requests/$transactionId.json");
+                MiscUtility::dataToZippedFile($requestData, "$folderPath/requests/$transactionId.json");
             }
             if (!empty($responseData) && $responseData != '[]') {
                 MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'responses');
-                JsonUtility::zipJson($responseData, "$folderPath/responses/$transactionId.json");
+                MiscUtility::dataToZippedFile($responseData, "$folderPath/responses/$transactionId.json");
             }
             $this->db->reset();
             $data = [
