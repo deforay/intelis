@@ -619,22 +619,22 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										<?php echo _translate("Report Top Margin"); ?>
 									</label>
 									<div class="col-lg-7">
-										<input type="number" value="<?php echo (isset($facilityAttributes->report_top_margin)) ? $facilityAttributes->report_top_margin : '' ?>" class="form-control" name="reportTopMargin" id="reportTopMargin" placeholder="<?php echo _translate('Report Top Margin'); ?>" title="<?php echo _translate('Please enter the report top margin'); ?>">
+										<input type="number" value="<?php echo (isset($facilityAttributes->report_top_margin)) ? $facilityAttributes->report_top_margin : '17' ?>" class="form-control" name="reportTopMargin" id="reportTopMargin" placeholder="<?php echo _translate('Report Top Margin'); ?>" title="<?php echo _translate('Please enter the report top margin'); ?>">
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
-									<div class="form-group">
-										<label for="bottomTextLocation" class="col-lg-4 control-label">
-											<?php echo _translate("Bottom Text Location"); ?>
-										</label>
-										<div class="col-lg-7">
-											<select class="form-control" name="bottomTextLocation" id="bottomTextLocation" title="<?php echo _translate('Please enter the Bottom Text Location'); ?>">
-												<option value="aboveFooter" <?php echo (isset($facilityAttributes->bottom_text_location) && $facilityAttributes->bottom_text_location === 'aboveFooter') ? "selected='selected'" : "" ?>><?php echo _translate("Above Footer"); ?></option>
-												<option value="belowPlatformName" <?php echo (isset($facilityAttributes->bottom_text_location) && $facilityAttributes->bottom_text_location === 'belowPlatformName') ? "selected='selected'" : "" ?>><?php echo _translate("Below Platform Name"); ?></option>
-											</select>
-										</div>
+								<div class="form-group">
+									<label for="bottomTextLocation" class="col-lg-4 control-label">
+										<?php echo _translate("Bottom Text Location"); ?>
+									</label>
+									<div class="col-lg-7">
+										<select class="form-control" name="bottomTextLocation" id="bottomTextLocation" title="<?php echo _translate('Please enter the Bottom Text Location'); ?>">
+											<option value="aboveFooter" <?php echo (isset($facilityAttributes->bottom_text_location) && $facilityAttributes->bottom_text_location === 'aboveFooter') ? "selected='selected'" : "" ?>><?php echo _translate("Above Footer"); ?></option>
+											<option value="belowPlatformName" <?php echo (isset($facilityAttributes->bottom_text_location) && $facilityAttributes->bottom_text_location === 'belowPlatformName') ? "selected='selected'" : "" ?>><?php echo _translate("Below Platform Name"); ?></option>
+										</select>
 									</div>
+								</div>
 							</div>
 						</div>
 					<?php } ?>
@@ -771,7 +771,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 		$("#testType").selectize({
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
-});
+		});
 
 		$("#contactPerson").select2({
 			placeholder: '<?php echo _translate("Select Lab Manager", true); ?>',

@@ -342,7 +342,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										</label>
 										<div class="col-lg-7">
 											<select class="" id="testType" name="testType[]" title="<?php echo _translate('Choose at least one test type'); ?>" onchange="getTestType();" multiple>
-											<option value=""><?php echo _translate("Select Test Types"); ?></option>
+												<option value=""><?php echo _translate("Select Test Types"); ?></option>
 
 												<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 													<option value="vl">
@@ -644,7 +644,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												<?php echo _translate("Report Top Margin"); ?>
 											</label>
 											<div class="col-lg-7">
-												<input type="number" class="form-control" name="reportTopMargin" id="reportTopMargin" placeholder="<?php echo _translate('Report Top Margin'); ?>" title="<?php echo _translate('Please enter the report top margin'); ?>">
+												<input type="number" class="form-control" name="reportTopMargin" id="reportTopMargin" placeholder="<?php echo _translate('Report Top Margin'); ?>" title="<?php echo _translate('Please enter the report top margin'); ?>" value="17">
 											</div>
 										</div>
 									</div>
@@ -655,8 +655,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											</label>
 											<div class="col-lg-7">
 												<select class="form-control" name="bottomTextLocation" id="bottomTextLocation" title="<?php echo _translate('Please enter the Bottom Text Location'); ?>">
-												<option value="aboveFooter"><?php echo _translate("Above Footer"); ?></option>
-												<option value="belowPlatformName"><?php echo _translate("Below Platform Name"); ?></option>
+													<option value="aboveFooter"><?php echo _translate("Above Footer"); ?></option>
+													<option value="belowPlatformName"><?php echo _translate("Below Platform Name"); ?></option>
 												</select>
 											</div>
 										</div>
@@ -789,11 +789,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 <script type="text/javascript">
 	$(document).ready(function() {
-	
+
 
 		$("#testType").selectize({
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
-});
+		});
 
 		$(".testSignType").select2({
 			placeholder: '<?php echo _translate("Select Test Type", true); ?>',

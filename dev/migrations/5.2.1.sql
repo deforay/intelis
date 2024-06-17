@@ -11,7 +11,7 @@ UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=e
 UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=covid19,/import-result/importedStatistics.php?t=covid19' WHERE `link` like '/import-result/import-file.php?t=covid19';
 UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=hepatitis,/import-result/importedStatistics.php?t=hepatitis' WHERE `link` like '/import-result/import-file.php?t=hepatitis';
 UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=tb,/import-result/importedStatistics.php?t=tb' WHERE `link` like '/import-result/import-file.php?t=tb';
-UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=genetic-tests,/import-result/importedStatistics.php?t=genetic-tests' WHERE `link` like '/import-result/import-file.php?t=genetic-tests';
+UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=generic-tests,/import-result/importedStatistics.php?t=generic-tests' WHERE `link` like '/import-result/import-file.php?t=generic-tests';
 
 -- Jeyabanu 19-Jul-2023
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`,`show_mode`) VALUES ( 'facilities', 'upload-facilities.php', 'Upload Facilities','always');
