@@ -44,7 +44,7 @@ final class ApiService
 
     public static function generateAuthToken(): string
     {
-        return base64_encode(MiscUtility::generateUUID() . "-" . MiscUtility::generateRandomString());
+        return base64_encode(MiscUtility::generateUUID());
     }
 
     protected function createApiClient(): Client

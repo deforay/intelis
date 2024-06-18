@@ -449,7 +449,7 @@ try {
 
                     $unwantedColumnList = [];
                     if ($dataType === 'users') {
-                        $unwantedColumnList = ['login_id', 'role_id', 'password'];
+                        $unwantedColumnList = ['login_id', 'role_id', 'password', 'status'];
                     }
 
                     $emptyTableArray = $general->getTableFieldsAsArray($dataToSync[$dataType]['tableName'], $unwantedColumnList);

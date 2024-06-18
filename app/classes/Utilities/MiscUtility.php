@@ -4,11 +4,27 @@ namespace App\Utilities;
 
 use Throwable;
 use ZipArchive;
+use Sqids\Sqids;
 use Ramsey\Uuid\Uuid;
 use App\Exceptions\SystemException;
 
 final class MiscUtility
 {
+    public static function encode($data)
+    {
+        $data = !is_array($data) ? [$data] : $data;
+        $sqids = new Sqids('', 10);
+        return $sqids->encode($data);
+    }
+
+    public static function decode($data)
+    {
+        $sqids = new Sqids();
+        $ids = $sqids->decode($data);
+        if (count($ids) == 1) {
+            return $ids[0];
+        }
+    }
     public static function generateRandomString(int $length = 32): string
     {
         $bytes = ceil($length * 3 / 4);
@@ -307,7 +323,6 @@ final class MiscUtility
         unset($value); // Break the reference after the loop
         return $array;
     }
-
 
     public static function generateUUID($attachExtraString = true): string
     {
