@@ -134,6 +134,16 @@ if (!empty($result)) {
 	if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
 		$resultApprovedBy = ($result['approvedBy']);
 		$userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
+	} else {
+		if (!empty($result['defaultApprovedBy'])) {
+			$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+			if ($approvedByRes) {
+				$resultApprovedBy = $approvedByRes['user_name'];
+				$result['approvedBySignature'] = $approvedByRes['user_signature'];
+				$result['result_approved_datetime'] = $result['sample_tested_datetime'];
+				$userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
+			}
+		}
 	}
 	$userSignaturePath = null;
 
