@@ -80,7 +80,7 @@ try {
 
             if (empty($freezerCheck)) {
                 $data = array(
-                    'storage_id' => $general->generateUUID(),
+                    'storage_id' => MiscUtility::generateUUID(),
                     'storage_code'     => $rowData['B'],
                     'lab_id'     => $getSample['lab_id'],
                     'storage_status' => "active",

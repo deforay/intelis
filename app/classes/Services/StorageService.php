@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Utilities\MiscUtility;
 use Exception;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -66,7 +67,7 @@ final class StorageService
                 $save = $this->db->update($this->table, $data);
             } else {
                 $data = array(
-                    'storage_id' => $this->commonService->generateUUID(),
+                    'storage_id' => MiscUtility::generateUUID(),
                     'storage_code'     => $params['storageCode'],
                     'lab_id'     => $_SESSION['instance']['labId'],
                     'storage_status' => $params['storageStatus'],

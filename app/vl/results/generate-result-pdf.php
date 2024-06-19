@@ -12,6 +12,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
+use App\Utilities\LoggerUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -36,7 +37,6 @@ $mFieldArray = [];
 if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
 	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
 }
-
 $requestResult = null;
 if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 
@@ -54,6 +54,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					l_f.facility_attributes as vl_facility_attributes,
 					u_d.user_name as reviewedBy,
 					a_u_d.user_name as approvedBy,
+                    a_u_d.user_id as approvedByUserId,
 					vl.last_modified_by as modified_by,
 					r_r_b.user_name as revised,
 					l_f.facility_logo as facilityLogo,
@@ -61,7 +62,8 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					funding.funding_source_name as funding_source_name,
 					r_c_a.recommended_corrective_action_name,
 					JSON_UNQUOTE(JSON_EXTRACT(i.approved_by, '$.vl')) AS defaultApprovedBy,
-                    JSON_UNQUOTE(JSON_EXTRACT(i.reviewed_by, '$.vl')) AS defaultReviewedBy
+                    JSON_UNQUOTE(JSON_EXTRACT(i.reviewed_by, '$.vl')) AS defaultReviewedBy,
+                    i.machine_name AS instrument_machine_name
 					FROM form_vl as vl
 					LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id
 					LEFT JOIN facility_details as c_f ON vl.facility_id = c_f.facility_id
@@ -73,8 +75,9 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
 					LEFT JOIN r_funding_sources as funding ON funding.funding_source_id = vl.funding_source
 					LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection
-					LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
-					LEFT JOIN instruments as i ON i.instrument_id=vl.instrument_id";
+					LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id = vl.recommended_corrective_action
+					LEFT JOIN instruments as i ON i.instrument_id = vl.instrument_id OR i.machine_name = vl.vl_test_platform
+                    LEFT JOIN instrument_machines as im ON im.config_machine_name = vl.vl_test_platform";
 
 	$searchQueryWhere = [];
 	if (!empty($_POST['id'])) {
@@ -86,9 +89,10 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 	if (!empty($searchQueryWhere)) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
-	//echo ($searchQuery);
+	LoggerUtility::log('info', $searchQuery);
 	$requestResult = $db->query($searchQuery);
 }
+
 
 if (empty($requestResult) || !$requestResult) {
 	return null;

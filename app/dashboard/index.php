@@ -504,9 +504,22 @@ require_once APPLICATION_PATH . '/header.php';
 	let currentRequestType = null;
 	let sampleCountsDatatableCounter = 0;
 	let samplePieChartCounter = 0;
-	let currentXHR = null;
+
+	let currentRequests = [];
+
 
 	$(function() {
+
+
+		$(window).on('beforeunload', function() {
+			// Abort all ongoing AJAX requests
+			currentRequests.forEach(xhr => {
+				if (xhr && xhr.readyState !== 4) {
+					xhr.abort();
+				}
+			});
+			currentRequests = []; // Clear the array
+		});
 
 
 		$(".searchVlRequestDataDiv").html('<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2" style="cursor:pointer;"><span class="dashloader"></span> </div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div>');
@@ -553,20 +566,14 @@ require_once APPLICATION_PATH . '/header.php';
 		sampleCountsDatatableCounter = 0;
 		samplePieChartCounter = 0;
 
-		$.when(
-				fetchSampleResultData(currentRequestType),
-			)
+		$.when(fetchSampleResultData(currentRequestType))
 			.done(function() {
 				$.unblockUI();
 				$(window).scroll();
 			});
 
 
-		$(window).on('beforeunload', function() {
-			if (currentXHR !== null && currentXHR !== undefined) {
-				currentXHR.abort();
-			}
-		});
+
 
 		$(window).on('resize scroll', function() {
 
@@ -694,6 +701,9 @@ require_once APPLICATION_PATH . '/header.php';
 				});
 		}
 
+		// Track the current request
+		currentRequests.push(currentXHR);
+
 		return currentXHR;
 
 	}
@@ -740,6 +750,8 @@ require_once APPLICATION_PATH . '/header.php';
 					}
 				});
 		}
+		// Track the current request
+		currentRequests.push(currentXHR);
 
 		return currentXHR;
 	}
@@ -844,7 +856,8 @@ require_once APPLICATION_PATH . '/header.php';
 					}
 				});
 		}
-
+		// Track the current request
+		currentRequests.push(currentXHR);
 		return currentXHR;
 	}
 
@@ -909,7 +922,7 @@ require_once APPLICATION_PATH . '/header.php';
 	function getVlMonthlyTargetsReport() {
 		// $.blockUI();
 
-		$.post("/vl/program-management/getVlMonthlyThresholdReport.php", {
+		let currentXHR = $.post("/vl/program-management/getVlMonthlyThresholdReport.php", {
 				targetType: '1',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
@@ -928,12 +941,14 @@ require_once APPLICATION_PATH . '/header.php';
 
 			});
 		$.unblockUI();
+		// Track the current request
+		currentRequests.push(currentXHR);
 	}
 
 	function getVlSuppressionTargetReport() {
 		// $.blockUI();
 
-		$.post("/vl/program-management/getSuppressedTargetReport.php", {
+		let currentXHR = $.post("/vl/program-management/getSuppressedTargetReport.php", {
 				targetType: '1',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
@@ -951,12 +966,14 @@ require_once APPLICATION_PATH . '/header.php';
 
 			});
 		$.unblockUI();
+		// Track the current request
+		currentRequests.push(currentXHR);
 	}
 
 	function getCovid19MonthlyTargetsReport() {
 		// $.blockUI();
 
-		$.post("/covid-19/management/getCovid19MonthlyThresholdReport.php", {
+		let currentXHR = $.post("/covid-19/management/getCovid19MonthlyThresholdReport.php", {
 				targetType: '1',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
@@ -975,12 +992,14 @@ require_once APPLICATION_PATH . '/header.php';
 
 			});
 		$.unblockUI();
+		// Track the current request
+		currentRequests.push(currentXHR);
 	}
 
 	function getHepatitisMonthlyTargetsReport() {
 		// $.blockUI();
 
-		$.post("/hepatitis/management/get-hepatitis-monthly-threshold-report.php", {
+		let currentXHR = $.post("/hepatitis/management/get-hepatitis-monthly-threshold-report.php", {
 				targetType: '1',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
@@ -996,12 +1015,14 @@ require_once APPLICATION_PATH . '/header.php';
 				}
 			});
 		$.unblockUI();
+		// Track the current request
+		currentRequests.push(currentXHR);
 	}
 
 	function getTbMonthlyTargetsReport() {
 		// $.blockUI();
 
-		$.post("/tb/management/get-tb-monthly-threshold-report.php", {
+		let currentXHR = $.post("/tb/management/get-tb-monthly-threshold-report.php", {
 				targetType: '1',
 				sampleTestDate: $("#tbSampleCollectionDate").val(),
 			},
@@ -1020,12 +1041,14 @@ require_once APPLICATION_PATH . '/header.php';
 
 			});
 		$.unblockUI();
+		// Track the current request
+		currentRequests.push(currentXHR);
 	}
 
 	function getCd4MonthlyTargetsReport() {
 		// $.blockUI();
 
-		$.post("/cd4/management/get-cd4-monthly-threshold-report.php", {
+		let currentXHR = $.post("/cd4/management/get-cd4-monthly-threshold-report.php", {
 				targetType: '1',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
@@ -1042,6 +1065,8 @@ require_once APPLICATION_PATH . '/header.php';
 
 			});
 		$.unblockUI();
+		// Track the current request
+		currentRequests.push(currentXHR);
 	}
 </script>
 <?php

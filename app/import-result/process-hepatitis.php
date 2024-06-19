@@ -2,10 +2,11 @@
 
 // this file is included in /import-result/processImportedResults.php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -18,6 +19,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var TestResultsService $testResultsService */
+$testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 $fileName = null;
 $importedBy = $_SESSION['userId'];
@@ -345,7 +349,7 @@ try {
 
     if ($numberOfResults > 0) {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';
-        $general->resultImportStats($numberOfResults, $fileName, $importedBy);
+        $testResultsService->resultImportStats($numberOfResults, $fileName, $importedBy);
     }
     echo "importedStatistics.php";
 } catch (Exception $exc) {

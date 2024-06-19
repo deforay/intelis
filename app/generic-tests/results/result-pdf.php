@@ -20,7 +20,7 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 $resultFilename = $showHideTable = '';
 if (!empty($requestResult)) {
-     $_SESSION['rVal'] = $general->generateRandomString(6);
+     $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
      $showHideTable = (string) ($general->getGlobalConfig('generic_tests_table_in_results_pdf')) ?? 'no';
      $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
      MiscUtility::makeDirectory($pathFront);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\JsonUtility;
 use Slim\Psr7\UploadedFile;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -38,7 +39,7 @@ try {
 
     $origJson = $request->getBody()->getContents();
 
-    // if (MiscUtility::isJSON($origJson) === false) {
+    // if (\App\Utilities\JsonUtility::isJSON($origJson) === false) {
     //     LoggerUtility::log("error", "Invalid JSON Payload : " . $origJson);
     //     throw new SystemException("Invalid JSON Payload");
     // }
@@ -53,10 +54,10 @@ try {
     ini_set('max_execution_time', 20000);
     $authToken = $apiService->getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
-    if (!empty($_REQUEST) && !empty($_REQUEST['post']) && MiscUtility::isJSON($_REQUEST['post'])) {
+    if (!empty($_REQUEST) && !empty($_REQUEST['post']) && JsonUtility::isJSON($_REQUEST['post'])) {
         $input = _sanitizeInput($_REQUEST);
         $input['post'] = json_decode((string) $input['post'], true);
-    } elseif (!empty($origJson) && MiscUtility::isJSON($origJson)) {
+    } elseif (!empty($origJson) && JsonUtility::isJSON($origJson)) {
         $input = _sanitizeInput($request->getParsedBody());
     } else {
         throw new SystemException("2 Invalid request. Please check your request parameters.");
@@ -73,7 +74,7 @@ try {
         }
     }
 
-    if (MiscUtility::isJSON($post)) {
+    if (JsonUtility::isJSON($post)) {
         $post = json_decode($post, true);
     }
     $post['loginId'] = $post['loginId'] ?? null;
@@ -102,7 +103,7 @@ try {
 
 
     $data = [
-        'user_id' => (!empty($userId) && $userId != "") ? $userId : $general->generateUUID(),
+        'user_id' => (!empty($userId) && $userId != "") ? $userId : MiscUtility::generateUUID(),
         'user_name' => $db->escape($post['userName']),
         'email' => $db->escape($post['email']),
         'interface_user_name' => !empty($post['interfaceUserName']) ? json_encode(array_map('trim', explode(",", $post['interfaceUserName']))) : null,
@@ -185,7 +186,7 @@ try {
         ];
     }
 
-    $payload = MiscUtility::encodeUtf8Json($payload);
+    $payload = JsonUtility::encodeUtf8Json($payload);
 } catch (Exception | SystemException $exc) {
     $payload = [
         'status' => 'failed',
@@ -194,7 +195,7 @@ try {
         'error' => $exc->getLine() . " | " . $exc->getMessage(),
     ];
 
-    $payload = MiscUtility::encodeUtf8Json($payload);
+    $payload = JsonUtility::encodeUtf8Json($payload);
 
     LoggerUtility::log("error", "Save User Profile API : " . $exc->getMessage(), [
         'file' => __FILE__,

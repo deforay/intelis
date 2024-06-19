@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Utilities\JsonUtility;
 use Exception;
 use Throwable;
 use GuzzleHttp\Client;
@@ -43,7 +44,7 @@ final class ApiService
 
     public static function generateAuthToken(): string
     {
-        return base64_encode(MiscUtility::generateUUID() . "-" . MiscUtility::generateRandomString());
+        return base64_encode(MiscUtility::generateUUID());
     }
 
     protected function createApiClient(): Client
@@ -115,7 +116,7 @@ final class ApiService
         ];
         try {
             if ($gzip) {
-                $compressedPayload = gzencode(MiscUtility::encodeUtf8Json($payload));
+                $compressedPayload = gzencode(JsonUtility::encodeUtf8Json($payload));
                 $options[RequestOptions::BODY] = $compressedPayload;
                 $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
                 $options[RequestOptions::HEADERS]['Accept-Encoding'] = 'gzip, deflate';
@@ -290,7 +291,7 @@ final class ApiService
     public function sendJsonResponse(mixed $payload)
     {
         // Ensure payload is a JSON string
-        $jsonPayload = is_array($payload) || is_object($payload) ? MiscUtility::encodeUtf8Json($payload) : $payload;
+        $jsonPayload = is_array($payload) || is_object($payload) ? JsonUtility::encodeUtf8Json($payload) : $payload;
 
         // Check for json_encode errors
         if (json_last_error() != JSON_ERROR_NONE) {

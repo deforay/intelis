@@ -1,7 +1,15 @@
 <?php
+
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+
 $title = _translate("Add Samples from Manifest");
 
 require_once APPLICATION_PATH . '/header.php';
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 
 
 ?>
@@ -242,7 +250,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	/* Remote Syn only package code matches */
 	<?php if ($general->isLISInstance()) { ?>
-		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
+		let remoteUrl = '<?= $general->getRemoteURL(); ?>';
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({
@@ -300,4 +308,5 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 </script>
 <?php
+
 require_once APPLICATION_PATH . '/footer.php';

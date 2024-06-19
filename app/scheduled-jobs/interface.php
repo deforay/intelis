@@ -17,6 +17,7 @@ use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
@@ -34,6 +35,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var TestResultsService $testResultsService */
+$testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $formId = (int) $general->getGlobalConfig('vl_form');
@@ -48,10 +51,7 @@ $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'la
 $mysqlConnected = false;
 $sqliteConnected = false;
 
-if (
-    !empty(SYSTEM_CONFIG['interfacing']['database']['host']) &&
-    !empty(SYSTEM_CONFIG['interfacing']['database']['username'])
-) {
+if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CONFIG['interfacing']['database']['username'])) {
     $mysqlConnected = true;
     $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
 }
@@ -162,6 +162,7 @@ if (!empty($interfaceData)) {
 
         $approved = !empty($instrumentDetails['approved_by']) ? json_decode((string) $instrumentDetails['approved_by'], true) : [];
         $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode((string) $instrumentDetails['reviewed_by'], true) : [];
+        $instrumentId = $instrumentDetails['instrument_id'] ?? null;
 
         if (isset($tableInfo['vl_sample_id'])) {
 
@@ -203,7 +204,7 @@ if (!empty($interfaceData)) {
                 }
             }
 
-            $testedByUserId = $approvedByUserId = $reviewedByUserId = null;
+            $testedByUserId = null;
             // if ^ exists it means the Operator Name has both tester and releaser name
             if (str_contains(strtolower((string)$result['tested_by']), '^')) {
                 $operatorArray = explode("^", (string) $result['tested_by']);
@@ -215,6 +216,7 @@ if (!empty($interfaceData)) {
 
             $data = [
                 'lab_id' => $labId,
+                'instrument_id' => $instrumentId,
                 'tested_by' => $testedByUserId,
                 'result_approved_by' => $approved['vl'] ?? null,
                 'result_approved_datetime' => $result['authorised_date_time'],
@@ -306,7 +308,9 @@ if (!empty($interfaceData)) {
             }
 
             $data = [
+                'lab_id' => $labId,
                 'tested_by' => $result['tested_by'],
+                'instrument_id' => $instrumentId,
                 'result_approved_datetime' => $result['authorised_date_time'],
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
                 'result' => $eidResult,
@@ -385,6 +389,7 @@ if (!empty($interfaceData)) {
 
             $data = [
                 'lab_id' => $labId,
+                'instrument_id' => $instrumentId,
                 'tested_by' => $userId,
                 'result_approved_datetime' => $result['authorised_date_time'],
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
@@ -463,6 +468,6 @@ if (!empty($interfaceData)) {
 
     if ($numberOfResults > 0) {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';
-        $general->resultImportStats($numberOfResults, 'interface', $importedBy);
+        $testResultsService->resultImportStats($numberOfResults, 'interface', $importedBy);
     }
 }

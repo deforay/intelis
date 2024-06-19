@@ -2,12 +2,13 @@
 
 // this file is included in /import-result/processImportedResults.php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
+use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
 
@@ -27,6 +28,9 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var TestResultsService $testResultsService */
+$testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 $tableName = "temp_sample_import";
 $tableName1 = "form_covid19";
@@ -326,7 +330,7 @@ try {
 
     if ($numberOfResults > 0) {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';
-        $general->resultImportStats($numberOfResults, $fileName, $importedBy);
+        $testResultsService->resultImportStats($numberOfResults, $fileName, $importedBy);
     }
 
     echo "importedStatistics.php";

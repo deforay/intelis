@@ -11,6 +11,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -42,9 +43,9 @@ try {
     }
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
-    $fileName = str_replace(" ", "-", $fileName) . "-" . $general->generateRandomString(12);
-    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileName = $_POST['fileName'] . "." . $extension;
+
+    $extension = MiscUtility::getFileExtension($fileName);
+    $fileName = $_POST['fileName'] . "-" . MiscUtility::generateRandomString(12) . "." . $extension;
 
 
 

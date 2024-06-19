@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Utilities\MiscUtility;
 use Exception;
 use Throwable;
 use App\Utilities\DateUtility;
@@ -103,7 +104,7 @@ final class PatientsService
             $systemPatientCode = $this->getSystemPatientId($data['patient_code'], $params['patientGender'], DateUtility::isoDateFormat($params['dob'] ?? ''));
 
             if (empty($systemPatientCode) || $systemPatientCode === '') {
-                $systemPatientCode = $this->commonService->generateUUID();
+                $systemPatientCode = MiscUtility::generateUUID();
             }
 
             $data['system_patient_code'] = $systemPatientCode;

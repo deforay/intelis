@@ -5,6 +5,7 @@ use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\EidService;
 use App\Services\UsersService;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\SystemService;
@@ -457,6 +458,6 @@ if ($status) {
     ];
     http_response_code(401);
 }
-$payload = MiscUtility::encodeUtf8Json($payload);
+$payload = JsonUtility::encodeUtf8Json($payload);
 $trackId = $general->addApiTracking($transactionId, $user['user_id'], 1, 'init', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 echo $payload;

@@ -20,7 +20,7 @@ $countryFormId = (int) $general->getGlobalConfig('vl_form');
 $resultFilename = '';
 
 if (!empty($requestResult)) {
-    $_SESSION['rVal'] = $general->generateRandomString(6);
+    $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
     $pages = [];
@@ -443,7 +443,7 @@ if (!empty($requestResult)) {
         if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
             $viewId = CommonService::encryptViewQRCode($result['unique_id']);
             $pdf->writeHTML($html);
-            $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
+            $remoteUrl = $general->getRemoteURL();
             if (isset($arr['tb_report_qr_code']) && $arr['tb_report_qr_code'] == 'yes') {
                 $h = 175;
                 if (!empty($signResults)) {

@@ -386,7 +386,7 @@ try {
         $freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_id', $_POST['freezer']);
 
         if (empty($freezerCheck)) {
-            $storageId = $general->generateUUID();
+            $storageId = MiscUtility::generateUUID();
             $freezerCode = $_POST['freezer'];
             $d = [
                 'storage_id' => $storageId,
@@ -443,7 +443,7 @@ try {
 
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
             $cpyReq = $general->getGlobalConfig('vl_copy_request_save_and_next');
-            if(isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes'){
+            if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
                 $_SESSION['vlData'] = $vlData;
             }
             header("Location:/vl/requests/addVlRequest.php");

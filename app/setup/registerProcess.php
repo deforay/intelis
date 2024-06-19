@@ -1,6 +1,7 @@
 <?php
 
 use App\Registries\AppRegistry;
+use App\Utilities\MiscUtility;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Services\CommonService;
@@ -49,7 +50,7 @@ try {
     if (!empty($userName) && !empty($password)) {
 
         $userPassword = $usersService->passwordHash($password);
-        $userId = $general->generateUUID();
+        $userId = MiscUtility::generateUUID();
 
 
         $insertData = array(
@@ -93,7 +94,7 @@ try {
             $db->query("INSERT IGNORE INTO roles_privileges_map(role_id,privilege_id) VALUES (1,$privilegeId)");
         }
 
-        if (!empty(SYSTEM_CONFIG['remoteURL']) && $general->isLISInstance()) {
+        if (!empty($general->getRemoteURL()) && $general->isLISInstance()) {
             $insertData['userId'] = $userId;
             $insertData['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
             $insertData['password'] = null; // We don't want to unintentionally end up creating admin users on STS
@@ -102,10 +103,10 @@ try {
             $insertData['status'] = 'inactive';
 
 
-            $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
+            $apiUrl = $general->getRemoteURL() . "/api/v1.1/user/save-user-profile.php";
             $post = array(
                 'post' => json_encode($insertData),
-                'x-api-key' => $general->generateRandomString(18)
+                'x-api-key' => MiscUtility::generateRandomString(18)
             );
 
             $client = new Client();

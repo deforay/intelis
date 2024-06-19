@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Services\StorageService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
@@ -21,6 +22,11 @@ $general = ContainerRegistry::get(CommonService::class);
 $storageService = ContainerRegistry::get(StorageService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_GET = _sanitizeInput($request->getQueryParams());
 
 $labId = null;
 if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != "") {

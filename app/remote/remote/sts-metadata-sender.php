@@ -2,6 +2,7 @@
 //get data from STS send to requesting LIS instance
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -33,7 +34,7 @@ $data = $apiService->getJsonFromRequest($request, decode: true);
 
 $counter = 0;
 
-$transactionId = $general->generateUUID();
+$transactionId = MiscUtility::generateUUID();
 
 if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
 
@@ -351,7 +352,7 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
 
     if (!empty($response)) {
         // using array_filter without callback will remove keys with empty values
-        $payload = MiscUtility::encodeUtf8Json(array_filter($response));
+        $payload = JsonUtility::encodeUtf8Json(array_filter($response));
     } else {
         $payload = json_encode([]);
     }
@@ -359,7 +360,7 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
     $payload =  json_encode(['status' => 'error', 'message' => 'Invalid request']);
 }
 
-$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], MiscUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
 $sql = 'UPDATE facility_details
             SET facility_attributes

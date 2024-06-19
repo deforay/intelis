@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -27,8 +28,8 @@ $zip = new ZipArchive();
 $userRequest = $userResponse = "{}";
 $folder = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api');
 
-$userRequest = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
-$userResponse = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
+$userRequest = MiscUtility::getDataFromZippedFile($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
+$userResponse = MiscUtility::getDataFromZippedFile($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
 
 ?>
 
@@ -57,10 +58,10 @@ $userResponse = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'res
             </div>
             <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade in active" id="request" style="min-height:300px;">
-                    <pre><?= MiscUtility::prettyJson($userRequest); ?></pre>
+                    <pre><?= JsonUtility::prettyJson($userRequest); ?></pre>
                 </div>
                 <div class="tab-pane fade in" id="response" style="min-height:300px;">
-                    <pre><?= MiscUtility::prettyJson($userResponse); ?></pre>
+                    <pre><?= JsonUtility::prettyJson($userResponse); ?></pre>
                 </div>
             </div>
     </section>

@@ -33,7 +33,7 @@ try {
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', (string) $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
     $ranNumber = MiscUtility::generateRandomString(12);
-    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $extension = MiscUtility::getFileExtension($fileName);
     $fileName = $ranNumber . "." . $extension;
 
     MiscUtility::makeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request");
@@ -81,7 +81,7 @@ try {
                 $data = array(
                     'vlsm_instance_id'                      => $instanceId['vlsm_instance_id'],
                     'sample_code'                           => $rowData['A'],
-                    'unique_id'                             => $general->generateUUID(),
+                    'unique_id'                             => MiscUtility::generateUUID(),
                     'vlsm_country_id'                       => $arr['vl_form'],
                     'source_of_alert'                       => (isset($rowData['B']) && $rowData['B'] != "") ? strtolower(str_replace(" ", "-", (string) $rowData['B'])) : null,
                     'source_of_alert_other'                 => $rowData['C'],

@@ -6,6 +6,7 @@ header('Content-Type: application/json');
 use App\Interop\Fhir;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -89,7 +90,7 @@ try {
     // echo prettyJson($json);
     // die;
 
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
     $version = $general->getSystemConfig('sc_version');
 
     foreach ($entries as $entry) {
@@ -365,10 +366,10 @@ try {
 
     $trackId = $general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
 
-    echo MiscUtility::prettyJson($response);
+    echo JsonUtility::prettyJson($response);
 
     $db->commitTransaction();
-} catch (\Throwable $exception) {
+} catch (Throwable $exception) {
     $db->rollbackTransaction();
     LoggerUtility::log('error', "Error while receiving FHIR data : " . $exception->getMessage());
 }

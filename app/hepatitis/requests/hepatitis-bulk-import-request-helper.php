@@ -32,7 +32,7 @@ try {
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', (string) $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
     $ranNumber = MiscUtility::generateRandomString(12);
-    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $extension = MiscUtility::getFileExtension($fileName);
     $fileName = $ranNumber . "." . $extension;
 
     if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request")) {

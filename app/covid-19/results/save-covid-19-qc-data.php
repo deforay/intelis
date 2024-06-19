@@ -4,6 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -26,7 +27,7 @@ try {
     if (isset($_POST['qcCode']) && trim((string) $_POST['qcCode']) != "") {
 
         $data = array(
-            'unique_id'             => $general->generateUUID(),
+            'unique_id'             => MiscUtility::generateUUID(),
             'qc_code'               => $_POST['qcCode'],
             'testkit'               => base64_decode((string) $_POST['testKit']),
             'lot_no'                => $_POST['lotNo'],

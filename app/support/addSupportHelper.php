@@ -1,7 +1,8 @@
 <?php
 
-use App\Exceptions\SystemException;
 use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
+use App\Exceptions\SystemException;
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();

@@ -543,3 +543,7 @@ VALUES
 
  --Jeyabanu 06-Jun-2024
  ALTER TABLE `batch_details` ADD `batch_attributes` JSON NULL DEFAULT NULL AFTER `batch_status`;
+
+
+-- Amit 17-Jun-2024
+UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=generic-tests,/import-result/importedStatistics.php?t=generic-tests' WHERE `link` like '/import-result/import-file.php?t=generic-tests';

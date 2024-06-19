@@ -27,7 +27,7 @@ if (!empty($userRes['user_signature'])) {
 }
 
 if (!empty($requestResult)) {
-    $_SESSION['rVal'] = $general->generateRandomString(6);
+    $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
     $pages = [];
@@ -454,11 +454,11 @@ if (!empty($requestResult)) {
 
         if (($result['hcv_vl_count'] != '' || $result['hbv_vl_count'] != '') || (($result['hcv_vl_count'] == '' || $result['hbv_vl_count'] == '') && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
             $pdf->writeHTML($html);
-            if (isset($arr['hepatitis_report_qr_code']) && $arr['hepatitis_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+            if (isset($arr['hepatitis_report_qr_code']) && $arr['hepatitis_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
                 $keyFromGlobalConfig = $general->getGlobalConfig('key');
                 if (!empty($keyFromGlobalConfig)) {
                     $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode((string) $keyFromGlobalConfig));
-                    $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
+                    $remoteUrl = $general->getRemoteURL();
                     $pdf->write2DBarcode($remoteUrl . '/hepatitis/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 200, 30, 30, [], 'N');
                 }
             }

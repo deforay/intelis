@@ -7,6 +7,8 @@ use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Utilities\LoggerUtility;
+use App\Utilities\MiscUtility;
 use Laminas\Diactoros\ServerRequest;
 
 final class UsersService
@@ -208,7 +210,7 @@ final class UsersService
         $result = $this->db->rawQueryOne($uQuery, [$name, $name]);
         if ($result == null) {
 
-            $userId = $this->commonService->generateUUID();
+            $userId = MiscUtility::generateUUID();
             $userData = [
                 'user_id' => $userId,
                 'user_name' => $name,

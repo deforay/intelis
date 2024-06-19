@@ -299,7 +299,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['sample_name']) . '</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['vl_test_platform']) . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['instrument_machine_name']) . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td colspan="4" style="line-height:16px;"></td>';
@@ -394,9 +394,9 @@ if (!empty($result)) {
      $html .= '</table>';
      if (!empty($result['result'])) {
           $pdf->writeHTML($html);
-          if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+          if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
                $viewId = CommonService::encryptViewQRCode($result['unique_id']);
-               $remoteUrl = rtrim((string) SYSTEM_CONFIG['remoteURL'], "/");
+               $remoteUrl = $general->getRemoteURL();
                $pdf->write2DBarcode($remoteUrl . '/vl/results/view.php?q=' . $viewId, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
           }
           $pdf->lastPage();

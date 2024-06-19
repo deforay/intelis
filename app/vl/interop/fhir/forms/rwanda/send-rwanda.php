@@ -6,6 +6,7 @@ header('Content-Type: application/json');
 use App\Interop\Fhir;
 use App\Services\DatabaseService;
 use App\Services\VlService;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
@@ -37,7 +38,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
-$transactionId = $general->generateUUID();
+$transactionId = MiscUtility::generateUUID();
 
 $fhir = new Fhir($interopConfig['FHIR']['url'], $interopConfig['FHIR']['auth']);
 
@@ -125,4 +126,4 @@ $response = json_encode(array('timestamp' => time(), 'processed' => $counter, 'r
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'FHIR-VL-Send', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
 
-echo MiscUtility::prettyJson($response);
+echo JsonUtility::prettyJson($response);

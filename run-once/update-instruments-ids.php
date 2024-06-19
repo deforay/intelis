@@ -4,6 +4,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 
 // only run from command line
 if (php_sapi_name() !== 'cli') {
@@ -51,7 +52,7 @@ foreach ($instrumentResult as $row) {
     $oldInstrumentId = null;
     if (is_numeric($row['instrument_id'])) {
         $oldInstrumentId = $row['instrument_id'];
-        $instrumentId = $general->generateUUID();
+        $instrumentId = MiscUtility::generateUUID();
         $db->where("instrument_id", $row['instrument_id']);
         $db->update('instruments', ['instrument_id' => $instrumentId, 'updated_datetime' => $updatedOn]);
 

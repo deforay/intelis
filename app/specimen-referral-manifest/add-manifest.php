@@ -13,6 +13,7 @@ use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Utilities\MiscUtility;
 
 $title = "Add New Specimen Referral Manifest";
 
@@ -76,7 +77,7 @@ if ($module == 'vl') {
 	$genService = ContainerRegistry::get(GenericTestsService::class);
 	$sampleTypes = $genService->getGenericSampleTypes();
 }
-$packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomString(6));
+$packageNo = strtoupper($shortCode . date('ymd') .  MiscUtility::generateRandomString(6));
 
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
@@ -445,7 +446,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	function getManifestCodeForm(value) {
 		if (value != "") {
 			shortCode = $("#testType").find(":selected").attr("data-short");
-			var code = shortCode.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $general->generateRandomString(6)); ?>';
+			var code = shortCode.toUpperCase() + '<?php echo strtoupper(date('ymd') .  MiscUtility::generateRandomString(6)); ?>';
 			$('#packageCode').val(code);
 			$("#addSpecimenReferralManifestForm").removeClass("hide");
 		}

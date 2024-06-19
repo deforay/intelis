@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\JsonUtility;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -46,7 +47,7 @@ try {
     $noOfFailedRecords = 0;
 
     $origJson = $request->getBody()->getContents();
-    if (MiscUtility::isJSON($origJson) === false) {
+    if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
     }
     $appVersion = null;
@@ -212,7 +213,7 @@ try {
             }
 
             // if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
-            //     $uniqueId = $data['uniqueId'] = $general->generateUUID();
+            //     $uniqueId = $data['uniqueId'] = \App\Utilities\MiscUtility::generateUUID();
             // }
 
             $currentSampleData = [];
@@ -225,7 +226,7 @@ try {
                 $params['appSampleCode'] = $data['appSampleCode'] ?? null;
                 $params['provinceCode'] = $provinceCode;
                 $params['provinceId'] = $provinceId;
-                $params['uniqueId'] = $uniqueId ?? $general->generateUUID();
+                $params['uniqueId'] = $uniqueId ?? MiscUtility::generateUUID();
                 $params['sampleCollectionDate'] = $sampleCollectionDate;
                 $params['userId'] = $user['user_id'];
                 $params['accessType'] = $user['access_type'];
@@ -496,6 +497,6 @@ try {
         'trace' => $exc->getTraceAsString()
     ]);
 }
-$payload = MiscUtility::encodeUtf8Json($payload);
+$payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], _getIteratorCount($input), 'save-request', 'generic-tests', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

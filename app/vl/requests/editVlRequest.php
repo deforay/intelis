@@ -8,6 +8,7 @@ use App\Utilities\DateUtility;
 use App\Services\FacilitiesService;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -42,7 +43,7 @@ $reasonForFailure = $vlService->getReasonForFailure();
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
+$id = (isset($_GET['id'])) ? MiscUtility::decode($_GET['id']) : null;
 
 
 // get instruments

@@ -9,6 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
@@ -26,7 +27,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
 $origJson = $request->getBody()->getContents();
-if (MiscUtility::isJSON($origJson) === false) {
+if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload");
 }
 $input = $request->getParsedBody();
@@ -111,6 +112,6 @@ try {
     LoggerUtility::log('error', $exc->getMessage());
 }
 
-$payload = MiscUtility::encodeUtf8Json($payload);
+$payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'cancel-requests', $input['testType'], $requestUrl, $origJson, $payload, 'json');
 echo $payload;

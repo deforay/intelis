@@ -2,14 +2,16 @@
 
 // File included in import-file-helper.php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
+use App\Utilities\MiscUtility;
 use League\Csv\Reader;
 use App\Services\VlService;
 use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
@@ -39,9 +41,7 @@ try {
 
     $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $allowedExtensions = array(
-        'csv',
-    );
+    $allowedExtensions = ['csv'];
 
     if (
         isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
@@ -51,12 +51,11 @@ try {
     }
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
-    $fileName = str_replace(" ", "-", $fileName) . "-" . $general->generateRandomString(12);
-    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $extension = MiscUtility::getFileExtension($fileName);
     if (!in_array($extension, $allowedExtensions)) {
         throw new SystemException("Invalid file format.");
     }
-    $fileName = $_POST['fileName'] . "." . $extension;
+    $fileName = $_POST['fileName'] . "-" . MiscUtility::generateRandomString(12) . "." . $extension;
 
     $resultFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results";
     if (!file_exists($resultFilePath) && !is_dir($resultFilePath)) {
@@ -212,11 +211,11 @@ try {
     $general->activityLog($eventType, $action, $resource);
 
 
-    header("Location:/import-result/imported-results.php?t=$type");
+    header("Location:/import-result/imported-results.php?t=vl");
 } catch (Exception $exc) {
 
-    error_log($exc->getMessage());
+    LoggerUtility::log('error', $exc->getMessage(), ['file' => __FILE__, 'line' => __LINE__, 'trace' => $exc->getTraceAsString()]);
 
-    $_SESSION['alertMsg'] = "Result file could not be imported. Please check if the file is of correct format.";
-    header("Location:/import-result/import-file.php?t=" . base64_encode('vl'));
+    $_SESSION['alertMsg'] = _translate("Result file could not be imported. Please check if the file is of correct format.");
+    header("Location:/import-result/import-file.php?t=vl");
 }

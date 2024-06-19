@@ -1,11 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -40,10 +41,10 @@ try {
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
 
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
 
     $sampleCodes = $facilityIds = [];
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         //remove fields that we DO NOT NEED here
         $unwantedColumns = [
@@ -162,7 +163,7 @@ try {
         }
     }
 
-    $payload = MiscUtility::encodeUtf8Json($sampleCodes);
+    $payload = JsonUtility::encodeUtf8Json($sampleCodes);
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 

@@ -1,11 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -53,11 +54,11 @@ try {
     // Create an array with all column names set to null
     $emptyLabArray = $general->getTableFieldsAsArray('form_generic', $unwantedColumns);
 
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
 
     $sampleCodes = $facilityIds = [];
     $labId = null;
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         $resultData = [];
         $testResultsData = [];
@@ -183,7 +184,7 @@ try {
         }
     }
 
-    $payload = MiscUtility::encodeUtf8Json($sampleCodes);
+    $payload = JsonUtility::encodeUtf8Json($sampleCodes);
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'generic-tests', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
     $general->updateResultSyncDateTime('generic', $facilityIds, $labId);

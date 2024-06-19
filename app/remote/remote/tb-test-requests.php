@@ -4,6 +4,7 @@ require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Exceptions\SystemException;
@@ -31,7 +32,7 @@ try {
     }
     $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
-    $transactionId = $general->generateUUID();
+    $transactionId = MiscUtility::generateUUID();
 
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
     $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
@@ -64,9 +65,9 @@ try {
         $response['result'] = $rResult;
     }
 
-    $payload = MiscUtility::encodeUtf8Json($response);
+    $payload = JsonUtility::encodeUtf8Json($response);
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'tb', $_SERVER['REQUEST_URI'], MiscUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'tb', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
 
     $general->updateTestRequestsSyncDateTime('tb', $facilityIds, $labId);

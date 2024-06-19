@@ -9,6 +9,7 @@ require_once(__DIR__ . "/../../bootstrap.php");
 
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Utilities\MiscUtility;
 use Ifsnop\Mysqldump as IMysqldump;
 use App\Registries\ContainerRegistry;
 
@@ -23,7 +24,7 @@ $backupFolder = APPLICATION_PATH . '/../backups';
 if (!is_dir($backupFolder)) {
     mkdir($backupFolder, 0777, true);
 }
-$randomString = $general->generateRandomString(12);
+$randomString = MiscUtility::generateRandomString(12);
 $sqlFileName = realpath($backupFolder) . DIRECTORY_SEPARATOR . 'vlsm-' . date("dmYHis") . '-' . $randomString . '.sql';
 
 try {

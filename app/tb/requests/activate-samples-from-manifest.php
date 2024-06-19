@@ -1,6 +1,5 @@
 <?php
 
-use Throwable;
 use App\Services\TbService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;

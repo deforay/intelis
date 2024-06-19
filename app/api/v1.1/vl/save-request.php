@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Utilities\JsonUtility;
 use JsonMachine\Items;
 use App\Services\VlService;
 use App\Services\ApiService;
@@ -44,7 +45,7 @@ try {
     $noOfFailedRecords = 0;
 
     $origJson = $request->getBody()->getContents();
-    if (MiscUtility::isJSON($origJson) === false) {
+    if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
     }
     $appVersion = null;
@@ -193,7 +194,7 @@ try {
                 $update = "yes";
                 $uniqueId = $rowData['unique_id'];
             } else {
-                $uniqueId = $general->generateUUID();
+                $uniqueId = MiscUtility::generateUUID();
             }
         }
 
@@ -482,7 +483,7 @@ try {
     ]);
 }
 
-$payload = MiscUtility::encodeUtf8Json($payload);
+$payload = JsonUtility::encodeUtf8Json($payload);
 
 $general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 

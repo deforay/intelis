@@ -3,6 +3,7 @@
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Utilities\MiscUtility;
 
 
 $title = _translate("Covid-19 | Confirmation Manifest");
@@ -17,7 +18,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$packageNo = strtoupper($module) . date('ymd') .  $general->generateRandomString(6);
+$packageNo = strtoupper($module) . date('ymd') .  MiscUtility::generateRandomString(6);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>

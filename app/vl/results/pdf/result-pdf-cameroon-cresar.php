@@ -278,7 +278,7 @@ if (!empty($result)) {
      $html .= '<tr><td></td></tr>';
      $html .= '<tr>';
      $html .= '<td width="10%" style="line-height:18px;font-size:10px;text-align:left;">' . _translate('Test Name') . ' : </td>';
-     $html .= '<td width="50%" style="line-height:18px;font-size:10px;text-align:left; border: 1px solid black;">&nbsp;' . $result['vl_test_platform'] . '</td>';
+     $html .= '<td width="50%" style="line-height:18px;font-size:10px;text-align:left; border: 1px solid black;">&nbsp;' . $result['instrument_machine_name'] . '</td>';
      $html .= '<td width="10%" style="line-height:18px;font-size:10px;text-align:right;">' . _translate('Test Date') . ' : &nbsp;</td>';
      $html .= '<td width="30%" style="line-height:18px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $result['sample_tested_datetime'] . '</td>';
      $html .= '</tr>';
