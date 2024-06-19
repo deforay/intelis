@@ -162,6 +162,7 @@ if (!empty($interfaceData)) {
 
         $approved = !empty($instrumentDetails['approved_by']) ? json_decode((string) $instrumentDetails['approved_by'], true) : [];
         $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode((string) $instrumentDetails['reviewed_by'], true) : [];
+        $instrumentId = $instrumentDetails['instrument_id'] ?? null;
 
         if (isset($tableInfo['vl_sample_id'])) {
 
@@ -215,6 +216,7 @@ if (!empty($interfaceData)) {
 
             $data = [
                 'lab_id' => $labId,
+                'instrument_id' => $instrumentId,
                 'tested_by' => $testedByUserId,
                 'result_approved_by' => $approved['vl'] ?? null,
                 'result_approved_datetime' => $result['authorised_date_time'],
@@ -306,7 +308,9 @@ if (!empty($interfaceData)) {
             }
 
             $data = [
+                'lab_id' => $labId,
                 'tested_by' => $result['tested_by'],
+                'instrument_id' => $instrumentId,
                 'result_approved_datetime' => $result['authorised_date_time'],
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
                 'result' => $eidResult,
@@ -385,6 +389,7 @@ if (!empty($interfaceData)) {
 
             $data = [
                 'lab_id' => $labId,
+                'instrument_id' => $instrumentId,
                 'tested_by' => $userId,
                 'result_approved_datetime' => $result['authorised_date_time'],
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
