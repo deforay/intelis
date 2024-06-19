@@ -51,10 +51,7 @@ $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'la
 $mysqlConnected = false;
 $sqliteConnected = false;
 
-if (
-    !empty(SYSTEM_CONFIG['interfacing']['database']['host']) &&
-    !empty(SYSTEM_CONFIG['interfacing']['database']['username'])
-) {
+if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CONFIG['interfacing']['database']['username'])) {
     $mysqlConnected = true;
     $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
 }
@@ -206,7 +203,7 @@ if (!empty($interfaceData)) {
                 }
             }
 
-            $testedByUserId = $approvedByUserId = $reviewedByUserId = null;
+            $testedByUserId = null;
             // if ^ exists it means the Operator Name has both tester and releaser name
             if (str_contains(strtolower((string)$result['tested_by']), '^')) {
                 $operatorArray = explode("^", (string) $result['tested_by']);

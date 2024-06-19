@@ -9,9 +9,9 @@ use App\Helpers\ResultPDFHelpers\CountrySpecificHelpers\DrcVlPDFHelper;
 
 if (!empty($result)) {
 
-	$signQuery = "SELECT * FROM lab_report_signatories
-						WHERE lab_id=? AND test_types LIKE '%vl%' AND signatory_status like 'active' ORDER BY display_order ASC";
-	$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
+	// $signQuery = "SELECT * FROM lab_report_signatories
+	// 					WHERE lab_id=? AND test_types LIKE '%vl%' AND signatory_status like 'active' ORDER BY display_order ASC";
+	// $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
 
 	$_SESSION['aliasPage'] = $page;
 	if (!isset($result['labName'])) {
@@ -131,20 +131,17 @@ if (!empty($result)) {
 	}
 	$resultApprovedBy  = '';
 	$userRes = [];
-	if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
-		$resultApprovedBy = ($result['approvedBy']);
-		$userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
-	} else {
-		if (!empty($result['defaultApprovedBy'])) {
-			$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-			if ($approvedByRes) {
-				$resultApprovedBy = $approvedByRes['user_name'];
-				$result['approvedBySignature'] = $approvedByRes['user_signature'];
-				$result['result_approved_datetime'] = $result['sample_tested_datetime'];
-				$userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
-			}
+	if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
+		$resultApprovedBy = $result['approvedBy'];
+		$userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
+	} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
+		$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+		if ($approvedByRes) {
+			$resultApprovedBy = $approvedByRes['user_name'];
 		}
+		$userRes['user_signature'] = $approvedByRes;
 	}
+
 	$userSignaturePath = null;
 
 	if (!empty($userRes['user_signature'])) {
@@ -300,27 +297,27 @@ if (!empty($result)) {
 		$html .= '<td colspan="3" style="line-height:16px;"></td>';
 		$html .= '</tr>';
 	}
-	if (empty($signResults)) {
+	//if (empty($signResults)) {
 
-		if (!empty($userSignaturePath) && MiscUtility::imageExists($userSignaturePath) && !empty($resultApprovedBy)) {
-			$html .= '<tr>';
-			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:100px;margin-top:-20px;" /><br></td>';
-			$html .= '</tr>';
-		}
+	if (!empty($userSignaturePath) && MiscUtility::imageExists($userSignaturePath) && !empty($resultApprovedBy)) {
 		$html .= '<tr>';
-		$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Approuvé par&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $resultApprovedBy . '</span></td>';
-		$html .= '</tr>';
-		$html .= '<tr>';
-		$html .= '<td colspan="3" style="line-height:10px;"></td>';
-		$html .= '</tr>';
-
-		$html .= '<tr>';
-		$html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
-		$html .= '</tr>';
-		$html .= '<tr>';
-		$html .= '<td colspan="3" style="line-height:14px;"></td>';
+		$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:100px;margin-top:-20px;" /><br></td>';
 		$html .= '</tr>';
 	}
+	$html .= '<tr>';
+	$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Approuvé par&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $resultApprovedBy . '</span></td>';
+	$html .= '</tr>';
+	$html .= '<tr>';
+	$html .= '<td colspan="3" style="line-height:10px;"></td>';
+	$html .= '</tr>';
+
+	$html .= '<tr>';
+	$html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
+	$html .= '</tr>';
+	$html .= '<tr>';
+	$html .= '<td colspan="3" style="line-height:14px;"></td>';
+	$html .= '</tr>';
+	//}
 
 
 	if ($result['last_viral_load_date'] != '' || $result['last_viral_load_result'] != '') {
@@ -346,29 +343,29 @@ if (!empty($result)) {
 	$html .= '<tr>';
 	$html .= '<tr>';
 	$html .= '<td colspan="3">';
-	if (!empty($signResults)) {
-		$html .= '<table style="width:100%;padding:3px;border:1px solid gray;">';
-		$html .= '<tr>';
-		$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;">AUTORISÉ PAR</td>';
-		$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">IMPRIMER LE NOM</td>';
-		$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">SIGNATURE</td>';
-		$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">DATE & HEURE</td>';
-		$html .= '</tr>';
-		foreach ($signResults as $key => $row) {
-			$lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
-			$signature = '';
-			if (MiscUtility::imageExists($lmSign)) {
-				$signature = '<img src="' . $lmSign . '" style="width:40px;" />';
-			}
-			$html .= '<tr>';
-			$html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid gray;">' . $row['designation'] . '</td>';
-			$html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $row['name_of_signatory'] . '</td>';
-			$html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $signature . '</td>';
-			$html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . date('d-M-Y H:i:s a') . '</td>';
-			$html .= '</tr>';
-		}
-		$html .= '</table>';
-	}
+	// if (!empty($signResults)) {
+	// 	$html .= '<table style="width:100%;padding:3px;border:1px solid gray;">';
+	// 	$html .= '<tr>';
+	// 	$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;">AUTORISÉ PAR</td>';
+	// 	$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">IMPRIMER LE NOM</td>';
+	// 	$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">SIGNATURE</td>';
+	// 	$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">DATE & HEURE</td>';
+	// 	$html .= '</tr>';
+	// 	foreach ($signResults as $key => $row) {
+	// 		$lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+	// 		$signature = '';
+	// 		if (MiscUtility::imageExists($lmSign)) {
+	// 			$signature = '<img src="' . $lmSign . '" style="width:40px;" />';
+	// 		}
+	// 		$html .= '<tr>';
+	// 		$html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid gray;">' . $row['designation'] . '</td>';
+	// 		$html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $row['name_of_signatory'] . '</td>';
+	// 		$html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $signature . '</td>';
+	// 		$html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . date('d-M-Y H:i:s a') . '</td>';
+	// 		$html .= '</tr>';
+	// 	}
+	// 	$html .= '</table>';
+	// }
 	$html .= '</td>';
 	$html .= '</tr>';
 	$html .= '<tr>';

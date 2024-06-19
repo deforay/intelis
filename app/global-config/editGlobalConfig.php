@@ -559,8 +559,8 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
-									<?php } 
-									if (isset($arr['vl_copy_request_save_and_next']) && $arr['vl_copy_request_save_and_next'] != '') { ?>
+									<?php }
+									if ($arr['vl_form'] === COUNTRY\CAMEROON && isset($arr['vl_copy_request_save_and_next']) && $arr['vl_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -575,7 +575,8 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
-									<?php } if (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] != '') { ?>
+									<?php }
+									if (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -590,7 +591,8 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
-									<?php } if (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] != '') { ?>
+									<?php }
+									if (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -768,7 +770,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 											</div>
 										</div>
 									</div>
-									<?php if (isset($arr['eid_copy_request_save_and_next']) && $arr['eid_copy_request_save_and_next'] != '') { ?>
+									<?php if ($arr['vl_form'] === COUNTRY\CAMEROON && isset($arr['eid_copy_request_save_and_next']) && $arr['eid_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -783,7 +785,8 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
-									<?php } if (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] != '') { ?>
+									<?php }
+									if (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -973,7 +976,8 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
-									<?php } if (isset($arr['covid19_copy_request_save_and_next']) && $arr['covid19_copy_request_save_and_next'] != '') { ?>
+									<?php }
+									if ($arr['vl_form'] === COUNTRY\CAMEROON && isset($arr['covid19_copy_request_save_and_next']) && $arr['covid19_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -1151,7 +1155,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 											</div>
 										</div>
 									</div>
-									<?php if (isset($arr['hepatitis_copy_request_save_and_next']) && $arr['hepatitis_copy_request_save_and_next'] != '') { ?>
+									<?php if ($arr['vl_form'] === COUNTRY\CAMEROON && isset($arr['hepatitis_copy_request_save_and_next']) && $arr['hepatitis_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -1166,7 +1170,8 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
-									<?php } if (isset($arr['hepatitis_sample_expiry_after_days']) && $arr['hepatitis_sample_expiry_after_days'] != '') { ?>
+									<?php }
+									if (isset($arr['hepatitis_sample_expiry_after_days']) && $arr['hepatitis_sample_expiry_after_days'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -1295,7 +1300,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 											</div>
 										</div>
 									</div>
-									<?php if (isset($arr['tb_copy_request_save_and_next']) && $arr['tb_copy_request_save_and_next'] != '') { ?>
+									<?php if ($arr['vl_form'] === COUNTRY\CAMEROON && isset($arr['tb_copy_request_save_and_next']) && $arr['tb_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -1310,7 +1315,8 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
-									<?php } if (isset($arr['tb_sample_expiry_after_days']) && $arr['tb_sample_expiry_after_days'] != '') { ?>
+									<?php }
+									if (isset($arr['tb_sample_expiry_after_days']) && $arr['tb_sample_expiry_after_days'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -1450,7 +1456,8 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
-									<?php } if (isset($arr['cd4_copy_request_save_and_next']) && $arr['cd4_copy_request_save_and_next'] != '') { ?>
+									<?php }
+									if ($arr['vl_form'] === COUNTRY\CAMEROON && isset($arr['cd4_copy_request_save_and_next']) && $arr['cd4_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -1599,7 +1606,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 											</div>
 										</div>
 									</div>
-									<?php if (isset($arr['generic_copy_request_save_and_next']) && $arr['generic_copy_request_save_and_next'] != '') { ?>
+									<?php if ($arr['vl_form'] === COUNTRY\CAMEROON && isset($arr['generic_copy_request_save_and_next']) && $arr['generic_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
@@ -1614,7 +1621,8 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 												</div>
 											</div>
 										</div>
-									<?php } if (isset($arr['generic_sample_expiry_after_days']) && $arr['generic_sample_expiry_after_days'] != '') { ?>
+									<?php }
+									if (isset($arr['generic_sample_expiry_after_days']) && $arr['generic_sample_expiry_after_days'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
