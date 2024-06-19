@@ -139,7 +139,7 @@ if (!empty($result)) {
 		if ($approvedByRes) {
 			$resultApprovedBy = $approvedByRes['user_name'];
 		}
-		$userRes['user_signature'] = $approvedByRes;
+		$userRes = $approvedByRes;
 	}
 
 	$userSignaturePath = null;
@@ -147,7 +147,6 @@ if (!empty($result)) {
 	if (!empty($userRes['user_signature'])) {
 		$userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
 	}
-
 	$smileyContent = '';
 	$showMessage = '';
 	$tndMessage = '';
