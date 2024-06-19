@@ -486,7 +486,7 @@ $storageInfo = $storageService->getLabStorage();
 												<select class="form-control select2 editableSelect" id="freezer" name="freezer" placeholder="<?php echo _translate('Enter Freezer'); ?>" title="<?php echo _translate('Please enter Freezer'); ?>">
 													<?= $general->generateSelectOptions($storageInfo, $storageObj->storageId, '-- Select --') ?>
 												</select>
-
+											</td>
 											<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control" id="rack" name="rack" value="<?= $storageObj->rack; ?>" placeholder="<?php echo _translate('Rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" value="<?= $storageObj->rack; ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
@@ -1028,7 +1028,8 @@ $storageInfo = $storageService->getLabStorage();
 						fieldId: fieldId,
 						tableName: table,
 						q: params.term, // search term
-						page: params.page
+						page: params.page,
+						labId: $("#labId").val(),
 					};
 				},
 				processResults: function(data, params) {

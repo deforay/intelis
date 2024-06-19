@@ -1032,7 +1032,8 @@ $sFormat = '';
 						fieldId: fieldId,
 						tableName: table,
 						q: params.term, // search term
-						page: params.page
+						page: params.page,
+						labId: $("#labId").val(),
 					};
 				},
 				processResults: function(data, params) {

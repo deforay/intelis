@@ -40,9 +40,9 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 
 	$output = [];
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Type", "Is Sample Rejected?","Freezer","Rack","Box", "Position","Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 	} else {
-		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)","Lab Assigned Code", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding",  "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)","Lab Assigned Code", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding",  "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Type", "Is Sample Rejected?","Freezer","Rack","Box", "Position","Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 	}
 	if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
 		unset($headings[$key]);
@@ -52,6 +52,10 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 
 	if ($formId != COUNTRY\CAMEROON) {
 		$headings = MiscUtility::removeMatchingElements($headings, ["Lab Assigned Code"]);
+	}
+
+	if ($formId != COUNTRY\DRC) {
+		$headings = MiscUtility::removeMatchingElements($headings, ["Freezer", "Rack", "Box", "Position", "Volume (ml)"]);
 	}
 
 	$no = 1;
@@ -112,6 +116,16 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		$row[] = $aRow['sample_name'] ?: null;
 		$row[] = $sampleRejection;
+		if ($formId == COUNTRY\DRC) {
+			$formAttributes = json_decode($aRow['form_attributes']);
+			$storageObj = json_decode($formAttributes->storage);
+	
+			$row[] = $storageObj->storageCode;
+			$row[] = $storageObj->rack;
+			$row[] = $storageObj->box;
+			$row[] = $storageObj->position;
+			$row[] = $storageObj->volume;
+		}
 		$row[] = $aRow['rejection_reason'];
 		$row[] = $aRow['recommended_corrective_action_name'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');

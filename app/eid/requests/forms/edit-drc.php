@@ -4,6 +4,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\EidService;
+use App\Services\StorageService;
 use App\Utilities\DateUtility;
 
 
@@ -11,6 +12,8 @@ use App\Utilities\DateUtility;
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
+/** @var StorageService $storageService */
+$storageService = ContainerRegistry::get(StorageService::class);
 
 // Getting the list of Provinces, Districts and Facilities
 
@@ -47,6 +50,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 
 $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", (string) $eidInfo['mother_treatment']) : [];
 $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", (string) $eidInfo['child_treatment']) : [];
+
+$formAttributes = json_decode($eidInfo['form_attributes']);
+
+$storageObj = json_decode($formAttributes->storage);
+$storageInfo = $storageService->getLabStorage();
 
 
 ?>
@@ -512,6 +520,38 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 													<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
 												</select>
 											</td>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :
+												</label></td>
+											<td style="width: 25%;">
+												<select class="form-control select2 editableSelect" id="freezer" name="freezer" placeholder="<?php echo _translate('Enter Freezer'); ?>" title="<?php echo _translate('Please enter Freezer'); ?>">
+													<?= $general->generateSelectOptions($storageInfo, $storageObj->storageId, '-- Select --') ?>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control" id="rack" name="rack" value="<?= $storageObj->rack; ?>" placeholder="<?php echo _translate('Rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" value="<?= $storageObj->rack; ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Box'); ?> :
+												</label></td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control" id="box" name="box" value="<?= $storageObj->box; ?>" placeholder="<?php echo _translate('Box'); ?>" title="<?php echo _translate('Please enter box'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 25%;"><label for="position"><?php echo _translate('Position'); ?> : </label> </td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control" id="position" name="position" value="<?= $storageObj->position; ?>" placeholder="<?php echo _translate('Position'); ?>" title="<?php echo _translate('Please enter position'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+
+											</td>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Volume (ml)'); ?> :
+												</label></td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control" id="volume" name="volume" value="<?= $storageObj->volume; ?>" placeholder="<?php echo _translate('Volume'); ?>" title="<?php echo _translate('Please enter volume'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
+										</tr>
+										<tr>
 											<th scope="row">Is Sample Rejected?</th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -521,9 +561,6 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												</select>
 											</td>
 
-
-										</tr>
-										<tr>
 											<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
 
@@ -749,7 +786,46 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 		}
 	}
 
-
+	function storageEditableSelect(id, _fieldName, fieldId, table, _placeholder) {
+		$("#" + id).select2({
+			placeholder: _placeholder,
+			minimumInputLength: 0,
+			width: '100%',
+			allowClear: true,
+			id: function(bond) {
+				return bond._id;
+			},
+			ajax: {
+				placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+				url: "/includes/get-data-list-for-generic.php",
+				dataType: 'json',
+				delay: 250,
+				data: function(params) {
+					return {
+						fieldName: _fieldName,
+						fieldId: fieldId,
+						tableName: table,
+						q: params.term, // search term
+						page: params.page,
+						labId: $("#labId").val(),
+					};
+				},
+				processResults: function(data, params) {
+					params.page = params.page || 1;
+					return {
+						results: data.result,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				//cache: true
+			},
+			escapeMarkup: function(markup) {
+				return markup;
+			}
+		});
+	}
 
 	$(document).ready(function() {
 
@@ -796,5 +872,10 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 			}
 		});
 
+		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Freezer Code');
+
+
 	});
+
+	
 </script>

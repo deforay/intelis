@@ -290,7 +290,6 @@ try {
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
 
-
           $row = [];
           $sampleCodeTooltip = '';
           $childTooltip = '';

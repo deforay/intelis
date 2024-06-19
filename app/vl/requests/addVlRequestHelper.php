@@ -383,7 +383,7 @@ try {
 
     if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
 
-        $freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_code', $_POST['freezer']);
+        $freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_id', $_POST['freezer']);
 
         if (empty($freezerCheck)) {
             $storageId = $general->generateUUID();

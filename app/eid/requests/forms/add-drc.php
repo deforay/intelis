@@ -482,7 +482,38 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
 												</select>
 											</td>
-											<th scope="row">Is Sample Rejected?</th>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :
+												</label></td>
+											<td style="width: 25%;">
+												<select class="form-control select2 editableSelect" id="freezer" name="freezer" placeholder="<?php echo _translate('Enter Freezer'); ?>" title="<?php echo _translate('Please enter Freezer'); ?>">
+												</select>
+
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control" id="rack" name="rack" placeholder="<?php echo _translate('Rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Box'); ?> :
+												</label></td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control" id="box" name="box" placeholder="<?php echo _translate('Box'); ?>" title="<?php echo _translate('Please enter box'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 25%;"><label for="position"><?php echo _translate('Position'); ?> : </label> </td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control" id="position" name="position" placeholder="<?php echo _translate('Position'); ?>" title="<?php echo _translate('Please enter position'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Volume (ml)'); ?> :
+												</label></td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control" id="volume" name="volume" placeholder="<?php echo _translate('Volume'); ?>" title="<?php echo _translate('Please enter volume'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
+										</tr>
+										<tr>
+											<th scope="row"><?php echo _translate('Is Sample Rejected?'); ?></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected">
 													<option value=''> -- Sélectionner -- </option>
@@ -490,8 +521,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 													<option value="no"> Non </option>
 												</select>
 											</td>
-										</tr>
-										<tr>
 											<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
 
@@ -522,7 +551,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											<td>
 												<input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" onchange="" style="width:100%;" />
 											</td>
-
 
 											<th scope="row">Résultat</th>
 											<td>
@@ -741,6 +769,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 		}
 	}
 
+
 	$(document).ready(function() {
 
 		$('#facilityId').select2({
@@ -762,6 +791,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 			placeholder: "Select Approuvé par"
 		});
 
+		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Freezer Code');
+
+		$("#freezer").on('change', function() {
+			storage = $("#freezer option:selected").text().split('-');
+			$("#freezerCode").val($.trim(storage[0]));
+		});
+
 		$("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
 			var motherVl = $("#motherViralLoadCopiesPerMl").val();
 			//var motherVlText = $("#motherViralLoadText").val();
@@ -771,4 +807,45 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 		});
 
 	});
+
+	function storageEditableSelect(id, _fieldName, fieldId, table, _placeholder) {
+		$("#" + id).select2({
+			placeholder: _placeholder,
+			minimumInputLength: 0,
+			width: '100%',
+			allowClear: true,
+			id: function(bond) {
+				return bond._id;
+			},
+			ajax: {
+				placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+				url: "/includes/get-data-list-for-generic.php",
+				dataType: 'json',
+				delay: 250,
+				data: function(params) {
+					return {
+						fieldName: _fieldName,
+						fieldId: fieldId,
+						tableName: table,
+						q: params.term, // search term
+						page: params.page,
+						labId: $("#labId").val(),
+					};
+				},
+				processResults: function(data, params) {
+					params.page = params.page || 1;
+					return {
+						results: data.result,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				//cache: true
+			},
+			escapeMarkup: function(markup) {
+				return markup;
+			}
+		});
+	}
 </script>

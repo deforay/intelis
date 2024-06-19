@@ -47,7 +47,9 @@ if (!empty($text) && $text != "") {
 if (!empty($_GET['status'])) {
     $cQuery .= " AND " . $_GET['status'] . " like 'active' ";
 }
-
+if (!empty($_GET['labId'])) {
+    $cQuery .= " AND lab_id = " . $_GET['labId'] ;
+}
 if (!empty($_GET['group'])) {
     $cQuery .= " GROUP BY '" . $_GET['group'] . "'";
 }

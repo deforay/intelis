@@ -126,7 +126,7 @@ final class EidService extends AbstractTestService
                     'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                     'province_id' => _castVariable($provinceId, 'int'),
                     'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                    'form_attributes' => $params['formAttributes'] ?? "{}",
+                    //'form_attributes' => $params['formAttributes'] ?? "{}",
                     'request_created_datetime' => DateUtility::getCurrentDateTime(),
                     'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime()
@@ -152,11 +152,11 @@ final class EidService extends AbstractTestService
                     $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                 }
 
-                $formAttributes = [
+               /* $formAttributes = [
                     'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address' => $this->commonService->getClientIpAddress()
                 ];
-                $tesRequestData['form_attributes'] = json_encode($formAttributes);
+                $tesRequestData['form_attributes'] = json_encode($formAttributes);*/
                 $this->db->insert("form_eid", $tesRequestData);
                 $id = $this->db->getInsertId();
                 // Commit the transaction after the successful insert

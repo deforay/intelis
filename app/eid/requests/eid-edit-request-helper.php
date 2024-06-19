@@ -474,6 +474,43 @@ try {
 	// //Update patient Information in Patients Table
 	// $patientsService->savePatient($_POST, 'form_eid');
 
+	$formAttributes = [
+		'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+		'ip_address' => $this->commonService->getClientIpAddress()
+	];
+	if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
+  
+		$freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_id', $_POST['freezer']);
+
+		if (empty($freezerCheck)) {
+			$storageId = $general->generateUUID();
+			$freezerCode = $_POST['freezer'];
+			$d = [
+				'storage_id' => $storageId,
+				'storage_code' => $freezerCode,
+				'lab_id' => $_POST['labId'],
+				'storage_status' => 'active'
+			];
+			$db->insert('lab_storage', $d);
+		} else {
+			$storageId = $_POST['freezer'];
+			$condition = " storage_id = '$freezerCheck'";
+			$freezerInfo = $general->getDataByTableAndFields('lab_storage', array('storage_code'), false, $condition);
+			$freezerCode = $freezerInfo[0]['storage_code'];
+		}
+
+		$formAttributes['storage'] = [
+			"storageId" => $storageId,
+			"storageCode" => $freezerCode,
+			"rack" => $_POST['rack'],
+			"box" => $_POST['box'],
+			"position" => $_POST['position'],
+			"volume" => $_POST['volume']
+		];
+	}
+
+	$formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+	$eidData['form_attributes'] = $db->func($formAttributes);
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
 		$db->where('eid_id', $_POST['eidSampleId']);
