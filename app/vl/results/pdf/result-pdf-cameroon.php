@@ -407,7 +407,7 @@ if (!empty($result)) {
      if (!empty($result['reason_for_sample_rejection']) && $result['reason_for_sample_rejection'] != '') {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
      }
-     if (str_contains(strtolower((string)$result['vl_test_platform']), 'abbott')) {
+     if (str_contains(strtolower((string)$result['instrument_machine_name']), 'abbott')) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="font-size:10px;padding-top:10px;">' . _translate("Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR (Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)") . '</td>';
           $html .= '</tr>';
@@ -439,7 +439,7 @@ if (!empty($result)) {
      $html .= '</tr>';
 
      $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:13px;font-size:10px;font-weight:bold;">' . _translate("TEST PLATFORM") . ' &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ($result['vl_test_platform']) . '</span></td>';
+     $html .= '<td colspan="3" style="line-height:13px;font-size:10px;font-weight:bold;">' . _translate("TEST PLATFORM") . ' &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ($result['instrument_machine_name']) . '</span></td>';
      $html .= '</tr>';
 
      $html .= '<tr>';
