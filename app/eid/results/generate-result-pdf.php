@@ -127,7 +127,6 @@ foreach ($requestResult as $result) {
     if (!empty($result['reportFormat'])) {
         $selectedReportFormats = json_decode((string) $result['reportFormat'], true);
     }
-
     if (!empty($selectedReportFormats) && !empty($selectedReportFormats['eid']) && file_exists(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['eid'])) {
         require($selectedReportFormats['eid']);
     } else {

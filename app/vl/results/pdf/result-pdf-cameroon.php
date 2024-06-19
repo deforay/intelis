@@ -115,9 +115,7 @@ if (!empty($result)) {
      $sameReviewerAndApprover = (!empty($reviewedBy) && $reviewedBy == $resultApprovedBy);
 
      $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = $approvedSignaturePath = null;
-     if (!empty($testedByRes['user_signature'])) {
-          $testUserSignaturePath =  $testedByRes['user_signature'];
-     }
+     
      if (!empty($reviewedByRes['user_signature'])) {
           $reviewedSignaturePath =  $reviewedByRes['user_signature'];
      }
@@ -214,7 +212,22 @@ if (!empty($result)) {
                $descriptionText = isset($instrumentInfo['additional_text']) && !empty($instrumentInfo['additional_text']) ? $instrumentInfo['additional_text'] : '';
           }
      }
+     $resultApprovedBy  = '';
+	$userRes = [];
+	if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
+		$resultApprovedBy = $result['approvedBy'];
+		$userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
+	} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
+		$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+		if ($approvedByRes) {
+			$resultApprovedBy = $approvedByRes['user_name'];
+		}
+		$userRes = $approvedByRes;
+	}
 
+	if (!empty($userRes['user_signature'])) {
+		$userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+	}
      $smileyContent = '';
      $showMessage = '';
      $tndMessage = '';
@@ -511,7 +524,11 @@ if (!empty($result)) {
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
                $html .= '</tr>';
-
+               if (!empty($userSignaturePath) && MiscUtility::imageExists($userSignaturePath) && !empty($resultApprovedBy)) {
+                    $html .= '<tr>';
+                    $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:100px;margin-top:-20px;" /><br>came</td>';
+                    $html .= '</tr>';
+               }
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
                if (!empty($approvedSignaturePath) && MiscUtility::imageExists(($approvedSignaturePath))) {
