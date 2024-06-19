@@ -153,7 +153,7 @@ if (!empty($result)) {
         if ($approvedByRes) {
             $resultApprovedBy = $approvedByRes['user_name'];
         }
-        $userRes['user_signature'] = $approvedByRes;
+        $userRes = $approvedByRes;
     }
     $userSignaturePath = null;
 
