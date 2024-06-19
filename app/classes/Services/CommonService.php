@@ -941,7 +941,7 @@ final class CommonService
         if (!empty($where)) {
             $whereStr = " WHERE " . implode(" AND ", $where);
         }
-        $query .= $whereStr . ' GROUP BY tl.test_type, facility_name ORDER BY facility_name ASC';
+        $query .= $whereStr . ' GROUP BY facility_name ORDER BY facility_name ASC';
         $result = $this->db->rawQuery($query);
         $response = [];
         foreach ($result as $key => $row) {
