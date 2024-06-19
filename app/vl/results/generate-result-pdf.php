@@ -12,6 +12,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
+use App\Utilities\LoggerUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -54,6 +55,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					l_f.facility_attributes as vl_facility_attributes,
 					u_d.user_name as reviewedBy,
 					a_u_d.user_name as approvedBy,
+                    a_u_d.user_id as approvedByUserId,
 					vl.last_modified_by as modified_by,
 					r_r_b.user_name as revised,
 					l_f.facility_logo as facilityLogo,
@@ -86,7 +88,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 	if (!empty($searchQueryWhere)) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
-	//echo ($searchQuery);
+	LoggerUtility::log('info', $searchQuery);
 	$requestResult = $db->query($searchQuery);
 }
 

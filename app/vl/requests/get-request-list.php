@@ -419,7 +419,7 @@ try {
                if ($general->isLISInstance() && $aRow['result_status'] == 9) {
                     $edit = '';
                } else {
-                    $edit = '<a href="editVlRequest.php?id=' . base64_encode((string) $aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+                    $edit = '<a href="editVlRequest.php?id=' . MiscUtility::encode($aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
                }
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/vl/requests/edit-locked-vl-samples")) {
                     $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';

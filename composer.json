@@ -60,7 +60,8 @@
         "symfony/cache": "^6.4",
         "gregwar/captcha": "^1.2",
         "openspout/openspout": "^4.24",
-        "voku/anti-xss": "^4.1"
+        "voku/anti-xss": "^4.1",
+        "sqids/sqids": "^0.4.1"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"

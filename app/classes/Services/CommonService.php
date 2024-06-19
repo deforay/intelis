@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Utilities\JsonUtility;
 use COUNTRY;
 use Exception;
 use Throwable;
 use TCPDFBarcode;
 use TCPDF2DBarcode;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;

@@ -354,7 +354,7 @@ try {
           $row[] = ($aRow['status_name']);
 
           if ($editRequest) {
-               $edit = '<a href="eid-edit-request.php?id=' . base64_encode((string) $aRow['eid_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+               $edit = '<a href="eid-edit-request.php?id=' . MiscUtility::encode($aRow['eid_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                     if (!_isAllowed("/eid/requests/edit-locked-eid-samples")) {
                          $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
