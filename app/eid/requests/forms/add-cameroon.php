@@ -474,7 +474,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><?= _translate('Sample Collection Date'); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" />
+                                            <input class="form-control dateTime isRequired" value="<?php if(isset($_SESSION['eidData']['sample_collection_date']) && !empty($_SESSION['eidData']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_collection_date'],true); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" />
                                         </td>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
@@ -828,6 +828,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     $(document).ready(function() {
         Utilities.autoSelectSingleOption('facilityId');
+        $("#sampleCollectionDate").trigger('change');
         $("#childId").on('input', function() {
             $.post("/common/patient-last-request-details.php", {
                     patientId: $.trim($(this).val()),

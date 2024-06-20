@@ -917,6 +917,7 @@ $sFormat = '';
 
 	$(document).ready(function() {
 
+		$("#sampleCollectionDate").trigger('change');
 		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
