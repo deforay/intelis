@@ -176,9 +176,6 @@ if (!empty($result)) {
     }
 
     $revisedSignaturePath = $reviewedBySignaturePath = $testUserSignaturePath = $approvedBySignaturePath = null;
-    if (!empty($testedByRes['user_signature'])) {
-        $testUserSignaturePath = $testedByRes['user_signature'];
-    }
     if (!empty($result['reviewedBySignature'])) {
         $reviewedBySignaturePath = $result['reviewedBySignature'];
     }
@@ -192,7 +189,21 @@ if (!empty($result)) {
     if (!isset($result['child_gender']) || trim((string) $result['child_gender']) == '') {
         $result['child_gender'] = _translate('Unreported');
     }
-
+    $resultApprovedBy  = '';
+	$userRes = [];
+	if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
+		$resultApprovedBy = $result['approvedBy'];
+		$userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
+	} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
+		$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+		if ($approvedByRes) {
+			$resultApprovedBy = $approvedByRes['user_name'];
+		}
+		$userRes = $approvedByRes;
+	}
+    if (!empty($userRes['user_signature'])) {
+		$userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+	}
     $finalResult = '';
     $smileyContent = '';
     $showMessage = '';
@@ -416,7 +427,7 @@ if (!empty($result)) {
     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEST PLATFORM</td>';
     $html .= '</tr>';
     $html .= '<tr>';
-    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['testingPlatform']) . '</td>';
+    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['instrument_machine_name'] ?? $result['eid_test_platform']) . '</td>';
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td colspan="3" style="line-height:2px;border-bottom:1px solid #d3d3d3;"></td>';
@@ -474,8 +485,8 @@ if (!empty($result)) {
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-        if (!empty($approvedBySignaturePath) && MiscUtility::imageExists($approvedBySignaturePath)) {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:150px;" /></td>';
+        if (!empty($userSignaturePath) && MiscUtility::imageExists($userSignaturePath)) {
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:150px;" /></td>';
         } else {
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         }

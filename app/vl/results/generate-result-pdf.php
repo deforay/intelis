@@ -140,7 +140,6 @@ foreach ($requestResult as $result) {
 			$fileToInclude = $selectedReportFormats['vl'];
 		}
 	}
-
 	require(__DIR__ . DIRECTORY_SEPARATOR . $fileToInclude);
 }
 

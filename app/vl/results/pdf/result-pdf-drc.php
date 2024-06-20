@@ -120,7 +120,7 @@ if (!empty($result)) {
 	if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_printed_datetime'] != '0000-00-00 00:00:00') {
 		$result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'], true);
 	} else {
-		$result['result_printed_datetime'] = DateUtility::getCurrentDateTime();
+		$result['result_printed_datetime'] = DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime(), true);
 	}
 
 	$result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
@@ -139,7 +139,7 @@ if (!empty($result)) {
 		if ($approvedByRes) {
 			$resultApprovedBy = $approvedByRes['user_name'];
 		}
-		$userRes['user_signature'] = $approvedByRes;
+		$userRes = $approvedByRes;
 	}
 
 	$userSignaturePath = null;
@@ -147,7 +147,6 @@ if (!empty($result)) {
 	if (!empty($userRes['user_signature'])) {
 		$userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
 	}
-
 	$smileyContent = '';
 	$showMessage = '';
 	$tndMessage = '';

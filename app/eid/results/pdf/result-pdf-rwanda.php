@@ -124,15 +124,20 @@ if (!empty($result)) {
     if (!isset($result['child_gender']) || trim((string) $result['child_gender']) == '') {
         $result['child_gender'] = _translate('Unreported');
     }
-    $userRes = [];
-    if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
-        $resultApprovedBy = ($result['approvedBy']);
-        $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
-    } else {
-        $resultApprovedBy  = '';
-    }
-    $userSignaturePath = null;
+    $resultApprovedBy  = '';
+     $userRes = [];
+     if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
+		$resultApprovedBy = $result['approvedBy'];
+		$userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
+	} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
+		$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+		if ($approvedByRes) {
+			$resultApprovedBy = $approvedByRes['user_name'];
+		}
+		$userRes = $approvedByRes;
+	}
 
+    $userSignaturePath = null;
     if (!empty($userRes['user_signature'])) {
         $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
     }

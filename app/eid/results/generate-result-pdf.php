@@ -70,9 +70,9 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
                     a_u_d.user_id as approvedByUserId,
                     a_u_d.user_signature as approvedBySignature,
                     r_r_b.user_name as revised,
-                    tp.config_machine_name as testingPlatform,
                     JSON_UNQUOTE(JSON_EXTRACT(i.approved_by, '$.eid')) AS defaultApprovedBy,
-                    JSON_UNQUOTE(JSON_EXTRACT(i.reviewed_by, '$.eid')) AS defaultReviewedBy
+                    JSON_UNQUOTE(JSON_EXTRACT(i.reviewed_by, '$.eid')) AS defaultReviewedBy,
+                    i.machine_name AS instrument_machine_name
                     FROM form_eid as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
@@ -82,8 +82,8 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
                     LEFT JOIN r_eid_sample_type as rst ON rst.sample_id=vl.specimen_type
                     LEFT JOIN r_eid_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
                     LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner
-                    LEFT JOIN instrument_machines as tp ON tp.config_machine_id=vl.import_machine_name
-                    LEFT JOIN instruments as i ON i.instrument_id=vl.instrument_id
+                    LEFT JOIN instruments as i ON i.instrument_id = vl.instrument_id OR i.machine_name = vl.eid_test_platform
+                    LEFT JOIN instrument_machines as im ON im.config_machine_name = vl.eid_test_platform
                     LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
                     WHERE vl.eid_id IN(" . $_POST['id'] . ")";
 } else {
@@ -127,7 +127,6 @@ foreach ($requestResult as $result) {
     if (!empty($result['reportFormat'])) {
         $selectedReportFormats = json_decode((string) $result['reportFormat'], true);
     }
-
     if (!empty($selectedReportFormats) && !empty($selectedReportFormats['eid']) && file_exists(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['eid'])) {
         require($selectedReportFormats['eid']);
     } else {
