@@ -117,11 +117,20 @@ try {
 			$response[$r['sample_id']] = $r;
 			$response[$r['sample_id']]['data_from_tests'] = $generic->getTestsByGenericSampleIds($r['sample_id']);
 		}
+		$payload = JsonUtility::encodeUtf8Json($response);
+	} else {
+		$payload = json_encode([]);
 	}
-	$payload = JsonUtility::encodeUtf8Json(array(
-		'labId' => $labId,
-		'result' => $response,
-	));
+
+	if ($resultCount > 0) {
+
+		$sampleIds = array_column($rResult, 'vl_sample_id');
+		$facilityIds = array_column($rResult, 'facility_id');
+
+		$payload = JsonUtility::encodeUtf8Json($rResult);
+	} else {
+		$payload = json_encode([]);
+	}
 	$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'generic-tests', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 	$general->updateTestRequestsSyncDateTime('generic', $facilityIds, $labId);
 	$db->commitTransaction();

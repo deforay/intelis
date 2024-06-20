@@ -103,7 +103,7 @@ try {
                     $sampleCode = $sheetData[$sampleIdCol];
                     $sampleType = $sheetData[$sampleTypeCol];
 
-                    //$batchCode = $sheetData[$batchCodeCol];
+                    //// $batchCode = $sheetData[$batchCodeCol];
                     $resultFlag = $sheetData[$flagCol];
                     //$reviewBy = $sheetData[$reviewByCol];
 
@@ -191,7 +191,7 @@ try {
                             "resultFlag" => $resultFlag,
                             "testingDate" => $testingDate,
                             "sampleType" => $sampleType,
-                            "batchCode" => $batchCode,
+                            // "batchCode" => $batchCode,
                             "lotNumber" => $lotNumberVal,
                             "lotExpirationDate" => $lotExpirationDateVal,
                         );
@@ -238,12 +238,12 @@ try {
                 $data['result'] = "";
             }
 
-            if ($batchCode == '' || empty($batchCode)) {
-                $data['batch_code'] = $newBatchCode;
-                $data['batch_code_key'] = $maxBatchCodeKey;
-            } else {
-                $data['batch_code'] = $batchCode;
-            }
+            // if ($batchCode == '' || empty($batchCode)) {
+            //     $data['batch_code'] = $newBatchCode;
+            //     $data['batch_code_key'] = $maxBatchCodeKey;
+            // } else {
+            //     $data['batch_code'] = $batchCode;
+            // }
             //get username
             if (!empty($d['reviewBy'])) {
 

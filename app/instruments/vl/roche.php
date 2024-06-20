@@ -212,12 +212,12 @@ try {
                 $data['result'] = "";
             }
 
-            if ($batchCode == '' || empty($batchCode)) {
-                $data['batch_code']     = $newBatchCode;
-                $data['batch_code_key'] = $maxBatchCodeKey;
-            } else {
-                $data['batch_code'] = $batchCode;
-            }
+            // if ($batchCode == '' || empty($batchCode)) {
+            //     $data['batch_code']     = $newBatchCode;
+            //     $data['batch_code_key'] = $maxBatchCodeKey;
+            // } else {
+            //     $data['batch_code'] = $batchCode;
+            // }
 
             $query    = "SELECT facility_id,
                                 vl_sample_id,
