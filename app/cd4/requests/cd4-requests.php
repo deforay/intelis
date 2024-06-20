@@ -1067,7 +1067,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		var stValue = $("#status").val();
 		var testIds = $("#checkedTests").val();
 		if (stValue != '' && testIds != '') {
-			conf = confirm("<?php echo _translate("Do you wish to change the test status ?"); ?>");
+			conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
 			if (conf) {
 				$.post("/cd4/results/updateTestStatus.php", {
 						status: stValue,

@@ -472,7 +472,7 @@ foreach ($rejectionTypeResult as $type) {
 		var stValue = $("#status").val();
 		var testIds = $("#checkedTests").val();
 		if (stValue != '' && testIds != '') {
-			conf = confirm("Do you wish to change the test status ?");
+			conf = confirm("Are you sure you want to modify the sample status?");
 			if (conf) {
 				$.post("/generic-tests/results/update-test-status.php", {
 						status: stValue,
