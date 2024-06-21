@@ -12,6 +12,17 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Initialize flag
+skip_all=false
+
+# Parse command-line option
+while getopts ":s" opt; do
+    case $opt in
+    s) skip_all=true ;;
+        # Ignore invalid options silently
+    esac
+done
+
 # Function to log messages
 log_action() {
     local message=$1
@@ -292,8 +303,10 @@ fi
 echo "All system checks passed. Continuing with the update..."
 
 # Update Ubuntu Packages
-echo "Updating Ubuntu packages..."
-apt-get update && apt-get upgrade -y
+if [ "$skip_all" = false ]; then
+    echo "Updating Ubuntu packages..."
+    apt-get update && apt-get upgrade -y
+fi
 
 if ! grep -q "ondrej/apache2" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
     add-apt-repository ppa:ondrej/apache2 -y
@@ -301,14 +314,17 @@ if ! grep -q "ondrej/apache2" /etc/apt/sources.list /etc/apt/sources.list.d/*; t
 fi
 
 # Configure any packages that were not fully installed
-echo "Configuring any partially installed packages..."
-sudo dpkg --configure -a
+if [ "$skip_all" = false ]; then
+    echo "Configuring any partially installed packages..."
+    sudo dpkg --configure -a
+fi
 
 # Clean up
 apt-get autoremove -y
-
-echo "Installing basic packages..."
-apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev
+if [ "$skip_all" = false ]; then
+    echo "Installing basic packages..."
+    apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev
+fi
 
 # Check if SSH service is enabled
 if ! systemctl is-enabled ssh >/dev/null 2>&1; then

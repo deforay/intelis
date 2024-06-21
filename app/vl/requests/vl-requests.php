@@ -88,12 +88,13 @@ foreach ($srcResults as $list) {
 	$srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
 }
 
-$formId = (int) $globalConfig['vl_form'];
 $lastModifiedColumnPosition = ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11;
 
 if ($formId == COUNTRY\CAMEROON) {
 	$lastModifiedColumnPosition += 2;
 }
+
+$sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 
 ?>
 <style>
@@ -879,13 +880,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function loadVlRequestData() {
 		$.blockUI();
-		<?php
-			$lastModifiedColumnPosition = ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11;
-
-			if ($formId == COUNTRY\CAMEROON) {
-				$lastModifiedColumnPosition += 2;
-			} 
-		?>
 		oTable = $('#vlRequestDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
@@ -959,7 +953,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			],
 			"order": [
 				[<?= $lastModifiedColumnPosition; ?>, "desc"],
-				[0, "desc"]
+				[<?= $sampleColumnToSort; ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");

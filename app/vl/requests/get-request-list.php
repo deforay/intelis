@@ -39,12 +39,12 @@ try {
 
 
      if ($formId == COUNTRY\CAMEROON) {
-          $newElements = array('health_insurance_code', 'lab_assigned_code');
+          $CountrySpecificFields = ['health_insurance_code', 'lab_assigned_code'];
 
           $index = array_search('s.sample_name', $aColumns);
           if ($index !== false) {
-               array_splice($aColumns, $index + 1, 0, $newElements);
-               array_splice($orderColumns, $index + 1, 0, $newElements);
+               array_splice($aColumns, $index + 1, 0, $CountrySpecificFields);
+               array_splice($orderColumns, $index + 1, 0, $CountrySpecificFields);
           }
      }
 
@@ -53,16 +53,6 @@ try {
      } elseif ($general->isStandaloneInstance()) {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
-     }
-
-     if ($formId == COUNTRY\CAMEROON) {
-          $newElements = array('health_insurance_code', 'lab_assigned_code');
-          
-          $index = array_search('s.sample_name', $aColumns);
-          if ($index !== false) {
-              array_splice($aColumns, $index + 1, 0, $newElements);
-              array_splice($orderColumns, $index + 1, 0, $newElements);
-          }
      }
 
      /* Indexed column (used for fast and accurate table cardinality) */
