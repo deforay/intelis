@@ -1,14 +1,15 @@
 <?php
 
-use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Writer\XLSX\Writer;
-use OpenSpout\Writer\XLSX\Options;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use App\Services\CommonService;
+use App\Utilities\DateUtility;
+use App\Services\DatabaseService;
+use App\Utilities\MiscUtility;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 
 ini_set('memory_limit', -1);
@@ -26,7 +27,9 @@ $formId = (int) $arr['vl_form'];
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
+$excel = new Spreadsheet();
 $output = [];
+$sheet = $excel->getActiveSheet();
 
 $headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Lab Assigned Code"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"),  _translate("Patient Contact Number"), _translate("Clinician Contact Number"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate('KP'), _translate("Universal Insurance Code"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate('CV Number'), _translate("Is Sample Rejected?"), _translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
 
@@ -42,16 +45,64 @@ if ($formId != COUNTRY\CAMEROON) {
 	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Universal Insurance Code"), _translate("Lab Assigned Code")]);
 }
 // ... and a writer to create the new file
-$writer = new Writer();
-$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomNumber(6) . '.xlsx';
-$writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+$colNo = 1;
 
-$writer->addRow(Row::fromValues($headings));
+$styleArray = array(
+	'font' => array(
+		'bold' => true,
+		'size' => 12,
+	),
+	'alignment' => array(
+		'horizontal' => Alignment::HORIZONTAL_CENTER,
+		'vertical' => Alignment::VERTICAL_CENTER,
+	),
+	'borders' => array(
+		'outline' => array(
+			'style' => Border::BORDER_THIN,
+		),
+	)
+);
 
-$no = 1;
+$borderStyle = array(
+	'alignment' => array(
+		'horizontal' => Alignment::HORIZONTAL_CENTER,
+	),
+	'borders' => array(
+		'outline' => array(
+			'style' => Border::BORDER_THIN,
+		),
+	)
+);
+
+$sheet->mergeCells('A1:AH1');
+$nameValue = '';
+foreach ($_POST as $key => $value) {
+	if (trim($value) != '' && trim($value) != '-- Select --') {
+		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+	}
+}
+$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
+	->setValueExplicit(html_entity_decode($nameValue));
+if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
+	foreach ($headings as $field => $value) {
+		$string = str_replace(' ', '', $value);
+		$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+		$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+			->setValueExplicit(html_entity_decode($value));
+		$colNo++;
+	}
+} else {
+	foreach ($headings as $field => $value) {
+		$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+			->setValueExplicit(html_entity_decode($value));
+		$colNo++;
+	}
+}
+$sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
 
 $key = (string) $general->getGlobalConfig('key');
 $resultSet = $db->rawQueryGenerator($_SESSION['vlRequestQuery']);
+$no = 1;
 foreach ($resultSet as $aRow) {
 	$row = [];
 	$age = null;
@@ -164,13 +215,20 @@ foreach ($resultSet as $aRow) {
 	$row[] = $aRow['funding_source_name'] ?? null;
 	$row[] = $aRow['i_partner_name'] ?? null;
 	$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
-	//$output[] = $row;
-	$writer->addRow(Row::fromValues($row));
-
-	unset($row);
+	$output[] = $row;
 	$no++;
 }
 
-
-$writer->close();
+$start = (count($output)) + 2;
+foreach ($output as $rowNo => $rowData) {
+	$colNo = 1;
+	$rRowCount = $rowNo + 4;
+	foreach ($rowData as $field => $value) {
+		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+		$colNo++;
+	}
+}
+$writer = IOFactory::createWriter($excel, 'Xlsx');
+$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
+$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

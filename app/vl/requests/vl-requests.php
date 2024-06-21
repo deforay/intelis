@@ -871,6 +871,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function loadVlRequestData() {
 		$.blockUI();
+		<?php
+			$lastModifiedColumnPosition = ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11;
+
+			if ($formId == COUNTRY\CAMEROON) {
+				$lastModifiedColumnPosition += 2;
+			} 
+		?>
 		oTable = $('#vlRequestDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
@@ -943,7 +950,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				<?php } ?>
 			],
 			"order": [
-				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>, "desc"],
+				[<?= $lastModifiedColumnPosition; ?>, "desc"],				
 				[0, "desc"]
 			],
 			"fnDrawCallback": function() {
