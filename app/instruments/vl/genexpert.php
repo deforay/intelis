@@ -165,12 +165,12 @@ try {
                 $data['result_status'] = SAMPLE_STATUS\ON_HOLD; // 1= Hold
             }
 
-            if (empty($batchCode)) {
-                $data['batch_code'] = $newBatchCode;
-                $data['batch_code_key'] = $maxBatchCodeKey;
-            } else {
-                $data['batch_code'] = $batchCode;
-            }
+            // if (empty($batchCode)) {
+            //     $data['batch_code'] = $newBatchCode;
+            //     $data['batch_code_key'] = $maxBatchCodeKey;
+            // } else {
+            //     $data['batch_code'] = $batchCode;
+            // }
             //get username
             if (!empty($d['reviewBy'])) {
 

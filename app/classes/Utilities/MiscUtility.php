@@ -411,13 +411,9 @@ final class MiscUtility
         return $actualMimeType === $expectedMimeType;
     }
 
-    public static function displayProgressBar($current, $total, $size = 30)
+    public static function displayProgressBar($current, $total = null, $size = 30)
     {
         static $startTime;
-
-        // Calculate the percentage
-        $progress = ($current / $total);
-        $bar = floor($progress * $size);
 
         // Start the timer
         if (empty($startTime)) {
@@ -427,14 +423,23 @@ final class MiscUtility
         // Calculate elapsed time
         $elapsed = time() - $startTime;
 
-        // Generate the progress bar string
-        $progressBar = str_repeat('=', $bar) . str_repeat(' ', $size - $bar);
+        if ($total !== null) {
+            // Calculate the percentage
+            $progress = ($current / $total);
+            $bar = floor($progress * $size);
 
-        // Output the progress bar
-        printf("\r[%s] %d%% Complete (%d/%d) - %d sec elapsed", $progressBar, $progress * 100, $current, $total, $elapsed);
+            // Generate the progress bar string
+            $progressBar = str_repeat('=', $bar) . str_repeat(' ', $size - $bar);
+
+            // Output the progress bar
+            printf("\r[%s] %d%% Complete (%d/%d) - %d sec elapsed", $progressBar, $progress * 100, $current, $total, $elapsed);
+        } else {
+            // Output the current progress without percentage
+            printf("\rProcessed %d items - %d sec elapsed", $current, $elapsed);
+        }
 
         // Flush output
-        if ($current === $total) {
+        if ($total !== null && $current === $total) {
             echo "\n";
         }
     }

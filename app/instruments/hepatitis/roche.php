@@ -174,7 +174,7 @@ try {
                 "resultFlag" => $resultFlag,
                 "testingDate" => $testingDate,
                 "sampleType" => $sampleType,
-                "batchCode" => $batchCode,
+                // "batchCode" => $batchCode,
                 "lotNumber" => $lotNumberVal,
                 "lotExpirationDate" => $lotExpirationDateVal,
                 "reviewBy" => $reviewBy
@@ -210,12 +210,12 @@ try {
             );
 
 
-            if ($batchCode == '' || empty($batchCode)) {
-                $data['batch_code'] = $newBatchCode;
-                $data['batch_code_key'] = $maxBatchCodeKey;
-            } else {
-                $data['batch_code'] = $batchCode;
-            }
+            // if ($batchCode == '' || empty($batchCode)) {
+            //     $data['batch_code'] = $newBatchCode;
+            //     $data['batch_code_key'] = $maxBatchCodeKey;
+            // } else {
+            //     $data['batch_code'] = $batchCode;
+            // }
             //get username
             if (!empty($d['reviewBy'])) {
 

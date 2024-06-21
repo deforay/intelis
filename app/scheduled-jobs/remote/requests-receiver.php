@@ -72,174 +72,6 @@ if (!empty($forceSyncModule)) {
  ****************************************************************
  */
 $request = [];
-if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
-
-    $url = $remoteUrl . '/remote/remote/generic-test-requests.php';
-    $payload = [
-        'labId' => $labId,
-        'module' => 'generic-tests',
-        "Key" => "vlsm-lab-data--",
-    ];
-    if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "generic-tests" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
-        $payload['manifestCode'] = $manifestCode;
-    }
-
-    $jsonResponse = $apiService->post($url, $payload);
-    // die($jsonResponse);
-    $columnList = [];
-
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
-
-        if ($cliMode) {
-            echo "Syncing data for Custom Tests" . PHP_EOL;
-        }
-
-        $options = [
-            'pointer' => '/result',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($jsonResponse, $options);
-
-        $removeKeys = array(
-            'sample_id',
-            'sample_batch_id',
-            'result',
-            'sample_tested_datetime',
-            'sample_received_at_testing_lab_datetime',
-            'result_dispatched_datetime',
-            'is_sample_rejected',
-            'reason_for_sample_rejection',
-            'result_approved_by',
-            'result_approved_datetime',
-            'data_sync'
-        );
-
-        $emptyLabArray = $general->getTableFieldsAsArray('form_generic', $removeKeys);
-
-        $counter = 0;
-        foreach ($parsedData as $key => $remoteData) {
-
-            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
-
-            $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-            $existingSampleQuery = "SELECT sample_id, sample_code, test_type_form
-                            FROM form_generic AS vl
-                            WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-            if (!empty($existingSampleResult)) {
-
-                $removeMoreKeys = array(
-                    'sample_code',
-                    'sample_code_key',
-                    'sample_code_format',
-                    'sample_batch_id',
-                    'lab_id',
-                    'vl_test_platform',
-                    'sample_received_at_hub_datetime',
-                    'sample_received_at_testing_lab_datetime',
-                    'sample_tested_datetime',
-                    'result_dispatched_datetime',
-                    'is_sample_rejected',
-                    'reason_for_sample_rejection',
-                    'rejection_on',
-                    'result',
-                    'result_reviewed_by',
-                    'result_reviewed_datetime',
-                    'tested_by',
-                    'result_approved_by',
-                    'result_approved_datetime',
-                    'lab_tech_comments',
-                    'reason_for_test_result_changes',
-                    'revised_by',
-                    'revised_on',
-                    'last_modified_by',
-                    'last_modified_datetime',
-                    'manual_result_entry',
-                    'result_status',
-                    'data_sync',
-                    'result_printed_datetime',
-                    'data_from_tests'
-                );
-
-                $request = array_diff_key($request, array_flip($removeMoreKeys));
-
-                $testTypeForm = $general->jsonToSetString(
-                    $existingSampleResult['test_type_form'],
-                    'test_type_form',
-                    $request['test_type_form'],
-                );
-                $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
-
-                $formAttributes = $general->jsonToSetString(
-                    $existingSampleResult['form_attributes'],
-                    'form_attributes',
-                    $request['form_attributes'],
-                );
-                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $db->where('sample_id', $existingSampleResult['sample_id']);
-                $id = $db->update('form_generic', $request);
-                $genericId = $existingSampleResult['sample_id'];
-            } else {
-                $request['source_of_request'] = 'vlsts';
-                if (!empty($request['sample_collection_date'])) {
-
-                    $testTypeForm = $general->jsonToSetString(
-                        $request['test_type_form'],
-                        'test_type_form'
-                    );
-                    $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
-
-                    $formAttributes = $general->jsonToSetString(
-                        $request['form_attributes'],
-                        'form_attributes',
-                        ['syncTransactionId' => $transactionId]
-                    );
-                    $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-
-                    $request['source_of_request'] = "vlsts";
-                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
-                    $request['data_sync'] = 0;
-                    $id = $db->insert('form_generic', $request);
-                    $genericId = $db->getInsertId();
-                }
-            }
-            if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])) {
-                $db->where('generic_id', $genericId);
-                $db->delete("generic_test_results");
-                foreach ($remoteData['data_from_tests'] as $genericTestData) {
-                    $db->insert("generic_test_results", array(
-                        "generic_id"                    => $genericId,
-                        "facility_id"                   => $genericTestData['facility_id'],
-                        "sub_test_name"                 => $genericTestData['sub_test_name'],
-                        "final_result_unit"             => $genericTestData['final_result_unit'],
-                        "result_type"                   => $genericTestData['result_type'],
-                        "test_name"                     => $genericTestData['test_name'],
-                        "tested_by"                     => $genericTestData['tested_by'],
-                        "sample_tested_datetime"        => $genericTestData['sample_tested_datetime'],
-                        "testing_platform"              => $genericTestData['testing_platform'],
-                        "kit_lot_no"                    => $genericTestData['kit_lot_no'],
-                        "kit_expiry_date"               => $genericTestData['kit_expiry_date'],
-                        "result"                        => $genericTestData['result'],
-                        "final_result"                  => $genericTestData['final_result'],
-                        "result_unit"                   => $genericTestData['result_unit'],
-                        "final_result_interpretation"   => $genericTestData['final_result_interpretation'],
-                        "updated_datetime"              => $genericTestData['updated_datetime']
-                    ));
-                }
-            }
-            if ($id === true) {
-                $counter++;
-            }
-        }
-
-        if ($cliMode && $counter > 0) {
-            echo "Synced $counter records" . PHP_EOL;
-        }
-
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
-    }
-}
 
 
 
@@ -385,7 +217,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                 $counter++;
             }
         }
-        if ($cliMode && $counter > 0) {
+        if ($cliMode) {
             echo "Synced $counter records" . PHP_EOL;
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
@@ -517,7 +349,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 $counter++;
             }
         }
-        if ($cliMode && $counter > 0) {
+        if ($cliMode) {
             echo "Synced $counter records" . PHP_EOL;
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'eid', $url, $payload, $jsonResponse, 'json', $labId);
@@ -703,7 +535,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                 $counter++;
             }
         }
-        if ($cliMode && $counter > 0) {
+        if ($cliMode) {
             echo "Synced $counter records" . PHP_EOL;
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
@@ -875,7 +707,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                 $counter++;
             }
         }
-        if ($cliMode && $counter > 0) {
+        if ($cliMode) {
             echo "Synced $counter records" . PHP_EOL;
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
@@ -1017,7 +849,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                 $counter++;
             }
         }
-        if ($cliMode && $counter > 0) {
+        if ($cliMode) {
             echo "Synced $counter records" . PHP_EOL;
         }
 
@@ -1154,10 +986,180 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
                 $counter++;
             }
         }
-        if ($cliMode && $counter > 0) {
+        if ($cliMode) {
             echo "Synced $counter records" . PHP_EOL;
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
+    }
+}
+
+
+
+if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
+
+    $url = $remoteUrl . '/remote/remote/generic-test-requests.php';
+    $payload = [
+        'labId' => $labId,
+        'module' => 'generic-tests',
+        "Key" => "vlsm-lab-data--",
+    ];
+    if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "generic-tests" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
+        $payload['manifestCode'] = $manifestCode;
+    }
+
+    $jsonResponse = $apiService->post($url, $payload);
+
+    $columnList = [];
+
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
+
+        if ($cliMode) {
+            echo "Syncing data for Custom Tests" . PHP_EOL;
+        }
+
+        $options = [
+            'decoder' => new ExtJsonDecoder(true)
+        ];
+        $parsedData = Items::fromString($jsonResponse, $options);
+
+        $removeKeys = array(
+            'sample_id',
+            'sample_batch_id',
+            'result',
+            'sample_tested_datetime',
+            'sample_received_at_testing_lab_datetime',
+            'result_dispatched_datetime',
+            'is_sample_rejected',
+            'reason_for_sample_rejection',
+            'result_approved_by',
+            'result_approved_datetime',
+            'data_sync'
+        );
+
+        $emptyLabArray = $general->getTableFieldsAsArray('form_generic', $removeKeys);
+
+        $counter = 0;
+        foreach ($parsedData as $key => $remoteData) {
+
+            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+
+            $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+
+            $existingSampleQuery = "SELECT sample_id, sample_code, test_type_form
+                            FROM form_generic AS vl
+                            WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+            if (!empty($existingSampleResult)) {
+
+                $removeMoreKeys = array(
+                    'sample_code',
+                    'sample_code_key',
+                    'sample_code_format',
+                    'sample_batch_id',
+                    'lab_id',
+                    'vl_test_platform',
+                    'sample_received_at_hub_datetime',
+                    'sample_received_at_testing_lab_datetime',
+                    'sample_tested_datetime',
+                    'result_dispatched_datetime',
+                    'is_sample_rejected',
+                    'reason_for_sample_rejection',
+                    'rejection_on',
+                    'result',
+                    'result_reviewed_by',
+                    'result_reviewed_datetime',
+                    'tested_by',
+                    'result_approved_by',
+                    'result_approved_datetime',
+                    'lab_tech_comments',
+                    'reason_for_test_result_changes',
+                    'revised_by',
+                    'revised_on',
+                    'last_modified_by',
+                    'last_modified_datetime',
+                    'manual_result_entry',
+                    'result_status',
+                    'data_sync',
+                    'result_printed_datetime',
+                    'data_from_tests'
+                );
+
+                $request = array_diff_key($request, array_flip($removeMoreKeys));
+
+                $testTypeForm = $general->jsonToSetString(
+                    $existingSampleResult['test_type_form'],
+                    'test_type_form',
+                    $request['test_type_form'],
+                );
+                $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
+
+                $formAttributes = $general->jsonToSetString(
+                    $existingSampleResult['form_attributes'],
+                    'form_attributes',
+                    $request['form_attributes'],
+                );
+                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                $db->where('sample_id', $existingSampleResult['sample_id']);
+                $id = $db->update('form_generic', $request);
+                $genericId = $existingSampleResult['sample_id'];
+            } else {
+                $request['source_of_request'] = 'vlsts';
+                if (!empty($request['sample_collection_date'])) {
+
+                    $testTypeForm = $general->jsonToSetString(
+                        $request['test_type_form'],
+                        'test_type_form'
+                    );
+                    $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
+
+                    $formAttributes = $general->jsonToSetString(
+                        $request['form_attributes'],
+                        'form_attributes',
+                        ['syncTransactionId' => $transactionId]
+                    );
+                    $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+
+                    $request['source_of_request'] = "vlsts";
+                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $request['data_sync'] = 0;
+                    $id = $db->insert('form_generic', $request);
+                    $genericId = $db->getInsertId();
+                }
+            }
+            if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])) {
+                $db->where('generic_id', $genericId);
+                $db->delete("generic_test_results");
+                foreach ($remoteData['data_from_tests'] as $genericTestData) {
+                    $db->insert("generic_test_results", array(
+                        "generic_id"                    => $genericId,
+                        "facility_id"                   => $genericTestData['facility_id'],
+                        "sub_test_name"                 => $genericTestData['sub_test_name'],
+                        "final_result_unit"             => $genericTestData['final_result_unit'],
+                        "result_type"                   => $genericTestData['result_type'],
+                        "test_name"                     => $genericTestData['test_name'],
+                        "tested_by"                     => $genericTestData['tested_by'],
+                        "sample_tested_datetime"        => $genericTestData['sample_tested_datetime'],
+                        "testing_platform"              => $genericTestData['testing_platform'],
+                        "kit_lot_no"                    => $genericTestData['kit_lot_no'],
+                        "kit_expiry_date"               => $genericTestData['kit_expiry_date'],
+                        "result"                        => $genericTestData['result'],
+                        "final_result"                  => $genericTestData['final_result'],
+                        "result_unit"                   => $genericTestData['result_unit'],
+                        "final_result_interpretation"   => $genericTestData['final_result_interpretation'],
+                        "updated_datetime"              => $genericTestData['updated_datetime']
+                    ));
+                }
+            }
+            if ($id === true) {
+                $counter++;
+            }
+        }
+
+        if ($cliMode) {
+            echo "Synced $counter records" . PHP_EOL;
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
     }
 }
 

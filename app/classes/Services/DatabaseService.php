@@ -324,4 +324,88 @@ final class DatabaseService extends MysqliDb
     {
         parent::reset();
     }
+
+
+    /**
+     * Insert multiple rows into a table in a single query with configurable insert options.
+     *
+     * @param string $tableName The name of the table to insert into.
+     * @param array $data An array of associative arrays representing the rows to insert.
+     * @param string $insertType The type of insert operation: 'ignore' for INSERT IGNORE, 'upsert' for INSERT ON DUPLICATE KEY UPDATE, and 'insert' for standard INSERT.
+     * @param array $updateColumns Columns to update in case of a duplicate key (only used for 'upsert').
+     * @return bool Returns true on success or false on failure.
+     */
+    public function insertMultipleRows(string $tableName, array $data, string $insertType = 'insert', array $updateColumns = []): bool
+    {
+        if (empty($data)) {
+            return false;
+        }
+
+        $keys = array_keys($data[0]);
+        $columns = implode('`, `', $keys);
+        $values = [];
+        $placeholders = array_fill(0, count($keys), '?');
+        $placeholderString = '(' . implode(', ', $placeholders) . ')';
+
+        foreach ($data as $row) {
+            $values = array_merge($values, array_values($row));
+        }
+
+        $placeholdersString = implode(', ', array_fill(0, count($data), $placeholderString));
+
+        $sql = '';
+        if ($insertType === 'ignore') {
+            $sql = "INSERT IGNORE INTO `$tableName` (`$columns`) VALUES $placeholdersString";
+        } elseif ($insertType === 'upsert') {
+            $updatePart = implode(', ', array_map(fn ($col) => "`$col` = VALUES(`$col`)", $updateColumns));
+            $sql = "INSERT INTO `$tableName` (`$columns`) VALUES $placeholdersString ON DUPLICATE KEY UPDATE $updatePart";
+        } else {
+            $sql = "INSERT INTO `$tableName` (`$columns`) VALUES $placeholdersString";
+        }
+
+        // Log the SQL string for testing purposes
+        LoggerUtility::log('info', "Generated SQL: $sql");
+
+        $stmt = $this->mysqli()->prepare($sql);
+        if (!$stmt) {
+            LoggerUtility::log('error', "Unable to prepare statement: " . $this->mysqli()->error);
+            return false;
+        }
+
+        $types = $this->determineTypes($values);
+        $stmt->bind_param($types, ...$values);
+
+        if ($stmt->execute()) {
+            $stmt->close();
+            return true;
+        } else {
+            $error = $stmt->error;
+            $stmt->close();
+            LoggerUtility::log('error', "Failed to execute insertMultipleRows: $error");
+            return false;
+        }
+    }
+
+    /**
+     * Determine the types of the values for bind_param.
+     *
+     * @param array $values The values to determine types for.
+     * @return string The types string.
+     */
+    private function determineTypes(array $values): string
+    {
+        $types = '';
+        foreach ($values as $value) {
+            if (is_int($value)) {
+                $types .= 'i';
+            } elseif (is_float($value)) {
+                $types .= 'd';
+            } elseif (is_string($value)) {
+                $types .= 's';
+            } else {
+                $types .= 'b'; // 'b' for blob and other types
+            }
+        }
+        return $types;
+    }
 }

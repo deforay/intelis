@@ -179,12 +179,12 @@ try {
                 $data['result'] = "";
             }
 
-            if ($batchCode == '' || empty($batchCode)) {
-                $data['batch_code']     = $newBatchCode;
-                $data['batch_code_key'] = $maxBatchCodeKey;
-            } else {
-                $data['batch_code'] = $batchCode;
-            }
+            // if ($batchCode == '' || empty($batchCode)) {
+            //     $data['batch_code']     = $newBatchCode;
+            //     $data['batch_code_key'] = $maxBatchCodeKey;
+            // } else {
+            //     $data['batch_code'] = $batchCode;
+            // }
 
             $query    = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from form_vl where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);

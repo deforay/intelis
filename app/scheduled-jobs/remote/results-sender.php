@@ -5,16 +5,21 @@ if ($cliMode) {
     require_once(__DIR__ . "/../../../bootstrap.php");
 }
 
+
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
+
 //this file gets the data from the local database and updates the remote database
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
-use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -57,6 +62,9 @@ try {
 
     // GERNERIC TEST RESULTS
     if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
+        if ($cliMode) {
+            echo "Trying to send test results from Custom Tests...\n";
+        }
 
         $genericQuery = "SELECT generic.*, a.user_name as 'approved_by_name'
                     FROM `form_generic` AS generic
@@ -93,12 +101,20 @@ try {
             $id = $db->update('form_generic', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', count($genericLabResult), 'send-results', 'generic', $url, $payload, $jsonResponse, 'json', $labId);
+        $totalResults  = count($result ?? []);
+        if ($cliMode) {
+            echo "Sent $totalResults test results from Custom Tests...\n";
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'generic', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
 
     // VIRAL LOAD TEST RESULTS
     if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
+        if ($cliMode) {
+            echo "Trying to send test results from HIV Viral Load...\n";
+        }
         $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
             FROM `form_vl` AS vl
             LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
@@ -129,11 +145,19 @@ try {
             $id = $db->update('form_vl', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', count($vlLabResult), 'send-results', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
+        $totalResults  = count($result ?? []);
+        if ($cliMode) {
+            echo "Sent $totalResults test results from HIV Viral Load...\n";
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     // EID TEST RESULTS
     if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
+        if ($cliMode) {
+            echo "Trying to send test results from EID...\n";
+        }
         $eidQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
                     FROM `form_eid` AS vl
                     LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
@@ -161,13 +185,19 @@ try {
             $db->where('sample_code', $result, 'IN');
             $id = $db->update('form_eid', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
+        $totalResults  = count($result ?? []);
+        if ($cliMode) {
+            echo "Sent $totalResults test results from EID...\n";
+        }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', count($eidLabResult), 'send-results', 'eid', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'eid', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     // COVID-19 TEST RESULTS
     if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
-
+        if ($cliMode) {
+            echo "Trying to send test results from Covid-19...\n";
+        }
         $covid19Query = "SELECT c19.*, a.user_name as 'approved_by_name'
                     FROM `form_covid19` AS c19
                     LEFT JOIN `user_details` AS a ON c19.result_approved_by = a.user_id
@@ -207,13 +237,20 @@ try {
             $id = $db->update('form_covid19', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', count($c19LabResult), 'send-results', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
+        $totalResults  = count($result ?? []);
+        if ($cliMode) {
+            echo "Sent $totalResults test results from Covid-19...\n";
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     // Hepatitis TEST RESULTS
 
     if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
-
+        if ($cliMode) {
+            echo "Trying to send test results from Hepatitis...\n";
+        }
         $hepQuery = "SELECT hep.*, a.user_name as 'approved_by_name'
                     FROM `form_hepatitis` AS hep
                     LEFT JOIN `user_details` AS a ON hep.result_approved_by = a.user_id
@@ -241,11 +278,19 @@ try {
             $id = $db->update('form_hepatitis', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', count($hepLabResult), 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
+        $totalResults  = count($result ?? []);
+        if ($cliMode) {
+            echo "Sent $totalResults test results from Hepatitis...\n";
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     // CD4 TEST RESULTS
     if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
+        if ($cliMode) {
+            echo "Trying to send test results from CD4...\n";
+        }
         $cd4Query = "SELECT cd4.*, a.user_name as 'approved_by_name'
             FROM `form_cd4` AS cd4
             LEFT JOIN `user_details` AS a ON cd4.result_approved_by = a.user_id
@@ -275,8 +320,11 @@ try {
             $db->where('sample_code', $result, 'IN');
             $id = $db->update('form_cd4', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
-
-        $general->addApiTracking($transactionId, 'vlsm-system', count($cd4LabResult), 'send-results', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
+        $totalResults  = count($result ?? []);
+        if ($cliMode) {
+            echo "Sent $totalResults test results from CD4...\n";
+        }
+        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     $instanceId = $general->getInstanceId();
