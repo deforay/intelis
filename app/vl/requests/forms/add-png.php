@@ -343,7 +343,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</td>
 										<td>
 											<label class="radio-inline">
-												<input type="text" class="form-control isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please enter the sample collection date" onchange="generateSampleCode(true);" style="width:100%;">
+												<input type="text" class="form-control isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please enter the sample collection date" onchange="generateSampleCode(true); checkCollectionDate(this.value);" style="width:100%;">
 											</label>
 										</td>
 										<td colspan="4" class="typeOfSample">

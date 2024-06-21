@@ -185,4 +185,21 @@
         var char = artRegimen.charAt(0);
         $("#lineOfTreatment").val(char);
     }
+
+    function checkCollectionDate(collectionDate, allowFutureDate = false){
+        if (collectionDate != "") {
+                $.post("/common/date-validation.php", {
+                        sampleCollectionDate: collectionDate,
+                        allowFutureDates : allowFutureDate
+                    },
+                    function(data) {
+                        console.log(data);
+                        if (data == "1") {
+                            alert("Please enter valid Sample Collection Date & Date should not be in future")
+                            return false;
+                        }
+                    });
+            }
+
+    }
 </script>

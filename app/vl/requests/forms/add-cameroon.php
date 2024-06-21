@@ -357,7 +357,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                   <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for=""><?= _translate('Date of Sample Collection'); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" value="<?php if(isset($_SESSION['vlData']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['vlData']['sample_collection_date'],true); ?>" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" title="<?= _translate('Please select sample collection date'); ?>" onchange="generateSampleCode();">
+                                                            <input type="text" class="form-control isRequired dateTime" value="<?php if(isset($_SESSION['vlData']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['vlData']['sample_collection_date'],true); ?>" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" title="<?= _translate('Please select sample collection date'); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);">
                                                        </div>
                                                   </div>
                                                   <div class="col-md-3">

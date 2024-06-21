@@ -404,7 +404,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                   <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for=""><?= _translate('Date of Sample Collection'); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" title="<?= _translate('Please select sample collection date'); ?>" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleTestingDate();">
+                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" title="<?= _translate('Please select sample collection date'); ?>" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleTestingDate(); checkCollectionDate(this.value);">
                                                        </div>
                                                   </div>
                                                   <div class="col-md-3">
