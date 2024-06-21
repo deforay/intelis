@@ -94,6 +94,8 @@ if ($formId == COUNTRY\CAMEROON) {
 	$lastModifiedColumnPosition += 2;
 }
 
+$sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
+
 ?>
 <style>
 	.select2-selection__choice {
@@ -951,7 +953,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			],
 			"order": [
 				[<?= $lastModifiedColumnPosition; ?>, "desc"],
-				[0, "desc"]
+				[<?= $sampleColumnToSort; ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
