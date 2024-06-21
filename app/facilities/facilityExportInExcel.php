@@ -56,7 +56,7 @@ if (!empty($sWhere)) {
 	$sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (!empty($sOrder)) {
+if (!empty($sOrder) && $sOrder !== '') {
 	$sOrder = preg_replace('/(\v|\s)+/', ' ', (string) $sOrder);
 	$sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }

@@ -173,7 +173,7 @@ try {
     }
 
     //$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
-    if (!empty($sOrder)) {
+    if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
         $sQuery = $sQuery . " ORDER BY " . $sOrder;
     }
@@ -201,7 +201,7 @@ try {
         $calcValueQuery = $calcValueQuery . ' WHERE ' . implode(" AND ", $sWhere);
     }
 
-    if (!empty($sOrder)) {
+    if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
         $calcValueQuery = $calcValueQuery . " ORDER BY " . $sOrder;
     }

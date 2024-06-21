@@ -193,7 +193,7 @@ try {
      //echo $sQuery; die;
      $_SESSION['cd4ResultQuery'] = $sQuery;
 
-     if (!empty($sOrder)) {
+     if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
           $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
      }

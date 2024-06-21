@@ -253,7 +253,7 @@ try {
           $sQuery = $sQuery . ' WHERE ' . $sWhere;
      }
      //die($sQuery);
-     if (!empty($sOrder)) {
+     if (!empty($sOrder) && $sOrder !== '') {
           $_SESSION['eidRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
           $sQuery = $sQuery . " ORDER BY " . $sOrder;
      }

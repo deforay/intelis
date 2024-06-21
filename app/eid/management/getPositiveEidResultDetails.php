@@ -174,7 +174,7 @@ try {
     }
     $sQuery = $sQuery . ' ' . $sWhere;
     $sQuery = $sQuery . ' group by vl.eid_id';
-    if (!empty($sOrder)) {
+    if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }

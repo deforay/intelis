@@ -88,7 +88,7 @@ final class EidService extends AbstractTestService
 
             // PNG FORM (formId = 5) CANNOT HAVE PROVINCE EMPTY
             // Sample Collection Date Cannot be Empty
-            if (empty($sampleCollectionDate) || ($formId == COUNTRY\PNG && empty($provinceId))) {
+            if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false || ($formId == COUNTRY\PNG && empty($provinceId))) {
                 return 0;
             }
 
@@ -153,7 +153,7 @@ final class EidService extends AbstractTestService
                     $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                 }
 
-               /* $formAttributes = [
+                /* $formAttributes = [
                     'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address' => $this->commonService->getClientIpAddress()
                 ];

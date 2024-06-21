@@ -152,7 +152,7 @@ try {
      $sQuery = $sQuery . $sWhere;
      // echo $sQuery;die;
      $_SESSION['vlIncompleteForm'] = $sQuery;
-     if (!empty($sOrder)) {
+     if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
           $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
      }

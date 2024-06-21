@@ -89,7 +89,7 @@ if (isset($_POST['category']) && $_POST['category']) {
     $sQuery = $sQuery . 'AND category like "' . $_POST['category'] . '"';
 }
 
-if (!empty($sOrder)) {
+if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }

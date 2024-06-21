@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\Covid19Service;
 use App\Exceptions\SystemException;
@@ -17,7 +18,7 @@ $provinceCode = $_POST['provinceCode'] ?? $_POST['pName'] ?? null;
 $sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? null;
 
 try {
-  if (empty($sampleCollectionDate)) {
+  if (empty($sampleCollectionDate || DateUtility::isDateValid($sampleCollectionDate) === false)) {
     echo json_encode([]);
   } else {
     $sampleCodeParams = [];

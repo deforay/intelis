@@ -178,7 +178,7 @@ if (!empty($sWhere)) {
 $sQuery = $sQuery . $sWhere;
 //echo $sQuery; die;
 $sQuery = $sQuery . ' group by vl.hepatitis_id';
-if (!empty($sOrder)) {
+if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }

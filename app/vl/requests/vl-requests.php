@@ -87,6 +87,14 @@ $srcOfReqList = [];
 foreach ($srcResults as $list) {
 	$srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
 }
+
+$formId = (int) $globalConfig['vl_form'];
+$lastModifiedColumnPosition = ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11;
+
+if ($formId == COUNTRY\CAMEROON) {
+	$lastModifiedColumnPosition += 2;
+}
+
 ?>
 <style>
 	.select2-selection__choice {
@@ -950,7 +958,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				<?php } ?>
 			],
 			"order": [
-				[<?= $lastModifiedColumnPosition; ?>, "desc"],				
+				[<?= $lastModifiedColumnPosition; ?>, "desc"],
 				[0, "desc"]
 			],
 			"fnDrawCallback": function() {

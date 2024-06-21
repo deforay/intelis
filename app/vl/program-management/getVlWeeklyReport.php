@@ -173,7 +173,7 @@ $sQuery = $sQuery . ' WHERE ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY vl.lab_id, vl.facility_id';
 
 
-if (!empty($sOrder)) {
+if (!empty($sOrder) && $sOrder !== '') {
   $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
   $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }

@@ -2,8 +2,8 @@
 
 use Throwable;
 use App\Services\CD4Service;
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var CD4Service $cd4Service */
@@ -17,7 +17,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $provinceCode = $_POST['provinceCode'] ?? $_POST['pName'] ?? null;
 $sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? null;
 try {
-  if (empty($sampleCollectionDate)) {
+  if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false) {
     echo json_encode([]);
   } else {
     $sampleCodeParams = [];

@@ -175,7 +175,7 @@ try {
 
     $sQuery = $sQuery . ' WHERE ' . $sWhere;
     //echo $sQuery;
-    if (!empty($sOrder)) {
+    if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }

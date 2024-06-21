@@ -364,7 +364,7 @@ final class Covid19Service extends AbstractTestService
 
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             // Sample Collection Date Cannot be Empty
-            if (empty($sampleCollectionDate) || ($formId == COUNTRY\PNG && empty($provinceId))) {
+            if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false || ($formId == COUNTRY\PNG && empty($provinceId))) {
                 return 0;
             }
 

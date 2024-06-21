@@ -180,7 +180,7 @@ final class TbService extends AbstractTestService
 
             // PNG FORM (formId = 5) CANNOT HAVE PROVINCE EMPTY
             // Sample Collection Date Cannot be Empty
-            if (empty($sampleCollectionDate) || ($formId == COUNTRY\PNG && empty($provinceId))) {
+            if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false || ($formId == COUNTRY\PNG && empty($provinceId))) {
                 return 0;
             }
 

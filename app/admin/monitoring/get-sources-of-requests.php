@@ -158,7 +158,7 @@ try {
     }
 
     $sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.sample_collection_date)';
-    if (!empty($sOrder)) {
+    if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
         $sQuery = $sQuery . " ORDER BY " . $sOrder;
     }

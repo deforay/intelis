@@ -1,8 +1,8 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\HepatitisService;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 
@@ -26,7 +26,7 @@ $sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? nul
 $prefix = $_POST['prefix'] ?? null;
 
 try {
-  if (empty($sampleCollectionDate) || empty($prefix)) {
+  if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false || empty($prefix)) {
     echo json_encode([]);
   } else {
     $sampleCodeParams = [];

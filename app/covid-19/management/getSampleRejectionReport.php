@@ -139,7 +139,7 @@ try {
     $sQuery = $sQuery . ' ' . $sWhere;
     //echo $sQuery; die;
     $sQuery = $sQuery . ' GROUP BY vl.covid19_id';
-    if (!empty($sOrder)) {
+    if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }

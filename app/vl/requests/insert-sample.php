@@ -3,7 +3,6 @@
 use App\Services\VlService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */

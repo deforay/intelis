@@ -197,7 +197,7 @@ if (!empty($sWhere)) {
     $sWhere = "WHERE temp_sample_status=0 AND imported_by ='" . $importedBy . "' ";
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-if (!empty($sOrder)) {
+if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 } else {

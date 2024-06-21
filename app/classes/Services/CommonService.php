@@ -879,7 +879,7 @@ final class CommonService
 
     public function generateDataTablesSorting($postData, $orderColumns)
     {
-        $sOrder = "";
+        $sOrder = null;
         if (isset($postData['iSortCol_0'])) {
             for ($i = 0; $i < (int) $postData['iSortingCols']; $i++) {
                 if ($postData['bSortable_' . (int) $postData['iSortCol_' . $i]] == "true") {

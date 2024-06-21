@@ -82,7 +82,7 @@ if (!empty($sWhere)) {
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (!empty($sOrder)) {
+if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
@@ -96,7 +96,7 @@ $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 $order = "";
-if (!empty($sOrder)) {
+if (!empty($sOrder) && $sOrder !== '') {
     $order = " order by $sOrder";
 }
 $aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_test_categories $sWhere $order");
