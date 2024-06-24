@@ -2,14 +2,17 @@
 
 namespace App\Services;
 
+use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
 
 final class ConfigService
 {
+    protected DatabaseService $db;
     protected $fileCache;
 
-    public function __construct(FileCacheUtility $fileCache)
+    public function __construct(DatabaseService $db, FileCacheUtility $fileCache)
     {
+        $this->db = $db;
         $this->fileCache = $fileCache;
     }
 
@@ -41,22 +44,29 @@ final class ConfigService
         file_put_contents($filePath, "<?php\n\n" . $formattedConfigArrayDefinition . "\n\nreturn \$systemConfig;\n");
     }
 
-    private function formatArrayAsPhpCode(array $array, $indentation = '')
+    public function formatArrayAsPhpCode(array $array, $parentKey = '$systemConfig', $indentation = '', &$previousKey = '')
     {
-        $output = "[\n";
-        $indentation .= '    ';
+        $output = '';
         foreach ($array as $key => $value) {
             $formattedKey = var_export($key, true);
+            $fullKey = "{$parentKey}[{$formattedKey}]";
+            $section = explode("['", $fullKey)[1] ?? '';
+            $currentSection = explode("']", $section)[0] ?? '';
+
+            if ($currentSection && $previousKey !== $currentSection) {
+                if ($previousKey) {
+                    $output .= "\n"; // Add a new line between different sections
+                }
+                $previousKey = $currentSection;
+            }
+
             if (is_array($value)) {
-                $formattedValue = $this->formatArrayAsPhpCode($value, $indentation);
+                $output .= $this->formatArrayAsPhpCode($value, $fullKey, $indentation, $previousKey);
             } else {
                 $formattedValue = var_export($value, true);
+                $output .= "{$indentation}{$fullKey} = {$formattedValue};\n";
             }
-            $output .= "{$indentation}{$formattedKey} => {$formattedValue},\n";
         }
-        $indentation = substr($indentation, 0, -4);
-        $output .= "{$indentation}]";
-
-        return "\$systemConfig = " . $output . ";";
+        return $output;
     }
 }
