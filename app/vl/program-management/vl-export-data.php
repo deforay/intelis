@@ -45,7 +45,11 @@ $implementingPartnerList = $general->getImplementationPartners();
 
 $state = $geolocationService->getProvinces("yes");
 $formId = (int) $general->getGlobalConfig('vl_form');
+$lastModifiedColumnPosition =  15;
 
+if ($formId == COUNTRY\CAMEROON) {
+	$lastModifiedColumnPosition += 2;
+}
 ?>
 <style>
 	.select2-selection__choice {
@@ -312,9 +316,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								</select>
 							</td>
 
-
-
-
 						</tr>
 						<tr>
 							<td><strong>
@@ -476,6 +477,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<th>
 										<?php echo _translate("Patient's Name"); ?>
 									</th>
+									<?php if ($formId == COUNTRY\CAMEROON) { ?>
+										<th>
+											<?php echo _translate("Universal Health Code"); ?>
+										</th>
+									<?php } ?>
 									<th scope="row">
 										<?php echo _translate("Facility Name"); ?>
 									</th>
@@ -684,6 +690,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				{
 					"sClass": "center"
 				},
+				<?php if ($formId == COUNTRY\CAMEROON) {
+					echo '{
+						"sClass": "center"
+
+					},';
+				} ?>
 				{
 					"sClass": "center"
 				},
@@ -721,7 +733,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				}
 			],
 			"aaSorting": [
-				[15, "desc"]
+				[<?= $lastModifiedColumnPosition; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
