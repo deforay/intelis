@@ -355,7 +355,7 @@ if (!empty($result)) {
      $html .= '</table>';
 
 
-     $html = '<table style="padding:8px 4px 2px 2px;">';
+     $html .= '<table style="padding:8px 4px 2px 2px;">';
      $html .= '<tr>';
      if (!empty($result['health_insurance_code'])) {
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH INSURANCE CODE") . '</td>';
