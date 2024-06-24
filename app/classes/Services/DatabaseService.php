@@ -364,7 +364,7 @@ final class DatabaseService extends MysqliDb
         }
 
         // Log the SQL string for testing purposes
-        LoggerUtility::log('info', "Generated SQL: $sql");
+        //LoggerUtility::log('info', "Generated SQL: $sql");
 
         $stmt = $this->mysqli()->prepare($sql);
         if (!$stmt) {

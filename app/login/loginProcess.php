@@ -138,7 +138,7 @@ try {
     }
 } catch (SystemException $exception) {
     $_SESSION['alertMsg'] = $exception->getMessage();
-    LoggerUtility::log('info', $exception->getMessage() . " | " . $ipaddress . " | " . $_POST['username'], [
+    LoggerUtility::log('error', $exception->getMessage() . " | " . $ipaddress . " | " . $_POST['username'], [
         'exception' => $exception,
         'file' => $exception->getFile(), // File where the error occurred
         'line' => $exception->getLine(), // Line number of the error
