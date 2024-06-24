@@ -115,7 +115,7 @@ if (!empty($result)) {
      $sameReviewerAndApprover = (!empty($reviewedBy) && $reviewedBy == $resultApprovedBy);
 
      $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = $approvedSignaturePath = null;
-     
+
      if (!empty($reviewedByRes['user_signature'])) {
           $reviewedSignaturePath =  $reviewedByRes['user_signature'];
      }
@@ -213,21 +213,21 @@ if (!empty($result)) {
           }
      }
      $resultApprovedBy  = '';
-	$userRes = [];
-	if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-		$resultApprovedBy = $result['approvedBy'];
-		$userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
-	} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-		$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-		if ($approvedByRes) {
-			$resultApprovedBy = $approvedByRes['user_name'];
-		}
-		$userRes = $approvedByRes;
-	}
+     $userRes = [];
+     if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
+          $resultApprovedBy = $result['approvedBy'];
+          $userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
+     } elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
+          $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+          if ($approvedByRes) {
+               $resultApprovedBy = $approvedByRes['user_name'];
+          }
+          $userRes = $approvedByRes;
+     }
 
-	if (!empty($userRes['user_signature'])) {
-		$userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
-	}
+     if (!empty($userRes['user_signature'])) {
+          $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+     }
      $smileyContent = '';
      $showMessage = '';
      $tndMessage = '';
@@ -353,12 +353,27 @@ if (!empty($result)) {
 
      $html .= '</tr>';
      $html .= '</table>';
+
+
+     $html = '<table style="padding:8px 4px 2px 2px;">';
+     $html .= '<tr>';
      if (!empty($result['health_insurance_code'])) {
-          $html .= '<table style="padding:8px 4px 2px 2px;">';
-          $html .= '<tr><td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH INSURANCE CODE") . '</td></tr>';
-          $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . $result['health_insurance_code'] . '</td></tr>';
-          $html .= '</table>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH INSURANCE CODE") . '</td>';
      }
+     if (!empty($result['lab_assigned_code'])) {
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("LAB ASSIGNED CODE") . '</td>';
+     }
+     $html .= '</tr><tr>';
+
+     if (!empty($result['health_insurance_code'])) {
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['health_insurance_code'] . '</td>';
+     }
+     if (!empty($result['lab_assigned_code'])) {
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['lab_assigned_code'] . '</td>';
+     }
+
+     $html .= '</tr></table>';
+
 
      $html .= '</td>';
      $html .= '</tr>';
