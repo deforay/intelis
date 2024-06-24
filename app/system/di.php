@@ -14,6 +14,7 @@ use App\Utilities\MiscUtility;
 use App\Helpers\BatchPdfHelper;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\ConfigService;
 use App\Services\SystemService;
 use App\Services\AppMenuService;
 use App\Services\Covid19Service;
@@ -91,6 +92,7 @@ $builder->addDefinitions([
 // Services
 $builder->addDefinitions([
     CommonService::class  => DI\autowire(),
+    ConfigService::class  => DI\autowire(),
     SystemService::class  => DI\autowire(),
     ResultPdfService::class  => DI\autowire(),
     BatchService::class  => DI\autowire(),

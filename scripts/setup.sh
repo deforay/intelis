@@ -718,6 +718,10 @@ if [ ! -z "$remote_sts_url" ]; then
     fi
 fi
 
+if grep -q "\['cache_di'\] => false" "${config_file}"; then
+    sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"
+fi
+
 # Run the database migrations and other post-install tasks
 cd "${vlsm_path}"
 echo "Running database migrations and other post-install tasks..."
