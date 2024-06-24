@@ -320,11 +320,12 @@ if ($priInfo) {
 											echo "</th>";
 											echo "</tr>";
 
-											$mode = match ($_SESSION['instance']['type']) {
-												'remoteuser' => " AND (show_mode like 'sts' or show_mode like 'always')",
-												'vluser' => " AND (show_mode like 'lis' or show_mode like 'always')",
-												default => " AND (show_mode like 'always')",
-											};
+											$mode = " AND (show_mode like 'always')";
+											if ($general->isSTSInstance()) {
+												$mode = " AND (show_mode like 'sts' or show_mode like 'always')";
+											} elseif ($general->isLISInstance()) {
+												$mode = " AND (show_mode like 'lis' or show_mode like 'always')";
+											}
 
 											$pQuery = "SELECT * FROM privileges WHERE resource_id= ? $mode ORDER BY display_order ASC";
 											$pInfo = $db->rawQuery($pQuery, [$mRes[0]]);

@@ -2,8 +2,10 @@
 
 namespace App\Helpers\ResultPDFHelpers;
 
-use App\Utilities\MiscUtility;
 use setasign\Fpdi\Tcpdf\Fpdi;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 class Covid19ResultPDFHelper extends Fpdi
 {
@@ -17,6 +19,7 @@ class Covid19ResultPDFHelper extends Fpdi
     public ?string $resultPrintedDate;
     public ?array $systemConfig = [];
     public $dataSync;
+    protected CommonService $commonService;
     public ?string $trainingTxt = null;
     private ?string $pdfTemplatePath = null;
     private bool $templateImported = false;
@@ -27,6 +30,7 @@ class Covid19ResultPDFHelper extends Fpdi
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskCache);
         $this->pdfTemplatePath = $pdfTemplatePath ?? null;
         $this->enableFooter = $enableFooter;
+        $this->commonService = ContainerRegistry::get(CommonService::class);
     }
 
     //Page header
@@ -143,7 +147,7 @@ class Covid19ResultPDFHelper extends Fpdi
         $this->SetY(-15);
         // Set font
         $this->SetFont('helvetica', '', 8);
-        if ($this->systemConfig['sc_user_type'] == 'vluser' && $this->dataSync == 0 && ($this->formId == 1 || $this->formId == 3)) {
+        if ($this->commonService->isLISInstance() && $this->dataSync == 0 && ($this->formId == 1 || $this->formId == 3)) {
             $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
         } else {
             $generatedAtTestingLab = "";

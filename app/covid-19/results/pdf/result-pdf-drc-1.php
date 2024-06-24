@@ -95,7 +95,7 @@ if (!class_exists('DRCCovid19PDF1')) {
             // Set font
             $this->SetFont('helvetica', 'I', 8);
             setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
-            if ($this->systemConfig['sc_user_type'] == 'vluser' && $this->dataSync == 0) {
+            if ($this->commonService->isLISInstance() && $this->dataSync == 0) {
                 $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
             } else {
                 $generatedAtTestingLab = "";

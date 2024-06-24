@@ -2,24 +2,33 @@
 
 namespace App\Services;
 
-use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
+use Laminas\Config\Factory as ConfigFactory;
 
 final class ConfigService
 {
-    protected DatabaseService $db;
     protected $fileCache;
 
-    public function __construct(DatabaseService $db, FileCacheUtility $fileCache)
+    public function __construct(FileCacheUtility $fileCache)
     {
-        $this->db = $db;
         $this->fileCache = $fileCache;
     }
 
-    public function updateConfig($filePath, $keyValuePairs)
+    public function getConfigFile()
     {
-        // Include the current configuration file
-        $systemConfig = require $filePath;
+        $configFile = ROOT_PATH . "/configs/config." . APPLICATION_ENV . ".php";
+        if (!file_exists($configFile)) {
+            $configFile = ROOT_PATH . "/configs/config.production.php";
+        }
+
+        return $configFile;
+    }
+
+    public function updateConfig($keyValuePairs)
+    {
+        $filePath = $this->getConfigFile();
+        // Parse the current configuration file using Laminas\Config\Factory
+        $config = ConfigFactory::fromFile($filePath, true);
 
         // Update the values in the config array
         foreach ($keyValuePairs as $fullKey => $value) {
@@ -27,7 +36,7 @@ final class ConfigService
             $keys = preg_split('/[.:]/', $fullKey);
 
             // Update the nested array
-            $temp = &$systemConfig;
+            $temp = &$config;
             foreach ($keys as $key) {
                 if (!isset($temp[$key])) {
                     $temp[$key] = [];
@@ -37,14 +46,18 @@ final class ConfigService
             $temp = $value;
         }
 
-        // Convert the updated config array back to a formatted string
-        $formattedConfigArrayDefinition = $this->formatArrayAsPhpCode($systemConfig);
+        // Write back the updated config using custom formatted output
+        $this->writeFormattedConfig($filePath, $config->toArray());
+        $this->fileCache->clear();
+    }
 
-        // Write back to the file
+    private function writeFormattedConfig($filePath, array $config)
+    {
+        $formattedConfigArrayDefinition = $this->formatArrayAsPhpCode($config);
         file_put_contents($filePath, "<?php\n\n" . $formattedConfigArrayDefinition . "\n\nreturn \$systemConfig;\n");
     }
 
-    public function formatArrayAsPhpCode(array $array, $parentKey = '$systemConfig', $indentation = '', &$previousKey = '')
+    private function formatArrayAsPhpCode(array $array, $parentKey = '$systemConfig', $indentation = '', &$previousKey = '')
     {
         $output = '';
         foreach ($array as $key => $value) {

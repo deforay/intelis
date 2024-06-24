@@ -104,10 +104,10 @@ try {
 
 
             $apiUrl = $general->getRemoteURL() . "/api/v1.1/user/save-user-profile.php";
-            $post = array(
+            $post = [
                 'post' => json_encode($insertData),
                 'x-api-key' => MiscUtility::generateRandomString(18)
-            );
+            ];
 
             $client = new Client();
             $response = $client->post($apiUrl, [

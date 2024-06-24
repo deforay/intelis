@@ -62,7 +62,6 @@ $fResult = $facilitiesService->getAllFacilities(2);
                             <option <?= ($arr['default_time_zone'] == $value ? 'selected=selected' : ''); ?> value='<?= $value; ?>'> <?= $value; ?></option>;
                           <?php
                           }
-
                           ?>
                         </select>
                       </div>
@@ -74,9 +73,9 @@ $fResult = $facilitiesService->getAllFacilities(2);
                       <div class="col-lg-8">
                         <select class="form-control select2" id="sc_user_type" name="sc_user_type" placeholder="<?php echo _translate('Instance Type'); ?>" title="<?php echo _translate('Please choose instance type'); ?>" onchange="enableLab();">
                           <option value=""><?php echo _translate("-- Select --"); ?></option>
-                          <option value="standalone" <?php echo ('standalone' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _translate("Standalone"); ?></option>
-                          <option value="vluser" <?php echo ('vluser' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _translate("Lab Instance"); ?></option>
-                          <option value="remoteuser" <?php echo ('remoteuser' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _translate("Remote Instance"); ?></option>
+                          <option value="standalone" <?php echo $general->isStandaloneInstance() ? "selected='selected'" : "" ?>><?php echo _translate("Standalone"); ?></option>
+                          <option value="vluser" <?php echo $general->isLISInstance() ? "selected='selected'" : "" ?>><?php echo _translate("Lab Instance"); ?></option>
+                          <option value="remoteuser" <?php echo $general->isSTSInstance() ? "selected='selected'" : "" ?>><?php echo _translate("Remote Instance"); ?></option>
                         </select>
                       </div>
                     </div>
