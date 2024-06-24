@@ -12,7 +12,6 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
-use App\Utilities\LoggerUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -89,7 +88,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 	if (!empty($searchQueryWhere)) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
-	LoggerUtility::log('info', $searchQuery);
+	//LoggerUtility::log('info', $searchQuery);
 	$requestResult = $db->query($searchQuery);
 }
 

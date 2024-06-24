@@ -539,6 +539,11 @@ else
     update_configuration
 fi
 
+# Check if the cache_di setting is set to true
+if grep -q "\['cache_di'\] => false" "${config_file}"; then
+    sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"
+fi
+
 # Run the database migrations and other post-update tasks
 echo "Running database migrations and other post-update tasks..."
 sudo -u www-data composer post-update &

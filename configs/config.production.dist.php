@@ -30,7 +30,6 @@ $systemConfig['database']['db']         = 'vlsm';
 $systemConfig['database']['port']       = 3306;
 $systemConfig['database']['charset']    = 'utf8mb4';
 
-$systemConfig['passwordSalt'] = 'PUT-A-RANDOM-STRING-HERE';
 $systemConfig['tryCrypt'] = 'PUT-A-RANDOM-STRING-HERE';
 
 
