@@ -7,6 +7,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
@@ -183,7 +184,7 @@ try {
         $freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_id', $_POST['freezer']);
 
         if (empty($freezerCheck)) {
-            $storageId = $general->generateUUID();
+            $storageId = MiscUtility::generateUUID();
             $freezerCode = $_POST['freezer'];
             $d = [
                 'storage_id' => $storageId,
@@ -209,7 +210,7 @@ try {
         ];
     }
 
-    $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+    $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
     $vlData['form_attributes'] = $db->func($formAttributes);
 
     $db->where('vl_sample_id', $_POST['vlSampleId']);

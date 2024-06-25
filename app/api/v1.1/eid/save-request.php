@@ -98,7 +98,7 @@ try {
     foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
         $userAttributes[$header] = $apiService->getHeader($request, $header);
     }
-    $userAttributes = $general->jsonToSetString(json_encode($userAttributes), 'user_attributes');
+    $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
     $responseData = [];
@@ -372,7 +372,7 @@ try {
             $reasonForChanges = json_encode($allChange);
         }
 
-        $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+        $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
         if (isset($data['motherTreatment']) && !empty($data['motherTreatment'])) {
             $data['motherTreatment'] = !is_array($data['motherTreatment']) ? [$data['motherTreatment']] : implode(",", $data['motherTreatment']);
         } else {

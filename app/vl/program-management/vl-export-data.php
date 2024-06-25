@@ -479,7 +479,7 @@ if ($formId == COUNTRY\CAMEROON) {
 									</th>
 									<?php if ($formId == COUNTRY\CAMEROON) { ?>
 										<th>
-											<?php echo _translate("Universal Health Code"); ?>
+											<?php echo _translate("Universal Health Coverage"); ?>
 										</th>
 									<?php } ?>
 									<th scope="row">
@@ -695,8 +695,7 @@ if ($formId == COUNTRY\CAMEROON) {
 						"sClass": "center"
 
 					},';
-				} ?>
-				{
+				} ?> {
 					"sClass": "center"
 				},
 				<?php if ($formId == COUNTRY\CAMEROON) {

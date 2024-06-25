@@ -643,7 +643,7 @@ final class CommonService
                     "{$testType}Remote{$syncType}Sync" => $currentDateTime
                 ];
 
-                $facilityAttributes = $this->jsonToSetString(json_encode($facilityAttributes), 'facility_attributes');
+                $facilityAttributes = JsonUtility::jsonToSetString(json_encode($facilityAttributes), 'facility_attributes');
 
                 $data = [
                     'facility_attributes' => $this->db->func($facilityAttributes)
@@ -664,7 +664,7 @@ final class CommonService
                     "last{$syncType}Sync" => $currentDateTime,
                     "{$testType}Last{$syncType}Sync" => $currentDateTime
                 ];
-                $facilityAttributes = $this->jsonToSetString(json_encode($facilityAttributes), 'facility_attributes');
+                $facilityAttributes = JsonUtility::jsonToSetString(json_encode($facilityAttributes), 'facility_attributes');
                 $data = [
                     'facility_attributes' => $this->db->func($facilityAttributes)
                 ];
@@ -706,64 +706,6 @@ final class CommonService
     {
         $barcodeobj = new TCPDF2DBarcode($code, $type);
         return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
-    }
-
-    /**
-     * Convert a JSON string to a string that can be used with JSON_SET()
-     *
-     * @param string|null $json The JSON string to convert
-     * @param string $column The name of the JSON column
-     * @param array|string $newData An optional array or JSON string of new key-value pairs to add to the JSON
-     * @return string|null The string that can be used with JSON_SET()
-     */
-    public function jsonToSetString(?string $json, string $column, $newData = []): ?string
-    {
-        // Decode JSON string to array
-        $jsonData = $json && JsonUtility::isJSON($json) ? json_decode($json, true) : [];
-
-        // Decode newData if it's a string
-        if (is_string($newData)) {
-            $newData = json_decode($newData, true);
-        }
-
-        // Combine original data and new data
-        $data = array_merge($jsonData, $newData);
-
-        // Return null if there's nothing to set
-        if (empty($data)) {
-            return null;
-        }
-
-        // Build the set string
-        $setString = '';
-        foreach ($data as $key => $value) {
-            $setString .= ', "$.' . $key . '", ' . $this->jsonValueToString($value);
-            //$setString .= ', "$.' . $key . '", JSON_UNQUOTE(' . (string) $this->jsonValueToString($value) . ')';
-        }
-
-        // Construct and return the JSON_SET query
-        return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
-    }
-
-    /**
-     * Convert a value to a JSON-compatible string representation
-     *
-     * @param mixed $value The value to convert
-     * @return string The JSON-compatible string representation
-     */
-    private function jsonValueToString($value): string
-    {
-        if (is_null($value)) {
-            return 'null';
-        } elseif (is_bool($value)) {
-            return $value ? 'true' : 'false';
-        } elseif (is_numeric($value)) {
-            return (string) $value;
-        } elseif (is_array($value)) {
-            return "'" . addslashes(json_encode($value)) . "'";
-        } else {
-            return "'" . addslashes((string) $value) . "'";
-        }
     }
 
     public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false)

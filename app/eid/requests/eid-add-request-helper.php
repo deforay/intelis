@@ -1,12 +1,13 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -457,43 +458,43 @@ try {
 	}
 
 	$formAttributes = [
-        'applicationVersion' => $general->getSystemConfig('sc_version'),
-        'ip_address' => $general->getClientIpAddress()
-    ];
+		'applicationVersion' => $general->getSystemConfig('sc_version'),
+		'ip_address' => $general->getClientIpAddress()
+	];
 
-    if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
+	if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
 
-        $freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_id', $_POST['freezer']);
+		$freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_id', $_POST['freezer']);
 
-        if (empty($freezerCheck)) {
-            $storageId = $general->generateUUID();
-            $freezerCode = $_POST['freezer'];
-            $d = [
-                'storage_id' => $storageId,
-                'storage_code' => $freezerCode,
-                'lab_id' => $_POST['labId'],
-                'storage_status' => 'active'
-            ];
-            $db->insert('lab_storage', $d);
-        } else {
-            $storageId = $_POST['freezer'];
-            $condition = " storage_id = '$freezerCheck'";
-            $freezerInfo = $general->getDataByTableAndFields('lab_storage', array('storage_code'), false, $condition);
-            $freezerCode = $freezerInfo[0]['storage_code'];
-        }
+		if (empty($freezerCheck)) {
+			$storageId = MiscUtility::generateUUID();
+			$freezerCode = $_POST['freezer'];
+			$d = [
+				'storage_id' => $storageId,
+				'storage_code' => $freezerCode,
+				'lab_id' => $_POST['labId'],
+				'storage_status' => 'active'
+			];
+			$db->insert('lab_storage', $d);
+		} else {
+			$storageId = $_POST['freezer'];
+			$condition = " storage_id = '$freezerCheck'";
+			$freezerInfo = $general->getDataByTableAndFields('lab_storage', array('storage_code'), false, $condition);
+			$freezerCode = $freezerInfo[0]['storage_code'];
+		}
 
-        $formAttributes['storage'] = [
-            "storageId" => $storageId,
-            "storageCode" => $freezerCode,
-            "rack" => $_POST['rack'],
-            "box" => $_POST['box'],
-            "position" => $_POST['position'],
-            "volume" => $_POST['volume']
-        ];
-    }
+		$formAttributes['storage'] = [
+			"storageId" => $storageId,
+			"storageCode" => $freezerCode,
+			"rack" => $_POST['rack'],
+			"box" => $_POST['box'],
+			"position" => $_POST['position'],
+			"volume" => $_POST['volume']
+		];
+	}
 
-    $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
-    $eidData['form_attributes'] = $db->func($formAttributes);
+	$formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
+	$eidData['form_attributes'] = $db->func($formAttributes);
 
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
@@ -515,7 +516,7 @@ try {
 	}
 	if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
 		$cpyReq = $general->getGlobalConfig('eid_copy_request_save_and_next');
-		if(isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes'){
+		if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
 			$_SESSION['eidData'] = $eidData;
 		}
 		header("Location:/eid/requests/eid-add-request.php");

@@ -2,16 +2,17 @@
 
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\StorageService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
-use App\Services\StorageService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -301,41 +302,41 @@ try {
      $formAttributes = [
           'applicationVersion' => $general->getSystemConfig('sc_version'),
           'ip_address' => $general->getClientIpAddress()
-      ];
-  
-      if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
-  
+     ];
+
+     if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
+
           $freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_id', $_POST['freezer']);
- 
+
           if (empty($freezerCheck)) {
-              $storageId = $general->generateUUID();
-              $freezerCode = $_POST['freezer'];
-              $d = [
-                  'storage_id' => $storageId,
-                  'storage_code' => $freezerCode,
-                  'lab_id' => $_POST['labId'],
-                  'storage_status' => 'active'
-              ];
-              $db->insert('lab_storage', $d);
+               $storageId = MiscUtility::generateUUID();
+               $freezerCode = $_POST['freezer'];
+               $d = [
+                    'storage_id' => $storageId,
+                    'storage_code' => $freezerCode,
+                    'lab_id' => $_POST['labId'],
+                    'storage_status' => 'active'
+               ];
+               $db->insert('lab_storage', $d);
           } else {
-              $storageId = $_POST['freezer'];
-              $condition = " storage_id = '$freezerCheck'";
-              $freezerInfo = $general->getDataByTableAndFields('lab_storage', array('storage_code'), false, $condition);
-              $freezerCode = $freezerInfo[0]['storage_code'];
+               $storageId = $_POST['freezer'];
+               $condition = " storage_id = '$freezerCheck'";
+               $freezerInfo = $general->getDataByTableAndFields('lab_storage', array('storage_code'), false, $condition);
+               $freezerCode = $freezerInfo[0]['storage_code'];
           }
-  
+
           $formAttributes['storage'] = [
-              "storageId" => $storageId,
-              "storageCode" => $freezerCode,
-              "rack" => $_POST['rack'],
-              "box" => $_POST['box'],
-              "position" => $_POST['position'],
-              "volume" => $_POST['volume']
+               "storageId" => $storageId,
+               "storageCode" => $freezerCode,
+               "rack" => $_POST['rack'],
+               "box" => $_POST['box'],
+               "position" => $_POST['position'],
+               "volume" => $_POST['volume']
           ];
-      }
-  
-      $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
-      $vlData['form_attributes'] = $db->func($formAttributes);
+     }
+
+     $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
+     $vlData['form_attributes'] = $db->func($formAttributes);
      $db->where('vl_sample_id', $_POST['vlSampleId']);
      $getPrevResult = $db->getOne('form_vl');
      if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult) {

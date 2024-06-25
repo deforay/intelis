@@ -97,7 +97,7 @@ try {
     foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
         $userAttributes[$header] = $apiService->getHeader($request, $header);
     }
-    $userAttributes = $general->jsonToSetString(json_encode($userAttributes), 'user_attributes');
+    $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
     if (isset($input) && !empty($input)) {
         foreach ($input as $rootKey => $data) {
@@ -338,7 +338,7 @@ try {
                 'mobileAppVersion' => $appVersion,
                 'deviceId' => $userAttributes['deviceId']
             ];
-            $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+            $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
             /* Reason for VL Result changes */
             $reasonForChanges = null;
@@ -356,7 +356,7 @@ try {
                 $reasonForChanges = json_encode($allChange);
             }
 
-            $testTypeForm = $general->jsonToSetString(json_encode($data['testTypeForm']), 'test_type_form');
+            $testTypeForm = JsonUtility::jsonToSetString(json_encode($data['testTypeForm']), 'test_type_form');
 
             $genericData = [
                 'vlsm_instance_id' => $data['instanceId'],

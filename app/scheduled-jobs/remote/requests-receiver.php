@@ -188,7 +188,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = $general->jsonToSetString(
+                $formAttributes = JsonUtility::jsonToSetString(
                     $request['form_attributes'],
                     'form_attributes',
                     ['syncTransactionId' => $transactionId]
@@ -202,7 +202,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                 if (!empty($request['sample_collection_date'])) {
 
                     $request['source_of_request'] = "vlsts";
-                    $formAttributes = $general->jsonToSetString(
+                    $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
@@ -321,7 +321,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = $general->jsonToSetString(
+                $formAttributes = JsonUtility::jsonToSetString(
                     $request['form_attributes'],
                     'form_attributes',
                     ['syncTransactionId' => $transactionId]
@@ -333,7 +333,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 if (!empty($request['sample_collection_date'])) {
 
                     $request['source_of_request'] = "vlsts";
-                    $formAttributes = $general->jsonToSetString(
+                    $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
@@ -460,7 +460,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = $general->jsonToSetString(
+                $formAttributes = JsonUtility::jsonToSetString(
                     $request['form_attributes'],
                     'form_attributes',
                     ['syncTransactionId' => $transactionId]
@@ -473,7 +473,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             } else {
                 if (!empty($request['sample_collection_date'])) {
                     $request['source_of_request'] = "vlsts";
-                    $formAttributes = $general->jsonToSetString(
+                    $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
@@ -651,7 +651,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = $general->jsonToSetString(
+                $formAttributes = JsonUtility::jsonToSetString(
                     $request['form_attributes'],
                     'form_attributes',
                     ['syncTransactionId' => $transactionId]
@@ -664,7 +664,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             } else {
                 if (!empty($request['sample_collection_date'])) {
                     $request['source_of_request'] = "vlsts";
-                    $formAttributes = $general->jsonToSetString(
+                    $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
@@ -819,7 +819,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = $general->jsonToSetString(
+                $formAttributes = JsonUtility::jsonToSetString(
                     $request['form_attributes'],
                     'form_attributes',
                     ['syncTransactionId' => $transactionId]
@@ -832,7 +832,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                 if (!empty($request['sample_collection_date'])) {
 
                     $request['source_of_request'] = "vlsts";
-                    $formAttributes = $general->jsonToSetString(
+                    $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
@@ -957,7 +957,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = $general->jsonToSetString(
+                $formAttributes = JsonUtility::jsonToSetString(
                     $request['form_attributes'],
                     'form_attributes',
                     ['syncTransactionId' => $transactionId]
@@ -971,7 +971,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
                 if (!empty($request['sample_collection_date'])) {
 
                     $request['source_of_request'] = "vlsts";
-                    $formAttributes = $general->jsonToSetString(
+                    $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
@@ -1086,14 +1086,14 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $testTypeForm = $general->jsonToSetString(
+                $testTypeForm = JsonUtility::jsonToSetString(
                     $existingSampleResult['test_type_form'],
                     'test_type_form',
                     $request['test_type_form'],
                 );
                 $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
 
-                $formAttributes = $general->jsonToSetString(
+                $formAttributes = JsonUtility::jsonToSetString(
                     $existingSampleResult['form_attributes'],
                     'form_attributes',
                     $request['form_attributes'],
@@ -1106,13 +1106,13 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                 $request['source_of_request'] = 'vlsts';
                 if (!empty($request['sample_collection_date'])) {
 
-                    $testTypeForm = $general->jsonToSetString(
+                    $testTypeForm = JsonUtility::jsonToSetString(
                         $request['test_type_form'],
                         'test_type_form'
                     );
                     $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
 
-                    $formAttributes = $general->jsonToSetString(
+                    $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]

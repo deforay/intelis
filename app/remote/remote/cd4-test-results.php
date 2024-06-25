@@ -136,7 +136,7 @@ try {
                     $sResult = $db->rawQueryOne($sQuery, $params);
                 }
 
-                $formAttributes = $general->jsonToSetString($lab['form_attributes'], 'form_attributes');
+                $formAttributes = JsonUtility::jsonToSetString($lab['form_attributes'], 'form_attributes');
                 $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
                 if (!empty($sResult)) {
