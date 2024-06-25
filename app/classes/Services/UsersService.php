@@ -5,9 +5,10 @@ namespace App\Services;
 use DateTime;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\MiscUtility;
 use Laminas\Diactoros\ServerRequest;
 
 final class UsersService
@@ -465,5 +466,45 @@ final class UsersService
 
         // Check if the user has failed to login continuously
         return ($failedAttempts >= 3 && $successAttempts == 0);
+    }
+
+    public function savePreferences(int $userId, string $page, array $newPreferences): bool
+    {
+        $pageId = MiscUtility::generateUUIDv5($page); // Generating UUIDv5 based on page name
+
+        // Retrieve current preferences
+        $currentPreferencesJson = $this->getPreferencesJson($userId, $pageId);
+
+        // Validate and decode current preferences, ensuring it's always an array
+        $currentPreferences = JsonUtility::isJSON($currentPreferencesJson) ? JsonUtility::decodeJson($currentPreferencesJson) : [];
+
+        // Merge current preferences with new preferences
+        $updatedPreferences = array_merge($currentPreferences, $newPreferences);
+
+        // Use JsonUtility to safely encode the merged preferences
+        $updatedPreferencesJson = JsonUtility::toJSON($updatedPreferences);
+
+        $data = [
+            'user_id' => $userId,
+            'page_id' => $pageId,
+            'preferences' => $updatedPreferencesJson,
+            'updated_datetime' => DateUtility::getCurrentDateTime() // Assuming you have a DateUtility to get the current date and time
+        ];
+
+        // Define which columns should be updated on duplicate key
+        $updateColumns = [
+            'preferences' => $updatedPreferencesJson,
+            'updated_datetime' => DateUtility::getCurrentDateTime()
+        ];
+
+        // Use the upsert method from DatabaseService
+        return $this->db->upsert('user_preferences', $data, $updateColumns);
+    }
+
+    public function getPreferencesJson(int $userId, string $pageId): ?string
+    {
+        $query = "SELECT preferences FROM user_preferences WHERE user_id = ? AND page_id = ?";
+        $result = $this->db->rawQueryOne($query, [$userId, $pageId]);
+        return $result ? $result['preferences'] : null;
     }
 }

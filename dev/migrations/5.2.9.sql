@@ -547,3 +547,12 @@ VALUES
 
 -- Amit 17-Jun-2024
 UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=generic-tests,/import-result/importedStatistics.php?t=generic-tests' WHERE `link` like '/import-result/import-file.php?t=generic-tests';
+
+-- Amit 25-Jun-2024
+CREATE TABLE IF NOT EXISTS user_preferences (
+    user_id INT NOT NULL,
+    page_id VARCHAR(100) NOT NULL,
+    preferences JSON,
+    updated_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, page_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
