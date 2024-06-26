@@ -1,7 +1,6 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Exceptions\SystemException;
@@ -53,10 +52,6 @@ try {
         $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData = $objPHPExcel->getActiveSheet();
 
-        /** @var BatchService $batchService */
-        $batchService = ContainerRegistry::get(BatchService::class);
-        [$maxBatchCodeKey, $newBatchCode] = $batchService->createBatchCode();
-
         $sheetData = $sheetData->toArray(null, true, true, true);
         $m = 0;
         $skipTillRow = 2;
@@ -73,7 +68,6 @@ try {
         $testingDateRow = '2';
         $logAndAbsoluteValInSameCol = 'no';
         $sampleTypeCol = 'F';
-        $batchCodeCol = 'G';
         $flagCol = 'K';
         //$flagRow = '2';
         $lotNumberCol = 'O';
@@ -85,7 +79,6 @@ try {
                 continue;
 
             $sampleCode = "";
-            $batchCode = "";
             $sampleType = "";
             $absDecimalVal = "";
             $absVal = "";
@@ -99,7 +92,6 @@ try {
 
             $sampleCode = $row[$sampleIdCol];
             $sampleType = $row[$sampleTypeCol];
-            $batchCode = $row[$batchCodeCol];
             $resultFlag = $row[$flagCol];
             $reviewBy = $row[$reviewByCol];
 
@@ -175,7 +167,6 @@ try {
                 "resultFlag" => $resultFlag,
                 "testingDate" => $testingDate,
                 "sampleType" => $sampleType,
-                // "batchCode" => $batchCode,
                 "lotNumber" => $lotNumberVal,
                 "lotExpirationDate" => $lotExpirationDateVal,
                 "reviewBy" => $reviewBy
@@ -222,13 +213,6 @@ try {
             } else {
                 $data['result'] = "";
             }
-
-            // if ($batchCode == '' || empty($batchCode)) {
-            //     $data['batch_code'] = $newBatchCode;
-            //     $data['batch_code_key'] = $maxBatchCodeKey;
-            // } else {
-            //     $data['batch_code'] = $batchCode;
-            // }
             //get username
             if (!empty($d['reviewBy'])) {
 
@@ -262,7 +246,7 @@ try {
                 $data['sample_details'] = 'New Sample';
             }
 
-            if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
+            if ($sampleCode != ''  || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);

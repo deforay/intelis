@@ -2,12 +2,11 @@
 
 // File included in import-file-helper.php
 
-use App\Utilities\MiscUtility;
 use League\Csv\Reader;
 use App\Services\VlService;
-use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -66,10 +65,6 @@ try {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         $mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
-
-        /** @var BatchService $batchService */
-        $batchService = ContainerRegistry::get(BatchService::class);
-        [$maxBatchCodeKey, $newBatchCode] = $batchService->createBatchCode();
 
         $m = 1;
         $skipTillRow = 47;
@@ -164,13 +159,6 @@ try {
             if (empty($data['result'])) {
                 $data['result_status'] = SAMPLE_STATUS\ON_HOLD; // 1= Hold
             }
-
-            // if (empty($batchCode)) {
-            //     $data['batch_code'] = $newBatchCode;
-            //     $data['batch_code_key'] = $maxBatchCodeKey;
-            // } else {
-            //     $data['batch_code'] = $batchCode;
-            // }
             //get username
             if (!empty($d['reviewBy'])) {
 

@@ -121,7 +121,7 @@ sort($fileList);
 									</label>
 									<div class="col-lg-7">
 										<select multiple class="" id="supportedTests" name="supportedTests[]">
-										<option value=""><?php echo _translate("Select Test Types"); ?></option>
+											<option value=""><?php echo _translate("Select Test Types"); ?></option>
 											<?php foreach ($testTypeList as $testType) { ?>
 												<option value="<?= $testType; ?>"><?php echo TestsService::getTestName($testType); ?></option>
 											<?php } ?>
@@ -141,12 +141,12 @@ sort($fileList);
 										<select name="configurationFile" id="configurationFile" class="form-control select2">
 											<option value=""><?php echo _translate('Select File'); ?></option>
 											<?php
-												foreach ($fileList as $fileName) {
-												?>
-													<option value="<?= $fileName; ?>"><?= $fileName; ?></option>
-												<?php
-												}
-												?>
+											foreach ($fileList as $fileName) {
+											?>
+												<option value="<?= $fileName; ?>"><?= $fileName; ?></option>
+											<?php
+											}
+											?>
 										</select>
 									</div>
 								</div>
@@ -505,12 +505,12 @@ sort($fileList);
 											<select name="fileName[]" id="fileName1" class="form-control select2 instrumentFile">
 												<option value=""><?php echo _translate('Select File'); ?></option>
 												<?php
-													foreach ($fileList as $fileName) {
-													?>
-														<option value="<?= $fileName; ?>"><?= $fileName; ?></option>
-													<?php
-													}
-													?>
+												foreach ($fileList as $fileName) {
+												?>
+													<option value="<?= $fileName; ?>"><?= $fileName; ?></option>
+												<?php
+												}
+												?>
 											</select>
 										</td>
 										<td>
@@ -580,12 +580,12 @@ sort($fileList);
 
 		$("#supportedTests").selectize({
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
-});
+		});
 
 		$('input').tooltip();
 
 		//$('#supportedTests').on('select2:select', function(e) {
-			$('#supportedTests').on('change', function(e) {
+		$('#supportedTests').on('change', function(e) {
 			var data = $('#supportedTests').val();
 			//console.log(data);
 			$(".ctlCalibrator, .lowVlResultText, .user-access-form").hide();
@@ -677,10 +677,12 @@ sort($fileList);
 					},
 					function(data) {
 						if (data === 'not exists') {
-							
-								$("#configurationFile").append('<option value='+configFileName+'>' + configFileName + '</option>');
-								$(".instrumentFile").append('<option value='+configFileName+'>' + configFileName + '</option>');
-								$('.select2').select2({ width: '100%'});
+
+							$("#configurationFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
+							$(".instrumentFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
+							$('.select2').select2({
+								width: '100%'
+							});
 						}
 					});
 
@@ -689,6 +691,13 @@ sort($fileList);
 			$("#configurationFile").val("");
 		}
 	}
+
+	<?php
+	$fileOptions = '';
+	foreach ($fileList as $fileName) {
+		$fileOptions .= '<option value="' . $fileName . '">' . $fileName . '</option>';
+	}
+	?>
 
 	function insRow() {
 		rl = document.getElementById("machineTable").rows.length;
@@ -704,15 +713,7 @@ sort($fileList);
 
 		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDuplication(this, \'configMachineName\');"/ >';
 		c.innerHTML = '<input type="text" value="d/m/Y H:i" name="dateFormat[]" id="dateFormat' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("Date Format"); ?>" title="<?php echo _translate("Please enter date format"); ?>" />';
-		d.innerHTML = '<select name="fileName[]" id="fileName'+ tableRowId +'" class="form-control select2 instrumentFile"><option value=""><?php echo _translate('Select File'); ?></option>\
-														<?php
-														foreach ($fileList as $fileName) {
-														?>
-															<option value="<?= $fileName; ?>"><?= $fileName; ?></option>\
-														<?php
-														}
-														?>
-													</select>';
+		d.innerHTML = '<select name="fileName[]" id="fileName' + tableRowId + '" class="form-control select2 instrumentFile"><option value=""><?php echo _translate('Select File'); ?></option><?= $fileOptions; ?></select>';
 		e.innerHTML = '<div class="col-md-3" >\
 						<input type="checkbox" id="pocdevice' + tableRowId + '" name="pocdevice[]" value="" onclick="getLatiLongi(' + tableRowId + ');">\
 						</div>\
@@ -726,7 +727,9 @@ sort($fileList);
 						</div>';
 		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
-		$('#fileName' + tableRowId +', .select2').select2({ width: '100%'});
+		$('#fileName' + tableRowId + ', .select2').select2({
+			width: '100%'
+		});
 		var configName = $("#configurationName").val();
 		if ($.trim(configName) != '') {
 			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
@@ -736,23 +739,25 @@ sort($fileList);
 				configName = configName.replace(/\-$/, '');
 				var configFileName = configName.toLowerCase() + ".php";
 				var path = '<?php echo $log_directory . '/'; ?>' + configFileName;
-				
+
 				$.post("/includes/checkFileExists.php", {
 						fileName: path,
 					},
 					function(data) {
-						
-						if (data === 'not exists') {
-							$(this).closest('.instrumentFile').append('<option value='+configFileName+'>' + configFileName + '</option>');
-							$('.instrumentFile').select2({ width: '100%'});
-						}
-						
-					});
-				}
-			}
 
-			
-			tableRowId++;
+						if (data === 'not exists') {
+							$(this).closest('.instrumentFile').append('<option value=' + configFileName + '>' + configFileName + '</option>');
+							$('.instrumentFile').select2({
+								width: '100%'
+							});
+						}
+
+					});
+			}
+		}
+
+
+		tableRowId++;
 	}
 
 	function removeAttributeRow(el) {
@@ -785,30 +790,31 @@ sort($fileList);
 		}
 	}
 
-	function changeDefaultReviewer(value,testType) {
+	function changeDefaultReviewer(value, testType) {
 		var userConfirmed = confirm("Do you want to update existing records? ");
 
-		if (userConfirmed && value !='') {
+		if (userConfirmed && value != '') {
 			$.post("/common/reference/update-default-reviewer.php", {
-				defaultReviewer: value,
-				testType: testType,
-			},
-			function(data) {
-				alert("<?php echo _translate("Updated successfully"); ?>.");
-			});
+					defaultReviewer: value,
+					testType: testType,
+				},
+				function(data) {
+					alert("<?php echo _translate("Updated successfully"); ?>.");
+				});
 		}
 	}
-	function changeDefaultApprover(value,testType) {
+
+	function changeDefaultApprover(value, testType) {
 		var userConfirmed = confirm("Do you want to update existing records? ");
 
-		if (userConfirmed && value !='') {
+		if (userConfirmed && value != '') {
 			$.post("/common/reference/update-default-approver.php", {
-				defaultApprover: value,
-				testType: testType,
-			},
-			function(data) {
-				alert("<?php echo _translate("Updated successfully"); ?>.");
-			});
+					defaultApprover: value,
+					testType: testType,
+				},
+				function(data) {
+					alert("<?php echo _translate("Updated successfully"); ?>.");
+				});
 		}
 	}
 </script>

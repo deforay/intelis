@@ -2,7 +2,6 @@
 
 // File included in import-file-helper.php
 
-use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -52,10 +51,6 @@ try {
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         $mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
-        /** @var BatchService $batchService */
-        $batchService = ContainerRegistry::get(BatchService::class);
-        [$maxBatchCodeKey, $newBatchCode] = $batchService->createBatchCode();
-
         $m = 1;
         $skipTillRow = 23;
 
@@ -64,7 +59,6 @@ try {
         $resultCol = 5;
         $txtValCol = 6;
 
-        $batchCodeVal = "";
         $flagCol = 10;
         $testDateCol = 11;
 
@@ -93,7 +87,6 @@ try {
                         continue;
                     }
                     $sampleCode = "";
-                    $batchCode = "";
                     $sampleType = "";
                     $resultFlag = "";
 
@@ -105,9 +98,7 @@ try {
 
                     $sampleType = $sheetData[$sampleTypeCol];
 
-                    // $batchCode = $sheetData[$batchCodeCol];
                     $resultFlag = $sheetData[$flagCol];
-                    //$reviewBy = $sheetData[$reviewByCol];
 
                     $result = '';
 
@@ -148,7 +139,6 @@ try {
                         }
                     }
 
-                    $batchCode = "";
 
 
                     if ($sampleCode == "") {
@@ -161,7 +151,6 @@ try {
                             "resultFlag" => $resultFlag,
                             "testingDate" => $testingDate,
                             "sampleType" => $sampleType,
-                            // "batchCode" => $batchCode,
                             "lotNumber" => $lotNumberVal,
                             "result" => $result,
                             "lotExpirationDate" => $lotExpirationDateVal,
@@ -194,13 +183,6 @@ try {
                 'lot_expiration_date' => $d['lotExpirationDate'],
                 'result' => $d['result'],
             );
-
-            // if ($batchCode == '' || empty($batchCode)) {
-            //     $data['batch_code'] = $newBatchCode;
-            //     $data['batch_code_key'] = $maxBatchCodeKey;
-            // } else {
-            //     $data['batch_code'] = $batchCode;
-            // }
             //get username
             if (!empty($d['reviewBy'])) {
 
@@ -229,7 +211,7 @@ try {
                 $data['sample_details'] = 'New Sample';
             }
 
-            if ($sampleCode != '' || $batchCode != '' || $sampleType != '') {
+            if ($sampleCode != ''  || $sampleType != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);

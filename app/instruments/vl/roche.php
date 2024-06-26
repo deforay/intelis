@@ -1,6 +1,5 @@
 <?php
 
-use App\Services\BatchService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -59,14 +58,6 @@ try {
         $sheetData   = $objPHPExcel->getActiveSheet();
 
 
-        /** @var BatchService $batchService */
-        $batchService = ContainerRegistry::get(BatchService::class);
-        [$maxBatchCodeKey, $newBatchCode] = $batchService->createBatchCode();
-
-
-
-
-        $newBatchCode = date('Ymd') . $maxBatchCodeKey;
 
         $sheetData   = $sheetData->toArray(null, true, true, true);
         $m           = 0;
@@ -84,7 +75,6 @@ try {
         $testingDateRow = '2';
         $logAndAbsoluteValInSameCol = 'no';
         $sampleTypeCol = 'F';
-        $batchCodeCol = 'G';
         $flagCol = 'K';
         //$flagRow = '2';
 
@@ -96,7 +86,6 @@ try {
 
 
             $sampleCode    = "";
-            $batchCode     = "";
             $sampleType    = "";
             $absDecimalVal = "";
             $absVal        = "";
@@ -109,7 +98,6 @@ try {
             $sampleCode = $row[$sampleIdCol];
             $sampleType = $row[$sampleTypeCol];
 
-            $batchCode = $row[$batchCodeCol];
             $resultFlag = $row[$flagCol];
 
 
@@ -174,8 +162,7 @@ try {
                 "txtVal" => $txtVal,
                 "resultFlag" => $resultFlag,
                 "testingDate" => $testingDate,
-                "sampleType" => $sampleType,
-                "batchCode" => $batchCode
+                "sampleType" => $sampleType
             ];
 
 
@@ -212,13 +199,6 @@ try {
                 $data['result'] = "";
             }
 
-            // if ($batchCode == '' || empty($batchCode)) {
-            //     $data['batch_code']     = $newBatchCode;
-            //     $data['batch_code_key'] = $maxBatchCodeKey;
-            // } else {
-            //     $data['batch_code'] = $batchCode;
-            // }
-
             $query    = "SELECT facility_id,
                                 vl_sample_id,
                                 result,
@@ -240,7 +220,7 @@ try {
             } else {
                 $data['sample_details'] = 'New Sample';
             }
-            if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
+            if ($sampleCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);

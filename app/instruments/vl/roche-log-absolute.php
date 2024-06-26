@@ -53,17 +53,6 @@ try {
         $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData   = $objPHPExcel->getActiveSheet();
 
-        $bquery    = "SELECT MAX(batch_code_key) FROM `batch_details`";
-        $bvlResult = $db->rawQuery($bquery);
-        if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
-            $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
-            $maxBatchCodeKey = "00" . $maxBatchCodeKey;
-        } else {
-            $maxBatchCodeKey = '001';
-        }
-
-        $newBatchCode = date('Ymd') . $maxBatchCodeKey;
-
         $sheetData   = $sheetData->toArray(null, true, true, true);
         $m           = 0;
         $skipTillRow = 2;
@@ -80,7 +69,6 @@ try {
         $testingDateRow = '2';
         $logAndAbsoluteValInSameCol = 'no';
         $sampleTypeCol = 'F';
-        $batchCodeCol = 'G';
         $flagCol = 'K';
         //$flagRow = '2';
 
@@ -90,7 +78,6 @@ try {
                 continue;
 
             $sampleCode    = "";
-            $batchCode     = "";
             $sampleType    = "";
             $absDecimalVal = "";
             $absVal        = "";
@@ -103,7 +90,6 @@ try {
             $sampleCode = $row[$sampleIdCol];
             $sampleType = $row[$sampleTypeCol];
 
-            $batchCode = $row[$batchCodeCol];
             $resultFlag = $row[$flagCol];
 
 
@@ -160,8 +146,7 @@ try {
                 "txtVal" => $txtVal,
                 "resultFlag" => $resultFlag,
                 "testingDate" => $testingDate,
-                "sampleType" => $sampleType,
-                "batchCode" => $batchCode
+                "sampleType" => $sampleType
             );
 
 
@@ -199,13 +184,6 @@ try {
                 $data['result'] = "";
             }
 
-            // if ($batchCode == '' || empty($batchCode)) {
-            //     $data['batch_code']     = $newBatchCode;
-            //     $data['batch_code_key'] = $maxBatchCodeKey;
-            // } else {
-            //     $data['batch_code'] = $batchCode;
-            // }
-
             $query    = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from form_vl where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
             if (!empty($vlResult) && !empty($sampleCode)) {
@@ -219,7 +197,7 @@ try {
                 $data['sample_details'] = 'New Sample';
             }
 
-            if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
+            if ($sampleCode != ''  || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);
