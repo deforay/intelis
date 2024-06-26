@@ -66,6 +66,7 @@ try {
                 $db->where('sample_batch_id', $id);
                 $db->update($testTable, ['sample_batch_id' => null]);
                 $xplodResultSample = [];
+               
                 if (isset($_POST['batchedSamples']) && trim((string) $_POST['batchedSamples']) != "") {
                     $xplodResultSample = explode(",", (string) $_POST['batchedSamples']);
                 }
@@ -82,6 +83,7 @@ try {
                 }
 
                 $uniqueSampleIds = array_unique($selectedSamples);
+
                 echo $_POST['positions']; 
 
                 $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");

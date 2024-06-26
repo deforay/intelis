@@ -2,6 +2,7 @@
 
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\TestsService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -38,6 +39,9 @@ if ($general->isSTSInstance()) {
 } else {
   $path = '/assets/img/bg.jpg';
 }
+
+$testName = TestsService::getTestTypes();
+
 ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
@@ -106,7 +110,21 @@ if ($general->isSTSInstance()) {
         <div style="padding-top:10px;" class="panel-body">
           <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
           <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
-
+          <!--<div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-link"></em></span>
+              <input id="remoteUrl" type="text" class="form-control isRequired" name="remoteUrl" value="" placeholder="<?= _translate("Remote URL"); ?>" title="Please enter remote url">
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-book"></em></span>
+              <select class="form-control select2 isRequired" name="enabledModules[]" id="enabledModules" title="<?php echo _translate('Please select the Enabled Modules'); ?>" multiple="multiple">
+                <option value=""><?= _translate("-- Choose Modules to Enable --"); ?></option>
+                <?php foreach($testName as $key=>$val){
+                  ?>
+                  <option value="<?= $key; ?>"><?= $val['testName']; ?></option>
+                  <?php
+                } ?>
+              </select>
+            </div>-->
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-flag"></em></span>
               <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>">
@@ -133,7 +151,6 @@ if ($general->isSTSInstance()) {
                   <option <?= ($globalConfig['default_time_zone'] == $value ? 'selected=selected' : ''); ?> value='<?= $value; ?>'> <?= $value; ?></option>;
                 <?php
                 }
-
                 ?>
               </select>
             </div>
@@ -147,6 +164,7 @@ if ($general->isSTSInstance()) {
                 <?php } ?>
               </select>
             </div>
+          
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
               <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _translate("Email ID"); ?>" title="Please enter your email id">
@@ -225,6 +243,9 @@ if ($general->isSTSInstance()) {
       });
       $('#default_time_zone').select2({
         placeholder: "<?= _translate("-- Select Timezone --", true); ?>",
+      });
+      $('#enabledModules').select2({
+        placeholder: "<?= _translate("-- Select Modules --", true); ?>",
       });
     });
   </script>

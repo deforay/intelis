@@ -75,9 +75,13 @@ $orderBy = match ($sortBy) {
 
 $orderBy = $orderBy . ' ' . $sortType;
 
+$samplesQry = "SELECT sample_code,$patientIdColumn,$primaryKeyColumn FROM form_vl WHERE sample_batch_id = $id";
+$samplesResult = $db->rawQuery($samplesQry);
+$samplesCount = count($samplesResult);
+
 // Config control
 $configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id= ? ";
-$configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['instrument_id']]);
+$configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['machine']]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];
@@ -89,6 +93,17 @@ foreach ($configControlInfo as $info) {
 if (empty($batchInfo)) {
 	header("Location:batches.php?type=" . $testType);
 }
+
+$prevMachineControlQuery = "SELECT control_names from batch_details WHERE machine = ? AND control_names IS NOT NULL  ORDER BY batch_id DESC LIMIT 0,1";
+$prevMachineControlInfo = $db->rawQuery($prevMachineControlQuery, [$machine]);
+
+$prevBatchControlNames = json_decode((string) $prevMachineControlInfo[0]['control_names'], true);
+if (!empty($batchInfo[0]['control_names'])) {
+	$batchControlNames = json_decode((string) $batchInfo[0]['control_names'], true);
+} else {
+	$batchControlNames = json_decode((string) $prevMachineControlInfo[0]['control_names'], true);
+}
+//echo '<pre>'; print_r($batchControlNames); die;
 if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_order']) != '') {
 	if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
 		foreach ($batchService->excelColumnRange('A', 'H') as $value) {
@@ -98,27 +113,82 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 		}
 	}
 	$jsonToArray = json_decode((string) $batchInfo[0]['label_order'], true);
-	for ($j = 0; $j < count($jsonToArray); $j++) {
-		if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
-			$index = $alphaNumeric[$j];
-		} else {
-			$index = $j;
+	if($batchInfo[0]['control_names'] != 'null'){
+
+		$controlNames = json_decode((string) $batchInfo[0]['control_names'], true);
+		$controlsCount = count($controlNames);
+	}
+
+	if(isset($jsonToArray) && (count($jsonToArray) != ($samplesCount+$controlsCount))){
+		foreach($samplesResult as $sample){
+			$displayOrder[] = "s_" . $sample[$primaryKeyColumn];
+			$label = $sample['sample_code'] . " - " . $sample[$patientIdColumn];
+			
+			$content .= '<li class="ui-state-default" id="s_' . $sample[$primaryKeyColumn] . '">' . $label . '</li>';
 		}
-		$displayOrder[] = $jsonToArray[$index];
-		$xplodJsonToArray = explode("_", (string) $jsonToArray[$index]);
-		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-			$sampleQuery = "SELECT sample_code, $patientIdColumn FROM $table WHERE  $primaryKeyColumn = ? ";
-			if (isset($testType) && $testType == 'generic-tests') {
-				$sampleQuery .= " AND test_type = $testType";
+			if($controlsCount > 0){
+				foreach($controlNames as $key=>$value){
+					$displayOrder[] = "s_" . $value;
+
+					$clabel = str_replace("in house", "In-House", $value);
+					$clabel = (str_replace("no of ", " ", $clabel));
+
+					if (isset($batchControlNames[$key]) && $batchControlNames[$key] != "") {
+						$existingValue = $batchControlNames[$key];
+						$liLabel = $existingValue;
+					} else {
+						$liLabel = $clabel;
+						$existingValue = "";
+					}
+
+					$content .= '<li class="ui-state-default" id="'.$key.'">' . $liLabel . '</li>';
+					$labelNewContent .= ' <tr><th>' . $liLabel . ' :</th><td> <input class="form-control" type="text" name="controls[' . $key . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
+
+				}
 			}
-			$sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
-			$label = $sampleResult[0]['sample_code'] . " - " . $sampleResult[0][$patientIdColumn];
-		} else {
-			$label = str_replace("_", " ", (string) $jsonToArray[$index]);
-			$label = str_replace("in house", "In-House", $label);
-			$label = (str_replace("no of ", " ", $label));
+	}
+	else{
+//echo '<pre>'; print_r($jsonToArray); die;
+		for ($j = 0; $j < count($jsonToArray); $j++) {
+			if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
+				$index = $alphaNumeric[$j];
+			} else {
+				$index = $j;
+			}
+			$displayOrder[] = $jsonToArray[$index];
+			$xplodJsonToArray = explode("_", (string) $jsonToArray[$index]);
+			if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+				$sampleQuery = "SELECT sample_code, $patientIdColumn FROM $table WHERE  $primaryKeyColumn = ? ";
+				if (isset($testType) && $testType == 'generic-tests') {
+					$sampleQuery .= " AND test_type = $testType";
+				}
+				$sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
+				$label = $sampleResult[0]['sample_code'] . " - " . $sampleResult[0][$patientIdColumn];
+				$content .= '<li class="ui-state-default" id="' . $jsonToArray[$index] . '">' . $label . '</li>';
+
+			} else {
+				/*$label = str_replace("_", " ", (string) $jsonToArray[$index]);
+				$label = str_replace("in house", "In-House", $label);
+				$label = (str_replace("no of ", " ", $label));*/
+
+				$label = str_replace("_", " ", (string) $jsonToArray[$index]);
+				$label = str_replace("manufacturer control", "Manufacturer Control", $label);
+				$label = (str_replace("no of ", " ", $label));
+
+				if (isset($batchControlNames[$jsonToArray[$index]]) && $batchControlNames[$jsonToArray[$index]] != "") {
+					$existingValue = $batchControlNames[$jsonToArray[$index]];
+					$liLabel = $existingValue;
+				} else {
+					$liLabel = $label;
+					$existingValue = "";
+				}
+				$labelNewContent .= ' <tr><th>' . $jsonToArray[$index] . ' :</th><td> <input class="form-control" type="text" name="controls[' . $jsonToArray[$index] . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
+				$content .= '<li class="ui-state-default" id="' . $jsonToArray[$index] . '">' . $liLabel . '</li>';
+
+			}
+
+
 		}
-		$content .= '<li class="ui-state-default" id="' . $jsonToArray[$index] . '">' . $label . '</li>';
 	}
 } else {
 	if (isset($configControl[$testType]['noHouseCtrl']) && trim((string) $configControl[$testType]['noHouseCtrl']) != '' && $configControl[$testType]['noHouseCtrl'] > 0) {
@@ -203,6 +273,10 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 									echo $content;
 									?>
 								</ul>
+								<table class="table table-striped" style="width:50%; margin:3em auto;">
+									<caption><strong><?= _translate("Labels for Controls/Calibrators") ?></strong></caption>
+									<?php echo $labelNewContent; ?>
+								</table>
 							</div>
 						</div>
 					</div>

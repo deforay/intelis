@@ -66,7 +66,7 @@ $batchInfo = $db->rawQuery($batchQuery, [$id]);
 
 // Config control
 $configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id= ? ";
-$configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['instrument_id']]);
+$configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['machine']]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];

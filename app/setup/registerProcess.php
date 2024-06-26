@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -25,6 +26,8 @@ $password = $_POST['password'];
 $vlForm = $_POST['vl_form'];
 $timeZone = $_POST['default_time_zone'];
 $locale = $_POST['app_locale'];
+$remoteUrl = $_POST['remoteUrl'];
+$modulesToEnable = $_POST['enabledModules'];
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -36,6 +39,9 @@ $userType = $general->getSystemConfig('sc_user_type');
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var ConfigService $configService */
+$configService = ContainerRegistry::get(ConfigService::class);
 
 $activeModulesArr = SystemService::getActiveModules();
 
@@ -65,6 +71,18 @@ try {
             'status'            => 'active'
         );
         $db->insert($tableName, $insertData);
+/*
+        
+$updatedConfig = [
+    'remoteURL' => $remoteUrl,
+    'modules.vl' => in_array('vl',$modulesToEnable) ? true : false,
+    'modules.eid' => in_array('eid',$modulesToEnable) ? true : false,
+    'modules.covid19' => in_array('covid19',$modulesToEnable) ? true : false,
+    'modules.hepatitis' => in_array('hepatitis',$modulesToEnable) ? true : false,
+    'modules.tb' => in_array('tb',$modulesToEnable) ? true : false,
+    'modules.cd4' => in_array('cd4',$modulesToEnable) ? true : false,
+];
+$configService->updateConfig($updatedConfig);*/
 
         $configFields = [
             'vl_form',
