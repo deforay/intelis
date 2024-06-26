@@ -89,7 +89,6 @@ foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
 }
 
-
 if (empty($batchInfo)) {
 	header("Location:batches.php?type=" . $testType);
 }
@@ -113,11 +112,15 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 		}
 	}
 	$jsonToArray = json_decode((string) $batchInfo[0]['label_order'], true);
-	if($batchInfo[0]['control_names'] != 'null'){
-
+	$labelControls = "";
+	if(isset($batchInfo[0]['control_names']) && $batchInfo[0]['control_names'] != 'null'){
 		$controlNames = json_decode((string) $batchInfo[0]['control_names'], true);
 		$controlsCount = count($controlNames);
 	}
+	else{
+		$labelControls = preg_grep("/^no_of_/i", $jsonToArray);
+	}
+
 
 	if(isset($jsonToArray) && (count($jsonToArray) != ($samplesCount+$controlsCount))){
 		foreach($samplesResult as $sample){
@@ -126,9 +129,10 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 			
 			$content .= '<li class="ui-state-default" id="s_' . $sample[$primaryKeyColumn] . '">' . $label . '</li>';
 		}
-			if($controlsCount > 0){
+		
+			if(isset($controlsCount) && $controlsCount > 0){
 				foreach($controlNames as $key=>$value){
-					$displayOrder[] = "s_" . $value;
+					$displayOrder[] = $value;
 
 					$clabel = str_replace("in house", "In-House", $value);
 					$clabel = (str_replace("no of ", " ", $clabel));
@@ -146,9 +150,30 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 
 				}
 			}
+			else{
+				foreach($labelControls as $value){
+					$displayOrder[] = $value;
+					$str = str_replace("_", " ", (string) $value);
+
+					if(substr_count($str, 'in house') > 0){
+						$clabel = str_replace("in house", "In-House", $value);
+						$clabel = (str_replace("no of ", " ", $clabel));
+					}
+					elseif(substr_count($str, 'manufacturer controls') > 0){
+						$clabel = str_replace("manufacturer control", "Manufacturer Control", $value);
+						$clabel = (str_replace("no of ", " ", $clabel));
+					}
+					elseif(substr_count($str, 'calibrator') > 0){
+						$clabel = str_replace("calibrator", "Calibrator", $value);
+						$clabel = (str_replace("no of ", " ", $clabel));
+					}
+					$content .= '<li class="ui-state-default" id="'.$value.'">' . $clabel . '</li>';
+					$labelNewContent .= ' <tr><th>' . $clabel . ' :</th><td> <input class="form-control" type="text" name="controls[' . $clabel . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
+
+				}
+			}
 	}
 	else{
-//echo '<pre>'; print_r($jsonToArray); die;
 		for ($j = 0; $j < count($jsonToArray); $j++) {
 			if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
 				$index = $alphaNumeric[$j];
@@ -167,13 +192,21 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 				$content .= '<li class="ui-state-default" id="' . $jsonToArray[$index] . '">' . $label . '</li>';
 
 			} else {
-				/*$label = str_replace("_", " ", (string) $jsonToArray[$index]);
-				$label = str_replace("in house", "In-House", $label);
-				$label = (str_replace("no of ", " ", $label));*/
 
 				$label = str_replace("_", " ", (string) $jsonToArray[$index]);
-				$label = str_replace("manufacturer control", "Manufacturer Control", $label);
-				$label = (str_replace("no of ", " ", $label));
+
+					if(substr_count($label, 'in house') > 0){
+						$label = str_replace("in house", "In-House", $label);
+						$label = (str_replace("no of ", " ", $label));
+					}
+					elseif(substr_count($str, 'manufacturer controls') > 0){
+						$label = str_replace("manufacturer control", "Manufacturer Control", $label);
+						$label = (str_replace("no of ", " ", $label));
+					}
+					elseif(substr_count($str, 'calibrator') > 0){
+						$label = str_replace("calibrator", "Calibrator", $label);
+						$label = (str_replace("no of ", " ", $label));
+					}
 
 				if (isset($batchControlNames[$jsonToArray[$index]]) && $batchControlNames[$jsonToArray[$index]] != "") {
 					$existingValue = $batchControlNames[$jsonToArray[$index]];
@@ -186,7 +219,6 @@ if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_or
 				$content .= '<li class="ui-state-default" id="' . $jsonToArray[$index] . '">' . $liLabel . '</li>';
 
 			}
-
 
 		}
 	}
