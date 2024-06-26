@@ -1,12 +1,13 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-
+use App\Utilities\MiscUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -479,11 +480,11 @@ try {
 		'ip_address' => $this->commonService->getClientIpAddress()
 	];
 	if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
-  
+
 		$freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_id', $_POST['freezer']);
 
 		if (empty($freezerCheck)) {
-			$storageId = $general->generateUUID();
+			$storageId = MiscUtility::generateUUID();
 			$freezerCode = $_POST['freezer'];
 			$d = [
 				'storage_id' => $storageId,
@@ -509,7 +510,7 @@ try {
 		];
 	}
 
-	$formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+	$formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
 	$eidData['form_attributes'] = $db->func($formAttributes);
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {

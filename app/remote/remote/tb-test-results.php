@@ -134,7 +134,7 @@ try {
                     $sResult = $db->rawQueryOne($sQuery, $params);
                 }
 
-                $formAttributes = $general->jsonToSetString(
+                $formAttributes = JsonUtility::jsonToSetString(
                     $lab['form_attributes'],
                     'form_attributes'
                 );

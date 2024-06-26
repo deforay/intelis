@@ -11,6 +11,7 @@ use App\Services\PatientsService;
 use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
+use App\Utilities\JsonUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -412,7 +413,7 @@ try {
         ];
     }
 
-    $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+    $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
     $vlData['form_attributes'] = $db->func($formAttributes);
 
 

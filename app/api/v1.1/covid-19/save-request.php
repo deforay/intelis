@@ -98,7 +98,7 @@ try {
     foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
         $userAttributes[$header] = $apiService->getHeader($request, $header);
     }
-    $userAttributes = $general->jsonToSetString(json_encode($userAttributes), 'user_attributes');
+    $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
     $responseData = [];
@@ -342,7 +342,7 @@ try {
             $reasonForChanges = json_encode($allChange);
         }
 
-        $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+        $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
         $covid19Data = [
             'vlsm_instance_id' => $data['instanceId'],

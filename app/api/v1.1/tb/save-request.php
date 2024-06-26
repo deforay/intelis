@@ -95,7 +95,7 @@ try {
     foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
         $userAttributes[$header] = $apiService->getHeader($request, $header);
     }
-    $userAttributes = $general->jsonToSetString(json_encode($userAttributes), 'user_attributes');
+    $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
     foreach ($input as $rootKey => $data) {
@@ -361,7 +361,7 @@ try {
         if (!empty($allChange)) {
             $reasonForChanges = json_encode($allChange);
         }
-        $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+        $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
         $tbData = [
             'vlsm_instance_id' => $data['instanceId'],

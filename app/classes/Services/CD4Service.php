@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
-use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
@@ -133,7 +134,7 @@ final class CD4Service extends AbstractTestService
                     'ip_address' => $this->commonService->getClientIpAddress()
                 ];
 
-                $formAttributes = $this->commonService->jsonToSetString(json_encode($formAttributes), 'form_attributes');
+                $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
                 $tesRequestData['form_attributes'] = $this->db->func($formAttributes);
                 $this->db->insert("form_cd4", $tesRequestData);
 
