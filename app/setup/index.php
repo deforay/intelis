@@ -110,7 +110,7 @@ $testName = TestsService::getTestTypes();
         <div style="padding-top:10px;" class="panel-body">
           <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
           <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
-          <!--<div style="margin-bottom: 5px" class="input-group">
+          <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-link"></em></span>
               <input id="remoteUrl" type="text" class="form-control isRequired" name="remoteUrl" value="" placeholder="<?= _translate("Remote URL"); ?>" title="Please enter remote url">
             </div>
@@ -124,7 +124,7 @@ $testName = TestsService::getTestTypes();
                   <?php
                 } ?>
               </select>
-            </div>-->
+            </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-flag"></em></span>
               <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>">
