@@ -79,6 +79,7 @@ $testName = TestsService::getTestTypes();
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/components-rounded.min.css">
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
   <!-- iCheck -->
   <style>
@@ -112,11 +113,11 @@ $testName = TestsService::getTestTypes();
           <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-link"></em></span>
-              <input id="remoteUrl" type="text" class="form-control isRequired" name="remoteUrl" value="" placeholder="<?= _translate("Remote URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>">
+              <input id="remoteUrl" type="text" class="form-control isRequired" name="remoteUrl" value="" placeholder="<?= _translate("Remote URL"); ?>" title="Please enter remote url" onchange="checkActiveUrl(this.value);" />
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-book"></em></span>
-              <select class="form-control select2 isRequired" name="enabledModules[]" id="enabledModules" title="<?php echo _translate('Please select the tests'); ?>" multiple="multiple">
+              <select class="" name="enabledModules[]" id="enabledModules" title="<?php echo _translate('Please select the tests'); ?>" multiple="multiple">
                 <option value=""><?= _translate("-- Choose Modules to Enable --"); ?></option>
                 <?php foreach ($testName as $key => $val) {
                 ?>
@@ -199,6 +200,8 @@ $testName = TestsService::getTestTypes();
   <script type="text/javascript" src="/assets/js/select2.min.js"></script>
   <script src="/assets/js/deforayValidation.js"></script>
   <script src="/assets/js/jquery.blockUI.js"></script>
+  <script type="text/javascript" src="/assets/js/selectize.js"></script>
+
   <script type="text/javascript">
     let pwdflag = true;
 
@@ -227,6 +230,19 @@ $testName = TestsService::getTestTypes();
       }
       return regex.test(pwd);
     }
+
+    function checkActiveUrl(url) {
+      
+        $.post("/includes/checkValidUrl.php", {
+                remoteUrl: url,
+            },
+            function(data) {
+                if (data != '1') {
+                    alert("Please enter valid remote URL");
+                    return false;
+                }
+            });
+    }
     $(document).ready(function() {
       <?php
       if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) != "") {
@@ -244,9 +260,9 @@ $testName = TestsService::getTestTypes();
       $('#default_time_zone').select2({
         placeholder: "<?= _translate("-- Select Timezone --", true); ?>",
       });
-      $('#enabledModules').select2({
-        placeholder: "<?= _translate("-- Select Modules --", true); ?>",
-      });
+      $("#enabledModules").selectize({
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+		});
     });
   </script>
 </body>
