@@ -28,7 +28,7 @@ final class ConfigService
     {
         $filePath = $this->getConfigFile();
         // Parse the current configuration file using Laminas\Config\Factory
-        $config = ConfigFactory::fromFile($filePath, true);
+        $config = ConfigFactory::fromFile($filePath, true)->toArray();
 
         // Update the values in the config array
         foreach ($keyValuePairs as $fullKey => $value) {
@@ -47,7 +47,7 @@ final class ConfigService
         }
 
         // Write back the updated config using custom formatted output
-        $this->writeFormattedConfig($filePath, $config->toArray());
+        $this->writeFormattedConfig($filePath, $config);
         $this->fileCache->clear();
     }
 

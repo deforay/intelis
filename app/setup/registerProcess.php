@@ -55,6 +55,23 @@ function changeModuleWithQuotes($moduleArr)
 try {
     if (!empty($userName) && !empty($password)) {
 
+
+        $updatedConfig = [
+            'remoteURL' => $remoteUrl,
+            'modules.vl' => in_array('vl', $modulesToEnable) ? 'true' : 'false',
+            'modules.eid' => in_array('eid', $modulesToEnable) ? 'true' : 'false',
+            'modules.covid19' => in_array('covid19', $modulesToEnable) ? 'true' : 'false',
+            'modules.hepatitis' => in_array('hepatitis', $modulesToEnable) ? 'true' : 'false',
+            'modules.tb' => in_array('tb', $modulesToEnable) ? 'true' : 'false',
+            'modules.cd4' => in_array('cd4', $modulesToEnable) ? 'true' : 'false',
+            'modules.generic-tests' => in_array('generic-tests', $modulesToEnable) ? 'true' : 'false',
+        ];
+
+        dump($updatedConfig);
+
+        $configService->updateConfig($updatedConfig);
+
+
         $userPassword = $usersService->passwordHash($password);
         $userId = MiscUtility::generateUUID();
 
@@ -70,18 +87,6 @@ try {
             'status'            => 'active'
         );
         $db->insert($tableName, $insertData);
-
-    $updatedConfig = [
-        'remoteURL' => $remoteUrl,
-        'modules.vl' => in_array('vl',$modulesToEnable) ? 'true' : 'false',
-        'modules.eid' => in_array('eid',$modulesToEnable) ? 'true' : 'false',
-        'modules.covid19' => in_array('covid19',$modulesToEnable) ? 'true' : 'false',
-        'modules.hepatitis' => in_array('hepatitis',$modulesToEnable) ? 'true' : 'false',
-        'modules.tb' => in_array('tb',$modulesToEnable) ? 'true' : 'false',
-        'modules.cd4' => in_array('cd4',$modulesToEnable) ? 'true' : 'false',
-    ];
-echo '<pre>'; print_r($updatedConfig); die;
-    $configService->updateConfig($updatedConfig);
 
         $configFields = [
             'vl_form',

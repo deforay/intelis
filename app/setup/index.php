@@ -23,8 +23,9 @@ $formResult = $db->query($formQuery);
 
 $globalConfig = $general->getGlobalConfig();
 
-$db->where("login_id", NULL, 'IS NOT');
-$db->where("role_id", NULL, 'IS NOT');
+// $db->where("login_id", NULL, 'IS NOT');
+// $db->where("role_id", NULL, 'IS NOT');
+$db->where("role_id=1");
 $count = $db->getValue("user_details", "count(*)");
 if ($count != 0) {
   header("Location:/login/login.php");
@@ -41,7 +42,6 @@ if ($general->isSTSInstance()) {
 }
 
 $testName = TestsService::getTestTypes();
-
 ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
@@ -110,18 +110,18 @@ $testName = TestsService::getTestTypes();
         <div style="padding-top:10px;" class="panel-body">
           <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
           <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
-          <div style="margin-bottom: 5px" class="input-group">
+            <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-link"></em></span>
-              <input id="remoteUrl" type="text" class="form-control isRequired" name="remoteUrl" value="" placeholder="<?= _translate("Remote URL"); ?>" title="Please enter remote url">
+              <input id="remoteUrl" type="text" class="form-control isRequired" name="remoteUrl" value="" placeholder="<?= _translate("Remote URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-book"></em></span>
-              <select class="form-control select2 isRequired" name="enabledModules[]" id="enabledModules" title="<?php echo _translate('Please select the Enabled Modules'); ?>" multiple="multiple">
+              <select class="form-control select2 isRequired" name="enabledModules[]" id="enabledModules" title="<?php echo _translate('Please select the tests'); ?>" multiple="multiple">
                 <option value=""><?= _translate("-- Choose Modules to Enable --"); ?></option>
-                <?php foreach($testName as $key=>$val){
-                  ?>
+                <?php foreach ($testName as $key => $val) {
+                ?>
                   <option value="<?= $key; ?>"><?= $val['testName']; ?></option>
-                  <?php
+                <?php
                 } ?>
               </select>
             </div>
@@ -164,7 +164,7 @@ $testName = TestsService::getTestTypes();
                 <?php } ?>
               </select>
             </div>
-          
+
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
               <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _translate("Email ID"); ?>" title="Please enter your email id">

@@ -19,8 +19,8 @@ if ($db->isConnected() === false) {
 
 // If there are NO users, then we need to register the admin user
 // This happens during first setup typically
-$db->where("login_id", NULL, 'IS NOT');
-$db->where("role_id", NULL, 'IS NOT');
+//$db->where("login_id", NULL, 'IS NOT');
+$db->where("role_id=1");
 $count = $db->getValue("user_details", "count(*)");
 if ($count == 0) {
 	header("Location:/setup/index.php");
