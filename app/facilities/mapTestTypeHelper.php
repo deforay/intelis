@@ -45,6 +45,10 @@ try {
 
             $db->where('facility_id', $mappedFacilities, 'IN');
             $db->update($tableName, ['updated_datetime'  => $currentDateTime]);
+
+            $db->where('facility_id', $mappedFacilities, 'IN');
+            $db->update('facility_details', ['updated_datetime'  => $currentDateTime]);
+
             $alertMessage = _translate("Facility Mapped to Selected Test Type successfully");
         } else {
             $alertMessage = _translate("No Facility Mapped to Selected Test Type");

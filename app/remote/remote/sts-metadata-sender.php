@@ -283,11 +283,13 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
         $counter += (count($response['cd4RejectionReasons']) + count($response['cd4SampleTypes']) + count($response['cd4ReasonForTesting']));
     }
 
+    // Global Config
     $condition = [];
     if (!empty($data['globalConfigLastModified'])) {
         $condition = "updated_datetime > '" . $data['globalConfigLastModified'] . "' AND remote_sync_needed = 'yes'";
     }
     $response['globalConfig'] = $general->fetchDataFromTable('global_config', $condition);
+
 
     $condition = [];
     $signatureCondition = [];
@@ -298,9 +300,14 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
     }
     $response['facilities'] = $general->fetchDataFromTable('facility_details', $condition);
 
+    $updatedFacilities = [];
+    if (!empty($response['facilities'])) {
+        $updatedFacilities = array_unique(array_column($response['facilities'], 'facility_id'));
+    }
+
+    // Lab Users
     $response['users'] = [];
     $userIds = array_column($response['facilities'], 'contact_person');
-
     foreach ($userIds as $userId) {
         if (!empty($userId)) {
             $userInfo = $general->fetchDataFromTable('user_details', "user_id = '$userId'");
@@ -309,41 +316,58 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
             }
         }
     }
-
     $response['labReportSignatories'] = $general->fetchDataFromTable('lab_report_signatories', $signatureCondition);
 
 
+    // Health Facilities
     $condition = [];
-    if (!empty($data['healthFacilityLastModified'])) {
-        $condition = "updated_datetime > '" . $data['healthFacilityLastModified'] . "'";
+    if (!empty($updatedFacilities)) {
+        $condition[] = "facility_id IN (" . implode(',', $updatedFacilities) . ")";
     }
-
+    if (!empty($data['healthFacilityLastModified'])) {
+        $condition[] = "updated_datetime > '" . $data['healthFacilityLastModified'] . "'";
+    }
+    $condition = implode(' OR ', $condition);
     $response['healthFacilities'] = $general->fetchDataFromTable('health_facilities', $condition);
 
+
+    // Testing Labs
     $condition = [];
-    if (!empty($data['testingLabsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['testingLabsLastModified'] . "'";
+    if (!empty($updatedFacilities)) {
+        $condition[] = "facility_id IN (" . implode(',', $updatedFacilities) . ")";
     }
+    if (!empty($data['testingLabsLastModified'])) {
+        $condition[] = "updated_datetime > '" . $data['testingLabsLastModified'] . "'";
+    }
+    $condition = implode(' OR ', $condition);
     $response['testingLabs'] = $general->fetchDataFromTable('testing_labs', $condition);
 
+
+    // Funding Sources
     $condition = [];
     if (!empty($data['fundingSourcesLastModified'])) {
         $condition = "updated_datetime > '" . $data['fundingSourcesLastModified'] . "'";
     }
     $response['fundingSources'] = $general->fetchDataFromTable('r_funding_sources', $condition);
 
+
+    // Implementation Partners
     $condition = [];
     if (!empty($data['partnersLastModified'])) {
         $condition = "updated_datetime > '" . $data['partnersLastModified'] . "'";
     }
     $response['partners'] = $general->fetchDataFromTable('r_implementation_partners', $condition);
 
+
+    // Geographical Divisions
     $condition = [];
     if (!empty($data['geoDivisionsLastModified'])) {
         $condition = "updated_datetime > '" . $data['geoDivisionsLastModified'] . "'";
     }
     $response['geoDivisions'] = $general->fetchDataFromTable('geographical_divisions', $condition);
 
+    // Patients
+    $condition = [];
     if (!empty($data['patientsLastModified'])) {
         $condition = "updated_datetime > '" . $data['patientsLastModified'] . "'";
     }
