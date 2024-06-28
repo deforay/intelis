@@ -68,10 +68,10 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 								<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;">
 									<tr>
 										<td colspan="4">
-											<select name="userType" id="userType" title="Please select the user type" class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
+											<select name="instanceType" id="instanceType" title="Please select the user type" class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
 												<option value=""><?= _translate("-- Select Instance Type --"); ?></option>
-												<option value="lis"><?= _translate("LIS with Remote Ordering Enabled"); ?></option>
-												<option value="sts"><?= _translate("Sample Tracking System(STS)"); ?></option>
+												<option value="vluser"><?= _translate("LIS with Remote Ordering Enabled"); ?></option>
+												<option value="remoteuser"><?= _translate("Sample Tracking System(STS)"); ?></option>
 												<option value="standalone"><?= _translate("Standalone (no Remote Ordering)"); ?></option>
 											</select>
 										</td>
@@ -162,9 +162,9 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 	<?php } ?>
 
 	function validateNow() {
-		if ($('#userType').val() == '') {
+		if ($('#instanceType').val() == '') {
 			alert('Please select the user type');
-			$('#userType').focus();
+			$('#instanceType').focus();
 		}
 		flag = deforayValidator.init({
 			formId: 'newInstance'
@@ -176,13 +176,13 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 	}
 
 	function changeLabType(value) {
-		if (value == 'lis' || value == 'standalone') {
+		if (value == 'vluser' || value == 'standalone') {
 			$('.lis').removeClass('hide');
 			$('.lis-input').addClass('isRequired');
 			$('.sts').addClass('hide');
 			$('.sts-input').removeClass('isRequired');
 			$('.sts-input,lis-input').val('').trigger('change');
-		} else if (value == 'sts') {
+		} else if (value == 'remoteuser') {
 			$('.sts').removeClass('hide');
 			$('.sts-input').addClass('isRequired');
 			$('.lis').addClass('hide');

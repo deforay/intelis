@@ -52,6 +52,14 @@ function getMacWindows(): string
 	return substr($mycom, ($pmac + 36), 17);
 }
 try {
+
+
+	$instanceType = $_POST['instanceType'];
+
+	$db->where('name', 'sc_user_type');
+	$db->update("system_config", ['value' => $instanceType]);
+
+
 	if ((isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) != "") || isset($_POST['labId']) && trim((string) $_POST['labId']) != "") {
 		if (isset($_POST['labId']) && trim((string) $_POST['labId']) != "") {
 			$labResults = $general->fetchDataFromTable('facility_details', 'facility_id = ' . $_POST['labId'], ['facility_type', 'facility_name', 'facility_code']);
