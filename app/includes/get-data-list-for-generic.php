@@ -1,8 +1,8 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 /** @var GeoLocationsService $geoDb */
@@ -48,7 +48,7 @@ if (!empty($_GET['status'])) {
     $cQuery .= " AND " . $_GET['status'] . " like 'active' ";
 }
 if (!empty($_GET['labId'])) {
-    $cQuery .= " AND lab_id = " . $_GET['labId'] ;
+    $cQuery .= " AND lab_id = " . $_GET['labId'];
 }
 if (!empty($_GET['group'])) {
     $cQuery .= " GROUP BY '" . $_GET['group'] . "'";
@@ -61,7 +61,7 @@ if (isset($returnField) && $returnField != "") {
     echo $cResult[0][$returnField];
 } else {
     $echoResult = [];
-    if (count($cResult) > 0) {
+    if (!empty($cResult)) {
         foreach ($cResult as $row) {
             $echoResult[] = array("id" => $row[$fieldId], "text" => ucwords((string) $row[$field]));
         }

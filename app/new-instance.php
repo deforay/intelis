@@ -69,10 +69,10 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 									<tr>
 										<td colspan="4">
 											<select name="userType" id="userType" title="Please select the user type" class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
-												<option value="">-- Select User Type --</option>
-												<option value="lis">LIS with Remote Ordering Enabled</option>
-												<option value="sts">Sample Tracking System(STS)</option>
-												<option value="standalone">Standalone (no Remote Ordering)</option>
+												<option value=""><?= _translate("-- Select Instance Type --"); ?></option>
+												<option value="lis"><?= _translate("LIS with Remote Ordering Enabled"); ?></option>
+												<option value="sts"><?= _translate("Sample Tracking System(STS)"); ?></option>
+												<option value="standalone"><?= _translate("Standalone (no Remote Ordering)"); ?></option>
 											</select>
 										</td>
 									</tr>

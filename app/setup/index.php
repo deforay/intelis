@@ -79,7 +79,7 @@ $testName = TestsService::getTestTypes();
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/components-rounded.min.css">
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
   <!-- iCheck -->
   <style>
@@ -112,11 +112,20 @@ $testName = TestsService::getTestTypes();
           <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
           <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><em class="fa-solid fa-link"></em></span>
-              <input id="remoteUrl" type="text" class="form-control isRequired" name="remoteUrl" value="" placeholder="<?= _translate("Remote URL"); ?>" title="Please enter remote url" onchange="checkActiveUrl(this.value);" />
+              <span class="input-group-addon"><em class="fa-solid fa-circle-nodes"></em></span>
+              <select name="instanceType" id="instanceType" title="Please select the user type" class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
+                <option value=""><?= _translate("-- Select Instance Type --"); ?></option>
+                <option value="vluser"><?= _translate("LIS with Remote Ordering Enabled"); ?></option>
+                <option value="remoteuser"><?= _translate("Sample Tracking System(STS)"); ?></option>
+                <option value="standalone"><?= _translate("Standalone (no Remote Ordering)"); ?></option>
+              </select>
             </div>
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><em class="fa-solid fa-book"></em></span>
+              <span class="input-group-addon"><em class="fa-solid fa-link"></em></span>
+              <input id="remoteUrl" type="text" class="form-control isRequired" name="remoteUrl" value="<?= $general->getRemoteUrl(); ?>" placeholder="<?= _translate("STS URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>" onchange="checkSTSUrl(this.value);" />
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-flask"></em></span>
               <select class="" name="enabledModules[]" id="enabledModules" title="<?php echo _translate('Please select the tests'); ?>" multiple="multiple">
                 <option value=""><?= _translate("-- Choose Modules to Enable --"); ?></option>
                 <?php foreach ($testName as $key => $val) {
@@ -202,6 +211,9 @@ $testName = TestsService::getTestTypes();
   <script src="/assets/js/jquery.blockUI.js"></script>
   <script type="text/javascript" src="/assets/js/selectize.js"></script>
 
+  <?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
+  <?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>
+
   <script type="text/javascript">
     let pwdflag = true;
 
@@ -231,17 +243,18 @@ $testName = TestsService::getTestTypes();
       return regex.test(pwd);
     }
 
-    function checkActiveUrl(url) {
-      
-        $.post("/includes/checkValidUrl.php", {
-                remoteUrl: url,
-            },
-            function(data) {
-                if (data != '1') {
-                    alert("Please enter valid remote URL");
-                    return false;
-                }
-            });
+    function checkSTSUrl(url) {
+
+      $.post("/includes/check-sts-url.php", {
+          remoteUrl: url,
+        },
+        function(data) {
+          if (data != '1') {
+            alert("<?= _translate("This STS URL is invalid. Please check and enter a valid STS URL.", true); ?>");
+            $('#remoteUrl').focus();
+            return false;
+          }
+        });
     }
     $(document).ready(function() {
       <?php
@@ -261,8 +274,8 @@ $testName = TestsService::getTestTypes();
         placeholder: "<?= _translate("-- Select Timezone --", true); ?>",
       });
       $("#enabledModules").selectize({
-			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
-		});
+        plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+      });
     });
   </script>
 </body>

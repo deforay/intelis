@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Utilities\FileCacheUtility;
 use Laminas\Config\Factory as ConfigFactory;
+use Laminas\Config\Config as LaminasConfig;
 
 final class ConfigService
 {
@@ -28,7 +29,7 @@ final class ConfigService
     {
         $filePath = $this->getConfigFile();
         // Parse the current configuration file using Laminas\Config\Factory
-        $config = ConfigFactory::fromFile($filePath, true)->toArray();
+        $config = new LaminasConfig(ConfigFactory::fromFile($filePath, true)->toArray(), true);
 
         // Update the values in the config array
         foreach ($keyValuePairs as $fullKey => $value) {
@@ -37,17 +38,18 @@ final class ConfigService
 
             // Update the nested array
             $temp = &$config;
+            $lastKey = array_pop($keys);
             foreach ($keys as $key) {
                 if (!isset($temp[$key])) {
-                    $temp[$key] = [];
+                    $temp[$key] = new LaminasConfig([], true);
                 }
                 $temp = &$temp[$key];
             }
-            $temp = $value;
+            $temp[$lastKey] = $value;
         }
 
         // Write back the updated config using custom formatted output
-        $this->writeFormattedConfig($filePath, $config);
+        $this->writeFormattedConfig($filePath, $config->toArray());
         $this->fileCache->clear();
     }
 

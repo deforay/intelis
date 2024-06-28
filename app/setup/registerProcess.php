@@ -1,15 +1,16 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Utilities\MiscUtility;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\SystemService;
 use App\Services\ConfigService;
+use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
 
@@ -35,8 +36,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$userType = $general->getSystemConfig('sc_user_type');
-
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
@@ -56,6 +55,12 @@ try {
     if (!empty($userName) && !empty($password)) {
 
 
+        $instanceType = $_POST['instanceType'];
+
+        $db->where('name', 'sc_user_type');
+        $db->update("system_config", ['value' => $instanceType]);
+
+
         $updatedConfig = [
             'remoteURL' => $remoteUrl,
             'modules.vl' => in_array('vl', $modulesToEnable) ? true : false,
@@ -69,6 +74,14 @@ try {
 
 
         $configService->updateConfig($updatedConfig);
+
+        // If 'instance' is set in session, unset it
+        if (isset($_SESSION['instance'])) {
+            unset($_SESSION['instance']);
+        }
+
+        // Clear the file cache
+        (ContainerRegistry::get(FileCacheUtility::class))->clear();
 
 
         $userPassword = $usersService->passwordHash($password);
