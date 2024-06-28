@@ -56,7 +56,7 @@ final class ConfigService
     private function writeFormattedConfig($filePath, array $config)
     {
         $formattedConfigArrayDefinition = $this->formatArrayAsPhpCode($config);
-        file_put_contents($filePath, "<?php\n\n" . $formattedConfigArrayDefinition . "\n\nreturn \$systemConfig;\n");
+        file_put_contents($filePath, "<?php\n\n\$systemConfig = [];\n\n" . $formattedConfigArrayDefinition . "\n\nreturn \$systemConfig;\n");
     }
 
     private function formatArrayAsPhpCode(array $array, $parentKey = '$systemConfig', $indentation = '', &$previousKey = '')
