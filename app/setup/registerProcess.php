@@ -60,6 +60,11 @@ try {
         $db->where('name', 'sc_user_type');
         $db->update("system_config", ['value' => $instanceType]);
 
+        if(isset($_POST['testingLab']) && $_POST['testingLab']!=""){
+            $db->where('name', 'sc_testing_lab_id');
+            $db->update("system_config", ['value' => $_POST['testingLab']]);
+        }
+
 
         $updatedConfig = [
             'remoteURL' => $remoteUrl,
@@ -70,6 +75,11 @@ try {
             'modules.tb' => in_array('tb', $modulesToEnable) ? true : false,
             'modules.cd4' => in_array('cd4', $modulesToEnable) ? true : false,
             'modules.generic-tests' => in_array('generic-tests', $modulesToEnable) ? true : false,
+            'database.host' => (isset($_POST['dbHostName']) && !empty($_POST['dbHostName'])) ? $_POST['dbHostName'] : '127.0.0.1',
+            'database.username' => (isset($_POST['dbUserName']) && !empty($_POST['dbUserName'])) ? $_POST['dbUserName'] : 'root',
+            'database.password' => (isset($_POST['dbPassword']) && !empty($_POST['dbPassword'])) ? $_POST['dbPassword'] : 'zaq12345',
+            'database.db' => (isset($_POST['dbName']) && !empty($_POST['dbName'])) ? $_POST['dbName'] : 'vlsm',
+            'database.port' => (isset($_POST['dbPort']) && !empty($_POST['dbPort'])) ? $_POST['dbPort'] : 3306,
         ];
 
 

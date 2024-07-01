@@ -15,6 +15,8 @@ if ($db->isConnected() === false) {
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+      
 // Get locale directory list
 $localeLists = $general->getLocaleList(0);
 
@@ -80,6 +82,7 @@ $testName = TestsService::getTestTypes();
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 
   <!-- iCheck -->
   <style>
@@ -95,6 +98,62 @@ $testName = TestsService::getTestTypes();
     a {
       cursor: pointer;
     }
+
+    <style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f1f1f1;
+}
+
+.stepwizard-step p {
+    margin-top: 0px;
+    color:#666;
+}
+.stepwizard-row {
+    display: table-row;
+}
+.stepwizard {
+    display: table;
+    width: 100%;
+    position: relative;
+}
+.stepwizard-step button[disabled] {
+    /*opacity: 1 !important;
+    filter: alpha(opacity=100) !important;*/
+}
+.stepwizard .btn.disabled, .stepwizard .btn[disabled], .stepwizard fieldset[disabled] .btn {
+    opacity:1 !important;
+    color:#bbb;
+}
+.stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content:" ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-index: 0;
+}
+.stepwizard-step {
+    display: table-cell;
+    text-align: center;
+    position: relative;
+}
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+
+
   </style>
 
   <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
@@ -109,8 +168,58 @@ $testName = TestsService::getTestTypes();
         </div>
 
         <div style="padding-top:10px;" class="panel-body">
-          <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-          <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
+
+
+
+
+
+
+        <div class="container" style="width:430px;">
+    <div class="stepwizard">
+        <div class="stepwizard-row setup-panel">
+            <div class="stepwizard-step col-xs-3"> 
+                <a href="#step-1" type="button" class="btn btn-success btn-circle">1</a>
+                <p><small>System Settings</small></p>
+            </div>
+            <div class="stepwizard-step col-xs-3"> 
+                <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                <p><small>Instance Settings</small></p>
+            </div>
+            <div class="stepwizard-step col-xs-3"> 
+                <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                <p><small>Admin</small></p>
+            </div>
+           
+        </div>
+    </div>
+   
+    <form role="form" id="registerForm" name="registerForm" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
+        <div class="panel panel-primary setup-content" id="step-1">
+            <div class="panel-heading">
+                 <h3 class="panel-title">System Settings</h3>
+            </div>
+            <div class="panel-body">
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-database"></em></span>
+              <input id="dbHostName" type="text" class="form-control" name="dbHostName" placeholder="<?= _translate("Please enter database host name"); ?>" title="<?= _translate("Please enter database host name"); ?>" />
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
+              <input id="dbUserName" type="text" class="form-control" name="dbUserName" placeholder="<?= _translate("Please enter database user name"); ?>" title="<?= _translate("Please enter database user name"); ?>" />
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-key"></em></span>
+              <input id="dbPassword" type="text" class="form-control" name="dbPassword" placeholder="<?= _translate("Please enter database password"); ?>" title="<?= _translate("Please enter database password"); ?>" />
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-database"></em></span>
+              <input id="dbName" type="text" class="form-control" name="dbName" placeholder="<?= _translate("Please enter database name"); ?>" title="<?= _translate("Please enter database name"); ?>" />
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-database"></em></span>
+              <input id="dbPort" type="text" class="form-control" name="dbPort" placeholder="<?= _translate("Please enter database port"); ?>" title="<?= _translate("Please enter database port"); ?>" />
+            </div>
+
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-circle-nodes"></em></span>
               <select name="instanceType" id="instanceType" title="Please select the user type" class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
@@ -120,9 +229,15 @@ $testName = TestsService::getTestTypes();
                 <option value="standalone"><?= _translate("Standalone (no Remote Ordering)"); ?></option>
               </select>
             </div>
-            <div style="margin-bottom: 5px" class="input-group">
+            <div style="margin-bottom: 5px" class="input-group lis">
               <span class="input-group-addon"><em class="fa-solid fa-link"></em></span>
-              <input id="remoteUrl" type="text" class="form-control isRequired" name="remoteUrl" value="<?= $general->getRemoteUrl(); ?>" placeholder="<?= _translate("STS URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>" onchange="checkSTSUrl(this.value);" />
+              <input id="remoteUrl" type="text" class="form-control lis-input" name="remoteUrl" value="<?= $general->getRemoteUrl(); ?>" placeholder="<?= _translate("STS URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>" onchange="checkSTSUrl(this.value);" />
+            </div>
+            <div style="margin-bottom: 5px" class="input-group lis">
+              <span class="input-group-addon"><em class="fa-solid fa-flask-vial"></em></span>
+                <select class="form-control select2" id="testingLab" name="testingLab" title="<?php echo _translate('Please select vl lab'); ?>">
+									<?= $testingLabsDropdown; ?>
+								</select>
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-flask"></em></span>
@@ -135,6 +250,15 @@ $testName = TestsService::getTestTypes();
                 } ?>
               </select>
             </div>
+                <button class="btn btn-primary nextBtn pull-right" type="button">Next</button>
+            </div>
+        </div>
+        
+        <div class="panel panel-primary setup-content" id="step-2">
+            <div class="panel-heading">
+                 <h3 class="panel-title">Instance Settings</h3>
+            </div>
+            <div class="panel-body">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-flag"></em></span>
               <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>">
@@ -174,7 +298,15 @@ $testName = TestsService::getTestTypes();
                 <?php } ?>
               </select>
             </div>
-
+                <button class="btn btn-primary nextBtn pull-right" type="button">Next</button>
+            </div>
+        </div>
+        
+        <div class="panel panel-primary setup-content" id="step-3">
+            <div class="panel-heading">
+                 <h3 class="panel-title">Admin</h3>
+            </div>
+            <div class="panel-body">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
               <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _translate("Email ID"); ?>" title="Please enter your email id">
@@ -194,15 +326,17 @@ $testName = TestsService::getTestTypes();
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
               <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?= _translate("Confirm Password"); ?>" title="" />
+            </div>                             
+            <button class="btn btn-success pull-right" type="submit">Finish!</button>
+
             </div>
-            <div style="margin-top:10px" class="form-group">
-              <!-- Button -->
-              <div class="col-sm-12 controls">
-                <button class="btn btn-lg btn-primary btn-block" onclick="validateNow();return false;"><?= _translate("Create User"); ?></button>
-              </div>
-            </div>
-          </form>
         </div>
+        
+       
+    </form>
+</div>
+
+
       </div>
     </div>
   </div>
@@ -215,6 +349,7 @@ $testName = TestsService::getTestTypes();
   <?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>
 
   <script type="text/javascript">
+
     let pwdflag = true;
 
     function validateNow() {
@@ -256,7 +391,77 @@ $testName = TestsService::getTestTypes();
           }
         });
     }
+
+    function changeLabType(value) {
+        if (value == 'remoteuser' || value == 'standalone') {
+          $('.lis').hide();
+          $('.lis-input').removeClass('isRequired');
+        } else if (value == 'vluser') {
+          $('.lis').show();
+          $('.lis-input').addClass('isRequired');
+          getTestingLabs();
+        } else {
+          $('.lis, .sts').addClass('hide');
+          $('.lis-input,sts-input').removeClass('isRequired');
+          $('.lis-input,sts-input').val('').trigger('change');
+        }
+	}
+
+  function getTestingLabs(){
+    $.post("/includes/getTestingLabOptions.php", 
+        function(data) {
+          if (data != 0) {
+              $("#testingLab").html(data);
+          }
+        });
+  }
+
     $(document).ready(function() {
+
+    $(".lis").hide();
+      /** for Step form */
+
+      var navListItems = $('div.setup-panel div a'),
+        allWells = $('.setup-content'),
+        allNextBtn = $('.nextBtn');
+
+    allWells.hide();
+
+    navListItems.click(function (e) {
+        e.preventDefault();
+        var $target = $($(this).attr('href')),
+            $item = $(this);
+
+        if (!$item.hasClass('disabled')) {
+            navListItems.removeClass('btn-success').addClass('btn-default');
+            $item.addClass('btn-success');
+            allWells.hide();
+            $target.show();
+            $target.find('input:eq(0)').focus();
+        }
+    });
+
+    allNextBtn.click(function () {
+        var curStep = $(this).closest(".setup-content"),
+            curStepBtn = curStep.attr("id"),
+            nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+            curInputs = curStep.find("input[type='text'],input[type='url']"),
+            isValid = true;
+
+        $(".form-group").removeClass("has-error");
+        for (var i = 0; i < curInputs.length; i++) {
+            if (!curInputs[i].validity.valid) {
+                isValid = false;
+                $(curInputs[i]).closest(".form-group").addClass("has-error");
+            }
+        }
+
+        if (isValid) nextStepWizard.removeAttr('disabled').trigger('click');
+    });
+
+    $('div.setup-panel div a.btn-success').trigger('click');
+
+      /** Step form script end */
       <?php
       if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) != "") {
       ?>
@@ -269,9 +474,11 @@ $testName = TestsService::getTestTypes();
 
       $('#vl_form').select2({
         placeholder: "<?= _translate("-- Choose Country of Installation --", true); ?>",
+        width: '100%',
       });
       $('#default_time_zone').select2({
         placeholder: "<?= _translate("-- Select Timezone --", true); ?>",
+        width: '100%',
       });
       $("#enabledModules").selectize({
         plugins: ["restore_on_backspace", "remove_button", "clear_button"],

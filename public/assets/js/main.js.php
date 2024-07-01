@@ -3,10 +3,14 @@
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use App\Services\SystemService;
 
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var SystemService $systemService */
+$systemService = ContainerRegistry::get(SystemService::class);
 
 $remoteUrl = $general->getRemoteURL();
 
