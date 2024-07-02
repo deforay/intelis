@@ -175,7 +175,7 @@ foreach ($testReasonsResultDetails as $row) {
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="fundingSource">Funding Source</label>
+                                                       <label for="fundingSource">Project Name</label>
                                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
                                                             <?php
