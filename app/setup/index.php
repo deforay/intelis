@@ -164,32 +164,26 @@ body {
     <div id="loginbox" style="margin-top:80px;float:right;" class="mainbox col-md-4 col-sm-8 ">
       <div class="panel panel-default" style="opacity: 0.98;">
         <div class="panel-heading">
-          <div class="panel-title"><?= _translate("Register Admin User"); ?></div>
+          <div class="panel-title"><?= _translate("Setup System"); ?></div>
         </div>
 
         <div style="padding-top:10px;" class="panel-body">
 
-
-
-
-
-
         <div class="container" style="width:430px;">
     <div class="stepwizard">
         <div class="stepwizard-row setup-panel">
-            <div class="stepwizard-step col-xs-3"> 
+            <div class="stepwizard-step col-xs-4"> 
                 <a href="#step-1" type="button" class="btn btn-success btn-circle">1</a>
                 <p><small>System Settings</small></p>
             </div>
-            <div class="stepwizard-step col-xs-3"> 
+            <div class="stepwizard-step col-xs-4"> 
                 <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
                 <p><small>Instance Settings</small></p>
             </div>
-            <div class="stepwizard-step col-xs-3"> 
+            <div class="stepwizard-step col-xs-4"> 
                 <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
                 <p><small>Admin</small></p>
             </div>
-           
         </div>
     </div>
    
@@ -219,7 +213,15 @@ body {
               <span class="input-group-addon"><em class="fa-solid fa-database"></em></span>
               <input id="dbPort" type="text" class="form-control" name="dbPort" placeholder="<?= _translate("Please enter database port"); ?>" title="<?= _translate("Please enter database port"); ?>" />
             </div>
-
+                <button class="btn btn-primary nextBtn pull-right" type="button">Next</button>
+            </div>
+        </div>
+        
+        <div class="panel panel-primary setup-content" id="step-2">
+            <div class="panel-heading">
+                 <h3 class="panel-title">Instance Settings</h3>
+            </div>
+            <div class="panel-body">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-circle-nodes"></em></span>
               <select name="instanceType" id="instanceType" title="Please select the user type" class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
@@ -250,15 +252,6 @@ body {
                 } ?>
               </select>
             </div>
-                <button class="btn btn-primary nextBtn pull-right" type="button">Next</button>
-            </div>
-        </div>
-        
-        <div class="panel panel-primary setup-content" id="step-2">
-            <div class="panel-heading">
-                 <h3 class="panel-title">Instance Settings</h3>
-            </div>
-            <div class="panel-body">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-flag"></em></span>
               <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>">
@@ -400,6 +393,7 @@ body {
           $('.lis').show();
           $('.lis-input').addClass('isRequired');
           getTestingLabs();
+          $("#testingLab").select2();
         } else {
           $('.lis, .sts').addClass('hide');
           $('.lis-input,sts-input').removeClass('isRequired');

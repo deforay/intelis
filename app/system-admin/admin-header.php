@@ -158,11 +158,6 @@ $skin = "skin-blue";
 							</li>
 						</ul>
 						<ul class="treeview-menu">
-							<li class="allMenu logFileMenu">
-								<a href="/system-admin/log-files/log-files.php"><em class="fa-regular fa-circle"></em> <?php echo _translate("Log File Viewer"); ?></a>
-							</li>
-						</ul>
-						<ul class="treeview-menu">
 							<li class="allMenu resetPasswordMenu">
 								<a href="/system-admin/reset-password/reset-password.php"><em class="fa-regular fa-circle"></em> <?php echo _translate("Reset Password"); ?></a>
 							</li>

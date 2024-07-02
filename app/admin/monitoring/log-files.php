@@ -1,5 +1,4 @@
 <?php
-$title = _translate("Log File Viewer") . " - " . _translate("System Admin");
 
 
 use App\Services\DatabaseService;
@@ -8,7 +7,9 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
+$title = _translate("Log File Viewer") . " - " . _translate("Admin");
+
+require_once APPLICATION_PATH . '/header.php';
 
 ?>
 <link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css">
@@ -86,7 +87,6 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 								<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Clear Search"); ?></span></button>
 							</td>
 						</tr>
-
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
@@ -181,4 +181,4 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 
 
 <?php
-require_once(APPLICATION_PATH . '/system-admin/admin-footer.php');
+require_once APPLICATION_PATH . '/footer.php';

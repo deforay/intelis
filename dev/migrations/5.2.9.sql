@@ -556,3 +556,9 @@ CREATE TABLE IF NOT EXISTS user_preferences (
     updated_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, page_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+--Jeyabanu 02-Jun-2024
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'common-reference', 'log-files.php', NULL, 'Log File Viewer', NULL, 'always');
+
+INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', NULL, 'no', 'Log File Viewer', '/admin/monitoring/log-files.php', NULL, 'always', 'fa-solid fa-gears', 'no', 'allMenu treeview log-file-viewer-menu', '7', '19', 'active', CURRENT_TIMESTAMP);
