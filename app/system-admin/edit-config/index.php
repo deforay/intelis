@@ -119,7 +119,7 @@ $globalConfig = $general->getGlobalConfig();
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-7">
+                  <div class="col-md-7 labName" style="<?php echo ($general->isLISInstance()) ? 'display:show' : 'display:none'; ?>">
                     <div class="form-group">
                       <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("STS URL"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
