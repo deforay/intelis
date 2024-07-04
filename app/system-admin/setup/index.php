@@ -71,7 +71,7 @@ fclose($myfile);
     <div id="loginbox" style="margin-left:35%;padding:0;" class="mainbox col-md-4 col-sm-8 ">
       <div class="panel panel-default" style="opacity: 0.93;">
         <div class="panel-heading">
-          <div class="panel-title"><?= _translate("Resgiter new System Admin"); ?></div>
+          <div class="panel-title"><?= _translate("Register new System Admin"); ?></div>
         </div>
 
         <div style="padding-top:10px;" class="panel-body">
