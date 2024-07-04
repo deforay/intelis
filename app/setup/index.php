@@ -226,7 +226,7 @@ body {
               <span class="input-group-addon"><em class="fa-solid fa-circle-nodes"></em></span>
               <select name="instanceType" id="instanceType" title="Please select the user type" class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
                 <option value=""><?= _translate("-- Select Instance Type --"); ?></option>
-                <option value="vluser"><?= _translate("LIS with Remote Ordering Enabled"); ?></option>
+                <option value="vluser" selected="selected"><?= _translate("LIS with Remote Ordering Enabled"); ?></option>
                 <option value="remoteuser"><?= _translate("Sample Tracking System(STS)"); ?></option>
                 <option value="standalone"><?= _translate("Standalone (no Remote Ordering)"); ?></option>
               </select>
