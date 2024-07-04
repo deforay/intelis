@@ -145,13 +145,13 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <tr>
                                         <td><label for="province"><?= _translate("Region"); ?> </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control select2 isRequired" name="province" id="province" title="<?= _translate("Please choose State"); ?>" onchange="getfacilityDetails(this);" style="width:100%;">
+                                            <select class="form-control isRequired" name="province" id="province" title="<?= _translate("Please choose State"); ?>" onchange="getfacilityDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
                                         <td><label for="district"><?= _translate("Health Facility/POE County"); ?> </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control select2 isRequired" name="district" id="district" title="<?= _translate("Please choose County"); ?>" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+                                            <select class="form-control isRequired" name="district" id="district" title="<?= _translate("Please choose County"); ?>" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> <?= _translate("-- Select --"); ?> </option>
                                             </select>
                                         </td>
@@ -871,7 +871,12 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         $('#patientProvince').select2({
             placeholder: "<?= _translate('Select Case State'); ?>"
         });
-
+        $('#province').select2({
+            placeholder: "<?= _translate('Select Province'); ?>"
+        });
+        $('#district').select2({
+            placeholder: "<?= _translate('Select District'); ?>"
+        });
         $('#facilityId').select2({
             placeholder: "<?= _translate('Select Clinic/Health Center'); ?>"
         });

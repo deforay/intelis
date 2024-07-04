@@ -97,17 +97,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                     <tr>
                                         <td style="width:25%"><label for="province"><?= _translate('Region'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired" name="province" id="province" title="<?= _translate('Please choose province'); ?>" onchange="getfacilityDetails(this);">
+                                            <select class="form-control isRequired" name="province" id="province" title="<?= _translate('Please select province'); ?>" onchange="getfacilityDetails(this);">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
                                         <td style="width:25%"><label for="district"><?= _translate('District'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired" name="district" id="district" title="Please choose district" onchange="getfacilityDistrictwise(this);">
+                                            <select class="form-control isRequired" name="district" id="district" title="Please select district" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> -- Select -- </option>
                                             </select>
                                         </td>
                                         <td style="width:25%"><label for="facilityId"><?= _translate('Facility'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose facility" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
+                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please select facility" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php foreach ($healthFacilitiesAllColumns as $hFacility) { ?>
                                                     <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>" <?php echo (isset($_SESSION['eidData']['facility_id']) && $_SESSION['eidData']['facility_id'] == $hFacility['facility_id']) ? 'selected="selected"' : '';?>><?php echo $hFacility['facility_name']; ?></option>
@@ -458,7 +458,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
                                                 <td>
-                                                    <input type="text" value="<?php echo $_SESSION['eidData']['lab_assigned_code'];?>" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                    <input type="text" value="<?php echo $_SESSION['eidData']['lab_assigned_code'];?>" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" onblur='checkNameValidation("form_eid","lab_assigned_code",this,null,"<?php echo _translate("The Lab Assigned Code that you entered already exists.Enter another Lab Assigned Code"); ?>",null)'/>
                                                 </td>
                                         </tr>
                                     <?php } ?>
@@ -848,6 +848,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 });
 
         });
+        $('#province').select2({
+            placeholder: "<?= _translate('Select Province'); ?>"
+        });
+        $('#district').select2({
+            placeholder: "<?= _translate('Select District'); ?>"
+        });
         $('#facilityId').select2({
             placeholder: "<?= _translate('Select Clinic/Health Center'); ?>"
         });
@@ -860,12 +866,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $('#approvedBy').select2({
             placeholder: "<?= _translate('Select Approved By'); ?>"
         });
-        // $('#district').select2({
-        //     placeholder: "District"
-        // });
-        // $('#province').select2({
-        //     placeholder: "Province"
-        // });
 
         $('#isChildOnCotrim').change(function() {
             if ($(this).val() == "no") {
@@ -888,4 +888,25 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             getfacilityProvinceDetails($('#facilityId'));
         <?php } ?>
     });
+
+    function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
+		var removeDots = obj.value.replace(/\./g, "");
+		removeDots = removeDots.replace(/\,/g, "");
+		//str=obj.value;
+		removeDots = removeDots.replace(/\s{2,}/g, ' ');
+
+		$.post("/includes/checkDuplicate.php", {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: removeDots.trim(),
+				fnct: fnct,
+				format: "html"
+			},
+			function(data) {
+				if (data === '1') {
+					alert(alrt);
+					document.getElementById(obj.id).value = "";
+				}
+			});
+	}
 </script>

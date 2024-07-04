@@ -133,7 +133,7 @@ foreach ($testReasonsResultDetails as $row) {
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="province"><?= _translate('Region'); ?> <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired" name="province" id="province" title="<?= _translate('Please choose a province'); ?>" style="width:100%;" onchange="getfacilityDetails(this);">
+                                                       <select class="form-control isRequired" name="province" id="province" title="<?= _translate('Please select a province'); ?>" style="width:100%;" onchange="getfacilityDetails(this);">
                                                             <?php echo $province; ?>
                                                        </select>
                                                   </div>
@@ -141,7 +141,7 @@ foreach ($testReasonsResultDetails as $row) {
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="district"><?= _translate('District'); ?> <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired" name="district" id="district" title="<?= _translate('Please choose a district'); ?>" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+                                                       <select class="form-control isRequired" name="district" id="district" title="<?= _translate('Please select a district'); ?>" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                        </select>
                                                   </div>
@@ -174,7 +174,7 @@ foreach ($testReasonsResultDetails as $row) {
                                         </div>
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
+                                                  <div class="">
                                                        <label for="fundingSource">Project Name</label>
                                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
@@ -213,7 +213,7 @@ foreach ($testReasonsResultDetails as $row) {
                                              <div class="row">
                                                   <div class="col-xs-3 col-md-3">
                                                        <label for="labAssignedCode"><?= _translate('Lab Assigned Code'); ?> </label>
-                                                       <input name="labAssignedCode" value="<?php echo $_SESSION['vlData']['lab_assigned_code'] ?? null; ?>" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>">
+                                                       <input name="labAssignedCode" value="<?php echo $_SESSION['vlData']['lab_assigned_code'] ?? null; ?>" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>" onblur='checkNameValidation("form_vl","lab_assigned_code",this,null,"<?php echo _translate("The Lab Assigned Code that you entered already exists.Enter another Lab Assigned Code"); ?>",null)'>
                                                   </div>
                                              </div>
                                         <?php } ?>
@@ -778,6 +778,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     }
                }
           });
+          $('#province').select2({
+               placeholder: "<?= _translate('Select Province'); ?>"
+          });
+          $('#district').select2({
+               placeholder: "<?= _translate('Select District'); ?>"
+          });
 
           $('#facilityId').select2({
                placeholder: "<?= _translate('Select Clinic/Health Center'); ?>"
@@ -1259,4 +1265,25 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#newreasonForVLTesting").hide().removeClass("isRequired");
           }
      }
+
+     function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
+		var removeDots = obj.value.replace(/\./g, "");
+		removeDots = removeDots.replace(/\,/g, "");
+		//str=obj.value;
+		removeDots = removeDots.replace(/\s{2,}/g, ' ');
+
+		$.post("/includes/checkDuplicate.php", {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: removeDots.trim(),
+				fnct: fnct,
+				format: "html"
+			},
+			function(data) {
+				if (data === '1') {
+					alert(alrt);
+					document.getElementById(obj.id).value = "";
+				}
+			});
+	}
 </script>
