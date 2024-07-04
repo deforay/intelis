@@ -115,17 +115,17 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                     </tr>
                                     <tr>
                                         <td style="width:25%"><label for="province"><?= _translate('Region'); ?> </label><span class="mandatory">*</span></br>
-                                            <select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
+                                            <select class="form-control isRequired" name="province" id="province" title="Please select province" onchange="getfacilityDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
                                         <td style="width:25%"><label for="district"><?= _translate('District'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+                                            <select class="form-control isRequired" name="district" id="district" title="Please select district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                             </select>
                                         </td>
                                         <td style="width:25%"><label for="facilityId"><?= _translate('Facility'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
+                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please select facility" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php //echo $facility;
                                                 foreach ($healthFacilitiesAllColumns as $hFacility) {
@@ -482,7 +482,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         <tr>
                                             <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" onblur="checkNameValidation('form_eid','lab_assigned_code',this,'<?php echo "eid_id##" . $id; ?>','This Lab Assigned Code that you entered already exists.Try another Lab Assigned Code',null)"/>
                                             </td>
                                         </tr>
                                     <?php } ?>
@@ -837,11 +837,11 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });
-        $('#district').select2({
-            placeholder: "District"
-        });
         $('#province').select2({
-            placeholder: "Province"
+            placeholder: "<?= _translate('Select Province'); ?>"
+        });
+        $('#district').select2({
+            placeholder: "<?= _translate('Select District'); ?>"
         });
         $('#labId').select2({
             placeholder: "Select Lab Name"
@@ -893,4 +893,25 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
         $('#isChildOnCotrim').trigger('change');
         $('#infantArtStatus').trigger('change');
     });
+
+    function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
+		var removeDots = obj.value.replace(/\./g, "");
+		removeDots = removeDots.replace(/\,/g, "");
+		//str=obj.value;
+		removeDots = removeDots.replace(/\s{2,}/g, ' ');
+
+		$.post("/includes/checkDuplicate.php", {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: removeDots.trim(),
+				fnct: fnct,
+				format: "html"
+			},
+			function(data) {
+				if (data === '1') {
+					alert(alrt);
+					document.getElementById(obj.id).value = "";
+				}
+			});
+	}
 </script>
