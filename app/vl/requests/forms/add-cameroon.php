@@ -428,7 +428,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                             </div>
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
+                                                            <div class="">
                                                                  <label for="lineOfTreatment" class="labels"><?= _translate('Line of Treatment'); ?> </label>
                                                                  <select class="form-control" name="lineOfTreatment" id="lineOfTreatment" title="<?= _translate('Line Of Treatment'); ?>">
                                                                       <option value=""><?= _translate('--Select--'); ?></option>

@@ -97,17 +97,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                     <tr>
                                         <td style="width:25%"><label for="province"><?= _translate('Region'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired" name="province" id="province" title="<?= _translate('Please select province'); ?>" onchange="getfacilityDetails(this);">
+                                            <select class="form-control isRequired" name="province" id="province" title="<?= _translate('Please select province'); ?>"  style="width:100%;" onchange="getfacilityDetails(this);">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
                                         <td style="width:25%"><label for="district"><?= _translate('District'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired" name="district" id="district" title="Please select district" onchange="getfacilityDistrictwise(this);">
+                                            <select class="form-control isRequired" name="district" id="district" title="Please select district"  style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> -- Select -- </option>
                                             </select>
                                         </td>
-                                        <td style="width:25%"><label for="facilityId"><?= _translate('Facility'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please select facility" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
+                                        <td style="width:25%">
+                                            <label for="facilityId"><?= _translate('Facility'); ?> </label><span class="mandatory">*</span><br>
+                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please select facility"  style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php foreach ($healthFacilitiesAllColumns as $hFacility) { ?>
                                                     <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>" <?php echo (isset($_SESSION['eidData']['facility_id']) && $_SESSION['eidData']['facility_id'] == $hFacility['facility_id']) ? 'selected="selected"' : '';?>><?php echo $hFacility['facility_name']; ?></option>
