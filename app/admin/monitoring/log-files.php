@@ -126,7 +126,7 @@ require_once APPLICATION_PATH . '/header.php';
 			$('#logViewer').append('<div class="loading">Loading...</div>');
 
 			$.ajax({
-				url: '/system-admin/log-files/get-log-files.php?date=' + $('#userDate').val() + '&start=' + start,
+				url: '/admin/monitoring/get-log-files.php?date=' + $('#userDate').val() + '&start=' + start,
 				success: function(data) {
 					$('.loading').remove(); // Remove loading indicator
 					if (data.trim() === '') {

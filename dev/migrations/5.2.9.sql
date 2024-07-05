@@ -562,3 +562,7 @@ CREATE TABLE IF NOT EXISTS user_preferences (
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'common-reference', 'log-files.php', NULL, 'Log File Viewer', NULL, 'always');
 
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', NULL, 'no', 'Log File Viewer', '/admin/monitoring/log-files.php', NULL, 'always', 'fa-solid fa-gears', 'no', 'allMenu treeview log-file-viewer-menu', '7', '19', 'active', CURRENT_TIMESTAMP);
+
+
+-- Jeyabanu 04-Jul-2024
+UPDATE `s_app_menu` SET `inner_pages` = '/facilities/addFacility.php,/facilities/editFacility.php,/facilities/mapTestType.php,/facilities/upload-facilities.php' WHERE `s_app_menu`.`link` = '/facilities/facilities.php';
