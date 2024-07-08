@@ -37,9 +37,9 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 $output = [];
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Is Sample Rejected?", "Freezer","Rack","Box", "Position","Volume (ml)","Sample Tested On", "Result", "Lab Assigned Code","Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding","Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date","Sample Requestor Phone Number" , "Is Sample Rejected?", "Freezer","Rack","Box", "Position","Volume (ml)","Sample Tested On", "Result", "Lab Assigned Code","Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 } else {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Is Sample Rejected?", "Freezer","Rack","Box", "Position","Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code","Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding","Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date","Sample Requestor Phone Number" ,"Is Sample Rejected?", "Freezer","Rack","Box", "Position","Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code","Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 }
 
 
@@ -102,10 +102,12 @@ foreach ($resultSet as $aRow) {
     $row[] = ($aRow['child_age'] != null && trim((string) $aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
     $row[] = $gender;
     $row[] = $aRow['has_infant_stopped_breastfeeding'];
+    $row[] = $aRow['sample_requestor_phone'];
     $row[] = $aRow['pcr_test_performed_before'];
     $row[] = $aRow['previous_pcr_result'];
     $row[] = $aRow['reason_for_pcr'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
+    $row[] = $aRow['sample_requestor_phone'];
     $row[] = $sampleRejection;
     if ($formId == COUNTRY\DRC) {
 		$formAttributes = json_decode($aRow['form_attributes']);
