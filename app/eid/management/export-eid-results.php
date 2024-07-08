@@ -110,7 +110,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = ($aRow['child_age'] != null && trim((string) $aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
 		$row[] = $gender;
 		$row[] = $aRow['has_infant_stopped_breastfeeding'];
-		$row[] = $aRow['sample_requestor_phone'];
+		$row[] = $aRow['request_clinician_phone_number'];
 		$row[] = $aRow['pcr_test_performed_before'];
 		$row[] = $aRow['previous_pcr_result'];
 		$row[] = $aRow['reason_for_pcr'];
