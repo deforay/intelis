@@ -914,4 +914,18 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
 				}
 			});
 	}
+    $('#editEIDRequestForm').keypress((e) => { 
+          // Enter key corresponds to number 13 
+          if (e.which === 13) {
+               e.preventDefault(); 
+               validateNow();     // Trigger the validateNow function
+          } 
+     });
+     // Handle Enter key specifically for select2 elements
+     $(document).on('keydown', '.select2-container--open', function(e) {
+          if (e.which === 13) {
+               e.preventDefault();  // Prevent the default form submission
+               validateNow();  // Trigger the validateNow function
+          }
+     });
 </script>
