@@ -205,7 +205,7 @@ if (!empty($id)) {
                             $sampleQuery = "SELECT sample_code,
                                                     remote_sample_code,
                                                     $resultColumn,
-                                                    is_encrypted,
+                                                    is_encrypted,lab_assigned_code,
                                                     $patientIdColumn,
                                                     $patientFirstName,
                                                     $patientLastName
@@ -216,7 +216,7 @@ if (!empty($id)) {
                             $sampleQuery = "SELECT sample_code,
                                                     remote_sample_code,
                                                     $resultColumn,
-                                                    lot_number,is_encrypted,
+                                                    lot_number,is_encrypted,lab_assigned_code,
                                                     CASE
                                                         WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
                                                         ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
@@ -233,6 +233,7 @@ if (!empty($id)) {
 
                         $lotDetails = '';
                         $lotExpirationDate = '';
+                        $labAssignedCode = '';
                         if (!empty($sampleResult[0]['lot_expiration_date'])) {
                             if (trim((string) $sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
@@ -246,12 +247,15 @@ if (!empty($id)) {
 
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
+                        if(!empty($sampleResult[0]['lab_assigned_code'])){
+                            $labAssignedCode = $sampleResult[0]['lab_assigned_code'];
+                        }
                         $tbl .= '<p></p>
                                 <table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                         $tbl .= '<tr nobr="true" style="width:100%;">';
 
                         $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
-                        $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['sample_code'] . '</td>';
+                        $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['sample_code'] . '--'. $labAssignedCode.'</td>';
                         if ($barcodeFormat == 'QRCODE') {
                             $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                         } else {
@@ -297,7 +301,7 @@ if (!empty($id)) {
                         if ((isset($_GET['type']) && $_GET['type'] == 'tb') || (isset($_GET['type']) && $_GET['type'] == 'cd4')) {
                             $sampleQuery = "SELECT sample_code,
                                             remote_sample_code,
-                                            $resultColumn,is_encrypted,
+                                            $resultColumn,is_encrypted,lab_assigned_code,
                                             $patientIdColumn,
                                             $patientFirstName,
                                             $patientLastName
@@ -307,7 +311,7 @@ if (!empty($id)) {
                             $sampleQuery = "SELECT sample_code,
                                                 remote_sample_code,
                                                 $resultColumn,
-                                                lot_number,is_encrypted,
+                                                lot_number,is_encrypted,lab_assigned_code,
                                                 CASE
                                                     WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
                                                     ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
@@ -323,6 +327,7 @@ if (!empty($id)) {
 
                         $lotDetails = '';
                         $lotExpirationDate = '';
+                        $labAssignedCode = '';
                         if (!empty($sampleResult[0]['lot_expiration_date'])) {
                             if (trim((string) $sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
@@ -334,11 +339,14 @@ if (!empty($id)) {
                         }
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
+                        if(!empty($sampleResult[0]['lab_assigned_code'])){
+                            $labAssignedCode = $sampleResult[0]['lab_assigned_code'];
+                        }
                         $tbl .= '<p></p><table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                         $tbl .= '<tr>';
 
                         $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
-                        $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['sample_code'] . '</td>';
+                        $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['sample_code'] . '<br>'. $labAssignedCode .'</td>';
                         if ($barcodeFormat == 'QRCODE') {
                             $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                         } else {
