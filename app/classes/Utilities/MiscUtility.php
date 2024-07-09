@@ -443,4 +443,34 @@ final class MiscUtility
             echo "\n";
         }
     }
+
+    public static function removeDuplicates($input)
+    {
+        // Check if the input is a string
+        if (is_string($input)) {
+            // Split the string into an array
+            $inputArray = explode(',', $input);
+        } elseif (is_array($input)) {
+            // Use the input array directly
+            $inputArray = $input;
+        } else {
+            // Invalid input type
+            return $input;
+        }
+
+        // Remove duplicate values
+        $uniqueArray = array_unique($inputArray);
+
+        // Optionally, remove any empty values
+        $uniqueArray = array_filter($uniqueArray);
+
+        // Return the same type as the input
+        if (is_string($input)) {
+            // Convert the array back to a comma-separated string
+            return implode(',', $uniqueArray);
+        } else {
+            // Return the unique array
+            return $uniqueArray;
+        }
+    }
 }
