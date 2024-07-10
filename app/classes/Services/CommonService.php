@@ -858,13 +858,13 @@ final class CommonService
         if (!empty($user)) {
             $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
-                $where[] = " f.facility_id IN (" . $facilityMap . ")";
+                $where[] = " f.facility_id IN ($facilityMap)";
             }
         }
         if (!$module) {
             $activeModule = str_replace(",", "','", (string) $activeModule);
             if (!empty($activeModule)) {
-                $where[] = " tl.test_type IN ('" . $activeModule . "')";
+                $where[] = " tl.test_type IN ('$activeModule')";
             }
         }
 

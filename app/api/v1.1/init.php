@@ -123,7 +123,7 @@ $data['activeModule'] = implode(",", $activeModule);
 $data['facilitiesList'] = $general->getAppHealthFacilitiesAPI(null, $user['user_id'], false, 0, false, null, $updatedDateTime);
 $data['geoGraphicalDivision'] = $geolocationService->fetchActiveGeolocations("", "", "no", true, null, $updatedDateTime);
 $data['healthFacilitiesList'] = $general->getAppHealthFacilitiesAPI(null, $user['user_id'], true, 1, false, implode(",", $activeModule), $updatedDateTime);
-$data['testingLabsList'] = $general->getTestingLabsAPI(null, $user['user_id'], false, false, implode(",", $activeModule), $updatedDateTime);
+$data['testingLabsList'] = $general->getTestingLabsAPI(testType: null, user: $user['user_id'], onlyActive: false, module: false, activeModule: implode(",", $activeModule), updatedDateTime: $updatedDateTime);
 /* Province Details */
 $data['provinceList'] = $general->getProvinceDetailsApi($user['user_id'], true, $updatedDateTime);
 /* District Details */
