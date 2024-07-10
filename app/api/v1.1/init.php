@@ -117,7 +117,6 @@ foreach ($userResult as $row) {
 }
 
 $activeModule = SystemService::getActiveModules(true);
-
 $data = [];
 $data['formId'] = $formId;
 $data['activeModule'] = implode(",", $activeModule);

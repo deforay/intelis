@@ -883,7 +883,12 @@ final class CommonService
         if (!empty($where)) {
             $whereStr = " WHERE " . implode(" AND ", $where);
         }
-        $query .= $whereStr . ' GROUP BY facility_name ORDER BY facility_name ASC';
+        if (!empty($activeModule)) {
+            $query .= $whereStr . ' ORDER BY facility_name ASC';
+        }else{
+            $query .= $whereStr . ' GROUP BY facility_name ORDER BY facility_name ASC';
+        }
+        // print_r($query);die;
         $result = $this->db->rawQuery($query);
         $response = [];
         foreach ($result as $key => $row) {
