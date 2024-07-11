@@ -178,16 +178,6 @@ $sResult = $db->rawQuery($sQuery);
                             </td>
                         </tr>
                     </table>
-                    <table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
-                        <tr id="">
-                            <td>
-                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span>
-                                        <?php echo _translate("Retest the selected samples"); ?>
-                                    </span></button>
-                            </td>
-                        </tr>
-                    </table>
-
                     <!-- /.box-header -->
                     <div class="box-body">
                         <input type="hidden" name="checkedTests" id="checkedTests" />
@@ -588,6 +578,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     if (data > 0) {
                         alert("<?php echo _translate("Selected Sample(s) ready for testing"); ?>");
                         oTable.fnDraw();
+                        // Clear selectedTests and selectedTestsId arrays
+                        selectedTests = [];
+                        selectedTestsId = [];
+                        $(".retest-btn").hide();
+                        $("#checkTestsData").prop('checked', false);
                     } else {
                         alert("<?php echo _translate("Something went wrong. Please try again later"); ?>");
                     }

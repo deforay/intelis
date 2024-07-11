@@ -36,8 +36,8 @@ try {
         $db->where('hepatitis_id', base64_decode((string) $_POST['hepatitisId']));
     }
 
-    $db->where('hepatitis_id', base64_decode((string) $_POST['hepatitisId']));
-    $db->delete('covid19_tests');
+    //$db->where('hepatitis_id', base64_decode((string) $_POST['hepatitisId']));
+    //$db->delete('covid19_tests');
 
     $id = $db->update(
         "form_hepatitis",
