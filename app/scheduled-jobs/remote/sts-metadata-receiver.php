@@ -24,6 +24,7 @@ use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -56,7 +57,33 @@ if ($general->isLISInstance() === false) {
     exit(0);
 }
 
-if (empty($general->getRemoteURL())) {
+if (!empty($_POST)) {
+    // Check if the referrer is from the same domain
+    if (isset($_SERVER['HTTP_REFERER'])) {
+        $referrerHost = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+        $serverHost = $_SERVER['HTTP_HOST'];
+
+        if ($referrerHost == $serverHost) {
+            // Sanitized values from $request object
+            /** @var Laminas\Diactoros\ServerRequest $request */
+            $request = AppRegistry::get('request');
+            $_POST = _sanitizeInput($request->getParsedBody());
+            $_POST = MiscUtility::arrayEmptyStringsToNull($_POST);
+            $remoteUrl = $_POST['remoteURL'];
+        } else {
+            // Referrer does not match the server host
+            //exit('Access denied: Referrer does not match the server host.');
+            exit(0);
+        }
+    } else {
+        //exit('Access denied: No referrer.');
+        exit(0);
+    }
+} else {
+    $remoteUrl = $general->getRemoteURL();
+}
+
+if (empty($remoteUrl)) {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
@@ -64,13 +91,6 @@ if (empty($general->getRemoteURL())) {
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
 $version = VERSION;
-
-$remoteUrl = $general->getRemoteURL();
-
-if (empty($remoteUrl)) {
-    LoggerUtility::log('error', "Please check if STS URL is set");
-    exit(0);
-}
 
 $instanceId = $general->getInstanceId();
 
@@ -461,7 +481,9 @@ try {
 
                     $totalRows = count($dataValues); // Get the total number of rows for the current table
                     foreach ($dataValues as $index => $tableDataValues) {
-                        MiscUtility::displayProgressBar($index + 1, $totalRows); // Update the progress bar for each row
+                        if ($cliMode) {
+                            MiscUtility::displayProgressBar($index + 1, $totalRows); // Update the progress bar for each row
+                        }
 
 
                         $tableData = MiscUtility::updateFromArray($emptyTableArray, $tableDataValues);

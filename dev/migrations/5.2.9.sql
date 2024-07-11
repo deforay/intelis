@@ -566,3 +566,15 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 
 -- Jeyabanu 04-Jul-2024
 UPDATE `s_app_menu` SET `inner_pages` = '/facilities/addFacility.php,/facilities/editFacility.php,/facilities/mapTestType.php,/facilities/upload-facilities.php' WHERE `s_app_menu`.`link` = '/facilities/facilities.php';
+
+-- Amit 10-Jul-2024
+ALTER TABLE `form_hepatitis` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `audit_form_hepatitis` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `form_covid19` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `audit_form_covid19` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `form_tb` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `audit_form_tb` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `form_cd4` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `audit_form_cd4` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `form_generic` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `audit_form_generic` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
