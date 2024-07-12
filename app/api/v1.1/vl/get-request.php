@@ -22,13 +22,13 @@ ini_set('max_execution_time', 20000);
 
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
-
-$origJson = $request->getBody()->getContents();
+$origJson = "";
+/* $origJson = $request->getBody()->getContents();
 if(isset($origJson) && !empty($origJson)){
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
     }
-}
+} */
 $input = $request->getParsedBody();
 
 /** @var DatabaseService $db */
