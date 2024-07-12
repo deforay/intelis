@@ -478,7 +478,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<tr>
 											<th scope="row" style="width:15%;"><label for="labId">Nom du Laboratoire</label> </th>
 											<td style="width:35%;">
-												<select name="labId" id="labId" class="form-control" title="Nom du Laboratoire" style="width:100%;">
+												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
 												</select>
 											</td>

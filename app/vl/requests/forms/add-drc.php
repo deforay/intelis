@@ -444,7 +444,7 @@ $sFormat = '';
 											</td>
 											<td style="width: 25%;"><label for="labId">Nom du laboratoire </label> </td>
 											<td style="width: 25%;">
-												<select name="labId" id="labId" class="form-control" title="Please choose laboratoire" style="width:100%;">
+												<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
 												</select>
 											</td>
