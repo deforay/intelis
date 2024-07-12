@@ -344,7 +344,7 @@ fi
 
 log_action "Ubuntu packages updated/installed."
 
-setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
+setfacl -R -m u:$USER:rwx,u:www-data:rwx "${vlsm_path}"
 
 spinner() {
     local pid=$!

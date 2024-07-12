@@ -188,15 +188,15 @@ $testName = TestsService::getTestTypes();
               <div class="stepwizard-row setup-panel">
                 <div class="stepwizard-step col-xs-4">
                   <a href="#step-1" type="button" class="btn btn-success btn-circle">1</a>
-                  <p><span>Database Setup</span></p>
+                  <p><span><?= _translate("Database Setup"); ?></span></p>
                 </div>
                 <div class="stepwizard-step col-xs-4">
                   <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
-                  <p><span>Instance Setup</span></p>
+                  <p><span><?= _translate("Instance Setup"); ?></span></p>
                 </div>
                 <div class="stepwizard-step col-xs-4">
                   <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
-                  <p><span>Admin Setup</span></p>
+                  <p><span><?= _translate("Admin Setup"); ?></span></p>
                 </div>
               </div>
             </div>
@@ -204,7 +204,7 @@ $testName = TestsService::getTestTypes();
             <form role="form" id="registerForm" name="registerForm" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
               <div class="panel panel-primary setup-content" id="step-1">
                 <div class="panel-heading">
-                  <h3 class="panel-title">Database Setup</h3>
+                  <h3 class="panel-title"><?= _translate("Database Setup"); ?></h3>
                 </div>
                 <div class="panel-body">
                   <div style="margin-bottom: 5px" class="input-group">
@@ -227,13 +227,13 @@ $testName = TestsService::getTestTypes();
                     <span class="input-group-addon"><em class="fa-solid fa-network-wired" style="font-size:12px;"></em></span>
                     <input id="dbPort" type="text" class="form-control" name="dbPort" placeholder="<?= _translate("Please enter database port"); ?>" title="<?= _translate("Please enter database port"); ?>" value="<?= SYSTEM_CONFIG['database']['port'] ?? ''; ?>">
                   </div>
-                  <button class="btn btn-primary nextBtn pull-right" type="button">Next</button>
+                  <button class="btn btn-primary nextBtn pull-right" type="button"><?= _translate("Next"); ?></button>
                 </div>
               </div>
 
               <div class="panel panel-primary setup-content" id="step-2">
                 <div class="panel-heading">
-                  <h3 class="panel-title">Instance Setup</h3>
+                  <h3 class="panel-title"><?= _translate("Instance Setup"); ?></h3>
                 </div>
                 <div class="panel-body">
                   <div style="margin-bottom: 5px" class="input-group">
@@ -311,13 +311,13 @@ $testName = TestsService::getTestTypes();
                       <?php } ?>
                     </select>
                   </div>
-                  <button class="btn btn-primary nextBtn pull-right" type="button">Next</button>
+                  <button class="btn btn-primary nextBtn pull-right" type="button"><?= _translate("Next"); ?></button>
                 </div>
               </div>
 
               <div class="panel panel-primary setup-content" id="step-3">
                 <div class="panel-heading">
-                  <h3 class="panel-title">Admin Setup</h3>
+                  <h3 class="panel-title"><?= _translate("Admin Setup"); ?></h3>
                 </div>
                 <div class="panel-body">
                   <div style="margin-bottom: 5px" class="input-group">
@@ -340,7 +340,7 @@ $testName = TestsService::getTestTypes();
                     <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
                     <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?= _translate("Confirm Password"); ?>" title="" />
                   </div>
-                  <button class="btn btn-success pull-right" type="submit">Finish!</button>
+                  <button class="btn btn-success pull-right" type="submit"><?= _translate("Finish"); ?></button>
 
                 </div>
               </div>

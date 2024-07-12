@@ -63,7 +63,7 @@ try {
 
             if (strtolower($rResult['sample_type']) != 's') {
                 $data = array(
-                    'control_code' => $rResult['sample_code'] ?? ($rResult['sample_type'] . "-" . $rResult['batch_code']),
+                    'control_code' => $rResult['sample_code'],
                     'lab_id' => $rResult['lab_id'],
                     'control_type' => $rResult['sample_type'],
                     'lot_number' => $rResult['lot_number'],
@@ -97,21 +97,6 @@ try {
                 }
                 $data['status'] = $status[$i];
 
-                $bquery = "SELECT * FROM batch_details WHERE batch_code= ?";
-                $bvlResult = $db->rawQueryOne($bquery, [$rResult['batch_code']]);
-                if ($bvlResult) {
-                    $data['batch_id'] = $bvlResult['batch_id'];
-                } else {
-                    $batchResult = $db->insert('batch_details', [
-                        'test_type' => 'vl',
-                        'batch_code' => $rResult['batch_code'],
-                        'batch_code_key' => $rResult['batch_code_key'],
-                        'sent_mail' => 'no',
-                        'request_created_datetime' => DateUtility::getCurrentDateTime()
-                    ]);
-                    $data['batch_id'] = $db->getInsertId();
-                }
-
                 $db->insert('vl_imported_controls', $data);
             } else {
 
@@ -136,11 +121,9 @@ try {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
-                    $data['batch_code'] = $rResult['batch_code'];
                     $data['specimen_type'] = $rResult['sample_type'];
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
                     $data['status'] = $status[$i];
-                    $data['import_batch_tracking'] = $_SESSION['controllertrack'];
                     $result = $db->insert('hold_sample_import', $data);
                 } else {
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
@@ -166,21 +149,6 @@ try {
 
                         $data['is_sample_rejected'] = 'no';
                         $data['reason_for_sample_rejection'] = null;
-                    }
-                    //get bacth code
-                    $bquery = "SELECT * FROM batch_details WHERE batch_code= ?";
-                    $bvlResult = $db->rawQueryOne($bquery, [$rResult['batch_code']]);
-                    if ($bvlResult) {
-                        $data['sample_batch_id'] = $bvlResult['batch_id'];
-                    } else {
-                        $batchResult = $db->insert('batch_details', [
-                            'test_type' => 'vl',
-                            'batch_code' => $rResult['batch_code'],
-                            'batch_code_key' => $rResult['batch_code_key'],
-                            'sent_mail' => 'no',
-                            'request_created_datetime' => DateUtility::getCurrentDateTime()
-                        ]);
-                        $data['sample_batch_id'] = $db->getInsertId();
                     }
 
                     $query = "SELECT vl_sample_id,result FROM form_vl WHERE sample_code= ?";
@@ -292,22 +260,6 @@ try {
                 $data['result_status'] = SAMPLE_STATUS\TEST_FAILED;
             } elseif ($data['vl_result_category'] == 'rejected') {
                 $data['result_status'] = SAMPLE_STATUS\REJECTED;
-            }
-
-            //get batch code
-            $bquery = "SELECT * FROM batch_details WHERE batch_code= ?";
-            $bvlResult = $db->rawQueryOne($bquery, [$accResult[$i]['batch_code']]);
-            if ($bvlResult) {
-                $data['sample_batch_id'] = $bvlResult['batch_id'];
-            } else {
-                $batchResult = $db->insert('batch_details', [
-                    'test_type' => 'vl',
-                    'batch_code' => $accResult[$i]['batch_code'],
-                    'batch_code_key' => $accResult[$i]['batch_code_key'],
-                    'sent_mail' => 'no',
-                    'request_created_datetime' => DateUtility::getCurrentDateTime()
-                ]);
-                $data['sample_batch_id'] = $db->getInsertId();
             }
             $data['data_sync'] = 0;
             $db->where('sample_code', $accResult[$i]['sample_code']);

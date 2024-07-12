@@ -55,8 +55,8 @@ if (!empty($_SESSION['facilityMap'])) {
 	$where[] = " facility_id IN(" . $_SESSION['facilityMap'] . ")";
 }
 
-if (!empty($_POST['testingLab']) && is_numeric($_POST['testingLab'])) {
-	$where[] = " vl.lab_id = " . $_POST['testingLab'];
+if (!empty($_POST['testingLab']) && $_POST['testingLab'] > 0) {
+	$where[] = " (vl.lab_id = 0 OR vl.lab_id IS NULL OR vl.lab_id = " . $_POST['testingLab'] . ") ";
 }
 
 if (!empty($_POST['testingLab']) && is_numeric($_POST['facility'])) {

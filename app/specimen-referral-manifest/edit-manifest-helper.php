@@ -52,16 +52,28 @@ try {
 
         if ($lastId > 0) {
             for ($j = 0; $j < count($selectedSample); $j++) {
-                $dataToUpdate = array(
+                $dataToUpdate = [
                     'sample_package_id'   => $lastId,
                     'sample_package_code' => $_POST['packageCode'],
-                    'lab_id'    => $_POST['testingLab'],
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
-                );
+                ];
                 $db->where($primaryKey, $uniqueSampleId[$j]);
                 $db->update($tableName, $dataToUpdate);
             }
+
+            // In case some records dont have lab_id in the testing table
+            // let us update them to the selected lab
+            $dataToUpdate = [
+                'lab_id' => $_POST['testingLab'],
+                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                'data_sync' => 0
+            ];
+
+            $db->where('sample_package_code', $_POST['packageCode']);
+            $db->where('lab_id IS NULL OR lab_id = 0');
+            $db->update($tableName, $dataToUpdate);
+
             $_SESSION['alertMsg'] = "Manifest details updated successfully";
         }
     }
