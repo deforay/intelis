@@ -43,10 +43,21 @@ $tableName = TestsService::getTestTableName($module);
 $primaryKey = TestsService::getTestPrimaryKeyColumn($module);
 
 $sql = "UPDATE package_details
-                SET lab_id = (SELECT lab_id FROM $tableName WHERE $tableName.sample_package_id = package_details.package_id limit 1)
+                SET lab_id = (SELECT lab_id FROM $tableName WHERE $tableName.sample_package_id = package_details.package_id and lab_id > 0 limit 1)
                 WHERE package_details.lab_id is null OR package_details.lab_id = 0";
 
 $db->rawQuery($sql);
+
+$sql = "UPDATE $tableName
+        SET lab_id = (SELECT lab_id
+                        FROM package_details
+                        WHERE lab_id > 0
+                        AND package_details.package_code = $tableName.sample_package_code
+                        LIMIT 1)
+        WHERE lab_id IS NULL OR lab_id = 0";
+
+$db->rawQuery($sql);
+
 
 $vlForm = (int) $general->getGlobalConfig('vl_form');
 
@@ -107,7 +118,7 @@ $sQuery = "SELECT p.request_created_datetime,
             p.module, p.package_id, p.number_of_samples,
             lab.facility_name as labName
             FROM package_details p
-            INNER JOIN facility_details lab on lab.facility_id = p.lab_id";
+            LEFT JOIN facility_details lab on lab.facility_id = p.lab_id";
 
 if (!empty($_SESSION['facilityMap'])) {
     $sQuery .= " INNER JOIN $tableName t on t.sample_package_id = p.package_id ";

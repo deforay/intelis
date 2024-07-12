@@ -1,6 +1,5 @@
 <?php
 
-use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -21,19 +20,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $tableName = "temp_sample_import";
 try {
     $result = 0;
-    if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
-        $batchResult = $db->rawQuery("SELECT batch_code FROM batch_details WHERE batch_code= ?", [trim((string) $_POST['batchCode'])]);
-        if (!$batchResult) {
-            $data = array(
-                'machine' => 0,
-                'batch_code' => trim((string) $_POST['batchCode']),
-                'request_created_datetime' => DateUtility::getCurrentDateTime()
-            );
-            $db->insert("batch_details", $data);
-        }
-        $db->where('temp_sample_id', $_POST['tempsampleId']);
-        $result = $db->update($tableName, array('batch_code' => $_POST['batchCode']));
-    } else if (isset($_POST['sampleCode']) && trim((string) $_POST['sampleCode']) != '') {
+    if (isset($_POST['sampleCode']) && trim((string) $_POST['sampleCode']) != '') {
         $sampleResult = $db->rawQuery("SELECT sample_code FROM form_vl WHERE sample_code='" . trim((string) $_POST['sampleCode']) . "'");
         if (!empty($sampleResult)) {
             $sampleDetails = _translate('Result already exists');

@@ -84,20 +84,6 @@ try {
                 }
                 $data['status'] = $status[$i];
 
-                $bquery = "SELECT * FROM batch_details WHERE batch_code = ?";
-                $bvlResult = $db->rawQuery($bquery, [$rResult['batch_code']]);
-                if ($bvlResult) {
-                    $data['batch_id'] = $bvlResult[0]['batch_id'];
-                } else {
-                    $batchResult = $db->insert('batch_details', [
-                        'test_type' => 'hepatitis',
-                        'batch_code' => $rResult['batch_code'],
-                        'batch_code_key' => $rResult['batch_code_key'],
-                        'sent_mail' => 'no',
-                        'request_created_datetime' => DateUtility::getCurrentDateTime()
-                    ]);
-                    $data['batch_id'] = $db->getInsertId();
-                }
 
                 $db->insert('vl_imported_controls', $data);
             } else {
@@ -119,11 +105,9 @@ try {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
-                    $data['batch_code'] = $rResult['batch_code'];
                     $data['sample_type'] = $rResult['sample_type'];
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
                     $data['status'] = $status[$i];
-                    $data['import_batch_tracking'] = $_SESSION['controllertrack'];
                     $result = $db->insert('hold_sample_import', $data);
                 } else {
                     $data['hepatitis_test_platform'] = $rResult['vl_test_platform'];
@@ -171,22 +155,6 @@ try {
                         if (empty($testType)) {
                             $data[$otherField] = $data[$resultField];
                         }
-                    }
-                    //get bacth code
-                    $bquery = "SELECT * FROM batch_details
-                                WHERE batch_code=?";
-                    $bvlResult = $db->rawQuery($bquery, [$rResult['batch_code']]);
-                    if ($bvlResult) {
-                        $data['sample_batch_id'] = $bvlResult[0]['batch_id'];
-                    } else {
-                        $batchResult = $db->insert('batch_details', [
-                            'test_type' => 'hepatitis',
-                            'batch_code' => $rResult['batch_code'],
-                            'batch_code_key' => $rResult['batch_code_key'],
-                            'sent_mail' => 'no',
-                            'request_created_datetime' => DateUtility::getCurrentDateTime()
-                        ]);
-                        $data['sample_batch_id'] = $db->getInsertId();
                     }
 
                     $data['result_status'] = $status[$i];
@@ -292,22 +260,7 @@ try {
                 $data[$resultField] = trim((string) $accResult[$i]['result']);
             }
 
-            //get bacth code
-            $bquery = "SELECT * FROM batch_details
-                        WHERE batch_code=?";
-            $bvlResult = $db->rawQuery($bquery, [$accResult[$i]['batch_code']]);
-            if ($bvlResult) {
-                $data['sample_batch_id'] = $bvlResult[0]['batch_id'];
-            } else {
-                $batchResult = $db->insert('batch_details', [
-                    'test_type' => 'hepatitis',
-                    'batch_code' => $accResult[$i]['batch_code'],
-                    'batch_code_key' => $accResult[$i]['batch_code_key'],
-                    'sent_mail' => 'no',
-                    'request_created_datetime' => DateUtility::getCurrentDateTime()
-                ]);
-                $data['sample_batch_id'] = $db->getInsertId();
-            }
+
             $data['data_sync'] = 0;
             $db->where('sample_code', $accResult[$i]['sample_code']);
             $result = $db->update('form_hepatitis', $data);
@@ -328,7 +281,6 @@ try {
     $sCode = implode(', ', $printSampleCode);
     $samplePrintQuery = "SELECT vl.*,
                             s.sample_name,
-                            b.*,
                             ts.*,
                             f.facility_name,
                             l.facility_name as labName,
@@ -339,7 +291,7 @@ try {
                             a_u_d.user_name as approvedBy,
                             rs.rejection_reason_name
                             FROM form_hepatitis as vl
-                            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_hepatitis_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
+                            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_hepatitis_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
     $samplePrintQuery .= ' WHERE vl.sample_code IN ( ' . $sCode . ')';
     $_SESSION['hepatitisPrintSearchResultQuery'] = $samplePrintQuery;
     $stQuery = "SELECT * FROM temp_sample_import as tsr

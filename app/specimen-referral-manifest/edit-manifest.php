@@ -1,18 +1,18 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Services\TbService;
 use App\Services\VlService;
+use App\Services\CD4Service;
 use App\Services\EidService;
 use App\Services\UsersService;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
-use App\Services\CD4Service;
 
 $title = "Edit Specimen Referral Manifest";
 require_once APPLICATION_PATH . '/header.php';
@@ -68,7 +68,7 @@ if ($module == 'vl') {
 				vl.vl_sample_id,
 				vl.sample_package_id
 				FROM form_vl as vl
-				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
+				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes') ";
 	$m = ($module == 'vl') ? 'vl' : $module;
 	/** @var VlService $vlService */
 	$vlService = ContainerRegistry::get(VlService::class);
@@ -79,36 +79,36 @@ if ($module == 'vl') {
 					vl.eid_id,
 					vl.sample_package_id
 					FROM form_eid as vl
-					WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
+					WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes') ";
 	$m = ($module == 'eid') ? 'eid' : $module;
 	/** @var EidService $eidService */
 	$eidService = ContainerRegistry::get(EidService::class);
 	$sampleTypes = $eidService->getEidSampleTypes();
 } elseif ($module == 'hepatitis') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id,vl.sample_package_id FROM form_hepatitis as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
+	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id,vl.sample_package_id FROM form_hepatitis as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes')  ";
 	$m = ($module == 'HEP') ? 'hepatitis' : $module;
 	/** @var HepatitisService $hepDb */
 	$hepDb = ContainerRegistry::get(HepatitisService::class);
 	$sampleTypes = $hepDb->getHepatitisSampleTypes();
 } elseif ($module == 'covid19') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.sample_package_id FROM form_covid19 as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
+	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.sample_package_id FROM form_covid19 as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes') ";
 	$m = ($module == 'C19') ? 'covid19' : $module;
 	/** @var Covid19Service $covid19Service */
 	$covid19Service = ContainerRegistry::get(Covid19Service::class);
 	$sampleTypes = $covid19Service->getCovid19SampleTypes();
 } elseif ($module == 'tb') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_package_id FROM form_tb as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
+	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_package_id FROM form_tb as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes')  ";
 	$m = ($module == 'TB') ? 'tb' : $module;
 	/** @var TbService $tbService */
 	$tbService = ContainerRegistry::get(TbService::class);
 	$sampleTypes = $tbService->getTbSampleTypes();
-} if ($module == 'cd4') {
+} elseif ($module == 'cd4') {
 	$query = "SELECT vl.sample_code,
 				vl.remote_sample_code,
 				vl.cd4_id,
 				vl.sample_package_id
 				FROM form_cd4 as vl
-				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
+				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes') ";
 	$m = ($module == 'cd4') ? 'cd4' : $module;
 	/** @var CD4Service $cd4Service */
 	$cd4Service = ContainerRegistry::get(CD4Service::class);
@@ -121,7 +121,7 @@ if ($module == 'vl') {
 				vl.remote_sample_code,
 				vl.sample_id,vl.sample_package_id
 				FROM form_generic as vl
-				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  AND vl.lab_id=" . $pResult['lab_id'] . " AND vl.test_type=" . $testType['test_type'];
+				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes') AND vl.test_type=" . $testType['test_type'];
 	$m = ($module == 'GEN') ? 'generic-tests' : $module;
 
 	/** @var GenericTestsService $genService */
@@ -228,7 +228,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<div class="form-group">
 									<label for="packageCode" class="col-lg-4 control-label">Testing Lab :</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control" id="testingLab" name="testingLab" title="Choose one test lab" readonly="readonly">
+										<select class="form-control" id="testingLab" name="testingLab" title="Choose one test lab" <?= !empty($pResult['lab_id']) ? 'readonly="readonly"' : ''; ?>>
 											<?= $general->generateSelectOptions($testingLabs, $pResult['lab_id'], '-- Select --'); ?>
 										</select>
 									</div>
@@ -519,7 +519,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				});
 			$.unblockUI();
 		} else {
-			alert('Please select the testing lab');
+			alert("<?= _translate("Please select the Testing Lab", true); ?>");
 		}
 	}
 
