@@ -6,6 +6,7 @@ use App\Services\GeoLocationsService;
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
+
 $list = [];
 
 if (isset($_POST['provinceId'])) {
@@ -18,10 +19,10 @@ if (isset($_POST['provinceId'])) {
         $option = "<option value=''>--Select--</option>";
         foreach ($districtList as $district) {
             $selected = "";
-            if($district['geo_id']==$_POST['districts']){
+            if ($district['geo_id'] == $_POST['districts']) {
                 $selected = "selected='selected'";
             }
-            $option .= '<option value="' . $district['geo_id'] . '" '.$selected.' >' . $district['geo_name'] . ' </option>';
+            $option .= '<option value="' . $district['geo_id'] . '" ' . $selected . ' >' . $district['geo_name'] . ' </option>';
         }
         $list['districts'] = $option;
     }

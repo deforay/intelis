@@ -30,12 +30,13 @@ try {
 
     if ($_POST['bulkIds'] && is_array($_POST['covid19Id'])) {
         $db->where("`covid19_id` IN (" . implode(",", $_POST['covid19Id']) . ")");
+        $db->delete('covid19_tests');
+        $db->where("`covid19_id` IN (" . implode(",", $_POST['covid19Id']) . ")");
     } else {
         $db->where('covid19_id', base64_decode((string) $_POST['covid19Id']));
+        $db->delete('covid19_tests');
+        $db->where('covid19_id', base64_decode((string) $_POST['covid19Id']));
     }
-
-    $db->where('covid19_id', base64_decode((string) $_POST['covid19Id']));
-    $db->delete('covid19_tests');
 
     $id = $db->update(
         "form_covid19",

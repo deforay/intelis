@@ -571,7 +571,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 </select>
                                             </td>
                                             <th scope="row" class="change-reason" style="display: none;"><?= _translate("Reason for Changing"); ?> <span class="mandatory">*</span></th>
-                                            <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="<?= _translate("Enter the reason for changing"); ?>" title="<?= _translate("Please enter the reason for changing"); ?>"></textarea></td>
+                                            <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control" placeholder="<?= _translate("Enter the reason for changing"); ?>" title="<?= _translate("Please enter the reason for changing"); ?>"></textarea></td>
                                         </tr>
                                         <tr>
                                             <th scope="row"><?= _translate("Is Result Authorized ?"); ?></th>

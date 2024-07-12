@@ -519,7 +519,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </td>
                                             <th scope="row" style="display: none;" class="labels change-reason">Reason for
                                                 Changing <span class="mandatory">*</span></th>
-                                            <td style="display: none;" class="change-reason"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                            <td style="display: none;" class="change-reason"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                     </table>
                                 </div>

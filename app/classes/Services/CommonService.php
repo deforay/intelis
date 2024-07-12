@@ -850,8 +850,20 @@ final class CommonService
     public function getTestingLabsAPI($testType = null, $user = null, $onlyActive = false, $module = false, $activeModule = null, $updatedDateTime = null): array
     {
 
-        $query = "SELECT tl.test_type, f.facility_id, f.facility_name, f.facility_code, f.other_id, f.facility_state_id, f.facility_state, f.facility_district_id, f.facility_district, f.testing_points, f.status, gd.geo_id, gd.geo_name
-                    from testing_labs AS tl
+        $query = "SELECT tl.test_type,
+                        f.facility_id,
+                        f.facility_name,
+                        f.facility_code,
+                        f.other_id,
+                        f.facility_state_id,
+                        f.facility_state,
+                        f.facility_district_id,
+                        f.facility_district,
+                        f.testing_points,
+                        f.status,
+                        gd.geo_id,
+                        gd.geo_name
+                    FROM testing_labs AS tl
                     INNER JOIN facility_details as f ON tl.facility_id=f.facility_id
                     LEFT JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
         $where = [];
@@ -885,10 +897,10 @@ final class CommonService
         }
         if (!empty($activeModule)) {
             $query .= $whereStr . ' ORDER BY facility_name ASC';
-        }else{
+        } else {
             $query .= $whereStr . ' GROUP BY facility_name ORDER BY facility_name ASC';
         }
-        // print_r($query);die;
+        // MiscUtility::dumpToErrorLog($query);
         $result = $this->db->rawQuery($query);
         $response = [];
         foreach ($result as $key => $row) {

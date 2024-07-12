@@ -1,3 +1,26 @@
+<script type="text/javascript" src="/assets/js/toastify.js"></script>
+<script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="/assets/js/js.cookie.js"></script>
+<script type="text/javascript" src="/assets/js/select2.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/js/dayjs.min.js"></script>
+<script type="text/javascript" src="/assets/js/dayjs.customParseFormat.js"></script>
+<script type="text/javascript" src="/assets/js/dayjs.utc.js"></script>
+<script type="text/javascript" src="/assets/js/dayjs.timezone.js"></script>
+<script type="text/javascript" src="/assets/js/app.min.js"></script>
+<script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts-exporting.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts-offline-exporting.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts-accessibility.js"></script>
+<script type="text/javascript" src="/assets/js/summernote.min.js"></script>
+<script type="text/javascript" src="/assets/js/selectize.js"></script>
 <?php
 
 use App\Utilities\MiscUtility;

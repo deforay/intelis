@@ -132,13 +132,6 @@ $state = $geolocationService->getProvinces("yes");
                             </td>
                         </tr>
                     </table>
-                    <table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
-                        <tr id="">
-                            <td>
-                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _translate("Retest the selected samples"); ?></span></button>
-                            </td>
-                        </tr>
-                    </table>
                     <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
                         <div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;">
                             <div class="col-md-12">
@@ -597,6 +590,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     if (data > 0) {
                         alert("<?php echo _translate("Retest has been submitted"); ?>.");
                         oTable.fnDraw();
+                        // Clear selectedTests and selectedTestsId arrays
+                        selectedTests = [];
+                        selectedTestsId = [];
+                        $(".retest-btn").hide();
+                        $("#checkTestsData").prop('checked', false);
                     } else {
                         alert("<?php echo _translate("Something went wrong. Please try again later"); ?>");
                     }

@@ -134,7 +134,7 @@ $sResult = $db->rawQuery($sQuery);
                                     <?php echo _translate("Result Status"); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                                <select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
+                                <select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>">
 
                                     <option value="5">
                                         <?php echo _translate("Failed"); ?>
@@ -172,15 +172,6 @@ $sResult = $db->rawQuery($sQuery);
                                     </span></button>
                             </td>
                             <td colspan="4">
-                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span>
-                                        <?php echo _translate("Retest the selected samples"); ?>
-                                    </span></button>
-                            </td>
-                        </tr>
-                    </table>
-                    <table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
-                        <tr id="">
-                            <td>
                                 &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span>
                                         <?php echo _translate("Retest the selected samples"); ?>
                                     </span></button>
@@ -543,6 +534,11 @@ $sResult = $db->rawQuery($sQuery);
                     if (data > 0) {
                         alert("<?php echo _translate("Selected Sample(s) ready for testing"); ?>");
                         oTable.fnDraw();
+                        // Clear selectedTests and selectedTestsId arrays
+                        selectedTests = [];
+                        selectedTestsId = [];
+                        $(".retest-btn").hide();
+                        $("#checkTestsData").prop('checked', false);
                     } else {
                         alert("<?php echo _translate("Something went wrong. Please try again later"); ?>");
                     }

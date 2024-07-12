@@ -32,10 +32,13 @@ try {
 
     if ($_POST['bulkIds'] && is_array($_POST['tbId'])) {
         $db->where("`tb_id` IN (" . implode(",", $_POST['tbId']) . ")");
+        $db->delete('tb_tests');
+        $db->where("`tb_id` IN (" . implode(",", $_POST['tbId']) . ")");
     } else {
         $db->where('tb_id', base64_decode((string) $_POST['tbId']));
+        $db->delete('tb_tests');
+        $db->where('tb_id', base64_decode((string) $_POST['tbId']));
     }
-    $db->delete('tb_tests');
 
     $id = $db->update(
         "form_tb",

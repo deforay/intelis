@@ -6,6 +6,8 @@ use App\Services\GeoLocationsService;
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
+
+
 $list = [];
 
 if (isset($_POST['districtId'])) {

@@ -132,7 +132,7 @@ try {
             $tableInfo = [];
             foreach ($availableModules as $primaryKeyColumn => $individualTableName) {
 
-                $columnsToSelect = $primaryKeyColumn . ", sample_code, remote_sample_code";
+                $columnsToSelect = "$primaryKeyColumn, sample_code, remote_sample_code, lab_assigned_code";
 
                 // If the table name is there in $additionalColumns, add the additional columns
                 if (!empty($additionalColumns) && array_key_exists($individualTableName, $additionalColumns)) {
@@ -140,10 +140,10 @@ try {
                     $columnsToSelect = "$primaryKeyColumn, $extraColumnsString";
                 }
 
-                $tableQuery = "SELECT $columnsToSelect FROM $individualTableName WHERE (sample_code = ? OR remote_sample_code = ?) OR (sample_code = ? OR remote_sample_code = ?)";
+                $tableQuery = "SELECT $columnsToSelect FROM $individualTableName WHERE (sample_code = ? OR remote_sample_code = ? OR lab_assigned_code = ?) OR (sample_code = ? OR remote_sample_code = ? OR lab_assigned_code = ?)";
 
                 // Execute the query
-                $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id'], $result['order_id'], $result['test_id'], $result['test_id']]);
+                $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id'], $result['order_id'], $result['order_id'], $result['test_id'], $result['test_id'], $result['test_id']]);
 
                 // If we found the information, break out of the loop
                 if (!empty($tableInfo[$primaryKeyColumn])) {
