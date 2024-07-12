@@ -146,7 +146,6 @@ try {
                         $data['result_value_absolute_decimal'] = null;
                         $data['result'] = null;
                     } else {
-
                         $data['is_sample_rejected'] = 'no';
                         $data['reason_for_sample_rejection'] = null;
                     }
@@ -155,14 +154,14 @@ try {
                     $vlResult = $db->rawQuery($query, [$sampleVal]);
                     $data['result_status'] = $status[$i];
 
-
-                    $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
-
-                    if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
+                    if (in_array(strtolower($data['result']), ['fail', 'failed', 'err', 'error'])) {
                         $data['result_status'] = SAMPLE_STATUS\TEST_FAILED;
                     } elseif ($data['vl_result_category'] == 'rejected') {
                         $data['result_status'] = SAMPLE_STATUS\REJECTED;
                     }
+
+                    $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
+
                     $data['cv_number'] = $rResult['cv_number'];
                     $data['sample_code'] = $rResult['sample_code'];
                     if (!empty($vlResult)) {

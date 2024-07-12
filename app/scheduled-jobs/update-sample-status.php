@@ -41,7 +41,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
         if ($module === 'vl') {
             $db->where('result', ['fail', 'failed', 'err', 'error'], 'IN');
             $db->where("result_status != " . SAMPLE_STATUS\REJECTED); // not rejected
-            $db->where("result_status != " . SAMPLE_STATUS\TEST_FAILED); // not rejected
+            $db->where("result_status != " . SAMPLE_STATUS\TEST_FAILED); // not already in failed status
             $db->update(
                 $tableName[$module],
                 [
