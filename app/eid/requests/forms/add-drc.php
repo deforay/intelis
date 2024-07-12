@@ -137,17 +137,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="" style="width:100%;" />
 										</td>
 									</tr>
-									<?php if ($general->isSTSInstance()) { ?>
-										<tr>
-											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
-												</select>
-											</td>
-										</tr>
-
-									<?php } ?>
 
 								</table>
 								<br><br>
@@ -419,6 +408,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 													allaitement)</option>
 											</select>
 										</td>
+										<?php if ($general->isSTSInstance()) { ?>
+											<th scope="row" style="width:15%;">Nom du Laboratoire <span class="mandatory">*</span> </th>
+											<td>
+												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
+													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
+												</select>
+											</td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>

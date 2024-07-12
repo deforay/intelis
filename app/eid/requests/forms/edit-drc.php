@@ -166,16 +166,6 @@ $storageInfo = $storageService->getLabStorage();
 											</select>
 										</td>
 
-										<?php if ($general->isSTSInstance()) { ?>
-											<!-- <tr> -->
-											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
-												</select>
-											</td>
-											<!-- </tr> -->
-										<?php } ?>
 									</tr>
 									<tr>
 										<td><label for="clinicianName">Demandeur </label></td>
@@ -459,6 +449,14 @@ $storageInfo = $storageService->getLabStorage();
 											</select>
 
 										</td>
+										<?php if ($general->isSTSInstance()) { ?>
+											<th scope="row" style="width:15%;">Nom du Laboratoire <span class="mandatory">*</span> </th>
+											<td>
+												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
+													<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
+												</select>
+											</td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
@@ -516,7 +514,7 @@ $storageInfo = $storageService->getLabStorage();
 										<tr>
 											<th scope="row" style="width:15%;"><label for="labId">Nom du Laboratoire </label> </th>
 											<td style="width:35%;">
-												<select name="labId" id="labId" class="form-control" title="Nom du Laboratoire" style="width:100%;">
+												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
 												</select>
 											</td>

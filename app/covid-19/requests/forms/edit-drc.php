@@ -781,7 +781,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <tr>
                                             <td class="lab-show"><label for="labId">Nom du laboratoire</label> </td>
                                             <td class="lab-show">
-                                                <select name="labId" id="labId" class="form-control" title="Nom du laboratoire" style="width:100%;">
+                                                <select name="labId" id="labId" class="form-control isRequired" title="Nom du laboratoire" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Sélectionner --'); ?>
                                                 </select>
                                             </td>
