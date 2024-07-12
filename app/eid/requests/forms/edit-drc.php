@@ -626,7 +626,7 @@ $storageInfo = $storageService->getLabStorage();
 										<tr class="change-reason">
 											<th scope="row" class="change-reason" style="display: none;">Raison du
 												changement <span class="mandatory">*</span></th>
-											<td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Entrez la raison du changement" title="Veuillez saisir la raison du changement"></textarea></td>
+											<td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control" placeholder="Entrez la raison du changement" title="Veuillez saisir la raison du changement"></textarea></td>
 											<th scope="row"></th>
 											<td></td>
 										</tr>
