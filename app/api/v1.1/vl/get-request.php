@@ -24,8 +24,10 @@ ini_set('max_execution_time', 20000);
 $request = AppRegistry::get('request');
 
 $origJson = $request->getBody()->getContents();
-if (JsonUtility::isJSON($origJson) === false) {
-    throw new SystemException("Invalid JSON Payload");
+if(isset($origJson) && !empty($origJson)){
+    if (JsonUtility::isJSON($origJson) === false) {
+        throw new SystemException("Invalid JSON Payload");
+    }
 }
 $input = $request->getParsedBody();
 
