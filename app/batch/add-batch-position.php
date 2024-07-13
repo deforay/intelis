@@ -124,7 +124,10 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 
 	//Get display sample only
 	$displaySampleOrderArray = [];
-	$samplesQuery = "SELECT $primaryKeyColumn, $patientIdColumn, sample_code
+	$samplesQuery = "SELECT $primaryKeyColumn,
+						$patientIdColumn,
+						sample_code,
+						lab_assigned_code
 						FROM $table
 						WHERE sample_batch_id= ?
 						ORDER BY $orderBy";
@@ -143,9 +146,10 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 				if ($sCount <= $prevDisplaySampleArray) {
 					$displayOrder[] = 's_' . $displaySampleOrderArray[$sCount];
 					$displaySampleArray[] = $displaySampleOrderArray[$sCount];
-					$sampleQuery = "SELECT sample_code, $patientIdColumn from $table WHERE $primaryKeyColumn = ?";
+					$sampleQuery = "SELECT sample_code, lab_assigned_code, $patientIdColumn from $table WHERE $primaryKeyColumn = ?";
 					$sampleResult = $db->rawQuery($sampleQuery, [$displaySampleOrderArray[$sCount]]);
-					$label = $sampleResult[0]['sample_code'] . ' - ' . $sampleResult[0][$patientIdColumn];
+					$sampleResult[0]['sample_code'] = (isset($sampleResult[0]['lab_assigned_code']) ? $sampleResult[0]['sample_code'] . ' | ' . $sampleResult[0]['lab_assigned_code'] : $sampleResult[0]['sample_code']);
+					$label = $sampleResult[0]['sample_code'] . ' | ' . $sampleResult[0][$patientIdColumn];
 					$content .= '<li class="ui-state-default" id="s_' . $displaySampleOrderArray[$sCount] . '">' . $label . '</li>';
 					$sCount++;
 				}
@@ -192,9 +196,10 @@ if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['
 	//For new samples
 	for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
 		$displayOrder[] = 's_' . $remainSampleNewArray[$ns];
-		$sampleQuery = "SELECT sample_code, $patientIdColumn from $table WHERE $primaryKeyColumn = ?";
+		$sampleQuery = "SELECT sample_code, lab_assigned_code, $patientIdColumn from $table WHERE $primaryKeyColumn = ?";
 		$sampleResult = $db->rawQuery($sampleQuery, [$remainSampleNewArray[$ns]]);
-		$label = $sampleResult[0]['sample_code'] . ' - ' . $sampleResult[0][$patientIdColumn];
+		$sampleResult[0]['sample_code'] = (isset($sampleResult[0]['lab_assigned_code']) ? $sampleResult[0]['sample_code'] . ' | ' . $sampleResult[0]['lab_assigned_code'] : $sampleResult[0]['sample_code']);
+		$label = $sampleResult[0]['sample_code'] . ' | ' . $sampleResult[0][$patientIdColumn];
 		$newContent .= '<li class="ui-state-default" id="s_' . $remainSampleNewArray[$ns] . '">' . $label . '</li>';
 	}
 } else {
