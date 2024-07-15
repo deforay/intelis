@@ -156,16 +156,13 @@ $sFormat = '';
 												<?php } ?>
 											</select>
 										</td>
-										<?php if ($general->isSTSInstance()) { ?>
-											<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
-												</select>
-											</td>
-										<?php } ?>
+										<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
+										<td>
+											<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">
+												<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
+											</select>
+										</td>
 									</tr>
-
 								</table>
 								<div class="box-header with-border">
 									<h3 class="box-title">Information sur le patient </h3>&nbsp;&nbsp;&nbsp;
@@ -435,59 +432,42 @@ $sFormat = '';
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td style="width: 25%;"><label for="">Date de réception de l'échantillon
-												</label></td>
+											<td style="width: 25%;"><label for="">Date de réception de l'échantillon</label></td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
-											<td style="width: 25%;"><label for="labId">Nom du laboratoire </label> </td>
-											<td style="width: 25%;">
-												<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
-												</select>
-											</td>
-										</tr>
-										<tr>
-											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :
-												</label></td>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :</label></td>
 											<td style="width: 25%;">
 												<select class="form-control select2 editableSelect" id="freezer" name="freezer" placeholder="<?php echo _translate('Enter Freezer'); ?>" title="<?php echo _translate('Please enter Freezer'); ?>">
 												</select>
-
 											</td>
+										</tr>
+										<tr>
 											<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control" id="rack" name="rack" placeholder="<?php echo _translate('Rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
-
 											</td>
-										</tr>
-										<tr>
-											<td style="width: 25%;"><label for=""><?php echo _translate('Box'); ?> :
-												</label></td>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Box'); ?> :</label></td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control" id="box" name="box" placeholder="<?php echo _translate('Box'); ?>" title="<?php echo _translate('Please enter box'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
+										</tr>
+										<tr>
 											<td style="width: 25%;"><label for="position"><?php echo _translate('Position'); ?> : </label> </td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control" id="position" name="position" placeholder="<?php echo _translate('Position'); ?>" title="<?php echo _translate('Please enter position'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
-
 											</td>
-										</tr>
-
-										<tr>
-											<td style="width: 25%;"><label for=""><?php echo _translate('Volume (ml)'); ?> :
-												</label></td>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Volume (ml)'); ?> :</label></td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control" id="volume" name="volume" placeholder="<?php echo _translate('Volume'); ?>" title="<?php echo _translate('Please enter volume'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
+										</tr>
+										<tr>
 											<td style="width: 25%;"><label for="sampleTestingDateAtLab">Date de réalisation
 													de la charge virale </label></td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
-
-										</tr>
-										<tr>
 											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label>
 											</td>
 											<td style="width: 25%;">
@@ -499,6 +479,8 @@ $sFormat = '';
 													<?php } ?>
 												</select>
 											</td>
+										</tr>
+										<tr>
 											<td style="width: 25%;"><label for="">Décision prise </label></td>
 											<td style="width: 25%;">
 												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
@@ -507,7 +489,6 @@ $sFormat = '';
 													<option value="yes">Echantillon rejeté</option>
 												</select>
 											</td>
-
 										</tr>
 										<tr class="rejectionReason" style="display:none;">
 											<td class="rejectionReason" style="display:none;"><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
@@ -528,9 +509,6 @@ $sFormat = '';
 												<?php echo _translate("Rejection Date"); ?> <span class="mandatory">*</span>
 											</th>
 											<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
-										</tr>
-										<tr>
-											<td colspan="4" style="height:30px;border:none;"></td>
 										</tr>
 										<tr class="resultSection">
 											<td class="vlResult" style="width: 25%;"><label for="vlResult">Résultat </label>

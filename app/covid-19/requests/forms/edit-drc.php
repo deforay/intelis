@@ -204,16 +204,12 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <?php if ($general->isSTSInstance()) { ?>
-                                            <!-- <tr> -->
-                                            <td><label for="labId">LAB ID <span class="mandatory">*</span></label> </td>
-                                            <td>
-                                                <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Lab name" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Sélectionner --'); ?>
-                                                </select>
-                                            </td>
-                                            <!-- </tr> -->
-                                        <?php } ?>
+                                        <td><label for="labId">LAB ID <span class="mandatory">*</span></label> </td>
+                                        <td>
+                                            <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Lab name" style="width:100%;">
+                                                <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Sélectionner --'); ?>
+                                            </select>
+                                        </td>
                                     </tr>
                                 </table>
 
@@ -779,12 +775,6 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="lab-show"><label for="labId">Nom du laboratoire</label> </td>
-                                            <td class="lab-show">
-                                                <select name="labId" id="labId" class="form-control isRequired" title="Nom du laboratoire" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Sélectionner --'); ?>
-                                                </select>
-                                            </td>
                                             <th scope="row"><?= _translate("Is Sample Rejected?"); ?></th>
                                             <td>
                                                 <select class="form-control result-focus" name="isSampleRejected" id="isSampleRejected" title="<?= _translate("Is Sample Rejected?"); ?>">
@@ -814,7 +804,6 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             <th scope="row" class="show-rejection" style="display: none;">Date de rejet<span class="mandatory">*</span></th>
                                             <td class="show-rejection" style="display: none;"><input value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Date de rejet" /></td>
                                         </tr>
-
                                         <tr>
                                             <td colspan="4">
                                                 <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" id="testNameTable">

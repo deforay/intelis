@@ -155,14 +155,12 @@ $storageInfo = $storageService->getLabStorage();
 									</td>
 								</tr>
 								<tr>
-									<?php if ($general->isSTSInstance()) { ?>
-										<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
-										<td>
-											<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
-												<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
-											</select>
-										</td>
-									<?php } ?>
+									<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
+									<td>
+										<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
+											<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
+										</select>
+									</td>
 								</tr>
 							</table>
 							<br><br>
@@ -495,7 +493,6 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr class="rejected" style="display:none;">
-										
 										<th scope="row">Date de rejet<span class="mandatory">*</span></th>
 										<td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
 										<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :</label></td>
@@ -582,6 +579,7 @@ $storageInfo = $storageService->getLabStorage();
 					<input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
 					<input type="hidden" id="childId" name="childId" value="<?php echo $eidInfo['child_id']; ?>" />
 					<input type="hidden" name="revised" id="revised" value="no" />
+					<input type="hidden" name="labId" id="labId" value="<?= ($eidInfo['lab_id']); ?>" />
 
 					<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 					<a href="/eid/requests/eid-requests.php" class="btn btn-default"> Cancel</a>
