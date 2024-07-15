@@ -12,6 +12,8 @@ use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
+use const SAMPLE_STATUS\ON_HOLD;
+
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -84,7 +86,7 @@ try {
                     'file_name' => $rResult['import_machine_file_name'],
                     'imported_date_time' => $rResult['result_imported_datetime'],
                 );
-                if ($status[$i] == 4) {
+                if ($status[$i] == SAMPLE_STATUS\REJECTED) {
                     $data['is_sample_rejected'] = 'yes';
                     $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                     $data['result_value_log'] = null;
@@ -117,7 +119,7 @@ try {
                     'import_machine_file_name' => $rResult['import_machine_file_name'],
                     'manual_result_entry' => 'no',
                 );
-                if ($status[$i] == '1') {
+                if ($status[$i] == SAMPLE_STATUS\ON_HOLD) {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];

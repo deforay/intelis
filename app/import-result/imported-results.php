@@ -2,8 +2,8 @@
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
 $tsQuery = "SELECT * FROM r_sample_status";
@@ -31,7 +31,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 
 $condition = " instrument_id = '$machine'";
-$getMachineInfo = $general->getDataByTableAndFields('instruments', array('approved_by','reviewed_by'), false, $condition);
+$getMachineInfo = $general->getDataByTableAndFields('instruments', array('approved_by', 'reviewed_by'), false, $condition);
 
 $approvedByAttr = json_decode($getMachineInfo[0]['approved_by']);
 $reviewedByAttr = json_decode($getMachineInfo[0]['reviewed_by']);
@@ -42,15 +42,15 @@ if (!empty($tResult['sample_review_by'])) {
 	$reviewBy = $tResult['sample_review_by'];
 } else {
 	//$reviewBy = $_SESSION['userId'];
-	if(!empty($reviewedBy))
+	if (!empty($reviewedBy))
 		$reviewBy = $reviewedBy;
 	else
 		$reviewBy = $_SESSION['userId'];
 }
-if(!empty($approvedBy))
-		$approveBy = $approvedBy;
-	else
-		$approveBy = $_SESSION['userId'];
+if (!empty($approvedBy))
+	$approveBy = $approvedBy;
+else
+	$approveBy = $_SESSION['userId'];
 
 $arr = $general->getGlobalConfig();
 $errorInImport = false;

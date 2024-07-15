@@ -92,7 +92,7 @@ try {
                         $data['lab_manager'] = $facility['contact_person'];
                     }
                 }
-                if ($status[$i] == 4) {
+                if ($status[$i] == SAMPLE_STATUS\REJECTED) {
                     $data['is_sample_rejected'] = 'yes';
                     $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                     $data['result'] = null;
@@ -123,7 +123,7 @@ try {
                         $data['lab_manager'] = $facility['contact_person'];
                     }
                 }
-                if ($status[$i] == '1') {
+                if ($status[$i] == SAMPLE_STATUS\ON_HOLD) {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
