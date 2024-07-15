@@ -138,7 +138,7 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 				$.blockUI({
 					message: "<h3><?= _translate("Trying to sync Lab Details", escapeText: true); ?><br><?= _translate("Please wait..."); ?></h3>"
 				});
-				window.parent.syncRemoteData();
+				window.parent.receiveMetaData();
 			}
 			syncData().then(
 				function(value) {

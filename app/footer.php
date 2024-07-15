@@ -26,7 +26,7 @@ if (_isAllowed("sync-history.php")) {
 	$syncHistory = "javascript:void(0);";
 }
 
-$syncLatestTime = $general->getLastRemoteSyncDateTime();
+$syncLatestTime = $general->getLastSTSSyncDateTime();
 
 if (empty($syncLatestTime)) {
 	$syncHistoryDisplay = "display:none;";
@@ -56,7 +56,7 @@ if (empty($syncLatestTime)) {
 			if (!empty($remoteUrl) && isset($_SESSION['userName']) && $general->isLISInstance()) { ?>
 
 				<small class="pull-right">
-					<a href="javascript:syncRemoteData();">
+					<a href="javascript:receiveMetaData();">
 						<?= _translate("Force Remote Sync"); ?>
 					</a>&nbsp;&nbsp;
 				</small>
