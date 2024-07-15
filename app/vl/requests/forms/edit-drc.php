@@ -203,6 +203,14 @@ $storageInfo = $storageService->getLabStorage();
 												<?php } ?>
 											</select>
 										</td>
+										<?php if ($general->isSTSInstance()) { ?>
+											<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
+											<td>
+												<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">
+													<?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Sélectionner --'); ?>
+												</select>
+											</td>
+										<?php } ?>
 									</tr>
 
 								</table>
@@ -399,18 +407,6 @@ $storageInfo = $storageService->getLabStorage();
 											préleveur)</small> </h3>
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-									<?php if ($general->isSTSInstance()) { ?>
-										<tr>
-											<td style="width:25%;"><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
-											<td style="width:25%;">
-												<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Sélectionner --'); ?>
-												</select>
-											</td>
-											<td style="width:25%;"></td>
-											<td style="width:25%;"></td>
-										</tr>
-									<?php } ?>
 									<tr>
 										<td style="width:25%;"><label for="">Date du prélèvement <span class="mandatory">*</span></label></td>
 										<td style="width:25%;">

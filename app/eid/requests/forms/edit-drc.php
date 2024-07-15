@@ -165,18 +165,24 @@ $storageInfo = $storageService->getLabStorage();
 												<?php } ?>
 											</select>
 										</td>
-
-									</tr>
-									<tr>
 										<td><label for="clinicianName">Demandeur </label></td>
 										<td>
 											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" value="<?= $eidInfo['clinician_name']; ?>" />
 										</td>
-
+									</tr>
+									<tr>
 										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien </label></td>
 										<td>
 											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" style="width:100%;" value="<?= $eidInfo['request_clinician_phone_number']; ?>" />
 										</td>
+										<?php if ($general->isSTSInstance()) { ?>
+											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
+											<td>
+												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
+													<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
+												</select>
+											</td>
+										<?php } ?>
 									</tr>
 								</table>
 								<br><br>
@@ -449,14 +455,6 @@ $storageInfo = $storageService->getLabStorage();
 											</select>
 
 										</td>
-										<?php if ($general->isSTSInstance()) { ?>
-											<th scope="row" style="width:15%;">Nom du Laboratoire <span class="mandatory">*</span> </th>
-											<td>
-												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
-												</select>
-											</td>
-										<?php } ?>
 									</tr>
 									<tr>
 										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>

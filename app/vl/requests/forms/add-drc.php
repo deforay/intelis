@@ -156,6 +156,14 @@ $sFormat = '';
 												<?php } ?>
 											</select>
 										</td>
+										<?php if ($general->isSTSInstance()) { ?>
+											<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
+											<td>
+												<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">
+													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
+												</select>
+											</td>
+										<?php } ?>
 									</tr>
 
 								</table>
@@ -366,18 +374,6 @@ $sFormat = '';
 											préleveur)</small> </h3>
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-									<?php if ($general->isSTSInstance()) { ?>
-										<tr>
-											<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
-												</select>
-											</td>
-											<td></td>
-											<td></td>
-										</tr>
-									<?php } ?>
 									<tr>
 										<td><label for="">Date du prélèvement <span class="mandatory">*</span></label>
 										</td>

@@ -183,6 +183,12 @@ $storageInfo = $storageService->getLabStorage();
 												<?php } ?>
 											</select>
 										</td>
+										<td><label for="labId">Nom du laboratoire </label> </td>
+										<td>
+											<select name="labId" id="labId" class="form-control" title="Please choose laboratoire" <?php echo $disable; ?> style="width:100%;">
+												<?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Sélectionner --'); ?>
+											</select>
+										</td>
 									</tr>
 								</table>
 								<div class="box-header with-border">
@@ -450,12 +456,6 @@ $storageInfo = $storageService->getLabStorage();
 										<td>
 											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" style="width:100%;" />
 										</td>
-										<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
-										<td>
-											<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">
-												<?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Sélectionner --'); ?>
-											</select>
-										</td>
 									</tr>
 									<tr>
 										<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :
@@ -539,7 +539,7 @@ $storageInfo = $storageService->getLabStorage();
 
 											</datalist>
 										</td>
-										<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label>
+										<td class="vlLog"><label for="vlLog">Log </label>
 										</td>
 										<td class="vlLog">
 											<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?= htmlspecialchars((string) $vlQueryInfo['result_value_log']); ?>" <?php echo $labFieldDisabled; ?> oninput="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
@@ -656,9 +656,9 @@ $storageInfo = $storageService->getLabStorage();
 			// $("#vlResult").addClass('isRequired');
 		}
 		checkreasonForVLTesting();
-		$('#labId').select2({
+		/*$('#labId').select2({
 			placeholder: "Select Nom du laboratoire"
-		});
+		});*/
 		$('#testingPlatform').select2({
 			placeholder: "Select Technique utilisée"
 		});
