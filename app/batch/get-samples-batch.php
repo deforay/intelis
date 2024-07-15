@@ -42,7 +42,7 @@ $orderBy = match ($sortBy) {
     default => 'sample_code',
 };
 
-$orderBy = $orderBy . ' ' . $sortType;
+$orderBy = "$orderBy $sortType";
 
 $table = TestsService::getTestTableName($_POST['type']);
 $primaryKeyColumn = TestsService::getTestPrimaryKeyColumn($_POST['type']);
@@ -71,8 +71,13 @@ $query = "(SELECT vl.sample_code,
                     f.facility_code
                     FROM $table as vl
                     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
-            
-$where[] = " (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no' OR IFNULL(vl.is_sample_rejected, 'no') = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.$resultColumn is NULL or vl.$resultColumn = '') AND (vl.sample_code NOT LIKE '' AND vl.sample_code IS NOT NULL)";
+
+$where[] = "((COALESCE(vl.is_sample_rejected, '') = '' OR vl.is_sample_rejected = 'no')
+                AND (COALESCE(vl.reason_for_sample_rejection, '') = '' OR vl.reason_for_sample_rejection = 0)
+                AND COALESCE(vl.$resultColumn, '') = ''
+                AND (vl.sample_code IS NOT NULL AND vl.sample_code != '')
+                AND vl.result_status IN (" . SAMPLE_STATUS\REORDERED_FOR_TESTING . ", " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . "))";
+
 
 if (isset($_POST['batchId'])) {
     $where[] = " (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
@@ -143,19 +148,18 @@ if (isset($_POST['batchId'])) {
         f.facility_code
         FROM $table as vl
         INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
-    $swhere[] = " (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '')
-        AND (vl.is_sample_rejected IS NULL
-        OR vl.is_sample_rejected like ''
-        OR vl.is_sample_rejected like 'no')
-        AND (vl.reason_for_sample_rejection IS NULL
-        OR vl.reason_for_sample_rejection like ''
-        OR vl.reason_for_sample_rejection = 0)
-        AND (vl.$resultColumn is NULL or vl.$resultColumn = '')
-        AND (vl.sample_code NOT LIKE '' AND vl.sample_code IS NOT NULL)";
+
+    $swhere[] = "(COALESCE(vl.sample_batch_id, '') = ''
+            AND (COALESCE(vl.is_sample_rejected, '') = '' OR vl.is_sample_rejected = 'no')
+            AND (COALESCE(vl.reason_for_sample_rejection, '') = '' OR vl.reason_for_sample_rejection = 0)
+            AND COALESCE(vl.$resultColumn, '') = ''
+            AND (vl.sample_code IS NOT NULL AND vl.sample_code != '')
+            AND vl.result_status IN (" . SAMPLE_STATUS\REORDERED_FOR_TESTING . ", " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . "))";
+
     if (!empty($swhere)) {
         $squery = $squery . ' WHERE ' . implode(" AND ", $swhere);
     }
-    $query .= $squery . " ORDER BY vl." . $orderBy . ")";
+    $query .= "$squery ORDER BY vl.$orderBy)";
 }
 
 $result = $db->rawQuery($query);
@@ -163,8 +167,8 @@ if (isset($_POST['batchId'])) {
 
     foreach ($result as $sample) {
         $labCode = "";
-        if($sample['lab_assigned_code']!=""){
-            $labCode = ' - '.$sample['lab_assigned_code'];
+        if ($sample['lab_assigned_code'] != "") {
+            $labCode = ' - ' . $sample['lab_assigned_code'];
         }
         if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
             <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . $labCode; ?></option>
@@ -174,10 +178,10 @@ if (isset($_POST['batchId'])) {
     <div class="col-md-5" id="sampleDetails">
         <select name="unbatchedSamples[]" id="search" class="form-control" size="8" multiple="multiple">
             <?php foreach ($result as $sample) {
-                 $labCode = "";
-                 if($sample['lab_assigned_code']!=""){
-                     $labCode = ' - '.$sample['lab_assigned_code'];
-                 }
+                $labCode = "";
+                if ($sample['lab_assigned_code'] != "") {
+                    $labCode = ' - ' . $sample['lab_assigned_code'];
+                }
                 if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
                     <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . ($sample['facility_name']) . $labCode; ?></option>
             <?php }
@@ -199,11 +203,11 @@ if (isset($_POST['batchId'])) {
         <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
             <?php foreach ($result as $sample) {
                 $labCode = "";
-                if($sample['lab_assigned_code']!=""){
-                    $labCode = ' - '.$sample['lab_assigned_code'];
+                if ($sample['lab_assigned_code'] != "") {
+                    $labCode = ' - ' . $sample['lab_assigned_code'];
                 }
                 if (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) { ?>
-                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . '-----'.$labCode; ?></option>
+                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . '-----' . $labCode; ?></option>
             <?php }
             } ?>
         </select>
