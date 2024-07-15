@@ -52,14 +52,14 @@ if (empty($batchInfo)) {
 	exit;
 }
 
-$batchAttributes = json_decode((string)$batchInfo[0]['batch_attributes']);
+$batchAttributes = json_decode((string)$batchInfo['batch_attributes']);
 $sortBy = $batchAttributes->sort_by ?? 'sampleCode';
 $sortType = $batchService->getSortType($batchAttributes->sort_type);
 $orderBy = $batchService->getOrderBy($sortBy, $sortType);
 $samplesResult = $batchService->getSamplesByBatchId($table, $primaryKeyColumn, $patientIdColumn, $id, $orderBy);
 $samplesCount = count($samplesResult);
-$configControl = $batchService->getConfigControl($batchInfo[0]['machine']);
-$prevBatchControlNames = $batchService->getPreviousBatchControlNames($batchInfo[0]['machine']);
+$configControl = $batchService->getConfigControl($batchInfo['machine']);
+$prevBatchControlNames = $batchService->getPreviousBatchControlNames($batchInfo['machine']);
 $batchControlNames = $batchService->getBatchControlNames($batchInfo, $prevBatchControlNames);
 $content = $batchService->generateContent($samplesResult, $batchInfo, $batchControlNames, $configControl, $samplesCount, $table, $primaryKeyColumn, $patientIdColumn, $testType, $orderBy, $id);
 
@@ -103,7 +103,7 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<h4><strong><?= _translate("Batch Code"); ?> :
-						<?php echo (isset($batchInfo[0]['batch_code'])) ? $batchInfo[0]['batch_code'] : ''; ?>
+						<?php echo (isset($batchInfo['batch_code'])) ? $batchInfo['batch_code'] : ''; ?>
 					</strong>
 					<button type="button" id="updateSerialNumbersButton" class="btn btn-primary pull-right" onclick="updateSerialNumbers();return false;">Update Serial Numbers
 					</button>

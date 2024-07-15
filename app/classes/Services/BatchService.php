@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services;
 
 use Generator;
@@ -9,7 +8,6 @@ use App\Registries\ContainerRegistry;
 
 final class BatchService
 {
-
     protected ?DatabaseService $db;
 
     public function __construct(?DatabaseService $db)
@@ -30,11 +28,10 @@ final class BatchService
                         WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
         $batchResult = $this->db->rawQueryOne($batchQuery);
 
-        $batchCode  = date('Ymd') . sprintf("%03s", $batchResult['maxId']);
+        $batchCode = date('Ymd') . sprintf("%03s", $batchResult['maxId']);
 
         return [$batchResult['maxId'], $batchCode];
     }
-
 
     public function excelColumnRange($lower, $upper): Generator
     {
@@ -43,7 +40,6 @@ final class BatchService
             yield $i;
         }
     }
-
 
     public function getSortType($sortType)
     {
@@ -71,9 +67,8 @@ final class BatchService
         $batchQuery = "SELECT * FROM batch_details as b_d
                 INNER JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
                 WHERE batch_id= ?";
-        return $this->db->rawQuery($batchQuery, [$id]);
+        return $this->db->rawQueryOne($batchQuery, [$id]);
     }
-
 
     public function generateAlphaNumericRange()
     {
@@ -115,8 +110,8 @@ final class BatchService
 
     public function getBatchControlNames($batchInfo, $prevBatchControlNames)
     {
-        if (!empty($batchInfo[0]['control_names'])) {
-            return json_decode((string)$batchInfo[0]['control_names'], true);
+        if (!empty($batchInfo['control_names'])) {
+            return json_decode((string)$batchInfo['control_names'], true);
         } else {
             return $prevBatchControlNames;
         }
@@ -124,8 +119,8 @@ final class BatchService
 
     public function getSamplesByBatchId($table, $primaryKeyColumn, $patientIdColumn, $id, $orderBy)
     {
-        $samplesQry = "SELECT sample_code,$patientIdColumn,$primaryKeyColumn FROM $table WHERE sample_batch_id = $id ORDER BY $orderBy";
-        return $this->db->rawQuery($samplesQry);
+        $samplesQry = "SELECT sample_code,$patientIdColumn,$primaryKeyColumn FROM $table WHERE sample_batch_id = ? ORDER BY $orderBy";
+        return $this->db->rawQuery($samplesQry, [$id]);
     }
 
     public function getPreviousBatchControlNames($machine)
@@ -138,23 +133,27 @@ final class BatchService
     public function generateDefaultContent($configControl, $primaryKeyColumn, $patientIdColumn, $orderBy, $id, $table, $testType)
     {
         $content = '';
+        $labelNewContent = '';
         $displayOrder = [];
         if (isset($configControl[$testType]['noHouseCtrl']) && $configControl[$testType]['noHouseCtrl'] > 0) {
             foreach (range(1, $configControl[$testType]['noHouseCtrl']) as $h) {
                 $displayOrder[] = "in_house_controls_" . $h;
                 $content .= '<li class="ui-state-default" id="in_house_controls_' . $h . '">In-House Control ' . $h . '</li>';
+                $labelNewContent .= ' <tr><th>In-House Control ' . $h . ':</th><td> <input class="form-control" type="text" name="controls[in_house_controls_' . $h . ']" value="" placeholder="Enter label name"/></td></tr>';
             }
         }
         if (isset($configControl[$testType]['noManufacturerCtrl']) && $configControl[$testType]['noManufacturerCtrl'] > 0) {
             foreach (range(1, $configControl[$testType]['noManufacturerCtrl']) as $m) {
                 $displayOrder[] = "manufacturer_controls_" . $m;
                 $content .= '<li class="ui-state-default" id="manufacturer_controls_' . $m . '">Manufacturer Control ' . $m . '</li>';
+                $labelNewContent .= ' <tr><th>Manufacturer Control ' . $m . ' :</th><td> <input class="form-control" type="text" name="controls[manufacturer_controls_' . $m . ']" value="" placeholder="Enter label name"/></td></tr>';
             }
         }
         if (isset($configControl[$testType]['noCalibrators']) && $configControl[$testType]['noCalibrators'] > 0) {
             foreach (range(1, $configControl[$testType]['noCalibrators']) as $c) {
                 $displayOrder[] = "calibrators_" . $c;
                 $content .= '<li class="ui-state-default" id="calibrators_' . $c . '">Calibrator ' . $c . '</li>';
+                $labelNewContent .= ' <tr><th>Calibrator ' . $c . ' :</th><td> <input class="form-control" type="text" name="controls[calibrators_' . $c . ']" value="" placeholder="Enter label name"/></td></tr>';
             }
         }
         $samplesQuery = "SELECT $primaryKeyColumn ,$patientIdColumn, sample_code FROM $table WHERE sample_batch_id=? ORDER BY $orderBy";
@@ -163,10 +162,8 @@ final class BatchService
             $displayOrder[] = "s_" . $sample[$primaryKeyColumn];
             $content .= '<li class="ui-state-default" id="s_' . $sample[$primaryKeyColumn] . '">' . $sample['sample_code'] . ' - ' . $sample[$patientIdColumn] . '</li>';
         }
-        return ['content' => $content, 'displayOrder' => $displayOrder];
+        return ['content' => $content, 'labelNewContent' => $labelNewContent, 'displayOrder' => $displayOrder];
     }
-
-
 
     public function generateLabelOrderContent($batchInfo, $batchControlNames, $samplesResult, $samplesCount, $primaryKeyColumn, $patientIdColumn, $table, $testType)
     {
@@ -174,14 +171,14 @@ final class BatchService
         $labelNewContent = '';
         $displayOrder = [];
         $alphaNumeric = $this->generateAlphaNumericRange();
-        $jsonToArray = json_decode((string)$batchInfo[0]['label_order'], true);
-        if (isset($jsonToArray) && (count($jsonToArray) != ($samplesCount + count($batchControlNames)))) {
+        $jsonToArray = json_decode((string)$batchInfo['label_order'], true);
+        if (isset($jsonToArray) && (count($jsonToArray) != ($samplesCount + count($batchControlNames ?? [])))) {
             foreach ($samplesResult as $sample) {
                 $displayOrder[] = "s_" . $sample[$primaryKeyColumn];
                 $label = $sample['sample_code'] . " - " . $sample[$patientIdColumn];
                 $content .= '<li class="ui-state-default" id="s_' . $sample[$primaryKeyColumn] . '">' . $label . '</li>';
             }
-            if (isset($batchControlNames) && count($batchControlNames) > 0) {
+            if (!empty($batchControlNames) && count($batchControlNames) > 0) {
                 foreach ($batchControlNames as $key => $value) {
                     $displayOrder[] = $value;
                     $clabel = str_replace("in house", "In-House", $value);
@@ -202,7 +199,7 @@ final class BatchService
             }
         } else {
             foreach ($jsonToArray as $j => $jsonValue) {
-                $index = ($batchInfo[0]['position_type'] == 'alpha-numeric') ? $alphaNumeric[$j] : $j;
+                $index = ($batchInfo['position_type'] == 'alpha-numeric') ? $alphaNumeric[$j] : $j;
                 $displayOrder[] = $jsonValue;
                 $xplodJsonToArray = explode("_", (string)$jsonValue);
                 if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
@@ -227,7 +224,7 @@ final class BatchService
         $content = '';
         $labelNewContent = '';
         $displayOrder = [];
-        if (isset($batchInfo[0]['label_order']) && trim((string)$batchInfo[0]['label_order']) != '') {
+        if (isset($batchInfo['label_order']) && trim((string)$batchInfo['label_order']) != '') {
             $contentData = $this->generateLabelOrderContent($batchInfo, $batchControlNames, $samplesResult, $samplesCount, $primaryKeyColumn, $patientIdColumn, $table, $testType);
             $content = $contentData['content'];
             $labelNewContent = $contentData['labelNewContent'];
@@ -235,6 +232,7 @@ final class BatchService
         } else {
             $contentData = $this->generateDefaultContent($configControl, $primaryKeyColumn, $patientIdColumn, $orderBy, $id, $table, $testType);
             $content = $contentData['content'];
+            $labelNewContent = $contentData['labelNewContent'];
             $displayOrder = $contentData['displayOrder'];
         }
         return ['content' => $content, 'labelNewContent' => $labelNewContent, 'displayOrder' => $displayOrder];
