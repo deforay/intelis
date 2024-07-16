@@ -172,7 +172,8 @@ final class BatchService
         $displayOrder = [];
         $alphaNumeric = $this->generateAlphaNumericRange();
         $jsonToArray = json_decode((string)$batchInfo['label_order'], true);
-        if (isset($jsonToArray) && (count($jsonToArray) != ($samplesCount + count($batchControlNames ?? [])))) {
+        $batchControlNames ??= [];
+        if (!empty($jsonToArray) && (count($jsonToArray) != ($samplesCount + count($batchControlNames)))) {
             foreach ($samplesResult as $sample) {
                 $displayOrder[] = "s_" . $sample[$primaryKeyColumn];
                 $label = $sample['sample_code'] . " - " . $sample[$patientIdColumn];
@@ -212,7 +213,7 @@ final class BatchService
                     $existingValue = $batchControlNames[$jsonValue] ?? "";
                     $liLabel = $existingValue ?: $label;
                     $labelNewContent .= ' <tr><th>' . $jsonValue . ' :</th><td> <input class="form-control" type="text" name="controls[' . $jsonValue . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
-                    $content = '<li class="ui-state-default" id="' . $jsonValue . '">' . $liLabel . '</li>' . $content;
+                    $content .= '<li class="ui-state-default" id="' . $jsonValue . '">' . $liLabel . '</li>';
                 }
             }
         }
