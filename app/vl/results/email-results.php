@@ -581,7 +581,11 @@ $batchResult = $db->rawQuery($batchQuery);
 	}
 
 	function validateNow() {
-
+		toEmailId = $('#toEmail').val();
+		if ($.trim(toEmailId) == '' || $.trim(toEmailId) == "NULL") {
+			alert("No valid Email id available. Please add valid email for Facility Name (To) ");
+			return false;
+		}
 		samplesData = $("#sample").val();
 		let samples = JSON.stringify($("#sample").val());
 		$("#selectedSamples").val(samples);
