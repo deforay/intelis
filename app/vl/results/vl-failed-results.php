@@ -124,7 +124,7 @@ $state = $geolocationService->getProvinces("yes");
                         </tr>
 
                         <tr>
-                            <td colspan="2"><input class="btn btn-primary btn-sm" type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
+                            <td colspan="2"><input class="btn btn-primary btn-sm" type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>">
                                 &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
                             </td>
                             <td colspan="4">

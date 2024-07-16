@@ -149,7 +149,7 @@ try {
         $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
     }
     if (isset($_POST['status']) && !empty($_POST['status'])) {
-        $sWhere[] =  ' vl.result_status IN ("' . $_POST['status'] . '")';
+        $sWhere[] =  ' vl.result_status IN (' . $_POST['status'] . ')';
     }
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
         $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';

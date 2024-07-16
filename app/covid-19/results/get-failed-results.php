@@ -150,8 +150,8 @@ try {
     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
         $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
     }
-    if (isset($_POST['status']) && $_POST['status'] != '') {
-        $sWhere[] =  ' vl.result_status = "' . $_POST['status'] . '"';
+    if (isset($_POST['status']) && !empty($_POST['status'])) {
+        $sWhere[] =  ' vl.result_status IN (' . $_POST['status'] . ')';
     }
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
         $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
