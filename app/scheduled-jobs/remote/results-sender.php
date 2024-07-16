@@ -213,20 +213,22 @@ try {
 
         $forms = array_column($c19LabResult, 'covid19_id');
 
-
         /** @var Covid19Service $covid19Service */
         $covid19Service = ContainerRegistry::get(Covid19Service::class);
-        $symptoms = $covid19Service->getCovid19SymptomsByFormId($forms);
-        $comorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($forms);
-        $testResults = $covid19Service->getCovid19TestsByFormId($forms);
 
-        $url = $remoteUrl . '/remote/remote/covid-19-test-results.php';
+        $c19ResultData = [];
+        foreach ($c19LabResult as $r) {
+            $c19ResultData[$r['unique_id']] = [];
+            $c19ResultData[$r['unique_id']]['form_data'] = $r;
+            // $c19ResultData[$r['unique_id']]['data_from_comorbidities'] = $covid19Service->getCovid19ComorbiditiesByFormId($r['covid19_id'], false, true);
+            // $c19ResultData[$r['unique_id']]['data_from_symptoms'] = $covid19Service->getCovid19SymptomsByFormId($r['covid19_id'], false, true);
+            $c19ResultData[$r['unique_id']]['data_from_tests'] = $covid19Service->getCovid19TestsByFormId($r['covid19_id']);
+        }
+
+        $url = "$remoteUrl/remote/remote/covid-19-test-results.php";
         $payload = [
             "labId" => $labId,
-            "result" => $c19LabResult,
-            "testResults" => $testResults,
-            "symptoms" => $symptoms,
-            "comorbidities" => $comorbidities,
+            "results" => $c19ResultData,
             "Key" => "vlsm-lab-data--",
         ];
         $jsonResponse = $apiService->post($url, $payload);
