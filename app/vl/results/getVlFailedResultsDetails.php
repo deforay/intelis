@@ -123,7 +123,10 @@ try {
     LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-
+    $failedStatusIds = [SAMPLE_STATUS\ON_HOLD,
+                        SAMPLE_STATUS\LOST_OR_MISSING,
+                        SAMPLE_STATUS\TEST_FAILED,
+                        SAMPLE_STATUS\EXPIRED];
     if (!empty($_POST['sampleCollectionDate'])) {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
@@ -150,6 +153,8 @@ try {
     }
     if (isset($_POST['status']) && !empty($_POST['status'])) {
         $sWhere[] =  ' vl.result_status IN (' . $_POST['status'] . ')';
+    } else {
+        $sWhere[] =  ' vl.result_status IN (' . implode(',', $failedStatusIds) . ')';
     }
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
         $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
