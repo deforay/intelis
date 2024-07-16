@@ -147,6 +147,7 @@ try {
                         $data['result_value_text'] = null;
                         $data['result_value_absolute_decimal'] = null;
                         $data['result'] = null;
+                        $data['result_status'] = SAMPLE_STATUS\REJECTED;
                     } else {
                         $data['is_sample_rejected'] = 'no';
                         $data['reason_for_sample_rejection'] = null;
@@ -154,12 +155,10 @@ try {
 
                     $query = "SELECT vl_sample_id,result FROM form_vl WHERE sample_code= ?";
                     $vlResult = $db->rawQuery($query, [$sampleVal]);
-                    $data['result_status'] = $status[$i];
 
+                    $data['result_status'] = $status[$i];
                     if (in_array(strtolower($data['result']), ['fail', 'failed', 'err', 'error'])) {
                         $data['result_status'] = SAMPLE_STATUS\TEST_FAILED;
-                    } elseif ($data['vl_result_category'] == 'rejected') {
-                        $data['result_status'] = SAMPLE_STATUS\REJECTED;
                     }
 
                     $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);

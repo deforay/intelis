@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-07-15 16:04+0530\n"
-"PO-Revision-Date: 2024-07-15 16:04+0530\n"
+"POT-Creation-Date: 2024-07-16 12:56+0530\n"
+"PO-Revision-Date: 2024-07-16 12:56+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -27,9 +27,9 @@ msgstr "Bienvenue sur la page de l’administrateur"
 #: admin/monitoring/audit-trail.php:120
 #: admin/monitoring/lab-sync-details.php:98 admin/monitoring/log-files.php:67
 #: admin/monitoring/sources-of-requests.php:70
-#: admin/monitoring/sync-status.php:70 batch/add-batch-position.php:277
+#: admin/monitoring/sync-status.php:70 batch/add-batch-position.php:87
 #: batch/add-batch.php:135 batch/batches.php:47
-#: batch/edit-batch-position.php:282 batch/edit-batch.php:186
+#: batch/edit-batch-position.php:97 batch/edit-batch.php:186
 #: cd4/reference/add-cd4-sample-rejection-reasons.php:12
 #: cd4/reference/add-cd4-sample-type.php:12
 #: cd4/reference/add-cd4-test-reasons.php:18
@@ -299,7 +299,7 @@ msgstr "Type d'action"
 #: cd4/management/cd4-sample-rejection-report.php:74
 #: cd4/management/cd4-sample-status.php:98
 #: cd4/management/cd4-testing-target-report.php:212
-#: cd4/requests/cd4-requests.php:430 cd4/results/cd4-failed-results.php:170
+#: cd4/requests/cd4-requests.php:430 cd4/results/cd4-failed-results.php:161
 #: cd4/results/cd4-manual-results.php:169 cd4/results/cd4-print-results.php:134
 #: cd4/results/cd4-print-results.php:296 cd4/results/cd4-result-status.php:183
 #: cd4/results/email-results.php:287
@@ -315,7 +315,7 @@ msgstr "Type d'action"
 #: covid-19/requests/covid-19-requests.php:352
 #: covid-19/requests/forms/add-cameroon.php:199
 #: covid-19/requests/forms/edit-cameroon.php:214
-#: covid-19/results/covid-19-failed-results.php:169
+#: covid-19/results/covid-19-failed-results.php:160
 #: covid-19/results/covid-19-manual-results.php:115
 #: covid-19/results/covid-19-print-results.php:137
 #: covid-19/results/covid-19-print-results.php:299
@@ -336,7 +336,7 @@ msgstr "Type d'action"
 #: eid/requests/eid-requests.php:367
 #: eid/requests/forms/add-burkina-faso.php:135
 #: eid/requests/forms/edit-burkina-faso.php:149
-#: eid/results/eid-failed-results.php:183
+#: eid/results/eid-failed-results.php:175
 #: eid/results/eid-manual-results.php:119 eid/results/eid-print-results.php:128
 #: eid/results/eid-print-results.php:288 eid/results/eid-result-status.php:137
 #: eid/results/email-results.php:284
@@ -366,7 +366,7 @@ msgstr "Type d'action"
 #: hepatitis/requests/hepatitis-dhis2.php:240
 #: hepatitis/requests/hepatitis-requests.php:353
 #: hepatitis/results/email-results.php:287
-#: hepatitis/results/hepatitis-failed-results.php:168
+#: hepatitis/results/hepatitis-failed-results.php:159
 #: hepatitis/results/hepatitis-manual-results.php:116
 #: hepatitis/results/hepatitis-print-results.php:144
 #: hepatitis/results/hepatitis-print-results.php:305
@@ -385,7 +385,7 @@ msgstr "Type d'action"
 #: tb/requests/forms/edit-burkina-faso.php:179 tb/requests/tb-requests.php:269
 #: tb/results/email-results.php:287
 #: tb/results/forms/update-burkina-faso.php:178
-#: tb/results/tb-failed-results.php:169 tb/results/tb-manual-results.php:122
+#: tb/results/tb-failed-results.php:160 tb/results/tb-manual-results.php:122
 #: tb/results/tb-print-results.php:134 tb/results/tb-print-results.php:291
 #: tb/results/tb-result-status.php:131 users/addUser.php:342
 #: users/addUser.php:343 users/editUser.php:441 users/editUser.php:442
@@ -405,7 +405,7 @@ msgstr "Type d'action"
 #: vl/program-management/vlWeeklyReport.php:215
 #: vl/reference/add-vl-results.php:172 vl/reference/add-vl-results.php:173
 #: vl/reference/edit-vl-results.php:176 vl/reference/edit-vl-results.php:177
-#: vl/requests/forms/add-drc.php:174 vl/requests/vl-requests.php:488
+#: vl/requests/forms/add-drc.php:171 vl/requests/vl-requests.php:488
 #: vl/results/email-results.php:287 vl/results/vl-failed-results.php:127
 #: vl/results/vlPrintResult.php:211 vl/results/vlPrintResult.php:471
 #: vl/results/vlResultApproval.php:183 vl/results/vlResultMail.php:287
@@ -421,7 +421,7 @@ msgstr "Rechercher"
 #: cd4/management/cd4-sample-rejection-report.php:107
 #: cd4/management/cd4-sample-status.php:156
 #: cd4/management/cd4-testing-target-report.php:265
-#: cd4/requests/cd4-requests.php:725 cd4/results/cd4-failed-results.php:333
+#: cd4/requests/cd4-requests.php:725 cd4/results/cd4-failed-results.php:327
 #: cd4/results/cd4-manual-results.php:318 cd4/results/cd4-print-results.php:454
 #: cd4/results/cd4-result-status.php:292 cd4/results/email-results.php:372
 #: covid-19/mail/mail-covid-19-results.php:281
@@ -433,7 +433,7 @@ msgstr "Rechercher"
 #: covid-19/requests/covid-19-dhis2.php:269
 #: covid-19/requests/covid-19-requests.php:591
 #: covid-19/results/can-record-confirmatory-tests.php:223
-#: covid-19/results/covid-19-failed-results.php:282
+#: covid-19/results/covid-19-failed-results.php:275
 #: covid-19/results/covid-19-manual-results.php:226
 #: covid-19/results/covid-19-print-results.php:463
 #: covid-19/results/covid-19-result-status.php:213
@@ -445,7 +445,7 @@ msgstr "Rechercher"
 #: eid/management/eid-sample-rejection-report.php:103
 #: eid/management/eid-sample-status.php:165
 #: eid/management/eidTestingTargetReport.php:266
-#: eid/requests/eid-requests.php:607 eid/results/eid-failed-results.php:353
+#: eid/requests/eid-requests.php:607 eid/results/eid-failed-results.php:348
 #: eid/results/eid-manual-results.php:268 eid/results/eid-print-results.php:470
 #: eid/results/eid-result-status.php:218 eid/results/email-results.php:369
 #: facilities/editFacility.php:538
@@ -456,7 +456,7 @@ msgstr "Rechercher"
 #: generic-tests/program-management/sample-rejection-report.php:129
 #: generic-tests/requests/view-requests.php:308
 #: generic-tests/results/email-results.php:372
-#: generic-tests/results/generic-failed-results.php:287
+#: generic-tests/results/generic-failed-results.php:290
 #: generic-tests/results/generic-print-result.php:572
 #: generic-tests/results/generic-result-approval.php:286
 #: generic-tests/results/generic-test-results.php:300
@@ -470,7 +470,7 @@ msgstr "Rechercher"
 #: hepatitis/requests/hepatitis-dhis2.php:450
 #: hepatitis/requests/hepatitis-requests.php:568
 #: hepatitis/results/email-results.php:372
-#: hepatitis/results/hepatitis-failed-results.php:324
+#: hepatitis/results/hepatitis-failed-results.php:318
 #: hepatitis/results/hepatitis-manual-results.php:228
 #: hepatitis/results/hepatitis-print-results.php:463
 #: hepatitis/results/hepatitis-result-status.php:208 mail/vlResultMail.php:372
@@ -482,7 +482,7 @@ msgstr "Rechercher"
 #: tb/management/tb-clinic-report.php:539 tb/management/tb-export-data.php:345
 #: tb/management/tb-sample-rejection-report.php:105
 #: tb/management/tb-sample-status.php:153 tb/requests/tb-requests.php:437
-#: tb/results/email-results.php:372 tb/results/tb-failed-results.php:327
+#: tb/results/email-results.php:372 tb/results/tb-failed-results.php:321
 #: tb/results/tb-manual-results.php:233 tb/results/tb-print-results.php:445
 #: tb/results/tb-result-status.php:210 users/editUser.php:224
 #: vl/program-management/highViralLoad.php:1125
@@ -496,7 +496,7 @@ msgstr "Rechercher"
 #: vl/program-management/vlTestingTargetReport.php:267
 #: vl/program-management/vlWeeklyReport.php:314
 #: vl/requests/sample-storage.php:435 vl/requests/vl-requests.php:815
-#: vl/results/email-results.php:372 vl/results/vl-failed-results.php:303
+#: vl/results/email-results.php:372 vl/results/vl-failed-results.php:307
 #: vl/results/vlPrintResult.php:676 vl/results/vlResultApproval.php:292
 #: vl/results/vlResultMail.php:372 vl/results/vlTestResult.php:315
 msgid "Clear"
@@ -527,7 +527,7 @@ msgstr "Enregistré le"
 #: cd4/management/cd4-testing-target-report.php:235
 #: cd4/reference/cd4-sample-rejection-reasons.php:47
 #: cd4/reference/cd4-sample-type.php:49 cd4/reference/cd4-test-reasons.php:49
-#: cd4/requests/cd4-requests.php:609 cd4/results/cd4-failed-results.php:237
+#: cd4/requests/cd4-requests.php:609 cd4/results/cd4-failed-results.php:228
 #: cd4/results/cd4-manual-results.php:285 cd4/results/cd4-print-results.php:218
 #: cd4/results/cd4-print-results.php:378 cd4/results/cd4-result-status.php:262
 #: common/reference/funding-sources.php:39
@@ -550,7 +550,7 @@ msgstr "Enregistré le"
 #: covid-19/reference/covid19-symptoms.php:47
 #: covid-19/reference/covid19-test-reasons.php:42
 #: covid-19/requests/covid-19-requests.php:480
-#: covid-19/results/covid-19-failed-results.php:237
+#: covid-19/results/covid-19-failed-results.php:228
 #: covid-19/results/covid-19-manual-results.php:194
 #: covid-19/results/covid-19-print-results.php:220
 #: covid-19/results/covid-19-print-results.php:381
@@ -566,7 +566,7 @@ msgstr "Enregistré le"
 #: eid/reference/eid-results.php:46
 #: eid/reference/eid-sample-rejection-reasons.php:50
 #: eid/reference/eid-sample-type.php:47 eid/reference/eid-test-reasons.php:47
-#: eid/requests/eid-requests.php:495 eid/results/eid-failed-results.php:257
+#: eid/requests/eid-requests.php:495 eid/results/eid-failed-results.php:249
 #: eid/results/eid-manual-results.php:235 eid/results/eid-print-results.php:227
 #: eid/results/eid-print-results.php:386 eid/results/eid-result-status.php:189
 #: facilities/facilities.php:182
@@ -602,7 +602,7 @@ msgstr "Enregistré le"
 #: hepatitis/reference/hepatitis-test-reasons.php:47
 #: hepatitis/requests/hepatitis-dhis2.php:357
 #: hepatitis/requests/hepatitis-requests.php:455
-#: hepatitis/results/hepatitis-failed-results.php:233
+#: hepatitis/results/hepatitis-failed-results.php:224
 #: hepatitis/results/hepatitis-manual-results.php:196
 #: hepatitis/results/hepatitis-print-results.php:227
 #: hepatitis/results/hepatitis-print-results.php:387
@@ -617,7 +617,7 @@ msgstr "Enregistré le"
 #: tb/management/tb-sample-status.php:125 tb/reference/tb-results.php:47
 #: tb/reference/tb-sample-rejection-reasons.php:49
 #: tb/reference/tb-sample-type.php:65 tb/reference/tb-test-reasons.php:49
-#: tb/requests/tb-requests.php:331 tb/results/tb-failed-results.php:236
+#: tb/requests/tb-requests.php:331 tb/results/tb-failed-results.php:227
 #: tb/results/tb-manual-results.php:201 tb/results/tb-print-results.php:213
 #: tb/results/tb-print-results.php:369 tb/results/tb-result-status.php:181
 #: users/users.php:69 vl/program-management/highViralLoad.php:357
@@ -773,14 +773,14 @@ msgstr "Veuillez sélectionner les types de tests"
 #: covid-19/requests/forms/add-cameroon.php:945
 #: covid-19/requests/forms/add-drc.php:50
 #: covid-19/requests/forms/add-drc.php:156
-#: covid-19/requests/forms/add-drc.php:249
-#: covid-19/requests/forms/add-drc.php:544
-#: covid-19/requests/forms/add-drc.php:556
-#: covid-19/requests/forms/add-drc.php:563
-#: covid-19/requests/forms/add-drc.php:584
-#: covid-19/requests/forms/add-drc.php:601
-#: covid-19/requests/forms/add-drc.php:868
-#: covid-19/requests/forms/add-drc.php:1555
+#: covid-19/requests/forms/add-drc.php:245
+#: covid-19/requests/forms/add-drc.php:540
+#: covid-19/requests/forms/add-drc.php:552
+#: covid-19/requests/forms/add-drc.php:559
+#: covid-19/requests/forms/add-drc.php:580
+#: covid-19/requests/forms/add-drc.php:597
+#: covid-19/requests/forms/add-drc.php:857
+#: covid-19/requests/forms/add-drc.php:1544
 #: covid-19/requests/forms/edit-cameroon.php:129
 #: covid-19/requests/forms/edit-cameroon.php:155
 #: covid-19/requests/forms/edit-cameroon.php:187
@@ -804,12 +804,12 @@ msgstr "Veuillez sélectionner les types de tests"
 #: covid-19/requests/forms/edit-cameroon.php:719
 #: covid-19/requests/forms/edit-cameroon.php:741
 #: covid-19/requests/forms/edit-drc.php:193
-#: covid-19/requests/forms/edit-drc.php:578
-#: covid-19/requests/forms/edit-drc.php:590
-#: covid-19/requests/forms/edit-drc.php:597
-#: covid-19/requests/forms/edit-drc.php:634
-#: covid-19/requests/forms/edit-drc.php:801
-#: covid-19/requests/forms/edit-drc.php:954
+#: covid-19/requests/forms/edit-drc.php:574
+#: covid-19/requests/forms/edit-drc.php:586
+#: covid-19/requests/forms/edit-drc.php:593
+#: covid-19/requests/forms/edit-drc.php:630
+#: covid-19/requests/forms/edit-drc.php:791
+#: covid-19/requests/forms/edit-drc.php:943
 #: covid-19/results/covid-19-failed-results.php:84
 #: covid-19/results/covid-19-failed-results.php:119
 #: covid-19/results/covid-19-manual-results.php:90
@@ -850,13 +850,13 @@ msgstr "Veuillez sélectionner les types de tests"
 #: covid-19/results/forms/update-cameroon-result.php:508
 #: covid-19/results/forms/update-cameroon-result.php:543
 #: covid-19/results/forms/update-cameroon-result.php:689
-#: covid-19/results/forms/update-drc-result.php:172
-#: covid-19/results/forms/update-drc-result.php:550
-#: covid-19/results/forms/update-drc-result.php:562
-#: covid-19/results/forms/update-drc-result.php:569
-#: covid-19/results/forms/update-drc-result.php:606
-#: covid-19/results/forms/update-drc-result.php:774
-#: covid-19/results/forms/update-drc-result.php:923
+#: covid-19/results/forms/update-drc-result.php:174
+#: covid-19/results/forms/update-drc-result.php:548
+#: covid-19/results/forms/update-drc-result.php:560
+#: covid-19/results/forms/update-drc-result.php:567
+#: covid-19/results/forms/update-drc-result.php:604
+#: covid-19/results/forms/update-drc-result.php:766
+#: covid-19/results/forms/update-drc-result.php:915
 #: covid-19/results/get-covid-19-result-status.php:219
 #: eid/management/eid-clinic-report.php:102
 #: eid/management/eid-clinic-report.php:115
@@ -903,7 +903,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: eid/requests/forms/add-cameroon.php:545
 #: eid/requests/forms/add-cameroon.php:562 eid/requests/forms/add-drc.php:24
 #: eid/requests/forms/add-drc.php:94 eid/requests/forms/add-drc.php:109
-#: eid/requests/forms/add-drc.php:121 eid/requests/forms/add-drc.php:525
+#: eid/requests/forms/add-drc.php:121 eid/requests/forms/add-drc.php:511
 #: eid/requests/forms/edit-burkina-faso.php:275
 #: eid/requests/forms/edit-burkina-faso.php:307
 #: eid/requests/forms/edit-cameroon.php:124
@@ -927,7 +927,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: eid/requests/forms/edit-cameroon.php:571
 #: eid/requests/forms/edit-cameroon.php:597 eid/requests/forms/edit-drc.php:134
 #: eid/requests/forms/edit-drc.php:149 eid/requests/forms/edit-drc.php:160
-#: eid/requests/forms/edit-drc.php:563 eid/requests/forms/edit-drc.php:564
+#: eid/requests/forms/edit-drc.php:550 eid/requests/forms/edit-drc.php:551
 #: eid/results/eid-failed-results.php:85 eid/results/eid-failed-results.php:120
 #: eid/results/eid-manual-results.php:88 eid/results/eid-manual-results.php:177
 #: eid/results/eid-print-results.php:85 eid/results/eid-print-results.php:244
@@ -962,8 +962,8 @@ msgstr "Veuillez sélectionner les types de tests"
 #: eid/results/forms/update-drc-result.php:118
 #: eid/results/forms/update-drc-result.php:133
 #: eid/results/forms/update-drc-result.php:144
-#: eid/results/forms/update-drc-result.php:482
-#: eid/results/forms/update-drc-result.php:483
+#: eid/results/forms/update-drc-result.php:480
+#: eid/results/forms/update-drc-result.php:481
 #: eid/results/forms/update-rwanda-result.php:112
 #: eid/results/forms/update-sierraleone-result.php:117
 #: eid/results/forms/update-southsudan-result.php:117
@@ -1245,11 +1245,11 @@ msgstr "Veuillez sélectionner les types de tests"
 #: vl/requests/forms/add-cameroon.php:558
 #: vl/requests/forms/add-cameroon.php:633 vl/requests/forms/add-drc.php:27
 #: vl/requests/forms/add-drc.php:108 vl/requests/forms/add-drc.php:132
-#: vl/requests/forms/add-drc.php:150 vl/requests/forms/add-drc.php:230
-#: vl/requests/forms/add-drc.php:275 vl/requests/forms/add-drc.php:336
-#: vl/requests/forms/add-drc.php:391 vl/requests/forms/add-drc.php:495
-#: vl/requests/forms/add-drc.php:505 vl/requests/forms/add-drc.php:516
-#: vl/requests/forms/add-drc.php:720 vl/requests/forms/add-drc.php:723
+#: vl/requests/forms/add-drc.php:150 vl/requests/forms/add-drc.php:227
+#: vl/requests/forms/add-drc.php:272 vl/requests/forms/add-drc.php:333
+#: vl/requests/forms/add-drc.php:388 vl/requests/forms/add-drc.php:475
+#: vl/requests/forms/add-drc.php:487 vl/requests/forms/add-drc.php:497
+#: vl/requests/forms/add-drc.php:698 vl/requests/forms/add-drc.php:701
 #: vl/requests/forms/edit-burkina-faso.php:488
 #: vl/requests/forms/edit-cameroon.php:190
 #: vl/requests/forms/edit-cameroon.php:198
@@ -1266,10 +1266,10 @@ msgstr "Veuillez sélectionner les types de tests"
 #: vl/requests/forms/edit-cameroon.php:930 vl/requests/forms/edit-drc.php:31
 #: vl/requests/forms/edit-drc.php:144 vl/requests/forms/edit-drc.php:154
 #: vl/requests/forms/edit-drc.php:181 vl/requests/forms/edit-drc.php:198
-#: vl/requests/forms/edit-drc.php:303 vl/requests/forms/edit-drc.php:368
-#: vl/requests/forms/edit-drc.php:424 vl/requests/forms/edit-drc.php:523
-#: vl/requests/forms/edit-drc.php:533 vl/requests/forms/edit-drc.php:544
-#: vl/requests/forms/edit-drc.php:853 vl/requests/forms/edit-drc.php:856
+#: vl/requests/forms/edit-drc.php:300 vl/requests/forms/edit-drc.php:365
+#: vl/requests/forms/edit-drc.php:421 vl/requests/forms/edit-drc.php:507
+#: vl/requests/forms/edit-drc.php:519 vl/requests/forms/edit-drc.php:529
+#: vl/requests/forms/edit-drc.php:838 vl/requests/forms/edit-drc.php:841
 #: vl/requests/sample-storage.php:184 vl/requests/sample-storage.php:365
 #: vl/requests/vl-requests.php:165 vl/requests/vl-requests.php:192
 #: vl/requests/vl-requests.php:238 vl/requests/vl-requests.php:257
@@ -1302,9 +1302,9 @@ msgstr "Veuillez sélectionner les types de tests"
 #: vl/results/forms/update-drc-result.php:253
 #: vl/results/forms/update-drc-result.php:320
 #: vl/results/forms/update-drc-result.php:405
-#: vl/results/forms/update-drc-result.php:501
-#: vl/results/forms/update-drc-result.php:511
-#: vl/results/forms/update-drc-result.php:521
+#: vl/results/forms/update-drc-result.php:497
+#: vl/results/forms/update-drc-result.php:509
+#: vl/results/forms/update-drc-result.php:519
 #: vl/results/getVlResultsForApproval.php:171
 #: vl/results/vl-failed-results.php:68 vl/results/vl-failed-results.php:94
 #: vl/results/vlPrintResult.php:95 vl/results/vlPrintResult.php:111
@@ -1450,7 +1450,7 @@ msgstr "Synchronisé sur"
 
 #: admin/monitoring/api-sync-history.php:140 batch/batches.php:101
 #: cd4/management/cd4-export-data.php:263 cd4/requests/cd4-requests.php:601
-#: cd4/results/cd4-failed-results.php:229
+#: cd4/results/cd4-failed-results.php:220
 #: cd4/results/cd4-manual-results.php:278 cd4/results/cd4-print-results.php:213
 #: cd4/results/cd4-print-results.php:373
 #: common/reference/geographical-divisions-details.php:37
@@ -1459,13 +1459,13 @@ msgstr "Synchronisé sur"
 #: covid-19/reference/add-covid19-qc-test-kit.php:72
 #: covid-19/reference/edit-covid19-qc-test-kit.php:83
 #: covid-19/requests/covid-19-requests.php:472
-#: covid-19/results/covid-19-failed-results.php:229
+#: covid-19/results/covid-19-failed-results.php:220
 #: covid-19/results/covid-19-manual-results.php:189
 #: covid-19/results/covid-19-print-results.php:215
 #: covid-19/results/covid-19-print-results.php:376
 #: covid-19/results/covid-19-qc-data.php:90
 #: eid/management/eid-export-data.php:313 eid/requests/eid-requests.php:487
-#: eid/results/eid-failed-results.php:249
+#: eid/results/eid-failed-results.php:241
 #: eid/results/eid-manual-results.php:228 eid/results/eid-print-results.php:222
 #: eid/results/eid-print-results.php:381 facilities/addFacility.php:694
 #: facilities/editFacility.php:654 facilities/facilities.php:176
@@ -1481,7 +1481,7 @@ msgstr "Synchronisé sur"
 #: hepatitis/management/hepatitis-export-data.php:285
 #: hepatitis/requests/hepatitis-dhis2.php:349
 #: hepatitis/requests/hepatitis-requests.php:447
-#: hepatitis/results/hepatitis-failed-results.php:226
+#: hepatitis/results/hepatitis-failed-results.php:217
 #: hepatitis/results/hepatitis-manual-results.php:191
 #: hepatitis/results/hepatitis-print-results.php:222
 #: hepatitis/results/hepatitis-print-results.php:382
@@ -1490,7 +1490,7 @@ msgstr "Synchronisé sur"
 #: specimen-referral-manifest/view-manifests.php:63
 #: system-admin/instance-overview/instanceIndex.php:127
 #: tb/management/tb-export-data.php:278 tb/requests/tb-requests.php:325
-#: tb/results/tb-failed-results.php:228 tb/results/tb-manual-results.php:196
+#: tb/results/tb-failed-results.php:219 tb/results/tb-manual-results.php:196
 #: tb/results/tb-print-results.php:208 tb/results/tb-print-results.php:364
 #: users/users.php:63 vl/requests/sample-storage.php:273
 #: vl/requests/vl-requests.php:686 vl/results/vl-failed-results.php:207
@@ -1511,7 +1511,7 @@ msgstr "Action"
 #: cd4/requests/add-samples-from-manifest.php:76
 #: cd4/requests/cd4-requests.php:499 cd4/requests/cd4-requests.php:556
 #: cd4/requests/export-cd4-requests.php:28
-#: cd4/results/cd4-failed-results.php:190
+#: cd4/results/cd4-failed-results.php:181
 #: cd4/results/cd4-manual-results.php:184
 #: cd4/results/cd4-manual-results.php:243 cd4/results/cd4-print-results.php:146
 #: cd4/results/cd4-print-results.php:198 cd4/results/cd4-print-results.php:308
@@ -1533,7 +1533,7 @@ msgstr "Action"
 #: covid-19/requests/forms/edit-cameroon.php:115
 #: covid-19/requests/forms/edit-cameroon.php:121
 #: covid-19/requests/forms/edit-cameroon.php:123
-#: covid-19/results/covid-19-failed-results.php:190
+#: covid-19/results/covid-19-failed-results.php:181
 #: covid-19/results/covid-19-manual-results.php:125
 #: covid-19/results/covid-19-manual-results.php:178
 #: covid-19/results/covid-19-print-results.php:149
@@ -1564,7 +1564,7 @@ msgstr "Action"
 #: eid/requests/forms/edit-cameroon.php:100
 #: eid/requests/forms/edit-cameroon.php:106
 #: eid/requests/forms/edit-cameroon.php:108
-#: eid/results/eid-failed-results.php:204
+#: eid/results/eid-failed-results.php:196
 #: eid/results/eid-manual-results.php:134
 #: eid/results/eid-manual-results.php:193 eid/results/eid-print-results.php:141
 #: eid/results/eid-print-results.php:201 eid/results/eid-print-results.php:301
@@ -1611,7 +1611,7 @@ msgstr "Action"
 #: hepatitis/requests/add-samples-from-manifest.php:70
 #: hepatitis/requests/hepatitis-dhis2.php:307
 #: hepatitis/requests/hepatitis-requests.php:402
-#: hepatitis/results/hepatitis-failed-results.php:188
+#: hepatitis/results/hepatitis-failed-results.php:179
 #: hepatitis/results/hepatitis-manual-results.php:126
 #: hepatitis/results/hepatitis-manual-results.php:179
 #: hepatitis/results/hepatitis-print-results.php:156
@@ -1633,7 +1633,7 @@ msgstr "Action"
 #: tb/requests/forms/edit-burkina-faso.php:112 tb/requests/tb-requests.php:305
 #: tb/results/forms/update-burkina-faso.php:105
 #: tb/results/forms/update-burkina-faso.php:111
-#: tb/results/tb-failed-results.php:189 tb/results/tb-manual-results.php:132
+#: tb/results/tb-failed-results.php:180 tb/results/tb-manual-results.php:132
 #: tb/results/tb-manual-results.php:185 tb/results/tb-print-results.php:146
 #: tb/results/tb-print-results.php:194 tb/results/tb-print-results.php:303
 #: tb/results/tb-print-results.php:350 tb/results/tb-result-status.php:162
@@ -1764,7 +1764,7 @@ msgstr "Envoyer"
 #: cd4/management/cd4-sample-rejection-report.php:75
 #: cd4/management/cd4-sample-status.php:99
 #: cd4/management/cd4-testing-target-report.php:213
-#: cd4/requests/cd4-requests.php:432 cd4/results/cd4-failed-results.php:172
+#: cd4/requests/cd4-requests.php:432 cd4/results/cd4-failed-results.php:163
 #: cd4/results/cd4-manual-results.php:171 cd4/results/cd4-print-results.php:135
 #: cd4/results/cd4-print-results.php:297 cd4/results/cd4-result-status.php:185
 #: cd4/results/email-results.php:288
@@ -1777,7 +1777,7 @@ msgstr "Envoyer"
 #: covid-19/management/covid-19-sample-status.php:92
 #: covid-19/management/covid19TestingTargetReport.php:216
 #: covid-19/requests/covid-19-requests.php:354
-#: covid-19/results/covid-19-failed-results.php:171
+#: covid-19/results/covid-19-failed-results.php:162
 #: covid-19/results/covid-19-manual-results.php:116
 #: covid-19/results/covid-19-print-results.php:138
 #: covid-19/results/covid-19-print-results.php:300
@@ -1793,7 +1793,7 @@ msgstr "Envoyer"
 #: eid/management/eid-sample-rejection-report.php:71
 #: eid/management/eid-sample-status.php:104
 #: eid/management/eidTestingTargetReport.php:215
-#: eid/requests/eid-requests.php:369 eid/results/eid-failed-results.php:185
+#: eid/requests/eid-requests.php:369 eid/results/eid-failed-results.php:177
 #: eid/results/eid-manual-results.php:121 eid/results/eid-print-results.php:129
 #: eid/results/eid-print-results.php:289 eid/results/eid-result-status.php:138
 #: eid/results/email-results.php:285
@@ -1818,7 +1818,7 @@ msgstr "Envoyer"
 #: hepatitis/requests/hepatitis-dhis2.php:242
 #: hepatitis/requests/hepatitis-requests.php:355
 #: hepatitis/results/email-results.php:288
-#: hepatitis/results/hepatitis-failed-results.php:170
+#: hepatitis/results/hepatitis-failed-results.php:161
 #: hepatitis/results/hepatitis-manual-results.php:117
 #: hepatitis/results/hepatitis-print-results.php:145
 #: hepatitis/results/hepatitis-print-results.php:306
@@ -1830,7 +1830,7 @@ msgstr "Envoyer"
 #: tb/management/tb-clinic-report.php:488
 #: tb/management/tb-sample-rejection-report.php:73
 #: tb/management/tb-sample-status.php:96 tb/requests/tb-requests.php:270
-#: tb/results/email-results.php:288 tb/results/tb-failed-results.php:171
+#: tb/results/email-results.php:288 tb/results/tb-failed-results.php:162
 #: tb/results/tb-manual-results.php:123 tb/results/tb-print-results.php:135
 #: tb/results/tb-print-results.php:292 tb/results/tb-result-status.php:132
 #: users/addUser.php:280 users/editUser.php:361
@@ -1881,7 +1881,7 @@ msgstr "Détails de la synchronisation des laboratoires"
 #: cd4/requests/add-samples-from-manifest.php:99
 #: cd4/requests/cd4-requests.php:364 cd4/requests/cd4-requests.php:529
 #: cd4/requests/cd4-requests.php:582 cd4/requests/export-cd4-requests.php:28
-#: cd4/results/cd4-failed-results.php:81 cd4/results/cd4-failed-results.php:213
+#: cd4/results/cd4-failed-results.php:81 cd4/results/cd4-failed-results.php:204
 #: cd4/results/cd4-print-results.php:82 cd4/results/cd4-print-results.php:172
 #: cd4/results/cd4-print-results.php:207 cd4/results/cd4-print-results.php:245
 #: cd4/results/cd4-print-results.php:333 cd4/results/cd4-print-results.php:367
@@ -1897,7 +1897,7 @@ msgstr "Détails de la synchronisation des laboratoires"
 #: covid-19/requests/covid-19-requests.php:456
 #: covid-19/requests/forms/add-cameroon.php:647
 #: covid-19/results/covid-19-failed-results.php:80
-#: covid-19/results/covid-19-failed-results.php:213
+#: covid-19/results/covid-19-failed-results.php:204
 #: covid-19/results/covid-19-print-results.php:86
 #: covid-19/results/covid-19-print-results.php:174
 #: covid-19/results/covid-19-print-results.php:209
@@ -1913,7 +1913,7 @@ msgstr "Détails de la synchronisation des laboratoires"
 #: eid/management/eid-export-data.php:105
 #: eid/requests/addSamplesFromManifest.php:108
 #: eid/requests/eid-requests.php:274 eid/requests/eid-requests.php:466
-#: eid/results/eid-failed-results.php:81 eid/results/eid-failed-results.php:233
+#: eid/results/eid-failed-results.php:81 eid/results/eid-failed-results.php:225
 #: eid/results/eid-print-results.php:82 eid/results/eid-print-results.php:178
 #: eid/results/eid-print-results.php:217 eid/results/eid-print-results.php:241
 #: eid/results/eid-print-results.php:338 eid/results/eid-print-results.php:376
@@ -1947,7 +1947,7 @@ msgstr "Détails de la synchronisation des laboratoires"
 #: hepatitis/requests/hepatitis-requests.php:428
 #: hepatitis/results/email-results.php:208
 #: hepatitis/results/hepatitis-failed-results.php:79
-#: hepatitis/results/hepatitis-failed-results.php:211
+#: hepatitis/results/hepatitis-failed-results.php:202
 #: hepatitis/results/hepatitis-print-results.php:94
 #: hepatitis/results/hepatitis-print-results.php:181
 #: hepatitis/results/hepatitis-print-results.php:216
@@ -1961,7 +1961,7 @@ msgstr "Détails de la synchronisation des laboratoires"
 #: tb/management/tb-clinic-report.php:458 tb/management/tb-export-data.php:92
 #: tb/requests/addSamplesFromManifest.php:63 tb/requests/tb-requests.php:213
 #: tb/requests/tb-requests.php:319 tb/results/email-results.php:208
-#: tb/results/tb-failed-results.php:80 tb/results/tb-failed-results.php:212
+#: tb/results/tb-failed-results.php:80 tb/results/tb-failed-results.php:203
 #: tb/results/tb-print-results.php:82 tb/results/tb-print-results.php:171
 #: tb/results/tb-print-results.php:203 tb/results/tb-print-results.php:240
 #: tb/results/tb-print-results.php:328 tb/results/tb-print-results.php:359
@@ -2013,7 +2013,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: cd4/requests/add-samples-from-manifest.php:102
 #: cd4/requests/cd4-requests.php:375 cd4/requests/cd4-requests.php:532
 #: cd4/requests/cd4-requests.php:585 cd4/requests/export-cd4-requests.php:28
-#: cd4/results/cd4-failed-results.php:89 cd4/results/cd4-failed-results.php:216
+#: cd4/results/cd4-failed-results.php:89 cd4/results/cd4-failed-results.php:207
 #: cd4/results/cd4-print-results.php:89 cd4/results/cd4-print-results.php:175
 #: cd4/results/cd4-print-results.php:208 cd4/results/cd4-print-results.php:252
 #: cd4/results/cd4-print-results.php:336 cd4/results/cd4-print-results.php:368
@@ -2030,7 +2030,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: covid-19/requests/forms/add-cameroon.php:684
 #: covid-19/requests/forms/add-cameroon.php:686
 #: covid-19/results/covid-19-failed-results.php:88
-#: covid-19/results/covid-19-failed-results.php:216
+#: covid-19/results/covid-19-failed-results.php:207
 #: covid-19/results/covid-19-print-results.php:93
 #: covid-19/results/covid-19-print-results.php:177
 #: covid-19/results/covid-19-print-results.php:210
@@ -2046,7 +2046,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: eid/management/eid-export-data.php:112
 #: eid/requests/addSamplesFromManifest.php:111
 #: eid/requests/eid-requests.php:286 eid/requests/eid-requests.php:469
-#: eid/results/eid-failed-results.php:89 eid/results/eid-failed-results.php:236
+#: eid/results/eid-failed-results.php:89 eid/results/eid-failed-results.php:228
 #: eid/results/eid-print-results.php:88 eid/results/eid-print-results.php:181
 #: eid/results/eid-print-results.php:218 eid/results/eid-print-results.php:248
 #: eid/results/eid-print-results.php:341 eid/results/eid-print-results.php:377
@@ -2083,7 +2083,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: hepatitis/requests/hepatitis-requests.php:431
 #: hepatitis/results/email-results.php:223
 #: hepatitis/results/hepatitis-failed-results.php:87
-#: hepatitis/results/hepatitis-failed-results.php:214
+#: hepatitis/results/hepatitis-failed-results.php:205
 #: hepatitis/results/hepatitis-print-results.php:101
 #: hepatitis/results/hepatitis-print-results.php:184
 #: hepatitis/results/hepatitis-print-results.php:217
@@ -2097,7 +2097,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: tb/management/tb-clinic-report.php:467 tb/management/tb-export-data.php:102
 #: tb/requests/addSamplesFromManifest.php:64 tb/requests/tb-requests.php:222
 #: tb/requests/tb-requests.php:320 tb/results/email-results.php:223
-#: tb/results/tb-failed-results.php:88 tb/results/tb-failed-results.php:215
+#: tb/results/tb-failed-results.php:88 tb/results/tb-failed-results.php:206
 #: tb/results/tb-print-results.php:89 tb/results/tb-print-results.php:174
 #: tb/results/tb-print-results.php:204 tb/results/tb-print-results.php:247
 #: tb/results/tb-print-results.php:331 tb/results/tb-print-results.php:360
@@ -2252,7 +2252,7 @@ msgstr "Veuillez choisir Région/Etat"
 #: cd4/requests/add-samples-from-manifest.php:96
 #: cd4/requests/cd4-requests.php:382 cd4/requests/cd4-requests.php:526
 #: cd4/requests/cd4-requests.php:579 cd4/requests/patientModal.php:113
-#: cd4/results/cd4-failed-results.php:99 cd4/results/cd4-failed-results.php:204
+#: cd4/results/cd4-failed-results.php:99 cd4/results/cd4-failed-results.php:195
 #: cd4/results/cd4-manual-results.php:138
 #: cd4/results/cd4-manual-results.php:204
 #: cd4/results/cd4-manual-results.php:260 cd4/results/cd4-print-results.php:103
@@ -2279,7 +2279,7 @@ msgstr "Veuillez choisir Région/Etat"
 #: covid-19/requests/forms/add-cameroon.php:590
 #: covid-19/requests/patientModal.php:86
 #: covid-19/results/covid-19-failed-results.php:98
-#: covid-19/results/covid-19-failed-results.php:204
+#: covid-19/results/covid-19-failed-results.php:195
 #: covid-19/results/covid-19-manual-results.php:96
 #: covid-19/results/covid-19-manual-results.php:144
 #: covid-19/results/covid-19-manual-results.php:183
@@ -2307,7 +2307,7 @@ msgstr "Veuillez choisir Région/Etat"
 #: eid/management/get-rejected-samples.php:92
 #: eid/requests/addSamplesFromManifest.php:93 eid/requests/eid-requests.php:293
 #: eid/requests/eid-requests.php:451 eid/requests/patientModal.php:105
-#: eid/results/eid-failed-results.php:99 eid/results/eid-failed-results.php:218
+#: eid/results/eid-failed-results.php:99 eid/results/eid-failed-results.php:210
 #: eid/results/eid-manual-results.php:100
 #: eid/results/eid-manual-results.php:154
 #: eid/results/eid-manual-results.php:204 eid/results/eid-print-results.php:99
@@ -2359,7 +2359,7 @@ msgstr "Veuillez choisir Région/Etat"
 #: hepatitis/requests/hepatitis-requests.php:419
 #: hepatitis/results/email-results.php:165
 #: hepatitis/results/hepatitis-failed-results.php:97
-#: hepatitis/results/hepatitis-failed-results.php:202
+#: hepatitis/results/hepatitis-failed-results.php:193
 #: hepatitis/results/hepatitis-manual-results.php:97
 #: hepatitis/results/hepatitis-manual-results.php:145
 #: hepatitis/results/hepatitis-manual-results.php:184
@@ -2381,7 +2381,7 @@ msgstr "Veuillez choisir Région/Etat"
 #: tb/reference/tb-sample-type.php:33 tb/requests/addSamplesFromManifest.php:60
 #: tb/requests/patientModal.php:88 tb/requests/tb-requests.php:227
 #: tb/requests/tb-requests.php:312 tb/results/email-results.php:165
-#: tb/results/tb-failed-results.php:98 tb/results/tb-failed-results.php:203
+#: tb/results/tb-failed-results.php:98 tb/results/tb-failed-results.php:194
 #: tb/results/tb-manual-results.php:103 tb/results/tb-manual-results.php:151
 #: tb/results/tb-manual-results.php:190 tb/results/tb-print-results.php:103
 #: tb/results/tb-print-results.php:165 tb/results/tb-print-results.php:201
@@ -2494,7 +2494,7 @@ msgstr "Pas de données disponibles"
 #: eid/management/eid-clinic-report.php:1004
 #: eid/management/eid-clinic-report.php:1024
 #: eid/management/eid-sample-status.php:328 eid/requests/eid-requests.php:938
-#: generic-tests/results/generic-failed-results.php:550
+#: generic-tests/results/generic-failed-results.php:553
 #: hepatitis/management/hepatitis-clinic-report.php:954
 #: hepatitis/management/hepatitis-clinic-report.php:977
 #: hepatitis/management/hepatitis-clinic-report.php:1000
@@ -2516,7 +2516,7 @@ msgstr "Pas de données disponibles"
 #: vl/program-management/vlWeeklyReport.php:572
 #: vl/program-management/vlWeeklyReport.php:596
 #: vl/requests/sample-storage.php:568 vl/requests/vl-requests.php:1208
-#: vl/results/vl-failed-results.php:566
+#: vl/results/vl-failed-results.php:570
 msgid "Unable to generate the excel file"
 msgstr "Impossible de générer le fichier excel"
 
@@ -2694,19 +2694,19 @@ msgid "Result Return Date and Time"
 msgstr "Résultat Date et heure de retour"
 
 #: admin/monitoring/sources-of-requests.php:253 batch/batches.php:99
-#: cd4/results/cd4-failed-results.php:222 cd4/results/cd4-print-results.php:184
+#: cd4/results/cd4-failed-results.php:213 cd4/results/cd4-print-results.php:184
 #: cd4/results/cd4-print-results.php:211 cd4/results/cd4-print-results.php:345
 #: cd4/results/cd4-print-results.php:371
 #: covid-19/requests/addSamplesFromManifest.php:109
 #: covid-19/requests/covid-19-requests.php:465
-#: covid-19/results/covid-19-failed-results.php:222
+#: covid-19/results/covid-19-failed-results.php:213
 #: covid-19/results/covid-19-print-results.php:186
 #: covid-19/results/covid-19-print-results.php:213
 #: covid-19/results/covid-19-print-results.php:348
 #: covid-19/results/covid-19-print-results.php:374
 #: covid-19/results/covid-19-qc-data.php:88
 #: eid/requests/addSamplesFromManifest.php:117
-#: eid/requests/eid-requests.php:480 eid/results/eid-failed-results.php:242
+#: eid/requests/eid-requests.php:480 eid/results/eid-failed-results.php:234
 #: eid/results/eid-print-results.php:187 eid/results/eid-print-results.php:220
 #: eid/results/eid-print-results.php:347 eid/results/eid-print-results.php:379
 #: generic-tests/program-management/generic-export-data.php:309
@@ -2718,13 +2718,13 @@ msgstr "Résultat Date et heure de retour"
 #: hepatitis/requests/add-samples-from-manifest.php:106
 #: hepatitis/requests/hepatitis-dhis2.php:342
 #: hepatitis/requests/hepatitis-requests.php:440
-#: hepatitis/results/hepatitis-failed-results.php:220
+#: hepatitis/results/hepatitis-failed-results.php:211
 #: hepatitis/results/hepatitis-print-results.php:193
 #: hepatitis/results/hepatitis-print-results.php:220
 #: hepatitis/results/hepatitis-print-results.php:354
 #: hepatitis/results/hepatitis-print-results.php:380
 #: tb/requests/addSamplesFromManifest.php:66 tb/requests/tb-requests.php:322
-#: tb/results/tb-failed-results.php:221 tb/results/tb-print-results.php:180
+#: tb/results/tb-failed-results.php:212 tb/results/tb-print-results.php:180
 #: tb/results/tb-print-results.php:206 tb/results/tb-print-results.php:337
 #: tb/results/tb-print-results.php:362
 #: vl/program-management/vl-export-data.php:452
@@ -2802,7 +2802,7 @@ msgstr "Nom du Labo"
 #: eid/requests/forms/add-sierraleone.php:186
 #: eid/requests/forms/add-southsudan.php:177
 #: eid/requests/forms/edit-burkina-faso.php:156
-#: eid/requests/forms/edit-cameroon.php:189 eid/requests/forms/edit-drc.php:201
+#: eid/requests/forms/edit-cameroon.php:189 eid/requests/forms/edit-drc.php:199
 #: eid/requests/forms/edit-png.php:230 eid/requests/forms/edit-rwanda.php:180
 #: eid/requests/forms/edit-sierraleone.php:187
 #: eid/requests/forms/edit-southsudan.php:183
@@ -2868,13 +2868,13 @@ msgstr "Nom du Labo"
 #: vl/reference/edit-vl-test-failure-reason.php:53
 #: vl/requests/forms/add-burkina-faso.php:293
 #: vl/requests/forms/add-cameroon.php:235
-#: vl/requests/forms/add-cameroon.php:434 vl/requests/forms/add-drc.php:184
+#: vl/requests/forms/add-cameroon.php:434 vl/requests/forms/add-drc.php:181
 #: vl/requests/forms/add-png.php:143 vl/requests/forms/add-rwanda.php:183
 #: vl/requests/forms/add-sierraleone.php:219
 #: vl/requests/forms/add-southsudan.php:229
 #: vl/requests/forms/edit-burkina-faso.php:378
 #: vl/requests/forms/edit-cameroon.php:284
-#: vl/requests/forms/edit-cameroon.php:479 vl/requests/forms/edit-drc.php:228
+#: vl/requests/forms/edit-cameroon.php:479 vl/requests/forms/edit-drc.php:225
 #: vl/requests/forms/edit-png.php:289 vl/requests/forms/edit-rwanda.php:227
 #: vl/requests/forms/edit-sierraleone.php:316
 #: vl/requests/forms/edit-southsudan.php:297
@@ -2936,16 +2936,16 @@ msgstr "Veuillez vérifier les paramètres de votre demande."
 msgid "Something went wrong. Please try again later."
 msgstr "Une erreur s'est produite. Veuillez réessayer plus tard."
 
-#: batch/add-batch-position.php:48
+#: batch/add-batch-position.php:32
 msgid " | Add Batch Position"
 msgstr " | Ajouter une position de lot"
 
-#: batch/add-batch-position.php:275
+#: batch/add-batch-position.php:85
 msgid "Add Batch Controls Position"
 msgstr "Ajouter une position de contrôle de lot"
 
-#: batch/add-batch-position.php:278 batch/add-batch.php:138
-#: batch/edit-batch-position.php:283 cd4/results/email-results.php:235
+#: batch/add-batch-position.php:88 batch/add-batch.php:138
+#: batch/edit-batch-position.php:98 cd4/results/email-results.php:235
 #: covid-19/results/email-results.php:235 eid/results/email-results.php:232
 #: generic-tests/results/email-results.php:235
 #: hepatitis/results/email-results.php:235 mail/vlResultMail.php:235
@@ -2954,9 +2954,9 @@ msgstr "Ajouter une position de contrôle de lot"
 msgid "Batch"
 msgstr "Lot"
 
-#: batch/add-batch-position.php:286 batch/add-batch.php:322
+#: batch/add-batch-position.php:95 batch/add-batch.php:322
 #: batch/add-batch.php:325 batch/batches.php:92
-#: batch/edit-batch-position.php:291 batch/edit-batch.php:295
+#: batch/edit-batch-position.php:105 batch/edit-batch.php:295
 #: batch/edit-batch.php:297 cd4/management/cd4-clinic-report.php:98
 #: cd4/management/cd4-clinic-report.php:206
 #: cd4/management/cd4-clinic-report.php:308
@@ -2969,7 +2969,7 @@ msgstr "Lot"
 #: cd4/requests/add-samples-from-manifest.php:87
 #: cd4/requests/cd4-requests.php:241 cd4/requests/cd4-requests.php:514
 #: cd4/requests/cd4-requests.php:567 cd4/requests/get-request-list.php:335
-#: cd4/results/cd4-failed-results.php:201
+#: cd4/results/cd4-failed-results.php:192
 #: cd4/results/cd4-manual-results.php:101
 #: cd4/results/cd4-manual-results.php:195
 #: cd4/results/cd4-manual-results.php:251 cd4/results/cd4-print-results.php:127
@@ -2990,7 +2990,7 @@ msgstr "Lot"
 #: covid-19/requests/covid-19-requests.php:173
 #: covid-19/requests/covid-19-requests.php:435
 #: covid-19/requests/get-request-list.php:294
-#: covid-19/results/covid-19-failed-results.php:201
+#: covid-19/results/covid-19-failed-results.php:192
 #: covid-19/results/covid-19-manual-results.php:87
 #: covid-19/results/covid-19-manual-results.php:135
 #: covid-19/results/covid-19-manual-results.php:182
@@ -3015,7 +3015,7 @@ msgstr "Lot"
 #: eid/management/eid-sample-status.php:73
 #: eid/requests/addSamplesFromManifest.php:90 eid/requests/eid-requests.php:154
 #: eid/requests/eid-requests.php:445 eid/requests/get-request-list.php:307
-#: eid/results/eid-failed-results.php:215 eid/results/eid-manual-results.php:83
+#: eid/results/eid-failed-results.php:207 eid/results/eid-manual-results.php:83
 #: eid/results/eid-manual-results.php:145
 #: eid/results/eid-manual-results.php:201 eid/results/eid-print-results.php:121
 #: eid/results/eid-print-results.php:151 eid/results/eid-print-results.php:205
@@ -3053,7 +3053,7 @@ msgstr "Lot"
 #: hepatitis/requests/hepatitis-dhis2.php:318
 #: hepatitis/requests/hepatitis-requests.php:189
 #: hepatitis/requests/hepatitis-requests.php:413
-#: hepatitis/results/hepatitis-failed-results.php:199
+#: hepatitis/results/hepatitis-failed-results.php:190
 #: hepatitis/results/hepatitis-manual-results.php:87
 #: hepatitis/results/hepatitis-manual-results.php:136
 #: hepatitis/results/hepatitis-manual-results.php:183
@@ -3076,7 +3076,7 @@ msgstr "Lot"
 #: tb/management/tb-sample-status.php:65
 #: tb/requests/addSamplesFromManifest.php:59
 #: tb/requests/get-request-list.php:268 tb/requests/tb-requests.php:143
-#: tb/requests/tb-requests.php:310 tb/results/tb-failed-results.php:200
+#: tb/requests/tb-requests.php:310 tb/results/tb-failed-results.php:191
 #: tb/results/tb-manual-results.php:92 tb/results/tb-manual-results.php:142
 #: tb/results/tb-manual-results.php:189 tb/results/tb-print-results.php:69
 #: tb/results/tb-print-results.php:127 tb/results/tb-print-results.php:156
@@ -3108,17 +3108,17 @@ msgstr "Lot"
 msgid "Batch Code"
 msgstr "Code du lot"
 
-#: batch/add-batch-position.php:290 batch/add-batch.php:286
+#: batch/add-batch-position.php:99 batch/add-batch.php:286
 #: batch/edit-batch.php:265
 msgid "Request Created"
 msgstr "Demande créée"
 
-#: batch/add-batch-position.php:291 batch/add-batch.php:237
+#: batch/add-batch-position.php:100 batch/add-batch.php:237
 #: batch/add-batch.php:240 batch/add-batch.php:287 batch/edit-batch.php:266
 msgid "Last Modified"
 msgstr "Dernière modification"
 
-#: batch/add-batch-position.php:292 batch/add-batch.php:288
+#: batch/add-batch-position.php:101 batch/add-batch.php:288
 #: batch/edit-batch.php:267
 #: vl/program-management/sample-storage-reports.php:134
 #: vl/program-management/sample-storage-reports.php:182
@@ -3127,7 +3127,7 @@ msgstr "Dernière modification"
 msgid "Sample Code"
 msgstr "Code d'échantillon"
 
-#: batch/add-batch-position.php:293 batch/add-batch.php:289
+#: batch/add-batch-position.php:102 batch/add-batch.php:289
 #: batch/edit-batch.php:268 eid/management/eid-export-data.php:269
 #: eid/management/eid-export-data.php:306 eid/requests/eid-requests.php:476
 #: eid/requests/export-eid-requests.php:51
@@ -3149,15 +3149,15 @@ msgstr "Code d'échantillon"
 msgid "Lab Assigned Code"
 msgstr "Code du Labo"
 
-#: batch/add-batch-position.php:298 batch/add-batch.php:294
+#: batch/add-batch-position.php:107 batch/add-batch.php:294
 msgid "Ascending"
 msgstr "Ascendant"
 
-#: batch/add-batch-position.php:299 batch/add-batch.php:295
+#: batch/add-batch-position.php:108 batch/add-batch.php:295
 msgid "Descending"
 msgstr "Descendant"
 
-#: batch/add-batch-position.php:322 batch/edit-batch-position.php:309
+#: batch/add-batch-position.php:127 batch/edit-batch-position.php:123
 msgid "Labels for Controls/Calibrators"
 msgstr "Étiquettes pour les contrôles/étalons"
 
@@ -3526,7 +3526,7 @@ msgstr "Échantillons entrés par"
 #: cd4/requests/add-samples-from-manifest.php:84
 #: cd4/requests/cd4-requests.php:133 cd4/requests/cd4-requests.php:510
 #: cd4/requests/cd4-requests.php:564 cd4/results/cd4-failed-results.php:75
-#: cd4/results/cd4-failed-results.php:198 cd4/results/cd4-manual-results.php:95
+#: cd4/results/cd4-failed-results.php:189 cd4/results/cd4-manual-results.php:95
 #: cd4/results/cd4-print-results.php:65 cd4/results/cd4-print-results.php:228
 #: cd4/results/cd4-result-status.php:117 cd4/results/cd4-result-status.php:233
 #: cd4/results/email-results.php:140
@@ -3552,7 +3552,7 @@ msgstr "Échantillons entrés par"
 #: covid-19/requests/forms/edit-cameroon.php:348
 #: covid-19/requests/forms/edit-cameroon.php:350
 #: covid-19/results/covid-19-failed-results.php:74
-#: covid-19/results/covid-19-failed-results.php:198
+#: covid-19/results/covid-19-failed-results.php:189
 #: covid-19/results/covid-19-manual-results.php:83
 #: covid-19/results/covid-19-print-results.php:73
 #: covid-19/results/covid-19-print-results.php:230
@@ -3580,7 +3580,7 @@ msgstr "Échantillons entrés par"
 #: eid/requests/forms/edit-burkina-faso.php:324
 #: eid/requests/forms/edit-cameroon.php:499
 #: eid/requests/forms/edit-cameroon.php:501
-#: eid/results/eid-failed-results.php:75 eid/results/eid-failed-results.php:212
+#: eid/results/eid-failed-results.php:75 eid/results/eid-failed-results.php:204
 #: eid/results/eid-manual-results.php:77 eid/results/eid-print-results.php:78
 #: eid/results/eid-print-results.php:237 eid/results/eid-result-status.php:102
 #: eid/results/eid-result-status.php:172 eid/results/email-results.php:137
@@ -3627,7 +3627,7 @@ msgstr "Échantillons entrés par"
 #: hepatitis/requests/hepatitis-requests.php:410
 #: hepatitis/results/email-results.php:140
 #: hepatitis/results/hepatitis-failed-results.php:73
-#: hepatitis/results/hepatitis-failed-results.php:196
+#: hepatitis/results/hepatitis-failed-results.php:187
 #: hepatitis/results/hepatitis-manual-results.php:83
 #: hepatitis/results/hepatitis-print-results.php:77
 #: hepatitis/results/hepatitis-print-results.php:237
@@ -3645,7 +3645,7 @@ msgstr "Échantillons entrés par"
 #: tb/management/tb-sample-status.php:61 tb/management/tb-sample-status.php:116
 #: tb/requests/addSamplesFromManifest.php:58 tb/requests/tb-requests.php:121
 #: tb/requests/tb-requests.php:309 tb/results/email-results.php:140
-#: tb/results/tb-failed-results.php:74 tb/results/tb-failed-results.php:197
+#: tb/results/tb-failed-results.php:74 tb/results/tb-failed-results.php:188
 #: tb/results/tb-manual-results.php:88 tb/results/tb-print-results.php:65
 #: tb/results/tb-print-results.php:223 tb/results/tb-result-status.php:89
 #: tb/results/tb-result-status.php:166
@@ -4224,11 +4224,11 @@ msgstr "Cette action est irréversible."
 msgid "Batch deleted successfully"
 msgstr "Suppression de lots réussie"
 
-#: batch/edit-batch-position.php:38
+#: batch/edit-batch-position.php:37
 msgid " | Edit Batch Position"
 msgstr " | Modifier la position du lot"
 
-#: batch/edit-batch-position.php:280
+#: batch/edit-batch-position.php:95
 msgid "Edit Batch Controls Position"
 msgstr "Éditer la position des contrôles de lots"
 
@@ -4333,7 +4333,7 @@ msgstr "BARCODE"
 #: cd4/requests/cd4-requests.php:506 cd4/requests/cd4-requests.php:560
 #: cd4/requests/export-cd4-requests.php:28
 #: cd4/requests/export-cd4-requests.php:31
-#: cd4/results/cd4-failed-results.php:194
+#: cd4/results/cd4-failed-results.php:185
 #: cd4/results/cd4-manual-results.php:191
 #: cd4/results/cd4-manual-results.php:247 cd4/results/cd4-print-results.php:152
 #: cd4/results/cd4-print-results.php:200 cd4/results/cd4-print-results.php:314
@@ -4349,7 +4349,7 @@ msgstr "BARCODE"
 #: covid-19/requests/covid-19-requests.php:428
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/results/covid-19-failed-results.php:194
+#: covid-19/results/covid-19-failed-results.php:185
 #: covid-19/results/covid-19-manual-results.php:131
 #: covid-19/results/covid-19-manual-results.php:180
 #: covid-19/results/covid-19-print-results.php:155
@@ -4365,7 +4365,7 @@ msgstr "BARCODE"
 #: eid/management/eid-export-data.php:298
 #: eid/management/eid-sample-status.php:124
 #: eid/requests/addSamplesFromManifest.php:83 eid/requests/eid-requests.php:438
-#: eid/results/eid-failed-results.php:208
+#: eid/results/eid-failed-results.php:200
 #: eid/results/eid-manual-results.php:141
 #: eid/results/eid-manual-results.php:197 eid/results/eid-print-results.php:147
 #: eid/results/eid-print-results.php:203 eid/results/eid-print-results.php:307
@@ -4392,7 +4392,7 @@ msgstr "BARCODE"
 #: hepatitis/management/hepatitis-export-data.php:274
 #: hepatitis/requests/hepatitis-dhis2.php:311
 #: hepatitis/requests/hepatitis-requests.php:406
-#: hepatitis/results/hepatitis-failed-results.php:192
+#: hepatitis/results/hepatitis-failed-results.php:183
 #: hepatitis/results/hepatitis-manual-results.php:132
 #: hepatitis/results/hepatitis-manual-results.php:181
 #: hepatitis/results/hepatitis-print-results.php:162
@@ -4406,7 +4406,7 @@ msgstr "BARCODE"
 #: tb/management/tb-clinic-report.php:434 tb/management/tb-export-data.php:226
 #: tb/management/tb-export-data.php:267
 #: tb/requests/addSamplesFromManifest.php:56 tb/requests/tb-requests.php:307
-#: tb/results/tb-failed-results.php:193 tb/results/tb-manual-results.php:138
+#: tb/results/tb-failed-results.php:184 tb/results/tb-manual-results.php:138
 #: tb/results/tb-manual-results.php:187 tb/results/tb-print-results.php:152
 #: tb/results/tb-print-results.php:196 tb/results/tb-print-results.php:309
 #: tb/results/tb-print-results.php:352 tb/results/tb-result-status.php:164
@@ -4909,13 +4909,13 @@ msgstr "Veuillez choisir le sexe"
 #: eid/management/eid-clinic-report.php:261
 #: eid/management/eid-clinic-report.php:368 eid/requests/eid-requests.php:221
 #: eid/requests/forms/add-burkina-faso.php:167
-#: eid/requests/forms/add-cameroon.php:199 eid/requests/forms/add-drc.php:217
+#: eid/requests/forms/add-cameroon.php:199 eid/requests/forms/add-drc.php:214
 #: eid/requests/forms/edit-burkina-faso.php:181
-#: eid/requests/forms/edit-cameroon.php:219 eid/requests/forms/edit-drc.php:265
+#: eid/requests/forms/edit-cameroon.php:219 eid/requests/forms/edit-drc.php:263
 #: eid/results/email-results.php:176
 #: eid/results/forms/update-burkina-faso-result.php:180
 #: eid/results/forms/update-cameroon-result.php:202
-#: eid/results/forms/update-drc-result.php:232
+#: eid/results/forms/update-drc-result.php:230
 #: generic-tests/program-management/generic-export-data.php:212
 #: generic-tests/requests/add-request.php:413
 #: generic-tests/requests/edit-request.php:592
@@ -4970,13 +4970,13 @@ msgstr "Homme"
 #: eid/management/eid-clinic-report.php:262
 #: eid/management/eid-clinic-report.php:369 eid/requests/eid-requests.php:224
 #: eid/requests/forms/add-burkina-faso.php:168
-#: eid/requests/forms/add-cameroon.php:200 eid/requests/forms/add-drc.php:218
+#: eid/requests/forms/add-cameroon.php:200 eid/requests/forms/add-drc.php:215
 #: eid/requests/forms/edit-burkina-faso.php:182
-#: eid/requests/forms/edit-cameroon.php:220 eid/requests/forms/edit-drc.php:266
+#: eid/requests/forms/edit-cameroon.php:220 eid/requests/forms/edit-drc.php:264
 #: eid/results/email-results.php:179
 #: eid/results/forms/update-burkina-faso-result.php:181
 #: eid/results/forms/update-cameroon-result.php:203
-#: eid/results/forms/update-drc-result.php:233
+#: eid/results/forms/update-drc-result.php:231
 #: generic-tests/program-management/generic-export-data.php:213
 #: generic-tests/requests/add-request.php:416
 #: generic-tests/requests/edit-request.php:596
@@ -5047,11 +5047,11 @@ msgstr "Femme"
 #: eid/management/eid-clinic-report.php:163
 #: eid/management/eid-clinic-report.php:263
 #: eid/management/eid-clinic-report.php:370 eid/requests/eid-requests.php:227
-#: eid/requests/forms/add-cameroon.php:201 eid/requests/forms/add-drc.php:219
-#: eid/requests/forms/edit-cameroon.php:221 eid/requests/forms/edit-drc.php:267
+#: eid/requests/forms/add-cameroon.php:201 eid/requests/forms/add-drc.php:216
+#: eid/requests/forms/edit-cameroon.php:221 eid/requests/forms/edit-drc.php:265
 #: eid/results/email-results.php:182
 #: eid/results/forms/update-cameroon-result.php:204
-#: eid/results/forms/update-drc-result.php:234
+#: eid/results/forms/update-drc-result.php:232
 #: eid/results/pdf/result-pdf-burkina-faso.php:158
 #: eid/results/pdf/result-pdf-drc.php:144
 #: eid/results/pdf/result-pdf-rwanda.php:125
@@ -5148,8 +5148,8 @@ msgstr "Exporter vers Excel"
 #: cd4/management/cd4-export-data.php:180
 #: cd4/management/cd4-export-data.php:218
 #: cd4/management/cd4-export-data.php:255 cd4/requests/cd4-requests.php:414
-#: cd4/requests/patientModal.php:101 cd4/results/cd4-failed-results.php:155
-#: cd4/results/cd4-failed-results.php:207 cd4/results/cd4-print-results.php:118
+#: cd4/requests/patientModal.php:101 cd4/results/cd4-failed-results.php:146
+#: cd4/results/cd4-failed-results.php:198 cd4/results/cd4-print-results.php:118
 #: cd4/results/cd4-print-results.php:203 cd4/results/cd4-print-results.php:280
 #: cd4/results/cd4-print-results.php:363
 #: covid-19/management/covid-19-clinic-report.php:183
@@ -5167,8 +5167,8 @@ msgstr "Exporter vers Excel"
 #: covid-19/requests/covid-19-requests.php:449
 #: covid-19/requests/patientModal.php:74
 #: covid-19/results/can-record-confirmatory-tests.php:179
-#: covid-19/results/covid-19-failed-results.php:154
-#: covid-19/results/covid-19-failed-results.php:207
+#: covid-19/results/covid-19-failed-results.php:145
+#: covid-19/results/covid-19-failed-results.php:198
 #: covid-19/results/covid-19-manual-results.php:184
 #: covid-19/results/covid-19-print-results.php:121
 #: covid-19/results/covid-19-print-results.php:162
@@ -5203,8 +5203,8 @@ msgstr "Exporter vers Excel"
 #: hepatitis/requests/hepatitis-dhis2.php:324
 #: hepatitis/requests/hepatitis-requests.php:325
 #: hepatitis/requests/hepatitis-requests.php:422
-#: hepatitis/results/hepatitis-failed-results.php:153
-#: hepatitis/results/hepatitis-failed-results.php:205
+#: hepatitis/results/hepatitis-failed-results.php:144
+#: hepatitis/results/hepatitis-failed-results.php:196
 #: hepatitis/results/hepatitis-manual-results.php:185
 #: hepatitis/results/hepatitis-print-results.php:128
 #: hepatitis/results/hepatitis-print-results.php:212
@@ -5218,7 +5218,7 @@ msgstr "Exporter vers Excel"
 #: tb/management/tb-export-data.php:233 tb/management/tb-export-data.php:270
 #: tb/requests/addSamplesFromManifest.php:61 tb/requests/patientModal.php:76
 #: tb/requests/tb-requests.php:250 tb/requests/tb-requests.php:316
-#: tb/results/tb-failed-results.php:154 tb/results/tb-failed-results.php:206
+#: tb/results/tb-failed-results.php:145 tb/results/tb-failed-results.php:197
 #: tb/results/tb-manual-results.php:191 tb/results/tb-print-results.php:118
 #: tb/results/tb-print-results.php:159 tb/results/tb-print-results.php:199
 #: tb/results/tb-print-results.php:275 tb/results/tb-print-results.php:316
@@ -5274,7 +5274,7 @@ msgstr "Identifiant du patient"
 #: hepatitis/management/hepatitis-clinic-report.php:387
 #: hepatitis/management/hepatitis-clinic-report.php:416
 #: hepatitis/management/hepatitis-clinic-report.php:441
-#: hepatitis/results/hepatitis-failed-results.php:208
+#: hepatitis/results/hepatitis-failed-results.php:199
 #: hepatitis/results/hepatitis-manual-results.php:142
 #: hepatitis/results/hepatitis-print-results.php:172
 #: hepatitis/results/hepatitis-print-results.php:333
@@ -5416,7 +5416,7 @@ msgstr "Résultat CD4"
 #: cd4/management/cd4-export-data.php:233
 #: cd4/management/cd4-export-data.php:260 cd4/reference/cd4-test-reasons.php:41
 #: cd4/requests/cd4-requests.php:198 cd4/requests/cd4-requests.php:544
-#: cd4/requests/cd4-requests.php:597 cd4/results/cd4-failed-results.php:225
+#: cd4/requests/cd4-requests.php:597 cd4/results/cd4-failed-results.php:216
 #: cd4/results/cd4-manual-results.php:219
 #: cd4/results/cd4-manual-results.php:275 cd4/results/cd4-print-results.php:187
 #: cd4/results/cd4-print-results.php:212 cd4/results/cd4-print-results.php:348
@@ -5446,7 +5446,7 @@ msgstr "Résultat CD4"
 #: covid-19/requests/addSamplesFromManifest.php:112
 #: covid-19/requests/covid-19-requests.php:261
 #: covid-19/requests/covid-19-requests.php:468
-#: covid-19/results/covid-19-failed-results.php:225
+#: covid-19/results/covid-19-failed-results.php:216
 #: covid-19/results/covid-19-manual-results.php:156
 #: covid-19/results/covid-19-manual-results.php:188
 #: covid-19/results/covid-19-print-results.php:189
@@ -5464,7 +5464,7 @@ msgstr "Résultat CD4"
 #: eid/reference/eid-sample-type.php:39 eid/reference/eid-test-reasons.php:39
 #: eid/requests/addSamplesFromManifest.php:120
 #: eid/requests/eid-requests.php:235 eid/requests/eid-requests.php:483
-#: eid/results/eid-failed-results.php:245
+#: eid/results/eid-failed-results.php:237
 #: eid/results/eid-manual-results.php:166
 #: eid/results/eid-manual-results.php:225 eid/results/eid-print-results.php:190
 #: eid/results/eid-print-results.php:221 eid/results/eid-print-results.php:350
@@ -5522,7 +5522,7 @@ msgstr "Résultat CD4"
 #: hepatitis/requests/hepatitis-dhis2.php:345
 #: hepatitis/requests/hepatitis-requests.php:223
 #: hepatitis/requests/hepatitis-requests.php:443
-#: hepatitis/results/hepatitis-failed-results.php:223
+#: hepatitis/results/hepatitis-failed-results.php:214
 #: hepatitis/results/hepatitis-manual-results.php:157
 #: hepatitis/results/hepatitis-manual-results.php:190
 #: hepatitis/results/hepatitis-print-results.php:196
@@ -5542,7 +5542,7 @@ msgstr "Résultat CD4"
 #: tb/management/tb-export-data.php:248 tb/management/tb-export-data.php:275
 #: tb/reference/tb-results.php:39 tb/reference/tb-sample-type.php:39
 #: tb/requests/addSamplesFromManifest.php:67 tb/requests/tb-requests.php:193
-#: tb/requests/tb-requests.php:323 tb/results/tb-failed-results.php:224
+#: tb/requests/tb-requests.php:323 tb/results/tb-failed-results.php:215
 #: tb/results/tb-manual-results.php:163 tb/results/tb-manual-results.php:195
 #: tb/results/tb-print-results.php:183 tb/results/tb-print-results.php:207
 #: tb/results/tb-print-results.php:340 tb/results/tb-print-results.php:363
@@ -5700,102 +5700,102 @@ msgstr "Sélectionner la date de prélèvement de l'échantillon"
 
 #: cd4/management/cd4-clinic-report.php:526
 #: cd4/management/cd4-export-data.php:312
-#: cd4/results/cd4-failed-results.php:314 cd4/results/cd4-print-results.php:444
+#: cd4/results/cd4-failed-results.php:308 cd4/results/cd4-print-results.php:444
 #: covid-19/management/covid-19-clinic-report.php:530
 #: covid-19/management/covid-19-export-data.php:332
 #: covid-19/requests/forms/add-cameroon.php:1043
 #: covid-19/requests/forms/edit-cameroon.php:875
-#: covid-19/results/covid-19-failed-results.php:268
+#: covid-19/results/covid-19-failed-results.php:261
 #: covid-19/results/covid-19-print-results.php:453
 #: eid/management/eid-clinic-report.php:533
 #: eid/management/eid-export-data.php:364
 #: eid/requests/forms/add-cameroon.php:853
 #: eid/requests/forms/edit-cameroon.php:841
-#: eid/results/eid-failed-results.php:334 eid/results/eid-print-results.php:460
+#: eid/results/eid-failed-results.php:329 eid/results/eid-print-results.php:460
 #: facilities/addFacility.php:808 facilities/editFacility.php:782
 #: facilities/facilities.php:206
 #: generic-tests/program-management/generic-export-data.php:368
 #: generic-tests/program-management/generic-tests-clinic-report.php:121
-#: generic-tests/results/generic-failed-results.php:267
+#: generic-tests/results/generic-failed-results.php:270
 #: generic-tests/results/generic-print-result.php:559
 #: hepatitis/management/hepatitis-clinic-report.php:530
 #: hepatitis/management/hepatitis-export-data.php:336
-#: hepatitis/results/hepatitis-failed-results.php:304
+#: hepatitis/results/hepatitis-failed-results.php:298
 #: hepatitis/results/hepatitis-print-results.php:453
 #: move-samples/select-samples-to-move.php:228 patients/add-patient.php:254
 #: patients/edit-patient.php:272 tb/management/tb-clinic-report.php:526
-#: tb/management/tb-export-data.php:327 tb/results/tb-failed-results.php:307
+#: tb/management/tb-export-data.php:327 tb/results/tb-failed-results.php:301
 #: tb/results/tb-print-results.php:435 users/addUser.php:395
 #: users/editUser.php:490 vl/program-management/highViralLoad.php:1105
 #: vl/program-management/vl-export-data.php:573
 #: vl/program-management/vlMonitoringReport.php:317
 #: vl/requests/forms/add-cameroon.php:782
 #: vl/requests/forms/edit-cameroon.php:813 vl/requests/sample-storage.php:419
-#: vl/results/vl-failed-results.php:283 vl/results/vlPrintResult.php:666
+#: vl/results/vl-failed-results.php:287 vl/results/vlPrintResult.php:666
 msgid "Select Province"
 msgstr "Sélectionner la région"
 
 #: cd4/management/cd4-clinic-report.php:529
 #: cd4/management/cd4-export-data.php:315
-#: cd4/results/cd4-failed-results.php:317 cd4/results/cd4-print-results.php:447
+#: cd4/results/cd4-failed-results.php:311 cd4/results/cd4-print-results.php:447
 #: covid-19/management/covid-19-clinic-report.php:533
 #: covid-19/management/covid-19-export-data.php:335
 #: covid-19/requests/forms/add-cameroon.php:1046
 #: covid-19/requests/forms/edit-cameroon.php:878
-#: covid-19/results/covid-19-failed-results.php:271
+#: covid-19/results/covid-19-failed-results.php:264
 #: covid-19/results/covid-19-print-results.php:456
 #: eid/management/eid-clinic-report.php:536
 #: eid/management/eid-export-data.php:367
 #: eid/requests/forms/add-cameroon.php:856
 #: eid/requests/forms/edit-cameroon.php:844
-#: eid/results/eid-failed-results.php:337 eid/results/eid-print-results.php:463
+#: eid/results/eid-failed-results.php:332 eid/results/eid-print-results.php:463
 #: facilities/addFacility.php:813 facilities/editFacility.php:787
 #: facilities/facilities.php:209
 #: generic-tests/program-management/generic-export-data.php:371
 #: generic-tests/program-management/generic-tests-clinic-report.php:124
-#: generic-tests/results/generic-failed-results.php:270
+#: generic-tests/results/generic-failed-results.php:273
 #: generic-tests/results/generic-print-result.php:563
 #: hepatitis/management/hepatitis-clinic-report.php:533
 #: hepatitis/management/hepatitis-export-data.php:339
-#: hepatitis/results/hepatitis-failed-results.php:307
+#: hepatitis/results/hepatitis-failed-results.php:301
 #: hepatitis/results/hepatitis-print-results.php:456
 #: tb/management/tb-clinic-report.php:529 tb/management/tb-export-data.php:330
-#: tb/results/tb-failed-results.php:310 tb/results/tb-print-results.php:438
+#: tb/results/tb-failed-results.php:304 tb/results/tb-print-results.php:438
 #: users/addUser.php:401 users/editUser.php:496
 #: vl/program-management/highViralLoad.php:1109
 #: vl/program-management/vl-export-data.php:576
 #: vl/program-management/vlMonitoringReport.php:320
 #: vl/requests/forms/add-cameroon.php:785
 #: vl/requests/forms/edit-cameroon.php:816 vl/requests/sample-storage.php:422
-#: vl/results/vl-failed-results.php:286 vl/results/vlPrintResult.php:669
+#: vl/results/vl-failed-results.php:290 vl/results/vlPrintResult.php:669
 msgid "Select District"
 msgstr "Sélectionner le district"
 
 #: cd4/management/cd4-clinic-report.php:532
 #: cd4/management/cd4-export-data.php:318
 #: cd4/management/cd4-export-data.php:321 cd4/requests/cd4-requests.php:715
-#: cd4/results/cd4-failed-results.php:323
+#: cd4/results/cd4-failed-results.php:317
 #: cd4/results/cd4-manual-results.php:311 cd4/results/cd4-print-results.php:450
 #: cd4/results/cd4-result-status.php:288 cd4/results/email-results.php:365
 #: covid-19/management/covid-19-clinic-report.php:536
 #: covid-19/management/covid-19-export-data.php:338
 #: covid-19/management/covid-19-export-data.php:341
 #: covid-19/requests/covid-19-requests.php:583
-#: covid-19/results/covid-19-failed-results.php:277
+#: covid-19/results/covid-19-failed-results.php:270
 #: covid-19/results/covid-19-manual-results.php:219
 #: covid-19/results/covid-19-print-results.php:459
 #: covid-19/results/covid-19-result-status.php:209
 #: covid-19/results/email-results.php:365
 #: eid/management/eid-clinic-report.php:539
 #: eid/management/eid-export-data.php:370 eid/requests/eid-requests.php:598
-#: eid/results/eid-failed-results.php:343
+#: eid/results/eid-failed-results.php:338
 #: eid/results/eid-manual-results.php:261 eid/results/eid-print-results.php:466
 #: eid/results/eid-result-status.php:214 eid/results/email-results.php:362
 #: generic-tests/program-management/generic-export-data.php:374
 #: generic-tests/program-management/generic-tests-clinic-report.php:127
 #: generic-tests/requests/view-requests.php:297
 #: generic-tests/results/email-results.php:365
-#: generic-tests/results/generic-failed-results.php:276
+#: generic-tests/results/generic-failed-results.php:279
 #: generic-tests/results/generic-print-result.php:567
 #: generic-tests/results/generic-result-approval.php:282
 #: generic-tests/results/generic-test-results.php:293
@@ -5804,19 +5804,19 @@ msgstr "Sélectionner le district"
 #: hepatitis/requests/hepatitis-dhis2.php:439
 #: hepatitis/requests/hepatitis-requests.php:560
 #: hepatitis/results/email-results.php:365
-#: hepatitis/results/hepatitis-failed-results.php:313
+#: hepatitis/results/hepatitis-failed-results.php:307
 #: hepatitis/results/hepatitis-manual-results.php:221
 #: hepatitis/results/hepatitis-print-results.php:459
 #: hepatitis/results/hepatitis-result-status.php:204 mail/vlResultMail.php:365
 #: move-samples/select-samples-to-move.php:225
 #: tb/management/tb-clinic-report.php:532 tb/management/tb-export-data.php:333
 #: tb/requests/tb-requests.php:429 tb/results/email-results.php:365
-#: tb/results/tb-failed-results.php:316 tb/results/tb-manual-results.php:226
+#: tb/results/tb-failed-results.php:310 tb/results/tb-manual-results.php:226
 #: tb/results/tb-print-results.php:441 tb/results/tb-result-status.php:206
 #: vl/program-management/highViralLoad.php:1113
 #: vl/program-management/vl-export-data.php:579
 #: vl/requests/sample-storage.php:425 vl/requests/vl-requests.php:806
-#: vl/results/email-results.php:365 vl/results/vl-failed-results.php:292
+#: vl/results/email-results.php:365 vl/results/vl-failed-results.php:296
 #: vl/results/vlPrintResult.php:672 vl/results/vlResultApproval.php:288
 #: vl/results/vlResultMail.php:365 vl/results/vlTestResult.php:308
 msgid "Select Facilities"
@@ -5911,21 +5911,14 @@ msgid "Select Print Date"
 msgstr "Sélectionner la date d'impression"
 
 #: cd4/management/cd4-export-data.php:129 cd4/requests/cd4-requests.php:201
-#: cd4/results/cd4-failed-results.php:138
 #: covid-19/management/covid-19-export-data.php:150
 #: covid-19/requests/covid-19-requests.php:264
-#: covid-19/results/covid-19-failed-results.php:137
 #: eid/management/eid-export-data.php:155 eid/requests/eid-requests.php:238
-#: eid/results/eid-failed-results.php:138
 #: generic-tests/program-management/generic-export-data.php:137
-#: generic-tests/results/generic-failed-results.php:106
 #: hepatitis/management/hepatitis-export-data.php:143
 #: hepatitis/requests/hepatitis-requests.php:226
-#: hepatitis/results/hepatitis-failed-results.php:136
 #: tb/management/tb-export-data.php:145 tb/requests/tb-requests.php:195
-#: tb/results/tb-failed-results.php:137
 #: vl/program-management/vl-export-data.php:195 vl/requests/vl-requests.php:222
-#: vl/results/vl-failed-results.php:108
 msgid "Please choose status"
 msgstr "Veuillez choisir un statut"
 
@@ -6026,18 +6019,18 @@ msgid "Registered At Testing Lab"
 msgstr "Enregistré au laboratoire de test"
 
 #: cd4/management/cd4-export-data.php:135
-#: cd4/results/cd4-failed-results.php:150
+#: cd4/results/cd4-failed-results.php:142
 #: covid-19/management/covid-19-export-data.php:156
 #: covid-19/requests/covid-19-requests.php:279
-#: covid-19/results/covid-19-failed-results.php:149
+#: covid-19/results/covid-19-failed-results.php:141
 #: eid/management/eid-export-data.php:161 eid/requests/eid-requests.php:253
-#: eid/results/eid-failed-results.php:143
+#: eid/results/eid-failed-results.php:142
 #: generic-tests/program-management/generic-export-data.php:143
 #: generic-tests/results/generic-failed-results.php:110
 #: hepatitis/requests/hepatitis-requests.php:241
-#: hepatitis/results/hepatitis-failed-results.php:148
+#: hepatitis/results/hepatitis-failed-results.php:140
 #: system/translate-strings.php:104 tb/management/tb-export-data.php:151
-#: tb/requests/tb-requests.php:201 tb/results/tb-failed-results.php:149
+#: tb/requests/tb-requests.php:201 tb/results/tb-failed-results.php:141
 #: vl/program-management/vl-export-data.php:201
 #: vl/results/vl-failed-results.php:112
 msgid "Expired"
@@ -6359,14 +6352,14 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: vl/requests/forms/add-cameroon.php:237
 #: vl/requests/forms/add-cameroon.php:319
 #: vl/requests/forms/add-cameroon.php:336
-#: vl/requests/forms/add-cameroon.php:547 vl/requests/forms/add-drc.php:186
+#: vl/requests/forms/add-cameroon.php:547 vl/requests/forms/add-drc.php:183
 #: vl/requests/forms/add-png.php:145 vl/requests/forms/add-rwanda.php:185
 #: vl/requests/forms/add-sierraleone.php:221
 #: vl/requests/forms/add-southsudan.php:231
 #: vl/requests/forms/edit-cameroon.php:286
 #: vl/requests/forms/edit-cameroon.php:366
 #: vl/requests/forms/edit-cameroon.php:383
-#: vl/requests/forms/edit-cameroon.php:607 vl/requests/forms/edit-drc.php:230
+#: vl/requests/forms/edit-cameroon.php:607 vl/requests/forms/edit-drc.php:227
 #: vl/requests/forms/edit-png.php:291 vl/requests/forms/edit-rwanda.php:229
 #: vl/requests/forms/edit-sierraleone.php:318
 #: vl/requests/forms/edit-southsudan.php:299 vl/requests/vl-requests.php:240
@@ -6558,14 +6551,14 @@ msgstr "Oui"
 #: vl/requests/forms/add-cameroon.php:236
 #: vl/requests/forms/add-cameroon.php:322
 #: vl/requests/forms/add-cameroon.php:339
-#: vl/requests/forms/add-cameroon.php:548 vl/requests/forms/add-drc.php:185
+#: vl/requests/forms/add-cameroon.php:548 vl/requests/forms/add-drc.php:182
 #: vl/requests/forms/add-png.php:144 vl/requests/forms/add-rwanda.php:184
 #: vl/requests/forms/add-sierraleone.php:220
 #: vl/requests/forms/add-southsudan.php:230
 #: vl/requests/forms/edit-cameroon.php:285
 #: vl/requests/forms/edit-cameroon.php:369
 #: vl/requests/forms/edit-cameroon.php:386
-#: vl/requests/forms/edit-cameroon.php:608 vl/requests/forms/edit-drc.php:229
+#: vl/requests/forms/edit-cameroon.php:608 vl/requests/forms/edit-drc.php:226
 #: vl/requests/forms/edit-png.php:290 vl/requests/forms/edit-rwanda.php:228
 #: vl/requests/forms/edit-sierraleone.php:317
 #: vl/requests/forms/edit-southsudan.php:298 vl/requests/vl-requests.php:243
@@ -6594,8 +6587,8 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: cd4/management/export-cd4-results.php:32
 #: cd4/management/export-cd4-results.php:35 cd4/requests/cd4-requests.php:420
 #: cd4/requests/export-cd4-requests.php:28 cd4/requests/patientModal.php:104
-#: cd4/results/cd4-failed-results.php:162
-#: cd4/results/cd4-failed-results.php:210 cd4/results/cd4-print-results.php:122
+#: cd4/results/cd4-failed-results.php:153
+#: cd4/results/cd4-failed-results.php:201 cd4/results/cd4-print-results.php:122
 #: cd4/results/cd4-print-results.php:204 cd4/results/cd4-print-results.php:284
 #: cd4/results/cd4-print-results.php:364
 #: covid-19/management/covid-19-export-data.php:203
@@ -6610,8 +6603,8 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/patientModal.php:77
 #: covid-19/results/can-record-confirmatory-tests.php:182
-#: covid-19/results/covid-19-failed-results.php:161
-#: covid-19/results/covid-19-failed-results.php:210
+#: covid-19/results/covid-19-failed-results.php:152
+#: covid-19/results/covid-19-failed-results.php:201
 #: covid-19/results/covid-19-manual-results.php:185
 #: covid-19/results/covid-19-print-results.php:125
 #: covid-19/results/covid-19-print-results.php:206
@@ -6629,7 +6622,7 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: hepatitis/requests/hepatitis-dhis2.php:327
 #: hepatitis/requests/hepatitis-requests.php:331
 #: hepatitis/requests/hepatitis-requests.php:425
-#: hepatitis/results/hepatitis-failed-results.php:160
+#: hepatitis/results/hepatitis-failed-results.php:151
 #: hepatitis/results/hepatitis-manual-results.php:186
 #: hepatitis/results/hepatitis-print-results.php:132
 #: hepatitis/results/hepatitis-print-results.php:213
@@ -6639,7 +6632,7 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: tb/management/tb-export-data.php:236 tb/management/tb-export-data.php:271
 #: tb/requests/addSamplesFromManifest.php:62 tb/requests/patientModal.php:79
 #: tb/requests/tb-requests.php:254 tb/requests/tb-requests.php:318
-#: tb/results/tb-failed-results.php:161 tb/results/tb-failed-results.php:209
+#: tb/results/tb-failed-results.php:152 tb/results/tb-failed-results.php:200
 #: tb/results/tb-manual-results.php:192 tb/results/tb-print-results.php:122
 #: tb/results/tb-print-results.php:200 tb/results/tb-print-results.php:279
 #: tb/results/tb-print-results.php:356
@@ -6660,11 +6653,11 @@ msgid "Patient Name"
 msgstr "Nom du patient"
 
 #: cd4/management/cd4-export-data.php:184 cd4/requests/cd4-requests.php:423
-#: cd4/results/cd4-failed-results.php:165 cd4/results/cd4-print-results.php:124
+#: cd4/results/cd4-failed-results.php:156 cd4/results/cd4-print-results.php:124
 #: cd4/results/cd4-print-results.php:286
 #: covid-19/management/covid-19-export-data.php:205
 #: covid-19/requests/covid-19-requests.php:346
-#: covid-19/results/covid-19-failed-results.php:164
+#: covid-19/results/covid-19-failed-results.php:155
 #: covid-19/results/covid-19-print-results.php:127
 #: covid-19/results/covid-19-print-results.php:289
 #: generic-tests/program-management/generic-export-data.php:123
@@ -6676,11 +6669,11 @@ msgstr "Nom du patient"
 #: generic-tests/results/update-generic-test-result.php:547
 #: hepatitis/management/hepatitis-export-data.php:198
 #: hepatitis/requests/hepatitis-requests.php:334
-#: hepatitis/results/hepatitis-failed-results.php:163
+#: hepatitis/results/hepatitis-failed-results.php:154
 #: hepatitis/results/hepatitis-print-results.php:134
 #: hepatitis/results/hepatitis-print-results.php:295
 #: tb/management/tb-export-data.php:200 tb/requests/tb-requests.php:256
-#: tb/results/tb-failed-results.php:164 tb/results/tb-print-results.php:124
+#: tb/results/tb-failed-results.php:155 tb/results/tb-print-results.php:124
 #: tb/results/tb-print-results.php:281
 #: vl/program-management/vl-export-data.php:366 vl/requests/vl-requests.php:452
 #: vl/results/forms/update-cameroon-result.php:356
@@ -6729,7 +6722,7 @@ msgstr "Gérer les colonnes"
 #: cd4/management/cd4-export-data.php:259
 #: cd4/requests/add-samples-from-manifest.php:108
 #: cd4/requests/cd4-requests.php:538 cd4/requests/cd4-requests.php:591
-#: cd4/results/cd4-failed-results.php:219
+#: cd4/results/cd4-failed-results.php:210
 #: cd4/results/cd4-manual-results.php:213
 #: cd4/results/cd4-manual-results.php:269 cd4/results/cd4-print-results.php:181
 #: cd4/results/cd4-print-results.php:210 cd4/results/cd4-print-results.php:342
@@ -6747,7 +6740,7 @@ msgstr "Gérer les colonnes"
 #: covid-19/requests/covid-19-requests.php:462
 #: covid-19/requests/export-covid19-requests.php:41
 #: covid-19/requests/export-covid19-requests.php:43
-#: covid-19/results/covid-19-failed-results.php:219
+#: covid-19/results/covid-19-failed-results.php:210
 #: covid-19/results/covid-19-manual-results.php:150
 #: covid-19/results/covid-19-manual-results.php:186
 #: covid-19/results/covid-19-print-results.php:183
@@ -6768,7 +6761,7 @@ msgstr "Gérer les colonnes"
 #: eid/requests/forms/add-cameroon.php:559
 #: eid/requests/forms/edit-burkina-faso.php:418
 #: eid/requests/forms/edit-cameroon.php:594
-#: eid/results/eid-failed-results.php:239
+#: eid/results/eid-failed-results.php:231
 #: eid/results/eid-manual-results.php:160
 #: eid/results/eid-manual-results.php:219 eid/results/eid-print-results.php:184
 #: eid/results/eid-print-results.php:219 eid/results/eid-print-results.php:344
@@ -6792,7 +6785,7 @@ msgstr "Gérer les colonnes"
 #: generic-tests/results/get-generic-test-result-details.php:298
 #: generic-tests/results/get-manual-results.php:282
 #: hepatitis/management/hepatitis-clinic-report.php:419
-#: hepatitis/results/hepatitis-failed-results.php:217
+#: hepatitis/results/hepatitis-failed-results.php:208
 #: hepatitis/results/hepatitis-manual-results.php:151
 #: hepatitis/results/hepatitis-samples-for-manual-result-entry.php:234
 #: import-result/imported-results.php:248
@@ -6805,7 +6798,7 @@ msgstr "Gérer les colonnes"
 #: tb/requests/forms/edit-burkina-faso.php:433 tb/requests/tb-requests.php:321
 #: tb/results/forms/update-burkina-faso.php:438
 #: tb/results/pdf/result-pdf-burkina-faso.php:309
-#: tb/results/tb-failed-results.php:218 tb/results/tb-manual-results.php:157
+#: tb/results/tb-failed-results.php:209 tb/results/tb-manual-results.php:157
 #: tb/results/tb-manual-results.php:193 tb/results/tb-print-results.php:177
 #: tb/results/tb-print-results.php:205 tb/results/tb-print-results.php:334
 #: tb/results/tb-print-results.php:361 tb/results/tb-result-status.php:171
@@ -7005,21 +6998,21 @@ msgid "Please select clinic name"
 msgstr "Veuillez sélectionner le nom de la clinique"
 
 #: cd4/management/cd4-sample-rejection-report.php:100
-#: cd4/results/cd4-failed-results.php:320
+#: cd4/results/cd4-failed-results.php:314
 #: covid-19/management/covid-19-sample-rejection-report.php:101
-#: covid-19/results/covid-19-failed-results.php:274
+#: covid-19/results/covid-19-failed-results.php:267
 #: eid/management/eid-sample-rejection-report.php:96
-#: eid/results/eid-failed-results.php:340
+#: eid/results/eid-failed-results.php:335
 #: generic-tests/program-management/sample-rejection-report.php:125
-#: generic-tests/results/generic-failed-results.php:273
+#: generic-tests/results/generic-failed-results.php:276
 #: hepatitis/management/hepatitis-export-data.php:346
 #: hepatitis/management/hepatitis-sample-rejection-report.php:100
-#: hepatitis/results/hepatitis-failed-results.php:310
+#: hepatitis/results/hepatitis-failed-results.php:304
 #: tb/management/tb-export-data.php:336
 #: tb/management/tb-sample-rejection-report.php:101
-#: tb/results/tb-failed-results.php:313
+#: tb/results/tb-failed-results.php:307
 #: vl/program-management/sampleRejectionReport.php:148
-#: vl/results/vl-failed-results.php:289
+#: vl/results/vl-failed-results.php:293
 msgid "Select Labs"
 msgstr "Selectionner les Labs"
 
@@ -7476,21 +7469,21 @@ msgstr "Date de la demande"
 #: cd4/management/export-cd4-results.php:32
 #: cd4/requests/export-cd4-requests.php:28
 #: covid-19/requests/forms/add-cameroon.php:411
-#: covid-19/requests/forms/add-drc.php:755
-#: covid-19/requests/forms/add-drc.php:757
+#: covid-19/requests/forms/add-drc.php:745
+#: covid-19/requests/forms/add-drc.php:747
 #: covid-19/requests/forms/edit-cameroon.php:427
-#: covid-19/requests/forms/edit-drc.php:788
-#: covid-19/requests/forms/edit-drc.php:790
+#: covid-19/requests/forms/edit-drc.php:778
+#: covid-19/requests/forms/edit-drc.php:780
 #: covid-19/results/forms/update-cameroon-result.php:388
-#: covid-19/results/forms/update-drc-result.php:761
-#: covid-19/results/forms/update-drc-result.php:763
+#: covid-19/results/forms/update-drc-result.php:753
+#: covid-19/results/forms/update-drc-result.php:755
 #: eid/requests/forms/add-burkina-faso.php:370
-#: eid/requests/forms/add-cameroon.php:531 eid/requests/forms/add-drc.php:513
+#: eid/requests/forms/add-cameroon.php:531 eid/requests/forms/add-drc.php:498
 #: eid/requests/forms/edit-burkina-faso.php:383
 #: eid/requests/forms/edit-cameroon.php:558
 #: eid/results/forms/update-burkina-faso-result.php:384
 #: eid/results/forms/update-cameroon-result.php:536
-#: eid/results/forms/update-drc-result.php:472
+#: eid/results/forms/update-drc-result.php:470
 #: generic-tests/requests/add-request.php:557
 #: generic-tests/requests/edit-request.php:757
 #: generic-tests/results/update-generic-test-result.php:741
@@ -8767,9 +8760,9 @@ msgstr "Échantillon communautaire"
 msgid "Please select cd4 lab"
 msgstr "Veuillez sélectionner le laboratoire cd4"
 
-#: cd4/requests/cd4-requests.php:417 cd4/results/cd4-failed-results.php:158
+#: cd4/requests/cd4-requests.php:417 cd4/results/cd4-failed-results.php:149
 #: cd4/results/cd4-print-results.php:120 cd4/results/cd4-print-results.php:282
-#: covid-19/results/covid-19-failed-results.php:157
+#: covid-19/results/covid-19-failed-results.php:148
 #: covid-19/results/covid-19-print-results.php:123
 #: covid-19/results/covid-19-print-results.php:285
 #: generic-tests/program-management/generic-export-data.php:239
@@ -8779,11 +8772,11 @@ msgstr "Veuillez sélectionner le laboratoire cd4"
 #: generic-tests/results/update-generic-test-result.php:519
 #: hepatitis/management/hepatitis-export-data.php:193
 #: hepatitis/requests/hepatitis-requests.php:328
-#: hepatitis/results/hepatitis-failed-results.php:156
+#: hepatitis/results/hepatitis-failed-results.php:147
 #: hepatitis/results/hepatitis-print-results.php:130
 #: hepatitis/results/hepatitis-print-results.php:291
 #: tb/management/tb-export-data.php:193 tb/requests/tb-requests.php:252
-#: tb/results/tb-failed-results.php:157 tb/results/tb-print-results.php:120
+#: tb/results/tb-failed-results.php:148 tb/results/tb-print-results.php:120
 #: tb/results/tb-print-results.php:277
 #: vl/program-management/vl-export-data.php:357 vl/requests/vl-requests.php:446
 #: vl/results/vl-failed-results.php:117 vl/results/vlPrintResult.php:191
@@ -8816,14 +8809,14 @@ msgstr "EMR/FHIR - OBTENIR DES TESTS"
 msgid "Art No"
 msgstr "Code TARV"
 
-#: cd4/requests/cd4-requests.php:617 cd4/results/cd4-failed-results.php:247
-#: eid/requests/eid-requests.php:505 eid/results/eid-failed-results.php:267
+#: cd4/requests/cd4-requests.php:617 cd4/results/cd4-failed-results.php:238
+#: eid/requests/eid-requests.php:505 eid/results/eid-failed-results.php:259
 #: generic-tests/requests/view-requests.php:219
 #: generic-tests/results/generic-failed-results.php:217
 #: hepatitis/requests/hepatitis-dhis2.php:367
 #: hepatitis/requests/hepatitis-requests.php:465
-#: hepatitis/results/hepatitis-failed-results.php:241
-#: tb/requests/tb-requests.php:339 tb/results/tb-failed-results.php:244
+#: hepatitis/results/hepatitis-failed-results.php:232
+#: tb/requests/tb-requests.php:339 tb/results/tb-failed-results.php:235
 #: vl/requests/vl-requests.php:704 vl/results/vl-failed-results.php:221
 msgid "Loading Printer Details"
 msgstr "Chargement des détails de l'imprimante"
@@ -8836,32 +8829,32 @@ msgstr "Chargement des détails de l'imprimante"
 msgid "No printer selected!"
 msgstr "Aucune imprimante sélectionnée !"
 
-#: cd4/requests/cd4-requests.php:629 cd4/results/cd4-failed-results.php:259
+#: cd4/requests/cd4-requests.php:629 cd4/results/cd4-failed-results.php:250
 #: covid-19/requests/covid-19-requests.php:501
-#: eid/requests/eid-requests.php:517 eid/results/eid-failed-results.php:279
+#: eid/requests/eid-requests.php:517 eid/results/eid-failed-results.php:271
 #: generic-tests/requests/add-request.php:709
 #: generic-tests/requests/view-requests.php:231
 #: generic-tests/results/generic-failed-results.php:225
 #: hepatitis/requests/hepatitis-dhis2.php:379
 #: hepatitis/requests/hepatitis-requests.php:477
-#: hepatitis/results/hepatitis-failed-results.php:253
-#: tb/requests/tb-requests.php:347 tb/results/tb-failed-results.php:256
+#: hepatitis/results/hepatitis-failed-results.php:244
+#: tb/requests/tb-requests.php:347 tb/results/tb-failed-results.php:247
 #: vl/requests/forms/add-burkina-faso.php:641
 #: vl/requests/forms/add-cameroon.php:683 vl/requests/vl-requests.php:716
 #: vl/results/vl-failed-results.php:229
 msgid "Change/Retry"
 msgstr "Modifier/Réessayer"
 
-#: cd4/requests/cd4-requests.php:633 cd4/results/cd4-failed-results.php:263
+#: cd4/requests/cd4-requests.php:633 cd4/results/cd4-failed-results.php:254
 #: covid-19/requests/covid-19-requests.php:505
-#: eid/requests/eid-requests.php:521 eid/results/eid-failed-results.php:283
+#: eid/requests/eid-requests.php:521 eid/results/eid-failed-results.php:275
 #: generic-tests/requests/add-request.php:712
 #: generic-tests/requests/view-requests.php:235
 #: generic-tests/results/generic-failed-results.php:228
 #: hepatitis/requests/hepatitis-dhis2.php:383
 #: hepatitis/requests/hepatitis-requests.php:481
-#: hepatitis/results/hepatitis-failed-results.php:257
-#: tb/requests/tb-requests.php:350 tb/results/tb-failed-results.php:260
+#: hepatitis/results/hepatitis-failed-results.php:248
+#: tb/requests/tb-requests.php:350 tb/results/tb-failed-results.php:251
 #: vl/requests/forms/add-burkina-faso.php:644
 #: vl/requests/forms/add-cameroon.php:686
 #: vl/requests/forms/edit-cameroon.php:746 vl/requests/vl-requests.php:720
@@ -8869,15 +8862,15 @@ msgstr "Modifier/Réessayer"
 msgid "Zebra Printer Options"
 msgstr "Options d'imprimante Zebra"
 
-#: cd4/requests/cd4-requests.php:634 cd4/results/cd4-failed-results.php:264
-#: eid/results/eid-failed-results.php:284
+#: cd4/requests/cd4-requests.php:634 cd4/results/cd4-failed-results.php:255
+#: eid/results/eid-failed-results.php:276
 #: generic-tests/requests/add-request.php:713
 #: generic-tests/requests/view-requests.php:236
 #: generic-tests/results/generic-failed-results.php:229
 #: hepatitis/requests/hepatitis-dhis2.php:384
 #: hepatitis/requests/hepatitis-requests.php:482
-#: hepatitis/results/hepatitis-failed-results.php:258
-#: tb/requests/tb-requests.php:351 tb/results/tb-failed-results.php:261
+#: hepatitis/results/hepatitis-failed-results.php:249
+#: tb/requests/tb-requests.php:351 tb/results/tb-failed-results.php:252
 #: vl/requests/vl-requests.php:721 vl/results/vl-failed-results.php:233
 msgid "Printer"
 msgstr "Imprimante"
@@ -8990,7 +8983,7 @@ msgstr ""
 #: tb/requests/forms/add-southsudan.php:167
 #: tb/requests/forms/edit-burkina-faso.php:185
 #: tb/results/forms/update-burkina-faso.php:184
-#: vl/requests/forms/add-cameroon.php:234 vl/requests/forms/add-drc.php:183
+#: vl/requests/forms/add-cameroon.php:234 vl/requests/forms/add-drc.php:180
 #: vl/requests/forms/add-png.php:142 vl/requests/forms/add-rwanda.php:182
 #: vl/requests/forms/add-sierraleone.php:218
 #: vl/requests/forms/add-southsudan.php:228
@@ -9003,7 +8996,7 @@ msgstr "Cryptage des données d'identification des patients"
 
 #: cd4/requests/forms/add-rwanda.php:759 cd4/requests/forms/edit-rwanda.php:853
 #: vl/requests/forms/add-burkina-faso.php:712
-#: vl/requests/forms/add-cameroon.php:753 vl/requests/forms/add-drc.php:945
+#: vl/requests/forms/add-cameroon.php:753 vl/requests/forms/add-drc.php:923
 #: vl/requests/forms/add-png.php:659 vl/requests/forms/add-rwanda.php:733
 #: vl/requests/forms/add-sierraleone.php:952
 #: vl/requests/forms/add-southsudan.php:828 vl/requests/forms/add-who.php:783
@@ -9014,7 +9007,7 @@ msgstr "Nombre de fois où le test a été demandé pour ce patient"
 
 #: cd4/requests/forms/add-rwanda.php:762 cd4/requests/forms/edit-rwanda.php:856
 #: vl/requests/forms/add-burkina-faso.php:715
-#: vl/requests/forms/add-cameroon.php:756 vl/requests/forms/add-drc.php:948
+#: vl/requests/forms/add-cameroon.php:756 vl/requests/forms/add-drc.php:926
 #: vl/requests/forms/add-png.php:662 vl/requests/forms/add-rwanda.php:736
 #: vl/requests/forms/add-sierraleone.php:955
 #: vl/requests/forms/add-southsudan.php:831 vl/requests/forms/add-who.php:786
@@ -9025,7 +9018,7 @@ msgstr "Dernière demande ajouté à LIS/STS"
 
 #: cd4/requests/forms/add-rwanda.php:765 cd4/requests/forms/edit-rwanda.php:859
 #: vl/requests/forms/add-burkina-faso.php:718
-#: vl/requests/forms/add-cameroon.php:759 vl/requests/forms/add-drc.php:951
+#: vl/requests/forms/add-cameroon.php:759 vl/requests/forms/add-drc.php:929
 #: vl/requests/forms/add-png.php:665 vl/requests/forms/add-rwanda.php:739
 #: vl/requests/forms/add-sierraleone.php:958
 #: vl/requests/forms/add-southsudan.php:834 vl/requests/forms/add-who.php:789
@@ -9036,7 +9029,7 @@ msgstr "Date du dernier prélèvement de l'échantillon"
 
 #: cd4/requests/forms/add-rwanda.php:768 cd4/requests/forms/edit-rwanda.php:862
 #: vl/requests/forms/add-burkina-faso.php:721
-#: vl/requests/forms/add-cameroon.php:762 vl/requests/forms/add-drc.php:954
+#: vl/requests/forms/add-cameroon.php:762 vl/requests/forms/add-drc.php:932
 #: vl/requests/forms/add-png.php:668 vl/requests/forms/add-rwanda.php:742
 #: vl/requests/forms/add-sierraleone.php:961
 #: vl/requests/forms/add-southsudan.php:837 vl/requests/forms/add-who.php:792
@@ -9241,80 +9234,89 @@ msgstr "Échec/Echantillons en attente"
 msgid "Result Status"
 msgstr "Résultat Statut"
 
-#: cd4/results/cd4-failed-results.php:141
-#: covid-19/results/covid-19-failed-results.php:140
-#: eid/results/eid-failed-results.php:140
+#: cd4/results/cd4-failed-results.php:138
+#: covid-19/results/covid-19-failed-results.php:137
+#: eid/results/eid-failed-results.php:138
+#: generic-tests/results/generic-failed-results.php:106
+#: hepatitis/results/hepatitis-failed-results.php:136
+#: tb/results/tb-failed-results.php:137 vl/results/vl-failed-results.php:108
+msgid "Please choose Sample Status"
+msgstr "Veuillez choisir le statut de l'échantillon"
+
+#: cd4/results/cd4-failed-results.php:139
+#: covid-19/results/covid-19-failed-results.php:138
+#: eid/results/eid-failed-results.php:139
 #: generic-tests/results/generic-failed-results.php:107
-#: hepatitis/results/hepatitis-failed-results.php:139
+#: hepatitis/results/hepatitis-failed-results.php:137
 #: system/translate-strings-country-4.php:26
-#: tb/results/tb-failed-results.php:140 vl/results/vl-failed-results.php:109
+#: tb/results/tb-failed-results.php:138 vl/results/vl-failed-results.php:109
 msgid "Failed"
 msgstr "Echec"
 
-#: cd4/results/cd4-failed-results.php:144
-#: covid-19/results/covid-19-failed-results.php:143
-#: eid/results/eid-failed-results.php:146
+#: cd4/results/cd4-failed-results.php:140
+#: covid-19/results/covid-19-failed-results.php:139
+#: eid/results/eid-failed-results.php:140
 #: generic-tests/results/generic-failed-results.php:108
-#: hepatitis/results/hepatitis-failed-results.php:142
-#: system/translate-strings.php:95 tb/results/tb-failed-results.php:143
+#: hepatitis/results/hepatitis-failed-results.php:138
+#: system/translate-strings.php:95 tb/results/tb-failed-results.php:139
 #: vl/results/vl-failed-results.php:110
 msgid "Hold"
 msgstr "En attente"
 
-#: cd4/results/cd4-failed-results.php:147 cd4/results/cd4-result-status.php:206
+#: cd4/results/cd4-failed-results.php:141 cd4/results/cd4-result-status.php:206
 #: cd4/results/get-cd4-result-status.php:174
-#: covid-19/results/covid-19-failed-results.php:146
+#: covid-19/results/covid-19-failed-results.php:140
 #: covid-19/results/covid-19-result-status.php:151
 #: covid-19/results/get-covid-19-result-status.php:222
-#: eid/results/eid-failed-results.php:149 eid/results/eid-result-status.php:151
+#: eid/results/eid-failed-results.php:141 eid/results/eid-result-status.php:151
 #: eid/results/get-eid-result-status.php:218
 #: generic-tests/results/generic-failed-results.php:109
 #: generic-tests/results/generic-result-approval.php:199
 #: generic-tests/results/get-generic-results-for-approval.php:193
 #: hepatitis/results/get-hepatitis-result-status.php:228
-#: hepatitis/results/hepatitis-failed-results.php:145
+#: hepatitis/results/hepatitis-failed-results.php:139
 #: hepatitis/results/hepatitis-result-status.php:145
 #: system/translate-strings.php:96 tb/results/get-tb-result-status.php:225
-#: tb/results/tb-failed-results.php:146 tb/results/tb-result-status.php:145
+#: tb/results/tb-failed-results.php:140 tb/results/tb-result-status.php:145
 #: vl/results/getVlResultsForApproval.php:174
 #: vl/results/vl-failed-results.php:111 vl/results/vlResultApproval.php:206
 msgid "Lost"
 msgstr "Perdu"
 
-#: cd4/results/cd4-failed-results.php:177
-#: covid-19/results/covid-19-failed-results.php:176
-#: eid/results/eid-failed-results.php:190
+#: cd4/results/cd4-failed-results.php:168
+#: covid-19/results/covid-19-failed-results.php:167
+#: eid/results/eid-failed-results.php:182
 #: generic-tests/results/generic-failed-results.php:129
-#: hepatitis/results/hepatitis-failed-results.php:175
-#: tb/results/tb-failed-results.php:176 vl/results/vl-failed-results.php:131
+#: hepatitis/results/hepatitis-failed-results.php:166
+#: tb/results/tb-failed-results.php:167 vl/results/vl-failed-results.php:131
 msgid "Retest the selected samples"
 msgstr "Retester les échantillons sélectionnés"
 
-#: cd4/results/cd4-failed-results.php:256
+#: cd4/results/cd4-failed-results.php:247
 #: covid-19/requests/covid-19-requests.php:498
-#: eid/requests/eid-requests.php:514 eid/results/eid-failed-results.php:276
+#: eid/requests/eid-requests.php:514 eid/results/eid-failed-results.php:268
 #: generic-tests/results/generic-failed-results.php:224
 #: hepatitis/requests/hepatitis-dhis2.php:376
 #: hepatitis/requests/hepatitis-requests.php:474
-#: hepatitis/results/hepatitis-failed-results.php:250
-#: tb/requests/tb-requests.php:346 tb/results/tb-failed-results.php:253
+#: hepatitis/results/hepatitis-failed-results.php:241
+#: tb/requests/tb-requests.php:346 tb/results/tb-failed-results.php:244
 #: vl/results/vl-failed-results.php:228
 msgid "No printer selected"
 msgstr "Aucune imprimante sélectionnée"
 
-#: cd4/results/cd4-failed-results.php:586
-#: eid/results/eid-failed-results.php:618
-#: generic-tests/results/generic-failed-results.php:575
-#: vl/results/vl-failed-results.php:591
+#: cd4/results/cd4-failed-results.php:580
+#: eid/results/eid-failed-results.php:613
+#: generic-tests/results/generic-failed-results.php:578
+#: vl/results/vl-failed-results.php:595
 msgid "Retest has been submitted"
 msgstr "Le nouveau test a été soumis"
 
-#: cd4/results/cd4-failed-results.php:594
-#: covid-19/results/covid-19-failed-results.php:543
-#: eid/results/eid-failed-results.php:626
-#: generic-tests/results/generic-failed-results.php:583
-#: hepatitis/results/hepatitis-failed-results.php:583
-#: tb/results/tb-failed-results.php:587 vl/results/vl-failed-results.php:599
+#: cd4/results/cd4-failed-results.php:588
+#: covid-19/results/covid-19-failed-results.php:536
+#: eid/results/eid-failed-results.php:621
+#: generic-tests/results/generic-failed-results.php:586
+#: hepatitis/results/hepatitis-failed-results.php:577
+#: tb/results/tb-failed-results.php:581 vl/results/vl-failed-results.php:603
 msgid "Something went wrong. Please try again later"
 msgstr ""
 "Quelque chose s’est mal passé. S’il vous plaît essayer à nouveau plus tard"
@@ -10170,7 +10172,7 @@ msgstr "Test de l'échantillon à nouveau"
 #: generic-tests/results/get-generic-failed-results-details.php:232
 #: hepatitis/results/get-failed-results.php:236
 #: tb/results/get-failed-results.php:242
-#: vl/results/getVlFailedResultsDetails.php:239
+#: vl/results/getVlFailedResultsDetails.php:240
 msgid "Retest"
 msgstr "Retester"
 
@@ -11835,7 +11837,7 @@ msgstr "Saisir le code TARV ou le nom du patient"
 #: eid/requests/forms/add-burkina-faso.php:135
 #: eid/requests/forms/edit-burkina-faso.php:149
 #: eid/results/forms/update-burkina-faso-result.php:148
-#: vl/requests/forms/add-cameroon.php:226 vl/requests/forms/add-drc.php:176
+#: vl/requests/forms/add-cameroon.php:226 vl/requests/forms/add-drc.php:173
 msgid "No Patient Found"
 msgstr "Aucun patient trouvé"
 
@@ -11853,7 +11855,7 @@ msgstr "Aucun patient trouvé"
 #: eid/requests/forms/add-southsudan.php:174
 #: eid/requests/forms/edit-burkina-faso.php:153
 #: eid/requests/forms/edit-cameroon.php:186
-#: eid/requests/forms/edit-cameroon.php:188 eid/requests/forms/edit-drc.php:200
+#: eid/requests/forms/edit-cameroon.php:188 eid/requests/forms/edit-drc.php:198
 #: eid/requests/forms/edit-png.php:227 eid/requests/forms/edit-png.php:229
 #: eid/requests/forms/edit-rwanda.php:177
 #: eid/requests/forms/edit-rwanda.php:179
@@ -11874,10 +11876,10 @@ msgstr "Aucun patient trouvé"
 #: tb/requests/forms/edit-southsudan.php:194
 #: tb/requests/forms/edit-southsudan.php:196
 #: tb/results/forms/update-burkina-faso.php:182
-#: vl/requests/forms/add-drc.php:181 vl/requests/forms/add-png.php:140
+#: vl/requests/forms/add-drc.php:178 vl/requests/forms/add-png.php:140
 #: vl/requests/forms/add-sierraleone.php:216
-#: vl/requests/forms/add-southsudan.php:226 vl/requests/forms/edit-drc.php:225
-#: vl/requests/forms/edit-drc.php:227 vl/requests/forms/edit-png.php:286
+#: vl/requests/forms/add-southsudan.php:226 vl/requests/forms/edit-drc.php:222
+#: vl/requests/forms/edit-drc.php:224 vl/requests/forms/edit-png.php:286
 #: vl/requests/forms/edit-png.php:288
 msgid "Encrypt PII"
 msgstr "Cryptage des IPI"
@@ -12234,8 +12236,8 @@ msgid "Sample Received Date"
 msgstr "Date de réception"
 
 #: covid-19/requests/forms/add-cameroon.php:377
-#: covid-19/requests/forms/add-drc.php:682
-#: covid-19/requests/forms/add-drc.php:737
+#: covid-19/requests/forms/add-drc.php:678
+#: covid-19/requests/forms/add-drc.php:733
 #: covid-19/requests/forms/add-png.php:512
 #: covid-19/requests/forms/add-rwanda.php:402
 #: covid-19/requests/forms/add-rwanda.php:526
@@ -12244,8 +12246,8 @@ msgstr "Date de réception"
 #: covid-19/requests/forms/add-who.php:322
 #: covid-19/requests/forms/add-who.php:437
 #: covid-19/requests/forms/edit-cameroon.php:393
-#: covid-19/requests/forms/edit-drc.php:714
-#: covid-19/requests/forms/edit-drc.php:769
+#: covid-19/requests/forms/edit-drc.php:710
+#: covid-19/requests/forms/edit-drc.php:765
 #: covid-19/requests/forms/edit-png.php:527
 #: covid-19/requests/forms/edit-rwanda.php:421
 #: covid-19/requests/forms/edit-rwanda.php:582
@@ -12255,8 +12257,8 @@ msgstr "Date de réception"
 #: covid-19/requests/forms/edit-who.php:480
 #: covid-19/requests/forms/quick-add-southsudan.php:130
 #: covid-19/results/forms/update-cameroon-result.php:354
-#: covid-19/results/forms/update-drc-result.php:686
-#: covid-19/results/forms/update-drc-result.php:742
+#: covid-19/results/forms/update-drc-result.php:684
+#: covid-19/results/forms/update-drc-result.php:740
 #: covid-19/results/forms/update-png-result.php:517
 #: covid-19/results/forms/update-rwanda-result.php:419
 #: covid-19/results/forms/update-rwanda-result.php:575
@@ -12268,8 +12270,8 @@ msgstr "Date de réception"
 #: eid/requests/forms/add-burkina-faso.php:380
 #: eid/requests/forms/add-burkina-faso.php:431
 #: eid/requests/forms/add-cameroon.php:529
-#: eid/requests/forms/add-cameroon.php:555 eid/requests/forms/add-drc.php:472
-#: eid/requests/forms/add-drc.php:549 eid/requests/forms/add-png.php:490
+#: eid/requests/forms/add-cameroon.php:555 eid/requests/forms/add-drc.php:468
+#: eid/requests/forms/add-drc.php:530 eid/requests/forms/add-png.php:490
 #: eid/requests/forms/add-png.php:527 eid/requests/forms/add-rwanda.php:365
 #: eid/requests/forms/add-rwanda.php:402
 #: eid/requests/forms/add-sierraleone.php:420
@@ -12283,8 +12285,8 @@ msgstr "Date de réception"
 #: eid/requests/forms/edit-burkina-faso.php:393
 #: eid/requests/forms/edit-burkina-faso.php:453
 #: eid/requests/forms/edit-cameroon.php:555
-#: eid/requests/forms/edit-cameroon.php:591 eid/requests/forms/edit-drc.php:509
-#: eid/requests/forms/edit-drc.php:587 eid/requests/forms/edit-png.php:519
+#: eid/requests/forms/edit-cameroon.php:591 eid/requests/forms/edit-drc.php:506
+#: eid/requests/forms/edit-drc.php:570 eid/requests/forms/edit-png.php:519
 #: eid/requests/forms/edit-png.php:565 eid/requests/forms/edit-rwanda.php:378
 #: eid/requests/forms/edit-rwanda.php:422
 #: eid/requests/forms/edit-sierraleone.php:411
@@ -12301,8 +12303,8 @@ msgstr "Date de réception"
 #: eid/results/forms/update-burkina-faso-result.php:480
 #: eid/results/forms/update-cameroon-result.php:525
 #: eid/results/forms/update-cameroon-result.php:569
-#: eid/results/forms/update-drc-result.php:468
-#: eid/results/forms/update-drc-result.php:532
+#: eid/results/forms/update-drc-result.php:466
+#: eid/results/forms/update-drc-result.php:529
 #: eid/results/forms/update-png-result.php:379
 #: eid/results/forms/update-png-result.php:423
 #: eid/results/forms/update-rwanda-result.php:360
@@ -12366,17 +12368,17 @@ msgstr "Date de réception"
 #: tb/results/forms/update-southsudan.php:373
 #: tb/results/forms/update-southsudan.php:379
 #: vl/requests/forms/add-burkina-faso.php:607 vl/requests/forms/add-drc.php:145
-#: vl/requests/forms/add-drc.php:304 vl/requests/forms/add-drc.php:329
-#: vl/requests/forms/add-drc.php:354 vl/requests/forms/add-drc.php:381
-#: vl/requests/forms/add-drc.php:417 vl/requests/forms/add-drc.php:441
-#: vl/requests/forms/add-drc.php:486 vl/requests/forms/add-sierraleone.php:831
+#: vl/requests/forms/add-drc.php:301 vl/requests/forms/add-drc.php:326
+#: vl/requests/forms/add-drc.php:351 vl/requests/forms/add-drc.php:378
+#: vl/requests/forms/add-drc.php:414 vl/requests/forms/add-drc.php:437
+#: vl/requests/forms/add-drc.php:469 vl/requests/forms/add-sierraleone.php:831
 #: vl/requests/forms/add-southsudan.php:723 vl/requests/forms/add-who.php:687
 #: vl/requests/forms/edit-burkina-faso.php:682
 #: vl/requests/forms/edit-drc.php:132 vl/requests/forms/edit-drc.php:193
-#: vl/requests/forms/edit-drc.php:242 vl/requests/forms/edit-drc.php:334
-#: vl/requests/forms/edit-drc.php:361 vl/requests/forms/edit-drc.php:386
-#: vl/requests/forms/edit-drc.php:413 vl/requests/forms/edit-drc.php:451
-#: vl/requests/forms/edit-drc.php:473 vl/requests/forms/edit-drc.php:515
+#: vl/requests/forms/edit-drc.php:239 vl/requests/forms/edit-drc.php:331
+#: vl/requests/forms/edit-drc.php:358 vl/requests/forms/edit-drc.php:383
+#: vl/requests/forms/edit-drc.php:410 vl/requests/forms/edit-drc.php:448
+#: vl/requests/forms/edit-drc.php:470 vl/requests/forms/edit-drc.php:502
 #: vl/requests/forms/edit-sierraleone.php:970
 #: vl/requests/forms/edit-southsudan.php:830 vl/requests/forms/edit-who.php:832
 #: vl/results/forms/update-burkina-faso-result.php:688
@@ -12388,7 +12390,7 @@ msgstr "Date de réception"
 #: vl/results/forms/update-drc-result.php:393
 #: vl/results/forms/update-drc-result.php:436
 #: vl/results/forms/update-drc-result.php:457
-#: vl/results/forms/update-drc-result.php:493
+#: vl/results/forms/update-drc-result.php:492
 #: vl/results/forms/update-sierraleone-result.php:855
 #: vl/results/forms/update-southsudan-result.php:849
 msgid "Please enter date"
@@ -12474,12 +12476,12 @@ msgstr "Veuillez sélectionner le motif du rejet"
 #: tb/requests/forms/edit-burkina-faso.php:421
 #: tb/results/forms/update-burkina-faso.php:426
 #: vl/requests/forms/add-burkina-faso.php:514
-#: vl/requests/forms/add-cameroon.php:574 vl/requests/forms/add-drc.php:528
+#: vl/requests/forms/add-cameroon.php:574 vl/requests/forms/add-drc.php:509
 #: vl/requests/forms/edit-burkina-faso.php:585
-#: vl/requests/forms/edit-cameroon.php:635 vl/requests/forms/edit-drc.php:555
+#: vl/requests/forms/edit-cameroon.php:635 vl/requests/forms/edit-drc.php:540
 #: vl/results/forms/update-burkina-faso-result.php:591
 #: vl/results/forms/update-cameroon-result.php:657
-#: vl/results/forms/update-drc-result.php:530
+#: vl/results/forms/update-drc-result.php:528
 msgid "Rejection Date"
 msgstr "Date de rejet"
 
@@ -12755,16 +12757,16 @@ msgstr "Sélectionner l'état du cas"
 msgid "Select Authorized By"
 msgstr "Sélection Autorisé par"
 
-#: covid-19/requests/forms/add-drc.php:186
-#: covid-19/requests/forms/edit-drc.php:222 eid/requests/forms/add-drc.php:155
-#: eid/requests/forms/edit-drc.php:192 vl/requests/forms/add-drc.php:172
-#: vl/requests/forms/add-drc.php:194 vl/requests/forms/edit-drc.php:219
-#: vl/requests/forms/edit-drc.php:238
+#: covid-19/requests/forms/add-drc.php:182
+#: covid-19/requests/forms/edit-drc.php:218 eid/requests/forms/add-drc.php:152
+#: eid/requests/forms/edit-drc.php:190 vl/requests/forms/add-drc.php:169
+#: vl/requests/forms/add-drc.php:191 vl/requests/forms/edit-drc.php:216
+#: vl/requests/forms/edit-drc.php:235
 #: vl/results/forms/update-drc-result.php:201
 msgid "Please enter the Patient ID"
 msgstr "Veuillez entrer le ID du patient"
 
-#: covid-19/requests/forms/add-drc.php:1252
+#: covid-19/requests/forms/add-drc.php:1241
 msgid "Please enter Patient Age or Date of Birth"
 msgstr "Veuillez saisir l'âge ou la date de naissance du patient"
 
@@ -13201,9 +13203,9 @@ msgstr "Covid-19 | Manifeste de confirmation"
 msgid "Covid19 | View All Requests"
 msgstr "Afficher les demandes de test"
 
-#: covid-19/results/covid-19-failed-results.php:535
-#: hepatitis/results/hepatitis-failed-results.php:575
-#: tb/results/tb-failed-results.php:579
+#: covid-19/results/covid-19-failed-results.php:528
+#: hepatitis/results/hepatitis-failed-results.php:569
+#: tb/results/tb-failed-results.php:573
 msgid "Selected Sample(s) ready for testing"
 msgstr "Échantillon(s) sélectionné(s) prêt(s) à être testé(s)"
 
@@ -13503,7 +13505,7 @@ msgstr "EID Rapport clinique"
 #: eid/management/eid-export-data.php:256
 #: eid/management/eid-export-data.php:301
 #: eid/requests/addSamplesFromManifest.php:96 eid/requests/eid-requests.php:454
-#: eid/results/eid-failed-results.php:221
+#: eid/results/eid-failed-results.php:213
 #: eid/results/eid-manual-results.php:207 eid/results/eid-print-results.php:154
 #: eid/results/eid-print-results.php:206 eid/results/eid-print-results.php:314
 #: eid/results/eid-print-results.php:365 eid/results/eid-result-status.php:174
@@ -13518,7 +13520,7 @@ msgstr "ID Enfant"
 #: eid/management/eid-export-data.php:259
 #: eid/management/eid-export-data.php:302
 #: eid/requests/addSamplesFromManifest.php:99 eid/requests/eid-requests.php:457
-#: eid/results/eid-failed-results.php:224
+#: eid/results/eid-failed-results.php:216
 #: eid/results/eid-manual-results.php:210 eid/results/eid-print-results.php:157
 #: eid/results/eid-print-results.php:207 eid/results/eid-print-results.php:317
 #: eid/results/eid-print-results.php:366 eid/results/eid-result-status.php:175
@@ -13536,7 +13538,7 @@ msgstr "Action correctrice recommandée"
 #: eid/management/eid-clinic-report.php:417
 #: eid/management/eid-export-data.php:204
 #: eid/management/eid-export-data.php:206 eid/requests/eid-requests.php:325
-#: eid/requests/eid-requests.php:328 eid/results/eid-failed-results.php:154
+#: eid/requests/eid-requests.php:328 eid/results/eid-failed-results.php:146
 #: eid/results/eid-print-results.php:113 eid/results/eid-print-results.php:274
 msgid "Child ID"
 msgstr "ID Enfant"
@@ -13560,43 +13562,43 @@ msgid "Please select Testing Lab"
 msgstr "Veuiller selectionner le laboratoire de test"
 
 #: eid/management/eid-export-data.php:208 eid/requests/eid-requests.php:331
-#: eid/results/eid-failed-results.php:161 eid/results/eid-print-results.php:117
+#: eid/results/eid-failed-results.php:153 eid/results/eid-print-results.php:117
 #: eid/results/eid-print-results.php:278
 msgid "Child Name"
 msgstr "Nom de l'enfant"
 
 #: eid/management/eid-export-data.php:210 eid/requests/eid-requests.php:334
-#: eid/results/eid-failed-results.php:164 eid/results/eid-print-results.php:119
+#: eid/results/eid-failed-results.php:156 eid/results/eid-print-results.php:119
 #: eid/results/eid-print-results.php:280
 msgid "Enter Child Name"
 msgstr "Saisir le nom de l'enfant"
 
 #: eid/management/eid-export-data.php:216 eid/requests/eid-requests.php:339
-#: eid/results/eid-failed-results.php:169 eid/results/eid-print-results.php:208
+#: eid/results/eid-failed-results.php:161 eid/results/eid-print-results.php:208
 #: eid/results/eid-print-results.php:367
 msgid "Mother ID"
 msgstr "ID de la mère"
 
 #: eid/management/eid-export-data.php:218 eid/requests/eid-requests.php:342
-#: eid/results/eid-failed-results.php:172
+#: eid/results/eid-failed-results.php:164
 msgid "Enter Mother ID"
 msgstr "Saisir l'identifiant de la mère"
 
 #: eid/management/eid-export-data.php:220 eid/requests/eid-requests.php:345
-#: eid/results/eid-failed-results.php:176 eid/results/eid-print-results.php:209
+#: eid/results/eid-failed-results.php:168 eid/results/eid-print-results.php:209
 #: eid/results/eid-print-results.php:368
 msgid "Mother Name"
 msgstr "Entrer le Nom de la mère"
 
 #: eid/management/eid-export-data.php:222 eid/requests/eid-requests.php:348
-#: eid/results/eid-failed-results.php:179
+#: eid/results/eid-failed-results.php:171
 msgid "Enter Mother Name"
 msgstr "Nom de la mère"
 
 #: eid/management/eid-export-data.php:273
 #: eid/management/eid-export-data.php:308
 #: eid/requests/addSamplesFromManifest.php:102
-#: eid/requests/eid-requests.php:460 eid/results/eid-failed-results.php:227
+#: eid/requests/eid-requests.php:460 eid/results/eid-failed-results.php:219
 #: eid/results/eid-manual-results.php:213 eid/results/eid-print-results.php:160
 #: eid/results/eid-print-results.php:320 eid/results/eid-result-status.php:176
 msgid "Mother's ID"
@@ -13717,7 +13719,7 @@ msgid "EID Test Request"
 msgstr "Demande de test EID"
 
 #: eid/requests/addSamplesFromManifest.php:105
-#: eid/requests/eid-requests.php:463 eid/results/eid-failed-results.php:230
+#: eid/requests/eid-requests.php:463 eid/results/eid-failed-results.php:222
 #: eid/results/eid-manual-results.php:216 eid/results/eid-print-results.php:163
 #: eid/results/eid-print-results.php:323 eid/results/eid-result-status.php:177
 msgid "Mother's Name"
@@ -14730,49 +14732,49 @@ msgstr "Sélectionner Approuvé par"
 msgid "Please enter requesting clinician name"
 msgstr "Veuillez saisir le nom du prescriteur"
 
-#: eid/requests/forms/add-drc.php:225 eid/requests/forms/edit-drc.php:273
-#: eid/results/forms/update-drc-result.php:240
+#: eid/requests/forms/add-drc.php:222 eid/requests/forms/edit-drc.php:271
+#: eid/results/forms/update-drc-result.php:238
 #: generic-tests/mail/mail-generic-tests-results.php:231
 #: vl/result-mail/editTestResultEmailConfig.php:92
 msgid "Age in years"
 msgstr "Âge en années"
 
-#: eid/requests/forms/add-drc.php:227 eid/requests/forms/edit-drc.php:275
-#: eid/results/forms/update-drc-result.php:242
+#: eid/requests/forms/add-drc.php:224 eid/requests/forms/edit-drc.php:273
+#: eid/results/forms/update-drc-result.php:240
 msgid "Age in weeks"
 msgstr "Âge en semaines"
 
-#: eid/requests/forms/add-drc.php:482 eid/requests/forms/edit-drc.php:519
-#: eid/results/forms/update-drc-result.php:501
+#: eid/requests/forms/add-drc.php:471 eid/requests/forms/edit-drc.php:510
+#: eid/results/forms/update-drc-result.php:498
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
 #: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-vl-requests.php:34 vl/requests/export-vl-requests.php:41
-#: vl/requests/forms/add-drc.php:451 vl/requests/forms/edit-drc.php:483
+#: vl/requests/forms/add-drc.php:439 vl/requests/forms/edit-drc.php:472
 #: vl/requests/get-request-list.php:376 vl/requests/sample-storage.php:155
 #: vl/requests/sample-storage.php:252
-#: vl/results/forms/update-drc-result.php:461
+#: vl/results/forms/update-drc-result.php:459
 msgid "Freezer"
 msgstr "Congélateur"
 
-#: eid/requests/forms/add-drc.php:485 eid/requests/forms/edit-drc.php:522
-#: eid/results/forms/update-drc-result.php:503
-#: vl/requests/forms/add-drc.php:454 vl/requests/forms/edit-drc.php:486
-#: vl/results/forms/update-drc-result.php:464
+#: eid/requests/forms/add-drc.php:473 eid/requests/forms/edit-drc.php:512
+#: eid/results/forms/update-drc-result.php:500
+#: vl/requests/forms/add-drc.php:441 vl/requests/forms/edit-drc.php:474
+#: vl/results/forms/update-drc-result.php:462
 msgid "Enter Freezer"
 msgstr "Entrer dans le congélateur"
 
-#: eid/requests/forms/add-drc.php:485 eid/requests/forms/edit-drc.php:522
-#: eid/results/forms/update-drc-result.php:503
-#: vl/requests/forms/add-drc.php:454 vl/requests/forms/edit-drc.php:486
-#: vl/results/forms/update-drc-result.php:464
+#: eid/requests/forms/add-drc.php:473 eid/requests/forms/edit-drc.php:512
+#: eid/results/forms/update-drc-result.php:500
+#: vl/requests/forms/add-drc.php:441 vl/requests/forms/edit-drc.php:474
+#: vl/results/forms/update-drc-result.php:462
 msgid "Please enter Freezer"
 msgstr "Veuillez entrer Congélateur"
 
-#: eid/requests/forms/add-drc.php:491 eid/requests/forms/add-drc.php:493
-#: eid/requests/forms/edit-drc.php:528 eid/requests/forms/edit-drc.php:530
-#: eid/results/forms/update-drc-result.php:509
-#: eid/results/forms/update-drc-result.php:511
+#: eid/requests/forms/add-drc.php:476 eid/requests/forms/add-drc.php:478
+#: eid/requests/forms/edit-drc.php:516 eid/requests/forms/edit-drc.php:518
+#: eid/results/forms/update-drc-result.php:506
+#: eid/results/forms/update-drc-result.php:508
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
 #: vl/program-management/sample-storage-reports.php:143
@@ -14781,24 +14783,24 @@ msgstr "Veuillez entrer Congélateur"
 #: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:34 vl/requests/export-vl-requests.php:41
-#: vl/requests/forms/add-drc.php:458 vl/requests/forms/add-drc.php:460
-#: vl/requests/forms/edit-drc.php:490 vl/requests/forms/edit-drc.php:492
+#: vl/requests/forms/add-drc.php:446 vl/requests/forms/add-drc.php:448
+#: vl/requests/forms/edit-drc.php:480 vl/requests/forms/edit-drc.php:482
 #: vl/requests/get-request-list.php:376 vl/requests/sample-storage.php:255
 #: vl/results/forms/update-drc-result.php:468
 msgid "Rack"
 msgstr "Coffret"
 
-#: eid/requests/forms/add-drc.php:493 eid/requests/forms/edit-drc.php:530
-#: eid/results/forms/update-drc-result.php:511
-#: vl/requests/forms/add-drc.php:460 vl/requests/forms/edit-drc.php:492
+#: eid/requests/forms/add-drc.php:478 eid/requests/forms/edit-drc.php:518
+#: eid/results/forms/update-drc-result.php:508
+#: vl/requests/forms/add-drc.php:448 vl/requests/forms/edit-drc.php:482
 #: vl/results/forms/update-drc-result.php:470
 msgid "Please enter rack"
 msgstr "Veuillez entrer le rack"
 
-#: eid/requests/forms/add-drc.php:495 eid/requests/forms/add-drc.php:498
-#: eid/requests/forms/edit-drc.php:532 eid/requests/forms/edit-drc.php:535
-#: eid/results/forms/update-drc-result.php:513
-#: eid/results/forms/update-drc-result.php:515
+#: eid/requests/forms/add-drc.php:482 eid/requests/forms/add-drc.php:485
+#: eid/requests/forms/edit-drc.php:522 eid/requests/forms/edit-drc.php:525
+#: eid/results/forms/update-drc-result.php:510
+#: eid/results/forms/update-drc-result.php:512
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
 #: vl/program-management/sample-storage-reports.php:146
@@ -14807,24 +14809,24 @@ msgstr "Veuillez entrer le rack"
 #: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:34 vl/requests/export-vl-requests.php:41
-#: vl/requests/forms/add-drc.php:465 vl/requests/forms/add-drc.php:468
-#: vl/requests/forms/edit-drc.php:496 vl/requests/forms/edit-drc.php:499
+#: vl/requests/forms/add-drc.php:450 vl/requests/forms/add-drc.php:452
+#: vl/requests/forms/edit-drc.php:484 vl/requests/forms/edit-drc.php:486
 #: vl/requests/get-request-list.php:376 vl/requests/sample-storage.php:258
-#: vl/results/forms/update-drc-result.php:474
+#: vl/results/forms/update-drc-result.php:472
 msgid "Box"
 msgstr "Boîte"
 
-#: eid/requests/forms/add-drc.php:498 eid/requests/forms/edit-drc.php:535
-#: eid/results/forms/update-drc-result.php:515
-#: vl/requests/forms/add-drc.php:468 vl/requests/forms/edit-drc.php:499
-#: vl/results/forms/update-drc-result.php:477
+#: eid/requests/forms/add-drc.php:485 eid/requests/forms/edit-drc.php:525
+#: eid/results/forms/update-drc-result.php:512
+#: vl/requests/forms/add-drc.php:452 vl/requests/forms/edit-drc.php:486
+#: vl/results/forms/update-drc-result.php:475
 msgid "Please enter box"
 msgstr "Veuillez entrer dans la case"
 
-#: eid/requests/forms/add-drc.php:502 eid/requests/forms/add-drc.php:504
-#: eid/requests/forms/edit-drc.php:539 eid/requests/forms/edit-drc.php:541
-#: eid/results/forms/update-drc-result.php:519
-#: eid/results/forms/update-drc-result.php:521
+#: eid/requests/forms/add-drc.php:487 eid/requests/forms/add-drc.php:489
+#: eid/requests/forms/edit-drc.php:527 eid/requests/forms/edit-drc.php:529
+#: eid/results/forms/update-drc-result.php:516
+#: eid/results/forms/update-drc-result.php:518
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
 #: vl/program-management/sample-storage-reports.php:149
@@ -14833,55 +14835,55 @@ msgstr "Veuillez entrer dans la case"
 #: vl/program-management/storageHistoryDataToExcel.php:25
 #: vl/requests/export-sample-storage.php:26
 #: vl/requests/export-vl-requests.php:34 vl/requests/export-vl-requests.php:41
-#: vl/requests/forms/add-drc.php:470 vl/requests/forms/add-drc.php:472
-#: vl/requests/forms/edit-drc.php:501 vl/requests/forms/edit-drc.php:503
+#: vl/requests/forms/add-drc.php:456 vl/requests/forms/add-drc.php:458
+#: vl/requests/forms/edit-drc.php:490 vl/requests/forms/edit-drc.php:492
 #: vl/requests/get-request-list.php:376 vl/requests/sample-storage.php:261
 #: vl/results/forms/update-drc-result.php:479
 #: vl/results/forms/update-drc-result.php:481
 msgid "Position"
 msgstr "Position"
 
-#: eid/requests/forms/add-drc.php:504 eid/requests/forms/edit-drc.php:541
-#: eid/results/forms/update-drc-result.php:521
-#: vl/requests/forms/add-drc.php:472 vl/requests/forms/edit-drc.php:503
+#: eid/requests/forms/add-drc.php:489 eid/requests/forms/edit-drc.php:529
+#: eid/results/forms/update-drc-result.php:518
+#: vl/requests/forms/add-drc.php:458 vl/requests/forms/edit-drc.php:492
 #: vl/results/forms/update-drc-result.php:481
 msgid "Please enter position"
 msgstr "Veuillez saisir la position"
 
-#: eid/requests/forms/add-drc.php:506 eid/requests/forms/edit-drc.php:544
-#: eid/results/forms/update-drc-result.php:523
+#: eid/requests/forms/add-drc.php:493 eid/requests/forms/edit-drc.php:533
+#: eid/results/forms/update-drc-result.php:520
 #: vl/program-management/export-vl-results.php:36
 #: vl/program-management/export-vl-results.php:49
 #: vl/requests/export-vl-requests.php:34 vl/requests/export-vl-requests.php:41
-#: vl/requests/forms/add-drc.php:478 vl/requests/forms/edit-drc.php:508
-#: vl/results/forms/update-drc-result.php:486
+#: vl/requests/forms/add-drc.php:460 vl/requests/forms/edit-drc.php:494
+#: vl/results/forms/update-drc-result.php:483
 msgid "Volume (ml)"
 msgstr "Volume (ml)"
 
-#: eid/requests/forms/add-drc.php:509 eid/requests/forms/edit-drc.php:547
-#: eid/results/forms/update-drc-result.php:526
-#: vl/requests/forms/add-drc.php:481 vl/requests/forms/edit-drc.php:511
-#: vl/results/forms/update-drc-result.php:489
+#: eid/requests/forms/add-drc.php:496 eid/requests/forms/edit-drc.php:536
+#: eid/results/forms/update-drc-result.php:523
+#: vl/requests/forms/add-drc.php:462 vl/requests/forms/edit-drc.php:496
+#: vl/results/forms/update-drc-result.php:486
 msgid "Volume"
 msgstr "Volume"
 
-#: eid/requests/forms/add-drc.php:509 eid/requests/forms/edit-drc.php:547
-#: eid/results/forms/update-drc-result.php:526
-#: vl/requests/forms/add-drc.php:481 vl/requests/forms/edit-drc.php:511
-#: vl/results/forms/update-drc-result.php:489
+#: eid/requests/forms/add-drc.php:496 eid/requests/forms/edit-drc.php:536
+#: eid/results/forms/update-drc-result.php:523
+#: vl/requests/forms/add-drc.php:462 vl/requests/forms/edit-drc.php:496
+#: vl/results/forms/update-drc-result.php:486
 msgid "Please enter volume"
 msgstr "Veuillez saisir le volume"
 
-#: eid/requests/forms/add-drc.php:818 eid/requests/forms/edit-drc.php:795
-#: eid/results/forms/update-drc-result.php:782
+#: eid/requests/forms/add-drc.php:798 eid/requests/forms/edit-drc.php:778
+#: eid/results/forms/update-drc-result.php:780
 #: generic-tests/requests/add-request.php:856
 #: generic-tests/requests/add-request.php:913
 #: generic-tests/requests/edit-request.php:1095
 #: generic-tests/requests/edit-request.php:1152
 #: generic-tests/results/update-generic-test-result.php:1061
 #: generic-tests/results/update-generic-test-result.php:1118
-#: vl/requests/forms/add-drc.php:1024 vl/requests/forms/edit-drc.php:1021
-#: vl/results/forms/update-drc-result.php:800
+#: vl/requests/forms/add-drc.php:1002 vl/requests/forms/edit-drc.php:1006
+#: vl/results/forms/update-drc-result.php:798
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères pour rechercher"
 
@@ -14948,7 +14950,7 @@ msgstr "Code/ID du nourrisson"
 msgid "Infant Name"
 msgstr "Nom du nourrisson"
 
-#: eid/results/eid-failed-results.php:157 eid/results/eid-print-results.php:115
+#: eid/results/eid-failed-results.php:149 eid/results/eid-print-results.php:115
 #: eid/results/eid-print-results.php:276
 msgid "Enter Child ID"
 msgstr "Saisir l'identifiant de l'enfant"
@@ -14991,7 +14993,7 @@ msgstr "Veuillez sélectionner la plateforme de test"
 #: generic-tests/results/get-generic-failed-results-details.php:232
 #: hepatitis/results/get-failed-results.php:236
 #: tb/results/get-failed-results.php:242
-#: vl/results/getVlFailedResultsDetails.php:239
+#: vl/results/getVlFailedResultsDetails.php:240
 msgid "Failed result retest"
 msgstr "Retest des Échec résultat"
 
@@ -17279,11 +17281,11 @@ msgid "Please select sub tests"
 msgstr "Veuillez sélectionner les sous-épreuves"
 
 #: generic-tests/requests/add-request.php:633
-#: vl/requests/forms/add-burkina-faso.php:567 vl/requests/forms/add-drc.php:551
+#: vl/requests/forms/add-burkina-faso.php:567 vl/requests/forms/add-drc.php:529
 #: vl/requests/forms/edit-burkina-faso.php:638
-#: vl/requests/forms/edit-drc.php:579
+#: vl/requests/forms/edit-drc.php:564
 #: vl/results/forms/update-burkina-faso-result.php:644
-#: vl/results/forms/update-drc-result.php:551
+#: vl/results/forms/update-drc-result.php:549
 msgid "Reason for Failure"
 msgstr "Motif de l'échec"
 
@@ -23721,47 +23723,47 @@ msgstr ""
 msgid "Recency ID"
 msgstr "ID de test récent"
 
-#: vl/requests/forms/add-drc.php:199
+#: vl/requests/forms/add-drc.php:196
 msgid "Please enter the Date of Birth"
 msgstr "Veuillez saisir la date de naissance"
 
-#: vl/requests/forms/add-drc.php:205 vl/requests/forms/edit-drc.php:248
+#: vl/requests/forms/add-drc.php:202 vl/requests/forms/edit-drc.php:245
 msgid "Please enter Patient age"
 msgstr "Veuillez indiquer l'âge du patient"
 
-#: vl/requests/forms/add-drc.php:219 vl/requests/forms/add-drc.php:223
-#: vl/requests/forms/add-drc.php:227 vl/results/forms/update-drc-result.php:223
+#: vl/requests/forms/add-drc.php:216 vl/requests/forms/add-drc.php:220
+#: vl/requests/forms/add-drc.php:224 vl/results/forms/update-drc-result.php:223
 #: vl/results/forms/update-drc-result.php:227
 #: vl/results/forms/update-drc-result.php:231
 msgid "Please select a gender"
 msgstr "Veuillez sélectionner un sexe"
 
-#: vl/requests/forms/add-drc.php:231 vl/requests/forms/edit-drc.php:260
+#: vl/requests/forms/add-drc.php:228 vl/requests/forms/edit-drc.php:257
 #: vl/results/forms/update-drc-result.php:234
 msgid "M"
 msgstr "M"
 
-#: vl/requests/forms/add-drc.php:232 vl/requests/forms/edit-drc.php:261
+#: vl/requests/forms/add-drc.php:229 vl/requests/forms/edit-drc.php:258
 #: vl/results/forms/update-drc-result.php:235
 msgid "F"
 msgstr "F"
 
-#: vl/requests/forms/add-drc.php:237 vl/requests/forms/edit-drc.php:266
+#: vl/requests/forms/add-drc.php:234 vl/requests/forms/edit-drc.php:263
 #: vl/results/forms/update-drc-result.php:239
 msgid "Please choose KP"
 msgstr "Veuillez choisir KP"
 
-#: vl/requests/forms/add-drc.php:720 vl/requests/forms/edit-drc.php:853
+#: vl/requests/forms/add-drc.php:698 vl/requests/forms/edit-drc.php:838
 #: vl/results/forms/update-drc-result.php:241
 msgid "PS"
 msgstr "PS"
 
-#: vl/requests/forms/add-drc.php:723 vl/requests/forms/edit-drc.php:856
+#: vl/requests/forms/add-drc.php:701 vl/requests/forms/edit-drc.php:841
 #: vl/results/forms/update-drc-result.php:242
 msgid "CPS"
 msgstr "CPS"
 
-#: vl/requests/forms/add-drc.php:723 vl/requests/forms/edit-drc.php:856
+#: vl/requests/forms/add-drc.php:701 vl/requests/forms/edit-drc.php:841
 #: vl/results/forms/update-drc-result.php:243
 msgid "MSM"
 msgstr "MSM"
@@ -23783,9 +23785,9 @@ msgstr "Raison de la demande de charge virale"
 msgid "Enter new reason of testing"
 msgstr "Saisir une nouvelle raison pour le contrôle"
 
-#: vl/requests/forms/edit-drc.php:615 vl/requests/forms/edit-drc.php:619
-#: vl/results/forms/update-drc-result.php:590
-#: vl/results/forms/update-drc-result.php:597
+#: vl/requests/forms/edit-drc.php:600 vl/requests/forms/edit-drc.php:604
+#: vl/results/forms/update-drc-result.php:588
+#: vl/results/forms/update-drc-result.php:595
 msgid "Enter reason for changing the result"
 msgstr "Indiquer la raison de la modification du résultat"
 
@@ -23971,15 +23973,15 @@ msgstr "Si âge < 1, âge en mois"
 msgid "rack"
 msgstr "coffret"
 
-#: vl/results/forms/update-drc-result.php:477
+#: vl/results/forms/update-drc-result.php:475
 msgid "box"
 msgstr "boite"
 
-#: vl/results/forms/update-drc-result.php:510
+#: vl/results/forms/update-drc-result.php:508
 msgid "Please select if sample is rejected"
 msgstr "Veuillez sélectionner si l'échantillon est rejeté"
 
-#: vl/results/forms/update-drc-result.php:520
+#: vl/results/forms/update-drc-result.php:518
 msgid "Please select reason for rejection"
 msgstr "Veuillez sélectionner le motif du rejet"
 
