@@ -197,7 +197,7 @@ abstract class AbstractTestService
 
             if ($tryCount < $this->maxTries) {
 
-                if ($insertOperation && in_array($exception->getCode(), [1205, 1213])) {
+                if ($insertOperation || in_array($exception->getCode(), [1205, 1213])) {
                     // Add a small delay before retrying to avoid immediate retries
                     usleep($tryCount * 50000); // 50 milliseconds
                 }
