@@ -11,6 +11,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\LoggerUtility;
 
 use const SAMPLE_STATUS\ON_HOLD;
 
@@ -102,7 +103,7 @@ try {
                 $db->insert('vl_imported_controls', $data);
             } else {
 
-                $data = array(
+                $data = [
                     'result_reviewed_datetime' => $rResult['result_reviewed_datetime'],
                     'result_reviewed_by' => $_POST['reviewedBy'],
                     'import_machine_name' => $rResult['import_machine_name'],
@@ -118,12 +119,13 @@ try {
                     'lab_id' => $rResult['lab_id'],
                     'import_machine_file_name' => $rResult['import_machine_file_name'],
                     'manual_result_entry' => 'no',
-                );
+                ];
+
                 if ($status[$i] == SAMPLE_STATUS\ON_HOLD) {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
-                    $data['specimen_type'] = $rResult['sample_type'];
+                    $data['sample_type'] = $rResult['sample_type'];
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
                     $data['status'] = $status[$i];
                     $result = $db->insert('hold_sample_import', $data);
@@ -290,6 +292,6 @@ try {
     }
 
     echo "importedStatistics.php";
-} catch (SystemException | Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Throwable $exc) {
+    LoggerUtility::log("error", $exc->getMessage());
 }

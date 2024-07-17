@@ -543,7 +543,7 @@ foreach ($rejectionTypeResult as $type) {
 		appBy = $("#approvedBy").val();
 		reviewedBy = $("#reviewedBy").val();
 		moduleName = $("#module").val();
-		globalValue = '<?php echo $arr["user_review_approve"]; ?>';
+		globalValue = '<?= $arr["user_review_approve"]; ?>';
 		if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'yes') {
 			conf = confirm("Same person is reviewing and approving result!");
 			if (conf) {} else {
@@ -583,6 +583,7 @@ foreach ($rejectionTypeResult as $type) {
 						format: "html"
 					},
 					function(data) {
+						console.log(data);
 						if ($("#print").val() == 'print') {
 							convertSearchResultToPdf('');
 						}
