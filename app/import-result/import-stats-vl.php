@@ -3,14 +3,14 @@
 // imported in importedStatistics.php
 
 $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount,
-                    SUM(CASE WHEN tsr.result = 'Target Not Detected' OR tsr.result = 'target not detected' THEN 1 ELSE 0 END) AS TargetNotDetected,
-                    SUM(CASE WHEN tsr.result > 1000 AND (tsr.result !='Target Not Detected' OR tsr.result != 'target not detected') THEN 1 ELSE 0 END) AS HighViralLoad,
-                    SUM(CASE WHEN tsr.result < 1000 AND (tsr.result !='Target Not Detected' OR tsr.result != 'target not detected') THEN 1 ELSE 0 END) AS LowViralLoad,
-                    SUM(CASE WHEN tsr.result = 'Invalid' OR tsr.result = 'invalid' THEN 1 ELSE 0 END) AS invalid
+                    SUM(CASE WHEN vl.result_status like '7' AND vl.vl_result_category like 'not suppressed' THEN 1 ELSE 0 END) AS HighViralLoad,
+                    SUM(CASE WHEN vl.result_status like '7' AND vl.vl_result_category like 'suppressed' THEN 1 ELSE 0 END) AS LowViralLoad,
+                    SUM(CASE WHEN vl.result_status like '4' OR vl.vl_result_category like 'rejected' THEN 1 ELSE 0 END) AS Rejected,
+                    SUM(CASE WHEN vl.result_status like '1' OR  vl.vl_result_category like 'failed' THEN 1 ELSE 0 END) AS HoldOrFailed
                     FROM temp_sample_import as tsr
                     $joinTypeWithTestTable form_vl as vl ON vl.sample_code=tsr.sample_code
                     WHERE  imported_by ='$importedBy' ";
-$tsResult = $db->rawQuery($tsQuery);
+$tsResult = $db->rawQueryOne($tsQuery);
 
 //set print query
 $hQuery = "SELECT hsr.sample_code
@@ -62,29 +62,29 @@ unset($_SESSION['controllertrack']);
                         <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
-                                    <th style="width: 13%;">No. of Results imported</th>
-                                    <th style="width: 11%;">No. of High Viral Load results</th>
-                                    <th style="width: 18%;">No. of Low Viral Load results</th>
-                                    <th style="width: 18%;">No. of Target Not Detected</th>
-                                    <th style="width: 18%;">No. of Invalid results</th>
+                                    <th><?= _translate("Total No. of Results imported"); ?></th>
+                                    <th><?= _translate("No. of High Viral Load results"); ?></th>
+                                    <th><?= _translate("No. of Low Viral Load results"); ?></th>
+                                    <th><?= _translate("No. of Rejected results"); ?></th>
+                                    <th><?= _translate("No. of Failed/On Hold results"); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>
-                                        <?= isset($tsResult[0]['totalCount']) ? $tsResult[0]['totalCount'] : 0; ?>
+                                        <?= isset($tsResult['totalCount']) ? $tsResult['totalCount'] : 0; ?>
                                     </td>
                                     <td>
-                                        <?= isset($tsResult[0]['HighViralLoad']) ? $tsResult[0]['HighViralLoad'] : 0; ?>
+                                        <?= isset($tsResult['HighViralLoad']) ? $tsResult['HighViralLoad'] : 0; ?>
                                     </td>
                                     <td>
-                                        <?= isset($tsResult[0]['LowViralLoad']) ? $tsResult[0]['LowViralLoad'] : 0; ?>
+                                        <?= isset($tsResult['LowViralLoad']) ? $tsResult['LowViralLoad'] : 0; ?>
                                     </td>
                                     <td>
-                                        <?= isset($tsResult[0]['TargetNotDetected']) ? $tsResult[0]['TargetNotDetected'] : 0; ?>
+                                        <?= isset($tsResult['Rejected']) ? $tsResult['Rejected'] : 0; ?>
                                     </td>
                                     <td>
-                                        <?= isset($tsResult[0]['invalid']) ? $tsResult[0]['invalid'] : 0; ?>
+                                        <?= isset($tsResult['HoldOrFailed']) ? $tsResult['HoldOrFailed'] : 0; ?>
                                     </td>
                                 </tr>
                             </tbody>
@@ -94,7 +94,7 @@ unset($_SESSION['controllertrack']);
                         <tr>
                             <td>
                                 <?php
-                                if (isset($tsResult[0]['totalCount']) && $tsResult[0]['totalCount'] > 0) { ?>
+                                if (isset($tsResult['totalCount']) && $tsResult['totalCount'] > 0) { ?>
                                     <input type="button" onclick="convertSearchResultToPdf();return false;" value="Print all results" class="btn btn-success btn-sm">&nbsp;&nbsp;
                                     <a href="/vl/results/vlPrintResult.php" class="btn btn-success btn-sm">
                                         <?= _translate("Continue without printing results"); ?>
