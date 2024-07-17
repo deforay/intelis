@@ -25,7 +25,8 @@ $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+$_POST = array_map('trim', $_POST);
 
 $uploadedFiles = $request->getUploadedFiles();
 
