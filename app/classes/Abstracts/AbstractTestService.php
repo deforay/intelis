@@ -161,6 +161,12 @@ abstract class AbstractTestService
 
                         LoggerUtility::log('info', "DUPLICATE ::: Sample ID/Sample Key Code in $testTable ::: " . $sampleCodeGenerator['sampleCode'] . " / " . $maxId);
                         $params['existingMaxId'] = $maxId;
+
+                        if ($insertOperation) {
+                            // Add a small delay before retrying to avoid immediate retries
+                            usleep($tryCount * 50000); // 50 milliseconds
+                        }
+
                         return $this->generateSampleCode($testTable, $params, $tryCount + 1);
                     }
 
@@ -190,6 +196,12 @@ abstract class AbstractTestService
             }
 
             if ($tryCount < $this->maxTries) {
+
+                if ($insertOperation && in_array($exception->getCode(), [1205, 1213])) {
+                    // Add a small delay before retrying to avoid immediate retries
+                    usleep($tryCount * 50000); // 50 milliseconds
+                }
+
                 return $this->generateSampleCode($testTable, $params, $tryCount + 1);
             }
 
