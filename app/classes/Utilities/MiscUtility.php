@@ -5,7 +5,8 @@ namespace App\Utilities;
 use Throwable;
 use ZipArchive;
 use Sqids\Sqids;
-use Ramsey\Uuid\Uuid;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\Ulid;
 use App\Exceptions\SystemException;
 
 final class MiscUtility
@@ -324,18 +325,33 @@ final class MiscUtility
         return $array;
     }
 
+    // Generate a UUIDv4 with an optional extra string
     public static function generateUUID($attachExtraString = true): string
     {
-        $uuid = Uuid::uuid4()->toString();
-        $uuid .= $attachExtraString ? '-' . self::generateRandomString(6) : '';
+        $uuid = Uuid::v4()->toRfc4122();
+        if ($attachExtraString) {
+            $uuid .= '-' . self::generateRandomString(6);
+        }
         return $uuid;
     }
-    public static function generateUUIDv5($name = null, $namespace = Uuid::NAMESPACE_URL): string
+
+    // Generate a UUIDv5 with a name and namespace
+    public static function generateUUIDv5($name, $namespace = null): string
     {
-        return Uuid::uuid5($namespace, $name)->toString();
+        if ($namespace === null) {
+            $namespace = Uuid::fromString(Uuid::NAMESPACE_OID);
+        } elseif (is_string($namespace)) {
+            $namespace = Uuid::fromString($namespace);
+        }
+        return Uuid::v5($namespace, $name)->toRfc4122();
     }
 
 
+    // Generate a ULID
+    public static function generateULID(): string
+    {
+        return (new Ulid())->toRfc4122();
+    }
 
     /**
      * String to a file inside a zip archive.
@@ -472,5 +488,50 @@ final class MiscUtility
             // Return the unique array
             return $uniqueArray;
         }
+    }
+
+    public static function getMacAddress()
+    {
+        $macAddress = null;
+
+        // Attempt to get the MAC address on Windows
+        if (strncasecmp(PHP_OS, 'WIN', 3) == 0) {
+            $output = [];
+            @exec('getmac', $output);
+
+            foreach ($output as $line) {
+                if (preg_match('/([0-9A-F]{2}[:-]){5}([0-9A-F]{2})/i', $line, $matches)) {
+                    $macAddress = $matches[0];
+                    break;
+                }
+            }
+        }
+        // Attempt to get the MAC address on Linux or Unix
+        else {
+            $output = [];
+            @exec('ifconfig -a', $output);
+
+            foreach ($output as $line) {
+                if (preg_match('/([0-9A-F]{2}[:-]){5}([0-9A-F]{2})/i', $line, $matches)) {
+                    $macAddress = $matches[0];
+                    break;
+                }
+            }
+
+            if ($macAddress === null) {
+                $output = [];
+                @exec('ip addr show', $output);
+
+                foreach ($output as $line) {
+                    if (preg_match('/([0-9A-F]{2}[:-]){5}([0-9A-F]{2})/i', $line, $matches)) {
+                        $macAddress = $matches[0];
+                        break;
+                    }
+                }
+            }
+        }
+
+        // If the MAC address was found, return it, otherwise return null
+        return $macAddress;
     }
 }

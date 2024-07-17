@@ -34,7 +34,6 @@
         "guzzlehttp/guzzle": "^7.8",
         "halaxa/json-machine": "^1.1",
         "crunzphp/crunz": "^3.7",
-        "ramsey/uuid": "^4.7",
         "hackzilla/password-generator": "^1.6",
         "laminas/laminas-filter": "^2.35",
         "symfony/string": "^6.4",
@@ -62,7 +61,8 @@
         "openspout/openspout": "^4.24",
         "voku/anti-xss": "^4.1",
         "sqids/sqids": "^0.4.1",
-        "symfony/yaml": "^6.4"
+        "symfony/yaml": "^6.4",
+        "symfony/uid": "^7.1"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"

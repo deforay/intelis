@@ -28,11 +28,7 @@ if (_isAllowed("sync-history.php")) {
 
 $syncLatestTime = $general->getLastSTSSyncDateTime();
 
-if (empty($syncLatestTime)) {
-	$syncHistoryDisplay = "display:none;";
-} else {
-	$syncHistoryDisplay = "display:inline;";
-}
+$syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inline;";
 
 ?>
 
@@ -83,8 +79,6 @@ if (empty($syncLatestTime)) {
 </footer>
 </div>
 
-
-
 <?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
 <?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>
 
@@ -101,15 +95,8 @@ if (empty($syncLatestTime)) {
 		unset($_SESSION['alertMsg']);
 
 		$isLogged = $_SESSION['logged'] ?? '';
-		if ($isLogged !== '') {
-		?>
+		if ($isLogged !== '') { ?>
 			setCrossLogin();
-		<?php }
-		// if instance facility name is not set, let us show the modal
-
-		if (empty($_SESSION['instance']['facilityName']) || ($general->isLISInstance() && $_SESSION['instance']['labId'] == null)) {
-		?>
-			showModal('/new-instance.php', 900, 420);
 		<?php } ?>
 
 	});

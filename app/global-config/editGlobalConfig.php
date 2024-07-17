@@ -92,35 +92,6 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="facilityId" class="col-lg-4 control-label"><?php echo _translate("Instance/Facility Name"); ?> <span class="mandatory">*</span></label>
-											<div class="col-lg-8">
-												<input type="text" class="form-control isRequired readPage" name="facilityId" id="facilityId" title="<?php echo _translate('Please enter instance name'); ?>" placeholder="<?php echo _translate('Facility/Instance Name'); ?>" value="<?php echo $instanceResult[0]['instance_facility_name']; ?>" />
-											</div>
-										</div>
-									</div>
-									<div class="col-md-7">
-										<div class="form-group">
-											<label for="facilityCode" class="col-lg-4 control-label"><?php echo _translate("Instance/Facility Code"); ?> </label>
-											<div class="col-lg-8">
-												<input type="text" class="form-control readPage" id="facilityCode" name="facilityCode" placeholder="<?php echo _translate('Facility Code'); ?>" title="<?php echo _translate('Please enter instance/facility code'); ?>" value="<?php echo $instanceResult[0]['instance_facility_code']; ?>" />
-											</div>
-										</div>
-									</div>
-									<div class="col-md-7">
-										<div class="form-group">
-											<label for="instance_type" class="col-lg-4 control-label"><?php echo _translate("Instance/Facility Type"); ?> <span class="mandatory">*</span></label>
-											<div class="col-lg-8">
-												<select class="form-control isRequired readPage" name="instance_type" id="instance_type" title="<?php echo _translate('Please select the instance type'); ?>">
-													<option value="Viral Load Lab" <?php echo ('Viral Load Lab' == $arr['instance_type']) ? "selected='selected'" : "" ?>><?php echo _translate("Viral Load Lab"); ?></option>
-													<option value="Clinic/Lab" <?php echo ('Clinic/Lab' == $arr['instance_type']) ? "selected='selected'" : "" ?>><?php echo _translate("Clinic/Lab"); ?></option>
-													<option value="Both" <?php echo ('Both' == $arr['instance_type']) ? "selected='selected'" : "" ?>><?php echo _translate("Both"); ?></option>
-												</select>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-md-7">
-										<div class="form-group">
 											<label for="gui_date_format" class="col-lg-4 control-label"><?php echo _translate("Date Format"); ?> <span class="mandatory">*</span></label>
 											<div class="col-lg-8">
 												<select class="form-control isRequired readPage" name="gui_date_format" id="gui_date_format" title="<?php echo _translate('Please select the date format'); ?>">

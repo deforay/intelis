@@ -61,22 +61,6 @@ try {
         }
     }
 
-    $instanceData = [
-        'instance_facility_name' => $_POST['facilityId'],
-        'instance_facility_code' => $_POST['facilityCode'],
-        'instance_facility_type' => $_POST['instance_type'],
-        'instance_update_on' => $currentDateTime,
-    ];
-    $db->where('vlsm_instance_id', $_SESSION['instanceId']);
-    $updateInstance = $db->update($instanceTableName, $instanceData);
-    if ($updateInstance > 0) {
-        //Add event log
-        $eventType = 'update-instance';
-        $action = $_SESSION['userName'] . ' update instance id';
-        $resource = 'instance-details';
-        $general->activityLog($eventType, $action, $resource);
-    }
-
 
     if ($sanitizedLogo instanceof UploadedFile && $sanitizedLogo->getError() === UPLOAD_ERR_OK) {
         $logoImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo";

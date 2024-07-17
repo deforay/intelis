@@ -64,22 +64,6 @@ $data = $db->rawQuery($instanceValues);
                                     <td><?php echo $project['vlsm_instance_id']; ?></td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _translate("Instance Facility Name"); ?></th>
-                                    <td><span class="editSpan instanceName"><?php echo $project['instance_facility_name']; ?></span>
-                                        <input class="editInput instanceName form-control input-sm" type="text" name="instance_facility_name" value="<?php echo $project['instance_facility_name']; ?>" style="display: none;">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th><?php echo _translate("Instance Facility Code"); ?></th>
-                                    <td><span class="editSpan instanceCode"><?php echo $project['instance_facility_code']; ?></span>
-                                        <input class="editInput instanceCode form-control input-sm" type="text" name="instance_facility_code" value="<?php echo $project['instance_facility_code']; ?>" style="display: none;">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th><?php echo _translate("Instance Facility Type"); ?></th>
-                                    <td><?php echo $project['instance_facility_type']; ?></td>
-                                </tr>
-                                <tr>
                                     <th><?php echo _translate("Added On"); ?></th>
                                     <td><?php echo date('d-M-Y H:i:s', strtotime((string) $project['instance_added_on'])); ?></td>
                                 </tr>
