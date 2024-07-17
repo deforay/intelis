@@ -277,10 +277,8 @@ try {
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($vlResult) && !empty($sampleCode)) {
-                if ($vlResult['result_value_log'] != '' || $vlResult['result_value_absolute'] != '' || $vlResult['result_value_text'] != '' || $vlResult['result_value_absolute_decimal'] != '') {
+                if (!empty($vlResult['result'])) {
                     $data['sample_details'] = 'Result already exists';
-                } else {
-                    $data['result_status'] = '7';
                 }
                 $data['facility_id'] = $vlResult['facility_id'];
             } else {

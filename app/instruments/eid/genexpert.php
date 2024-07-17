@@ -153,15 +153,13 @@ try {
             $query = "SELECT facility_id, eid_id, result
                         FROM form_eid
                         WHERE sample_code= ?";
-            $vlResult = $db->rawQuery($query, array($sampleCode));
+            $vlResult = $db->rawQueryOne($query, array($sampleCode));
 
             if (!empty($vlResult) && !empty($sampleCode)) {
-                if (!empty($vlResult[0]['result'])) {
+                if (!empty($vlResult['result'])) {
                     $data['sample_details'] = 'Result already exists';
-                } else {
-                    $data['result_status'] = '7';
                 }
-                $data['facility_id'] = $vlResult[0]['facility_id'];
+                $data['facility_id'] = $vlResult['facility_id'];
             } else {
                 $data['sample_details'] = 'New Sample';
             }

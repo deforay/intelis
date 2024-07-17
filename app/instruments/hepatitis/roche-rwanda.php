@@ -219,7 +219,7 @@ try {
             }
 
             $query = "SELECT facility_id,hepatitis_id,hcv_vl_count,hbv_vl_count,hepatitis_test_type, result_status FROM form_hepatitis WHERE sample_code='" . $sampleCode . "'";
-            $hepResult = $db->rawQuery($query);
+            $hepResult = $db->rawQueryOne($query);
 
             // $testType = strtolower($hepResult['hepatitis_test_type']);
             // if ($testType == 'hbv') {
@@ -253,18 +253,11 @@ try {
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($hepResult) && !empty($sampleCode)) {
-                if ($hepResult[0]['result_value_log'] != '' || $hepResult[0]['result_value_absolute'] != '' || $hepResult[0]['result_value_text'] != '' || $hepResult[0]['result_value_absolute_decimal'] != '') {
+                if ($hepResult['hcv_vl_count'] != '' || $hepResult['hbv_vl_count'] != '') {
                     $data['sample_details'] = 'Result already exists';
-                } else {
-                    if ($hepResult[0]['result_status'] != '') {
-                        $data['result_status'] = $hepResult[0]['result_status'];
-                    } else {
-                        $data['result_status'] = '7';
-                    }
                 }
-                $data['facility_id'] = $hepResult[0]['facility_id'];
+                $data['facility_id'] = $hepResult['facility_id'];
             } else {
-                $data['result_status'] = '7';
                 $data['sample_details'] = 'New Sample';
             }
 

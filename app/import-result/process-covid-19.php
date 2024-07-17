@@ -127,7 +127,7 @@ try {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
-                    $data['specimen_type'] = $rResult['sample_type'];
+                    $data['sample_type'] = $rResult['sample_type'];
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
                     $data['status'] = $status[$i];
                     $result = $db->insert('hold_sample_import', $data);

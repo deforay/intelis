@@ -583,7 +583,7 @@ foreach ($rejectionTypeResult as $type) {
 						format: "html"
 					},
 					function(data) {
-						console.log(data);
+						$.unblockUI();
 						if ($("#print").val() == 'print') {
 							convertSearchResultToPdf('');
 						}
@@ -597,7 +597,7 @@ foreach ($rejectionTypeResult as $type) {
 						$("#checkedTestsIdValue").val('');
 						$("#comments").val('');
 					});
-				$.unblockUI();
+
 			} else {
 				oTable.fnDraw();
 			}

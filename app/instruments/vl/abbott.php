@@ -267,14 +267,12 @@ try {
             $scQuery = "SELECT r_sample_control_name FROM r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
+                $scData = ['r_sample_control_name' => trim((string) $d['sampleType'])];
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($vlResult) && !empty($sampleCode)) {
-                if ($vlResult['result_value_log'] != '' || $vlResult['result_value_absolute'] != '' || $vlResult['result_value_text'] != '' || $vlResult['result_value_absolute_decimal'] != '') {
+                if (!empty($vlResult['result'])) {
                     $data['sample_details'] = 'Result already exists';
-                } else {
-                    $data['result_status'] = '7';
                 }
                 $data['facility_id'] = $vlResult['facility_id'];
             } else {

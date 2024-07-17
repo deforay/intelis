@@ -50,7 +50,8 @@ if (!empty($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSampl
 }
 
 $dtsQuery = "SELECT SQL_CALC_FOUND_ROWS tsr.temp_sample_id,
-                tsr.module,tsr.sample_code,tsr.sample_details,
+                tsr.module,tsr.sample_code,
+                tsr.sample_details,
                     tsr.result_value_absolute,
                     tsr.result_value_log,
                     tsr.result_value_text,
@@ -80,8 +81,9 @@ if (isset($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSample
         $delId = $db->delete('temp_sample_import');
 
         $dtsQuery = "SELECT
-                    SQL_CALC_FOUND_ROWS tsr.temp_sample_id,tsr.sample_code,
-                    tsr.sample_details,tsr.result_value_absolute,
+                    tsr.temp_sample_id,tsr.sample_code,
+                    tsr.sample_details,
+                    tsr.result_value_absolute,
                     tsr.result_value_log,tsr.result_value_text,
                     vl.sample_collection_date,
                     tsr.sample_tested_datetime,
@@ -208,18 +210,18 @@ if (!empty($sOrder) && $sOrder !== '') {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-$rResult = $db->rawQuery($sQuery);
+
+[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery, returnGenerator: false);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
 /*
          * Output
         */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
 );
 $refno = abs($sampleTypeTotal - $totalControls);
@@ -253,8 +255,7 @@ foreach ($rResult as $aRow) {
     if ($aRow['sample_details'] == _translate('Result already exists')) {
         $rsDetails = _translate('Existing Result');
         $color = '<span style="color:#FFC300;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
-    }
-    if ($aRow['sample_details'] == _translate('New Sample')) {
+    } elseif ($aRow['sample_details'] == _translate('New Sample')) {
         $rsDetails = _translate('Unknown Sample');
         $color = '<span style="color:#e8000b;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
     }

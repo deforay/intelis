@@ -192,7 +192,7 @@ try {
             }
 
             $query = "select facility_id,eid_id,result from form_eid where sample_code='" . $sampleCode . "'";
-            $vlResult = $db->rawQuery($query);
+            $vlResult = $db->rawQueryOne($query);
             //insert sample controls
             $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
@@ -201,12 +201,10 @@ try {
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($vlResult) && !empty($sampleCode)) {
-                if (!empty($vlResult[0]['result'])) {
+                if (!empty($vlResult['result'])) {
                     $data['sample_details'] = 'Result already exists';
-                } else {
-                    $data['result_status'] = '7';
                 }
-                $data['facility_id'] = $vlResult[0]['facility_id'];
+                $data['facility_id'] = $vlResult['facility_id'];
             } else {
                 $data['sample_details'] = 'New Sample';
             }

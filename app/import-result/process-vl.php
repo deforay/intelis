@@ -65,7 +65,7 @@ try {
             }
 
             if (strtolower($rResult['sample_type']) != 's') {
-                $data = array(
+                $data = [
                     'control_code' => $rResult['sample_code'],
                     'lab_id' => $rResult['lab_id'],
                     'control_type' => $rResult['sample_type'],
@@ -86,7 +86,7 @@ try {
                     'vlsm_country_id' => $arr['vl_form'],
                     'file_name' => $rResult['import_machine_file_name'],
                     'imported_date_time' => $rResult['result_imported_datetime'],
-                );
+                ];
                 if ($status[$i] == SAMPLE_STATUS\REJECTED) {
                     $data['is_sample_rejected'] = 'yes';
                     $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];

@@ -72,19 +72,19 @@ unset($_SESSION['controllertrack']);
                             <tbody>
                                 <tr>
                                     <td>
-                                        <?php echo (isset($tsResult[0]['totalCount'])) ? $tsResult[0]['totalCount'] : 0; ?>
+                                        <?= isset($tsResult[0]['totalCount']) ? $tsResult[0]['totalCount'] : 0; ?>
                                     </td>
                                     <td>
-                                        <?php echo (isset($tsResult[0]['HighViralLoad'])) ? $tsResult[0]['HighViralLoad'] : 0; ?>
+                                        <?= isset($tsResult[0]['HighViralLoad']) ? $tsResult[0]['HighViralLoad'] : 0; ?>
                                     </td>
                                     <td>
-                                        <?php echo (isset($tsResult[0]['LowViralLoad'])) ? $tsResult[0]['LowViralLoad'] : 0; ?>
+                                        <?= isset($tsResult[0]['LowViralLoad']) ? $tsResult[0]['LowViralLoad'] : 0; ?>
                                     </td>
                                     <td>
-                                        <?php echo (isset($tsResult[0]['TargetNotDetected'])) ? $tsResult[0]['TargetNotDetected'] : 0; ?>
+                                        <?= isset($tsResult[0]['TargetNotDetected']) ? $tsResult[0]['TargetNotDetected'] : 0; ?>
                                     </td>
                                     <td>
-                                        <?php echo (isset($tsResult[0]['invalid'])) ? $tsResult[0]['invalid'] : 0; ?>
+                                        <?= isset($tsResult[0]['invalid']) ? $tsResult[0]['invalid'] : 0; ?>
                                     </td>
                                 </tr>
                             </tbody>
