@@ -294,6 +294,15 @@ if (!isset($facilityResult[0]['facility_state'])) {
 if (!isset($facilityResult[0]['facility_district'])) {
 	$facilityResult[0]['facility_district'] = '';
 }
+
+$user = '';
+if($facilityResult[0]['contact_person'] != ''){
+     $contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
+     if (!empty($contactUser)) {
+          $user = $contactUser['user_name'];
+     }
+}
+
 //echo '<pre>'; print_r($facility); die;
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
@@ -495,8 +504,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 									<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
 										<strong>Clinic Contact Person -</strong>
 									</div>
-									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-										<?php echo ($facilityResult[0]['contact_person']); ?></div>
+									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;">
+										<?php echo ($user); ?></div>
 								</div>
 
 
