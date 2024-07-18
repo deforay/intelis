@@ -34,7 +34,9 @@ $covid19SelectedReasonsForTesting = $covid19Service->getCovid19ReasonsForTesting
 $covid19SelectedReasonsDetailsForTesting = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($covid19Info['covid19_id']);
 // To get the reason details value
 $reasonDetails = json_decode((string) $covid19SelectedReasonsDetailsForTesting['reason_details'], true);
-
+if (!is_array($reasonDetails)) {
+    $reasonDetails = [];
+}
 $covid19Comorbidities = $covid19Service->getCovid19Comorbidities();
 $covid19SelectedComorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($covid19Info['covid19_id']);
 
@@ -180,16 +182,12 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                     </td>
                                 </tr>
                                 <tr>
-                                    <?php if ($general->isSTSInstance()) { ?>
-                                        <!-- <tr> -->
-                                        <td><label for="labId">LAB ID <span class="mandatory">*</span></label> </td>
-                                        <td>
-                                            <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Lab name" style="width:100%;">
-                                                <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Sélectionner --'); ?>
-                                            </select>
-                                        </td>
-                                        <!-- </tr> -->
-                                    <?php } ?>
+                                    <td><label for="labId">LAB ID <span class="mandatory">*</span></label> </td>
+                                    <td>
+                                        <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Lab name" style="width:100%;">
+                                            <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Sélectionner --'); ?>
+                                        </select>
+                                    </td>
                                 </tr>
                             </table>
 
@@ -752,12 +750,6 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="lab-show"><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
-                                        <td class="lab-show">
-                                            <select name="labId" id="labId" class="form-control isRequired" title="Nom du laboratoire" style="width:100%;">
-                                                <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Sélectionner --'); ?>
-                                            </select>
-                                        </td>
                                         <th scope="row"><?= _translate("Is Sample Rejected?"); ?> <span class="mandatory">*</span></th>
                                         <td>
                                             <select class="form-control result-focus isRequired" name="isSampleRejected" id="isSampleRejected" title="<?= _translate("Is Sample Rejected?"); ?>">
@@ -955,6 +947,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                             <input type="hidden" name="oldStatus" id="oldStatus" value="<?php echo $covid19Info['result_status']; ?>" />
                             <input type="hidden" name="provinceCode" id="provinceCode" />
                             <input type="hidden" name="provinceId" id="provinceId" />
+                            <input type="hidden" name="labId" id="labId" value="<?= ($covid19Info['lab_id']); ?>" />
                             <a href="/covid-19/results/covid-19-manual-results.php" class="btn btn-default"> Cancel</a>
                         </div>
                         <!-- /.box-footer -->
@@ -1141,6 +1134,9 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
         });
         $('#province').select2({
             placeholder: "Province"
+        });
+        $('#labId').select2({
+            placeholder: "Select Nom du laboratoire"
         });
         $('#patientNationality').select2({
             placeholder: "Nationalité du patient"

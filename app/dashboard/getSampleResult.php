@@ -352,7 +352,7 @@ try {
                     <span data-counter="counterup" data-value="<?= $receivedTotal; ?>"><?php echo $receivedTotal; ?></span>
                 </h3>
                 <small class="font-green-sharp">
-                    <?= _translate("SAMPLES REGISTERED"); ?>
+                    <?= _translate("SAMPLES COLLECTED"); ?>
                 </small><br>
                 <small class="font-green-sharp" style="font-size:0.75em;">
                     <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>

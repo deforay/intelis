@@ -103,11 +103,11 @@ $state = $geolocationService->getProvinces("yes");
                         <tr>
                             <td><strong><?php echo _translate("Result Status"); ?>&nbsp;:</strong></td>
                             <td>
-                                <select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>">
-                                    <option value="5"><?php echo _translate("Failed"); ?></option>
-                                    <option value="1"><?php echo _translate("Hold"); ?></option>
-                                    <option value="2"><?php echo _translate("Lost"); ?></option>
-                                    <option value="10"><?php echo _translate("Expired"); ?></option>
+                                <select name="status[]" id="status" multiple="multiple" title="<?php echo _translate('Please choose Sample Status'); ?>">
+                                    <option value="<?= SAMPLE_STATUS\TEST_FAILED; ?>" selected="selected"><?php echo _translate("Failed"); ?></option>
+                                    <option value="<?= SAMPLE_STATUS\ON_HOLD; ?>" selected="selected"><?php echo _translate("Hold"); ?></option>
+                                    <option value="<?= SAMPLE_STATUS\LOST_OR_MISSING; ?>"><?php echo _translate("Lost"); ?></option>
+                                    <option value="<?= SAMPLE_STATUS\EXPIRED; ?>"><?php echo _translate("Expired"); ?></option>
                                 </select>
                             </td>
                             <td><strong><?php echo _translate("Patient ID"); ?>&nbsp;:</strong></td>
@@ -122,7 +122,7 @@ $state = $geolocationService->getProvinces("yes");
                         </tr>
 
                         <tr>
-                            <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
+                            <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-primary btn-sm">
                                 &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
                             </td>
                             <td colspan="4">
@@ -263,6 +263,9 @@ $state = $geolocationService->getProvinces("yes");
     var selectedTestsId = [];
     var oTable = null;
     $(document).ready(function() {
+        $("#status").selectize({
+            plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+        });
         $("#state").select2({
             placeholder: "<?php echo _translate("Select Province"); ?>"
         });
@@ -432,7 +435,7 @@ $state = $geolocationService->getProvinces("yes");
             },
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "get-generic-failed-results-details.php",
+            "sAjaxSource": "/generic-tests/results/get-generic-failed-results-details.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "sampleCollectionDate",

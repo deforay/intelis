@@ -80,6 +80,14 @@ $facilityEmails = $facilityResult[0]['facility_emails'] ?? '';
 $facilityState = $facilityResult[0]['facility_state'] ?? '';
 $facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
 
+$user = '';
+if($contactPerson != ''){
+     $contactUser = $usersService->getUserInfo($contactPerson);
+     if (!empty($contactUser)) {
+          $user = $contactUser['user_name'];
+     }
+}
+
 //set reason for changes history
 $rch = '';
 $allChange = [];
@@ -246,7 +254,7 @@ $disable = "disabled = 'disabled'";
                                         <div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><strong><?= _translate("Clinic Mobile No.(s)"); ?></strong></div>
                                         <div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
                                         <div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><strong><?= _translate("Clinic Contact Person"); ?> -</strong></div>
-                                        <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><?php echo ($facilityResult[0]['contact_person']); ?></div>
+                                        <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;"><?php echo ($user); ?></div>
                                    </div>
                                    <div class="row">
                                         <div class="col-xs-4 col-md-4">

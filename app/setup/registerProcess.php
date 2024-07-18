@@ -2,6 +2,7 @@
 
 use GuzzleHttp\Client;
 use App\Services\UsersService;
+use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -54,18 +55,32 @@ function changeModuleWithQuotes($moduleArr)
 try {
     if (!empty($userName) && !empty($password)) {
 
+        // UPDATING s_vlsm_instance TABLE
 
+        $data = [
+            'vlsm_instance_id' => MiscUtility::generateUUID(),
+            'instance_mac_address' => MiscUtility::getMacAddress(),
+            'instance_added_on' => DateUtility::getCurrentDateTime(),
+            'instance_update_on' => DateUtility::getCurrentDateTime()
+        ];
+
+        // deleting just in case there is a row already inserted
+        $db->delete('s_vlsm_instance');
+        $db->insert('s_vlsm_instance', $data);
+
+
+        // UPDATING SYSTEM CONFIG TABLE
         $instanceType = $_POST['instanceType'];
-
         $db->where('name', 'sc_user_type');
         $db->update("system_config", ['value' => $instanceType]);
 
-        if(isset($_POST['testingLab']) && $_POST['testingLab']!=""){
+        if (isset($_POST['testingLab']) && $_POST['testingLab'] != "") {
             $db->where('name', 'sc_testing_lab_id');
             $db->update("system_config", ['value' => $_POST['testingLab']]);
         }
 
 
+        // UPDATING CONFIG FILE
         $updatedConfig = [
             'remoteURL' => $remoteUrl,
             'modules.vl' => in_array('vl', $modulesToEnable) ? true : false,
@@ -89,7 +104,6 @@ try {
         if (isset($_SESSION['instance'])) {
             unset($_SESSION['instance']);
         }
-
         // Clear the file cache
         (ContainerRegistry::get(FileCacheUtility::class))->clear();
 

@@ -86,7 +86,7 @@ $remoteUrl = $general->getRemoteURL();
     <?php if (!empty($remoteUrl) && $general->isLISInstance()) { ?>
         remoteSync = true;
 
-        function syncRemoteData() {
+        function receiveMetaData() {
             if (!navigator.onLine) {
                 alert("<?= _translate("Please connect to internet to sync with STS", escapeText: true); ?>");
                 return false;
@@ -94,7 +94,7 @@ $remoteUrl = $general->getRemoteURL();
 
             if (remoteSync) {
                 $.blockUI({
-                    message: "<h3><?= _translate("Preparing for STS sync.", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
+                    message: "<h3><?= _translate("Receiving Metadata from STS", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
                 });
                 $.ajax({
                         url: "/scheduled-jobs/remote/sts-metadata-receiver.php",
@@ -108,15 +108,42 @@ $remoteUrl = $general->getRemoteURL();
                         alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeText: true); ?>");
                     })
                     .always(function() {
-                        syncResults();
+                        sendLabMetaData();
                     });
             }
         }
 
-        function syncResults() {
+        function sendLabMetaData() {
+            if (!navigator.onLine) {
+                alert("<?= _translate("Please connect to internet to sync with STS", escapeText: true); ?>");
+                return false;
+            }
+
+            if (remoteSync) {
+                $.blockUI({
+                    message: "<h3><?= _translate("Sending Lab Metadata", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
+                });
+                $.ajax({
+                        url: "/scheduled-jobs/remote/lab-metadata-sender.php",
+                    })
+                    .done(function(data) {
+                        console.log("Lab Metadata Synced | LIS -> STS");
+                        $.unblockUI();
+                    })
+                    .fail(function() {
+                        $.unblockUI();
+                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeText: true); ?>");
+                    })
+                    .always(function() {
+                        sendTestResults();
+                    });
+            }
+        }
+
+        function sendTestResults() {
 
             $.blockUI({
-                message: "<h3><?= _translate("Trying to sync Test Results", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
+                message: "<h3><?= _translate("Sending Test Results", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
             });
 
             if (remoteSync) {
@@ -132,15 +159,15 @@ $remoteUrl = $general->getRemoteURL();
                         alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeText: true); ?>");
                     })
                     .always(function() {
-                        syncRequests();
+                        receiveTestRequests();
                     });
             }
         }
 
 
-        function syncRequests() {
+        function receiveTestRequests() {
             $.blockUI({
-                message: "<h3><?= _translate("Trying to sync Test Requests", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
+                message: "<h3><?= _translate("Receiving Test Requests", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
             });
 
             if (remoteSync) {
@@ -159,7 +186,7 @@ $remoteUrl = $general->getRemoteURL();
         }
 
         if (remoteSync) {
-            (function getLastRemoteSyncDateTime() {
+            (function getLastSTSSyncDateTime() {
                 let currentDateTime = new Date();
                 $.ajax({
                     url: '/scheduled-jobs/remote/get-last-sts-sync-datetime.php',
@@ -172,7 +199,7 @@ $remoteUrl = $general->getRemoteURL();
                     },
                     error: function(data) {}
                 });
-                setTimeout(getLastRemoteSyncDateTime, 15 * 60 * 1000);
+                setTimeout(getLastSTSSyncDateTime, 15 * 60 * 1000);
             })();
 
             // Every 5 mins check if STS is reachable

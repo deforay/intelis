@@ -1,9 +1,9 @@
 <?php
 
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
 $title = _translate("Print EID Results");

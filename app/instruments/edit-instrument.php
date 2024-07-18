@@ -574,7 +574,7 @@ $testTypeList = SystemService::getActiveModules(true);
 												$style = "display:none";
 												$check = "";
 											}
-										?>
+									?>
 											<tr>
 												<td>
 													<input type="hidden" name="configMachineId[]" value="<?php echo $machine['config_machine_id']; ?>" />
@@ -625,16 +625,16 @@ $testTypeList = SystemService::getActiveModules(true);
 												<input type="text" value="d/m/Y H:i" name="dateFormat[]" id="dateFormat0" class="form-control" placeholder='<?php echo _translate("Date Format"); ?>' title='<?php echo _translate("Please enter date format"); ?>' />
 											</td>
 											<td>
-													<select name="fileName[]" id="fileName0" class="form-control select2 instrumentFile">
-														<option value=""><?php echo _translate('Select File'); ?></option>
-														<?php
-														foreach ($fileList as $fileName) {
-														?>
-															<option value="<?= $fileName; ?>"><?= $fileName; ?></option>
-														<?php
-														}
-														?>
-													</select>
+												<select name="fileName[]" id="fileName0" class="form-control select2 instrumentFile">
+													<option value=""><?php echo _translate('Select File'); ?></option>
+													<?php
+													foreach ($fileList as $fileName) {
+													?>
+														<option value="<?= $fileName; ?>"><?= $fileName; ?></option>
+													<?php
+													}
+													?>
+												</select>
 											</td>
 											<td>
 												<div class="col-md-3">
@@ -724,7 +724,7 @@ $testTypeList = SystemService::getActiveModules(true);
 
 		$("#supportedTests").selectize({
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
-});
+		});
 
 		$('#supportedTests').on('change', function(e) {
 			var data = $('#supportedTests').val();
@@ -763,9 +763,11 @@ $testTypeList = SystemService::getActiveModules(true);
 					},
 					function(data) {
 						if (data === 'not exists') {
-								$("#configurationFile").append('<option value='+configFileName+'>' + configFileName + '</option>');
-								$(".instrumentFile").append('<option value='+configFileName+'>' + configFileName + '</option>');
-								$('.select2').select2({ width: '100%'});
+							$("#configurationFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
+							$(".instrumentFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
+							$('.select2').select2({
+								width: '100%'
+							});
 						}
 					});
 
@@ -800,9 +802,15 @@ $testTypeList = SystemService::getActiveModules(true);
 				}
 			});
 	}
+	<?php
+	$fileOptions = '';
+	foreach ($fileList as $fileName) {
+		$fileOptions .= '<option value="' . $fileName . '">' . $fileName . '</option>';
+	}
+	?>
 
 	function insRow() {
-		
+
 		rl = document.getElementById("machineTable").rows.length;
 		var a = document.getElementById("machineTable").insertRow(rl);
 		a.setAttribute("style", "display:none");
@@ -817,15 +825,7 @@ $testTypeList = SystemService::getActiveModules(true);
 		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDuplication(this, \'configMachineName\');"/ >';
 		c.innerHTML = '<input type="text" value="d/m/Y H:i" name="dateFormat[]" id="dateFormat' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("Date Format"); ?>" title="<?php echo _translate("Please enter date format"); ?>" />';
 		//d.innerHTML = '<input type="text" name="fileName[]" id="fileName' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("File Name"); ?>" title="<?php echo _translate("Please enter file name"); ?>"/>';
-		d.innerHTML = '<select name="fileName[]" id="fileName'+ tableRowId +'" class="form-control select2 instrumentFile"><option value=""><?php echo _translate('Select File'); ?></option>\
-	<?php
-														foreach ($fileList as $fileName) {
-														?>
-															<option value="<?= $fileName; ?>"><?= $fileName; ?></option>\
-														<?php
-														}
-														?>
-													</select>';
+		d.innerHTML = '<select name="fileName[]" id="fileName' + tableRowId + '" class="form-control select2 instrumentFile"><option value=""><?php echo _translate('Select File'); ?></option><?= $fileOptions; ?></select>';
 		e.innerHTML = '<div class="col-md-3" >\
 						<input type="checkbox" id="pocdevice' + tableRowId + '" name="pocdevice[]" value="" onclick="getLatiLongi(' + tableRowId + ');">\
 						</div>\
@@ -839,7 +839,9 @@ $testTypeList = SystemService::getActiveModules(true);
 						</div>';
 		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
-		$('#fileName' + tableRowId +', .select2').select2({ width: '100%'});
+		$('#fileName' + tableRowId + ', .select2').select2({
+			width: '100%'
+		});
 		var configName = $("#configurationName").val();
 		if ($.trim(configName) != '') {
 			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
@@ -849,20 +851,22 @@ $testTypeList = SystemService::getActiveModules(true);
 				configName = configName.replace(/\-$/, '');
 				var configFileName = configName.toLowerCase() + ".php";
 				var path = '<?php echo $log_directory . '/'; ?>' + configFileName;
-				
+
 				$.post("/includes/checkFileExists.php", {
 						fileName: path,
 					},
 					function(data) {
 						if (data === 'not exists') {
-							$('#fileName'+ tableRowId).append('<option value="">' + configFileName + '</option>');
-							$('#fileName' + tableRowId).select2({ width: '100%'});
+							$('#fileName' + tableRowId).append('<option value="">' + configFileName + '</option>');
+							$('#fileName' + tableRowId).select2({
+								width: '100%'
+							});
 						}
-						
+
 					});
-				}
 			}
-			tableRowId++;
+		}
+		tableRowId++;
 
 	}
 
@@ -896,34 +900,33 @@ $testTypeList = SystemService::getActiveModules(true);
 		}
 	}
 
-	function changeDefaultReviewer(value,testType) {
+	function changeDefaultReviewer(value, testType) {
 		var userConfirmed = confirm("Do you want to update existing records? ");
 
-		if (userConfirmed && value !='') {
+		if (userConfirmed && value != '') {
 			$.post("/common/reference/update-default-reviewer.php", {
-				defaultReviewer: value,
-				testType: testType,
-			},
-			function(data) {
-				alert("<?php echo _translate("Updated successfully"); ?>.");
-			});
+					defaultReviewer: value,
+					testType: testType,
+				},
+				function(data) {
+					alert("<?php echo _translate("Updated successfully"); ?>.");
+				});
 		}
 	}
-	function changeDefaultApprover(value,testType) {
+
+	function changeDefaultApprover(value, testType) {
 		var userConfirmed = confirm("Do you want to update existing records? ");
 
-		if (userConfirmed && value !='') {
+		if (userConfirmed && value != '') {
 			$.post("/common/reference/update-default-approver.php", {
-				defaultApprover: value,
-				testType: testType,
-			},
-			function(data) {
-				alert("<?php echo _translate("Updated successfully"); ?>.");
-			});
+					defaultApprover: value,
+					testType: testType,
+				},
+				function(data) {
+					alert("<?php echo _translate("Updated successfully"); ?>.");
+				});
 		}
 	}
-
-
 </script>
 
 <?php

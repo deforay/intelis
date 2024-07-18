@@ -107,12 +107,10 @@ try {
                 if (!empty($lab['unique_id'])) {
                     $conditions[] = "unique_id = ?";
                     $params[] = $lab['unique_id'];
-                }
-                if (!empty($lab['remote_sample_code'])) {
+                } elseif (!empty($lab['remote_sample_code'])) {
                     $conditions[] = "remote_sample_code = ?";
                     $params[] = $lab['remote_sample_code'];
-                }
-                if (!empty($lab['sample_code'])) {
+                } elseif (!empty($lab['sample_code'])) {
                     if (!empty($lab['lab_id'])) {
                         $conditions[] = "sample_code = ? AND lab_id = ?";
                         $params[] = $lab['sample_code'];

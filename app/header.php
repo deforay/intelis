@@ -234,11 +234,11 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 										$subMenuHasChildren = true;
 									}
 									$innerPages = '';
-												if (!empty($subMenu['inner_pages'])) {
-													$dataInnerPages = explode(',', (string) $subMenu['inner_pages']);
-													$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
-													$innerPages = 'data-inner-pages="' . $dataInnerPages . '"';
-												}
+									if (!empty($subMenu['inner_pages'])) {
+										$dataInnerPages = explode(',', (string) $subMenu['inner_pages']);
+										$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
+										$innerPages = 'data-inner-pages="' . $dataInnerPages . '"';
+									}
 									?>
 
 										<li class="sub-menu-li <?= $subMenu['additional_class_names'] ?> ">

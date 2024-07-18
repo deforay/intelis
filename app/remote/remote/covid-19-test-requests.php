@@ -81,13 +81,6 @@ try {
       $response[$r['covid19_id']]['data_from_symptoms'] = $covid19Service->getCovid19SymptomsByFormId($r['covid19_id'], false, true);
       $response[$r['covid19_id']]['data_from_tests'] = $covid19Service->getCovid19TestsByFormId($r['covid19_id']);
     }
-    /* $symptoms = $covid19Service->getCovid19SymptomsByFormId($sampleIds);
-    $comorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($sampleIds);
-    $testResults = $covid19Service->getCovid19TestsByFormId($sampleIds);
-    $response['result'] = $rResult;
-    $response['symptoms'] = $symptoms;
-    $response['comorbidities'] = $comorbidities;
-    $response['testResults'] = $testResults; */
   }
   $payload = JsonUtility::encodeUtf8Json(array(
     'labId' => $labId,

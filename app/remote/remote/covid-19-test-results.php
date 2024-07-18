@@ -60,10 +60,7 @@ try {
         // Create an array with all column names set to null
         $emptyLabArray = $general->getTableFieldsAsArray('form_covid19', $unwantedColumns);
 
-        $resultData = [];
-        $testResultsData = [];
-        $symptomsData = [];
-        $comorbiditiesData = [];
+        $resultsData = [];
         $options = [
             'decoder' => new ExtJsonDecoder(true)
         ];
@@ -71,22 +68,23 @@ try {
         foreach ($parsedData as $name => $data) {
             if ($name === 'labId') {
                 $labId = $data;
-            } else if ($name === 'result') {
-                $resultData = $data;
-            } else if ($name === 'testResults') {
-                $testResultsData = $data;
-            } else if ($name === 'symptoms') {
-                //$symptomsData = $data;
-            } else if ($name === 'comorbidities') {
-                //$comorbiditiesData = $data;
+            } elseif ($name === 'results') {
+                $resultsData = $data;
             }
         }
 
         $counter = 0;
-        foreach ($resultData as $key => $resultRow) {
+        foreach ($resultsData as $uniqueId => $resultRow) {
             $counter++;
-            // Overwrite the values in $emptyLabArray with the values in $resultRow
-            $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
+
+            $formData = $resultRow[$uniqueId]['form_data'] ?? [];
+            if (empty($formData)) {
+                continue;
+            }
+
+
+            // Overwrite the values in $emptyLabArray with the values in $formData
+            $lab = MiscUtility::updateFromArray($emptyLabArray, $formData);
 
             if (isset($lab['approved_by_name']) && $lab['approved_by_name'] != '') {
 
@@ -122,12 +120,10 @@ try {
                 if (!empty($lab['unique_id'])) {
                     $conditions[] = "unique_id = ?";
                     $params[] = $lab['unique_id'];
-                }
-                if (!empty($lab['remote_sample_code'])) {
+                } elseif (!empty($lab['remote_sample_code'])) {
                     $conditions[] = "remote_sample_code = ?";
                     $params[] = $lab['remote_sample_code'];
-                }
-                if (!empty($lab['sample_code'])) {
+                } elseif (!empty($lab['sample_code'])) {
                     if (!empty($lab['lab_id'])) {
                         $conditions[] = "sample_code = ? AND lab_id = ?";
                         $params[] = $lab['sample_code'];
@@ -158,6 +154,28 @@ try {
                     $id = $db->insert($tableName, $lab);
                     $primaryKeyValue = $db->getInsertId();
                 }
+
+                // Insert covid19_tests
+                $testsData = $resultRow[$uniqueId]['data_from_tests'] ?? [];
+
+                $db->where('covid19_id', $primaryKeyValue);
+                $db->delete("covid19_tests");
+                foreach ($testsData as $tRow) {
+                    $covid19TestData = [
+                        "covid19_id"                => $primaryKeyValue,
+                        "facility_id"               => $tRow['facility_id'],
+                        "test_name"                 => $tRow['test_name'],
+                        "tested_by"                 => $tRow['tested_by'],
+                        "sample_tested_datetime"    => $tRow['sample_tested_datetime'],
+                        "testing_platform"          => $tRow['testing_platform'],
+                        "instrument_id"             => $tRow['instrument_id'],
+                        "kit_lot_no"                => $tRow['kit_lot_no'],
+                        "kit_expiry_date"           => $tRow['kit_expiry_date'],
+                        "result"                    => $tRow['result'],
+                        "updated_datetime"          => $tRow['updated_datetime']
+                    ];
+                    $db->insert("covid19_tests", $covid19TestData);
+                }
             } catch (Throwable $e) {
                 if ($db->getLastError()) {
                     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
@@ -171,22 +189,6 @@ try {
             if ($id === true && isset($lab['sample_code'])) {
                 $sampleCodes[] = $lab['sample_code'];
                 $facilityIds[] = $lab['facility_id'];
-            }
-        }
-
-
-
-        $unwantedColumns = [
-            'test_id'
-        ];
-        $emptyTestsArray = $general->getTableFieldsAsArray('covid19_tests', $unwantedColumns);
-
-        foreach ($testResultsData as $covid19Id => $testResults) {
-            $db->where('covid19_id', $covid19Id);
-            $db->delete("covid19_tests");
-            foreach ($testResults as $covid19TestData) {
-                $covid19TestData = MiscUtility::updateFromArray($emptyTestsArray, $covid19TestData);
-                $db->insert("covid19_tests", $covid19TestData);
             }
         }
     }

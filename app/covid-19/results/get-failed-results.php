@@ -122,6 +122,10 @@ try {
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
+    $failedStatusIds = [SAMPLE_STATUS\ON_HOLD,
+                        SAMPLE_STATUS\LOST_OR_MISSING,
+                        SAMPLE_STATUS\TEST_FAILED,
+                        SAMPLE_STATUS\EXPIRED];
     $start_date = '';
     $end_date = '';
     if (!empty($_POST['sampleCollectionDate'])) {
@@ -150,8 +154,10 @@ try {
     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
         $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
     }
-    if (isset($_POST['status']) && $_POST['status'] != '') {
-        $sWhere[] =  ' vl.result_status = "' . $_POST['status'] . '"';
+    if (isset($_POST['status']) && !empty($_POST['status'])) {
+        $sWhere[] =  ' vl.result_status IN (' . $_POST['status'] . ')';
+    } else {
+        $sWhere[] =  ' vl.result_status IN (' . implode(',', $failedStatusIds) . ')';
     }
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
         $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';

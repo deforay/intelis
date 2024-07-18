@@ -556,7 +556,7 @@ final class CommonService
     {
         return $this->getInstanceType() === 'standalone';
     }
-    public function getLastRemoteSyncDateTime()
+    public function getLastSTSSyncDateTime()
     {
         if ($this->isSTSInstance()) {
             $dateTime = $this->db->rawQueryOne("SELECT MAX(`requested_on`) AS `dateTime`

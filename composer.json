@@ -34,7 +34,6 @@
         "guzzlehttp/guzzle": "^7.8",
         "halaxa/json-machine": "^1.1",
         "crunzphp/crunz": "^3.7",
-        "ramsey/uuid": "^4.7",
         "hackzilla/password-generator": "^1.6",
         "laminas/laminas-filter": "^2.35",
         "symfony/string": "^6.4",
@@ -62,7 +61,8 @@
         "openspout/openspout": "^4.24",
         "voku/anti-xss": "^4.1",
         "sqids/sqids": "^0.4.1",
-        "symfony/yaml": "^6.4"
+        "symfony/yaml": "^6.4",
+        "symfony/uid": "^7.1"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"
@@ -87,12 +87,12 @@
         "fix-privileges": "php maintenance/update-privileges.php",
         "fix-audit-tables": "php maintenance/fix-audit-tables.php",
         "migrate": "php app/system/migrate.php -yq",
-        "sts-metadata-sync": "php app/scheduled-jobs/remote/sts-metadata-receiver.php",
-        "lis-metadata-sync": "php app/scheduled-jobs/remote/lab-metadata-sender.php",
+        "sts-metadata-sync": "php app/scheduled-jobs/remote/sts-metadata-receiver.php -f",
+        "lis-metadata-sync": "php app/scheduled-jobs/remote/lab-metadata-sender.php -f",
         "metadata-sync": "php app/scheduled-jobs/remote/sts-metadata-receiver.php && php app/scheduled-jobs/remote/lab-metadata-sender.php",
         "remote-sync": "php app/scheduled-jobs/remote/results-sender.php && php app/scheduled-jobs/remote/requests-receiver.php && php app/scheduled-jobs/remote/lab-metadata-sender.php",
         "generate-translation-strings": "php app/system/generate-translation-strings.php",
-        "post-install": "php app/system/migrate.php -yq && php maintenance/update-privileges.php && php fix-scripts/app-menu.php && php app/scheduled-jobs/remote/sts-metadata-receiver.php -f && php app/scheduled-jobs/remote/lab-metadata-sender.php && php app/includes/clear-cache.php && php maintenance/change-db-collation.php",
+        "post-install": "php app/system/migrate.php -yq && php maintenance/update-privileges.php && php fix-scripts/app-menu.php && php app/scheduled-jobs/remote/sts-metadata-receiver.php -f && php app/includes/clear-cache.php && php maintenance/change-db-collation.php",
         "post-update": "php app/system/migrate.php -yq && php maintenance/update-privileges.php && php fix-scripts/app-menu.php && php app/includes/clear-cache.php"
     }
 }

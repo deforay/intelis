@@ -11,6 +11,9 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\LoggerUtility;
+
+use const SAMPLE_STATUS\ON_HOLD;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -62,7 +65,7 @@ try {
             }
 
             if (strtolower($rResult['sample_type']) != 's') {
-                $data = array(
+                $data = [
                     'control_code' => $rResult['sample_code'],
                     'lab_id' => $rResult['lab_id'],
                     'control_type' => $rResult['sample_type'],
@@ -83,8 +86,8 @@ try {
                     'vlsm_country_id' => $arr['vl_form'],
                     'file_name' => $rResult['import_machine_file_name'],
                     'imported_date_time' => $rResult['result_imported_datetime'],
-                );
-                if ($status[$i] == 4) {
+                ];
+                if ($status[$i] == SAMPLE_STATUS\REJECTED) {
                     $data['is_sample_rejected'] = 'yes';
                     $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                     $data['result_value_log'] = null;
@@ -100,7 +103,7 @@ try {
                 $db->insert('vl_imported_controls', $data);
             } else {
 
-                $data = array(
+                $data = [
                     'result_reviewed_datetime' => $rResult['result_reviewed_datetime'],
                     'result_reviewed_by' => $_POST['reviewedBy'],
                     'import_machine_name' => $rResult['import_machine_name'],
@@ -116,12 +119,13 @@ try {
                     'lab_id' => $rResult['lab_id'],
                     'import_machine_file_name' => $rResult['import_machine_file_name'],
                     'manual_result_entry' => 'no',
-                );
-                if ($status[$i] == '1') {
+                ];
+
+                if ($status[$i] == SAMPLE_STATUS\ON_HOLD) {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
-                    $data['specimen_type'] = $rResult['sample_type'];
+                    $data['sample_type'] = $rResult['sample_type'];
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
                     $data['status'] = $status[$i];
                     $result = $db->insert('hold_sample_import', $data);
@@ -145,6 +149,7 @@ try {
                         $data['result_value_text'] = null;
                         $data['result_value_absolute_decimal'] = null;
                         $data['result'] = null;
+                        $data['result_status'] = SAMPLE_STATUS\REJECTED;
                     } else {
                         $data['is_sample_rejected'] = 'no';
                         $data['reason_for_sample_rejection'] = null;
@@ -152,12 +157,10 @@ try {
 
                     $query = "SELECT vl_sample_id,result FROM form_vl WHERE sample_code= ?";
                     $vlResult = $db->rawQuery($query, [$sampleVal]);
-                    $data['result_status'] = $status[$i];
 
+                    $data['result_status'] = $status[$i];
                     if (in_array(strtolower($data['result']), ['fail', 'failed', 'err', 'error'])) {
                         $data['result_status'] = SAMPLE_STATUS\TEST_FAILED;
-                    } elseif ($data['vl_result_category'] == 'rejected') {
-                        $data['result_status'] = SAMPLE_STATUS\REJECTED;
                     }
 
                     $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
@@ -289,6 +292,6 @@ try {
     }
 
     echo "importedStatistics.php";
-} catch (SystemException | Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Throwable $exc) {
+    LoggerUtility::log("error", $exc->getMessage());
 }

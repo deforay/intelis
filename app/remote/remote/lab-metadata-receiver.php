@@ -36,8 +36,6 @@ try {
     $jsonResponse = $apiService->getJsonFromRequest($request);
     $counter = 0;
 
-
-    //$storageId = [];
     $labId = null;
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
@@ -54,33 +52,26 @@ try {
             } elseif ($name === 'labId') {
                 $labId = $data;
             } elseif ($name === 'labStorage') {
-
                 $tableInfo['primaryKey'][$i] = 'storage_id';
                 $tableInfo['table'][$i] = 'lab_storage';
             } elseif ($name === 'labStorageHistory') {
-
                 $tableInfo['primaryKey'][$i] = 'history_id';
                 $tableInfo['table'][$i] = 'lab_storage_history';
             } elseif ($name === 'instruments') {
-
                 $tableInfo['primaryKey'][$i] = 'instrument_id';
                 $tableInfo['table'][$i] = 'instruments';
-                // $tableInfo[$i]['instrumentsData'] = $data;
             } elseif ($name === 'instrumentMachines') {
-
                 $tableInfo['primaryKey'][$i] = 'config_machine_id';
                 $tableInfo['table'][$i] = 'instrument_machines';
-                // $tableInfo[$i]['instrumentMachinesData'] = $data;
             } elseif ($name === 'instrumentControls') {
-
                 $tableInfo['primaryKey'][$i] = 'instrument_id';
                 $tableInfo['table'][$i] = 'instrument_controls';
-                // $tableInfo[$i]['instrumentControlsData'] = $data;
             } elseif ($name === 'patients') {
-
                 $tableInfo['primaryKey'][$i] = 'system_patient_code';
                 $tableInfo['table'][$i] = 'patients';
-                // $tableInfo[$i]['patientsData'] = $data;
+            } elseif ($name === 'users') {
+                $tableInfo['primaryKey'][$i] = 'user_id';
+                $tableInfo['table'][$i] = 'user_details';
             }
             $tableInfo['data'][$i] = $data;
             $i++;
@@ -96,20 +87,30 @@ try {
                 $deletedId = [];
                 foreach ($tableInfo['data'][$j] as $key => $resultRow) {
                     $counter++;
-                    // Overwrite the values in $emptyLabArray with the values in $resultRow
                     $data = MiscUtility::updateFromArray($emptyTableArray, $resultRow);
                     $data['updated_datetime'] = DateUtility::getCurrentDateTime();
                     $primaryKey = $checkColumn = $tableInfo['primaryKey'][$j];
                     $tableName = $tableInfo['table'][$j];
                     try {
-
-                        if ($r == 'instrument_controls' || $r == 'instrument_machines') {
+                        if ($tableName == 'instrument_controls' || $tableName == 'instrument_machines') {
                             if (!in_array($data['instrument_id'], $deletedId)) {
                                 $deletedId[] = $data['instrument_id'];
-                                $db->delete($r, "instrument_id = " . $data['instrument_id']);
+                                $db->delete($tableName, "instrument_id = " . $data['instrument_id']);
                             }
                             $id = $db->insert($tableName, $data);
                         } else {
+                            if ($tableName == 'user_details' && !empty($data['signature_image_content']) && !empty($data['signature_image_filename'])) {
+                                $signatureImagePathBase = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
+                                MiscUtility::makeDirectory($signatureImagePathBase);
+                                $signatureImagePathBase = realpath($signatureImagePathBase);
+
+                                $signatureImage = base64_decode($data['signature_image_content']);
+                                $signatureImagePath = $signatureImagePathBase . DIRECTORY_SEPARATOR . $data['signature_image_filename'];
+                                file_put_contents($signatureImagePath, $signatureImage);
+                                unset($data['signature_image_content']);
+                                unset($data['signature_image_filename']);
+                            }
+
                             $sResult = [];
                             if (!empty($data[$checkColumn])) {
                                 $sQuery = "SELECT $primaryKey FROM $tableName WHERE $checkColumn =?";
@@ -123,12 +124,9 @@ try {
                             }
                         }
                     } catch (Throwable $e) {
-
-
                         LoggerUtility::log('error', (__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno()));
                         LoggerUtility::log('error', (__FILE__ . ":" . __LINE__ . ":" . $db->getLastError()));
                         LoggerUtility::log('error', (__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery()));
-
                         LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                         continue;
                     }
@@ -150,9 +148,9 @@ try {
     $payload = json_encode([]);
 
     if (!empty($db->getLastError())) {
-        error_log('Error in system-metadata-sync.php in remote : ' . $db->getLastErrno());
-        error_log('Error in system-metadata-sync.php in remote : ' . $db->getLastError());
-        error_log('Error in system-metadata-sync.php in remote : ' . $db->getLastQuery());
+        error_log('Error in lab-metadata-receiver.php : ' . $db->getLastErrno());
+        error_log('Error in lab-metadata-receiver.php : ' . $db->getLastError());
+        error_log('Error in lab-metadata-receiver.php : ' . $db->getLastQuery());
     }
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }

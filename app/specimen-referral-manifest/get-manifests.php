@@ -48,15 +48,15 @@ $sql = "UPDATE package_details
 
 $db->rawQuery($sql);
 
-$sql = "UPDATE $tableName
-        SET lab_id = (SELECT lab_id
-                        FROM package_details
-                        WHERE lab_id > 0
-                        AND package_details.package_code = $tableName.sample_package_code
-                        LIMIT 1)
-        WHERE lab_id IS NULL OR lab_id = 0";
+// $sql = "UPDATE $tableName
+//         SET lab_id = (SELECT lab_id
+//                         FROM package_details
+//                         WHERE lab_id > 0
+//                         AND package_details.package_code = $tableName.sample_package_code
+//                         LIMIT 1)
+//         WHERE lab_id IS NULL OR lab_id = 0";
 
-$db->rawQuery($sql);
+// $db->rawQuery($sql);
 
 
 $vlForm = (int) $general->getGlobalConfig('vl_form');

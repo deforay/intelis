@@ -260,20 +260,19 @@ try {
                 $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy']);
             }
 
-            $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal FROM form_vl WHERE result_printed_datetime is null AND sample_code like ?";
+            $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal FROM form_vl
+                            WHERE result_printed_datetime is null AND sample_code like ?";
             $vlResult = $db->rawQueryOne($query, array($sampleCode));
             //insert sample controls
             $scQuery = "SELECT r_sample_control_name FROM r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
+                $scData = ['r_sample_control_name' => trim((string) $d['sampleType'])];
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($vlResult) && !empty($sampleCode)) {
-                if ($vlResult['result_value_log'] != '' || $vlResult['result_value_absolute'] != '' || $vlResult['result_value_text'] != '' || $vlResult['result_value_absolute_decimal'] != '') {
+                if (!empty($vlResult['result'])) {
                     $data['sample_details'] = 'Result already exists';
-                } else {
-                    $data['result_status'] = '7';
                 }
                 $data['facility_id'] = $vlResult['facility_id'];
             } else {

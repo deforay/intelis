@@ -278,8 +278,6 @@ try {
             if (!empty($hepResult) && !empty($sampleCode)) {
                 if ($hepResult['hcv_vl_count'] != '' || $hepResult['hbv_vl_count'] != '') {
                     $data['sample_details'] = 'Result already exists';
-                } else {
-                    $data['result_status'] = '7';
                 }
                 $data['facility_id'] = $hepResult['facility_id'];
             } else {

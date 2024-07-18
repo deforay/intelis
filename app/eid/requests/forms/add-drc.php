@@ -136,8 +136,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<td>
 											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="" style="width:100%;" />
 										</td>
+										<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
+										<td>
+											<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
+												<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
+											</select>
+										</td>
 									</tr>
-
 								</table>
 								<br><br>
 
@@ -408,14 +413,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 													allaitement)</option>
 											</select>
 										</td>
-										<?php if ($general->isSTSInstance()) { ?>
-											<th scope="row" style="width:15%;">Nom du Laboratoire <span class="mandatory">*</span> </th>
-											<td>
-												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
-												</select>
-											</td>
-										<?php } ?>
 									</tr>
 									<tr>
 										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
@@ -460,8 +457,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label>
-											</td>
+											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label></td>
 											<td style="width: 25%;">
 												<select name="eidPlatform" id="eidPlatform" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 													<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
@@ -471,45 +467,34 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											<td style="width:35%;">
 												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" style="width:100%;" />
 											</td>
-
 										<tr>
-											<th scope="row" style="width:15%;"><label for="labId">Nom du Laboratoire</label> </th>
-											<td style="width:35%;">
-												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
-												</select>
-											</td>
-											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :
-												</label></td>
+											<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :</label></td>
 											<td style="width: 25%;">
 												<select class="form-control select2 editableSelect" id="freezer" name="freezer" placeholder="<?php echo _translate('Enter Freezer'); ?>" title="<?php echo _translate('Please enter Freezer'); ?>">
 												</select>
-
 											</td>
-										</tr>
-										<tr>
 											<td style="width: 25%;"><label for="rack"><?php echo _translate('Rack'); ?> : </label> </td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control" id="rack" name="rack" placeholder="<?php echo _translate('Rack'); ?>" title="<?php echo _translate('Please enter rack'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
+										</tr>
+										<tr>
 											<td style="width: 25%;"><label for=""><?php echo _translate('Box'); ?> :
 												</label></td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control" id="box" name="box" placeholder="<?php echo _translate('Box'); ?>" title="<?php echo _translate('Please enter box'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
-										</tr>
-										<tr>
 											<td style="width: 25%;"><label for="position"><?php echo _translate('Position'); ?> : </label> </td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control" id="position" name="position" placeholder="<?php echo _translate('Position'); ?>" title="<?php echo _translate('Please enter position'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
+										</tr>
+										<tr>
 											<td style="width: 25%;"><label for=""><?php echo _translate('Volume (ml)'); ?> :
 												</label></td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control" id="volume" name="volume" placeholder="<?php echo _translate('Volume'); ?>" title="<?php echo _translate('Please enter volume'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
-										</tr>
-										<tr>
 											<th scope="row"><?php echo _translate('Is Sample Rejected?'); ?></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -518,9 +503,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 													<option value="no"> Non </option>
 												</select>
 											</td>
-											<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
-											<td class="rejected" style="display: none;">
-
+										</tr>
+										<tr class="rejected" style="display: none;">
+											<th scope="row">Raison du rejet</th>
+											<td>
 												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Please choose a Rejection Reason">
 													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
@@ -535,20 +521,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 													<?php } ?>
 												</select>
 											</td>
-										</tr>
-										<tr class="rejected" style="display:none;">
 											<th scope="row">Date de rejet<span class="mandatory">*</span></th>
 											<td><input value="" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
-											<th scope="row">
-											</th>
-											<td></td>
 										</tr>
 										<tr>
 											<th scope="row"><label for="">Test effectué le </label></th>
 											<td>
 												<input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" onchange="" style="width:100%;" />
 											</td>
-
 											<th scope="row">Résultat</th>
 											<td>
 												<select class="form-control" name="result" id="result">

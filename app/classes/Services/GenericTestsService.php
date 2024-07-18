@@ -183,7 +183,7 @@ final class GenericTestsService extends AbstractTestService
                 // Commit the transaction after the successful insert
                 $this->db->commitTransaction();
             } else {
-                LoggerUtility::log('info', 'Sample ID exists already. Trying to regenerate Sample ID', [
+                LoggerUtility::log('info', 'Sample ID exists already. Trying to regenerate Sample ID - ' . $sampleData['sampleCode'], [
                     'file' => __FILE__,
                     'line' => __LINE__,
                 ]);

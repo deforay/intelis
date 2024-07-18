@@ -44,6 +44,15 @@ if (!isset($facilityResult[0]['facility_state']) || $facilityResult[0]['facility
 if (!isset($facilityResult[0]['facility_district']) || $facilityResult[0]['facility_district'] == '') {
 	$facilityResult[0]['facility_district'] = '';
 }
+
+$user = '';
+if($facilityResult[0]['contact_person'] != ''){
+     $contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
+     if (!empty($contactUser)) {
+          $user = $contactUser['user_name'];
+     }
+}
+
 $stateName = $facilityResult[0]['facility_state'];
 if (trim((string) $stateName) != '') {
 	$stateQuery = "SELECT * from geographical_divisions where geo_name='" . $stateName . "'";
@@ -258,8 +267,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
 									<strong>Clinic Contact Person -</strong>
 								</div>
-								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-									<?php echo ($facilityResult[0]['contact_person']); ?></div>
+								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;">
+									<?php echo ($user); ?></div>
 							</div>
 						</div>
 
