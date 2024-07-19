@@ -260,9 +260,10 @@ else
         echo "Failed to restart Apache2. Exiting..."
         exit 1
     }
-    setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
     log_action "Apache installed and configured."
 fi
+
+setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
 # Check for Brotli support and install it if necessary
 if ! apache2ctl -M | grep -q 'brotli_module'; then
@@ -721,6 +722,8 @@ fi
 if grep -q "\['cache_di'\] => false" "${config_file}"; then
     sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"
 fi
+
+setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
 # Run the database migrations and other post-install tasks
 cd "${vlsm_path}"
