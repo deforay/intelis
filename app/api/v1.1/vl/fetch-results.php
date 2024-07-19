@@ -144,7 +144,7 @@ try {
         vl.result_approved_by                                as approvedBy,
         a_u_d.user_name                                      as approvedByName,
         vl.result_approved_datetime                          as approvedOn,
-        u_d.user_name                                        as reviewedBy,
+        IFNULL(vl.result_reviewed_by,'')                     as reviewedBy,
         u_d.user_name                                        as reviewedByName,
         vl.result_reviewed_datetime                          as reviewedOn,
         lt_u_d.user_name                                     as labTechnicianName,

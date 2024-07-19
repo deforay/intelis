@@ -62,8 +62,8 @@ if (!empty($_POST['sampleCollectionDate'])) {
 		$sWhere[] = " (DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate')";
 	}
 } else {
-	$to = date('Y-m-d', strtotime('today - 30 days'));
-	$from = date('Y-m-d');
+	$from = date('Y-m-d', strtotime('today - 30 days'));
+	$to = date('Y-m-d');
 	$sWhere[] = " (DATE(vl.sample_collection_date) BETWEEN '$from' AND '$to')";
 }
 if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
@@ -76,6 +76,10 @@ if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedD
 
 if (isset($_POST['freezerCode']) && trim((string) $_POST['freezerCode']) != '') {
 	$sWhere[] = ' h.freezer_id = "' . $_POST['freezerCode'] . '"';
+}
+
+if (isset($_POST['labId']) && trim((string) $_POST['labId']) != '') {
+	$sWhere[] = ' s.lab_id = "' . $_POST['labId'] . '"';
 }
 
 if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
@@ -114,10 +118,13 @@ foreach ($vlQueryInfo as $info) {
 
 $sampleUniqueId = implode(',', $uniqueId);
 if (!empty($sampleUniqueId)) {
-	$getCurrentStorage = "SELECT sh.*,s.storage_code,s.storage_id FROM lab_storage_history as sh LEFT JOIN lab_storage as s ON s.storage_id=sh.freezer_id WHERE sh.sample_unique_id IN ($sampleUniqueId) ";
+	$getCurrentStorage = "SELECT sh.*,s.storage_code,s.storage_id FROM lab_storage_history as sh 
+	LEFT JOIN lab_storage as s ON s.storage_id=sh.freezer_id WHERE sh.sample_unique_id IN ($sampleUniqueId) ";
 	$currentStorage = $db->rawQuery($getCurrentStorage);
 }
 //echo '<pre>'; print_r($currentStorage); die;
+
+$testingLabs = $facilitiesService->getTestingLabs('vl');
 ?>
 <style>
 	.select2-selection__choice {
@@ -151,13 +158,22 @@ if (!empty($sampleUniqueId)) {
 					<form name="searchSample" id="searchSample" method="post" action="sample-storage.php">
 						<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 							<tr>
+								<td class="labField"><strong>
+										<?php echo _translate("Nom du laboratoire"); ?>&nbsp;:
+									</strong>
+								</td>
+								<td class="labField">
+									<select name="labId" id="labId" class="form-control labSelect" style="width:250px;" onchange="getFreezers(this.value);">
+										<?= $general->generateSelectOptions($testingLabs, $_POST['labId'], '-- Sélectionner --'); ?>
+									</select>
+								</td>
 								<td><strong>
 										<?php echo _translate("Freezer"); ?>&nbsp;:
 									</strong>
 								</td>
 								<td>
-									<select type="text" name="freezerCode" id="freezerCode" class="form-control freezerSelect" style="width:250px;">
-										<?= $general->generateSelectOptions($storageInfo, $_POST['freezerCode'], '-- Select --') ?>
+									<select name="freezerCode" id="freezerCode" class="form-control freezerSelect" style="width:250px;">
+										<!-- < ?= $general->generateSelectOptions($storageInfo, $_POST['freezerCode'], '-- Select --') ?> -->
 									</select>
 								</td>
 								<td><strong>
@@ -167,6 +183,8 @@ if (!empty($sampleUniqueId)) {
 								<td>
 									<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" value="<?php if (isset($_POST['sampleCollectionDate']) && $_POST['sampleCollectionDate'] != "") echo str_replace('+', ' ', $_POST['sampleCollectionDate']); ?>" />
 								</td>
+							</tr>
+							<tr>
 								<td><strong>
 										<?php echo _translate("Sample Received at Lab Date"); ?>&nbsp;:
 									</strong></td>
@@ -174,8 +192,6 @@ if (!empty($sampleUniqueId)) {
 									<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Received Date'); ?>" style="width:220px;background:#fff;" value="<?php //if(isset($_POST['sampleReceivedDate']) && $_POST['sampleReceivedDate']!="") echo str_replace('+',' ',$_POST['sampleReceivedDate']); 
 																																																															?>" />
 								</td>
-							</tr>
-							<tr>
 								<td><strong>
 										<?php echo _translate("Province/State"); ?> :
 									</strong></td>
@@ -191,6 +207,8 @@ if (!empty($sampleUniqueId)) {
 									<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict(this.value)">
 									</select>
 								</td>
+							</tr>
+							<tr>
 								<td><strong>
 										<?php echo _translate("Facility Name"); ?> :
 									</strong></td>
@@ -267,7 +285,7 @@ if (!empty($sampleUniqueId)) {
 											<?php echo _translate("Comments"); ?>
 										</th>
 										<!--<th>
-											<?php echo _translate("Status"); ?>
+											< ?php echo _translate("Status"); ?>
 										</th>-->
 										<th>
 											<?php echo _translate("Action"); ?>
@@ -427,6 +445,16 @@ if (!empty($sampleUniqueId)) {
 		$(".freezerSelect").select2({
 			placeholder: "<?php echo _translate("Select Freezer"); ?>"
 		});
+		$("#labId").select2({
+			placeholder: "<?php echo _translate("Select Lab"); ?>"
+		});
+
+		<?php if (!$general->isSTSInstance()) { ?>
+			var currentLabId = "40";
+			$('#labId').val(currentLabId);
+			$('.labField').hide();
+			getFreezers(currentLabId); // Load the freezers for the current lab
+		<?php } ?>
 
 
 
@@ -487,7 +515,18 @@ if (!empty($sampleUniqueId)) {
 			document.getElementById('searchSample').submit();
 		}
 	}
-
+	
+	function getFreezers(labId) {
+		debugger;
+		$.blockUI();
+		$.post("/vl/program-management/get-freezer-list-by-lab.php", {
+				labId: labId,
+			},
+			function(data) {
+				$.unblockUI();
+				$("#freezerCode").html(data);
+			});
+	}
 
 	function getByProvince(provinceId) {
 		$("#district").html('');

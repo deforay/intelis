@@ -16,7 +16,7 @@ if (isset($_POST['labId'])) {
     $labId = $_POST['labId'];
 
     $freezerList = $storageService->getFreezerListByLabId($labId);
-    $option = "";
+    $option = "<option value=''>-- Sélectionner --</option>";
     foreach ($freezerList as $list) {
         $option .= "<option value='" . $list['storage_id'] . "'>" . $list['storage_code'] . "</option>";
     }
