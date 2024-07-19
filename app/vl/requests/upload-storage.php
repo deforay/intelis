@@ -6,6 +6,8 @@ use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 require_once APPLICATION_PATH . '/header.php';
 /** @var DatabaseService $db */
@@ -36,6 +38,13 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 if (isset($_GET['total'])) {
 	$addedRecords = $_GET['total'] - $_GET['notAdded'];
 }
+
+$spreadsheet = IOFactory::load(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx');
+
+$sheet = $spreadsheet->getActiveSheet()->removeRow(2,100);
+$writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
+$writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx');
+
 ?>
 <style>
 	.ms-choice {
@@ -83,6 +92,24 @@ if (isset($_GET['total'])) {
 									<?php } ?>
 								<?php } ?>
 
+								<div class="form-group">
+									<label for="manifestCode" class="col-lg-2 control-label">
+										<?= _translate("Manifest Code"); ?> 
+									</label>
+									<div class="col-lg-6">
+										<input type="text" class="form-control isRequired" id="manifestCode" name="manifestCode" placeholder="<?php echo _translate('Manifest Code'); ?>" title="<?= _translate('Enter Manifest code'); ?>" onchange="getOneCode('manifest',this.value);" />
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="batchCode" class="col-lg-2 control-label">
+										<?= _translate("Batch Code"); ?> 
+									</label>
+									<div class="col-lg-6">
+										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _translate('Batch Code'); ?>" title="<?= _translate('Enter sample batch code'); ?>" onchange="getOneCode('batch',this.value);" />
+									</div>
+								</div>
+
 
 								<div class="form-group">
 									<label for="StorageInfo" class="col-lg-2 control-label">
@@ -121,6 +148,43 @@ if (isset($_GET['total'])) {
 </section>
 <!-- /.content -->
 </div>
+<script>
+	function getOneCode(codeType, codeValue){
+		
+		if(codeValue != ""){
+			if(codeType=="manifest"){
+				$("#batchCode").prop("readonly",true);
+				$("#manifestCode").prop("readonly",false);
+			}
+			else if(codeType=="batch"){
+				$("#manifestCode").prop("readonly",true);
+				$("#batchCode").prop("readonly",false);
+			}
+			
+			$.post("/includes/write-samples-storageTemplate.php", {
+				codeType: codeType,
+				codeValue: codeValue
+			},
+			function(data) {
+				if (data != "") {
+					if ($("#batchId").val() > 0) {
+						$("#search").html(data);
+						var count = $('#search option').length;
+						$("#unselectedCount").html(count);
+					} else {
+						//$("#sampleDetails").html(data);
+					}
+				}
+			});
+		}
+		else{
+			$("#manifestCode").prop("readonly",false);
+			$("#batchCode").prop("readonly",false);
+			window.location.reload();
+
+		}
+	}
+</script>
 
 <?php
 require_once APPLICATION_PATH . '/footer.php';
