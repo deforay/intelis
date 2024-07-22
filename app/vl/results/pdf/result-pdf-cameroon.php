@@ -10,6 +10,7 @@ use App\Helpers\PdfWatermarkHelper;
 use App\Services\InstrumentsService;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
+use App\Services\VlService;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -18,15 +19,18 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $instrumentsService = ContainerRegistry::get(InstrumentsService::class);
 
 
+/** @var VlService $vlService */
+$vlService = ContainerRegistry::get(VlService::class);
+
 /** @var ResultPdfService $resultPdfService */
 $resultPdfService = ContainerRegistry::get(ResultPdfService::class);
 
 
-$arr = $general->getGlobalConfig();
+$globalConfig = $general->getGlobalConfig();
 
 $key = (string) $general->getGlobalConfig('key');
 
-$facilityAttributes = json_decode((string) $result['facility_attributes']);
+$vlFacilityAttributes = null;
 
 if (!empty($result)) {
      $result = MiscUtility::arrayEmptyStringsToNull($result);
@@ -151,11 +155,11 @@ if (!empty($result)) {
           if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
           } else {
-               $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
+               $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $globalConfig['logo'];
           }
           // set default header data
           $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
-          $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT');
+          $pdf->setHeading($logoPrintInPdf, $globalConfig['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT');
      }
      // set document information
      $pdf->SetCreator('VLSM');
@@ -233,19 +237,23 @@ if (!empty($result)) {
      $tndMessage = '';
      $messageTextSize = '15px';
 
-     if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
+     if (empty($result['vl_result_category']) || $result['vl_result_category'] == '') {
+          $result['vl_result_category'] = $vlService->getVLResultCategory($result['result_status'], $result['result']);
+     }
+
+     if (isset($globalConfig['show_smiley']) && trim($globalConfig['show_smiley']) == "no") {
           $smileyContent = '';
      } else {
           if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
                $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-               $showMessage = ($arr['l_vl_msg']);
+               $showMessage = $globalConfig['l_vl_msg'];
           } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
                $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
-               $showMessage = ($arr['h_vl_msg']);
+               $showMessage = $globalConfig['h_vl_msg'];
           } elseif ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
                $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
           }
-          $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
+          $smileyContent = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$smileyContent";
      }
      $html = '<table style="padding:4px 2px 2px 2px;width:100%;">';
      $html .= '<tr>';
@@ -418,7 +426,7 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:8px 2px 2px 2px;">';
      $logValue = '';
-     if ($result['is_sample_rejected'] !== 'yes' && isset($arr['vl_display_log_result']) && trim((string) $arr['vl_display_log_result']) == "yes") {
+     if ($result['is_sample_rejected'] !== 'yes' && isset($globalConfig['vl_display_log_result']) && trim((string) $globalConfig['vl_display_log_result']) == "yes") {
           if ($result['result_value_log'] != '' && !empty($result['result_value_log'])) {
                $result['result_value_log'] = round($result['result_value_log'], 2);
                $logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
@@ -519,7 +527,7 @@ if (!empty($result)) {
      $bottomHtml .= '</tr>';
      $bottomHtml .= '</table>';
 
-     $bottomTextLocation = $facilityAttributes->bottom_text_location ?? 'belowPlatformName';
+     $bottomTextLocation = !empty($vlFacilityAttributes) && !empty($vlFacilityAttributes->bottom_text_location) ? $vlFacilityAttributes->bottom_text_location : 'belowPlatformName';
 
      if ($bottomTextLocation == 'belowPlatformName') {
           // Use writeHTMLCell() to position the bottom HTML content
@@ -531,7 +539,7 @@ if (!empty($result)) {
 
           if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime']) && $displaySignatureTable) {
 
-               $approvertext = ($sameReviewerAndApprover) ? _translate("REVIEWED AND APPROVED BY") : _translate("APPROVED BY");
+               $approvertext = $sameReviewerAndApprover ? _translate("REVIEWED AND APPROVED BY") : _translate("APPROVED BY");
 
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . $approvertext . '</td>';
