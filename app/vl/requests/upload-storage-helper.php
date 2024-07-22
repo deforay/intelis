@@ -75,31 +75,34 @@ try {
                 $instanceId = $_SESSION['instanceId'];
                 $_POST['instanceId'] = $instanceId;
             }
-            $getSample = $general->getDataFromOneFieldAndValue('form_vl', 'sample_code', $rowData['A']);
-            $freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_code', $rowData['B']);
+            $condition = "sample_code = '".$rowData['A']."'";
+            $condition1 = "storage_code = '".$rowData['B']."'";
+
+            $getSample = $general->fetchDataFromTable('form_vl', $condition);
+            $freezerCheck = $general->fetchDataFromTable('lab_storage', $condition1);
 
             if (empty($freezerCheck)) {
                 $data = array(
                     'storage_id' => MiscUtility::generateUUID(),
                     'storage_code'     => $rowData['B'],
-                    'lab_id'     => $getSample['lab_id'],
+                    'lab_id'     => $getSample[0]['lab_id'],
                     'storage_status' => "active",
                     'updated_datetime'    => DateUtility::getCurrentDateTime()
                 );
                 $db->insert('lab_storage', $data);
                 $storageId = $data['storage_id'];
             } else {
-                $storageId = $freezerCheck['storage_id'];
+                $storageId = $freezerCheck[0]['storage_id'];
             }
 
-            $formAttributes = json_decode($getSample['form_attributes']);
+            $formAttributes = json_decode($getSample[0]['form_attributes']);
 
 
             try {
                 if (!isset($formAttributes->storage) && empty($formAttributes->storage)) {
                     $formAttributes->storage = array("storageId" => $storageId, "storageCode" => $rowData['B'], "rack" => $rowData['C'], "box" => $rowData['D'], "position" => $rowData['E'], "volume" => $rowData['F']);
                     $vlData['form_attributes'] = json_encode($formAttributes);
-                    $db->where('vl_sample_id', $getSample['vl_sample_id']);
+                    $db->where('vl_sample_id', $getSample[0]['vl_sample_id']);
                     $id = $db->update('form_vl', $vlData);
                 } else {
                     $storageNotAdded[] = $rowData;
