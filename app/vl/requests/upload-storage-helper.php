@@ -62,6 +62,7 @@ try {
             $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
             header("Location:/vl/requests/upload-storage.php");
         }
+        $failedRow = array();
 
         foreach ($filteredArray as $rowIndex => $rowData) {
 
@@ -79,24 +80,30 @@ try {
             $condition1 = "storage_code = '".$rowData['B']."'";
 
             $getSample = $general->fetchDataFromTable('form_vl', $condition);
-            $freezerCheck = $general->fetchDataFromTable('lab_storage', $condition1);
 
-            if (empty($freezerCheck)) {
-                $data = array(
-                    'storage_id' => MiscUtility::generateUUID(),
-                    'storage_code'     => $rowData['B'],
-                    'lab_id'     => $getSample[0]['lab_id'],
-                    'storage_status' => "active",
-                    'updated_datetime'    => DateUtility::getCurrentDateTime()
-                );
-                $db->insert('lab_storage', $data);
-                $storageId = $data['storage_id'];
-            } else {
-                $storageId = $freezerCheck[0]['storage_id'];
+           
+            if(isset($getSample[0]['sample_code']) && $getSample[0]['sample_code']!=""){
+                $freezerCheck = $general->fetchDataFromTable('lab_storage', $condition1);
+
+                if (empty($freezerCheck)) {
+                    $data = array(
+                        'storage_id' => MiscUtility::generateUUID(),
+                        'storage_code'     => $rowData['B'],
+                        'lab_id'     => $getSample[0]['lab_id'],
+                        'storage_status' => "active",
+                        'updated_datetime'    => DateUtility::getCurrentDateTime()
+                    );
+                    $db->insert('lab_storage', $data);
+                    $storageId = $data['storage_id'];
+                } else {
+                    $storageId = $freezerCheck[0]['storage_id'];
+                }
+
+                $formAttributes = json_decode($getSample[0]['form_attributes']);
             }
-
-            $formAttributes = json_decode($getSample[0]['form_attributes']);
-
+            else{
+                $failedRow[] = array($rowData['A'],$rowData['B'],$rowData['C'],$rowData['D'],$rowData['E'],$rowData['F']);
+            }
 
             try {
                 if (!isset($formAttributes->storage) && empty($formAttributes->storage)) {
@@ -135,7 +142,10 @@ try {
     } else {
         throw new SystemException(_translate("Bulk Storage Import Failed") . " - " . $uploadedFile->getError());
     }
-    header("Location:/vl/requests/upload-storage.php?total=$total&notAdded=$notAdded&link=$filename&option=$uploadOption");
+    $failedSampleCount = count($failedRow);
+   // echo '<pre>'; print_r($failedRow); die;
+   $failedRow = http_build_query($failedRow);
+    header("Location:/vl/requests/upload-storage.php?total=$total&notAdded=$notAdded&link=$filename&option=$uploadOption&failedRowCount=$failedSampleCount&$failedRow");
 } catch (Exception $exc) {
     throw new SystemException(($exc->getMessage()));
 }
