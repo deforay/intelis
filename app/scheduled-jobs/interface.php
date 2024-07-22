@@ -165,6 +165,7 @@ try {
             $approved = !empty($instrumentDetails['approved_by']) ? json_decode((string) $instrumentDetails['approved_by'], true) : [];
             $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode((string) $instrumentDetails['reviewed_by'], true) : [];
             $instrumentId = $instrumentDetails['instrument_id'] ?? null;
+            $lowerLimit = $instrumentDetails['lower_limit'];
 
             if (isset($tableInfo['vl_sample_id'])) {
 

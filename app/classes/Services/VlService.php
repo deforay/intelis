@@ -105,7 +105,7 @@ final class VlService extends AbstractTestService
 
             if (empty($finalResult) || $finalResult == '') {
                 $vlResultCategory = null;
-            } elseif (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
+            } elseif (in_array(strtolower($finalResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
                 $vlResultCategory = 'failed';
             } elseif (in_array($resultStatus, [1, 2, 3, 10])) {
                 $vlResultCategory = null;
