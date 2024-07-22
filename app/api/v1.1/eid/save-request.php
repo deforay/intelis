@@ -383,12 +383,11 @@ try {
         } else {
             $data['childTreatmentOther'] = null;
         }
-        if (isset($data['childTreatment']) && !empty($data['childTreatment'])) {
-            $data['childTreatment'] = !is_array($data['childTreatment']) ? [$data['childTreatment']] : implode(",", $data['childTreatment']);
-        } else {
-            $data['childTreatment'] = null;
+        if(is_array($data['childTreatment'])){
+            $data['childTreatment'] = implode(",", $data['childTreatment']);
+        }else{
+            $data['childTreatment'] = str_replace("##", ",", $data['childTreatment']);
         }
-
         $eidData = [
             'vlsm_instance_id' => $instanceId,
             'app_sample_code' => $data['appSampleCode'] ?? null,
