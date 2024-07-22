@@ -165,7 +165,7 @@ try {
             $approved = !empty($instrumentDetails['approved_by']) ? json_decode((string) $instrumentDetails['approved_by'], true) : [];
             $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode((string) $instrumentDetails['reviewed_by'], true) : [];
             $instrumentId = $instrumentDetails['instrument_id'] ?? null;
-            $lowerLimit = $instrumentDetails['lower_limit'];
+            $lowerLimit = $instrumentDetails['lower_limit'] ?? null;
 
             if (isset($tableInfo['vl_sample_id'])) {
 
@@ -185,6 +185,8 @@ try {
 
                     if ($vlResult == "-1.00") {
                         $vlResult = "Target Not Detected";
+                    } elseif (strtolower($vlResult) == 'detected' && !empty($lowerLimit)) {
+                        $vlResult = "< $lowerLimit";
                     }
 
                     $logVal = null;
