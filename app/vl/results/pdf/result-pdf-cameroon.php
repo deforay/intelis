@@ -233,20 +233,18 @@ if (!empty($result)) {
      $tndMessage = '';
      $messageTextSize = '15px';
 
-
-     if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
-          $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-          $showMessage = ($arr['l_vl_msg']);
-     } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
-          $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
-          $showMessage = ($arr['h_vl_msg']);
-     } elseif ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
-          $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
-     }
-
      if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
           $smileyContent = '';
      } else {
+          if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
+               $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
+               $showMessage = ($arr['l_vl_msg']);
+          } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
+               $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
+               $showMessage = ($arr['h_vl_msg']);
+          } elseif ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
+               $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
+          }
           $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
      }
      $html = '<table style="padding:4px 2px 2px 2px;width:100%;">';
@@ -422,6 +420,7 @@ if (!empty($result)) {
      $logValue = '';
      if ($result['is_sample_rejected'] !== 'yes' && isset($arr['vl_display_log_result']) && trim((string) $arr['vl_display_log_result']) == "yes") {
           if ($result['result_value_log'] != '' && !empty($result['result_value_log'])) {
+               $result['result_value_log'] = round($result['result_value_log'], 2);
                $logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
           } elseif (is_numeric($result['result'])) {
                $logV = round(log10($result['result']), 2);
