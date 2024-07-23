@@ -10,10 +10,11 @@ class CustomBatchPdfHelper extends Fpdi
 {
 
     public ?string $text;
+    public ?array $batchDetails;
 
-    public function setHeading(): void
+    public function setHeading($batchDetails): void
     {
-        $this->Header();
+        $this->batchDetails = $batchDetails;
     }
     //Page header
     public function Header(): void
@@ -28,10 +29,14 @@ class CustomBatchPdfHelper extends Fpdi
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font
-        $this->SetFont('helvetica', 'I', 8);
+        $this->SetFont('helvetica', '', 8);
         // Page number
-        $text = _translate("Batch file generated on") . ' : ' . DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime(), true);
-        $this->Cell(0, 10, $text, 0, false, 'L  ', 0);
-        $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
+        $text =_translate("Batch Code: " . $this->batchDetails['batch_code']) . ' (' . DateUtility::humanReadableDateFormat($this->batchDetails['request_created_datetime'], true) . ')';
+        if(isset($this->batchDetails['lab_assigned_batch_code']) && !empty($this->batchDetails['lab_assigned_batch_code'])){
+            $text .= ' | '.  _translate("Lab Assigned Batch Code") . ': ' . $this->batchDetails['lab_assigned_batch_code'];
+        }
+        $text .= ' | '.  _translate("Generated on") . ': ' . DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime(), true);
+        $this->Cell(0, 0, $text, 0, false, 'L  ', 0);
+        $this->Cell(0, 15, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
     }
 }
