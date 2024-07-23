@@ -167,19 +167,19 @@ final class BatchService
 
     public function generateLabelOrderContent($batchInfo, $batchControlNames, $samplesResult, $samplesCount, $primaryKeyColumn, $patientIdColumn, $table, $testType)
     {
-        $content = '';
         $labelNewContent = '';
         $displayOrder = [];
         $alphaNumeric = $this->generateAlphaNumericRange();
         $jsonToArray = json_decode((string)$batchInfo['label_order'], true);
         $batchControlNames ??= [];
+        $content = '';
+        $controls = '';
         if (!empty($jsonToArray) && (count($jsonToArray) != ($samplesCount + count($batchControlNames)))) {
             foreach ($samplesResult as $sample) {
                 $displayOrder[] = "s_" . $sample[$primaryKeyColumn];
                 $label = $sample['sample_code'] . " - " . $sample[$patientIdColumn];
                 $content .= '<li class="ui-state-default" id="s_' . $sample[$primaryKeyColumn] . '">' . $label . '</li>';
             }
-            $controls = '';
             if (!empty($batchControlNames) && count($batchControlNames) > 0) {
                 foreach ($batchControlNames as $key => $value) {
                     $displayOrder[] = $value;
@@ -199,13 +199,13 @@ final class BatchService
                     $labelNewContent .= ' <tr><th>' . $clabel . ' :</th><td> <input class="form-control" type="text" name="controls[' . $clabel . ']" value="" placeholder="Enter label name"/></td></tr>';
                 }
             }
-            $content = $controls . $content;
         } else {
+            $controls = '';
             foreach ($jsonToArray as $j => $jsonValue) {
                 $index = ($batchInfo['position_type'] == 'alpha-numeric') ? $alphaNumeric[$j] : $j;
                 $displayOrder[] = $jsonValue;
                 $xplodJsonToArray = explode("_", (string)$jsonValue);
-                $controls = '';
+
                 if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                     $sampleQuery = "SELECT sample_code, $patientIdColumn FROM $table WHERE  $primaryKeyColumn = ?";
                     $sampleResult = $this->db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
@@ -218,9 +218,10 @@ final class BatchService
                     $labelNewContent .= ' <tr><th>' . $jsonValue . ' :</th><td> <input class="form-control" type="text" name="controls[' . $jsonValue . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
                     $controls .= '<li class="ui-state-default" id="' . $jsonValue . '">' . $liLabel . '</li>';
                 }
-                $content = $controls . $content;
             }
         }
+
+        $content = $controls . $content;
         return ['content' => $content, 'labelNewContent' => $labelNewContent, 'displayOrder' => $displayOrder];
     }
 
