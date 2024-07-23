@@ -54,6 +54,7 @@ try {
                 'batch_code' => $_POST['batchCode'],
                 'position_type' => $_POST['positions'],
                 'machine' => $_POST['machine'],
+                'lab_assigned_batch_code' => $_POST['labAssignedBatchCode'],
                 'last_modified_by' => $_SESSION['userId'],
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
@@ -97,6 +98,7 @@ try {
             } else {
                 $data = [
                     'machine' => $_POST['platform'],
+                    'lab_assigned_batch_code' => $_POST['labAssignedBatchCode'],
                     'batch_code' => $_POST['batchCode'],
                     'batch_code_key' => $_POST['batchCodeKey'],
                     'position_type' => $_POST['positions'],

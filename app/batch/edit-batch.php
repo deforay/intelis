@@ -313,8 +313,18 @@ $fundingSourceList = $general->getFundingSources();
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"></div>
+							
 						</div>
+						<div class="row">
+						<div class="col-md-6">
+								<div class="form-group">
+									<label for="machine" class="col-lg-4 control-label"><?php echo _translate("Lab Assigned Batch Code"); ?></label>
+									<div class="col-lg-7" style="margin-left:3%;">
+									<input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode" class="form-control" placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>" value="<?php echo $batchInfo[0]['lab_assigned_batch_code'] ?>"/>
+									</div>
+								</div>
+							</div>
+											</div>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-5">
 								<select name="unbatchedSamples[]" id="search" class="form-control" size="8" multiple="multiple">
