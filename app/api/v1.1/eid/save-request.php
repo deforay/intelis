@@ -373,21 +373,22 @@ try {
         }
 
         $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
-        if (isset($data['motherTreatment']) && !empty($data['motherTreatment'])) {
-            $data['motherTreatment'] = !is_array($data['motherTreatment']) ? [$data['motherTreatment']] : implode(",", $data['motherTreatment']);
-        } else {
-            $data['motherTreatment'] = null;
+        if(is_array($data['motherTreatment'])){
+            $data['motherTreatment'] = implode(",", $data['motherTreatment']);
+        }else{
+            $data['motherTreatment'] = str_replace("##", ",", $data['motherTreatment']);
         }
-        if (isset($data['childTreatmentOther']) && !empty($data['childTreatmentOther'])) {
-            $data['childTreatmentOther'] = !is_array($data['childTreatmentOther']) ? [$data['childTreatmentOther']] : implode(",", $data['childTreatmentOther']);
-        } else {
-            $data['childTreatmentOther'] = null;
+        if(is_array($data['childTreatmentOther'])){
+            $data['childTreatmentOther'] = implode(",", $data['childTreatmentOther']);
+        }else{
+            $data['childTreatmentOther'] = str_replace("##", ",", $data['childTreatmentOther']);
         }
         if(is_array($data['childTreatment'])){
             $data['childTreatment'] = implode(",", $data['childTreatment']);
         }else{
             $data['childTreatment'] = str_replace("##", ",", $data['childTreatment']);
         }
+        // print_r($data['childTreatment']);die;
         $eidData = [
             'vlsm_instance_id' => $instanceId,
             'app_sample_code' => $data['appSampleCode'] ?? null,

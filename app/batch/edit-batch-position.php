@@ -1,5 +1,5 @@
 <?php
-
+use App\Services\SystemService;
 use App\Services\BatchService;
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
@@ -23,7 +23,6 @@ $_GET = _sanitizeInput($request->getQueryParams());
 
 $type = $_GET['type'];
 $testType = $_GET['type'];
-
 $testTableData = TestsService::getAllData($testType);
 
 $testName = $testTableData['testName'];
@@ -35,8 +34,11 @@ $patientLastName = $testTableData['patientLastName'];
 
 $testType = ($testType == 'covid19') ? 'covid-19' : $testType;
 $title = _translate($testName . " | Edit Batch Position");
-$testType = isset($_GET['testType']) ? base64_decode((string)$_GET['testType']) : null;
-
+$modules = SYSTEM_CONFIG['modules'];
+$activeModule = SystemService::getActiveModules(true);
+if(isset($_GET['testType']) && !in_array((string)$_GET['testType'], $activeModule)){
+	$testType = isset($_GET['testType']) ? base64_decode((string)$_GET['testType']) : null;
+}
 require_once APPLICATION_PATH . '/header.php';
 
 $id = isset($_GET['id']) ? base64_decode((string)$_GET['id']) : null;
@@ -98,7 +100,6 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 			<li class="active"><?= _translate("Batch"); ?></li>
 		</ol>
 	</section>
-
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
