@@ -179,6 +179,7 @@ final class BatchService
                 $label = $sample['sample_code'] . " - " . $sample[$patientIdColumn];
                 $content .= '<li class="ui-state-default" id="s_' . $sample[$primaryKeyColumn] . '">' . $label . '</li>';
             }
+            $controls = '';
             if (!empty($batchControlNames) && count($batchControlNames) > 0) {
                 foreach ($batchControlNames as $key => $value) {
                     $displayOrder[] = $value;
@@ -186,7 +187,7 @@ final class BatchService
                     $clabel = str_replace("no of ", " ", $clabel);
                     $existingValue = $batchControlNames[$key] ?? "";
                     $liLabel = $existingValue ?: $clabel;
-                    $content .= '<li class="ui-state-default" id="' . $key . '">' . $liLabel . '</li>';
+                    $controls .= '<li class="ui-state-default" id="' . $key . '">' . $liLabel . '</li>';
                     $labelNewContent .= ' <tr><th>' . $liLabel . ' :</th><td> <input class="form-control" type="text" name="controls[' . $key . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
                 }
             } else {
@@ -194,10 +195,11 @@ final class BatchService
                 foreach ($labelControls as $value) {
                     $displayOrder[] = $value;
                     $clabel = $this->formatLabel($value);
-                    $content .= '<li class="ui-state-default" id="' . $value . '">' . $clabel . '</li>';
+                    $controls .= '<li class="ui-state-default" id="' . $value . '">' . $clabel . '</li>';
                     $labelNewContent .= ' <tr><th>' . $clabel . ' :</th><td> <input class="form-control" type="text" name="controls[' . $clabel . ']" value="" placeholder="Enter label name"/></td></tr>';
                 }
             }
+            $content = $controls . $content;
         } else {
             foreach ($jsonToArray as $j => $jsonValue) {
                 $index = ($batchInfo['position_type'] == 'alpha-numeric') ? $alphaNumeric[$j] : $j;
