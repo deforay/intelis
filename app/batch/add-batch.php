@@ -194,6 +194,7 @@ $fundingSourceList = $general->getFundingSources();
                     <td style="width: 30%;">&nbsp;
                     </td>
                 </tr>
+               
             </table>
 
             &nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
@@ -326,6 +327,20 @@ $fundingSourceList = $general->getFundingSources();
                                         <input type="hidden" name="batchCodeKey" id="batchCodeKey" value="<?php echo $maxId; ?>" />
                                         <input type="hidden" name="platform" id="platform" value="" />
                                         <input type="hidden" name="positions" id="positions" value="" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <label for="batchCode" class="col-lg-2 control-label">
+                                        <?php echo _translate("Lab Assigned Batch Code"); ?> 
+                                    </label>
+                                    <div class="col-lg-7" style="margin-left:3%;">
+                                        <input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode" class="form-control" placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>"/>
                                     </div>
                                 </div>
                                 <p><button type='button' class='btn btn-default selectSamples' onclick='autoselectBatchSamples()'><?php echo _translate('Automatically select samples for Batch'); ?></button></p>

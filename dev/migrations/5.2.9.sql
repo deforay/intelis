@@ -578,3 +578,7 @@ ALTER TABLE `form_cd4` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFT
 ALTER TABLE `audit_form_cd4` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
 ALTER TABLE `form_generic` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
 ALTER TABLE `audit_form_generic` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
+
+
+-- Jeyabanu 23-Jul-2024
+ALTER TABLE `batch_details` ADD `lab_assigned_batch_code` VARCHAR(64) NULL DEFAULT NULL AFTER `machine`;
