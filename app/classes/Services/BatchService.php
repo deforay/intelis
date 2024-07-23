@@ -225,7 +225,7 @@ final class BatchService
         $content = '';
         $labelNewContent = '';
         $displayOrder = [];
-        if (isset($batchInfo['label_order']) && trim((string)$batchInfo['label_order']) != '') {
+        if (isset($batchInfo['label_order']) && trim((string)$batchInfo['label_order']) != '' && false) {
             $contentData = $this->generateLabelOrderContent($batchInfo, $batchControlNames, $samplesResult, $samplesCount, $primaryKeyColumn, $patientIdColumn, $table, $testType);
             $content = $contentData['content'];
             $labelNewContent = $contentData['labelNewContent'];
