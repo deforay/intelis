@@ -117,6 +117,7 @@ foreach ($vlQueryInfo as $info) {
 }
 
 $sampleUniqueId = implode(',', $uniqueId);
+$currentStorage = "";
 if (!empty($sampleUniqueId)) {
 	$getCurrentStorage = "SELECT sh.*,s.storage_code,s.storage_id FROM lab_storage_history as sh 
 	LEFT JOIN lab_storage as s ON s.storage_id=sh.freezer_id WHERE sh.sample_unique_id IN ($sampleUniqueId) ";
@@ -323,16 +324,15 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 												$patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 											}
 										*/
-											if (is_array($currentStorage[$i]) && in_array($vl['unique_id'], $currentStorage[$i]) && ($currentStorage[$i]['freezer_id'] != "")) {
+										$existingStorage = "";
+											if (!empty($currentStorage[$i]) && ($vl['unique_id'] == $currentStorage[$i]['sample_unique_id'])) {
 												$existingStorage = $currentStorage[$i]['storage_code'] . '-' . $currentStorage[$i]['rack'] . '-' . $currentStorage[$i]['box'] . '-' . $currentStorage[$i]['position'] . ' ' . $currentStorage[$i]['volume'] . ' ml';
-											} else {
-												$existingStorage = "";
-											}
+											} 
 
 									?>
 											<tr>
 												<td class="dataTables_empty">
-													<?php echo $vl['sample_code']; ?>
+													<?php echo $vl['sample_code'].	' -- '. $currentStorage[$i]['sample_unique_id'];  ?>
 													<input type="hidden" name="sampleUniqueId[<?= $i; ?>]" id="sampleUniqueId<?= $i; ?>" class="form-control" value="<?php echo $vl['unique_id']; ?>" size="5" />
 												</td>
 												<td class="dataTables_empty">
@@ -517,7 +517,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 	}
 	
 	function getFreezers(labId) {
-		debugger;
+		//debugger;
 		$.blockUI();
 		$.post("/vl/program-management/get-freezer-list-by-lab.php", {
 				labId: labId,
