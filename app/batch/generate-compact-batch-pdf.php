@@ -4,11 +4,11 @@ use App\Services\BatchService;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
-use App\Helpers\CustomBatchPdfHelper;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Helpers\CustomBatchPdfHelper;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -154,17 +154,17 @@ if (!empty($id)) {
             $tbl = '<table cellspacing="2" cellpadding="6" style="width:100%;" border="0">
                 <tr>
                     <th style="font-weight: bold;">' . _translate('Reagent/Kit Name') . ' :</th><td style="width:20%;">' . ((isset($dateResult['covid19_test_name']) && $dateResult['covid19_test_name'] != "") ? $dateResult['covid19_test_name'] : $dateResult['test_name']) . '</td>';
-                    if((isset($dateResult['kit_lot_no']) && !empty($dateResult['kit_lot_no'])) || isset($dateResult['lot_number']) && !empty($dateResult['lot_number'])){
-                        $tbl .= '<th style="font-weight: bold;">' . _translate('Lot Number') . ' :</th><td>' . ((isset($dateResult['kit_lot_no']) && $dateResult['kit_lot_no'] != "") ? $dateResult['kit_lot_no'] : $dateResult['lot_number']) . '</td>';
-                    }else{
-                        $tbl .= '<th></th>';
-                    }
-                    if((isset($dateResult['kit_expiry_date']) && !empty($dateResult['kit_expiry_date'])) || isset($dateResult['lot_expiration_date']) && !empty($dateResult['lot_expiration_date'])){
-                        $tbl .= '<th style="font-weight: bold;width:20%;">' . _translate('Lot Expiry Date') . ' :</th><td>' . ((isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "") ? $dateResult['kit_expiry_date'] : $dateResult['lot_expiration_date']) . '</td>';
-                    }else{
-                        $tbl .= '<th></th>';
-                    }
-                $tbl .= '</tr>
+            if ((isset($dateResult['kit_lot_no']) && !empty($dateResult['kit_lot_no'])) || isset($dateResult['lot_number']) && !empty($dateResult['lot_number'])) {
+                $tbl .= '<th style="font-weight: bold;">' . _translate('Lot Number') . ' :</th><td>' . ((isset($dateResult['kit_lot_no']) && $dateResult['kit_lot_no'] != "") ? $dateResult['kit_lot_no'] : $dateResult['lot_number']) . '</td>';
+            } else {
+                $tbl .= '<th></th>';
+            }
+            if ((isset($dateResult['kit_expiry_date']) && !empty($dateResult['kit_expiry_date'])) || isset($dateResult['lot_expiration_date']) && !empty($dateResult['lot_expiration_date'])) {
+                $tbl .= '<th style="font-weight: bold;width:20%;">' . _translate('Lot Expiry Date') . ' :</th><td>' . ((isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "") ? $dateResult['kit_expiry_date'] : $dateResult['lot_expiration_date']) . '</td>';
+            } else {
+                $tbl .= '<th></th>';
+            }
+            $tbl .= '</tr>
                 <tr>
                     <th style="font-weight: bold;">' . _translate('Printed By') . ' :</th><td>' . $_SESSION['userName'] . '</td>
                     <th style="font-weight: bold;">' . _translate('Printed On') . ':</th><td colspan="2">' . date("d-M-Y h:i:A") . '</td>
@@ -191,7 +191,7 @@ if (!empty($id)) {
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if ((isset($_GET['type']) && $_GET['type'] == 'tb') || (isset($_GET['type']) && $_GET['type'] == 'cd4')) {
                             $sampleQuery = "SELECT sample_code,
-                                                    remote_sample_code, lab_assigned_code, 
+                                                    remote_sample_code, lab_assigned_code,
                                                     $resultColumn,
                                                     is_encrypted,
                                                     $patientIdColumn,
@@ -202,7 +202,7 @@ if (!empty($id)) {
                                                     WHERE $primaryKey = ?";
                         } else {
                             $sampleQuery = "SELECT sample_code,
-                                                    remote_sample_code, lab_assigned_code, 
+                                                    remote_sample_code, lab_assigned_code,
                                                     $resultColumn,
                                                     lot_number,is_encrypted,
                                                     CASE
@@ -236,7 +236,7 @@ if (!empty($id)) {
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<td colspan="2" align="center">';
                         $tbl .= 'Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
-                        if(isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])){
+                        if (isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])) {
                             $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
                         }
                         if ($barcodeFormat == 'QRCODE') {
@@ -250,11 +250,11 @@ if (!empty($id)) {
                             $tbl .= 'Patient Code : ' . $sampleResult[0][$patientIdColumn] . '<br>';
                         } else {
                             $tbl .= 'Patient Code : ' . $sampleResult[0][$patientIdColumn] . '<br>';
-                            if(isset($lotDetails) && !empty($lotDetails)){
+                            if (isset($lotDetails) && !empty($lotDetails)) {
                                 $tbl .= 'Lot Number / Exp. Date : ' . $lotDetails . '<br>';
                             }
                         }
-                        if(isset($sampleResult[0][$resultColumn]) && !empty($sampleResult[0][$resultColumn])){
+                        if (isset($sampleResult[0][$resultColumn]) && !empty($sampleResult[0][$resultColumn])) {
                             $tbl .= 'Test Result : ' . ucwords((string) $sampleResult[0][$resultColumn]) . '<br>';
                         }
                         $tbl .= '</td>';
@@ -292,7 +292,7 @@ if (!empty($id)) {
                                             WHERE $primaryKey =?";
                         } else {
                             $sampleQuery = "SELECT sample_code,
-                                                remote_sample_code, lab_assigned_code, 
+                                                remote_sample_code, lab_assigned_code,
                                                 $resultColumn,
                                                 lot_number,is_encrypted,
                                                 CASE
@@ -325,7 +325,7 @@ if (!empty($id)) {
 
                         $tbl .= '<td colspan="2" align="center">';
                         $tbl .= 'Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
-                        if(isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])){
+                        if (isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])) {
                             $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
                         }
                         if ($barcodeFormat == 'QRCODE') {
@@ -338,11 +338,11 @@ if (!empty($id)) {
                             $tbl .= 'Patient Code : ' . $sampleResult[0][$patientIdColumn] . '<br>';
                         } else {
                             $tbl .= 'Patient Code : ' . $sampleResult[0][$patientIdColumn] . '<br>';
-                            if(isset($lotDetails) && !empty($lotDetails)){
+                            if (isset($lotDetails) && !empty($lotDetails)) {
                                 $tbl .= 'Lot Number / Exp. Date : ' . $lotDetails . '<br>';
                             }
                         }
-                        if(isset($sampleResult[0][$resultColumn]) && !empty($sampleResult[0][$resultColumn])){
+                        if (isset($sampleResult[0][$resultColumn]) && !empty($sampleResult[0][$resultColumn])) {
                             $tbl .= 'Test Result : ' . ucwords((string) $sampleResult[0][$resultColumn]) . '<br>';
                         }
 
@@ -422,7 +422,7 @@ if (!empty($id)) {
             }
             $sampleCounter = ($noOfInHouseControls + $noOfManufacturerControls + $noOfCalibrators + 1);
             $sQuery = "SELECT sample_code,
-                            remote_sample_code, lab_assigned_code, 
+                            remote_sample_code, lab_assigned_code,
                             lot_number,
                             CASE
                                 WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
@@ -462,7 +462,7 @@ if (!empty($id)) {
 
                 $tbl .= '<td colspan="2" align="center">';
                 $tbl .= 'Sample ID : ' . $sample['sample_code'] . '<br>';
-                if(isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])){
+                if (isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])) {
                     $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
                 }
                 if ($barcodeFormat == 'QRCODE') {
@@ -475,11 +475,11 @@ if (!empty($id)) {
                     $tbl .= 'Patient Code : ' . $patientIdentifier . '<br>';
                 } else {
                     $tbl .= 'Patient Code : ' . $patientIdentifier . '<br>';
-                    if(isset($lotDetails) && !empty($lotDetails)){
+                    if (isset($lotDetails) && !empty($lotDetails)) {
                         $tbl .= 'Lot Number / Exp. Date : ' . $lotDetails . '<br>';
                     }
                 }
-                if(isset($sample[$resultColumn]) && !empty($sample[$resultColumn])){
+                if (isset($sample[$resultColumn]) && !empty($sample[$resultColumn])) {
                     $tbl .= 'Test Result : ' . $sample[$resultColumn] . '<br>';
                 }
                 $tbl .= '</td>';
