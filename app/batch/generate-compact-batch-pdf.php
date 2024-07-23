@@ -76,6 +76,7 @@ if (!empty($id)) {
     if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
         $dateQuery = "SELECT ct.*,
                         covid19.sample_tested_datetime,
+                        covid19.lab_assigned_code,
                         covid19.result_reviewed_datetime,
                         ct.test_name,
                         ct.kit_lot_no,
@@ -91,7 +92,7 @@ if (!empty($id)) {
                     WHERE sample_batch_id= ?
                     GROUP BY covid19.covid19_id";
     } else {
-        $dateQuery = "SELECT sample_tested_datetime,
+        $dateQuery = "SELECT sample_tested_datetime, lab_assigned_code
                         result_reviewed_datetime
                         FROM $table
                         WHERE sample_batch_id= ?";
@@ -190,7 +191,7 @@ if (!empty($id)) {
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if ((isset($_GET['type']) && $_GET['type'] == 'tb') || (isset($_GET['type']) && $_GET['type'] == 'cd4')) {
                             $sampleQuery = "SELECT sample_code,
-                                                    remote_sample_code,
+                                                    remote_sample_code, lab_assigned_code, 
                                                     $resultColumn,
                                                     is_encrypted,
                                                     $patientIdColumn,
@@ -201,7 +202,7 @@ if (!empty($id)) {
                                                     WHERE $primaryKey = ?";
                         } else {
                             $sampleQuery = "SELECT sample_code,
-                                                    remote_sample_code,
+                                                    remote_sample_code, lab_assigned_code, 
                                                     $resultColumn,
                                                     lot_number,is_encrypted,
                                                     CASE
@@ -235,6 +236,9 @@ if (!empty($id)) {
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<td colspan="2" align="center">';
                         $tbl .= 'Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
+                        if(isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])){
+                            $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
+                        }
                         if ($barcodeFormat == 'QRCODE') {
                             $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">' . '<br>';
                         } else {
@@ -279,7 +283,7 @@ if (!empty($id)) {
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if ((isset($_GET['type']) && $_GET['type'] == 'tb') || (isset($_GET['type']) && $_GET['type'] == 'cd4')) {
                             $sampleQuery = "SELECT sample_code,
-                                            remote_sample_code,
+                                            remote_sample_code, lab_assigned_code,
                                             $resultColumn,is_encrypted,
                                             $patientIdColumn,
                                             $patientFirstName,
@@ -288,7 +292,7 @@ if (!empty($id)) {
                                             WHERE $primaryKey =?";
                         } else {
                             $sampleQuery = "SELECT sample_code,
-                                                remote_sample_code,
+                                                remote_sample_code, lab_assigned_code, 
                                                 $resultColumn,
                                                 lot_number,is_encrypted,
                                                 CASE
@@ -321,6 +325,9 @@ if (!empty($id)) {
 
                         $tbl .= '<td colspan="2" align="center">';
                         $tbl .= 'Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
+                        if(isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])){
+                            $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
+                        }
                         if ($barcodeFormat == 'QRCODE') {
                             $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">' . '<br>';
                         } else {
@@ -415,7 +422,7 @@ if (!empty($id)) {
             }
             $sampleCounter = ($noOfInHouseControls + $noOfManufacturerControls + $noOfCalibrators + 1);
             $sQuery = "SELECT sample_code,
-                            remote_sample_code,
+                            remote_sample_code, lab_assigned_code, 
                             lot_number,
                             CASE
                                 WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
@@ -455,6 +462,9 @@ if (!empty($id)) {
 
                 $tbl .= '<td colspan="2" align="center">';
                 $tbl .= 'Sample ID : ' . $sample['sample_code'] . '<br>';
+                if(isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])){
+                    $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
+                }
                 if ($barcodeFormat == 'QRCODE') {
                     $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"><br>';
                 } else {
