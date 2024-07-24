@@ -123,7 +123,6 @@ if (!empty($sampleUniqueId)) {
 	LEFT JOIN lab_storage as s ON s.storage_id=sh.freezer_id WHERE sh.sample_unique_id IN ($sampleUniqueId) ";
 	$currentStorage = $db->rawQuery($getCurrentStorage);
 }
-//echo '<pre>'; print_r($currentStorage); die;
 
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 ?>
@@ -324,15 +323,14 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 												$patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 											}
 										*/
-										$existingStorage = "";
-											if (!empty($currentStorage[$i]) && ($vl['unique_id'] == $currentStorage[$i]['sample_unique_id'])) {
-												$existingStorage = $currentStorage[$i]['storage_code'] . '-' . $currentStorage[$i]['rack'] . '-' . $currentStorage[$i]['box'] . '-' . $currentStorage[$i]['position'] . ' ' . $currentStorage[$i]['volume'] . ' ml';
-											} 
+										
 
 									?>
 											<tr>
 												<td class="dataTables_empty">
-													<?php echo $vl['sample_code'].	' -- '. $currentStorage[$i]['sample_unique_id'];  ?>
+													<?php echo $vl['sample_code']; 
+													
+													?>
 													<input type="hidden" name="sampleUniqueId[<?= $i; ?>]" id="sampleUniqueId<?= $i; ?>" class="form-control" value="<?php echo $vl['unique_id']; ?>" size="5" />
 												</td>
 												<td class="dataTables_empty">

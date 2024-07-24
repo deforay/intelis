@@ -372,8 +372,14 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 } ?>
                                             </select>
                                         </td>
-                                        <th scope="row"></th>
-                                        <td></td>
+                                        <?php if($general->isLISInstance()){ ?>
+                                            <tr>
+                                            <th scope="row"><label for=""><?= _translate("Sample Received Date"); ?> </label></th>
+                                            <td>
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate("Please enter sample receipt date"); ?>" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                            </td>
+                                        </tr>
+                                        <?php } ?>
                                     </tr>
                                 </table>
                             </div>
@@ -388,10 +394,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <th scope="row"><label for=""><?= _translate("Sample Received Date"); ?> </label></th>
-                                            <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate("Please enter sample receipt date"); ?>" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
-                                            </td>
                                             <td class="lab-show"><label for="labId"><?= _translate("Testing Laboratory"); ?> </label> </td>
                                             <td class="lab-show">
                                                 <select name="labId" id="labId" class="form-control" title="<?= _translate("Please select Testing Testing Laboratory"); ?>" style="width:100%;" onchange="getTestingPoints();">

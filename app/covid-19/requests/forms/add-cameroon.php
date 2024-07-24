@@ -3,6 +3,7 @@
 
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
 
@@ -138,7 +139,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td><label for="facilityId"><?= _translate("Facility"); ?> </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control  " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
-                                                <?php echo $facility; ?>
+                                                <option value=""> <?= _translate('-- Select --'); ?> </option>
+                                                    <?php foreach ($healthFacilitiesAllColumns as $hFacility) { ?>
+                                                <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>" <?php echo (isset($_SESSION['covid19Data']['facility_id']) && $_SESSION['covid19Data']['facility_id'] == $hFacility['facility_id']) ? 'selected="selected"' : ''; ?>><?php echo $hFacility['facility_name']; ?></option>
+                                                    <?php } ?>
                                             </select>
                                         </td>
                                         <td>
@@ -152,7 +156,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo (isset($_SESSION['covid19Data']['funding_source']) && $_SESSION['covid19Data']['funding_source'] == $fundingSource['funding_source_id']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -162,7 +166,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo (isset($_SESSION['covid19Data']['implementing_partner']) && $_SESSION['covid19Data']['implementing_partner'] == $implementingPartner['i_partner_id']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -316,17 +320,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select name="testTypeRequested" id="testTypeRequested" class="form-control" title="<?= _translate('Please choose type of test request'); ?>" style="width:100%">
                                                 <option value=""><?= _translate("-- Select --"); ?></option>
-                                                <option value="Real Time RT-PCR"><?= _translate("Real Time RT-PCR"); ?></option>
-                                                <option value="RDT-Antibody"><?= _translate("RDT-Antibody"); ?></option>
-                                                <option value="RDT-Antigen"><?= _translate("RDT-Antigen"); ?></option>
-                                                <option value="GeneXpert"><?= _translate("GeneXpert"); ?></option>
-                                                <option value="ELISA"><?= _translate("ELISA"); ?></option>
+                                                <option value="Real Time RT-PCR" <?php echo (isset($_SESSION['covid19Data']['type_of_test_requested']) && $_SESSION['covid19Data']['type_of_test_requested'] == 'Real Time RT-PCR') ? 'selected="selected"' : ''; ?>><?= _translate("Real Time RT-PCR"); ?></option>
+                                                <option value="RDT-Antibody" <?php echo (isset($_SESSION['covid19Data']['type_of_test_requested']) && $_SESSION['covid19Data']['type_of_test_requested'] == 'RDT-Antibody') ? 'selected="selected"' : ''; ?>><?= _translate("RDT-Antibody"); ?></option>
+                                                <option value="RDT-Antigen" <?php echo (isset($_SESSION['covid19Data']['type_of_test_requested']) && $_SESSION['covid19Data']['type_of_test_requested'] == 'RDT-Antigen') ? 'selected="selected"' : ''; ?>><?= _translate("RDT-Antigen"); ?></option>
+                                                <option value="GeneXpert" <?php echo (isset($_SESSION['covid19Data']['type_of_test_requested']) && $_SESSION['covid19Data']['type_of_test_requested'] == 'GeneXpert') ? 'selected="selected"' : ''; ?>><?= _translate("GeneXpert"); ?></option>
+                                                <option value="ELISA" <?php echo (isset($_SESSION['covid19Data']['type_of_test_requested']) && $_SESSION['covid19Data']['type_of_test_requested'] == 'ELISA') ? 'selected="selected"' : ''; ?>><?= _translate("ELISA"); ?></option>
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate("Reason for Test Request"); ?> <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="reasonForCovid19Test" id="reasonForCovid19Test" class="form-control isRequired" title="<?= _translate('Please choose reason for testing'); ?>" style="width:100%">
-                                                <?= $general->generateSelectOptions($covid19ReasonsForTesting, null, '-- Select --'); ?>
+                                                <?= $general->generateSelectOptions($covid19ReasonsForTesting, $_SESSION['covid19Data']['reason_for_covid19_test'], '-- Select --'); ?>
                                             </select>
                                         </td>
                                     </tr>
@@ -334,31 +338,39 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" />
+                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" value="<?php if(isset($_SESSION['covid19Data']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'],true); ?>" onchange="generateSampleCode();" />
                                         </td>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Dispatched On"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="<?= _translate('Sample Dispatched On'); ?>" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="<?= _translate('Sample Dispatched On'); ?>" value="<?php if(isset($_SESSION['covid19Data']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'],true); ?>"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate("Specimen Type"); ?> <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="<?= _translate('Please choose specimen type'); ?>" style="width:100%">
-                                                <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
+                                                <?php echo $general->generateSelectOptions($specimenTypeResult, $_SESSION['covid19Data']['specimen_type'], '-- Select --'); ?>
                                             </select>
                                         </td>
                                         <th scope="row"><label for="testNumber"><?= _translate("Number of Times Tested"); ?></label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="<?= _translate('Number of Times Tested'); ?>" style="width:100%;">
                                                 <option value=""><?= _translate("-- Select --"); ?></option>
-                                                <?php foreach (range(1, 5) as $element) {
-                                                    echo '<option value="' . $element . '">' . $element . '</option>';
+                                                <?php foreach (range(1, 5) as $element) { ?>
+                                                    <option value="<?= $element; ?>" <?php echo (isset($_SESSION['covid19Data']['test_number']) && $_SESSION['covid19Data']['test_number'] == $element) ? 'selected="selected"' : ''; ?>><?= $element; ?></option>;
+                                                    <?php
                                                 } ?>
                                             </select>
                                         </td>
-                                        <th scope="row"></th>
-                                        <td></td>
+                                            </tr>
+                                        <?php if($general->isLISInstance()){ ?>
+                                            <tr>
+                                        <th scope="row"><label for=""><?= _translate("Sample Received Date"); ?> </label></th>
+                                            <td>
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate('Please enter sample receipt date'); ?>"  value="<?php if(isset($_SESSION['covid19Data']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_received_at_lab_datetime'],true); ?>"  style="width:100%;" />
+                                            </td>
+                                        </tr>
+                                            <?php } ?>
                                     </tr>
                                 </table>
                             </div>
@@ -372,10 +384,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <th scope="row"><label for=""><?= _translate("Sample Received Date"); ?> </label></th>
-                                            <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate('Please enter sample receipt date'); ?>" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?>onchange="" style="width:100%;" />
-                                            </td>
                                             <td class="lab-show"><label for="labId"><?= _translate("Testing Laboratory"); ?> </label> </td>
                                             <td class="lab-show">
                                                 <select name="labId" id="labId" class="select2 form-control" title="<?= _translate('Please select Testing Testing Laboratory'); ?>" style="width:100%;" onchange="getTestingPoints();">
@@ -1082,6 +1090,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 checkPostive();
             });
         <?php } ?>
+
+         // BARCODESTUFF END
+         <?php if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
+               unset($_SESSION['covid19Data']); ?>
+               fillFacilityDetails();
+          <?php } ?>
 
     });
 

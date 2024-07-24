@@ -528,6 +528,13 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         <td>
                                             <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
                                         </td>
+                                        <?php if($general->isLISInstance()){ ?>
+                                            <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
+                                            <td>
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo $eidInfo['sample_received_at_lab_datetime']; ?>" onchange="" style="width:100%;" />
+                                            </td>
+
+                                        <?php } ?>
                                     </tr>
                                 </table>
 
@@ -548,11 +555,6 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                 <select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
                                                 </select>
-                                            </td>
-                                        <tr>
-                                            <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
-                                            <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo $eidInfo['sample_received_at_lab_datetime']; ?>" onchange="" style="width:100%;" />
                                             </td>
 
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>

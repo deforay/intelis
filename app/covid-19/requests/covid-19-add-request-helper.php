@@ -344,7 +344,6 @@ try {
 		}
 	}
 
-	// echo "<pre>";print_r($_POST);die;
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testKitName) {
@@ -412,14 +411,20 @@ try {
 	} else {
 		$_SESSION['alertMsg'] = _translate("Unable to add this Covid-19 sample. Please try again later");
 	}
-	if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next' && (!empty($_POST['quickForm']) && $_POST['quickForm'] == "quick")) {
+	if (!empty($_POST['quickForm']) && $_POST['quickForm'] == "quick") {
 		header("Location:/covid-19/requests/covid-19-quick-add.php");
 	} else {
-		if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-			header("Location:/covid-19/requests/covid-19-add-request.php");
-		} else {
-			header("Location:/covid-19/requests/covid-19-requests.php");
-		}
+		
+		if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
+            $cpyReq = $general->getGlobalConfig('covid19_copy_request_save_and_next');
+            if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
+                $_SESSION['covid19Data'] = $covid19Data;
+            }
+            header("Location:/covid-19/requests/covid-19-add-request.php");
+        } else {
+            header("Location:/covid-19/requests/covid-19-requests.php");
+        }
+
 	}
 } catch (Exception $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
