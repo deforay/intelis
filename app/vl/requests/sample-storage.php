@@ -78,8 +78,12 @@ if (isset($_POST['freezerCode']) && trim((string) $_POST['freezerCode']) != '') 
 	$sWhere[] = ' h.freezer_id = "' . $_POST['freezerCode'] . '"';
 }
 
-if (isset($_POST['labId']) && trim((string) $_POST['labId']) != '') {
-	$sWhere[] = ' s.lab_id = "' . $_POST['labId'] . '"';
+if ($general->isLISInstance() && $arr['vl_lab_id'] != '') {
+		$sWhere[] = ' s.lab_id = "' . $arr['vl_lab_id'] . '"';
+}else{
+	if (isset($_POST['labId']) && trim((string) $_POST['labId']) != '') {
+		$sWhere[] = ' s.lab_id = "' . $_POST['labId'] . '"';
+	}
 }
 
 if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
@@ -123,7 +127,6 @@ if (!empty($sampleUniqueId)) {
 	LEFT JOIN lab_storage as s ON s.storage_id=sh.freezer_id WHERE sh.sample_unique_id IN ($sampleUniqueId) ";
 	$currentStorage = $db->rawQuery($getCurrentStorage);
 }
-//echo '<pre>'; print_r($currentStorage); die;
 
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 ?>
@@ -164,8 +167,12 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 									</strong>
 								</td>
 								<td class="labField">
-									<select name="labId" id="labId" class="form-control labSelect" style="width:250px;" onchange="getFreezers(this.value);">
-										<?= $general->generateSelectOptions($testingLabs, $_POST['labId'], '-- Sélectionner --'); ?>
+									<select name="labId" id="labId" class="form-control labSelect" style="width:250px;" onchange="getFreezers(this.value, 'freezerCode');">
+										<?php if ($general->isLISInstance()) {
+												echo $general->generateSelectOptions($testingLabs, $arr['vl_lab_id'], '-- Select --');
+											} else { 
+												echo $general->generateSelectOptions($testingLabs, null, '-- Select --');
+											} ?>
 									</select>
 								</td>
 								<td><strong>
@@ -267,6 +274,9 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 										<th width="3%">
 											<?php echo _translate("Volume(ml)"); ?>
 										</th>
+										<th width="10%" class="labCol">
+											<?php echo _translate("Lab"); ?>
+										</th>
 										<th width="10%">
 											<?php echo _translate("Freezer"); ?>
 										</th>
@@ -324,15 +334,14 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 												$patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 											}
 										*/
-										$existingStorage = "";
-											if (!empty($currentStorage[$i]) && ($vl['unique_id'] == $currentStorage[$i]['sample_unique_id'])) {
-												$existingStorage = $currentStorage[$i]['storage_code'] . '-' . $currentStorage[$i]['rack'] . '-' . $currentStorage[$i]['box'] . '-' . $currentStorage[$i]['position'] . ' ' . $currentStorage[$i]['volume'] . ' ml';
-											} 
+										
 
 									?>
 											<tr>
 												<td class="dataTables_empty">
-													<?php echo $vl['sample_code'].	' -- '. $currentStorage[$i]['sample_unique_id'];  ?>
+													<?php echo $vl['sample_code']; 
+													
+													?>
 													<input type="hidden" name="sampleUniqueId[<?= $i; ?>]" id="sampleUniqueId<?= $i; ?>" class="form-control" value="<?php echo $vl['unique_id']; ?>" size="5" />
 												</td>
 												<td class="dataTables_empty">
@@ -353,9 +362,18 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 												<td class="dataTables_empty">
 													<input type="text" name="volume[<?= $i; ?>]" id="volume<?= $i; ?>" class="form-control" size="2" />
 												</td>
+												<td class="dataTables_empty labCol">
+													<select type="text" name="lab[<?= $i; ?>]" id="lab[<?= $i; ?>]" class="form-control labSelect" style="width:90px;" onchange="getFreezers(this.value, 'freezer<?= $i; ?>');">
+														<?php if ($general->isLISInstance()) {
+																echo $general->generateSelectOptions($testingLabs, $arr['vl_lab_id'], '-- Select --');
+															} else { 
+																echo $general->generateSelectOptions($testingLabs, null, '-- Select --');
+															} ?>
+													</select>
+												</td>
 												<td class="dataTables_empty">
 													<select type="text" name="freezer[<?= $i; ?>]" id="freezer<?= $i; ?>" class="form-control freezerSelect" style="width:90px;">
-														<?= $general->generateSelectOptions($storageInfo, null, '-- Select --') ?>
+														<!-- < ?= $general->generateSelectOptions($storageInfo, null, '-- Select --') ?> -->
 													</select>
 												</td>
 												<td class="dataTables_empty">
@@ -449,11 +467,24 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 			placeholder: "<?php echo _translate("Select Lab"); ?>"
 		});
 
-		<?php if (!$general->isSTSInstance()) { ?>
-			var currentLabId = "40";
-			$('#labId').val(currentLabId);
-			$('.labField').hide();
-			getFreezers(currentLabId); // Load the freezers for the current lab
+		var currentLabId = $('#labId').val();
+		<?php if ($general->isLISInstance()) { ?> // vluser
+			if(currentLabId != ''){
+				getFreezers(currentLabId, 'freezerCode'); // Load the freezers for the current lab
+				$('.labField').hide();
+			}
+
+			 // Loop through all form lab dropdowns
+			 $('[id^="lab["]').each(function() {
+				var id = $(this).attr('id');
+				var index = id.match(/\d+/)[0]; // Extract the index from the id
+				var freezerId = 'freezer' + index;
+
+				if ($(this).val() != '') {
+					getFreezers($(this).val(), freezerId);
+					$('.labCol').hide();
+				}
+			});
 		<?php } ?>
 
 
@@ -515,17 +546,16 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 			document.getElementById('searchSample').submit();
 		}
 	}
-	
-	function getFreezers(labId) {
-		//debugger;
+
+	function getFreezers(labId, freezerSelectId) {
 		$.blockUI();
 		$.post("/vl/program-management/get-freezer-list-by-lab.php", {
-				labId: labId,
-			},
-			function(data) {
-				$.unblockUI();
-				$("#freezerCode").html(data);
-			});
+			labId: labId,
+		},
+		function(data) {
+			$.unblockUI();
+			$("#" + freezerSelectId).html(data);
+		});
 	}
 
 	function getByProvince(provinceId) {

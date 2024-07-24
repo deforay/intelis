@@ -503,6 +503,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <input value="<?php echo $_SESSION['eidData']['sample_requestor_phone'] ?? null;?>"  class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" />
                                         </td>
+                                        <?php if($general->isLISInstance()){ ?>
+                                        <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
+                                        <td>
+                                            <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" value="<?php if(isset($_SESSION['eidData']['sample_received_at_lab_datetime']) && !empty($_SESSION['eidData']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_received_at_lab_datetime'],true); ?>" onchange="" style="width:100%;" />
+                                        </td>
+                                        <?php } ?>
                                     </tr>
                                 </table>
 
@@ -523,11 +529,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        <tr>
-                                            <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
-                                            <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
-                                            </td>
+                                       
+                                           
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
