@@ -192,7 +192,7 @@ try {
 		'patient_gender' => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
 		'health_insurance_code' => $_POST['healthInsuranceCode'] ?? null,
 		'is_patient_pregnant' => !empty($_POST['isPatientPregnant']) ? $_POST['isPatientPregnant'] : null,
-		'patient_age' => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
+		'patient_age' => !empty($_POST['ageInYears']) ? $_POST['ageInYears'] : null,
 		'patient_phone_number' => !empty($_POST['patientPhoneNumber']) ? $_POST['patientPhoneNumber'] : null,
 		'patient_email' => !empty($_POST['patientEmail']) ? $_POST['patientEmail'] : null,
 		'patient_address' => !empty($_POST['patientAddress']) ? $_POST['patientAddress'] : null,

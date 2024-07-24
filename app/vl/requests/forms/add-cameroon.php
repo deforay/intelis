@@ -251,14 +251,16 @@ foreach ($testReasonsResultDetails as $row) {
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="dob"><?= _translate('Date of Birth'); ?> <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                       <input type="text" name="dob" id="dob" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="<?= _translate('Enter dob'); ?>" onchange="getAge();checkARTInitiationDate();" />
+                                                       <label for="dob"><?= _translate('Date of Birth'); ?> <span class='mandatory'>*</span></label>
+                                                       <input type="text" name="dob" id="dob" class="form-control date isRequired" placeholder="<?= _translate('Enter DOB'); ?>" title="<?= _translate('Enter dob'); ?>" onchange="getAge();checkARTInitiationDate();" />
+                                                       <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();"/> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="ageInYears"><?= _translate('If DOB unknown, Age in Year(s)'); ?> </label>
+                                                       <label for="ageInYears"><?= _translate('If DOB unknown, Age in Year(s)'); ?><span class="mandatory">*</span> </label>
                                                        <input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Year(s)'); ?>" title="<?= _translate('Enter age in years'); ?>" />
+                                                       
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -822,6 +824,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           <?php } ?>
      });
 
+    
+
      function hivDetectionChange() {
 
           var text = $('#testingPlatform').val();
@@ -1307,6 +1311,23 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                validateNow('save');  // Trigger the validateNow function
           }
      });
+
+     function updateAgeInfo()
+     {
+          var isChecked = $("#unreported").is(":checked");
+          if(isChecked == true){
+               $("#dob").val("");
+               $("#ageInYears").val("");
+               $('#dob').prop('readonly', true);
+               $('#ageInYears').prop('readonly', true);
+               $('#dob').removeClass('isRequired');
+          }
+          else{
+               $('#dob').prop('readonly', false);
+               $('#ageInYears').prop('readonly', false);
+               $('#dob').addClass('isRequired');
+          }
+     }
 
      
 </script>

@@ -104,6 +104,10 @@ foreach ($testReasonsResultDetails as $row) {
           $subTestReasons[$row['parent_reason']][$row['test_reason_id']] = $row['test_reason_name'];
      }
 }
+$ageInfo = "";
+if($vlQueryInfo['patient_dob']==NULL && $vlQueryInfo['patient_age_in_years']==NULL){
+     $ageInfo = "unreported";
+}
 ?>
 <style>
      .table>tbody>tr>td {
@@ -299,13 +303,14 @@ foreach ($testReasonsResultDetails as $row) {
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="dob"><?= _translate('Date of Birth'); ?> <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                       <input type="text" name="dob" id="dob" value="<?= $vlQueryInfo['patient_dob'] ?>" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();checkARTInitiationDate();" />
+                                                       <input type="text" name="dob" id="dob" value="<?= $vlQueryInfo['patient_dob'] ?>" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();checkARTInitiationDate();"  <?php if($ageInfo=="unreported") echo "readonly"; ?> />
+                                                       <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();" <?php if($ageInfo=="unreported") echo "checked='checked'"; ?>/> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="ageInYears"><?= _translate('If DOB unknown, Age in Year(s)'); ?> </label>
-                                                       <input type="text" name="ageInYears" id="ageInYears" value="<?= $vlQueryInfo['patient_age_in_years'] ?>" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Year(s)'); ?>" title="<?= _translate('Enter age in years'); ?>" />
+                                                       <input type="text" name="ageInYears" id="ageInYears" value="<?= $vlQueryInfo['patient_age_in_years'] ?>" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Year(s)'); ?>" title="<?= _translate('Enter age in years'); ?>" <?php if($ageInfo=="unreported") echo "readonly"; ?> />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -1271,4 +1276,23 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                validateNow()  // Trigger the validateNow function
           }
      });
+
+     function updateAgeInfo()
+     {
+          var isChecked = $("#unreported").is(":checked");
+          if(isChecked == true){
+               $("#dob").val("");
+               $("#ageInYears").val("");
+               $('#dob').prop('readonly', true);
+               $('#ageInYears').prop('readonly', true);
+               $('#dob').removeClass('isRequired');
+
+          }
+          else{
+               $('#dob').prop('readonly', false);
+               $('#ageInYears').prop('readonly', false);
+               $('#dob').addClass('isRequired');
+
+          }
+     }
 </script>
