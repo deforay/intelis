@@ -150,6 +150,7 @@ try {
         vl.last_modified_datetime               as updatedOn,
         vl.lab_technician                       as labTechnician,
         rs.rejection_reason_name                as rejectionReason,
+        vl.reason_for_sample_rejection          as rejectionReasonId,
         vl.rejection_on                         as rejectionDate,
         vl.funding_source                       as fundingSource,
         r_f_s.funding_source_name               as fundingSourceName,
