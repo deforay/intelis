@@ -163,8 +163,7 @@ final class ApiService
 
             // Initialize the options array for multipart form data
             $options = [
-                RequestOptions::MULTIPART => $multipartData,
-                RequestOptions::HEADERS => ['Content-Type' => 'multipart/form-data; charset=utf-8']
+                RequestOptions::MULTIPART => $multipartData
             ];
 
             // Send the request
