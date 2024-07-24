@@ -285,9 +285,11 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
 
     // Global Config
     $condition = [];
-    if (!empty($data['globalConfigLastModified'])) {
-        $condition = "updated_datetime > '" . $data['globalConfigLastModified'] . "' AND remote_sync_needed = 'yes'";
+    if (empty($data['globalConfigLastModified'])) {
+        $data['globalConfigLastModified'] = '1970-01-01 00:00:00';
     }
+    $condition = "COALESCE(remote_sync_needed, 'no') = 'yes' AND updated_datetime > '" . $data['globalConfigLastModified'] . "'";
+
     $response['globalConfig'] = $general->fetchDataFromTable('global_config', $condition);
 
 

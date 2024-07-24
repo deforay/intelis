@@ -391,7 +391,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 								<div class="row">
 									<div class="col-md-7" style="height:38px;">
 										<div class="form-group" style="height:38px;">
-											<label for="batch_pdf_layout" class="col-lg-4 control-label"><?php echo _translate("Batch Pdf Layout"); ?> </label>
+											<label for="batch_pdf_layout" class="col-lg-4 control-label"><?php echo _translate("Batch PDF Layout"); ?> </label>
 											<div class="col-lg-8">
 												<br>
 												<input type="radio" class="readPage" id="standard_batch_pdf_layout" name="batch_pdf_layout" value="standard" <?php echo ($arr['batch_pdf_layout'] == 'standard' || $arr['batch_pdf_layout'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Standard"); ?>&nbsp;&nbsp;
