@@ -373,23 +373,18 @@ try {
         }
 
         $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
-        if(is_array($data['motherTreatment'])){
-            $data['motherTreatment'] = implode(",", $data['motherTreatment']);
-        }else{
-            $data['motherTreatment'] = str_replace("##", ",", $data['motherTreatment']);
+        /* New API changes start */
+        foreach(array("motherTreatment", "childTreatment", "childTreatmentOther") as $key){
+            if(is_array($data[$key])){
+                $data[$key] = implode(",", $data[$key]);
+            }else{
+                if(str_contains($data[$key], '##')){
+                    $data[$key] = str_replace("##", ",", $data[$key]);
+                }
+            }
         }
-        if(is_array($data['childTreatmentOther'])){
-            $data['childTreatmentOther'] = implode(",", $data['childTreatmentOther']);
-        }else{
-            $data['childTreatmentOther'] = str_replace("##", ",", $data['childTreatmentOther']);
-        }
-        if(is_array($data['childTreatment'])){
-            $data['childTreatment'] = implode(",", $data['childTreatment']);
-        }else{
-            $data['childTreatment'] = str_replace("##", ",", $data['childTreatment']);
-        }
-        // print_r($data['childTreatment']);die;
-        $eidData = [
+        /* New API changes end */
+        $eidData = [ 
             'vlsm_instance_id' => $instanceId,
             'app_sample_code' => $data['appSampleCode'] ?? null,
             'facility_id' => $data['facilityId'] ?? null,

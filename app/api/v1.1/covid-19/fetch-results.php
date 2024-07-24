@@ -125,6 +125,7 @@ try {
         vl.travel_return_date                   as returnDate,
         vl.sample_received_at_lab_datetime   as sampleReceivedDate,
         vl.sample_condition                     as sampleCondition,
+        vl.asymptomatic                         as asymptomatic,
         vl.is_sample_rejected                   as isSampleRejected,
         vl.result                               as result,
         vl.if_have_other_diseases               as ifOtherDiseases,
