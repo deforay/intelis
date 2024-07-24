@@ -342,6 +342,10 @@ try {
             $reasonForChanges = json_encode($allChange);
         }
 
+        if(isset($data['patientDob']) && !empty($data['patientDob'])){
+            $data['dob'] = $data['patientDob'];
+        }
+
         $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
         $covid19Data = [

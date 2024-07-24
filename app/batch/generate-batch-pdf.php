@@ -441,7 +441,7 @@ if (!empty($id)) {
                     $tbl .= '</table>';
                 }
             }
-            $sampleCounter = ($noOfInHouseControls + $noOfManufacturerControls + $noOfCalibrators + 1);
+            $sampleCounter = $noOfInHouseControls + $noOfManufacturerControls + $noOfCalibrators + 1;
             $sQuery = "SELECT sample_code,
                             remote_sample_code,
                             lot_number,

@@ -246,10 +246,10 @@ if (!empty($result)) {
      } else {
           if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
                $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-               $showMessage = $globalConfig['l_vl_msg'];
+               $showMessage = $globalConfig['l_vl_msg'] ?? '';
           } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
                $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
-               $showMessage = $globalConfig['h_vl_msg'];
+               $showMessage = $globalConfig['h_vl_msg'] ?? '';
           } elseif ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
                $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
           }

@@ -2,6 +2,7 @@
 
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 
@@ -14,6 +15,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $instanceQuery = "SELECT * FROM s_vlsm_instance
 					WHERE vlsm_instance_id= ?";
@@ -40,6 +44,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
 }
 
+$vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 
 ?>
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
@@ -386,7 +391,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 								<div class="row">
 									<div class="col-md-7" style="height:38px;">
 										<div class="form-group" style="height:38px;">
-											<label for="batch_pdf_layout" class="col-lg-4 control-label"><?php echo _translate("Batch Pdf Layout"); ?> </label>
+											<label for="batch_pdf_layout" class="col-lg-4 control-label"><?php echo _translate("Batch PDF Layout"); ?> </label>
 											<div class="col-lg-8">
 												<br>
 												<input type="radio" class="readPage" id="standard_batch_pdf_layout" name="batch_pdf_layout" value="standard" <?php echo ($arr['batch_pdf_layout'] == 'standard' || $arr['batch_pdf_layout'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Standard"); ?>&nbsp;&nbsp;
@@ -654,6 +659,18 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 														<option value=""><?php echo _translate("--Select--"); ?></option>
 														<option value="default" <?php echo (isset($arr['vl_excel_export_format']) && $arr['vl_excel_export_format'] == 'default') ? "selected='selected'" : ''; ?>><?php echo _translate("Default Format"); ?></option>
 														<option value="cresar" <?php echo (isset($arr['vl_excel_export_format']) && $arr['vl_excel_export_format'] == 'cresar') ? "selected='selected'" : ''; ?>><?php echo _translate("CRESAR Format"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="vl_lab_id" class="col-lg-2 control-label"><?php echo _translate("VL Lab"); ?> <span class="mandatory">*</span> </label>
+												<div class="col-lg-4">
+													<select class="form-control isRequired readPage select2" id="vl_lab_id" name="vl_lab_id" placeholder="<?php echo _translate('Lab'); ?>" title="<?php echo _translate('Please choose VL Lab'); ?>">
+														<?= $general->generateSelectOptions($vlTestingLabs, $arr['vl_lab_id'], '-- Select --'); ?>
 													</select>
 												</div>
 											</div>

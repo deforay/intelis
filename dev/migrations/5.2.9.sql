@@ -315,7 +315,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 
 
 -- Brindha 18-Mar-2024
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Batch Pdf Layout', 'batch_pdf_layout', 'standard', 'general', 'no', NULL, NULL, 'active');
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Batch PDF Layout', 'batch_pdf_layout', 'standard', 'general', 'no', NULL, NULL, 'active');
 
 -- Jeyabanu 20-Mar-2024
 UPDATE `privileges` SET `shared_privileges` = '[\"/vl/requests/upload-storage.php\"]' WHERE `privileges`.`privilege_name` = "/vl/requests/vl-requests.php"
@@ -582,3 +582,6 @@ ALTER TABLE `audit_form_generic` ADD `lab_assigned_code` VARCHAR(32) NULL DEFAUL
 
 -- Jeyabanu 23-Jul-2024
 ALTER TABLE `batch_details` ADD `lab_assigned_batch_code` VARCHAR(64) NULL DEFAULT NULL AFTER `machine`;
+
+-- Brindha 23-Jul-2024
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) VALUES ('VL Lab', 'vl_lab_id', '', '', 'vl', 'no', NULL, NULL, 'active');
