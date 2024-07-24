@@ -13,6 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$cpyReq = $general->getGlobalConfig('covid19_copy_request_save_and_next');
 
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
@@ -56,7 +57,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
-$facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
+$facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid19Data']['facility_id'], '-- Select --');
 
 ?>
 
@@ -138,11 +139,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                         <td><label for="facilityId"><?= _translate("Facility"); ?> </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control  " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
+                                            <select class="form-control  " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
-                                                    <?php foreach ($healthFacilitiesAllColumns as $hFacility) { ?>
-                                                <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>" <?php echo (isset($_SESSION['covid19Data']['facility_id']) && $_SESSION['covid19Data']['facility_id'] == $hFacility['facility_id']) ? 'selected="selected"' : ''; ?>><?php echo $hFacility['facility_name']; ?></option>
-                                                    <?php } ?>
+                                                <?php echo $facility; ?>
                                             </select>
                                         </td>
                                         <td>
@@ -959,6 +958,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $.blockUI();
         //check facility name
         var cName = $("#facilityId").val();
+        alert(cName);
         var pName = $("#province").val();
         if (cName != '' && provinceName && facilityName) {
             provinceName = false;
@@ -980,10 +980,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             provinceName = true;
             facilityName = true;
             $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo ((string) $facility); ?>");
+            $("#facilityId").html("<?php echo $facility; ?>");
         }
         $.unblockUI();
     }
+
 
 
     function validateNow() {
@@ -1093,11 +1094,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
          // BARCODESTUFF END
          <?php if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
-               unset($_SESSION['covid19Data']); ?>
-               fillFacilityDetails();
-          <?php } ?>
+             //  unset($_SESSION['covid19Data']); ?>
+            getfacilityProvinceDetails($('#facilityId'));
+            <?php } ?>
 
     });
+
+    function fillFacilityDetails() {
+          $.blockUI();
+          //check facility name
+         
+          $.unblockUI();
+        $("#facilityCode").val($('#facilityId').find(':selected').data('code'));
+     }
 
     let testCounter = 1;
 
