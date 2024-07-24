@@ -341,11 +341,14 @@ try {
         if (!empty($allChange)) {
             $reasonForChanges = json_encode($allChange);
         }
-
+        /* New API changes start */
         if(isset($data['patientDob']) && !empty($data['patientDob'])){
             $data['dob'] = $data['patientDob'];
         }
-
+        if(isset($data['rejectionReasonId']) && !empty($data['rejectionReasonId'])){
+            $data['sampleRejectionReason'] = $data['rejectionReasonId'];
+        }
+        /* New API changes end */
         $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
         $covid19Data = [
