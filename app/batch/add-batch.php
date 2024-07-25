@@ -441,7 +441,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
         $("#batchedSamples").val(selVal);
         var selected = $("#machine").find('option:selected');
         noOfSamples = selected.data('no-of-samples');
-        
+        if (noOfSamples < selVal.length) {
+            alert("<?= _translate("You have selected more than the allowed number of samples for this platform", true); ?>");
+            return false;
+        }
         if (selVal == "") {
             alert("<?= _translate("Please select at least one sample", true); ?>");
             return false;
