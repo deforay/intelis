@@ -105,7 +105,7 @@ foreach ($testReasonsResultDetails as $row) {
      }
 }
 $ageInfo = "";
-if ($vlQueryInfo['patient_dob'] == NULL && $vlQueryInfo['patient_age_in_years'] == NULL) {
+if ($general->isLISInstance() && $vlQueryInfo['patient_dob'] == null && $vlQueryInfo['patient_age_in_years'] == null) {
      $ageInfo = "ageUnreported";
 }
 ?>
@@ -304,7 +304,9 @@ if ($vlQueryInfo['patient_dob'] == NULL && $vlQueryInfo['patient_age_in_years'] 
                                                   <div class="form-group">
                                                        <label for="dob"><?= _translate('Date of Birth'); ?> <span class='mandatory'>*</span></label>
                                                        <input type="text" name="dob" id="dob" value="<?= $vlQueryInfo['patient_dob'] ?>" class="form-control date isRequired" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();checkARTInitiationDate();" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> />
-                                                       <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if ($ageInfo == "ageUnreported") echo "checked='checked'"; ?> /> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                                       <?php if ($general->isLISInstance()) { ?>
+                                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if ($ageInfo == "ageUnreported") echo "checked='checked'"; ?> /> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                                       <?php } ?>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
