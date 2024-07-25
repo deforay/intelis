@@ -253,14 +253,14 @@ foreach ($testReasonsResultDetails as $row) {
                                                   <div class="form-group">
                                                        <label for="dob"><?= _translate('Date of Birth'); ?> <span class='mandatory'>*</span></label>
                                                        <input type="text" name="dob" id="dob" class="form-control date isRequired" placeholder="<?= _translate('Enter DOB'); ?>" title="<?= _translate('Enter dob'); ?>" onchange="getAge();checkARTInitiationDate();" />
-                                                       <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();"/> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                                       <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" /> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="ageInYears"><?= _translate('If DOB unknown, Age in Year(s)'); ?><span class="mandatory">*</span> </label>
                                                        <input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Year(s)'); ?>" title="<?= _translate('Enter age in years'); ?>" />
-                                                       
+
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -359,7 +359,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                   <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for=""><?= _translate('Date of Sample Collection'); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" value="<?php if(isset($_SESSION['vlData']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['vlData']['sample_collection_date'],true); ?>" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" title="<?= _translate('Please select sample collection date'); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);">
+                                                            <input type="text" class="form-control isRequired dateTime" value="<?php if (isset($_SESSION['vlData']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['vlData']['sample_collection_date'], true); ?>" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" title="<?= _translate('Please select sample collection date'); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);">
                                                        </div>
                                                   </div>
                                                   <div class="col-md-3">
@@ -393,17 +393,17 @@ foreach ($testReasonsResultDetails as $row) {
                                                        </div>
                                                   </div>
                                              </div>
-                                             <?php if($general->isLISInstance()){ ?>
-                                             <div class="row">
-                                             <div class="col-md-3">
-                                                       <div class="form-group">
-                                                       <label class="" for="sampleReceivedDate"><?= _translate('Date Sample Received at Testing Lab'); ?> </label>
-                                                            <input type="text" class="form-control dateTime" value="<?php if(isset($_SESSION['vlData']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['vlData']['sample_received_at_lab_datetime'],true); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate('Sample Received Date'); ?>" title="<?= _translate('Please select sample received date'); ?>" />
+                                             <?php if ($general->isLISInstance()) { ?>
+                                                  <div class="row">
+                                                       <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                 <label class="" for="sampleReceivedDate"><?= _translate('Date Sample Received at Testing Lab'); ?> </label>
+                                                                 <input type="text" class="form-control dateTime" value="<?php if (isset($_SESSION['vlData']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['vlData']['sample_received_at_lab_datetime'], true); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate('Sample Received Date'); ?>" title="<?= _translate('Please select sample received date'); ?>" />
 
+                                                            </div>
                                                        </div>
-                                                  </div>
 
-                                             </div>
+                                                  </div>
                                              <?php } ?>
                                         </div>
                                         <div class="box box-primary">
@@ -538,7 +538,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 
+
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-6">
@@ -824,7 +824,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           <?php } ?>
      });
 
-    
+
 
      function hivDetectionChange() {
 
@@ -1144,9 +1144,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                return false;
           }
 
-          if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
-               alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
-               return false;
+          if (!$('#ageUnreported').is(':checked')) {
+               if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
+                    alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
+                    return false;
+               }
           }
           let formId = 'vlRequestFormCameroon';
           flag = deforayValidator.init({
@@ -1277,57 +1279,53 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
-		var removeDots = obj.value.replace(/\./g, "");
-		removeDots = removeDots.replace(/\,/g, "");
-		//str=obj.value;
-		removeDots = removeDots.replace(/\s{2,}/g, ' ');
+          var removeDots = obj.value.replace(/\./g, "");
+          removeDots = removeDots.replace(/\,/g, "");
+          //str=obj.value;
+          removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
-		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
-				if (data === '1') {
-					alert(alrt);
-					document.getElementById(obj.id).value = "";
-				}
-			});
-	}
-     $('#vlRequestFormCameroon').keypress((e) => { 
-          // Enter key corresponds to number 13 
+          $.post("/includes/checkDuplicate.php", {
+                    tableName: tableName,
+                    fieldName: fieldName,
+                    value: removeDots.trim(),
+                    fnct: fnct,
+                    format: "html"
+               },
+               function(data) {
+                    if (data === '1') {
+                         alert(alrt);
+                         document.getElementById(obj.id).value = "";
+                    }
+               });
+     }
+     $('#vlRequestFormCameroon').keypress((e) => {
+          // Enter key corresponds to number 13
           if (e.which === 13) {
-               e.preventDefault(); 
-               //console.log('form submitted'); 
-               validateNow('save');     // Trigger the validateNow function
-          } 
+               e.preventDefault();
+               //console.log('form submitted');
+               validateNow('save'); // Trigger the validateNow function
+          }
      });
      // Handle Enter key specifically for select2 elements
      $(document).on('keydown', '.select2-container--open', function(e) {
           if (e.which === 13) {
-               e.preventDefault();  // Prevent the default form submission
-               validateNow('save');  // Trigger the validateNow function
+               e.preventDefault(); // Prevent the default form submission
+               validateNow('save'); // Trigger the validateNow function
           }
      });
 
-     function updateAgeInfo()
-     {
-          var isChecked = $("#unreported").is(":checked");
-          if(isChecked == true){
+     function updateAgeInfo() {
+          var isChecked = $("#ageUnreported").is(":checked");
+          if (isChecked == true) {
                $("#dob").val("");
                $("#ageInYears").val("");
                $('#dob').prop('readonly', true);
                $('#ageInYears').prop('readonly', true);
                $('#dob').removeClass('isRequired');
-          }
-          else{
+          } else {
                $('#dob').prop('readonly', false);
                $('#ageInYears').prop('readonly', false);
                $('#dob').addClass('isRequired');
           }
      }
-
-     
 </script>

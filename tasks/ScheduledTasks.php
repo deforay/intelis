@@ -39,7 +39,7 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/cleanup.ph
 
 // Expiring/Locking Samples
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-sample-status.php")
-    ->everyFiveMinutes()
+    ->cron('5 0 * * *')
     ->timezone($timeZone)
     ->preventOverlapping()
     ->description('Updating sample status to Expired or Locking samples');
