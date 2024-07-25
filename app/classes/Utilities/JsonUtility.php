@@ -6,6 +6,7 @@ use App\Utilities\LoggerUtility;
 
 final class JsonUtility
 {
+    // Validate if a string is valid JSON
     public static function isJSON($string, bool $logError = false): bool
     {
         if (empty($string) || !is_string($string)) {
@@ -25,6 +26,7 @@ final class JsonUtility
         }
     }
 
+    // Convert input to UTF-8 encoding
     public static function toUtf8(array|string|null $input): array|string|null
     {
         if (is_array($input)) {
@@ -37,6 +39,7 @@ final class JsonUtility
         return $input;
     }
 
+    // Encode data to JSON with UTF-8 encoding
     public static function encodeUtf8Json(array|string|null $data): string
     {
         if (is_null($data)) {
@@ -49,6 +52,7 @@ final class JsonUtility
         return self::toJSON(self::toUtf8($data));
     }
 
+    // Convert data to JSON string
     public static function toJSON($data, int $flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE): ?string
     {
         $json = json_encode($data, $flags);
@@ -59,6 +63,7 @@ final class JsonUtility
         return $json;
     }
 
+    // Pretty-print JSON
     public static function prettyJson(array|string $json): string
     {
         $decodedJson = is_array($json) ? $json : self::decodeJson($json);
@@ -74,6 +79,7 @@ final class JsonUtility
         return $encodedJson;
     }
 
+    // Merge multiple JSON strings into one
     public static function mergeJson(...$jsonStrings): ?string
     {
         $mergedArray = [];
@@ -89,6 +95,7 @@ final class JsonUtility
         return self::toJSON($mergedArray);
     }
 
+    // Extract specific data from JSON using a path
     public static function extractJsonData($json, $path): mixed
     {
         $data = self::decodeJson($json);
@@ -106,6 +113,7 @@ final class JsonUtility
         return $data;
     }
 
+    // Decode JSON string to array or object
     public static function decodeJson($json, bool $assoc = true): mixed
     {
         $data = json_decode($json, $assoc);
@@ -116,6 +124,7 @@ final class JsonUtility
         return $data;
     }
 
+    // Minify JSON string
     public static function minifyJson($json): string
     {
         $decodedJson = self::decodeJson($json);
@@ -126,6 +135,7 @@ final class JsonUtility
         return self::toJSON($decodedJson, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
+    // Get keys from JSON object
     public static function getJsonKeys($json): array
     {
         $data = self::decodeJson($json);
@@ -136,6 +146,7 @@ final class JsonUtility
         return array_keys($data);
     }
 
+    // Get values from JSON object
     public static function getJsonValues($json): array
     {
         $data = self::decodeJson($json);
@@ -146,12 +157,7 @@ final class JsonUtility
         return array_values($data);
     }
 
-    /**
-     * Convert a value to a JSON-compatible string representation
-     *
-     * @param mixed $value The value to convert
-     * @return string The JSON-compatible string representation
-     */
+    // Convert a value to a JSON-compatible string representation
     public static function jsonValueToString($value): string
     {
         if (is_null($value)) {
@@ -167,14 +173,7 @@ final class JsonUtility
         }
     }
 
-    /**
-     * Convert a JSON string to a string that can be used with JSON_SET()
-     *
-     * @param string|null $json The JSON string to convert
-     * @param string $column The name of the JSON column
-     * @param array|string $newData An optional array or JSON string of new key-value pairs to add to the JSON
-     * @return string|null The string that can be used with JSON_SET()
-     */
+    // Convert a JSON string to a string that can be used with JSON_SET()
     public static function jsonToSetString(?string $json, string $column, $newData = []): ?string
     {
         // Decode JSON string to array
@@ -197,7 +196,6 @@ final class JsonUtility
         $setString = '';
         foreach ($data as $key => $value) {
             $setString .= ', "$.' . $key . '", ' . self::jsonValueToString($value);
-            //$setString .= ', "$.' . $key . '", JSON_UNQUOTE(' . (string) $this->jsonValueToString($value) . ')';
         }
 
         // Construct and return the JSON_SET query
