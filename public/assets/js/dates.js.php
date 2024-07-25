@@ -223,7 +223,7 @@
         }
 
         let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
-        $('.date').mask(dateFormatMask);
+        //$('.date').mask(dateFormatMask);
         $('.dateTime, .date-time').mask(dateFormatMask + ' 99:99');
 
     });

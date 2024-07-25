@@ -302,15 +302,15 @@ if($vlQueryInfo['patient_dob']==NULL && $vlQueryInfo['patient_age_in_years']==NU
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="dob"><?= _translate('Date of Birth'); ?> <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                       <input type="text" name="dob" id="dob" value="<?= $vlQueryInfo['patient_dob'] ?>" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();checkARTInitiationDate();"  <?php if($ageInfo=="unreported") echo "readonly"; ?> />
+                                                       <label for="dob"><?= _translate('Date of Birth'); ?> <span class='mandatory'>*</span></label>
+                                                       <input type="text" name="dob" id="dob" value="<?= $vlQueryInfo['patient_dob'] ?>" class="form-control date isRequired" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();checkARTInitiationDate();"  <?php if($ageInfo=="unreported") echo "readonly"; ?> />
                                                        <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();" <?php if($ageInfo=="unreported") echo "checked='checked'"; ?>/> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="ageInYears"><?= _translate('If DOB unknown, Age in Year(s)'); ?> </label>
-                                                       <input type="text" name="ageInYears" id="ageInYears" value="<?= $vlQueryInfo['patient_age_in_years'] ?>" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Year(s)'); ?>" title="<?= _translate('Enter age in years'); ?>" <?php if($ageInfo=="unreported") echo "readonly"; ?> />
+                                                       <label for="ageInYears"><?= _translate('If DOB unknown, Age in Year(s)'); ?><span class='mandatory'>*</span> </label>
+                                                       <input type="text" name="ageInYears" id="ageInYears" value="<?= $vlQueryInfo['patient_age_in_years'] ?>" class="form-control forceNumeric isRequired" maxlength="2" placeholder="<?= _translate('Age in Year(s)'); ?>" title="<?= _translate('Enter age in years'); ?>" <?php if($ageInfo=="unreported") echo "readonly"; ?> />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -800,6 +800,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      provinceName = true;
      facilityName = true;
      $(document).ready(function() {
+          updateAgeInfo();
 
           $("#vlResult").trigger('change');
 
@@ -1222,19 +1223,25 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                formId: 'vlRequestFormCameroon'
           });
 
-          if (dob == "" && age == "") {
-               alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
-               return false;
+          var isChecked = $("#unreported").is(":checked");
+          if(isChecked == false){
+
+               if (dob == "" && age == "") {
+                    alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
+                    return false;
+               }
+               if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
+                    alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
+                    return false;
+               }
           }
+
 
           $('.isRequired').each(function() {
                ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
           });
-          if ($.trim($("#dob").val()) == '' && $.trim($("#ageInYears").val()) == '' && $.trim($("#ageInMonths").val()) == '') {
-               alert("<?= _translate("Please enter the Patient Date of Birth or Age", true); ?>");
-               return false;
-          }
-
+        
+          
           if (flag) {
                $.blockUI();
                document.getElementById('vlRequestFormCameroon').submit();
@@ -1286,12 +1293,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#dob').prop('readonly', true);
                $('#ageInYears').prop('readonly', true);
                $('#dob').removeClass('isRequired');
-
+               $('#ageInYears').removeClass('isRequired');
           }
           else{
                $('#dob').prop('readonly', false);
                $('#ageInYears').prop('readonly', false);
                $('#dob').addClass('isRequired');
+               $('#ageInYears').addClass('isRequired');
 
           }
      }

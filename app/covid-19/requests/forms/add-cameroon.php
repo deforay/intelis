@@ -232,9 +232,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                     </tr>
                                     <tr>
 
-                                        <th scope="row"><label for="dob"><?= _translate('Date of Birth'); ?> </label></th>
+                                        <th scope="row"><label for="dob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate('Date of Birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="getAge();" />
+                                            <input type="text" class="form-control date isRequired" id="dob" name="dob" placeholder="<?= _translate('Date of Birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="getAge();" />
                                             <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();"/> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate("Age (years)"); ?></th>
@@ -1049,7 +1049,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                     });
             }
         });
-
 
 
 
