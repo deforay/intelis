@@ -43,7 +43,7 @@ try {
     //     LoggerUtility::log("error", "Invalid JSON Payload : " . $origJson);
     //     throw new SystemException("Invalid JSON Payload");
     // }
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
 
     $uploadedFiles = $request->getUploadedFiles();
 

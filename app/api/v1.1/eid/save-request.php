@@ -72,7 +72,7 @@ try {
         throw new SystemException("Invalid request");
     }
 
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
@@ -374,17 +374,17 @@ try {
 
         $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
         /* New API changes start */
-        foreach(array("motherTreatment", "childTreatment", "childTreatmentOther") as $key){
-            if(is_array($data[$key])){
+        foreach (array("motherTreatment", "childTreatment", "childTreatmentOther") as $key) {
+            if (is_array($data[$key])) {
                 $data[$key] = implode(",", $data[$key]);
-            }else{
-                if(str_contains($data[$key], '##')){
+            } else {
+                if (str_contains($data[$key], '##')) {
                     $data[$key] = str_replace("##", ",", $data[$key]);
                 }
             }
         }
         /* New API changes end */
-        $eidData = [ 
+        $eidData = [
             'vlsm_instance_id' => $instanceId,
             'app_sample_code' => $data['appSampleCode'] ?? null,
             'facility_id' => $data['facilityId'] ?? null,

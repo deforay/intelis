@@ -55,6 +55,12 @@ final class JsonUtility
     // Convert data to JSON string
     public static function toJSON($data, int $flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE): ?string
     {
+        // Check if the data is already a valid JSON string
+        if (is_string($data) && self::isJSON($data)) {
+            return $data;
+        }
+
+        // Convert the data to JSON
         $json = json_encode($data, $flags);
         if ($json === false) {
             LoggerUtility::log('error', 'Data could not be encoded as JSON: ' . json_last_error_msg());
@@ -71,7 +77,7 @@ final class JsonUtility
             return htmlspecialchars("Error in JSON decoding: " . json_last_error_msg(), ENT_QUOTES, 'UTF-8');
         }
 
-        $encodedJson = json_encode($decodedJson, JSON_PRETTY_PRINT);
+        $encodedJson = json_encode($decodedJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         if (json_last_error() !== JSON_ERROR_NONE) {
             return htmlspecialchars("Error in JSON encoding: " . json_last_error_msg(), ENT_QUOTES, 'UTF-8');
         }

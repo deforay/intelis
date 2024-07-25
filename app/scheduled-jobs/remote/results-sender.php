@@ -49,7 +49,7 @@ try {
         return false;
     }
 
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
 
     $forceSyncModule = !empty($_GET['forceSyncModule']) ? $_GET['forceSyncModule'] : null;
     $sampleCode = !empty($_GET['sampleCode']) ? $_GET['sampleCode'] : null;

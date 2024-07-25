@@ -44,7 +44,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
-$transactionId = MiscUtility::generateUUID();
+$transactionId = MiscUtility::generateULID();
 
 $user = null;
 /* For API Tracking params */

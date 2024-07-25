@@ -43,7 +43,7 @@ try {
     throw new SystemException('Lab ID is missing in the request', 400);
   }
 
-  $transactionId = MiscUtility::generateUUID();
+  $transactionId = MiscUtility::generateULID();
 
   $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 

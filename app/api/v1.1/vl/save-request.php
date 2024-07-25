@@ -72,7 +72,7 @@ try {
         throw new SystemException("Invalid request", 400, $e);
     }
 
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
 
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();

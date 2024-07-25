@@ -37,7 +37,7 @@ try {
 
 
   $db->beginTransaction();
-  $transactionId = MiscUtility::generateUUID();
+  $transactionId = MiscUtility::generateULID();
 
   if (empty($labId)) {
     throw new SystemException('Lab ID is missing in the request', 400);

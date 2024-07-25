@@ -467,7 +467,7 @@ try {
 		$freezerCheck = $general->getDataFromOneFieldAndValue('lab_storage', 'storage_id', $_POST['freezer']);
 
 		if (empty($freezerCheck)) {
-			$storageId = MiscUtility::generateUUID();
+			$storageId = MiscUtility::generateULID();
 			$freezerCode = $_POST['freezer'];
 			$d = [
 				'storage_id' => $storageId,

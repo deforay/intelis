@@ -90,7 +90,7 @@ try {
     // echo prettyJson($json);
     // die;
 
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
     $version = $general->getSystemConfig('sc_version');
 
     foreach ($entries as $entry) {

@@ -42,7 +42,7 @@ if (
 }
 
 
-$transactionId = MiscUtility::generateUUID();
+$transactionId = MiscUtility::generateULID();
 
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
