@@ -176,9 +176,6 @@ $state = $geolocationService->getProvinces("yes");
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
 																<?= _translate('Reset'); ?>
 															</span></button>
-														&nbsp;<button class="btn btn-default btn-sm" onclick="convertSearchResultToPdf('');"><span>
-																<?php echo _translate("Print Result PDF"); ?>
-															</span></button>
 														&nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span>
 																<?php echo _translate("Manage Columns"); ?>
 															</span></button>
@@ -236,7 +233,11 @@ $state = $geolocationService->getProvinces("yes");
 													</div>
 												</div>
 											</span>
-
+											<br>
+											<div id="notPrintedResult" style="display:none;">
+											&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('');"><span><em class="fa-solid fa-print"></em>
+													<?php echo _translate("Print Selected Results PDF"); ?>
+											</span></button></div>
 											<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
@@ -395,9 +396,6 @@ $state = $geolocationService->getProvinces("yes");
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
 																<?= _translate('Reset'); ?>
 															</span></button>
-														&nbsp;<button class="btn btn-default btn-sm" onclick="convertSearchResultToPdf('','printData');"><span>
-																<?php echo _translate("Print Result PDF"); ?>
-															</span></button>
 														&nbsp;<button class="btn btn-primary btn-sm" onclick="$('#printShowhide').fadeToggle();return false;"><span>
 																<?php echo _translate("Manage Columns"); ?>
 															</span></button>
@@ -454,6 +452,11 @@ $state = $geolocationService->getProvinces("yes");
 													</div>
 												</div>
 											</span>
+											<br>
+											<div id="printedResult" style="display:none;">
+											&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('','printData');"><em class="fa-solid fa-print"></em><span>
+																<?php echo _translate("Print selected Results PDF"); ?>
+															</span></button></div>
 											<table aria-describedby="table" id="printedVlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
@@ -1034,6 +1037,18 @@ $state = $geolocationService->getProvinces("yes");
 						$(".checkPrintedRows").prop('checked', false);
 						$("#checkPrintedRowsData").prop('checked', false);
 					}
+					if(selectedRows!=""){
+                        $("#notPrintedResult").css('display', 'block');
+                    }
+                    else{
+                        $("#notPrintedResult").css('display', 'none');
+                    }
+                    if(selectedPrintedRows!=""){
+                        $("#printedResult").css('display', 'block');
+                    }
+                    else{
+                        $("#printedResult").css('display', 'none');
+                    }
 					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
@@ -1050,6 +1065,12 @@ $state = $geolocationService->getProvinces("yes");
 			selectedRowsId.splice($.inArray(obj.id, selectedRowsId), 1);
 			$("#checkRowsData").attr("checked", false);
 		}
+		if(selectedRows!=""){
+                        $("#notPrintedResult").css('display', 'block');
+                    }
+                    else{
+                        $("#notPrintedResult").css('display', 'none');
+                    }
 		$("#checkedRows").val(selectedRows.join());
 	}
 
@@ -1064,6 +1085,12 @@ $state = $geolocationService->getProvinces("yes");
 			selectedPrintedRowsId.splice($.inArray(obj.id, selectedPrintedRowsId), 1);
 			$("#checkPrintedRowsData").attr("checked", false);
 		}
+		if(selectedPrintedRows!=""){
+                        $("#printedResult").css('display', 'block');
+                    }
+                    else{
+                        $("#printedResult").css('display', 'none');
+                    }
 		$("#checkedPrintedRows").val(selectedPrintedRows.join());
 	}
 
