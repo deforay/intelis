@@ -756,6 +756,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 	function loadVlRequestData() {
 		$.blockUI();
+		<?php if ($formId == COUNTRY\CAMEROON) { ?>
+				sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>';
+		<?php } else{ ?>
+			sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>';
+		<?php } ?>
 		oTable = $('#vlRequestDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
@@ -826,7 +831,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				},
 			],
 			"aaSorting": [
-				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>, "desc"]
+				[sort, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
@@ -914,6 +919,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 	function loadPrintedVlRequestData() {
 		$.blockUI();
+		<?php if ($formId == COUNTRY\CAMEROON) { ?>
+				sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>';
+		<?php } else{ ?>
+				sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>';
+		<?php } ?>
 		opTable = $('#printedVlRequestDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
@@ -984,7 +994,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				},
 			],
 			"aaSorting": [
-				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>, "desc"]
+				[sort, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chkPrinted[]");
