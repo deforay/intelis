@@ -33,6 +33,7 @@ try {
     $usersService = ContainerRegistry::get(UsersService::class);
 
     $formTable = TestsService::getTestTableName($_POST['type']);
+    $formId = (int) $general->getGlobalConfig('vl_form');
 
     // Check if test type is not set for any batch
     $db->where('test_type', null);
@@ -48,8 +49,8 @@ try {
 
     $pdfLayout = $general->getGlobalConfig('batch_pdf_layout');
 
-    $aColumns = ['b.batch_code', 'b.batch_code', null, "DATE_FORMAT(vl.sample_tested_datetime, '%d-%b-%Y')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')"];
-    $orderColumns = ['b.batch_code', 'b.batch_code', null, 'last_tested_date', 'b.last_modified_datetime'];
+    $aColumns = ['b.batch_code', 'b.batch_code', 'b.lab_assigned_batch_code',null, "DATE_FORMAT(vl.sample_tested_datetime, '%d-%b-%Y')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')"];
+    $orderColumns = ['b.batch_code', 'b.batch_code', 'b.lab_assigned_batch_code', null, 'last_tested_date', 'b.last_modified_datetime'];
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -85,6 +86,7 @@ try {
                 b.request_created_datetime,
                 b.last_modified_datetime,
                 b.batch_code,
+                b.lab_assigned_batch_code,
                 b.batch_id,
                 COUNT(vl.sample_code) AS total_samples
                 FROM batch_details b
@@ -164,6 +166,9 @@ try {
         $row[] = $aRow['batch_code'];
         if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
             $row[] = $testTypes[$aRow['test_type']];
+        }
+        if ($formId == COUNTRY\CAMEROON) {
+            $row[] = $aRow['lab_assigned_batch_code'];
         }
         $row[] = $aRow['total_samples'];
         $row[] = $aRow['testcount'];

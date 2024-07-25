@@ -94,6 +94,7 @@ $sQuery = "SELECT * FROM $sampleTypeTable where  $sampleTypeStatus='active'";
 $sResult = $db->rawQuery($sQuery);
 
 $fundingSourceList = $general->getFundingSources();
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -332,7 +333,7 @@ $fundingSourceList = $general->getFundingSources();
 
                             </div>
                         </div>
-
+                    <?php if ($formId == COUNTRY\CAMEROON) { ?>
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="form-group">
@@ -347,7 +348,7 @@ $fundingSourceList = $general->getFundingSources();
 
                             </div>
                         </div>
-
+                    <?php } ?>
                         <div class="row" id="sampleDetails">
                         </div>
                         <div class="row col-md-12" id="alertText"></div>

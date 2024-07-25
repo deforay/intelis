@@ -6,11 +6,14 @@ use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -35,6 +38,10 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 $testTypeQuery = "SELECT * FROM r_test_types WHERE test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
+
+
+$formId = (int) $general->getGlobalConfig('vl_form');
+
 ?>
 
 
@@ -92,6 +99,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									<th scope="col"><?= _translate("Batch Code"); ?></th>
 									<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
 										<th scope="col"><?= _translate("Test Type"); ?></th>
+									<?php } if ($formId == COUNTRY\CAMEROON) { ?>
+									<th scope="col"><?= _translate("Lab Assigned Batch Code"); ?></th>
 									<?php } ?>
 									<th scope="col"><?= _translate("No. of Samples"); ?></th>
 									<th scope="col"><?= _translate("No. of Samples Tested"); ?></th>
@@ -127,6 +136,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			placeholder: "<?php echo _translate("Select Test Type"); ?>"
 		});
 		$.blockUI();
+		<?php if ($formId == COUNTRY\CAMEROON) { ?>
+				sort = '5';
+		<?php } else{ ?>
+			sort = '4';
+		<?php } ?>
 		oTable = $('#batchCodeDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
@@ -144,7 +158,13 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						"sClass": "center",
 						"bSortable": false
 					},
-				<?php } ?> {
+				<?php } ?> <?php
+				if ($formId == COUNTRY\CAMEROON) {
+					echo '{
+						"sClass": "center",
+					},';
+				}
+				?>{
 					"sClass": "center",
 					"bSortable": false
 				},
@@ -165,7 +185,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				} ?>
 			],
 			"aaSorting": [
-				[4, "desc"]
+				[sort, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
