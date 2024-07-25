@@ -359,7 +359,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                         <input type="hidden" name="sortBy" class="sortBy" />
                         <input type="hidden" name="sortType" class="sortType" />
                         <input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
-                        <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _translate('Please select machine'); ?>" onclick="validateNow();return false;"><?php echo _translate("Save and Next"); ?></a>
+                        <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Save and Next"); ?></a>
                         <a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
                     </div>
                     <!-- /.box-footer -->
@@ -445,7 +445,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
             alert("<?= _translate("You have selected more than the allowed number of samples for this platform", true); ?>");
             return false;
         }
-
         if (selVal == "") {
             alert("<?= _translate("Please select at least one sample", true); ?>");
             return false;

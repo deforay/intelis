@@ -585,3 +585,6 @@ ALTER TABLE `batch_details` ADD `lab_assigned_batch_code` VARCHAR(64) NULL DEFAU
 
 -- Brindha 23-Jul-2024
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) VALUES ('VL Lab', 'vl_lab_id', '', '', 'vl', 'no', NULL, NULL, 'active');
+
+-- Brindha 24-Jul-2024
+ALTER TABLE `batch_details` CHANGE `last_modified_by` `last_modified_by` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;

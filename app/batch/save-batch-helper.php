@@ -26,15 +26,53 @@ $batchService = ContainerRegistry::get(BatchService::class);
 $testTable = "form_vl";
 $testTablePrimaryKey = "vl_sample_id";
 
-$table = TestsService::getTestTableName($_POST['type']);
-$primaryKeyColumn = TestsService::getTestPrimaryKeyColumn($_POST['type']);
-
 if (isset($_POST['type'])) {
     $testTable = TestsService::getTestTableName($_POST['type']);
     $testTablePrimaryKey = TestsService::getTestPrimaryKeyColumn($_POST['type']);
 }
 
+$instrumentId = isset($_POST['platform']) ? $_POST['platform'] : (isset($_POST['machine']) ? $_POST['machine'] : null);
 
+if($instrumentId != null){
+    $testType = ($_POST['type'] == 'covid19') ? 'covid-19' : $_POST['type'];
+    // get instruments
+    $condition = "instrument_id = '".$instrumentId."'";
+    $insInfo = $general->fetchDataFromTable('instruments', $condition);
+    $instrument = $insInfo[0];
+    $configControl = $batchService->getConfigControl($instrumentId);
+
+    if (!empty($instrument) && !empty($configControl)) {
+        if (trim((string) $_POST['batchedSamples']) != '') {
+            $selectedSamples = explode(",", (string) $_POST['batchedSamples']);
+            $samplesCount = count($selectedSamples);
+            if ($instrument['max_no_of_samples_in_a_batch'] > 0 && ($instrument['max_no_of_samples_in_a_batch'] < $samplesCount)) {
+                $_SESSION['alertMsg'] = _translate("Maximun number of allowed samples for this platform " . $instrument['max_no_of_samples_in_a_batch']);
+                header("Location:batches.php?type=" . $_POST['type']);
+                exit;
+            }
+        }
+        
+        if ($instrument['number_of_in_house_controls'] > 0 && $configControl[$testType]['noHouseCtrl'] > 0 && ($instrument['number_of_in_house_controls'] <  $configControl[$testType]['noHouseCtrl'])) {
+            $_SESSION['alertMsg'] = _translate("Maximun number of allowed in house controls for this platform " . $instrument['number_of_in_house_controls']);
+            header("Location:batches.php?type=" . $_POST['type']);
+            exit;
+        }
+        if ($instrument['number_of_manufacturer_controls'] > 0 && $configControl[$testType]['noManufacturerCtrl'] > 0 && ($instrument['number_of_manufacturer_controls'] <  $configControl[$testType]['noManufacturerCtrl'])) {
+            $_SESSION['alertMsg'] = _translate("Maximun number of allowed manufacturer controls for this platform " . $instrument['number_of_manufacturer_controls']);
+            header("Location:batches.php?type=" . $_POST['type']);
+            exit;
+        }
+        if ($instrument['number_of_calibrators'] > 0 && $configControl[$testType]['noCalibrators'] > 0 && ($instrument['number_of_calibrators'] <  $configControl[$testType]['noCalibrators'])) {
+            $_SESSION['alertMsg'] = _translate("Maximun number of allowed calibrators for this platform " . $instrument['number_of_calibrators']);
+            header("Location:batches.php?type=" . $_POST['type']);
+            exit;
+        }
+    }else{
+        $_SESSION['alertMsg'] = _translate("Something went wrong. Please try again later.");
+        header("Location:batches.php?type=" . $_POST['type']);
+        exit;
+    }
+}
 
 $tableName1 = "batch_details";
 try {
@@ -85,7 +123,7 @@ try {
 
                 $uniqueSampleIds = array_unique($selectedSamples);
 
-                echo $_POST['positions']; 
+                //echo $_POST['positions']; 
 
                 $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");
                 $db->update($testTable, ['sample_batch_id' => $id]);
@@ -96,6 +134,8 @@ try {
                 $_SESSION['alertMsg'] = _translate("Something went wrong. Please try again later.");
                 header("Location:batches.php?type=" . $_POST['type']);
             } else {
+                $maxSampleBatchId = $general->getMaxSampleBatchId($testTable);
+                $maxBatchId = $general->getMaxBatchId($tableName1);
                 $data = [
                     'machine' => $_POST['platform'],
                     'lab_assigned_batch_code' => $_POST['labAssignedBatchCode'],
@@ -119,8 +159,17 @@ try {
                 if (!empty($batchAttributes)) {
                     $data['batch_attributes'] = json_encode($batchAttributes, true);
                 }
+                if ($maxBatchId < $maxSampleBatchId) {
+                    $data['batch_id'] = $maxSampleBatchId + 1 ; 
+                }
                 $db->insert($tableName1, $data);
-                $lastId = $db->getInsertId();
+
+                if ($maxBatchId < $maxSampleBatchId) {
+                    $lastId = $maxSampleBatchId + 1 ; 
+                }else{
+                    $lastId = $db->getInsertId();
+                }
+
                 if ($lastId > 0 && trim((string) $_POST['batchedSamples']) != '') {
                     $selectedSamples = explode(",", (string) $_POST['batchedSamples']);
                     $uniqueSampleIds = array_unique($selectedSamples);

@@ -1221,4 +1221,18 @@ final class CommonService
         }
         return $status;
     }
+
+    public function getMaxSampleBatchId($table)
+    {
+        $maxSampleBatchIdQuery = "SELECT MAX(CONVERT(sample_batch_id, UNSIGNED)) AS max_sample_batch_id FROM $table";
+        $result = $this->db->rawQuery($maxSampleBatchIdQuery);
+        return isset($result[0]['max_sample_batch_id']) ? (int)$result[0]['max_sample_batch_id'] : 0;
+    }
+    public function getMaxBatchId($table)
+    {
+        $maxBatchIdQuery = "SELECT MAX(CONVERT(batch_id, UNSIGNED)) AS max_batch_id FROM $table";
+        $result = $this->db->rawQuery($maxBatchIdQuery);
+        return isset($result[0]['max_batch_id']) ? (int)$result[0]['max_batch_id'] : 0;
+    }
+    
 }
