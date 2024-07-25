@@ -45,24 +45,24 @@ if($instrumentId != null){
         if (trim((string) $_POST['batchedSamples']) != '') {
             $selectedSamples = explode(",", (string) $_POST['batchedSamples']);
             $samplesCount = count($selectedSamples);
-            if ($instrument['max_no_of_samples_in_a_batch'] != '' && ($instrument['max_no_of_samples_in_a_batch'] < $samplesCount)) {
+            if ($instrument['max_no_of_samples_in_a_batch'] > 0 && ($instrument['max_no_of_samples_in_a_batch'] < $samplesCount)) {
                 $_SESSION['alertMsg'] = _translate("Maximun number of allowed samples for this platform " . $instrument['max_no_of_samples_in_a_batch']);
                 header("Location:batches.php?type=" . $_POST['type']);
                 exit;
             }
         }
         
-        if ($instrument['number_of_in_house_controls'] != '' && $configControl[$testType]['noHouseCtrl'] != '' && ($instrument['number_of_in_house_controls'] <  $configControl[$testType]['noHouseCtrl'])) {
+        if ($instrument['number_of_in_house_controls'] > 0 && $configControl[$testType]['noHouseCtrl'] > 0 && ($instrument['number_of_in_house_controls'] <  $configControl[$testType]['noHouseCtrl'])) {
             $_SESSION['alertMsg'] = _translate("Maximun number of allowed in house controls for this platform " . $instrument['number_of_in_house_controls']);
             header("Location:batches.php?type=" . $_POST['type']);
             exit;
         }
-        if ($instrument['number_of_manufacturer_controls'] != '' && $configControl[$testType]['noManufacturerCtrl'] != '' && ($instrument['number_of_manufacturer_controls'] <  $configControl[$testType]['noManufacturerCtrl'])) {
+        if ($instrument['number_of_manufacturer_controls'] > 0 && $configControl[$testType]['noManufacturerCtrl'] > 0 && ($instrument['number_of_manufacturer_controls'] <  $configControl[$testType]['noManufacturerCtrl'])) {
             $_SESSION['alertMsg'] = _translate("Maximun number of allowed manufacturer controls for this platform " . $instrument['number_of_manufacturer_controls']);
             header("Location:batches.php?type=" . $_POST['type']);
             exit;
         }
-        if ($instrument['number_of_calibrators'] != '' && $configControl[$testType]['noCalibrators'] != '' && ($instrument['number_of_calibrators'] <  $configControl[$testType]['noCalibrators'])) {
+        if ($instrument['number_of_calibrators'] > 0 && $configControl[$testType]['noCalibrators'] > 0 && ($instrument['number_of_calibrators'] <  $configControl[$testType]['noCalibrators'])) {
             $_SESSION['alertMsg'] = _translate("Maximun number of allowed calibrators for this platform " . $instrument['number_of_calibrators']);
             header("Location:batches.php?type=" . $_POST['type']);
             exit;
