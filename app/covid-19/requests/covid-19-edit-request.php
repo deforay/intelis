@@ -279,10 +279,5 @@ require_once($fileArray[$arr['vl_form']]);
         <?php } ?>
     }
 
-
-    function calculateAgeInYears() {
-        var dateOfBirth = moment($("#patientDob").val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
-        $("#patientAge").val(moment().diff(dateOfBirth, 'years'));
-    }
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php'; ?>

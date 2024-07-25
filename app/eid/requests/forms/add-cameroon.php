@@ -186,9 +186,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <th scope="row"><label for="childDob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control isRequired date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInMonths();" />
+                                            <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();"/> <label for="dob"><?= _translate('Unreported'); ?> </label>
+
                                         </td>
                                         <th scope="row"><?= _translate('Infant Age (months)'); ?></th>
-                                        <td><input type="number" max="24" maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?= _translate('Age'); ?>" title="<?= _translate('Age'); ?>" style="width:100%;" /></td>
+                                        <td><input type="number" max="24" maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control" id="childAge" name="childAge" placeholder="<?= _translate('Age'); ?>" title="<?= _translate('Age'); ?>" style="width:100%;" /></td>
 
                                     </tr>
                                     <tr>
@@ -829,6 +831,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             $("#labTestingPointOther").hide();
         }
     }
+
+    function updateAgeInfo()
+     {
+          var isChecked = $("#unreported").is(":checked");
+          if(isChecked == true){
+               $("#childDob").val("");
+               $("#childAge").val("");
+               $('#childDob').prop('readonly', true);
+               $('#childAge').prop('readonly', true);
+               $('#childDob').removeClass('isRequired');
+
+          }
+          else{
+               $('#childDob').prop('readonly', false);
+               $('#childAge').prop('readonly', false);
+               $('#childDob').addClass('isRequired');
+          }
+     }
 
     $(document).ready(function() {
         Utilities.autoSelectSingleOption('facilityId');

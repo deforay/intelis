@@ -77,6 +77,10 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
 
+$ageInfo = "";
+if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
+     $ageInfo = "unreported";
+}
 
 ?>
 
@@ -243,12 +247,13 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><label for="dob"><?= _translate("Date of Birth"); ?> </label></th>
+                                        <th scope="row"><label for="dob"><?= _translate("Date of Birth"); ?> <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate("Date of Birth"); ?>" title="<?= _translate("Please enter Date of birth"); ?>" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo $covid19Info['patient_dob']; ?>" />
+                                            <input type="text" class="form-control date isRequired" id="dob" name="dob" placeholder="<?= _translate("Date of Birth"); ?>" title="<?= _translate("Please enter Date of birth"); ?>" style="width:100%;" onchange="getAge();" value="<?php echo $covid19Info['patient_dob']; ?>" <?php if($ageInfo=="unreported") echo "readonly"; ?> />
+                                            <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();" <?php if($ageInfo=="unreported") echo "checked='checked'"; ?>/> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate("Case Age (years)"); ?></th>
-                                        <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="<?= _translate("Age (in years)"); ?>" title="<?= _translate("Age"); ?>" style="width:100%;" value="<?php echo $covid19Info['patient_age']; ?>" /></td>
+                                        <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="ageInYears" name="ageInYears" placeholder="<?= _translate("Age (in years)"); ?>" title="<?= _translate("Age"); ?>" style="width:100%;" value="<?php echo $covid19Info['patient_age']; ?>" <?php if($ageInfo=="unreported") echo "readonly"; ?> /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><label for="patientGender"><?= _translate("Gender"); ?> <span class="mandatory">*</span> </label></th>
@@ -641,6 +646,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     machineName = true;
     let testCounter = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
     deletedRow = [];
+    
 
     function getfacilityDetails(obj) {
         $.blockUI();
@@ -810,7 +816,26 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         }
     }
 
+    function updateAgeInfo()
+     {
+          var isChecked = $("#unreported").is(":checked");
+          if(isChecked == true){
+               $("#dob").val("");
+               $("#ageInYears").val("");
+               $('#dob').prop('readonly', true);
+               $('#ageInYears').prop('readonly', true);
+               $('#dob').removeClass('isRequired');
+          }
+          else{
+               $('#dob').prop('readonly', false);
+               $('#ageInYears').prop('readonly', false);
+               $('#dob').addClass('isRequired');
+          }
+     }
+
     $(document).ready(function() {
+        updateAgeInfo();
+
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
@@ -834,8 +859,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         });
 
         $("#labId,#facilityId,#sampleCollectionDate").trigger('change');
-
-
 
 
         $('.expDate').datepicker({

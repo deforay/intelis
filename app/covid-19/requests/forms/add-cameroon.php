@@ -13,6 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$cpyReq = $general->getGlobalConfig('covid19_copy_request_save_and_next');
 
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
@@ -56,7 +57,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
-$facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
+$facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid19Data']['facility_id'], '-- Select --');
 
 ?>
 
@@ -138,11 +139,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                         <td><label for="facilityId"><?= _translate("Facility"); ?> </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control  " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
+                                            <select class="form-control  " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
-                                                    <?php foreach ($healthFacilitiesAllColumns as $hFacility) { ?>
-                                                <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>" <?php echo (isset($_SESSION['covid19Data']['facility_id']) && $_SESSION['covid19Data']['facility_id'] == $hFacility['facility_id']) ? 'selected="selected"' : ''; ?>><?php echo $hFacility['facility_name']; ?></option>
-                                                    <?php } ?>
+                                                <?php echo $facility; ?>
                                             </select>
                                         </td>
                                         <td>
@@ -233,12 +232,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                     <tr>
 
-                                        <th scope="row"><label for="dob"><?= _translate('Date of Birth'); ?> </label></th>
+                                        <th scope="row"><label for="dob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate('Date of Birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInYears();" />
+                                            <input type="text" class="form-control date isRequired" id="dob" name="dob" placeholder="<?= _translate('Date of Birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="getAge();" />
+                                            <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();"/> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate("Age (years)"); ?></th>
-                                        <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="<?= _translate('Case Age (in years)'); ?>" title="<?= _translate('Case Age'); ?>" style="width:100%;" onchange="" /></td>
+                                        <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="ageInYears" name="ageInYears" placeholder="<?= _translate('Case Age (in years)'); ?>" title="<?= _translate('Case Age'); ?>" style="width:100%;" onchange="" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><label for="patientGender"><?= _translate("Gender"); ?> <span class="mandatory">*</span> </label></th>
@@ -897,7 +897,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $("#lastName").val(patientArray['lastname']);
         $("#patientPhoneNumber").val(patientArray['patient_phone_number']);
         $("#patientGender").val(patientArray['gender']);
-        $("#patientAge").val(patientArray['age']);
+        $("#ageInYears").val(patientArray['age']);
         $("#patientDob").val(patientArray['dob']);
         $("#patientId").val(patientArray['patient_id']);
         $("#patientPassportNumber").val(patientArray['patient_passport_number']);
@@ -980,10 +980,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             provinceName = true;
             facilityName = true;
             $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo ((string) $facility); ?>");
+            $("#facilityId").html("<?php echo $facility; ?>");
         }
         $.unblockUI();
     }
+
 
 
     function validateNow() {
@@ -1010,6 +1011,23 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         }
     }
 
+    function updateAgeInfo()
+     {
+          var isChecked = $("#unreported").is(":checked");
+          if(isChecked == true){
+               $("#dob").val("");
+               $("#ageInYears").val("");
+               $('#dob').prop('readonly', true);
+               $('#ageInYears').prop('readonly', true);
+               $('#dob').removeClass('isRequired');
+          }
+          else{
+               $('#dob').prop('readonly', false);
+               $('#ageInYears').prop('readonly', false);
+               $('#dob').addClass('isRequired');
+          }
+     }
+
     $(document).ready(function() {
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
@@ -1031,7 +1049,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                     });
             }
         });
-
 
 
 
@@ -1093,11 +1110,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
          // BARCODESTUFF END
          <?php if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
-               unset($_SESSION['covid19Data']); ?>
-               fillFacilityDetails();
-          <?php } ?>
+             //  unset($_SESSION['covid19Data']); ?>
+            getfacilityProvinceDetails($('#facilityId'));
+            <?php } ?>
 
     });
+
+    function fillFacilityDetails() {
+          $.blockUI();
+          //check facility name
+         
+          $.unblockUI();
+        $("#facilityCode").val($('#facilityId').find(':selected').data('code'));
+     }
 
     let testCounter = 1;
 
