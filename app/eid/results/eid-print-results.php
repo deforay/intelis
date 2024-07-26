@@ -1025,6 +1025,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                 $("#status").prop('disabled', true);
             });
         }
+        if(selectedRows!=""){
+			$("#notPrintedResult").css('display', 'block');
+		}
+		else{
+			$("#notPrintedResult").css('display', 'none');
+		}
         $("#checkedRows").val(selectedRows.join());
     }
 
@@ -1049,6 +1055,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                 $("#status").prop('disabled', true);
             });
         }
+        if(selectedPrintedRowsId!=""){
+			$("#printedResult").css('display', 'block');
+		}
+		else{
+			$("#printedResult").css('display', 'none');
+		}
         $("#checkedPrintedRows").val(selectedPrintedRows.join());
     }
 

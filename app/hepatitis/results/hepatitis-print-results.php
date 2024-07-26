@@ -966,6 +966,12 @@ $state = $geolocationService->getProvinces("yes");
                 $("#status").prop('disabled', true);
             });
         }
+        if(selectedRows!=""){
+            $("#notPrintedResult").css('display', 'block');
+        }
+        else{
+            $("#notPrintedResult").css('display', 'none');
+        }
         $("#checkedRows").val(selectedRows.join());
     }
 
@@ -989,6 +995,12 @@ $state = $geolocationService->getProvinces("yes");
                 selectedPrintedRowsId.splice($.inArray(this.id, selectedPrintedRowsId), 1);
                 $("#status").prop('disabled', true);
             });
+        }
+        if(selectedPrintedRows!=""){
+            $("#printedResult").css('display', 'block');
+        }
+        else{
+            $("#printedResult").css('display', 'none');
         }
         $("#checkedPrintedRows").val(selectedPrintedRows.join());
     }

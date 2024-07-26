@@ -1066,11 +1066,11 @@ $state = $geolocationService->getProvinces("yes");
 			$("#checkRowsData").attr("checked", false);
 		}
 		if(selectedRows!=""){
-                        $("#notPrintedResult").css('display', 'block');
-                    }
-                    else{
-                        $("#notPrintedResult").css('display', 'none');
-                    }
+            $("#notPrintedResult").css('display', 'block');
+        }
+        else{
+            $("#notPrintedResult").css('display', 'none');
+        }
 		$("#checkedRows").val(selectedRows.join());
 	}
 
@@ -1086,11 +1086,11 @@ $state = $geolocationService->getProvinces("yes");
 			$("#checkPrintedRowsData").attr("checked", false);
 		}
 		if(selectedPrintedRows!=""){
-                        $("#printedResult").css('display', 'block');
-                    }
-                    else{
-                        $("#printedResult").css('display', 'none');
-                    }
+            $("#printedResult").css('display', 'block');
+        }
+        else{
+            $("#printedResult").css('display', 'none');
+        }
 		$("#checkedPrintedRows").val(selectedPrintedRows.join());
 	}
 
@@ -1115,6 +1115,12 @@ $state = $geolocationService->getProvinces("yes");
 				$("#status").prop('disabled', true);
 			});
 		}
+		if(selectedRows!=""){
+            $("#notPrintedResult").css('display', 'block');
+        }
+        else{
+            $("#notPrintedResult").css('display', 'none');
+        }
 		$("#checkedRows").val(selectedRows.join());
 	}
 
@@ -1139,6 +1145,12 @@ $state = $geolocationService->getProvinces("yes");
 				$("#status").prop('disabled', true);
 			});
 		}
+		if(selectedPrintedRows!=""){
+            $("#printedResult").css('display', 'block');
+        }
+        else{
+            $("#printedResult").css('display', 'none');
+        }
 		$("#checkedPrintedRows").val(selectedPrintedRows.join());
 	}
 

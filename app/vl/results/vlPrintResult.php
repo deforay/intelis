@@ -1229,7 +1229,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	}
 
 	function toggleAllVisible() {
-		//alert(tabStatus);
 		$(".checkRows").each(function() {
 			$(this).prop('checked', false);
 			selectedRows.splice($.inArray(this.value, selectedRows), 1);
@@ -1248,6 +1247,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				selectedRowsId.splice($.inArray(this.id, selectedRowsId), 1);
 				$("#status").prop('disabled', true);
 			});
+		}
+		if(selectedRows!=""){
+			$("#notPrintedResult").css('display', 'block');
+		}
+		else{
+			$("#notPrintedResult").css('display', 'none');
 		}
 		$("#checkedRows").val(selectedRows.join());
 	}
@@ -1272,6 +1277,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				selectedPrintedRowsId.splice($.inArray(this.id, selectedPrintedRowsId), 1);
 				$("#status").prop('disabled', true);
 			});
+		}
+		if(selectedPrintedRowsId!=""){
+			$("#printedResult").css('display', 'block');
+		}
+		else{
+			$("#printedResult").css('display', 'none');
 		}
 		$("#checkedPrintedRows").val(selectedPrintedRows.join());
 	}
