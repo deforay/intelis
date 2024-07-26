@@ -43,7 +43,7 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
-$transactionId = MiscUtility::generateUUID();
+$transactionId = MiscUtility::generateULID();
 
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];

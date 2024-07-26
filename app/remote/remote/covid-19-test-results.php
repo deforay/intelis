@@ -43,7 +43,7 @@ try {
     //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
 
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
 
     $sampleCodes = $facilityIds = [];
 

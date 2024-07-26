@@ -195,7 +195,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                     <td style="width: 30%;">&nbsp;
                     </td>
                 </tr>
-               
+
             </table>
 
             &nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
@@ -320,7 +320,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="form-group">
-                                    <label for="batchCode" class="col-lg-2 control-label">
+                                    <label for="batchCode" class="col-lg-3 control-label">
                                         <?php echo _translate("Batch Code"); ?> <span class="mandatory">*</span>
                                     </label>
                                     <div class="col-lg-7" style="margin-left:3%;">
@@ -337,11 +337,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="form-group">
-                                    <label for="batchCode" class="col-lg-2 control-label">
-                                        <?php echo _translate("Lab Assigned Batch Code"); ?> 
+                                    <label for="batchCode" class="col-lg-3 control-label">
+                                        <?php echo _translate("Lab Assigned Batch Code"); ?>
                                     </label>
                                     <div class="col-lg-7" style="margin-left:3%;">
-                                        <input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode" class="form-control" placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>"/>
+                                        <input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode" class="form-control" placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>" />
                                     </div>
                                 </div>
                                 <p><button type='button' class='btn btn-default selectSamples' onclick='autoselectBatchSamples()'><?php echo _translate('Automatically select samples for Batch'); ?></button></p>
@@ -391,7 +391,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
         });
 
         $("#facilityName").selectize({
-                plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+            plugins: ["restore_on_backspace", "remove_button", "clear_button"],
         });
 
 

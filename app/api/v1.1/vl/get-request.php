@@ -46,7 +46,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
-$transactionId = MiscUtility::generateUUID();
+$transactionId = MiscUtility::generateULID();
 
 $user = null;
 

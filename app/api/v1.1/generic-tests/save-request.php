@@ -90,7 +90,7 @@ try {
     $formId = (int) $general->getGlobalConfig('vl_form');
 
     /* Update form attributes */
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
     $version = $general->getSystemConfig('sc_version');
     /* To save the user attributes from API */
     $userAttributes = [];
@@ -211,10 +211,6 @@ try {
                     $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
                 }
             }
-
-            // if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
-            //     $uniqueId = $data['uniqueId'] = \App\Utilities\MiscUtility::generateUUID();
-            // }
 
             $currentSampleData = [];
             if (!empty($rowData)) {

@@ -47,7 +47,7 @@ try {
 
 
 
-	$transactionId = MiscUtility::generateUUID();
+	$transactionId = MiscUtility::generateULID();
 
 	$counter = 0;
 

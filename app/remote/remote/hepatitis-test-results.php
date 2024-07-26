@@ -40,7 +40,7 @@ try {
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
 
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
 
     $sampleCodes = $facilityIds = [];
     $labId = null;

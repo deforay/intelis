@@ -75,7 +75,7 @@ try {
     $tableName = "form_covid19";
     $tableName1 = "activity_log";
     $testTableName = 'covid19_tests';
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
@@ -342,10 +342,10 @@ try {
             $reasonForChanges = json_encode($allChange);
         }
         /* New API changes start */
-        if(isset($data['patientDob']) && !empty($data['patientDob'])){
+        if (isset($data['patientDob']) && !empty($data['patientDob'])) {
             $data['dob'] = $data['patientDob'];
         }
-        if(isset($data['rejectionReasonId']) && !empty($data['rejectionReasonId'])){
+        if (isset($data['rejectionReasonId']) && !empty($data['rejectionReasonId'])) {
             $data['sampleRejectionReason'] = $data['rejectionReasonId'];
         }
         /* New API changes end */

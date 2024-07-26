@@ -31,7 +31,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $apiService = ContainerRegistry::get(ApiService::class);
 
 
-$transactionId = MiscUtility::generateUUID();
+$transactionId = MiscUtility::generateULID();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;

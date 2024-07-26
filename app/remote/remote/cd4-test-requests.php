@@ -34,7 +34,7 @@ $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
 try {
   $db->beginTransaction();
-  $transactionId = MiscUtility::generateUUID();
+  $transactionId = MiscUtility::generateULID();
 
 
 

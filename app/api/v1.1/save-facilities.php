@@ -74,7 +74,7 @@ try {
     //echo '<pre>'; print_r($input); die;
 
 
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
 
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();

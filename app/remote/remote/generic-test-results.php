@@ -54,7 +54,7 @@ try {
     // Create an array with all column names set to null
     $emptyLabArray = $general->getTableFieldsAsArray('form_generic', $unwantedColumns);
 
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
 
     $sampleCodes = $facilityIds = [];
     $labId = null;

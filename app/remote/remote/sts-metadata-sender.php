@@ -34,7 +34,7 @@ $data = $apiService->getJsonFromRequest($request, decode: true);
 
 $counter = 0;
 
-$transactionId = MiscUtility::generateUUID();
+$transactionId = MiscUtility::generateULID();
 
 if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
 

@@ -32,7 +32,7 @@ try {
     }
     $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
 
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
     $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
