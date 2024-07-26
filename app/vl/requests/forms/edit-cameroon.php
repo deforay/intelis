@@ -317,8 +317,7 @@ if ($general->isLISInstance() && $vlQueryInfo['patient_dob'] == null && $vlQuery
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="ageInMonths"><?= _translate('If Age
-                                                            < 1, Age in Month(s)'); ?> </label> <input type="text" name="ageInMonths" id="ageInMonths" value="<?= $vlQueryInfo['patient_age_in_months'] ?>" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Month(s)'); ?>" title="<?= _translate('Enter age in months'); ?>" />
+                                                       <label for="ageInMonths"><?= _translate('If Age < 1, Age in Month(s)'); ?> </label> <input type="text" name="ageInMonths" id="ageInMonths" value="<?= $vlQueryInfo['patient_age_in_months'] ?>" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Month(s)'); ?>" title="<?= _translate('Enter age in months'); ?>" />
                                                   </div>
                                              </div>
                                         </div>
