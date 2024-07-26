@@ -1287,7 +1287,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      });
 
      function updateAgeInfo() {
-          var isChecked = $("#unreported").is(":checked");
+          var isChecked = $("#ageUnreported").is(":checked");
           if (isChecked == true) {
                $("#dob").val("");
                $("#ageInYears").val("");

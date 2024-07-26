@@ -235,7 +235,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                         <th scope="row"><label for="dob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span></label></th>
                                         <td>
                                             <input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate('Date of Birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="getAge();" />
-                                            <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();"/> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();"/> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate("Age (years)"); ?></th>
                                         <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control" id="ageInYears" name="ageInYears" placeholder="<?= _translate('Case Age (in years)'); ?>" title="<?= _translate('Case Age'); ?>" style="width:100%;" onchange="" /></td>
@@ -1013,7 +1013,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
 
     function updateAgeInfo()
      {
-          var isChecked = $("#unreported").is(":checked");
+          var isChecked = $("#ageUnreported").is(":checked");
           if(isChecked == true){
                $("#dob").val("");
                $("#ageInYears").val("");
