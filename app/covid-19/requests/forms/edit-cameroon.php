@@ -249,7 +249,7 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                     <tr>
                                         <th scope="row"><label for="dob"><?= _translate("Date of Birth"); ?> <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input type="text" class="form-control date isRequired" id="dob" name="dob" placeholder="<?= _translate("Date of Birth"); ?>" title="<?= _translate("Please enter Date of birth"); ?>" style="width:100%;" onchange="getAge();" value="<?php echo $covid19Info['patient_dob']; ?>" <?php if($ageInfo=="unreported") echo "readonly"; ?> />
+                                            <input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate("Date of Birth"); ?>" title="<?= _translate("Please enter Date of birth"); ?>" style="width:100%;" onchange="getAge();" value="<?php echo $covid19Info['patient_dob']; ?>" <?php if($ageInfo=="unreported") echo "readonly"; ?> />
                                             <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();" <?php if($ageInfo=="unreported") echo "checked='checked'"; ?>/> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate("Case Age (years)"); ?></th>

@@ -252,7 +252,7 @@ foreach ($testReasonsResultDetails as $row) {
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="dob"><?= _translate('Date of Birth'); ?> <span class='mandatory'>*</span></label>
-                                                       <input type="text" name="dob" id="dob" class="form-control date isRequired" placeholder="<?= _translate('Enter DOB'); ?>" title="<?= _translate('Enter dob'); ?>" onchange="getAge();checkARTInitiationDate();" />
+                                                       <input type="text" name="dob" id="dob" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="<?= _translate('Enter dob'); ?>" onchange="getAge();checkARTInitiationDate();" />
                                                        <?php if ($general->isLISInstance()) { ?>
                                                             <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" /> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                                        <?php } ?>

@@ -209,7 +209,7 @@ if($eidInfo['child_dob']==NULL && $eidInfo['child_age']==NULL){
                                     <tr>
                                         <th scope="row"><label for="childDob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" <?php if($ageInfo=="unreported") echo "readonly"; ?> />
+                                            <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" <?php if($ageInfo=="unreported") echo "readonly"; ?> />
                                             <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();" <?php if($ageInfo=="unreported") echo "checked='checked'"; ?>/> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate('Infant Age (months)'); ?></th>
